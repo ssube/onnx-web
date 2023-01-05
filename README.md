@@ -3,7 +3,8 @@
 This is a rudimentary web UI for ONNX models, providing a way to run GPU-accelerated models on Windows and even AMD
 with a remote web interface.
 
-This is still fairly early and instructions are a little rough, but it works on my machine.
+This is still fairly early and instructions are a little rough, but it works on my machine. If I keep working on this
+for more than a week, I would like to add img2img and Nvidia support.
 
 ![txt2img with example astronaut prompt and image](./docs/readme-preview.png)
 
@@ -14,9 +15,18 @@ Based on work by:
 - https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs
 - https://www.travelneil.com/stable-diffusion-updates.html
 
+## Features
+
+- REST API server capable of running ONNX models with DirectML acceleration
+  - multiple schedulers
+- web app to generate and view images
+  - parameter inputs with validation
+  - txt2img mode
+
 ## Contents
 
 - [ONNX Web UI](#onnx-web-ui)
+  - [Features](#features)
   - [Contents](#contents)
   - [Setup](#setup)
     - [Note about setup paths](#note-about-setup-paths)
