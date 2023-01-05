@@ -1,0 +1,20 @@
+FROM docker.artifacts.apextoaster.com/library/node:18-buster
+
+ENV PATH="${PATH}:$(yarn global bin)"
+
+WORKDIR /onnx-web
+
+# copy package first, to invalidate other layers when version changes
+COPY package.json /onnx-web/package.json
+COPY yarn.lock /onnx-web/yarn.lock
+RUN yarn install --production
+
+# copy chunks, largest to smallest (entrypoint)
+COPY out/src/ /onnx-web/out/src/
+COPY out/bundle/ /onnx-web/out/bundle/
+
+# set up as global cli tool
+RUN yarn global add file:$(pwd)
+
+ENTRYPOINT [ "node", "/onnx-web/out/bundle/main.js" ]
+CMD [ "--help" ]
