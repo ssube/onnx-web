@@ -2,6 +2,7 @@ import { Box, Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 
 import { ApiClient } from '../api/client.js';
+import { ImageControl, ImageParams } from './ImageControl.js';
 
 const { useState } = React;
 
@@ -13,12 +14,16 @@ export function Txt2Img(props: Txt2ImgProps) {
   const { client } = props;
   const [image, setImage] = useState('');
 
-  const [cfg, setCfg] = useState(5);
   const [prompt, setPrompt] = useState('an astronaut eating a hamburger');
-  const [steps, setSteps] = useState(20);
+  const [params, setParams] = useState<ImageParams>({
+    cfg: 6,
+    steps: 25,
+    width: 512,
+    height: 512,
+  })
 
   async function getImage() {
-    const image = await client.txt2img({ prompt, cfg, steps });
+    const image = await client.txt2img({ ...params, prompt });
     console.log(prompt, image);
     setImage(image);
   }
@@ -36,11 +41,8 @@ export function Txt2Img(props: Txt2ImgProps) {
       <Box>
         txt2img mode
       </Box>
-      <TextField label="CFG" variant="outlined" type="number" inputProps={{ min: 5, max: 30 }} value={cfg} onChange={(event) => {
-        setCfg(parseInt(event.target.value, 10));
-      }} />
-      <TextField label="Steps" variant="outlined" type="number" inputProps={{ min: 15, max: 150 }} value={steps} onChange={(event) => {
-        setSteps(parseInt(event.target.value, 10));
+      <ImageControl params={params} onChange={(params) => {
+        setParams(params);
       }} />
       <TextField label="Prompt" variant="outlined" value={prompt} onChange={(event) => {
         setPrompt(event.target.value);

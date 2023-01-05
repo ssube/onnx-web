@@ -4,6 +4,8 @@ export interface Txt2ImgParams {
   prompt: string;
   cfg: number;
   steps: number;
+  width: number;
+  height: number;
 }
 
 export interface ApiClient {
@@ -25,16 +27,16 @@ export function makeClient(root: string, f = fetch): ApiClient {
   return {
     async txt2img(params: Txt2ImgParams): Promise<string> {
       if (doesExist(pending)) {
-        console.log('skipping duplicate request, one is already pending');
+        console.log('skipping request, one is already pending');
         return pending;
       }
 
-      const { prompt, cfg, steps } = params;
-
       const url = new URL('/txt2img', root);
-      url.searchParams.append('cfg', cfg.toFixed(0));
-      url.searchParams.append('prompt', prompt);
-      url.searchParams.append('steps', steps.toFixed(0));
+      url.searchParams.append('cfg', params.cfg.toFixed(0));
+      url.searchParams.append('steps', params.steps.toFixed(0));
+      url.searchParams.append('width', params.width.toFixed(0));
+      url.searchParams.append('height', params.height.toFixed(0));
+      url.searchParams.append('prompt', params.prompt);
 
       pending = f(url).then((res) => {
         pending = undefined;
