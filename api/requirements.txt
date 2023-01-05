@@ -1,0 +1,10 @@
+### AI packages ###
+diffusers
+numpy
+onnx
+onnxruntime
+transformers
+
+### Server packages ###
+flask
+stringcase
