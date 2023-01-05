@@ -27,8 +27,8 @@ max_height = 512
 max_width = 512
 
 # paths
-model_path = environ.get('ONNX_WEB_MODEL_PATH', "../../stable_diffusion_onnx")
-output_path = environ.get('ONNX_WEB_OUTPUT_PATH', "../../web_output")
+model_path = environ.get('ONNX_WEB_MODEL_PATH', "../models/stable-diffusion-onnx-v1-5")
+output_path = environ.get('ONNX_WEB_OUTPUT_PATH', "../outputs")
 
 # schedulers
 scheduler_list = {
