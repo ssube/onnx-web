@@ -24,8 +24,8 @@ build: deps
 	yarn tsc
 
 build-shebang: build
-	sed -i '1s;^;#! /usr/bin/env node\n\n;g' $(shell pwd)/out/src/index.js
-	chmod ug+x out/src/index.js
+	sed -i '1s;^;#! /usr/bin/env node\n\n;g' $(shell pwd)/out/src/main.js
+	chmod ug+x out/src/main.js
 
 bundle: build
 	node esbuild.js

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "onnx web gui",
   "type": "module",
-  "main": "out/bundle/index.js",
+  "main": "out/src/main.js",
   "author": "ssube",
   "license": "MIT",
   "dependencies": {
