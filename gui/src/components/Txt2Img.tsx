@@ -24,9 +24,8 @@ export function Txt2Img(props: Txt2ImgProps) {
   const [scheduler, setScheduler] = useState('euler-a');
 
   async function getImage() {
-    const image = await client.txt2img({ ...params, prompt, scheduler });
-    console.log(prompt, image);
-    setImage(image);
+    const data = await client.txt2img({ ...params, prompt, scheduler });
+    setImage(data);
   }
 
   function renderImage() {
@@ -54,8 +53,8 @@ export function Txt2Img(props: Txt2ImgProps) {
         <MenuItem value='euler-a'>Euler A</MenuItem>
         <MenuItem value='dpm-multi'>DPM</MenuItem>
       </Select>
-      <ImageControl params={params} onChange={(params) => {
-        setParams(params);
+      <ImageControl params={params} onChange={(newParams) => {
+        setParams(newParams);
       }} />
       <TextField label="Prompt" variant="outlined" value={prompt} onChange={(event) => {
         setPrompt(event.target.value);

@@ -19,8 +19,10 @@ export interface ApiClient {
   txt2img(params: Txt2ImgParams): Promise<string>;
 }
 
+export const STATUS_SUCCESS = 200;
+
 export async function imageFromResponse(res: Response) {
-  if (res.status === 200) {
+  if (res.status === STATUS_SUCCESS) {
     const imageBlob = await res.blob();
     return URL.createObjectURL(imageBlob);
   } else {
@@ -34,7 +36,6 @@ export function makeClient(root: string, f = fetch): ApiClient {
   return {
     async txt2img(params: Txt2ImgParams): Promise<string> {
       if (doesExist(pending)) {
-        console.log('skipping request, one is already pending');
         return pending;
       }
 
@@ -60,12 +61,12 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       url.searchParams.append('prompt', params.prompt);
 
-      pending = f(url).then((res) => {
+      pending = f(url).then((res) => imageFromResponse(res)).finally(() => {
         pending = undefined;
-        return imageFromResponse(res);
       });
 
+      // eslint-disable-next-line no-return-await
       return await pending;
     },
-  }
+  };
 }
