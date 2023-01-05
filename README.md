@@ -120,13 +120,18 @@ Sign up for an account at https://huggingface.co and find the models you want to
 
 - https://huggingface.co/runwayml/stable-diffusion-v1-5
 
-Download the conversion script from the `huggingface/diffusers` repository:
-
-- https://raw.githubusercontent.com/huggingface/diffusers/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
+Log into the HuggingFace CLI:
 
 ```shell
-> wget https://raw.githubusercontent.com/huggingface/diffusers/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
+> huggingface-cli.exe login
 ```
+
+Issue an API token from https://huggingface.co/settings/tokens, naming it something memorable like `onnx-web`, and then
+paste it into the prompt.
+
+Download the conversion script from the `huggingface/diffusers` repository to the root of this project:
+
+- https://raw.githubusercontent.com/huggingface/diffusers/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
 
 Run the conversion script with your desired model(s):
 
@@ -136,8 +141,8 @@ Run the conversion script with your desired model(s):
 
 This will take a little while to convert each model. Stable diffusion v1.4 is about 6GB, v1.5 is at least 10GB or so.
 
-You can verify that all of the steps up to this point worked correctly by attempting to run the basic `txt2img` script
-provided with `diffusers` and included here as `api/setup-test.py`.
+You can verify that all of the steps up to this point worked correctly by attempting to run the `api/setup-test.py`
+script, which is a slight variation on the original txt2img script.
 
 ## Usage
 

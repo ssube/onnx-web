@@ -11,14 +11,33 @@ const root = process.cwd();
 
 const portNum = parseInt(port, 10);
 
+const contentTypes = [
+  [/^.*\.html$/, 'text/html'],
+  [/^.*\.js$/, 'application/javascript'],
+  [/^.*\.json$/, 'text/json'],
+];
+
+function getContentType(path) {
+  for (const [regex, type] of contentTypes) {
+    if (regex.test(path)) {
+      return type;
+    }
+  }
+
+  return 'unknown';
+}
+
 const server = createServer((req, res) => {
-  readFile(join(root, 'out', req.url || 'index.html'), function (err, data) {
+  const path = join(root, 'out', req.url || 'index.html');
+  readFile(path, function (err, data) {
     if (err) {
       res.writeHead(404);
       res.end(JSON.stringify(err));
       return;
     }
-    res.writeHead(200);
+    res.writeHead(200, {
+      'Content-Type': getContentType(path),
+    });
     res.end(data);
   });
 });

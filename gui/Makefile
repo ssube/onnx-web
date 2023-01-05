@@ -30,6 +30,7 @@ build-shebang: build
 bundle: build
 	node esbuild.js
 	cp -v src/index.html out/
+	cp -v examples/config.json out/
 
 COVER_OPTS := --all \
 		--exclude ".eslintrc.js" \
@@ -54,16 +55,3 @@ lint: deps
 
 test: build
 	MOCHA_FILE=out/test-results.xml yarn c8 $(COVER_OPTS) mocha $(MOCHA_OPTS) "out/**/Test*.js"
-
-# image-building targets
-image:
-	podman build -t docker-push.artifacts.apextoaster.com/ssube/conan-discord:main -f Containerfile .
-
-image-local: ci
-	podman pull docker-push.artifacts.apextoaster.com/ssube/conan-discord:main
-	$(MAKE) image
-	podman push docker-push.artifacts.apextoaster.com/ssube/conan-discord:main
-
-# run targets
-run: build
-	node out/src/index.js
