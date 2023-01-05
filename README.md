@@ -1,7 +1,11 @@
 # ONNX Web UI
 
-This is a rudimentary web UI for ONNX models, providing a way to run GPU-accelerated models on Windows and AMD with a
-remote web interface.
+This is a rudimentary web UI for ONNX models, providing a way to run GPU-accelerated models on Windows and even AMD
+with a remote web interface.
+
+This is still fairly early and instructions are a little rough, but it works on my machine.
+
+![txt2img with example astronaut prompt and image](./docs/readme-preview.png)
 
 Based on work by:
 
@@ -17,7 +21,7 @@ Based on work by:
   - [Setup](#setup)
     - [Install Git and Python](#install-git-and-python)
     - [Create a Virtual Environment](#create-a-virtual-environment)
-    - [Install pip packages](#install-pip-packages)
+    - [Install AI packages](#install-ai-packages)
     - [Install ORT Nightly package](#install-ort-nightly-package)
     - [Download and Convert Models](#download-and-convert-models)
   - [Usage](#usage)
@@ -28,10 +32,15 @@ Based on work by:
 
 ## Setup
 
-This is a very similar process to what harishanand95 and averad's gists recommend, split up into a few larger steps:
+This is a very similar process to what [harishanand95](https://gist.github.com/harishanand95/75f4515e6187a6aa3261af6ac6f61269)
+and [averad's](https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674) gists recommend, split up into a few
+steps:
 
-1. Create a virtual environment
-2. Install pip package
+1. Install Git and Python, if you have not already
+2. Create a virtual environment
+3. Install AI packages
+4. Install ORT Nightly package
+5. Download and convert models
 
 ### Install Git and Python
 
@@ -68,7 +77,7 @@ Every time you start using ONNX web, activate the virtual environment:
 > .\onnx_env\Scripts\Activate.bat
 ```
 
-### Install pip packages
+### Install AI packages
 
 Update pip itself:
 

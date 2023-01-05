@@ -39,9 +39,6 @@ export function Txt2Img(props: Txt2ImgProps) {
 
   return <Box>
     <Stack spacing={2}>
-      <Box>
-        txt2img mode
-      </Box>
       <Select
         value={scheduler}
         label="Scheduler"
