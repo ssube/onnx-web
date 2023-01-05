@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"name": "root",
+			"path": "."
+		},
+		{
+			"path": "api"
+		},
+		{
+			"path": "gui"
+		}
+	],
+	"settings": {
+		"cSpell.words": [
+			"ddim",
+			"ddpm",
+			"Onnx",
+			"pndm"
+		]
+	}
+}
