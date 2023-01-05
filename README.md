@@ -39,7 +39,7 @@ steps:
 
 1. Install Git and Python, if you have not already
 2. Create a virtual environment
-3. Install AI packages
+3. Install pip packages
 4. Install ORT Nightly package
 5. Download and convert models
 
@@ -106,7 +106,7 @@ Update pip itself:
 Install the following packages for AI:
 
 ```shell
-> pip install diffusers transformers ftfy spacy scipy
+> pip install diffusers transformers ftfy numpy spacy scipy
 > pip install onnx onnxruntime torch
 > pip install onnxruntime-directml --force-reinstall    # TODO: is this one necessary?
 ```
@@ -117,8 +117,11 @@ Install the following packages for the web UI:
 > pip install flask stringcase
 ```
 
-There is [a `requirements.txt` file](./api/requirements.txt) in the `api/` directory, so you can install all of these
-at once using `pip install -r requirements.txt`.
+_Or_ install all of these packages at once using [the `requirements.txt` file](./api/requirements.txt):
+
+```shell
+> pip install -r requirements.txt
+```
 
 At the moment, none of these packages seem to need specific versions. There is a warning about an incompatibility in
 Protobuf, and some of the gist guides recommend `diffusers=0.3.0`, but I had trouble with old versions of `diffusers`
