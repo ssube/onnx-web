@@ -1,12 +1,12 @@
 from diffusers import OnnxStableDiffusionPipeline
 from diffusers import (
-    DDPMScheduler,
     DDIMScheduler,
-    PNDMScheduler,
-    LMSDiscreteScheduler,
+    DDPMScheduler,
+    DPMSolverMultistepScheduler,
     EulerDiscreteScheduler,
     EulerAncestralDiscreteScheduler,
-    DPMSolverMultistepScheduler,
+    LMSDiscreteScheduler,
+    PNDMScheduler,
 )
 from flask import Flask, make_response, request, send_file
 from stringcase import spinalcase
@@ -31,14 +31,14 @@ model_path = environ.get('ONNX_WEB_MODEL_PATH', "../models/stable-diffusion-onnx
 output_path = environ.get('ONNX_WEB_OUTPUT_PATH', "../outputs")
 
 # schedulers
-scheduler_list = {
-    'ddpm': DDPMScheduler.from_pretrained(model_path, subfolder="scheduler"),
+pipeline_schedulers = {
     'ddim': DDIMScheduler.from_pretrained(model_path, subfolder="scheduler"),
-    'pndm': PNDMScheduler.from_pretrained(model_path, subfolder="scheduler"),
-    'lms-discrete': LMSDiscreteScheduler.from_pretrained(model_path, subfolder="scheduler"),
-    'euler-a': EulerAncestralDiscreteScheduler.from_pretrained(model_path, subfolder="scheduler"),
-    'euler': EulerDiscreteScheduler.from_pretrained(model_path, subfolder="scheduler"),
+    'ddpm': DDPMScheduler.from_pretrained(model_path, subfolder="scheduler"),
     'dpm-multi': DPMSolverMultistepScheduler.from_pretrained(model_path, subfolder="scheduler"),
+    'euler': EulerDiscreteScheduler.from_pretrained(model_path, subfolder="scheduler"),
+    'euler-a': EulerAncestralDiscreteScheduler.from_pretrained(model_path, subfolder="scheduler"),
+    'lms-discrete': LMSDiscreteScheduler.from_pretrained(model_path, subfolder="scheduler"),
+    'pndm': PNDMScheduler.from_pretrained(model_path, subfolder="scheduler"),
 }
 
 
@@ -86,7 +86,7 @@ def txt2img():
 
     prompt = request.args.get('prompt', default_prompt)
     scheduler = get_from_map(request.args, 'scheduler',
-                             scheduler_list, 'euler-a')
+                             pipeline_schedulers, 'euler-a')
     cfg = get_and_clamp(request.args, 'cfg', default_cfg, max_cfg, 0)
     steps = get_and_clamp(request.args, 'steps', default_steps, max_steps)
     height = get_and_clamp(request.args, 'height', default_height, max_height)
