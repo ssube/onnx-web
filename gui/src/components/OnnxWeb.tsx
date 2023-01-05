@@ -42,9 +42,6 @@ export function OnnxWeb(props: OnnxWebProps) {
             </TabList>
           </Box>
           <TabPanel value="1">
-            <Box>
-              txt2img using {model}
-            </Box>
             <Txt2Img {...props} />
           </TabPanel>
           <TabPanel value="2">

@@ -1,8 +1,9 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
-import { ApiClient } from "../api/client";
 
-const { useEffect, useState } = React;
+import { ApiClient } from '../api/client.js';
+
+const { useState } = React;
 
 export interface Txt2ImgProps {
   client: ApiClient;
@@ -31,17 +32,21 @@ export function Txt2Img(props: Txt2ImgProps) {
   }
 
   return <Box>
-    <TextField label="CFG" variant="outlined" type="number" inputProps={{ min: 5, max: 30 }} value={cfg} onChange={(event) => {
-      setCfg(parseInt(event.target.value, 10));
-    }} />
-    <TextField label="Steps" variant="outlined" type="number" inputProps={{ min: 15, max: 150 }} value={steps} onChange={(event) => {
-      setSteps(parseInt(event.target.value, 10));
-    }} />
-    <TextField label="Prompt" variant="outlined" value={prompt} onChange={(event) => {
-      console.log('changing prompt', event.target.value);
-      setPrompt(event.target.value);
-    }} />
-    <Button onClick={getImage}>Generate</Button>
-    {renderImage()}
+    <Stack spacing={2}>
+      <Box>
+        txt2img mode
+      </Box>
+      <TextField label="CFG" variant="outlined" type="number" inputProps={{ min: 5, max: 30 }} value={cfg} onChange={(event) => {
+        setCfg(parseInt(event.target.value, 10));
+      }} />
+      <TextField label="Steps" variant="outlined" type="number" inputProps={{ min: 15, max: 150 }} value={steps} onChange={(event) => {
+        setSteps(parseInt(event.target.value, 10));
+      }} />
+      <TextField label="Prompt" variant="outlined" value={prompt} onChange={(event) => {
+        setPrompt(event.target.value);
+      }} />
+      <Button onClick={getImage}>Generate</Button>
+      {renderImage()}
+    </Stack>
   </Box>;
 }
