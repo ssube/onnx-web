@@ -9,7 +9,7 @@ from diffusers import (
     DPMSolverMultistepScheduler,
 )
 from flask import Flask, make_response, request, send_file
-from stringcase import snakecase
+from stringcase import spinalcase
 from io import BytesIO
 from os import environ, path, makedirs
 
@@ -83,7 +83,7 @@ def txt2img():
     guidance_scale=cfg
   ).images[0]
 
-  output = '%s/txt2img-%s' % (output_path, snakecase(prompt))
+  output = '%s/txt2img_%s.png' % (output_path, spinalcase(prompt))
   print("txt2img output: %s" % (output))
   image.save(output)
 
