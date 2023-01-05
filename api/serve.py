@@ -1,5 +1,5 @@
 from diffusers import OnnxStableDiffusionPipeline
-from flask import Flask, request, response, send_file
+from flask import Flask, make_response, request, send_file
 from io import BytesIO
 from os import environ, path, makedirs
 
@@ -57,5 +57,6 @@ def txt2img():
 
   image_queue.remove(user)
 
-  response.headers.add('Access-Control-Allow-Origin', '*')
-  return send_file(img_io, mimetype='image/png')
+  res = make_response(send_file(img_io, mimetype='image/png'))
+  res.headers.add('Access-Control-Allow-Origin', '*')
+  return res
