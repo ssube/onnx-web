@@ -8,7 +8,7 @@ from diffusers import (
     LMSDiscreteScheduler,
     PNDMScheduler,
 )
-from flask import Flask, make_response, request, send_file
+from flask import Flask, make_response, request, send_file, send_from_directory
 from stringcase import spinalcase
 from io import BytesIO
 from os import environ, path, makedirs
@@ -135,3 +135,7 @@ def txt2img():
     res = make_response(send_file(img_io, mimetype='image/png'))
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
+
+@app.route('/output/<path:filename>')
+def output(filename):
+    return send_from_directory(output_path, filename, as_attachment=False)
