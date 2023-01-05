@@ -99,7 +99,7 @@ Every time you start using ONNX web, activate the virtual environment:
 
 ```shell
 # on linux:
-> ./onnx_env/bin/activate
+> source ./onnx_env/bin/activate
 
 # on windows:
 > .\onnx_env\Scripts\Activate.bat
@@ -116,7 +116,8 @@ Update pip itself:
 Install the following packages for AI:
 
 ```shell
-> pip install diffusers transformers ftfy numpy spacy scipy
+> pip install numpy>=1.20,<1.24   # version is important, 1.24 removed the deprecated np.float symbol
+> pip install accelerate diffusers transformers ftfy spacy scipy
 > pip install onnx onnxruntime torch
 > pip install onnxruntime-directml --force-reinstall    # TODO: is this one necessary?
 ```
@@ -133,8 +134,11 @@ _Or_ install all of these packages at once using [the `requirements.txt` file](.
 > pip install -r requirements.txt
 ```
 
-At the moment, none of these packages seem to need specific versions. There is a warning about an incompatibility in
-Protobuf, and some of the gist guides recommend `diffusers=0.3.0`, but I had trouble with old versions of `diffusers`
+At the moment, only `numpy` seems to need a specific version. If you see an error about `np.float`, make sure you are
+not using `numpy>=1.24`. [This SO question](https://stackoverflow.com/questions/74844262/how-to-solve-error-numpy-has-no-attribute-float-in-python)
+has more details.
+
+I got a warning about an incompatibility in `protobuf` when installing the `onnxruntime-directml` package, but have not seen any issues. Some of the gist guides recommend `diffusers=0.3.0`, but I had trouble with old versions of `diffusers`
 before 0.6.0 or so. If I can determine a good set of working versions, I will pin them in `requirements.txt`.
 
 ### Install ORT Nightly package
@@ -145,7 +149,6 @@ Downloads can be found at https://aiinfra.visualstudio.com/PublicPackages/_artif
 Python 3.10, download the `cp310` package. For Python 3.9, download the `cp39` package, and so on.
 
 ```shell
-> wget https://aiinfra.pkgs.visualstudio.com/PublicPackages/_apis/packaging/feeds/7982ae20-ed19-4a35-a362-a96ac99897b7/pypi/packages/ort-nightly-directml/versions/1.14.dev20221214001/ort_nightly_directml-1.14.0.dev20221214001-cp310-cp310-win_amd64.whl/content
 > pip install ~/Downloads/ort_nightly_directml-1.14.0.dev20221214001-cp310-cp310-win_amd64.whl --force-reinstall
 ```
 
@@ -174,7 +177,9 @@ Download the conversion script from the `huggingface/diffusers` repository to th
 Run the conversion script with your desired model(s):
 
 ```shell
-> python convert_stable_diffusion_checkpoint_to_onnx.py --model_path="runwayml/stable-diffusion-v1-5" --output_path="./stable-diffusion-onnx-v1-5"
+> python convert_stable_diffusion_checkpoint_to_onnx.py \
+    --model_path="runwayml/stable-diffusion-v1-5" \
+    --output_path="./models/stable-diffusion-onnx-v1-5"
 ```
 
 This will take a little while to convert each model. Stable diffusion v1.4 is about 6GB, v1.5 is at least 10GB or so.
