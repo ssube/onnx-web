@@ -1,5 +1,5 @@
 {
   "api": {
-    "root": "http://ssube-desktop.home.holdmyran.ch:5000"
+    "root": "http://127.0.0.1:5000"
   }
 }
