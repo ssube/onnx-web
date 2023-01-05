@@ -4,8 +4,15 @@ export interface Txt2ImgParams {
   prompt: string;
   cfg: number;
   steps: number;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
+  seed?: string;
+  scheduler?: string;
+}
+
+export interface ApiResponse {
+  params: Txt2ImgParams;
+  path: string;
 }
 
 export interface ApiClient {
@@ -34,8 +41,23 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const url = new URL('/txt2img', root);
       url.searchParams.append('cfg', params.cfg.toFixed(0));
       url.searchParams.append('steps', params.steps.toFixed(0));
-      url.searchParams.append('width', params.width.toFixed(0));
-      url.searchParams.append('height', params.height.toFixed(0));
+
+      if (doesExist(params.width)) {
+        url.searchParams.append('width', params.width.toFixed(0));
+      }
+
+      if (doesExist(params.height)) {
+        url.searchParams.append('height', params.height.toFixed(0));
+      }
+
+      if (doesExist(params.seed)) {
+        url.searchParams.append('seed', params.seed);
+      }
+
+      if (doesExist(params.scheduler)) {
+        url.searchParams.append('scheduler', params.scheduler);
+      }
+
       url.searchParams.append('prompt', params.prompt);
 
       pending = f(url).then((res) => {

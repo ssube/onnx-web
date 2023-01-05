@@ -1,6 +1,7 @@
 import { doesExist } from '@apextoaster/js-utils';
-import { Container, Stack, TextField } from '@mui/material';
+import { Stack, TextField } from '@mui/material';
 import * as React from 'react';
+import { NumericField } from './NumericField';
 
 export interface ImageParams {
   cfg: number;
@@ -19,64 +20,64 @@ export function ImageControl(props: ImageControlProps) {
 
   return <Stack spacing={2}>
     <Stack direction="row" spacing={4}>
-      <TextField
+      <NumericField
         label="CFG"
-        variant="outlined"
-        type="number"
-        inputProps={{ min: 0, max: 30, step: 1 }}
+        min={0}
+        max={30}
+        step={1}
         value={params.cfg}
-        onChange={(event) => {
+        onChange={(cfg) => {
           if (doesExist(props.onChange)) {
             props.onChange({
               ...params,
-              cfg: parseInt(event.target.value, 10),
+              cfg,
             });
           }
         }}
       />
-      <TextField
+      <NumericField
         label="Steps"
-        variant="outlined"
-        type="number"
-        inputProps={{ min: 1, max: 150, step: 1 }}
+        min={1}
+        max={150}
+        step={1}
         value={params.steps}
-        onChange={(event) => {
+        onChange={(steps) => {
           if (doesExist(props.onChange)) {
             props.onChange({
               ...params,
-              steps: parseInt(event.target.value, 10),
+              steps,
             });
           }
         }}
       />
     </Stack>
     <Stack direction="row" spacing={4}>
-      <TextField
+      <NumericField
         label="Width"
-        variant="outlined"
-        type="number"
-        inputProps={{ min: 1, max: 512, step: 16 }}
+        min={1}
+        max={512}
+        step={8}
         value={params.width}
-        onChange={(event) => {
+        onChange={(width) => {
           if (doesExist(props.onChange)) {
             props.onChange({
               ...params,
-              width: parseInt(event.target.value, 10),
+              width,
             });
           }
         }}
       />
-      <TextField
+      <NumericField
         label="Height"
-        variant="outlined"
-        type="number"
-        inputProps={{ min: 1, max: 512, step: 16 }}
+        min={1}
+        max={512}
+        step={8}
         value={params.height}
-        onChange={(event) => {
+        onChange={(height) => {
           if (doesExist(props.onChange)) {
             props.onChange({
               ...params,
-              height: parseInt(event.target.value, 10),
+              height,
             });
           }
         }}

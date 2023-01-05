@@ -1,4 +1,4 @@
-import { Box, Button, Stack, TextField } from '@mui/material';
+import { Box, Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 
 import { ApiClient } from '../api/client.js';
@@ -20,10 +20,11 @@ export function Txt2Img(props: Txt2ImgProps) {
     steps: 25,
     width: 512,
     height: 512,
-  })
+  });
+  const [scheduler, setScheduler] = useState('euler-a');
 
   async function getImage() {
-    const image = await client.txt2img({ ...params, prompt });
+    const image = await client.txt2img({ ...params, prompt, scheduler });
     console.log(prompt, image);
     setImage(image);
   }
@@ -41,6 +42,21 @@ export function Txt2Img(props: Txt2ImgProps) {
       <Box>
         txt2img mode
       </Box>
+      <Select
+        value={scheduler}
+        label="Scheduler"
+        onChange={(event) => {
+          setScheduler(event.target.value);
+        }}
+      >
+        <MenuItem value='ddim'>DDIM</MenuItem>
+        <MenuItem value='ddpm'>DDPM</MenuItem>
+        <MenuItem value='pndm'>PNDM</MenuItem>
+        <MenuItem value='lms-discrete'>LMS</MenuItem>
+        <MenuItem value='euler'>Euler</MenuItem>
+        <MenuItem value='euler-a'>Euler A</MenuItem>
+        <MenuItem value='dpm-multi'>DPM</MenuItem>
+      </Select>
       <ImageControl params={params} onChange={(params) => {
         setParams(params);
       }} />
