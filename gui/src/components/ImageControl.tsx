@@ -1,6 +1,7 @@
 import { doesExist } from '@apextoaster/js-utils';
-import { Stack, TextField } from '@mui/material';
+import { Stack } from '@mui/material';
 import * as React from 'react';
+
 import { NumericField } from './NumericField';
 
 export interface ImageParams {
@@ -54,7 +55,7 @@ export function ImageControl(props: ImageControlProps) {
     <Stack direction="row" spacing={4}>
       <NumericField
         label="Width"
-        min={1}
+        min={8}
         max={512}
         step={8}
         value={params.width}
@@ -69,7 +70,7 @@ export function ImageControl(props: ImageControlProps) {
       />
       <NumericField
         label="Height"
-        min={1}
+        min={8}
         max={512}
         step={8}
         value={params.height}
