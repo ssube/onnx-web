@@ -1,5 +1,5 @@
 from diffusers import OnnxStableDiffusionPipeline
-from flask import Flask, request, send_file
+from flask import Flask, request, response, send_file
 from io import BytesIO
 from os import environ, path, makedirs
 
@@ -38,15 +38,15 @@ def txt2img():
   if len(image_queue) > 0:
     return 'Queue full: %s' % (image_queue)
 
-  origin = request.origin
+  user = request.remote_addr
   prompt = request.args.get('prompt', empty_prompt)
   height = request.args.get('height', max_height)
   width = request.args.get('width', max_width)
   steps = int(request.args.get('steps', max_steps))
   cfg = int(request.args.get('cfg', max_cfg))
 
-  print("txt2img from %s: %s/%s, %sx%s, %s" % (origin, cfg, steps, width, height, prompt))
-  image_queue.add(origin)
+  print("txt2img from %s: %s/%s, %sx%s, %s" % (user, cfg, steps, width, height, prompt))
+  image_queue.add(user)
 
   image = pipe(prompt, height, width, num_inference_steps=steps, guidance_scale=cfg).images[0]
   # image.save("astronaut_rides_horse.png")
@@ -55,5 +55,7 @@ def txt2img():
   image.save(img_io, 'PNG', quality=100)
   img_io.seek(0)
 
-  image_queue.remove(origin)
+  image_queue.remove(user)
+
+  response.headers.add('Access-Control-Allow-Origin', '*')
   return send_file(img_io, mimetype='image/png')
