@@ -1,0 +1,80 @@
+stages:
+  - build
+  - package
+
+.build-base:
+  tags:
+    - platform:k8s
+    - runner:shared
+
+.build-node:
+  extends:
+    - .build-base
+  image: docker.io/node:18
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - gui/out/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: gui/out/coverage/cobertura-coverage.xml
+      junit: gui/out/test-results.xml
+  cache:
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - gui/node_modules/
+    policy: pull-push
+
+.build-dind:
+  extends:
+    - .build-base
+  image: docker.io/docker:20.10
+  services:
+    - docker.io/docker-dind:20.10
+  allow_failure: false
+  before_script:
+    - mkdir ${HOME}/.docker
+    - echo "${DOCKER_SECRET}" | base64 -d > ${HOME}/.docker/config.json
+  after_script:
+    - rm -rfv ${HOME}/.docker
+  variables:
+    DOCKER_CERT_PATH: "/shared/docker/client"
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://localhost:2376
+    DOCKER_NAME: "${CI_PROJECT_PATH}"
+    DOCKER_TLS_CERTDIR: "/shared/docker"
+    DOCKER_TLS_VERIFY: 1
+    IMAGE_FILE: Containerfile
+    IMAGE_ROOT: "${CI_PROJECT_DIR}"
+    VERSION_TAG: "${CI_COMMIT_REF_SLUG}"
+
+build-js:
+  extends:
+    - .build-node
+  stage: build
+  script:
+    - cd gui
+    - make ci
+
+package-oci:
+  extends:
+    - .build-dind
+  stage: package
+  needs:
+    - build-js
+  script:
+    - ${CI_PROJECT_DIR}/scripts/image-build.sh --push
+
+package-npm:
+  extends:
+    - .build-node
+  stage: package
+  needs:
+    - build-js
+  only:
+    - tags
+  script:
+    - npm publish
