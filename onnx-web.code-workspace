@@ -15,8 +15,23 @@
 		"cSpell.words": [
 			"ddim",
 			"ddpm",
+			"directml",
+			"ftfy",
+			"huggingface",
+			"Multistep",
+			"numpy",
 			"Onnx",
-			"pndm"
+			"onnxruntime",
+			"pndm",
+			"pretrained",
+			"protobuf",
+			"runwayml",
+			"scipy",
+			"spacy",
+			"spinalcase",
+			"stringcase",
+			"venv",
+			"virtualenv"
 		]
 	}
 }
