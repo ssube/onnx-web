@@ -47,7 +47,6 @@ def setup():
 # setup
 setup()
 app = Flask(__name__)
-pipe = OnnxStableDiffusionPipeline.from_pretrained(model_path, provider="DmlExecutionProvider", safety_checker=None)
 
 # routes
 @app.route('/')
@@ -70,13 +69,18 @@ def txt2img():
   print("txt2img from %s: %s/%s, %sx%s, %s" % (user, cfg, steps, width, height, prompt))
   image_queue.add(user)
 
+  pipe = OnnxStableDiffusionPipeline.from_pretrained(
+    model_path,
+    provider="DmlExecutionProvider",
+    safety_checker=None,
+    scheduler=scheduler
+  )
   image = pipe(
     prompt,
     height,
     width,
     num_inference_steps=steps,
-    guidance_scale=cfg,
-    scheduler=scheduler
+    guidance_scale=cfg
   ).images[0]
 
   output = '%s/txt2img-%s' % (output_path, snakecase(prompt))
