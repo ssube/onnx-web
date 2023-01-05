@@ -19,9 +19,10 @@ Based on work by:
 - [ONNX Web UI](#onnx-web-ui)
   - [Contents](#contents)
   - [Setup](#setup)
+    - [Note about setup paths](#note-about-setup-paths)
     - [Install Git and Python](#install-git-and-python)
-    - [Create a Virtual Environment](#create-a-virtual-environment)
-    - [Install AI packages](#install-ai-packages)
+    - [Create a virtual environment](#create-a-virtual-environment)
+    - [Install pip packages](#install-pip-packages)
     - [Install ORT Nightly package](#install-ort-nightly-package)
     - [Download and Convert Models](#download-and-convert-models)
   - [Usage](#usage)
@@ -42,6 +43,23 @@ steps:
 4. Install ORT Nightly package
 5. Download and convert models
 
+### Note about setup paths
+
+This project contains both Javascript and Python, for the client and server respectively. Make sure you are in the
+correct directory when working with each part.
+
+Most of these setup commands should be run in the Python environment and the `api/` directory:
+
+```shell
+> cd api
+> pwd
+/home/ssube/code/github/ssube/onnx-web/api
+```
+
+The Python virtual environment will be created within the `api/` directory.
+
+The Javascript client can be built and run within the `gui/` directory.
+
 ### Install Git and Python
 
 Install Git and Python 3.10 for your environment:
@@ -51,7 +69,7 @@ Install Git and Python 3.10 for your environment:
 
 The latest version of git should be fine. Python must be 3.10 or earlier, 3.10 seems to work well.
 
-### Create a Virtual Environment
+### Create a virtual environment
 
 Make sure you have Python 3.10 or earlier, then create a virtual environment:
 
@@ -77,13 +95,13 @@ Every time you start using ONNX web, activate the virtual environment:
 > .\onnx_env\Scripts\Activate.bat
 ```
 
-### Install AI packages
-
 Update pip itself:
 
 ```shell
 > python -m pip install --upgrade pip
 ```
+
+### Install pip packages
 
 Install the following packages for AI:
 
@@ -98,6 +116,13 @@ Install the following packages for the web UI:
 ```shell
 > pip install flask stringcase
 ```
+
+There is [a `requirements.txt` file](./api/requirements.txt) in the `api/` directory, so you can install all of these
+at once using `pip install -r requirements.txt`.
+
+At the moment, none of these packages seem to need specific versions. There is a warning about an incompatibility in
+Protobuf, and some of the gist guides recommend `diffusers=0.3.0`, but I had trouble with old versions of `diffusers`
+before 0.6.0 or so. If I can determine a good set of working versions, I will pin them in `requirements.txt`.
 
 ### Install ORT Nightly package
 
