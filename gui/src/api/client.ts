@@ -16,6 +16,8 @@ export interface ApiResponse {
 }
 
 export interface ApiClient {
+  platforms(): Promise<Array<string>>;
+  schedulers(): Promise<Array<string>>;
   txt2img(params: Txt2ImgParams): Promise<ApiResponse>;
 }
 
@@ -38,6 +40,16 @@ export function makeClient(root: string, f = fetch): ApiClient {
   let pending: Promise<ApiResponse> | undefined;
 
   return {
+    async schedulers(): Promise<Array<string>> {
+      const path = new URL('/settings/schedulers', root);
+      const res = await f(path);
+      return await res.json() as Array<string>;
+    },
+    async platforms(): Promise<Array<string>> {
+      const path = new URL('/settings/platforms', root);
+      const res = await f(path);
+      return await res.json() as Array<string>;
+    },
     async txt2img(params: Txt2ImgParams): Promise<ApiResponse> {
       if (doesExist(pending)) {
         return pending;
