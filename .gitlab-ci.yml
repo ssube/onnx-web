@@ -7,27 +7,6 @@ stages:
     - platform:k8s
     - runner:shared
 
-.build-node:
-  extends:
-    - .build-base
-  image: docker.io/node:18
-  artifacts:
-    expire_in: 1 day
-    paths:
-      - gui/out/
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: gui/out/coverage/cobertura-coverage.xml
-      junit: gui/out/test-results.xml
-  cache:
-    key:
-      files:
-        - yarn.lock
-    paths:
-      - gui/node_modules/
-    policy: pull-push
-
 .build-dind:
   extends:
     - .build-base
@@ -49,7 +28,33 @@ stages:
     DOCKER_TLS_VERIFY: 1
     VERSION_TAG: "${CI_COMMIT_REF_SLUG}"
 
-build-gui-js:
+.build-node:
+  extends:
+    - .build-base
+  image: docker.io/node:18
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - gui/out/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: gui/out/coverage/cobertura-coverage.xml
+      junit: gui/out/test-results.xml
+  cache:
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - gui/node_modules/
+    policy: pull-push
+
+.build-python:
+  extends:
+    - .build-base
+  image: docker.io/python:3.10
+
+build-gui-bundle:
   extends:
     - .build-node
   stage: build
@@ -57,12 +62,20 @@ build-gui-js:
     - cd gui
     - make ci
 
+build-api-coverage:
+  extends:
+    - .build-python
+  stage: build
+  script:
+    - cd api
+    - make ci
+
 .package-gui-oci:
   extends:
     - .build-dind
   stage: package
   needs:
-    - build-gui-js
+    - build-gui-bundle
   script:
     - cd gui
     - ${CI_PROJECT_DIR}/common/scripts/image-build.sh --push
@@ -87,7 +100,7 @@ package-gui-npm:
     - .build-node
   stage: package
   needs:
-    - build-gui-js
+    - build-gui-bundle
   only:
     - tags
   script:
