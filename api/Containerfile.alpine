@@ -7,6 +7,6 @@ COPY serve.py /onnx-web/serve.py
 
 RUN pip install -r requirements.txt
 
-RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/rocm5.2
+# RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/rocm5.2
 
 ENTRYPOINT [ "flask", "--app=serve", "run", "--host=0.0.0.0" ]
