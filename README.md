@@ -280,7 +280,7 @@ read-only, but outputs should be read-write.
 ```shell
 > podman run -p 5000:5000 --rm -v ../models:/models:ro -v ../outputs:/outputs:rw docker.io/ssube/onnx-web-api:main-buster
 
-> podman run -p 3000:3000 --rm docker.io/ssube/onnx-web-gui:main-buster
+> podman run -p 8000:80 --rm docker.io/ssube/onnx-web-gui:main-nginx-bullseye
 ```
 
 ### Customizing the config
@@ -305,4 +305,10 @@ directory after building the bundle:
 
 ```shell
 > make bundle && cp -v ~/onnx-web-config.json out/config.json
+```
+
+When running the container, you can mount the config at `/usr/share/nginx/html/config.json` using:
+
+```shell
+> podman run -p 8000:80 --rm -v ~/onnx-web-config.json:/usr/share/nginx/html/config.json:ro docker.io/ssube/onnx-web-gui:main-nginx-bullseye
 ```
