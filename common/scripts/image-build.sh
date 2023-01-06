@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 IMAGE_PUSH="${1:---skip}"
 
