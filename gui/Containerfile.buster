@@ -1,4 +1,4 @@
-FROM docker.artifacts.apextoaster.com/library/node:18-buster
+FROM docker.io/node:18-buster
 
 ENV PATH="${PATH}:$(yarn global bin)"
 
