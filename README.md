@@ -18,10 +18,15 @@ Based on work by:
 ## Features
 
 - REST API server capable of running ONNX models with DirectML acceleration
+  - AMD hardware acceleration
+  - CPU software fallback
   - multiple schedulers
 - web app to generate and view images
-  - parameter inputs with validation
-  - txt2img mode
+  - can be hosted alongside API or on a CDN
+  - built with React and MUI
+- txt2img mode
+  - outputs are saved to file
+  - show image history
 
 ## Contents
 
@@ -199,6 +204,13 @@ script, which is a slight variation on the original txt2img script.
 
 ### Configuring and running the server
 
+The server relies mostly on two paths, the models and outputs. It will make sure both paths exist when it starts up,
+and will exit with an error if the models path does not.
+
+Both of those paths exist in the git repository, with placeholder files to make sure they exist. You should not have to
+create them, if you are using the default settings. You can customize the paths by setting `ONNX_WEB_MODEL_PATH` and
+`ONNX_WEB_OUTPUT_PATH`, if your models exist somewhere else or you want output written to another disk, for example.
+
 In the `api/` directory, run the server with Flask:
 
 ```shell
@@ -233,9 +245,11 @@ the `flask run` command from earlier. It should look something like this:
 }
 ```
 
-Still in the `gui/` directory, run the dev server with Node:
+Still in the `gui/` directory, build the UI bundle and run the dev server with Node:
 
 ```shell
+> make bundle
+
 > node serve.js
 ```
 
@@ -243,5 +257,9 @@ Still in the `gui/` directory, run the dev server with Node:
 
 You should be able to access the web interface at http://127.0.0.1:3000/index.html or your local machine's hostname.
 
+- If you get a `Connection Refused` error, make sure you are using the correct address and the dev server is still running.
+- If you get a `File not found` error, make sure you have built the UI bundle (`make bundle`) and are using the `/index.html` path
+
 The txt2img tab will be active by default, with an example prompt. You can press the `Generate` button and an image
-should appear on the page 10-15 seconds later (depending on your GPU and other hardware).
+should appear on the page 10-15 seconds later (depending on your GPU and other hardware). The last four images will
+be shown, along with the parameters used to generate them.
