@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 import { ApiClient } from '../api/client.js';
+import { Config } from '../config.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl, ImageParams } from './ImageControl.js';
 import { MutationHistory } from './MutationHistory.js';
@@ -30,6 +31,7 @@ const SCHEDULER_LABELS: Record<string, string> = {
 
 export interface Txt2ImgProps {
   client: ApiClient;
+  config: Config;
   model: string;
 }
 
@@ -53,15 +55,15 @@ export function Txt2Img(props: Txt2ImgProps) {
     staleTime: STALE_TIME,
   });
 
-  const [prompt, setPrompt] = useState('an astronaut eating a hamburger');
   const [params, setParams] = useState<ImageParams>({
     cfg: 6,
     steps: 25,
     width: 512,
     height: 512,
   });
-  const [scheduler, setScheduler] = useState('euler-a');
-  const [platform, setPlatform] = useState('amd');
+  const [prompt, setPrompt] = useState(props.config.default.prompt);
+  const [platform, setPlatform] = useState(props.config.default.platform);
+  const [scheduler, setScheduler] = useState(props.config.default.scheduler);
 
   return <Box>
     <Stack spacing={2}>

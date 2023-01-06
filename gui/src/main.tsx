@@ -4,24 +4,9 @@ import * as React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { makeClient, STATUS_SUCCESS } from './api/client.js';
+import { makeClient } from './api/client.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
-
-export interface Config {
-  api: {
-    root: string;
-  };
-}
-
-export async function loadConfig(): Promise<Config> {
-  const configPath = new URL('./config.json', window.origin);
-  const configReq = await fetch(configPath);
-  if (configReq.status === STATUS_SUCCESS) {
-    return configReq.json();
-  } else {
-    throw new Error('could not load config');
-  }
-}
+import { loadConfig } from './config.js';
 
 export async function main() {
   const config = await loadConfig();
@@ -31,7 +16,7 @@ export async function main() {
   const appElement = mustExist(document.getElementById('app'));
   const app = ReactDOM.createRoot(appElement);
   app.render(<QueryClientProvider client={query}>
-    <OnnxWeb client={client} />
+    <OnnxWeb client={client} config={config} />
   </QueryClientProvider>);
 }
 

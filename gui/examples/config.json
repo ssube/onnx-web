@@ -1,5 +1,11 @@
 {
   "api": {
     "root": "http://127.0.0.1:5000"
+  },
+  "default": {
+    "model": "stable-diffusion-onnx-v1-5",
+    "platform": "amd",
+    "scheduler": "euler-a",
+    "prompt": "an astronaut eating a hamburger"
   }
 }

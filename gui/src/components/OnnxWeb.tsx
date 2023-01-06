@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useQuery } from 'react-query';
 
 import { ApiClient } from '../api/client.js';
+import { Config } from '../config.js';
 import { QueryList } from './QueryList.js';
 import { STALE_TIME, Txt2Img } from './Txt2Img.js';
 
@@ -11,6 +12,7 @@ const { useState } = React;
 
 export interface OnnxWebProps {
   client: ApiClient;
+  config: Config;
 }
 
 const MODEL_LABELS = {
@@ -18,8 +20,10 @@ const MODEL_LABELS = {
 };
 
 export function OnnxWeb(props: OnnxWebProps) {
+  const { client, config } = props;
+
   const [tab, setTab] = useState('1');
-  const [model, setModel] = useState('stable-diffusion-onnx-v1-5');
+  const [model, setModel] = useState(config.default.model);
 
   const models = useQuery('models', async () => props.client.models(), {
     staleTime: STALE_TIME,
@@ -49,7 +53,7 @@ export function OnnxWeb(props: OnnxWebProps) {
             </TabList>
           </Box>
           <TabPanel value="1">
-            <Txt2Img client={props.client} model={model} />
+            <Txt2Img client={client} config={config} model={model} />
           </TabPanel>
           <TabPanel value="2">
             <Box>
