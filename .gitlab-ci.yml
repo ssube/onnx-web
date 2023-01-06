@@ -10,7 +10,7 @@ stages:
 .build-node:
   extends:
     - .build-base
-  image: docker.io/node:18
+  image: docker.io/node:19
   artifacts:
     expire_in: 1 day
     paths:
