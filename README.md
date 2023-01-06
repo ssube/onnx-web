@@ -8,7 +8,7 @@ for more than a week, I would like to add img2img and Nvidia support.
 
 ![txt2img with example astronaut prompt and image](./docs/readme-preview.png)
 
-Based on work by:
+Based on guides by:
 
 - https://gist.github.com/harishanand95/75f4515e6187a6aa3261af6ac6f61269
 - https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674
@@ -38,8 +38,8 @@ Based on work by:
     - [Install Git and Python](#install-git-and-python)
     - [Create a virtual environment](#create-a-virtual-environment)
     - [Install pip packages](#install-pip-packages)
-    - [Install ORT Nightly package](#install-ort-nightly-package)
-    - [Download and Convert Models](#download-and-convert-models)
+    - [Install ORT nightly package](#install-ort-nightly-package)
+    - [Download and convert models](#download-and-convert-models)
   - [Usage](#usage)
     - [Configuring and running the server](#configuring-and-running-the-server)
       - [Securing the server](#securing-the-server)
@@ -156,7 +156,7 @@ has more details.
 I got a warning about an incompatibility in `protobuf` when installing the `onnxruntime-directml` package, but have not seen any issues. Some of the gist guides recommend `diffusers=0.3.0`, but I had trouble with old versions of `diffusers`
 before 0.6.0 or so. If I can determine a good set of working versions, I will pin them in `requirements.txt`.
 
-### Install ORT Nightly package
+### Install ORT nightly package
 
 Download the latest DirectML ORT nightly package for your version of Python and install it with pip.
 
@@ -170,7 +170,7 @@ Python 3.10, download the `cp310` package. For Python 3.9, download the `cp39` p
 Make sure to include the `--force-reinstall` flag, since it requires some older versions of other packages, and will
 overwrite the versions you currently have installed.
 
-### Download and Convert Models
+### Download and convert models
 
 Sign up for an account at https://huggingface.co and find the models you want to use. Popular options include:
 

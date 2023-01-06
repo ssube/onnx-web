@@ -111,19 +111,33 @@ package-api-oci-buster:
     IMAGE_ARCH: buster
     IMAGE_FILE: Containerfile.buster
 
-package-gui-oci-alpine:
+package-gui-oci-nginx-alpine:
   extends:
     - .package-gui-oci
   variables:
-    IMAGE_ARCH: alpine
-    IMAGE_FILE: Containerfile.alpine
+    IMAGE_ARCH: nginx-alpine
+    IMAGE_FILE: Containerfile.nginx.alpine
 
-package-gui-oci-buster:
+package-gui-oci-nginx-bullseye:
   extends:
     - .package-gui-oci
   variables:
-    IMAGE_ARCH: buster
-    IMAGE_FILE: Containerfile.buster
+    IMAGE_ARCH: nginx-buster
+    IMAGE_FILE: Containerfile.nginx.buster
+
+package-gui-oci-node-alpine:
+  extends:
+    - .package-gui-oci
+  variables:
+    IMAGE_ARCH: node-alpine
+    IMAGE_FILE: Containerfile.node.alpine
+
+package-gui-oci-node-bullseye:
+  extends:
+    - .package-gui-oci
+  variables:
+    IMAGE_ARCH: node-buster
+    IMAGE_FILE: Containerfile.node.buster
 
 package-api-twine:
   extends:
