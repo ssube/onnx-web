@@ -1,4 +1,4 @@
-import { Card, CardContent, CardMedia, List, Paper, Stack, Typography } from '@mui/material';
+import { Card, CardContent, CardMedia, Paper, Stack } from '@mui/material';
 import * as React from 'react';
 import { UseMutationResult } from 'react-query';
 
@@ -34,13 +34,11 @@ export function ImageCard(props: ImageCardProps) {
         title={params.prompt}
       />
       <CardContent>
-        <Typography variant='body2'>
-          <Stack spacing={1}>
-            <Paper>CFG: {params.cfg}</Paper>
-            <Paper>Steps: {params.steps}</Paper>
-            <Paper>Seed: {params.seed}</Paper>
-          </Stack>
-        </Typography>
+        <Stack spacing={2}>
+          <Paper>CFG: {params.cfg}</Paper>
+          <Paper>Steps: {params.steps}</Paper>
+          <Paper>Seed: {params.seed}</Paper>
+        </Stack>
       </CardContent>
     </Card>;
   }

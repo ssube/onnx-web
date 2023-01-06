@@ -121,6 +121,7 @@ Install the following packages for AI:
 > pip install numpy>=1.20,<1.24   # version is important, 1.24 removed the deprecated np.float symbol
 > pip install accelerate diffusers transformers ftfy spacy scipy
 > pip install onnx onnxruntime torch
+# TODO: is pytorch needed?
 ```
 
 If you are running on Windows, install the DirectML ONNX runtime as well:
