@@ -51,7 +51,7 @@ export function Txt2Img(props: Txt2ImgProps) {
   return <Box>
     <Stack spacing={2}>
       <Stack direction='row' spacing={2}>
-        <QueryList result={schedulers} value={scheduler} labels={SCHEDULER_LABELS}
+        <QueryList result={schedulers} value={scheduler} labels={SCHEDULER_LABELS} name='Scheduler'
           onChange={(value) => {
             setScheduler(value);
           }}

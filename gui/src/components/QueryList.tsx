@@ -1,10 +1,11 @@
 import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
-import { MenuItem, Select } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import * as React from 'react';
 import { UseQueryResult } from 'react-query';
 
 export interface QueryListProps {
   labels: Record<string, string>;
+  name: string;
   result: UseQueryResult<Array<string>>;
   value: string;
 
@@ -32,11 +33,14 @@ export function QueryList(props: QueryListProps) {
 
   // else: success
   const data = mustExist(result.data);
-  return <Select value={value} onChange={(e) => {
-    if (doesExist(props.onChange)) {
-      props.onChange(e.target.value);
-    }
-  }}>
-    {data.map((name) => <MenuItem key={name} value={name}>{mustDefault(labels[name], name)}</MenuItem>)}
-  </Select>;
+  return <FormControl>
+    <InputLabel>{props.name}</InputLabel>
+    <Select value={value} onChange={(e) => {
+      if (doesExist(props.onChange)) {
+        props.onChange(e.target.value);
+      }
+    }}>
+      {data.map((name) => <MenuItem key={name} value={name}>{mustDefault(labels[name], name)}</MenuItem>)}
+    </Select>
+  </FormControl>;
 }

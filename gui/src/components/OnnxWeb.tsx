@@ -40,12 +40,12 @@ export function OnnxWeb(props: OnnxWebProps) {
         </Box>
         <Box sx={{ my: 4 }}>
           <Stack direction='row' spacing={2}>
-            <QueryList result={models} labels={MODEL_LABELS} value={model}
+            <QueryList result={models} labels={MODEL_LABELS} value={model} name='Model'
               onChange={(value) => {
                 setModel(value);
               }}
             />
-            <QueryList result={platforms} labels={PLATFORM_LABELS} value={platform}
+            <QueryList result={platforms} labels={PLATFORM_LABELS} value={platform} name='Platform'
               onChange={(value) => {
                 setPlatform(value);
               }}
