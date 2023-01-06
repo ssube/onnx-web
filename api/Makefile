@@ -4,7 +4,7 @@ onnx_env: ## create virtual env
 	python -v venv onnx_env
 
 ci: pip
-	pip install coverage hypothesis unittest
+	pip install coverage hypothesis
 	$(MAKE) test
 
 pip:

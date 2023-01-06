@@ -1,3 +1,7 @@
+.coverage
+coverage.xml
+
 __pycache__/
+htmlcov/
 onnx_env/
 venv/
