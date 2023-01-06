@@ -13,7 +13,7 @@ export interface Config {
   };
 }
 
-export async function loadConfig() {
+export async function loadConfig(): Promise<Config> {
   const configPath = new URL('./config.json', window.origin);
   const configReq = await fetch(configPath);
   if (configReq.status === STATUS_SUCCESS) {
@@ -30,7 +30,9 @@ export async function main() {
 
   const appElement = mustExist(document.getElementById('app'));
   const app = ReactDOM.createRoot(appElement);
-  app.render(<QueryClientProvider client={query}><OnnxWeb client={client} /></QueryClientProvider>);
+  app.render(<QueryClientProvider client={query}>
+    <OnnxWeb client={client} />
+  </QueryClientProvider>);
 }
 
 window.addEventListener('load', () => {

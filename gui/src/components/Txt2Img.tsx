@@ -1,22 +1,22 @@
-import { mustExist } from '@apextoaster/js-utils';
-import { Box, Button, MenuItem, Select, Stack, TextField } from '@mui/material';
+import { Box, Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 import { ApiClient } from '../api/client.js';
 import { ImageControl, ImageParams } from './ImageControl.js';
+import { QueryList } from './QueryList.js';
 
 const { useState } = React;
 
 export const STALE_TIME = 3_000;
 
 // TODO: set up i18next
-const PLATFORM_NAMES: Record<string, string> = {
+const PLATFORM_LABELS: Record<string, string> = {
   amd: 'AMD GPU',
   cpu: 'CPU',
 };
 
-const SCHEDULER_NAMES: Record<string, string> = {
+const SCHEDULER_LABELS: Record<string, string> = {
   'ddim': 'DDIM',
   'ddpm': 'DDPM',
   'dpm-multi': 'DPM Multistep',
@@ -32,12 +32,12 @@ export interface Txt2ImgProps {
 }
 
 export function Txt2Img(props: Txt2ImgProps) {
-  const { client } = props;
+  const { client, model } = props;
 
   async function generateImage() {
     return client.txt2img({
       ...params,
-      model: props.model,
+      model,
       prompt,
       scheduler,
     });
@@ -78,53 +78,19 @@ export function Txt2Img(props: Txt2ImgProps) {
     }
   }
 
-  function renderSchedulers() {
-    switch (schedulers.status) {
-      case 'error':
-        return <MenuItem value='error'>Error</MenuItem>;
-      case 'loading':
-        return <MenuItem value='loading'>Loading</MenuItem>;
-      case 'success':
-        return mustExist(schedulers.data).map((name) => <MenuItem key={name} value={name}>{SCHEDULER_NAMES[name]}</MenuItem>);
-      default:
-        return <MenuItem value='error'>Unknown Error</MenuItem>;
-    }
-  }
-
-  function renderPlatforms() {
-    switch (platforms.status) {
-      case 'error':
-        return <MenuItem value='error'>Error</MenuItem>;
-      case 'loading':
-        return <MenuItem value='loading'>Loading</MenuItem>;
-      case 'success':
-        return mustExist(platforms.data).map((name) => <MenuItem key={name} value={name}>{PLATFORM_NAMES[name]}</MenuItem>);
-      default:
-        return <MenuItem value='error'>Unknown Error</MenuItem>;
-    }
-  }
-
   return <Box>
     <Stack spacing={2}>
       <Stack direction='row' spacing={2}>
-        <Select
-          value={scheduler}
-          label="Scheduler"
-          onChange={(event) => {
-            setScheduler(event.target.value);
+        <QueryList result={schedulers} value={scheduler} labels={SCHEDULER_LABELS}
+          onChange={(value) => {
+            setScheduler(value);
           }}
-        >
-          {renderSchedulers()}
-        </Select>
-        <Select
-          value={platform}
-          label="Platform"
-          onChange={(event) => {
-            setPlatform(event.target.value);
+        />
+        <QueryList result={platforms} value={platform} labels={PLATFORM_LABELS}
+          onChange={(value) => {
+            setPlatform(value);
           }}
-        >
-          {renderPlatforms()}
-        </Select>
+        />
       </Stack>
       <ImageControl params={params} onChange={(newParams) => {
         setParams(newParams);

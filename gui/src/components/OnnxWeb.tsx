@@ -1,10 +1,10 @@
-import { mustExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, MenuItem, Select, Tab, Typography } from '@mui/material';
+import { Box, Container, Tab, Typography } from '@mui/material';
 import * as React from 'react';
 import { useQuery } from 'react-query';
 
 import { ApiClient } from '../api/client.js';
+import { QueryList } from './QueryList.js';
 import { STALE_TIME, Txt2Img } from './Txt2Img.js';
 
 const { useState } = React;
@@ -13,6 +13,10 @@ export interface OnnxWebProps {
   client: ApiClient;
 }
 
+const MODEL_LABELS = {
+  'stable-diffusion-onnx-v1-5': 'Stable Diffusion v1.5',
+};
+
 export function OnnxWeb(props: OnnxWebProps) {
   const [tab, setTab] = useState('1');
   const [model, setModel] = useState('stable-diffusion-onnx-v1-5');
@@ -20,19 +24,6 @@ export function OnnxWeb(props: OnnxWebProps) {
   const models = useQuery('models', async () => props.client.models(), {
     staleTime: STALE_TIME,
   });
-
-  function renderModels() {
-    switch (models.status) {
-      case 'error':
-        return <MenuItem value='error'>Error</MenuItem>;
-      case 'loading':
-        return <MenuItem value='loading'>Loading</MenuItem>;
-      case 'success':
-        return mustExist(models.data).map((name) => <MenuItem key={name} value={name}>{name}</MenuItem>);
-      default:
-        return <MenuItem value='error'>Unknown Error</MenuItem>;
-    }
-  }
 
   return (
     <div>
@@ -43,11 +34,9 @@ export function OnnxWeb(props: OnnxWebProps) {
           </Typography>
         </Box>
         <Box sx={{ my: 4 }}>
-          <Select value={model} onChange={(e) => {
-            setModel(e.target.value);
-          }}>
-            {renderModels()}
-          </Select>
+          <QueryList result={models} labels={MODEL_LABELS} value={model} onChange={(value) => {
+            setModel(value);
+          }} />
         </Box>
         <TabContext value={tab}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
