@@ -10,7 +10,7 @@ from diffusers import (
 )
 from flask import Flask, jsonify, request, send_from_directory, url_for
 from stringcase import spinalcase
-from os import environ, path, makedirs, scandir
+from os import environ, makedirs, path, scandir
 import numpy as np
 
 # defaults
@@ -26,24 +26,28 @@ max_height = 512
 max_width = 512
 
 # paths
-model_path = environ.get('ONNX_WEB_MODEL_PATH', "../models/stable-diffusion-onnx-v1-5")
+model_path = environ.get('ONNX_WEB_MODEL_PATH', "../models")
 output_path = environ.get('ONNX_WEB_OUTPUT_PATH', "../outputs")
 
-# platforms
+
+# pipeline caching
+available_models = []
+pipeline_options = (None, None, None)
+pipeline_instance = None
+
+# pipeline params
 platform_providers = {
     'amd': 'DmlExecutionProvider',
     'cpu': 'CPUExecutionProvider',
 }
-
-# schedulers
 pipeline_schedulers = {
-    'ddim': DDIMScheduler.from_pretrained(model_path, subfolder="scheduler"),
-    'ddpm': DDPMScheduler.from_pretrained(model_path, subfolder="scheduler"),
-    'dpm-multi': DPMSolverMultistepScheduler.from_pretrained(model_path, subfolder="scheduler"),
-    'euler': EulerDiscreteScheduler.from_pretrained(model_path, subfolder="scheduler"),
-    'euler-a': EulerAncestralDiscreteScheduler.from_pretrained(model_path, subfolder="scheduler"),
-    'lms-discrete': LMSDiscreteScheduler.from_pretrained(model_path, subfolder="scheduler"),
-    'pndm': PNDMScheduler.from_pretrained(model_path, subfolder="scheduler"),
+    'ddim': DDIMScheduler,
+    'ddpm': DDPMScheduler,
+    'dpm-multi': DPMSolverMultistepScheduler,
+    'euler': EulerDiscreteScheduler,
+    'euler-a': EulerAncestralDiscreteScheduler,
+    'lms-discrete': LMSDiscreteScheduler,
+    'pndm': PNDMScheduler,
 }
 
 
@@ -59,7 +63,7 @@ def get_from_map(args, key, values, default):
         return values[default]
 
 
-# TODO: credit this function
+# from https://www.travelneil.com/stable-diffusion-updates.html
 def get_latents_from_seed(seed: int, width: int, height: int) -> np.ndarray:
     # 1 is batch size
     latents_shape = (1, 4, height // 8, width // 8)
@@ -69,7 +73,29 @@ def get_latents_from_seed(seed: int, width: int, height: int) -> np.ndarray:
     return image_latents
 
 
+def load_pipeline(model, provider, scheduler):
+    global pipeline_instance
+    global pipeline_options
+
+    options = (model, provider, scheduler)
+    if pipeline_instance != None and pipeline_options == options:
+        print('reusing existing pipeline')
+        return pipeline_instance
+
+    print('loading different pipeline')
+    pipe = OnnxStableDiffusionPipeline.from_pretrained(
+        model,
+        provider=provider,
+        safety_checker=None,
+        scheduler=scheduler.from_pretrained(model, subfolder="scheduler")
+    )
+    pipeline_options = options
+    pipeline_instance = pipe
+    return pipe
+
+
 def json_with_cors(data, origin='*'):
+    """Build a JSON response with CORS headers allowing `origin`"""
     res = jsonify(data)
     res.access_control_allow_origin = origin
     return res
@@ -83,12 +109,23 @@ def url_from_rule(rule):
     return url_for(rule.endpoint, **options)
 
 # setup
-if not path.exists(model_path):
-    raise RuntimeError('model path must exist')
 
-if not path.exists(output_path):
-    makedirs(output_path)
 
+def check_paths():
+    if not path.exists(model_path):
+        raise RuntimeError('model path must exist')
+
+    if not path.exists(output_path):
+        makedirs(output_path)
+
+
+def load_models():
+    global available_models
+    available_models = [f.name for f in scandir(model_path) if f.is_dir()]
+
+
+check_paths()
+load_models()
 app = Flask(__name__)
 
 # routes
@@ -107,7 +144,7 @@ def index():
 
 @app.route('/settings/models')
 def list_models():
-    return json_with_cors([f.path for f in scandir(model_path) if f.is_dir()])
+    return json_with_cors(available_models)
 
 
 @app.route('/settings/platforms')
@@ -124,10 +161,15 @@ def list_schedulers():
 def txt2img():
     user = request.remote_addr
 
-    prompt = request.args.get('prompt', default_prompt)
-    provider = get_from_map(request.args, 'provider', platform_providers, 'amd')
+    # pipeline stuff
+    model = path.join(model_path, request.args.get('model'))
+    provider = get_from_map(request.args, 'platform',
+                            platform_providers, 'amd')
     scheduler = get_from_map(request.args, 'scheduler',
                              pipeline_schedulers, 'euler-a')
+
+    # image params
+    prompt = request.args.get('prompt', default_prompt)
     cfg = get_and_clamp(request.args, 'cfg', default_cfg, max_cfg, 0)
     steps = get_and_clamp(request.args, 'steps', default_steps, max_steps)
     height = get_and_clamp(request.args, 'height', default_height, max_height)
@@ -142,12 +184,7 @@ def txt2img():
     print("txt2img from %s: %s/%s, %sx%s, %s, %s" %
           (user, cfg, steps, width, height, seed, prompt))
 
-    pipe = OnnxStableDiffusionPipeline.from_pretrained(
-        model_path,
-        provider=provider,
-        safety_checker=None,
-        scheduler=scheduler
-    )
+    pipe = load_pipeline(model, provider, scheduler)
     image = pipe(
         prompt,
         height,
