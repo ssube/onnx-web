@@ -8,7 +8,7 @@ from diffusers import (
     LMSDiscreteScheduler,
     PNDMScheduler,
 )
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, url_for
 from stringcase import spinalcase
 from os import environ, path, makedirs
 import numpy as np
@@ -69,6 +69,13 @@ def get_latents_from_seed(seed: int, width: int, height: int) -> np.ndarray:
     return image_latents
 
 
+def url_from_rule(rule):
+    options = {}
+    for arg in rule.arguments:
+        options[arg] = ":%s" % (arg)
+
+    return url_for(rule.endpoint, **options)
+
 # setup
 if not path.exists(model_path):
     raise RuntimeError('model path must exist')
@@ -83,7 +90,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    return 'Hello, %s' % (__name__)
+    return {
+        'name': 'onnx-web',
+        'routes': [{
+            'path': url_from_rule(rule),
+            'methods': list(rule.methods)
+        } for rule in app.url_map.iter_rules()]
+    }
 
 
 @app.route('/txt2img')
