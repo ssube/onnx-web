@@ -2,6 +2,7 @@ import { Grid } from '@mui/material';
 import { useState } from 'react';
 import * as React from 'react';
 import { UseMutationResult } from 'react-query';
+import { LoadingCard } from './LoadingCard';
 
 export interface MutationHistoryProps<T> {
   element: React.ComponentType<{value: T}>;
@@ -19,7 +20,7 @@ export function MutationHistory<T>(props: MutationHistoryProps<T>) {
   const children = [];
 
   if (status === 'loading') {
-    children.push(<div>Generating...</div>);
+    children.push(<LoadingCard height={512} width={512} />); // TODO: get dimensions from current request
   }
 
   if (status === 'success') {
