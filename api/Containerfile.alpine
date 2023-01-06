@@ -13,4 +13,4 @@ RUN pip install -r requirements.txt
 
 COPY onnx_web/ /onnx-web/onnx_web/
 
-ENTRYPOINT [ "flask", "--app=onnx_web", "run", "--host=0.0.0.0" ]
+ENTRYPOINT [ "flask", "--app=onnx_web.serve", "run", "--host=0.0.0.0" ]

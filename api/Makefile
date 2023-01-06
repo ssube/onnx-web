@@ -19,7 +19,7 @@ test:
 package: package-dist package-upload
 
 package-dist:
-	python ./setup.py sdist
+	python3 ./setup.py sdist
 
 package-upload:
 	twine upload dist/*

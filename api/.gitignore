@@ -1,7 +1,14 @@
 .coverage
 coverage.xml
 
+*.swp
+*.pyc
+
 __pycache__/
+dist/
 htmlcov/
 onnx_env/
 venv/
+
+*.egg-info/
+**/__pycache__/
