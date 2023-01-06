@@ -14,9 +14,19 @@ export interface Txt2ImgParams {
   seed?: string;
 }
 
+export interface Txt2ImgResponse extends Txt2ImgParams {
+  model: string;
+  platform: string;
+  scheduler: string;
+
+  width: number;
+  height: number;
+  seed: string;
+}
+
 export interface ApiResponse {
   output: string;
-  params: Txt2ImgParams;
+  params: Txt2ImgResponse;
 }
 
 export interface ApiClient {

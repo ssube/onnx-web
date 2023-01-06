@@ -1,7 +1,7 @@
+import { Grid } from '@mui/material';
 import { useState } from 'react';
 import * as React from 'react';
 import { UseMutationResult } from 'react-query';
-import { Grid, Stack } from '@mui/material';
 
 export interface MutationHistoryProps<T> {
   element: React.ComponentType<{value: T}>;
@@ -43,5 +43,5 @@ export function MutationHistory<T>(props: MutationHistoryProps<T>) {
     }
   }
 
-  return <Grid container spacing={2}>{children.slice(0, limit).map((child) => <Grid xs={6}>{child}</Grid>)}</Grid>;
+  return <Grid container spacing={2}>{children.slice(0, limit).map((child) => <Grid item xs={6}>{child}</Grid>)}</Grid>;
 }
