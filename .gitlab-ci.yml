@@ -100,24 +100,28 @@ package-api-oci-alpine:
   extends:
     - .package-api-oci
   variables:
+    IMAGE_ARCH: alpine
     IMAGE_FILE: Containerfile.alpine
 
 package-api-oci-buster:
   extends:
     - .package-api-oci
   variables:
+    IMAGE_ARCH: buster
     IMAGE_FILE: Containerfile.buster
 
 package-gui-oci-alpine:
   extends:
     - .package-gui-oci
   variables:
+    IMAGE_ARCH: alpine
     IMAGE_FILE: Containerfile.alpine
 
 package-gui-oci-buster:
   extends:
     - .package-gui-oci
   variables:
+    IMAGE_ARCH: buster
     IMAGE_FILE: Containerfile.buster
 
 package-api-twine:

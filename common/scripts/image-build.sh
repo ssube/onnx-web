@@ -3,9 +3,8 @@
 IMAGE_PUSH="${1:---skip}"
 
 IMAGE_NAME="${CI_PROJECT_PATH}-${IMAGE_SUFFIX}"
-IMAGE_TAG="$(echo "${CI_COMMIT_TAG:-${CI_COMMIT_REF_SLUG}}" | sed -r 's/[^-_a-zA-Z0-9\\.]/-/g')"
+IMAGE_TAG="${IMAGE_ARCH}-$(echo "${CI_COMMIT_TAG:-${CI_COMMIT_REF_SLUG}}" | sed -r 's/[^-_a-zA-Z0-9\\.]/-/g')"
 
-IMAGE_SHORT="${IMAGE_NAME}:${IMAGE_TAG}"
 IMAGE_FULL="${IMAGE_NAME}:${IMAGE_TAG}"
 
 echo "Loading last image: ${IMAGE_FULL}"
