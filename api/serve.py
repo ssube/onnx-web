@@ -216,6 +216,9 @@ def txt2img():
     return json_with_cors({
         'output': output_file,
         'params': {
+            'model': model,
+            'provider': provider,
+            'scheduler': scheduler.__name__,
             'cfg': cfg,
             'steps': steps,
             'height': height,
