@@ -5,11 +5,12 @@ RUN apk add --update cmake \
 
 WORKDIR /onnx-web
 
+RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+
 COPY requirements.txt /onnx-web/requirements.txt
-COPY serve.py /onnx-web/serve.py
 
 RUN pip install -r requirements.txt
 
-RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+COPY serve.py /onnx-web/serve.py
 
 ENTRYPOINT [ "flask", "--app=serve", "run", "--host=0.0.0.0" ]

@@ -2,11 +2,14 @@ FROM docker.io/python:3.10-buster
 
 WORKDIR /onnx-web
 
+# TODO: set up venv within the container
+
+RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+
 COPY requirements.txt /onnx-web/requirements.txt
-COPY serve.py /onnx-web/serve.py
 
 RUN pip install -r requirements.txt
 
-RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+COPY serve.py /onnx-web/serve.py
 
 ENTRYPOINT [ "flask", "--app=serve", "run", "--host=0.0.0.0" ]
