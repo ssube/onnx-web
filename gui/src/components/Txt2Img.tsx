@@ -4,6 +4,7 @@ import { useMutation, useQuery } from 'react-query';
 
 import { ApiClient } from '../api/client.js';
 import { Config } from '../config.js';
+import { SCHEDULER_LABELS } from '../strings.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl, ImageParams } from './ImageControl.js';
 import { MutationHistory } from './MutationHistory.js';
@@ -12,45 +13,28 @@ import { QueryList } from './QueryList.js';
 const { useState } = React;
 
 export const STALE_TIME = 3_000;
-
-// TODO: set up i18next
-const PLATFORM_LABELS: Record<string, string> = {
-  amd: 'AMD GPU',
-  cpu: 'CPU',
-};
-
-const SCHEDULER_LABELS: Record<string, string> = {
-  'ddim': 'DDIM',
-  'ddpm': 'DDPM',
-  'dpm-multi': 'DPM Multistep',
-  'euler': 'Euler',
-  'euler-a': 'Euler Ancestral',
-  'lms-discrete': 'LMS Discrete',
-  'pndm': 'PNDM',
-};
-
 export interface Txt2ImgProps {
   client: ApiClient;
   config: Config;
+
   model: string;
+  platform: string;
 }
 
 export function Txt2Img(props: Txt2ImgProps) {
-  const { client, model } = props;
+  const { client, config, model, platform } = props;
 
   async function generateImage() {
     return client.txt2img({
       ...params,
       model,
+      platform,
       prompt,
       scheduler,
     });
   }
 
   const generate = useMutation(generateImage);
-  const platforms = useQuery('platforms', async () => client.platforms(), {
-    staleTime: STALE_TIME,
-  });
   const schedulers = useQuery('schedulers', async () => client.schedulers(), {
     staleTime: STALE_TIME,
   });
@@ -61,9 +45,8 @@ export function Txt2Img(props: Txt2ImgProps) {
     width: 512,
     height: 512,
   });
-  const [prompt, setPrompt] = useState(props.config.default.prompt);
-  const [platform, setPlatform] = useState(props.config.default.platform);
-  const [scheduler, setScheduler] = useState(props.config.default.scheduler);
+  const [prompt, setPrompt] = useState(config.default.prompt);
+  const [scheduler, setScheduler] = useState(config.default.scheduler);
 
   return <Box>
     <Stack spacing={2}>
@@ -71,11 +54,6 @@ export function Txt2Img(props: Txt2ImgProps) {
         <QueryList result={schedulers} value={scheduler} labels={SCHEDULER_LABELS}
           onChange={(value) => {
             setScheduler(value);
-          }}
-        />
-        <QueryList result={platforms} value={platform} labels={PLATFORM_LABELS}
-          onChange={(value) => {
-            setPlatform(value);
           }}
         />
       </Stack>

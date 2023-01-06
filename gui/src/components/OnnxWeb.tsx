@@ -1,10 +1,11 @@
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, Tab, Typography } from '@mui/material';
+import { Box, Container, Stack, Tab, Typography } from '@mui/material';
 import * as React from 'react';
 import { useQuery } from 'react-query';
 
 import { ApiClient } from '../api/client.js';
 import { Config } from '../config.js';
+import { MODEL_LABELS, PLATFORM_LABELS } from '../strings.js';
 import { QueryList } from './QueryList.js';
 import { STALE_TIME, Txt2Img } from './Txt2Img.js';
 
@@ -15,17 +16,17 @@ export interface OnnxWebProps {
   config: Config;
 }
 
-const MODEL_LABELS = {
-  'stable-diffusion-onnx-v1-5': 'Stable Diffusion v1.5',
-};
-
 export function OnnxWeb(props: OnnxWebProps) {
   const { client, config } = props;
 
   const [tab, setTab] = useState('1');
   const [model, setModel] = useState(config.default.model);
+  const [platform, setPlatform] = useState(config.default.platform);
 
-  const models = useQuery('models', async () => props.client.models(), {
+  const models = useQuery('models', async () => client.models(), {
+    staleTime: STALE_TIME,
+  });
+  const platforms = useQuery('platforms', async () => client.platforms(), {
     staleTime: STALE_TIME,
   });
 
@@ -38,9 +39,18 @@ export function OnnxWeb(props: OnnxWebProps) {
           </Typography>
         </Box>
         <Box sx={{ my: 4 }}>
-          <QueryList result={models} labels={MODEL_LABELS} value={model} onChange={(value) => {
-            setModel(value);
-          }} />
+          <Stack direction='row' spacing={2}>
+            <QueryList result={models} labels={MODEL_LABELS} value={model}
+              onChange={(value) => {
+                setModel(value);
+              }}
+            />
+            <QueryList result={platforms} labels={PLATFORM_LABELS} value={platform}
+              onChange={(value) => {
+                setPlatform(value);
+              }}
+            />
+          </Stack>
         </Box>
         <TabContext value={tab}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -53,7 +63,7 @@ export function OnnxWeb(props: OnnxWebProps) {
             </TabList>
           </Box>
           <TabPanel value="1">
-            <Txt2Img client={client} config={config} model={model} />
+            <Txt2Img client={client} config={config} model={model} platform={platform} />
           </TabPanel>
           <TabPanel value="2">
             <Box>
