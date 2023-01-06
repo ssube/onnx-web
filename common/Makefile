@@ -38,3 +38,6 @@ help: ## print this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort \
 		| sed 's/^.*\/\(.*\)/\1/' \
 		| awk 'BEGIN {FS = ":[^:]*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+release:
+	$$(yarn global bin)/commit-and-tag-version --packageFiles gui/package.json
