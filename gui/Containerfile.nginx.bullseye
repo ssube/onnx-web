@@ -1,5 +1,5 @@
 FROM docker.io/nginx:1.22
 
-COPY out/bundle/index.html /usr/share/nginx/html/index.html
-COPY out/bundle/config.json /usr/share/nginx/html/configl.json
+COPY out/index.html /usr/share/nginx/html/index.html
+COPY out/config.json /usr/share/nginx/html/configl.json
 COPY out/bundle/main.js /usr/share/nginx/html/main.js
