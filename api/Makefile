@@ -3,7 +3,9 @@
 onnx_env: ## create virtual env
 	python -v venv onnx_env
 
-ci: pip test
+ci: pip
+	pip install coverage
+	$(MAKE) test
 
 pip:
 	if [ -z $${VIRTUAL_ENV+x} ]; then echo "Are you sure you want to install dependencies outside of a virtual environment?"; sleep 30; fi
