@@ -20,9 +20,9 @@ export function ImageControl(props: ImageControlProps) {
   const { params } = props;
 
   return <Stack spacing={2}>
-    <Stack direction="row" spacing={4}>
+    <Stack direction='row' spacing={4}>
       <NumericField
-        label="CFG"
+        label='CFG'
         min={0}
         max={30}
         step={1}
@@ -37,7 +37,7 @@ export function ImageControl(props: ImageControlProps) {
         }}
       />
       <NumericField
-        label="Steps"
+        label='Steps'
         min={1}
         max={150}
         step={1}
@@ -52,9 +52,9 @@ export function ImageControl(props: ImageControlProps) {
         }}
       />
     </Stack>
-    <Stack direction="row" spacing={4}>
+    <Stack direction='row' spacing={4}>
       <NumericField
-        label="Width"
+        label='Width'
         min={8}
         max={512}
         step={8}
@@ -69,7 +69,7 @@ export function ImageControl(props: ImageControlProps) {
         }}
       />
       <NumericField
-        label="Height"
+        label='Height'
         min={8}
         max={512}
         step={8}

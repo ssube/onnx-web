@@ -16,8 +16,8 @@ export function NumericField(props: ImageControlProps) {
   const { label, min, max, step, value } = props;
   return <TextField
     label={label}
-    variant="outlined"
-    type="number"
+    variant='outlined'
+    type='number'
     inputProps={{ min, max, step }}
     value={value}
     onChange={(event) => {

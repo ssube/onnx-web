@@ -1,4 +1,4 @@
-# ONNX Web UI
+# ONNX Web
 
 This is a rudimentary web UI for ONNX models, providing a way to run GPU-accelerated models on Windows and even AMD
 with a remote web interface.
@@ -30,7 +30,7 @@ Based on guides by:
 
 ## Contents
 
-- [ONNX Web UI](#onnx-web-ui)
+- [ONNX Web](#onnx-web)
   - [Features](#features)
   - [Contents](#contents)
   - [Setup](#setup)

@@ -19,7 +19,7 @@ export interface OnnxWebProps {
 export function OnnxWeb(props: OnnxWebProps) {
   const { client, config } = props;
 
-  const [tab, setTab] = useState('1');
+  const [tab, setTab] = useState('txt2img');
   const [model, setModel] = useState(config.default.model);
   const [platform, setPlatform] = useState(config.default.platform);
 
@@ -67,20 +67,24 @@ export function OnnxWeb(props: OnnxWebProps) {
             <TabList onChange={(_e, idx) => {
               setTab(idx);
             }}>
-              <Tab label="txt2img" value="1" />
-              <Tab label="img2img" value="2" />
-              <Tab label="settings" value="3" />
+              <Tab label='txt2img' value='txt2img' />
+              <Tab label='img2img' value='img2img' disabled />
+              <Tab label='settings' value='settings' />
             </TabList>
           </Box>
-          <TabPanel value="1">
+          <TabPanel value='txt2img'>
             <Txt2Img client={client} config={config} model={model} platform={platform} />
           </TabPanel>
-          <TabPanel value="2">
+          <TabPanel value='img2img'>
             <Box>
               img2img using {model}
             </Box>
           </TabPanel>
-          <TabPanel value="3">settings for onnx-web</TabPanel>
+          <TabPanel value='settings'>
+            <Box>
+              settings for onnx-web
+            </Box>
+          </TabPanel>
         </TabContext>
       </Container>
     </div>

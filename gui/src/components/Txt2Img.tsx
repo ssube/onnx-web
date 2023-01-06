@@ -65,7 +65,7 @@ export function Txt2Img(props: Txt2ImgProps) {
       <ImageControl params={params} onChange={(newParams) => {
         setParams(newParams);
       }} />
-      <TextField label="Prompt" variant="outlined" value={prompt} onChange={(event) => {
+      <TextField label='Prompt' variant='outlined' value={prompt} onChange={(event) => {
         setPrompt(event.target.value);
       }} />
       <Button onClick={() => generate.mutate()}>Generate</Button>
