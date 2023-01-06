@@ -10,7 +10,7 @@ from diffusers import (
 )
 from flask import Flask, jsonify, request, send_from_directory, url_for
 from stringcase import spinalcase
-from os import environ, path, makedirs
+from os import environ, path, makedirs, scandir
 import numpy as np
 
 # defaults
@@ -72,7 +72,6 @@ def get_latents_from_seed(seed: int, width: int, height: int) -> np.ndarray:
 def json_with_cors(data, origin='*'):
     res = jsonify(data)
     res.access_control_allow_origin = origin
-    #res.headers.add('Access-Control-Allow-Origin', '*')
     return res
 
 
@@ -104,6 +103,11 @@ def index():
             'methods': list(rule.methods)
         } for rule in app.url_map.iter_rules()]
     }
+
+
+@app.route('/settings/models')
+def list_models():
+    return json_with_cors([f.path for f in scandir(model_path) if f.is_dir()])
 
 
 @app.route('/settings/platforms')
