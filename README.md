@@ -46,6 +46,7 @@ Based on work by:
     - [Configuring and hosting the client](#configuring-and-hosting-the-client)
     - [Using the web interface](#using-the-web-interface)
     - [Running from containers](#running-from-containers)
+    - [Customizing the config](#customizing-the-config)
 
 ## Setup
 
@@ -280,4 +281,28 @@ read-only, but outputs should be read-write.
 > podman run -p 5000:5000 --rm -v ../models:/models:ro -v ../outputs:/outputs:rw docker.io/ssube/onnx-web-api:main-buster
 
 > podman run -p 3000:3000 --rm docker.io/ssube/onnx-web-gui:main-buster
+```
+
+### Customizing the config
+
+You can customize the config file to change the default model, platform (hardware acceleration), scheduler, and prompt.
+If you have a good base or example prompt, you can set that in the config file:
+
+```json
+{
+  "default": {
+    "model": "stable-diffusion-onnx-v1-5",
+    "platform": "amd",
+    "scheduler": "euler-a",
+    "prompt": "an astronaut eating a hamburger"
+  }
+}
+```
+
+When running the dev server, `node serve.js`, the config file at `out/config.json` will be loaded. If you want to load
+a different config file, save it to your home directory named `onnx-web-config.json` and copy it into the output
+directory after building the bundle:
+
+```shell
+> make bundle && cp -v ~/onnx-web-config.json out/config.json
 ```
