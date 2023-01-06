@@ -216,7 +216,7 @@ create them, if you are using the default settings. You can customize the paths 
 In the `api/` directory, run the server with Flask:
 
 ```shell
-> flask --app serve run
+> flask --app=onnx_web run
 ```
 
 Note the IP address this prints.
@@ -224,7 +224,7 @@ Note the IP address this prints.
 If you want to access the server from other machines on your local network, pass the `--host` argument:
 
 ```shell
-> flask --app serve run --host 0.0.0.0
+> flask --app=onnx_web run --host=0.0.0.0
 ```
 
 This will listen for requests from your current local network and may be dangerous.

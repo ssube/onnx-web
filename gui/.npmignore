@@ -25,6 +25,8 @@ vendor/
 .codeclimate.yml
 .dockerignore
 .eslintrc.json
+.mocharc.json
+.reporters.json
 
 Containerfile.*
 Makefile
