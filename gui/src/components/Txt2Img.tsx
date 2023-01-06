@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 import { ApiClient } from '../api/client.js';
+import { ImageCard } from './ImageCard.js';
 import { ImageControl, ImageParams } from './ImageControl.js';
 import { QueryList } from './QueryList.js';
 
@@ -61,23 +62,6 @@ export function Txt2Img(props: Txt2ImgProps) {
   const [scheduler, setScheduler] = useState('euler-a');
   const [platform, setPlatform] = useState('cpu');
 
-  function renderImage() {
-    switch (generate.status) {
-      case 'error':
-        if (generate.error instanceof Error) {
-          return <div>{generate.error.message}</div>;
-        } else {
-          return <div>Unknown error generating image.</div>;
-        }
-      case 'loading':
-        return <div>Generating...</div>;
-      case 'success':
-        return <img src={generate.data.output} />;
-      default:
-        return <div>No result. Press Generate.</div>;
-    }
-  }
-
   return <Box>
     <Stack spacing={2}>
       <Stack direction='row' spacing={2}>
@@ -99,7 +83,7 @@ export function Txt2Img(props: Txt2ImgProps) {
         setPrompt(event.target.value);
       }} />
       <Button onClick={() => generate.mutate()}>Generate</Button>
-      {renderImage()}
+      <ImageCard result={generate} />
     </Stack>
   </Box>;
 }
