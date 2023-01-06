@@ -122,8 +122,8 @@ package-gui-oci-nginx-bullseye:
   extends:
     - .package-gui-oci
   variables:
-    IMAGE_ARCH: nginx-buster
-    IMAGE_FILE: Containerfile.nginx.buster
+    IMAGE_ARCH: nginx-bullseye
+    IMAGE_FILE: Containerfile.nginx.bullseye
 
 package-gui-oci-node-alpine:
   extends:
