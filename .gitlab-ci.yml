@@ -33,7 +33,7 @@ stages:
     - .build-base
   image: docker.io/docker:20.10
   services:
-    - docker.io/docker-dind:20.10
+    - docker.io/docker:20.10-dind
   allow_failure: false
   before_script:
     - mkdir ${HOME}/.docker
@@ -51,7 +51,7 @@ stages:
     IMAGE_ROOT: "${CI_PROJECT_DIR}"
     VERSION_TAG: "${CI_COMMIT_REF_SLUG}"
 
-build-js:
+build-gui-js:
   extends:
     - .build-node
   stage: build
@@ -59,22 +59,26 @@ build-js:
     - cd gui
     - make ci
 
-package-oci:
+package-gui-oci:
   extends:
     - .build-dind
   stage: package
   needs:
-    - build-js
+    - build-gui-js
   script:
+    - cd gui
     - ${CI_PROJECT_DIR}/scripts/image-build.sh --push
+  variables:
+    IMAGE_SUFFIX: gui
 
-package-npm:
+package-gui-npm:
   extends:
     - .build-node
   stage: package
   needs:
-    - build-js
+    - build-gui-js
   only:
     - tags
   script:
+    - cd gui
     - npm publish
