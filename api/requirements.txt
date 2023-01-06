@@ -1,7 +1,7 @@
 ### AI packages ###
 accelerate
 diffusers
-numpy>=1.20,<1.24
+numpy>=1.24,<1.25
 onnx
 onnxruntime
 transformers
