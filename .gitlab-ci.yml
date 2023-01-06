@@ -47,8 +47,6 @@ stages:
     DOCKER_NAME: "${CI_PROJECT_PATH}"
     DOCKER_TLS_CERTDIR: "/shared/docker"
     DOCKER_TLS_VERIFY: 1
-    IMAGE_FILE: Containerfile
-    IMAGE_ROOT: "${CI_PROJECT_DIR}"
     VERSION_TAG: "${CI_COMMIT_REF_SLUG}"
 
 build-gui-js:
@@ -59,7 +57,7 @@ build-gui-js:
     - cd gui
     - make ci
 
-package-gui-oci:
+.package-gui-oci:
   extends:
     - .build-dind
   stage: package
@@ -67,9 +65,22 @@ package-gui-oci:
     - build-gui-js
   script:
     - cd gui
-    - ${CI_PROJECT_DIR}/scripts/image-build.sh --push
+    - ${CI_PROJECT_DIR}/common/scripts/image-build.sh --push
   variables:
+    IMAGE_ROOT: "${CI_PROJECT_DIR}/gui"
     IMAGE_SUFFIX: gui
+
+package-gui-oci-alpine:
+  extends:
+    - .package-gui-oci
+  variables:
+    IMAGE_FILE: Containerfile.alpine
+
+package-gui-oci-buster:
+  extends:
+    - .package-gui-oci
+  variables:
+    IMAGE_FILE: Containerfile.buster
 
 package-gui-npm:
   extends:
