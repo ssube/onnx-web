@@ -52,7 +52,7 @@ stages:
 .build-python:
   extends:
     - .build-base
-  image: docker.io/python:3.10
+  image: docker.io/python:3.11
 
 build-api-coverage:
   extends:
