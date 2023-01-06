@@ -4,6 +4,7 @@ import * as React from 'react';
 import { UseQueryResult } from 'react-query';
 
 export interface QueryListProps {
+  id: string;
   labels: Record<string, string>;
   name: string;
   result: UseQueryResult<Array<string>>;
@@ -32,14 +33,20 @@ export function QueryList(props: QueryListProps) {
   }
 
   // else: success
+  const labelID = `query-list-${props.id}-labels`;
   const data = mustExist(result.data);
   return <FormControl>
-    <InputLabel>{props.name}</InputLabel>
-    <Select value={value} onChange={(e) => {
-      if (doesExist(props.onChange)) {
-        props.onChange(e.target.value);
-      }
-    }}>
+    <InputLabel id={labelID}>{props.name}</InputLabel>
+    <Select
+      labelId={labelID}
+      label={props.name}
+      value={value}
+      onChange={(e) => {
+        if (doesExist(props.onChange)) {
+          props.onChange(e.target.value);
+        }
+      }}
+    >
       {data.map((name) => <MenuItem key={name} value={name}>{mustDefault(labels[name], name)}</MenuItem>)}
     </Select>
   </FormControl>;
