@@ -41,3 +41,4 @@ help: ## print this help
 
 release:
 	$$(yarn global bin)/commit-and-tag-version --packageFiles gui/package.json
+	GIT_ARGS=--follow-tags $(MAKE) git-push
