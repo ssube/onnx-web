@@ -96,12 +96,13 @@ build-gui-bundle:
     IMAGE_ROOT: "${CI_PROJECT_DIR}/gui"
     IMAGE_SUFFIX: gui
 
-package-api-oci-alpine:
-  extends:
-    - .package-api-oci
-  variables:
-    IMAGE_ARCH: alpine
-    IMAGE_FILE: Containerfile.alpine
+# no API image for alpine: https://github.com/microsoft/onnxruntime/issues/2909#issuecomment-593591317
+# package-api-oci-alpine:
+#   extends:
+#     - .package-api-oci
+#   variables:
+#     IMAGE_ARCH: alpine
+#     IMAGE_FILE: Containerfile.alpine
 
 package-api-oci-buster:
   extends:

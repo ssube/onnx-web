@@ -1,5 +1,8 @@
 FROM docker.io/python:3.10-alpine
 
+RUN apk add --update cmake \
+ && rm -rf /var/cache/apk/*
+
 WORKDIR /onnx-web
 
 COPY requirements.txt /onnx-web/requirements.txt
