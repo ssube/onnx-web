@@ -10,11 +10,11 @@ COPY yarn.lock /onnx-web/yarn.lock
 RUN yarn install --production
 
 # copy chunks, largest to smallest (entrypoint)
+COPY serve.js /onnx-web/serve.js
 COPY out/src/ /onnx-web/out/src/
 COPY out/bundle/ /onnx-web/out/bundle/
 
 # set up as global cli tool
 RUN yarn global add file:$(pwd)
 
-ENTRYPOINT [ "node", "/onnx-web/out/bundle/main.js" ]
-CMD [ "--help" ]
+ENTRYPOINT [ "node", "/onnx-web/serve.js" ]
