@@ -4,7 +4,7 @@ onnx_env: ## create virtual env
 	python -v venv onnx_env
 
 ci: pip
-	pip install coverage
+	pip install coverage hypothesis unittest
 	$(MAKE) test
 
 pip:
@@ -15,6 +15,8 @@ test:
 	python -m coverage run -m unittest discover -s tests/
 	python -m coverage html
 	python -m coverage xml
+
+package: package-dist package-upload
 
 package-dist:
 	python ./setup.py sdist

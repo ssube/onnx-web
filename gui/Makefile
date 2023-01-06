@@ -3,7 +3,7 @@
 # JS targets
 node_modules: deps
 
-ci: deps lint build-shebang test
+ci: deps lint build-shebang test bundle
 
 clean:
 	rm -rf node_modules/

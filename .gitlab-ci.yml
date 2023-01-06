@@ -7,27 +7,6 @@ stages:
     - platform:k8s
     - runner:shared
 
-.build-dind:
-  extends:
-    - .build-base
-  image: docker.io/docker:20.10
-  services:
-    - docker.io/docker:20.10-dind
-  allow_failure: false
-  before_script:
-    - mkdir ${HOME}/.docker
-    - echo "${DOCKER_SECRET}" | base64 -d > ${HOME}/.docker/config.json
-  after_script:
-    - rm -rfv ${HOME}/.docker
-  variables:
-    DOCKER_CERT_PATH: "/shared/docker/client"
-    DOCKER_DRIVER: overlay2
-    DOCKER_HOST: tcp://localhost:2376
-    DOCKER_NAME: "${CI_PROJECT_PATH}"
-    DOCKER_TLS_CERTDIR: "/shared/docker"
-    DOCKER_TLS_VERIFY: 1
-    VERSION_TAG: "${CI_COMMIT_REF_SLUG}"
-
 .build-node:
   extends:
     - .build-base
@@ -49,18 +28,31 @@ stages:
       - gui/node_modules/
     policy: pull-push
 
+.build-oci:
+  extends:
+    - .build-base
+  image: docker.io/docker:20.10
+  services:
+    - docker.io/docker:20.10-dind
+  allow_failure: false
+  before_script:
+    - mkdir ${HOME}/.docker
+    - echo "${DOCKER_SECRET}" | base64 -d > ${HOME}/.docker/config.json
+  after_script:
+    - rm -rfv ${HOME}/.docker
+  variables:
+    DOCKER_CERT_PATH: "/shared/docker/client"
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://localhost:2376
+    DOCKER_NAME: "${CI_PROJECT_PATH}"
+    DOCKER_TLS_CERTDIR: "/shared/docker"
+    DOCKER_TLS_VERIFY: 1
+    VERSION_TAG: "${CI_COMMIT_REF_SLUG}"
+
 .build-python:
   extends:
     - .build-base
   image: docker.io/python:3.10
-
-build-gui-bundle:
-  extends:
-    - .build-node
-  stage: build
-  script:
-    - cd gui
-    - make ci
 
 build-api-coverage:
   extends:
@@ -70,9 +62,30 @@ build-api-coverage:
     - cd api
     - make ci
 
+build-gui-bundle:
+  extends:
+    - .build-node
+  stage: build
+  script:
+    - cd gui
+    - make ci
+
+.package-api-oci:
+  extends:
+    - .build-oci
+  stage: package
+  needs:
+    - build-api-coverage
+  script:
+    - cd api
+    - ${CI_PROJECT_DIR}/common/scripts/image-build.sh --push
+  variables:
+    IMAGE_ROOT: "${CI_PROJECT_DIR}/api"
+    IMAGE_SUFFIX: api
+
 .package-gui-oci:
   extends:
-    - .build-dind
+    - .build-oci
   stage: package
   needs:
     - build-gui-bundle
@@ -82,6 +95,18 @@ build-api-coverage:
   variables:
     IMAGE_ROOT: "${CI_PROJECT_DIR}/gui"
     IMAGE_SUFFIX: gui
+
+package-api-oci-alpine:
+  extends:
+    - .package-api-oci
+  variables:
+    IMAGE_FILE: Containerfile.alpine
+
+package-api-oci-buster:
+  extends:
+    - .package-api-oci
+  variables:
+    IMAGE_FILE: Containerfile.buster
 
 package-gui-oci-alpine:
   extends:
@@ -94,6 +119,18 @@ package-gui-oci-buster:
     - .package-gui-oci
   variables:
     IMAGE_FILE: Containerfile.buster
+
+package-api-twine:
+  extends:
+    - .build-node
+  stage: package
+  needs:
+    - build-api-coverage
+  only:
+    - tags
+  script:
+    - cd api
+    - echo make package
 
 package-gui-npm:
   extends:
