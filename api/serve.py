@@ -8,9 +8,8 @@ from diffusers import (
     LMSDiscreteScheduler,
     PNDMScheduler,
 )
-from flask import Flask, make_response, request, send_file, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory
 from stringcase import spinalcase
-from io import BytesIO
 from os import environ, path, makedirs
 import numpy as np
 
@@ -60,6 +59,7 @@ def get_from_map(args, key, values, default):
         return values[default]
 
 
+# TODO: credit this function
 def get_latents_from_seed(seed: int, width: int, height: int) -> np.ndarray:
     # 1 is batch size
     latents_shape = (1, 4, height // 8, width // 8)
@@ -123,18 +123,25 @@ def txt2img():
         latents=latents
     ).images[0]
 
-    output = '%s/txt2img_%s_%s.png' % (output_path,
-                                       seed, spinalcase(prompt[0:64]))
-    print("txt2img output: %s" % (output))
-    image.save(output)
+    output_file = "txt2img_%s_%s.png" % (seed, spinalcase(prompt[0:64]))
+    output_full = '%s/%s' % (output_path, output_file)
+    print("txt2img output: %s" % output_full)
+    image.save(output_full)
 
-    img_io = BytesIO()
-    image.save(img_io, 'PNG', quality=100)
-    img_io.seek(0)
-
-    res = make_response(send_file(img_io, mimetype='image/png'))
+    res = jsonify({
+        'output': output_file,
+        'params': {
+            'cfg': cfg,
+            'steps': steps,
+            'height': height,
+            'width': width,
+            'prompt': prompt,
+            'seed': seed
+        }
+    })
     res.headers.add('Access-Control-Allow-Origin', '*')
     return res
+
 
 @app.route('/output/<path:filename>')
 def output(filename):

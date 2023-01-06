@@ -11,30 +11,34 @@ export interface Txt2ImgParams {
 }
 
 export interface ApiResponse {
+  output: string;
   params: Txt2ImgParams;
-  path: string;
 }
 
 export interface ApiClient {
-  txt2img(params: Txt2ImgParams): Promise<string>;
+  txt2img(params: Txt2ImgParams): Promise<ApiResponse>;
 }
 
 export const STATUS_SUCCESS = 200;
 
-export async function imageFromResponse(res: Response) {
+export async function imageFromResponse(root: string, res: Response): Promise<ApiResponse> {
   if (res.status === STATUS_SUCCESS) {
-    const imageBlob = await res.blob();
-    return URL.createObjectURL(imageBlob);
+    const data = await res.json() as ApiResponse;
+    const output = new URL(['output', data.output].join('/'), root).toString();
+    return {
+      output,
+      params: data.params,
+    };
   } else {
     throw new Error('request error');
   }
 }
 
 export function makeClient(root: string, f = fetch): ApiClient {
-  let pending: Promise<string> | undefined;
+  let pending: Promise<ApiResponse> | undefined;
 
   return {
-    async txt2img(params: Txt2ImgParams): Promise<string> {
+    async txt2img(params: Txt2ImgParams): Promise<ApiResponse> {
       if (doesExist(pending)) {
         return pending;
       }
@@ -61,7 +65,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       url.searchParams.append('prompt', params.prompt);
 
-      pending = f(url).then((res) => imageFromResponse(res)).finally(() => {
+      pending = f(url).then((res) => imageFromResponse(root, res)).finally(() => {
         pending = undefined;
       });
 

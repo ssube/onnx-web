@@ -77,7 +77,9 @@ Install Git and Python 3.10 for your environment:
 - https://www.python.org/downloads/
 - https://gitforwindows.org/
 
-The latest version of git should be fine. Python must be 3.10 or earlier, 3.10 seems to work well.
+The latest version of git should be fine. Python must be 3.10 or earlier, 3.10 seems to work well. If you already have
+Python installed for another form of Stable Diffusion, that should work, but make sure to verify the version in the next
+step.
 
 ### Create a virtual environment
 
