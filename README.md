@@ -45,6 +45,7 @@ Based on work by:
       - [Securing the server](#securing-the-server)
     - [Configuring and hosting the client](#configuring-and-hosting-the-client)
     - [Using the web interface](#using-the-web-interface)
+    - [Running from containers](#running-from-containers)
 
 ## Setup
 
@@ -263,3 +264,20 @@ You should be able to access the web interface at http://127.0.0.1:3000/index.ht
 The txt2img tab will be active by default, with an example prompt. You can press the `Generate` button and an image
 should appear on the page 10-15 seconds later (depending on your GPU and other hardware). The last four images will
 be shown, along with the parameters used to generate them.
+
+### Running from containers
+
+OCI images are available for both the API and GUI, `ssube/onnx-web-api` and `ssube/onnx-web-gui`, respectively. These
+are regularly built from the `main` branch and for all tags.
+
+The `ssube/onnx-web-gui` image is available in both Debian and Alpine-based versions, but the `ssube/onnx-web-api`
+image is only available as a Debian-based image, due to [this Github issue with `onnxruntime`](https://github.com/microsoft/onnxruntime/issues/2909#issuecomment-593591317).
+
+When using the containers, make sure to mount the `models/` and `outputs/` directories. The models directory can be
+read-only, but outputs should be read-write.
+
+```shell
+> podman run -p 5000:5000 --rm -v ../models:/models:ro -v ../outputs:/outputs:rw docker.io/ssube/onnx-web-api:main-buster
+
+> podman run -p 3000:3000 --rm docker.io/ssube/onnx-web-gui:main-buster
+```
