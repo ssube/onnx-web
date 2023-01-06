@@ -1,8 +1,8 @@
-import { doesExist } from '@apextoaster/js-utils';
 import { Box, Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import * as React from 'react';
+import { useMutation } from 'react-query';
 
-import { ApiClient, ApiResponse } from '../api/client.js';
+import { ApiClient } from '../api/client.js';
 import { ImageControl, ImageParams } from './ImageControl.js';
 
 const { useState } = React;
@@ -14,6 +14,12 @@ export interface Txt2ImgProps {
 export function Txt2Img(props: Txt2ImgProps) {
   const { client } = props;
 
+  async function generateImage() {
+    return client.txt2img({ ...params, prompt, scheduler });
+  }
+
+  const generate = useMutation(generateImage);
+
   const [prompt, setPrompt] = useState('an astronaut eating a hamburger');
   const [params, setParams] = useState<ImageParams>({
     cfg: 6,
@@ -23,18 +29,18 @@ export function Txt2Img(props: Txt2ImgProps) {
   });
   const [scheduler, setScheduler] = useState('euler-a');
 
-  const [result, setResult] = useState<ApiResponse | undefined>();
-
-  async function getImage() {
-    const data = await client.txt2img({ ...params, prompt, scheduler });
-    setResult(data);
-  }
-
   function renderImage() {
-    if (doesExist(result)) {
-      return <img src={result.output} />;
-    } else {
-      return <div>No result. Press Generate.</div>;
+    switch (generate.status) {
+      case 'error':
+        if (generate.error instanceof Error) {
+          return <div>{generate.error.message}</div>;
+        } else {
+          return <div>Unknown error generating image.</div>;
+        }
+      case 'success':
+        return <img src={generate.data.output} />;
+      default:
+        return <div>No result. Press Generate.</div>;
     }
   }
 
@@ -61,7 +67,7 @@ export function Txt2Img(props: Txt2ImgProps) {
       <TextField label="Prompt" variant="outlined" value={prompt} onChange={(event) => {
         setPrompt(event.target.value);
       }} />
-      <Button onClick={getImage}>Generate</Button>
+      <Button onClick={() => generate.mutate()}>Generate</Button>
       {renderImage()}
     </Stack>
   </Box>;

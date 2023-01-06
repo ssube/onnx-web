@@ -2,6 +2,7 @@
 import { mustExist } from '@apextoaster/js-utils';
 import * as React from 'react';
 import ReactDOM from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { makeClient, STATUS_SUCCESS } from './api/client.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
@@ -24,11 +25,12 @@ export async function loadConfig() {
 
 export async function main() {
   const config = await loadConfig();
+  const client = makeClient(config.api.root);
+  const query = new QueryClient();
 
   const appElement = mustExist(document.getElementById('app'));
   const app = ReactDOM.createRoot(appElement);
-  const client = makeClient(config.api.root);
-  app.render(<OnnxWeb client={client} />);
+  app.render(<QueryClientProvider client={query}><OnnxWeb client={client} /></QueryClientProvider>);
 }
 
 window.addEventListener('load', () => {
