@@ -231,4 +231,4 @@ def txt2img():
 
 @app.route('/output/<path:filename>')
 def output(filename):
-    return send_from_directory(output_path, filename, as_attachment=False)
+    return send_from_directory(path.join('..', output_path), filename, as_attachment=False)
