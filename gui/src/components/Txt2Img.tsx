@@ -5,6 +5,7 @@ import { useMutation, useQuery } from 'react-query';
 import { ApiClient } from '../api/client.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl, ImageParams } from './ImageControl.js';
+import { MutationHistory } from './MutationHistory.js';
 import { QueryList } from './QueryList.js';
 
 const { useState } = React;
@@ -83,7 +84,9 @@ export function Txt2Img(props: Txt2ImgProps) {
         setPrompt(event.target.value);
       }} />
       <Button onClick={() => generate.mutate()}>Generate</Button>
-      <ImageCard result={generate} />
+      <MutationHistory result={generate} limit={4} element={ImageCard}
+        isPresent={(list, item) => list.some((other) => item.output === other.output)}
+      />
     </Stack>
   </Box>;
 }
