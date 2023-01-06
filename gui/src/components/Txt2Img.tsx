@@ -61,7 +61,7 @@ export function Txt2Img(props: Txt2ImgProps) {
     height: 512,
   });
   const [scheduler, setScheduler] = useState('euler-a');
-  const [platform, setPlatform] = useState('cpu');
+  const [platform, setPlatform] = useState('amd');
 
   return <Box>
     <Stack spacing={2}>
