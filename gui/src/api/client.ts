@@ -1,13 +1,17 @@
 import { doesExist } from '@apextoaster/js-utils';
 
 export interface Txt2ImgParams {
+  model?: string;
+  platform?: string;
+  scheduler?: string;
+
   prompt: string;
   cfg: number;
   steps: number;
+
   width?: number;
   height?: number;
   seed?: string;
-  scheduler?: string;
 }
 
 export interface ApiResponse {
@@ -16,8 +20,10 @@ export interface ApiResponse {
 }
 
 export interface ApiClient {
+  models(): Promise<Array<string>>;
   platforms(): Promise<Array<string>>;
   schedulers(): Promise<Array<string>>;
+
   txt2img(params: Txt2ImgParams): Promise<ApiResponse>;
 }
 
@@ -40,6 +46,11 @@ export function makeClient(root: string, f = fetch): ApiClient {
   let pending: Promise<ApiResponse> | undefined;
 
   return {
+    async models(): Promise<Array<string>> {
+      const path = new URL('/settings/models', root);
+      const res = await f(path);
+      return await res.json() as Array<string>;
+    },
     async schedulers(): Promise<Array<string>> {
       const path = new URL('/settings/schedulers', root);
       const res = await f(path);
@@ -69,6 +80,14 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       if (doesExist(params.seed)) {
         url.searchParams.append('seed', params.seed);
+      }
+
+      if (doesExist(params.model)) {
+        url.searchParams.append('model', params.model);
+      }
+
+      if (doesExist(params.platform)) {
+        url.searchParams.append('platform', params.platform);
       }
 
       if (doesExist(params.scheduler)) {

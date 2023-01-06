@@ -8,7 +8,7 @@ import { ImageControl, ImageParams } from './ImageControl.js';
 
 const { useState } = React;
 
-const STALE_TIME = 3_000;
+export const STALE_TIME = 3_000;
 
 // TODO: set up i18next
 const PLATFORM_NAMES: Record<string, string> = {
@@ -28,13 +28,19 @@ const SCHEDULER_NAMES: Record<string, string> = {
 
 export interface Txt2ImgProps {
   client: ApiClient;
+  model: string;
 }
 
 export function Txt2Img(props: Txt2ImgProps) {
   const { client } = props;
 
   async function generateImage() {
-    return client.txt2img({ ...params, prompt, scheduler });
+    return client.txt2img({
+      ...params,
+      model: props.model,
+      prompt,
+      scheduler,
+    });
   }
 
   const generate = useMutation(generateImage);
