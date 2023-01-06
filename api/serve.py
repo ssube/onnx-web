@@ -69,6 +69,13 @@ def get_latents_from_seed(seed: int, width: int, height: int) -> np.ndarray:
     return image_latents
 
 
+def json_with_cors(data, origin='*'):
+    res = jsonify(data)
+    res.access_control_allow_origin = origin
+    #res.headers.add('Access-Control-Allow-Origin', '*')
+    return res
+
+
 def url_from_rule(rule):
     options = {}
     for arg in rule.arguments:
@@ -89,7 +96,7 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def hello():
+def index():
     return {
         'name': 'onnx-web',
         'routes': [{
@@ -97,6 +104,16 @@ def hello():
             'methods': list(rule.methods)
         } for rule in app.url_map.iter_rules()]
     }
+
+
+@app.route('/settings/platforms')
+def list_platforms():
+    return json_with_cors(list(platform_providers.keys()))
+
+
+@app.route('/settings/schedulers')
+def list_schedulers():
+    return json_with_cors(list(pipeline_schedulers.keys()))
 
 
 @app.route('/txt2img')
@@ -141,7 +158,7 @@ def txt2img():
     print("txt2img output: %s" % output_full)
     image.save(output_full)
 
-    res = jsonify({
+    return json_with_cors({
         'output': output_file,
         'params': {
             'cfg': cfg,
@@ -152,8 +169,6 @@ def txt2img():
             'seed': seed
         }
     })
-    res.headers.add('Access-Control-Allow-Origin', '*')
-    return res
 
 
 @app.route('/output/<path:filename>')
