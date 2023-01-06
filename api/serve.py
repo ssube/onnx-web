@@ -151,7 +151,7 @@ def index():
         'name': 'onnx-web',
         'routes': [{
             'path': url_from_rule(rule),
-            'methods': list(rule.methods)
+            'methods': list(rule.methods).sort()
         } for rule in app.url_map.iter_rules()]
     }
 
