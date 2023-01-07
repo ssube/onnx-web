@@ -43,6 +43,7 @@ last_pipeline_scheduler = None
 platform_providers = {
     'amd': 'DmlExecutionProvider',
     'cpu': 'CPUExecutionProvider',
+    'nvidia': 'CUDAExecutionProvider',
 }
 pipeline_schedulers = {
     'ddim': DDIMScheduler,

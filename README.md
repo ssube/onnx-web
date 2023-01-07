@@ -1,9 +1,10 @@
 # ONNX Web
 
-This is a web UI for running ONNX models with GPU acceleration locally or on a remote machine.
+This is a web UI for running ONNX models with GPU acceleration or in software, running locally or on a remote machine.
 
-The API runs on both Linux and Windows and provides access to the major functionality of `diffusers`, metadata
-about the available models and accelerators, and the output of previous runs.
+The API runs on both Linux and Windows and provides access to the major functionality of `diffusers`, along with
+metadata about the available models and accelerators, and the output of previous runs. Hardware acceleration is
+supported for AMD and experimental for Nvidia, with a CPU fallback capable of running on laptop-class machines.
 
 The GUI runs in all major browsers, including on mobile devices, and allows you to select the model and accelerator
 being used, along with the prompt and other image parameters. The last few output images are shown, making it easy to
