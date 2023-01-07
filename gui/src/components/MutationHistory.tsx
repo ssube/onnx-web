@@ -26,7 +26,7 @@ export function MutationHistory<T>(props: MutationHistoryProps<T>) {
   const children = [];
 
   if (status === 'loading') {
-    children.push(<LoadingCard height={512} width={512} />); // TODO: get dimensions from current request
+    children.push(<LoadingCard height={512} width={512} />); // TODO: get dimensions from parent
   }
 
   if (status === 'success') {
@@ -54,5 +54,5 @@ export function MutationHistory<T>(props: MutationHistoryProps<T>) {
     }
   }
 
-  return <Grid container spacing={2}>{children.slice(0, limit).map((child) => <Grid item xs={6}>{child}</Grid>)}</Grid>;
+  return <Grid container spacing={2}>{children.slice(0, limit).map((child, idx) => <Grid item key={idx} xs={6}>{child}</Grid>)}</Grid>;
 }
