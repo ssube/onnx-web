@@ -1,6 +1,6 @@
 # ONNX Web
 
-This is a web UI for running ONNX models with GPU acceleration or in software, running locally or on a remote machine.
+This is a web UI for running [ONNX models](https://onnx.ai/) with GPU acceleration or in software, running locally or on a remote machine.
 
 The API runs on both Linux and Windows and provides access to the major functionality of `diffusers`, along with
 metadata about the available models and accelerators, and the output of previous runs. Hardware acceleration is
@@ -94,9 +94,15 @@ The latest version of git should be fine. Python must be 3.10 or earlier, 3.10 s
 Python installed for another form of Stable Diffusion, that should work, but make sure to verify the version in the next
 step.
 
+Once you have those basic packages installed, clone this git repository:
+
+```shell
+> git clone https://github.com/ssube/onnx-web.git
+```
+
 ### Create a virtual environment
 
-Make sure you have Python 3.10 or earlier, then create a virtual environment:
+Make sure you have Python 3.10 or earlier, change into the then create a virtual environment:
 
 ```shell
 > python --version
@@ -134,7 +140,6 @@ Install the following packages for AI:
 > pip install numpy>=1.20,<1.24   # version is important, 1.24 removed the deprecated np.float symbol
 > pip install accelerate diffusers transformers ftfy spacy scipy
 > pip install onnx onnxruntime torch
-# TODO: is pytorch needed?
 ```
 
 If you are running on Windows, install the DirectML ONNX runtime as well:
@@ -206,7 +211,7 @@ Run the conversion script with your desired model(s):
 This will take a little while to convert each model. Stable diffusion v1.4 is about 6GB, v1.5 is at least 10GB or so.
 
 You should verify that all of the steps up to this point have worked correctly by attempting to run the
-`api/setup-test.py` script, which is a slight variation on the original txt2img script.
+`api/test-setup.py` script, which is a slight variation on the original txt2img script.
 
 ## Usage
 
