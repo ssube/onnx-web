@@ -159,7 +159,9 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       url.searchParams.append('prompt', params.prompt);
 
-      pending = f(url).then((res) => imageFromResponse(root, res)).finally(() => {
+      pending = f(url, {
+        method: 'POST',
+      }).then((res) => imageFromResponse(root, res)).finally(() => {
         pending = undefined;
       });
 
