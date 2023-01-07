@@ -6,6 +6,7 @@ import { useQuery } from 'react-query';
 import { ApiClient } from '../api/client.js';
 import { Config } from '../config.js';
 import { MODEL_LABELS, PLATFORM_LABELS } from '../strings.js';
+import { Img2Img } from './Img2Img.js';
 import { QueryList } from './QueryList.js';
 import { STALE_TIME, Txt2Img } from './Txt2Img.js';
 
@@ -68,7 +69,7 @@ export function OnnxWeb(props: OnnxWebProps) {
               setTab(idx);
             }}>
               <Tab label='txt2img' value='txt2img' />
-              <Tab label='img2img' value='img2img' disabled />
+              <Tab label='img2img' value='img2img' />
               <Tab label='settings' value='settings' />
             </TabList>
           </Box>
@@ -76,9 +77,7 @@ export function OnnxWeb(props: OnnxWebProps) {
             <Txt2Img client={client} config={config} model={model} platform={platform} />
           </TabPanel>
           <TabPanel value='img2img'>
-            <Box>
-              img2img using {model}
-            </Box>
+            <Img2Img client={client} config={config} model={model} platform={platform} />
           </TabPanel>
           <TabPanel value='settings'>
             <Box>
