@@ -205,8 +205,8 @@ Run the conversion script with your desired model(s):
 
 This will take a little while to convert each model. Stable diffusion v1.4 is about 6GB, v1.5 is at least 10GB or so.
 
-You can verify that all of the steps up to this point worked correctly by attempting to run the `api/setup-test.py`
-script, which is a slight variation on the original txt2img script.
+You should verify that all of the steps up to this point have worked correctly by attempting to run the
+`api/setup-test.py` script, which is a slight variation on the original txt2img script.
 
 ## Usage
 
@@ -268,9 +268,10 @@ You should be able to access the web interface at http://127.0.0.1:3000/index.ht
 - If you get a `Connection Refused` error, make sure you are using the correct address and the dev server is still running.
 - If you get a `File not found` error, make sure you have built the UI bundle (`make bundle`) and are using the `/index.html` path
 
-The txt2img tab will be active by default, with an example prompt. You can press the `Generate` button and an image
-should appear on the page 10-15 seconds later (depending on your GPU and other hardware). The last four images will
-be shown, along with the parameters used to generate them.
+The txt2img tab will be active by default, with an example prompt. When you press the `Generate` button, an image should
+appear on the page 10-15 seconds later (depending on your GPU and other hardware). Generating images on CPU will take
+substantially longer, at least 2-3 minutes. The last four images will be shown, along with the parameters used to
+generate them.
 
 ### Running from containers
 
@@ -291,8 +292,8 @@ read-only, but outputs should be read-write.
 
 ### Customizing the config
 
-You can customize the config file to change the default model, platform (hardware acceleration), scheduler, and prompt.
-If you have a good base or example prompt, you can set that in the config file:
+You can customize the config file if you want to change the default model, platform (hardware acceleration), scheduler,
+and prompt. If you have a good base prompt or always want to use the CPU fallback, you can set that in the config file:
 
 ```json
 {
