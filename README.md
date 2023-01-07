@@ -299,7 +299,7 @@ If you have a good base or example prompt, you can set that in the config file:
 }
 ```
 
-When running the dev server, `node serve.js`, the config file at `out/config.json` will be loaded. If you want to load
+When running the dev server, `node serve.js`, the config file will be loaded from `out/config.json`. If you want to load
 a different config file, save it to your home directory named `onnx-web-config.json` and copy it into the output
 directory after building the bundle:
 
@@ -307,7 +307,8 @@ directory after building the bundle:
 > make bundle && cp -v ~/onnx-web-config.json out/config.json
 ```
 
-When running the container, you can mount the config at `/usr/share/nginx/html/config.json` using:
+When running the container, the config will be loaded from `/usr/share/nginx/html/config.json` and you can mount a
+custom config using:
 
 ```shell
 > podman run -p 8000:80 --rm -v ~/onnx-web-config.json:/usr/share/nginx/html/config.json:ro docker.io/ssube/onnx-web-gui:main-nginx-bullseye

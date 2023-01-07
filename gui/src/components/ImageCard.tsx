@@ -1,17 +1,27 @@
-import { Box, Card, CardContent, CardMedia, Grid, Paper } from '@mui/material';
+import { doesExist } from '@apextoaster/js-utils';
+import { Delete, Download } from '@mui/icons-material';
+import { Box, Button, Card, CardContent, CardMedia, Grid, Paper } from '@mui/material';
 import * as React from 'react';
 
 import { ApiResponse } from '../api/client.js';
 
 export interface ImageCardProps {
   value: ApiResponse;
+
+  onDelete?: (key: ApiResponse) => void;
+}
+
+export function GridItem(props: {xs: number; children: React.ReactNode}) {
+  return <Grid item xs={props.xs}>
+    <Paper elevation={0} sx={{ padding: 1 }}>{props.children}</Paper>
+  </Grid>;
 }
 
 export function ImageCard(props: ImageCardProps) {
   const { value } = props;
   const { params, output } = value;
 
-  return <Card sx={{ maxWidth: params.width }}>
+  return <Card sx={{ maxWidth: params.width }} elevation={2}>
     <CardMedia sx={{ height: params.height }}
       component='img'
       image={output}
@@ -20,24 +30,26 @@ export function ImageCard(props: ImageCardProps) {
     <CardContent>
       <Box>
         <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <Paper>CFG: {params.cfg}</Paper>
-          </Grid>
-          <Grid item xs={4}>
-            <Paper>Steps: {params.steps}</Paper>
-          </Grid>
-          <Grid item xs={4}>
-            <Paper>Size: {params.width}x{params.height}</Paper>
-          </Grid>
-          <Grid item xs={4}>
-            <Paper>Seed: {params.seed}</Paper>
-          </Grid>
-          <Grid item xs={8}>
-            <Paper>Scheduler: {params.scheduler}</Paper>
-          </Grid>
-          <Grid item xs={12}>
-            <Paper>{params.prompt}</Paper>
-          </Grid>
+          <GridItem xs={4}>CFG: {params.cfg}</GridItem>
+          <GridItem xs={4}>Steps: {params.steps}</GridItem>
+          <GridItem xs={4}>Size: {params.width}x{params.height}</GridItem>
+          <GridItem xs={4}>Seed: {params.seed}</GridItem>
+          <GridItem xs={8}>Scheduler: {params.scheduler}</GridItem>
+          <GridItem xs={12}>{params.prompt}</GridItem>
+          <GridItem xs={2}>
+            <Button onClick={() => window.open(output, '_blank')}>
+              <Download />
+            </Button>
+          </GridItem>
+          <GridItem xs={2}>
+            <Button onClick={() => {
+              if (doesExist(props.onDelete)) {
+                props.onDelete(value);
+              }
+            }}>
+              <Delete />
+            </Button>
+          </GridItem>
         </Grid>
       </Box>
     </CardContent>

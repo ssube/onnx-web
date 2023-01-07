@@ -4,12 +4,18 @@ import * as React from 'react';
 import { UseMutationResult } from 'react-query';
 import { LoadingCard } from './LoadingCard';
 
+export interface MutationHistoryChildProps<T> {
+  value: T;
+
+  onDelete: (key: T) => void;
+}
+
 export interface MutationHistoryProps<T> {
-  element: React.ComponentType<{value: T}>;
+  element: React.ComponentType<MutationHistoryChildProps<T>>;
   limit: number;
   result: UseMutationResult<T, unknown, void>;
 
-  isPresent: (list: Array<T>, item: T) => boolean;
+  isEqual: (a: T, b: T) => boolean;
 }
 
 export function MutationHistory<T>(props: MutationHistoryProps<T>) {
@@ -25,7 +31,7 @@ export function MutationHistory<T>(props: MutationHistoryProps<T>) {
 
   if (status === 'success') {
     const { data } = result;
-    if (props.isPresent(history, data)) {
+    if (history.some((other) => props.isEqual(data, other))) {
       // item already exists, skip it
     } else {
       setHistory([
@@ -35,8 +41,12 @@ export function MutationHistory<T>(props: MutationHistoryProps<T>) {
     }
   }
 
+  function removeHistory(data: T) {
+    setHistory(history.filter((item) => props.isEqual(item, data) === false));
+  }
+
   if (history.length > 0) {
-    children.push(...history.map((item) => <props.element value={item} />));
+    children.push(...history.map((item) => <props.element value={item} onDelete={removeHistory} />));
   } else {
     // only show the prompt when the button has not been pushed
     if (status !== 'loading') {

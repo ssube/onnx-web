@@ -71,7 +71,7 @@ export function Txt2Img(props: Txt2ImgProps) {
       }} />
       <Button onClick={() => generate.mutate()}>Generate</Button>
       <MutationHistory result={generate} limit={4} element={ImageCard}
-        isPresent={(list, item) => list.some((other) => item.output === other.output)}
+        isEqual={(a, b) => a.output === b.output}
       />
     </Stack>
   </Box>;

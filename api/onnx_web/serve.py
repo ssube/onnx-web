@@ -14,6 +14,9 @@ from os import environ, makedirs, path, scandir
 import numpy as np
 
 # defaults
+default_model = "stable-diffusion-onnx-v1-5"
+default_platform = "amd"
+default_scheduler = "euler-a"
 default_prompt = "a photo of an astronaut eating a hamburger"
 default_cfg = 8
 default_steps = 20
@@ -97,7 +100,8 @@ def load_pipeline(model, provider, scheduler):
 
     if last_pipeline_scheduler != scheduler:
         print('changing pipeline scheduler')
-        pipe.scheduler = scheduler.from_pretrained(model, subfolder="scheduler")
+        pipe.scheduler = scheduler.from_pretrained(
+            model, subfolder="scheduler")
         last_pipeline_scheduler = scheduler
 
     return pipe
@@ -176,11 +180,11 @@ def txt2img():
     user = request.remote_addr
 
     # pipeline stuff
-    model = safer_join(model_path, request.args.get('model', 'stable-diffusion-onnx-v1-5'))
+    model = safer_join(model_path, request.args.get('model', default_model))
     provider = get_from_map(request.args, 'platform',
-                            platform_providers, 'amd')
+                            platform_providers, default_platform)
     scheduler = get_from_map(request.args, 'scheduler',
-                             pipeline_schedulers, 'euler-a')
+                             pipeline_schedulers, default_scheduler)
 
     # image params
     prompt = request.args.get('prompt', default_prompt)
