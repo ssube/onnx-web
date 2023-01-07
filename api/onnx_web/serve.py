@@ -222,7 +222,9 @@ def img2img():
     input_image = Image.open(BytesIO(input_file.read())).convert('RGB')
     input_image.thumbnail((default_width, default_height))
 
-    strength = get_and_clamp(request.args, 'strength', 1.0, 1.0, 0.0)
+    strength = float(request.args.get('strength', 0.8))
+    print('strength: %s' % (strength))
+
     (model, provider, scheduler, prompt, cfg, steps, height,
      width, seed, pipe) = pipeline_from_request(OnnxStableDiffusionImg2ImgPipeline)
 
