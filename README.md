@@ -1,10 +1,13 @@
 # ONNX Web
 
-This is a rudimentary web UI for ONNX models, providing a way to run GPU-accelerated models on Windows and even AMD
-with a remote web interface.
+This is a web UI for running ONNX models with GPU acceleration locally or on a remote machine.
 
-This is still fairly early and instructions are a little rough, but it works on my machine. If I keep working on this
-for more than a week, I would like to add img2img and Nvidia support.
+The API runs on both Linux and Windows and provides access to the major functionality of `diffusers`, metadata
+about the available models and accelerators, and the output of previous runs.
+
+The GUI runs in all major browsers, including on mobile devices, and allows you to select the model and accelerator
+being used, along with the prompt and other image parameters. The last few output images are shown, making it easy to
+refer back to previous parameters.
 
 ![txt2img with example astronaut prompt and image](./docs/readme-preview.png)
 
@@ -14,6 +17,8 @@ Based on guides by:
 - https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674
 - https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs
 - https://www.travelneil.com/stable-diffusion-updates.html
+
+This is still an early project and the instructions are a little rough, but it works on my machine.
 
 ## Features
 
@@ -54,11 +59,11 @@ This is a very similar process to what [harishanand95](https://gist.github.com/h
 and [averad's](https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674) gists recommend, split up into a few
 steps:
 
-1. Install Git and Python, if you have not already
-2. Create a virtual environment
-3. Install pip packages
-4. Install ORT Nightly package
-5. Download and convert models
+1. [Install Git and Python](#install-git-and-python), if you have not already
+2. [Create a virtual environment](#create-a-virtual-environment)
+3. [Install pip packages](#install-pip-packages)
+4. [Install ORT Nightly package](#install-ort-nightly-package)
+5. [Download and convert models](#download-and-convert-models)
 
 ### Note about setup paths
 
