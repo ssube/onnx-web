@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import { useState } from 'react';
 import * as React from 'react';
 import { UseMutationResult } from 'react-query';
-import { LoadingCard } from './LoadingCard';
+import { LoadingCard } from './LoadingCard.js';
 
 export interface MutationHistoryChildProps<T> {
   value: T;

@@ -3,7 +3,7 @@ import { IconButton, Stack } from '@mui/material';
 import { Casino } from '@mui/icons-material';
 import * as React from 'react';
 
-import { NumericField } from './NumericField';
+import { NumericField } from './NumericField.js';
 
 export interface ImageParams {
   cfg: number;
