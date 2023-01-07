@@ -41,6 +41,7 @@ export function Txt2Img(props: Txt2ImgProps) {
 
   const [params, setParams] = useState<ImageParams>({
     cfg: 6,
+    seed: -1,
     steps: 25,
     width: 512,
     height: 512,

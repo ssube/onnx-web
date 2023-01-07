@@ -11,7 +11,7 @@ export interface Txt2ImgParams {
 
   width?: number;
   height?: number;
-  seed?: string;
+  seed?: number;
 }
 
 export interface Txt2ImgResponse extends Txt2ImgParams {
@@ -21,7 +21,7 @@ export interface Txt2ImgResponse extends Txt2ImgParams {
 
   width: number;
   height: number;
-  seed: string;
+  seed: number;
 }
 
 export interface ApiResponse {
@@ -93,7 +93,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
       }
 
       if (doesExist(params.seed)) {
-        url.searchParams.append('seed', params.seed);
+        url.searchParams.append('seed', params.seed.toFixed(0));
       }
 
       if (doesExist(params.model)) {

@@ -1,11 +1,13 @@
 import { doesExist } from '@apextoaster/js-utils';
-import { Stack } from '@mui/material';
+import { IconButton, Stack } from '@mui/material';
+import { Casino } from '@mui/icons-material';
 import * as React from 'react';
 
 import { NumericField } from './NumericField';
 
 export interface ImageParams {
   cfg: number;
+  seed: number;
   steps: number;
   width: number;
   height: number;
@@ -83,6 +85,34 @@ export function ImageControl(props: ImageControlProps) {
           }
         }}
       />
+    </Stack>
+    <Stack direction='row' spacing={4}>
+      <NumericField
+        label='Seed'
+        min={-1}
+        max={Number.MAX_SAFE_INTEGER}
+        step={1}
+        value={params.seed}
+        onChange={(seed) => {
+          if (doesExist(props.onChange)) {
+            props.onChange({
+              ...params,
+              seed,
+            });
+          }
+        }}
+      />
+      <IconButton onClick={() => {
+        const seed = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+        if (doesExist(props.onChange)) {
+          props.onChange({
+            ...params,
+            seed,
+          });
+        }
+      }}>
+        <Casino />
+      </IconButton>
     </Stack>
   </Stack>;
 }
