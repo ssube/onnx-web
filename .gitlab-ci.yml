@@ -104,12 +104,19 @@ build-gui-bundle:
 #     IMAGE_ARCH: alpine
 #     IMAGE_FILE: Containerfile.alpine
 
-package-api-oci-buster:
+package-api-oci-cpu-buster:
   extends:
     - .package-api-oci
   variables:
-    IMAGE_ARCH: buster
-    IMAGE_FILE: Containerfile.buster
+    IMAGE_ARCH: cpu-buster
+    IMAGE_FILE: Containerfile.cpu.buster
+
+package-api-oci-cuda-buster:
+  extends:
+    - .package-api-oci
+  variables:
+    IMAGE_ARCH: cuda-buster
+    IMAGE_FILE: Containerfile.cuda.buster
 
 package-gui-oci-nginx-alpine:
   extends:
