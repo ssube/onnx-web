@@ -9,6 +9,8 @@ export interface Img2ImgParams {
   cfg: number;
   steps: number;
 
+  seed?: number;
+
   source: File;
 }
 
@@ -107,6 +109,10 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       if (doesExist(params.scheduler)) {
         url.searchParams.append('scheduler', params.scheduler);
+      }
+
+      if (doesExist(params.seed)) {
+        url.searchParams.append('seed', params.seed.toFixed(0));
       }
 
       url.searchParams.append('prompt', params.prompt);
