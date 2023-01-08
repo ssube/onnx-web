@@ -66,8 +66,9 @@ steps:
 1. [Install Git and Python](#install-git-and-python), if you have not already
 2. [Create a virtual environment](#create-a-virtual-environment)
 3. [Install pip packages](#install-pip-packages)
-4. [Install ORT Nightly package](#install-ort-nightly-package)
-5. [Download and convert models](#download-and-convert-models)
+   1. Install common packages
+   2. Install platform-specific packages for your GPU (or CPU)
+4. [Download and convert models](#download-and-convert-models)
 
 ### Note about setup paths
 
@@ -158,12 +159,6 @@ Install the following packages for AI:
 > pip install accelerate diffusers ftfy onnx onnxruntime spacy scipy transformers
 ```
 
-If you are running on Windows, install the DirectML ONNX runtime as well:
-
-```shell
-> pip install onnxruntime-directml --force-reinstall
-```
-
 Install the following packages for the web UI:
 
 ```shell
@@ -182,6 +177,12 @@ sure you are not using `numpy>=1.24`.
 has more details.
 
 #### For AMD on Windows: Install ORT nightly package
+
+If you are running on Windows, install the DirectML ONNX runtime as well:
+
+```shell
+> pip install onnxruntime-directml --force-reinstall
+```
 
 You can optionally install the latest DirectML ORT nightly package, which may provide a substantial performance increase
 (on my machine, the stable version takes about 30sec/image vs 9sec/image for the nightly).
@@ -247,9 +248,7 @@ Download the conversion script from the `huggingface/diffusers` repository to th
 Run the conversion script with your desired model(s):
 
 ```shell
-> python convert_stable_diffusion_checkpoint_to_onnx.py \
-    --model_path="runwayml/stable-diffusion-v1-5" \
-    --output_path="./models/stable-diffusion-onnx-v1-5"
+> python convert_stable_diffusion_checkpoint_to_onnx.py --model_path="runwayml/stable-diffusion-v1-5" --output_path="./models/stable-diffusion-onnx-v1-5"
 ```
 
 This will take a little while to convert each model. Stable diffusion v1.4 is about 6GB, v1.5 is at least 10GB or so.
