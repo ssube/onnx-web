@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.2.0](https://github.com/ssube/onnx-web/compare/v0.1.0...v0.2.0) (2023-01-08)
+
+
+### Features
+
+* **api:** add image with pytorch CUDA ([a721008](https://github.com/ssube/onnx-web/commit/a721008d94d34f655d8749f9fc8fa9f801950427))
+* **api:** add img2img endpoint ([09ce654](https://github.com/ssube/onnx-web/commit/09ce6546beac735369a4535646bb1362ff0eaac3))
+* **api:** experimentally add CUDA provider and Nvidia platform ([8359bd5](https://github.com/ssube/onnx-web/commit/8359bd5b9969051dde4686223f602cdb77b15901))
+* **api:** switch to package structure ([599e0ee](https://github.com/ssube/onnx-web/commit/599e0ee2d0df405062f660af5adae4aaa2fcdb3d))
+* **api:** use hash of params as output filename ([e82379c](https://github.com/ssube/onnx-web/commit/e82379c61f7bfafaf102379cddd6fb7407dc99e2))
+* **gui:** add download and delete buttons to image history ([e605c9f](https://github.com/ssube/onnx-web/commit/e605c9f66b4bbcf76b8b7ff113792c62087c2716))
+* **gui:** add seed to image controls with random button (fixes [#16](https://github.com/ssube/onnx-web/issues/16)) ([4585792](https://github.com/ssube/onnx-web/commit/45857924928817fd0913af215cfed6be25903dcf))
+* **gui:** add sliders to numeric inputs ([c5e0439](https://github.com/ssube/onnx-web/commit/c5e0439aa5994c2ca25828589178e3ad91c7d1cc))
+* **gui:** add strength to img2img controls ([2328c5f](https://github.com/ssube/onnx-web/commit/2328c5f46a76d7d08067f9fc3a9611000cdda83f))
+* **gui:** implement img2img tab ([98a8db1](https://github.com/ssube/onnx-web/commit/98a8db16a33f1e389ecf3cd9237cbdedd38d3b59))
+* **gui:** put in a proper loading card ([3ec8f7c](https://github.com/ssube/onnx-web/commit/3ec8f7c2fcfc3b21d75f17b9ac31d424ce4fdd1a))
+* implement negative prompts ([f2e2b20](https://github.com/ssube/onnx-web/commit/f2e2b20f18bc8ec1e452ae5ba7929f7ad7ad81f2))
+* make additional schedulers available in UI ([93e53f6](https://github.com/ssube/onnx-web/commit/93e53f6dc3d312f348df156780d5f89712f1c087))
+
+
+### Bug Fixes
+
+* **api:** adjust output path for module structure ([c6662d1](https://github.com/ssube/onnx-web/commit/c6662d155da9176e799fd8979ed7be289982b593))
+* **api:** clamp im2img strength ([282a7cf](https://github.com/ssube/onnx-web/commit/282a7cfa2af5ff0c02dd3a33f43858ca9f5c0b4d))
+* **api:** defer first model load until first request ([0232c71](https://github.com/ssube/onnx-web/commit/0232c7180c16cc6a497b28be1d1381bd89e099c5))
+* **api:** hash full range of seed values ([057eea2](https://github.com/ssube/onnx-web/commit/057eea25ef52de4f945f40a805ec2bb6cd46f9e6))
+* **api:** keep strength as a float ([926f77b](https://github.com/ssube/onnx-web/commit/926f77b3b0758a16196392a505d5ca695e54422b))
+* **api:** remove prompt from output name ([0d4c0a5](https://github.com/ssube/onnx-web/commit/0d4c0a5942a150cbb407a621f4a6c85eef1f41b6))
+* **api:** seed rng for each image ([8c133e9](https://github.com/ssube/onnx-web/commit/8c133e9230eb0ecaefcabd3209d926603eea6903))
+* **api:** typesafe param hashing ([f4ca6a0](https://github.com/ssube/onnx-web/commit/f4ca6a0547d5414da25c395b38ae628c97198964))
+* **api:** update serve app name, add module entrypoint ([b59519c](https://github.com/ssube/onnx-web/commit/b59519cb7e1300e39c1e6bb7c704b701e7ffc36a))
+* **build:** automatically push after tagging releases ([55d4354](https://github.com/ssube/onnx-web/commit/55d435489a2ef8d93c5082229c6bf6fd09d57201))
+* **docs:** add section with known errors ([067a9b3](https://github.com/ssube/onnx-web/commit/067a9b39812f6ef9dae7255bcb8e28797aed0872))
+* **docs:** begin clarifying packages for each environment ([#19](https://github.com/ssube/onnx-web/issues/19)) ([f99438e](https://github.com/ssube/onnx-web/commit/f99438e623891af122495af6cceefeb6991454a4))
+* **docs:** include onnxruntime in list of common deps ([6442e68](https://github.com/ssube/onnx-web/commit/6442e68e676271a1d5ae1ddefac9e8995f48cb9d))
+* **docs:** move ONNX DML package to Windows setup ([16c8b54](https://github.com/ssube/onnx-web/commit/16c8b54b1a558afe7299b7e970ddd599976b166c))
+* **docs:** note cloning and fix test script name in readme ([9973bf1](https://github.com/ssube/onnx-web/commit/9973bf1bfc423194c353fbb2d50336d88dabc8de))
+* **docs:** note python3 command and venv "name cmd" error in readme ([f119cb4](https://github.com/ssube/onnx-web/commit/f119cb41000784abb4ea62ea31487e4da37ed2b2))
+* **gui:** add npm ignore ([8f7c1e7](https://github.com/ssube/onnx-web/commit/8f7c1e705b0329b3d537827564008033607c2e82))
+* **gui:** add strings for more stable diffusion models, nvidia GPUs ([33fd5f1](https://github.com/ssube/onnx-web/commit/33fd5f1b532e76d8b0777a60e2815c5b49e1fcc5))
+* **gui:** bind dev server to localhost by default, open binding in containers ([fc988e4](https://github.com/ssube/onnx-web/commit/fc988e4b5bc4d29a3a71121538f8d362490c3212))
+* **gui:** disable img2img tab for now, consistent quotes in jsx ([de48450](https://github.com/ssube/onnx-web/commit/de48450730bf59177372f81e322a77754e1c8636))
+* **gui:** handle decimal inputs correctly ([d5c4040](https://github.com/ssube/onnx-web/commit/d5c4040b073bbd94076ccce9f7212efe25958254))
+* **gui:** key image history by order ([17e62fb](https://github.com/ssube/onnx-web/commit/17e62fb8e393bdccfc33577ba8584ac72e8bb5b1))
+* **gui:** limit seed to safe values, prep for more settings ([3dfbb00](https://github.com/ssube/onnx-web/commit/3dfbb0061b02e8950d40abc2840622ac471de119))
+* **gui:** send seed with img2img requests ([4894e0d](https://github.com/ssube/onnx-web/commit/4894e0ddd691cd642b7e2af91e439c603a5cc796))
+* **gui:** switch txt2img to post on client ([e454203](https://github.com/ssube/onnx-web/commit/e4542031c4262b1a12be639e5bad747763eb3e8b))
+
 ## 0.1.0 (2023-01-06)
 
 

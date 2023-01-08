@@ -1,11 +1,11 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open("../README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="onnx_web",
-    version="0.1.0",
+    version="0.2.0",
     author="ssube",
     author_email="seansube@gmail.com",
     description="web UI for running ONNX models",
