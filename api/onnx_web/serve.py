@@ -17,6 +17,7 @@ from diffusers import (
     OnnxStableDiffusionImg2ImgPipeline,
 )
 from flask import Flask, jsonify, request, send_from_directory, url_for
+from hashlib import sha256
 from io import BytesIO
 from PIL import Image
 from stringcase import spinalcase
@@ -139,6 +140,18 @@ def json_with_cors(data, origin='*'):
     return res
 
 
+def make_output_path(type, params):
+    sha = sha256()
+    sha.update(type)
+    for param in params:
+        sha.update(param)
+
+    output_file = 'txt2img_%s_%s.png' % (params[0], sha.hexdigest())
+    output_full = safer_join(output_path, output_file)
+
+    return (output_file, output_full)
+
+
 def safer_join(base, tail):
     safer_path = path.relpath(path.normpath(path.join('/', tail)), '/')
     return path.join(base, safer_path)
@@ -249,8 +262,7 @@ def img2img():
         generator=rng,
     ).images[0]
 
-    output_file = 'img2img_%s_%s.png' % (seed, spinalcase(prompt[0:64]))
-    output_full = safer_join(output_path, output_file)
+    (output_file, output_full) = make_output_path('img2img', (prompt, cfg, steps, height, width, seed))
     print("img2img output: %s" % output_full)
     image.save(output_full)
 
@@ -288,8 +300,7 @@ def txt2img():
         generator=rng,
     ).images[0]
 
-    output_file = 'txt2img_%s_%s.png' % (seed, spinalcase(prompt[0:64]))
-    output_full = safer_join(output_path, output_file)
+    (output_file, output_full) = make_output_path('txt2img', (prompt, cfg, steps, height, width, seed))
     print("txt2img output: %s" % output_full)
     image.save(output_full)
 
