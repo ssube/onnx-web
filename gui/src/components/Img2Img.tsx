@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 import { ApiClient, BaseImgParams } from '../api/client.js';
-import { Config } from '../config.js';
+import { Config, CONFIG_DEFAULTS, STALE_TIME } from '../config.js';
 import { SCHEDULER_LABELS } from '../strings.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
@@ -14,7 +14,6 @@ import { QueryList } from './QueryList.js';
 
 const { useState } = React;
 
-export const STALE_TIME = 3_000;
 export interface Img2ImgProps {
   client: ApiClient;
   config: Config;
@@ -52,11 +51,11 @@ export function Img2Img(props: Img2ImgProps) {
   });
 
   const [source, setSource] = useState<File>();
-  const [strength, setStrength] = useState(0.5);
+  const [strength, setStrength] = useState(CONFIG_DEFAULTS.strength.default);
   const [params, setParams] = useState<BaseImgParams>({
-    cfg: 6,
-    seed: -1,
-    steps: 25,
+    cfg: CONFIG_DEFAULTS.cfg.default,
+    seed: CONFIG_DEFAULTS.seed.default,
+    steps: CONFIG_DEFAULTS.steps.default,
     prompt: config.default.prompt,
   });
   const [scheduler, setScheduler] = useState(config.default.scheduler);
@@ -81,10 +80,10 @@ export function Img2Img(props: Img2ImgProps) {
       }} />
       <NumericField
         decimal
-        label='Weight'
-        min={0}
-        max={1}
-        step={0.01}
+        label='Strength'
+        min={CONFIG_DEFAULTS.strength.min}
+        max={CONFIG_DEFAULTS.strength.max}
+        step={CONFIG_DEFAULTS.strength.step}
         value={strength}
         onChange={(value) => {
           setStrength(value);

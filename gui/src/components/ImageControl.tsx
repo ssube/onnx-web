@@ -1,10 +1,11 @@
 import { doesExist } from '@apextoaster/js-utils';
-import { IconButton, Stack, TextField } from '@mui/material';
 import { Casino } from '@mui/icons-material';
+import { IconButton, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 
-import { NumericField } from './NumericField.js';
 import { BaseImgParams } from '../api/client.js';
+import { CONFIG_DEFAULTS } from '../config.js';
+import { NumericField } from './NumericField.js';
 
 export interface ImageControlProps {
   params: BaseImgParams;
@@ -18,9 +19,9 @@ export function ImageControl(props: ImageControlProps) {
     <Stack direction='row' spacing={4}>
       <NumericField
         label='CFG'
-        min={0}
-        max={30}
-        step={1}
+        min={CONFIG_DEFAULTS.cfg.min}
+        max={CONFIG_DEFAULTS.cfg.max}
+        step={CONFIG_DEFAULTS.cfg.step}
         value={params.cfg}
         onChange={(cfg) => {
           if (doesExist(props.onChange)) {
@@ -33,9 +34,9 @@ export function ImageControl(props: ImageControlProps) {
       />
       <NumericField
         label='Steps'
-        min={1}
-        max={150}
-        step={1}
+        min={CONFIG_DEFAULTS.steps.min}
+        max={CONFIG_DEFAULTS.steps.max}
+        step={CONFIG_DEFAULTS.steps.step}
         value={params.steps}
         onChange={(steps) => {
           if (doesExist(props.onChange)) {
@@ -50,9 +51,9 @@ export function ImageControl(props: ImageControlProps) {
     <Stack direction='row' spacing={4}>
       <NumericField
         label='Seed'
-        min={-1}
-        max={Number.MAX_SAFE_INTEGER}
-        step={1}
+        min={CONFIG_DEFAULTS.seed.min}
+        max={CONFIG_DEFAULTS.seed.max}
+        step={CONFIG_DEFAULTS.seed.step}
         value={params.seed}
         onChange={(seed) => {
           if (doesExist(props.onChange)) {
@@ -64,7 +65,7 @@ export function ImageControl(props: ImageControlProps) {
         }}
       />
       <IconButton onClick={() => {
-        const seed = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+        const seed = Math.floor(Math.random() * CONFIG_DEFAULTS.seed.max);
         if (doesExist(props.onChange)) {
           props.onChange({
             ...params,

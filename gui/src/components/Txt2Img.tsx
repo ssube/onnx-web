@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 import { ApiClient, BaseImgParams } from '../api/client.js';
-import { Config } from '../config.js';
+import { Config, CONFIG_DEFAULTS, STALE_TIME } from '../config.js';
 import { SCHEDULER_LABELS } from '../strings.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
@@ -13,7 +13,6 @@ import { QueryList } from './QueryList.js';
 
 const { useState } = React;
 
-export const STALE_TIME = 3_000;
 export interface Txt2ImgProps {
   client: ApiClient;
   config: Config;
@@ -41,12 +40,12 @@ export function Txt2Img(props: Txt2ImgProps) {
     staleTime: STALE_TIME,
   });
 
-  const [height, setHeight] = useState(512);
-  const [width, setWidth] = useState(512);
+  const [height, setHeight] = useState(CONFIG_DEFAULTS.height.default);
+  const [width, setWidth] = useState(CONFIG_DEFAULTS.width.default);
   const [params, setParams] = useState<BaseImgParams>({
-    cfg: 6,
-    seed: -1,
-    steps: 25,
+    cfg: CONFIG_DEFAULTS.cfg.default,
+    seed: CONFIG_DEFAULTS.seed.default,
+    steps: CONFIG_DEFAULTS.steps.default,
     prompt: config.default.prompt,
   });
   const [scheduler, setScheduler] = useState(config.default.scheduler);
@@ -71,9 +70,9 @@ export function Txt2Img(props: Txt2ImgProps) {
       <Stack direction='row' spacing={4}>
         <NumericField
           label='Width'
-          min={8}
-          max={512}
-          step={8}
+          min={CONFIG_DEFAULTS.width.min}
+          max={CONFIG_DEFAULTS.width.max}
+          step={CONFIG_DEFAULTS.width.step}
           value={width}
           onChange={(value) => {
             setWidth(value);
@@ -81,9 +80,9 @@ export function Txt2Img(props: Txt2ImgProps) {
         />
         <NumericField
           label='Height'
-          min={8}
-          max={512}
-          step={8}
+          min={CONFIG_DEFAULTS.height.min}
+          max={CONFIG_DEFAULTS.height.max}
+          step={CONFIG_DEFAULTS.height.step}
           value={height}
           onChange={(value) => {
             setHeight(value);

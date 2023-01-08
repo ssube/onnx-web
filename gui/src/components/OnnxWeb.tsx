@@ -4,11 +4,11 @@ import * as React from 'react';
 import { useQuery } from 'react-query';
 
 import { ApiClient } from '../api/client.js';
-import { Config } from '../config.js';
+import { Config, STALE_TIME } from '../config.js';
 import { MODEL_LABELS, PLATFORM_LABELS } from '../strings.js';
 import { Img2Img } from './Img2Img.js';
 import { QueryList } from './QueryList.js';
-import { STALE_TIME, Txt2Img } from './Txt2Img.js';
+import { Txt2Img } from './Txt2Img.js';
 
 const { useState } = React;
 
