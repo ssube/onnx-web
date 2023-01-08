@@ -56,6 +56,7 @@ This is still an early project and the instructions are a little rough, but it w
     - [Using the web interface](#using-the-web-interface)
     - [Running from containers](#running-from-containers)
     - [Customizing the config](#customizing-the-config)
+    - [Known errors and solutions](#known-errors-and-solutions)
 
 ## Setup
 
@@ -368,3 +369,22 @@ custom config using:
 ```shell
 > podman run -p 8000:80 --rm -v ~/onnx-web-config.json:/usr/share/nginx/html/config.json:ro docker.io/ssube/onnx-web-gui:main-nginx-bullseye
 ```
+
+### Known errors and solutions
+
+- `Error: name 'cmd' is not defined` while setting up the virtual environment:
+  - install venv through apt: `sudo apt install python3-venv`
+  - see https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1884072.html
+- command not found `python` or `pip`:
+  - some systems differentiate between Python 2 and 3, and reserve the `python` command for 2
+- connection refused:
+  - make sure the API and GUI are both running
+  - make sure you are using the correct hostname or IP address
+  - open the appropriate firewall ports:
+    - TCP/5000 for the API
+    - TCP/3000 or TCP/8000 for the GUI (3000 is the dev server)
+- CUDA errors:
+  - make sure you are using CUDA 11.x
+  - https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements
+- numpy invalid combination of arguments:
+  - make sure to export ONNX models using the same packages and versions that you use while running the API
