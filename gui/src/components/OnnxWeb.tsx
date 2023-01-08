@@ -7,6 +7,7 @@ import { ApiClient } from '../api/client.js';
 import { Config, STALE_TIME } from '../config.js';
 import { MODEL_LABELS, PLATFORM_LABELS } from '../strings.js';
 import { Img2Img } from './Img2Img.js';
+import { Inpaint } from './Inpaint.js';
 import { QueryList } from './QueryList.js';
 import { Txt2Img } from './Txt2Img.js';
 
@@ -70,6 +71,7 @@ export function OnnxWeb(props: OnnxWebProps) {
             }}>
               <Tab label='txt2img' value='txt2img' />
               <Tab label='img2img' value='img2img' />
+              <Tab label='inpaint' value='inpaint' />
               <Tab label='settings' value='settings' />
             </TabList>
           </Box>
@@ -78,6 +80,9 @@ export function OnnxWeb(props: OnnxWebProps) {
           </TabPanel>
           <TabPanel value='img2img'>
             <Img2Img client={client} config={config} model={model} platform={platform} />
+          </TabPanel>
+          <TabPanel value='inpaint'>
+            <Inpaint client={client} config={config} model={model} platform={platform} />
           </TabPanel>
           <TabPanel value='settings'>
             <Box>
