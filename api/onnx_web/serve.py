@@ -32,6 +32,7 @@ default_cfg = 8
 default_steps = 20
 default_height = 512
 default_width = 512
+default_strength = 0.5
 
 max_cfg = 30
 max_steps = 150
@@ -71,7 +72,11 @@ pipeline_schedulers = {
 }
 
 
-def get_and_clamp(args, key, default_value, max_value, min_value=1):
+def get_and_clamp_float(args, key, default_value, max_value, min_value=0.0):
+    return min(max(float(args.get(key, default_value)), min_value), max_value)
+
+
+def get_and_clamp_int(args, key, default_value, max_value, min_value=1):
     return min(max(int(args.get(key, default_value)), min_value), max_value)
 
 
@@ -207,10 +212,10 @@ def pipeline_from_request(pipeline):
 
     # image params
     prompt = request.args.get('prompt', default_prompt)
-    cfg = get_and_clamp(request.args, 'cfg', default_cfg, max_cfg, 0)
-    steps = get_and_clamp(request.args, 'steps', default_steps, max_steps)
-    height = get_and_clamp(request.args, 'height', default_height, max_height)
-    width = get_and_clamp(request.args, 'width', default_width, max_width)
+    cfg = get_and_clamp_int(request.args, 'cfg', default_cfg, max_cfg, 0)
+    steps = get_and_clamp_int(request.args, 'steps', default_steps, max_steps)
+    height = get_and_clamp_int(request.args, 'height', default_height, max_height)
+    width = get_and_clamp_int(request.args, 'width', default_width, max_width)
 
     seed = int(request.args.get('seed', -1))
     if seed == -1:
@@ -229,7 +234,7 @@ def img2img():
     input_image = Image.open(BytesIO(input_file.read())).convert('RGB')
     input_image.thumbnail((default_width, default_height))
 
-    strength = float(request.args.get('strength', 0.8))
+    strength = get_and_clamp_float(request.args, 'strength', 0.5, 1.0)
 
     (model, provider, scheduler, prompt, cfg, steps, height,
      width, seed, pipe) = pipeline_from_request(OnnxStableDiffusionImg2ImgPipeline)

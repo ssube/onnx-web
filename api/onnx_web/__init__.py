@@ -1,1 +1,1 @@
-from onnx_web.serve import get_and_clamp, get_from_map, get_latents_from_seed, load_pipeline
+from onnx_web.serve import get_and_clamp_float, get_and_clamp_int, get_from_map, get_latents_from_seed, load_pipeline
