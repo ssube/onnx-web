@@ -2,7 +2,16 @@ import { doesExist } from '@apextoaster/js-utils';
 import { TextField } from '@mui/material';
 import * as React from 'react';
 
+export function parseNumber(num: string, decimal=false): number {
+  if (decimal) {
+    return parseFloat(num);
+  } else {
+    return parseInt(num, 10);
+  }
+}
+
 export interface ImageControlProps {
+  decimal?: boolean;
   label: string;
   min: number;
   max: number;
@@ -22,7 +31,7 @@ export function NumericField(props: ImageControlProps) {
     value={value}
     onChange={(event) => {
       if (doesExist(props.onChange)) {
-        props.onChange(parseInt(event.target.value, 10));
+        props.onChange(parseNumber(event.target.value, props.decimal));
       }
     }}
   />;
