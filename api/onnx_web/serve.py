@@ -239,12 +239,14 @@ def img2img():
     (model, provider, scheduler, prompt, cfg, steps, height,
      width, seed, pipe) = pipeline_from_request(OnnxStableDiffusionImg2ImgPipeline)
 
+    rng = np.random.RandomState(seed)
     image = pipe(
         prompt=prompt,
         image=input_image,
         num_inference_steps=steps,
         guidance_scale=cfg,
         strength=strength,
+        generator=rng,
     ).images[0]
 
     output_file = 'img2img_%s_%s.png' % (seed, spinalcase(prompt[0:64]))
@@ -274,6 +276,7 @@ def txt2img():
      width, seed, pipe) = pipeline_from_request(OnnxStableDiffusionPipeline)
 
     latents = get_latents_from_seed(seed, width, height)
+    rng = np.random.RandomState(seed)
 
     image = pipe(
         prompt,
@@ -281,7 +284,8 @@ def txt2img():
         width,
         num_inference_steps=steps,
         guidance_scale=cfg,
-        latents=latents
+        latents=latents,
+        generator=rng,
     ).images[0]
 
     output_file = 'txt2img_%s_%s.png' % (seed, spinalcase(prompt[0:64]))
