@@ -98,7 +98,6 @@ def load_pipeline(pipeline, model, provider, scheduler):
         pipe = last_pipeline_instance
     else:
         print('loading different pipeline')
-        # pipe = OnnxStableDiffusionPipeline.from_pretrained(
         pipe = pipeline.from_pretrained(
             model,
             provider=provider,
@@ -221,7 +220,6 @@ def img2img():
     input_image.thumbnail((default_width, default_height))
 
     strength = float(request.args.get('strength', 0.8))
-    print('strength: %s' % (strength))
 
     (model, provider, scheduler, prompt, cfg, steps, height,
      width, seed, pipe) = pipeline_from_request(OnnxStableDiffusionImg2ImgPipeline)
