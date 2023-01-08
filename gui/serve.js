@@ -5,7 +5,7 @@ import { join } from 'path';
 
 const { env } = process;
 
-const host = mustDefault(env.ONNX_WEB_DEV_HOST, '0.0.0.0');
+const host = mustDefault(env.ONNX_WEB_DEV_HOST, '127.0.0.1');
 const port = mustDefault(env.ONNX_WEB_DEV_PORT, '3000');
 const root = process.cwd();
 
