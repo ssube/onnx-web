@@ -44,7 +44,10 @@ This is still an early project and the instructions are a little rough, but it w
     - [Install Git and Python](#install-git-and-python)
     - [Create a virtual environment](#create-a-virtual-environment)
     - [Install pip packages](#install-pip-packages)
-    - [Install ORT nightly package](#install-ort-nightly-package)
+      - [For AMD on Windows: Install ORT nightly package](#for-amd-on-windows-install-ort-nightly-package)
+      - [For CPU on Linux: Install CPU PyTorch and ONNX](#for-cpu-on-linux-install-cpu-pytorch-and-onnx)
+      - [For CPU on Windows: Install CPU PyTorch and ONNX](#for-cpu-on-windows-install-cpu-pytorch-and-onnx)
+      - [For Nvidia everywhere: Install GPU PyTorch and ONNX](#for-nvidia-everywhere-install-gpu-pytorch-and-onnx)
     - [Download and convert models](#download-and-convert-models)
   - [Usage](#usage)
     - [Configuring and running the server](#configuring-and-running-the-server)
@@ -137,9 +140,9 @@ Update pip itself:
 Install the following packages for AI:
 
 ```shell
-> pip install numpy>=1.20,<1.24   # version is important, 1.24 removed the deprecated np.float symbol
-> pip install accelerate diffusers transformers ftfy spacy scipy
-> pip install onnx onnxruntime torch
+> pip install "numpy>=1.20,<1.24"
+> pip install "protobuf<4,>=3.20.2"
+> pip install accelerate diffusers ftfy onnx spacy scipy transformers
 ```
 
 If you are running on Windows, install the DirectML ONNX runtime as well:
@@ -160,26 +163,55 @@ _Or_ install all of these packages at once using [the `requirements.txt` file](.
 > pip install -r requirements.txt
 ```
 
-At the moment, only `numpy` seems to need a specific version. If you see an error about `np.float`, make sure you are
-not using `numpy>=1.24`. [This SO question](https://stackoverflow.com/questions/74844262/how-to-solve-error-numpy-has-no-attribute-float-in-python)
+At the moment, only `numpy` and `protobuf` seem to need a specific version. If you see an error about `np.float`, make
+sure you are not using `numpy>=1.24`.
+[This SO question](https://stackoverflow.com/questions/74844262/how-to-solve-error-numpy-has-no-attribute-float-in-python)
 has more details.
 
-I got a warning about an incompatibility in `protobuf` when installing the `onnxruntime-directml` package, but have not seen any issues. Some of the gist guides recommend `diffusers=0.3.0`, but I had trouble with old versions of `diffusers`
-before 0.6.0 or so. If I can determine a good set of working versions, I will pin them in `requirements.txt`.
+#### For AMD on Windows: Install ORT nightly package
 
-### Install ORT nightly package
+You can optionally install the latest DirectML ORT nightly package, which may provide a substantial performance increase
+(on my machine, the stable version takes about 30sec/image vs 9sec/image for the nightly).
 
-Download the latest DirectML ORT nightly package for your version of Python and install it with pip.
-
-Downloads can be found at https://aiinfra.visualstudio.com/PublicPackages/_artifacts/feed/ORT-Nightly. If you are using
-Python 3.10, download the `cp310` package. For Python 3.9, download the `cp39` package, and so on.
+Downloads can be found at https://aiinfra.visualstudio.com/PublicPackages/_artifacts/feed/ORT-Nightly. You can install
+through pip or download the package file. If you are using Python 3.10, download the `cp310` package. For Python 3.9,
+download the `cp39` package, and so on. Installing with pip will figure out the correct version:
 
 ```shell
-> pip install ~/Downloads/ort_nightly_directml-1.14.0.dev20221214001-cp310-cp310-win_amd64.whl --force-reinstall
+> pip install --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/ORT-Nightly/pypi/simple/ ort-nightly-directml --force-reinstall
 ```
 
 Make sure to include the `--force-reinstall` flag, since it requires some older versions of other packages, and will
 overwrite the versions you currently have installed.
+
+#### For CPU on Linux: Install CPU PyTorch and ONNX
+
+If you are running with a CPU and no hardware acceleration, install `onnxruntime` and the CPU version of PyTorch:
+
+```shell
+> pip install onnxruntime
+> pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
+```
+
+#### For CPU on Windows: Install CPU PyTorch and ONNX
+
+If you are running with a CPU and no hardware acceleration, install `onnxruntime` and the CPU version of PyTorch:
+
+```shell
+> pip install onnxruntime torch
+```
+
+#### For Nvidia everywhere: Install GPU PyTorch and ONNX
+
+If you are running with an Nvidia GPU, install `onnxruntime-gpu`:
+
+```shell
+> pip install onnxruntime-gpu
+> pip install torch --extra-index-url https://download.pytorch.org/whl/cu117
+```
+
+Make sure you have CUDA 11.x installed and that the version of PyTorch matches the version of CUDA
+([see their documentation](https://pytorch.org/get-started/locally/) for more details).
 
 ### Download and convert models
 

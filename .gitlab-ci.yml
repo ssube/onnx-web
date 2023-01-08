@@ -139,7 +139,7 @@ package-gui-oci-node-alpine:
     IMAGE_ARCH: node-alpine
     IMAGE_FILE: Containerfile.node.alpine
 
-package-gui-oci-node-bullseye:
+package-gui-oci-node-buster:
   extends:
     - .package-gui-oci
   variables:
