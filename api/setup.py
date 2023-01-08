@@ -5,7 +5,7 @@ with open("../README.md", "r") as fh:
 
 setuptools.setup(
     name="onnx_web",
-    version="0.2.0",
+    version="0.2.1",
     author="ssube",
     author_email="seansube@gmail.com",
     description="web UI for running ONNX models",
