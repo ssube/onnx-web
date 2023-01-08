@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [0.2.1](https://github.com/ssube/onnx-web/compare/v0.2.0...v0.2.1) (2023-01-08)
+
+
+### Bug Fixes
+
+* **gui:** allow max safe seed constant ([477d89b](https://github.com/ssube/onnx-web/commit/477d89b6fc8ae61031f25573c9edaad84fcbf4d2))
+
 ## [0.2.0](https://github.com/ssube/onnx-web/compare/v0.1.0...v0.2.0) (2023-01-08)
 
 
