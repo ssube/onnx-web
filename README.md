@@ -97,6 +97,15 @@ The latest version of git should be fine. Python must be 3.10 or earlier, 3.10 s
 Python installed for another form of Stable Diffusion, that should work, but make sure to verify the version in the next
 step.
 
+Make sure you have Python 3.10 or earlier:
+
+```shell
+> python --version
+Python 3.10
+```
+
+If your system uses `python3` and `pip3` for the Python 3.x tools, make sure to adjust the commands shown here.
+
 Once you have those basic packages installed, clone this git repository:
 
 ```shell
@@ -105,12 +114,9 @@ Once you have those basic packages installed, clone this git repository:
 
 ### Create a virtual environment
 
-Make sure you have Python 3.10 or earlier, change into the then create a virtual environment:
+Change into the `api/` directory, then create a virtual environment:
 
 ```shell
-> python --version
-Python 3.10
-
 > pip install virtualenv
 
 > python -m venv onnx_env
@@ -118,6 +124,13 @@ Python 3.10
 
 This will contain all of the pip libraries. If you update or reinstall Python, you will need to recreate the virtual
 environment.
+
+If you receive an error like `Error: name 'cmd' is not defined`, there may be [a bug in the `venv` module](https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1884072.html) on certain
+Debian-based systems. You may need to install venv through apt instead:
+
+```shell
+> sudo apt install python3-venv   # only if you get an error
+```
 
 Every time you start using ONNX web, activate the virtual environment:
 
