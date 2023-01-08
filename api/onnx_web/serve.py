@@ -151,8 +151,6 @@ def check_paths():
 def load_models():
     global available_models
     available_models = [f.name for f in scandir(model_path) if f.is_dir()]
-    load_pipeline(OnnxStableDiffusionPipeline, get_model_path(available_models[0]), platform_providers.get(
-        default_platform), pipeline_schedulers.get(default_scheduler))
 
 
 check_paths()
