@@ -67,6 +67,7 @@ export const CONFIG_DEFAULTS: ConfigRanges<Required<Img2ImgParams & Txt2ImgParam
   seed: {
     default: -1,
     min: -1,
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     max: (2 ** 32) - 1,
     step: 1,
   },
