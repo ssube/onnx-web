@@ -9,4 +9,3 @@ transformers
 
 ### Server packages ###
 flask
-stringcase
