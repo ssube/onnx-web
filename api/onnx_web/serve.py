@@ -21,6 +21,7 @@ from hashlib import sha256
 from io import BytesIO
 from PIL import Image
 from stringcase import spinalcase
+from struct import pack
 from os import environ, makedirs, path, scandir
 import numpy as np
 
@@ -144,7 +145,14 @@ def make_output_path(type, params):
     sha = sha256()
     sha.update(type)
     for param in params:
-        sha.update(param)
+        if isinstance(param, str):
+            sha.update(param.encode('utf-8'))
+        elif isinstance(param, int):
+            sha.update(bytearray(pack('!i', param)))
+        elif isinstance(param, float):
+            sha.update(bytearray(pack('!f', param)))
+        else:
+            print('cannot hash param: %s, %s' % (param, type(param)))
 
     output_file = 'txt2img_%s_%s.png' % (params[0], sha.hexdigest())
     output_full = safer_join(output_path, output_file)
