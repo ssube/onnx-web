@@ -45,8 +45,8 @@ This is still an early project and the instructions are a little rough, but it w
     - [Create a virtual environment](#create-a-virtual-environment)
     - [Install pip packages](#install-pip-packages)
       - [For AMD on Windows: Install ORT nightly package](#for-amd-on-windows-install-ort-nightly-package)
-      - [For CPU on Linux: Install CPU PyTorch and ONNX](#for-cpu-on-linux-install-cpu-pytorch-and-onnx)
-      - [For CPU on Windows: Install CPU PyTorch and ONNX](#for-cpu-on-windows-install-cpu-pytorch-and-onnx)
+      - [For CPU on Linux: Install CPU PyTorch](#for-cpu-on-linux-install-cpu-pytorch)
+      - [For CPU on Windows: Install CPU PyTorch](#for-cpu-on-windows-install-cpu-pytorch)
       - [For Nvidia everywhere: Install GPU PyTorch and ONNX](#for-nvidia-everywhere-install-gpu-pytorch-and-onnx)
     - [Download and convert models](#download-and-convert-models)
   - [Usage](#usage)
@@ -142,7 +142,7 @@ Install the following packages for AI:
 ```shell
 > pip install "numpy>=1.20,<1.24"
 > pip install "protobuf<4,>=3.20.2"
-> pip install accelerate diffusers ftfy onnx spacy scipy transformers
+> pip install accelerate diffusers ftfy onnx onnxruntime spacy scipy transformers
 ```
 
 If you are running on Windows, install the DirectML ONNX runtime as well:
@@ -184,21 +184,20 @@ download the `cp39` package, and so on. Installing with pip will figure out the 
 Make sure to include the `--force-reinstall` flag, since it requires some older versions of other packages, and will
 overwrite the versions you currently have installed.
 
-#### For CPU on Linux: Install CPU PyTorch and ONNX
+#### For CPU on Linux: Install CPU PyTorch
 
 If you are running with a CPU and no hardware acceleration, install `onnxruntime` and the CPU version of PyTorch:
 
 ```shell
-> pip install onnxruntime
 > pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
 ```
 
-#### For CPU on Windows: Install CPU PyTorch and ONNX
+#### For CPU on Windows: Install CPU PyTorch
 
 If you are running with a CPU and no hardware acceleration, install `onnxruntime` and the CPU version of PyTorch:
 
 ```shell
-> pip install onnxruntime torch
+> pip install torch
 ```
 
 #### For Nvidia everywhere: Install GPU PyTorch and ONNX
