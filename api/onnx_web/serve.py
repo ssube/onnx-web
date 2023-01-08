@@ -148,7 +148,7 @@ def make_output_path(type: str, params: Tuple[Union[str, int, float]]):
         if isinstance(param, str):
             sha.update(param.encode('utf-8'))
         elif isinstance(param, int):
-            sha.update(bytearray(pack('!i', param)))
+            sha.update(bytearray(pack('!I', param)))
         elif isinstance(param, float):
             sha.update(bytearray(pack('!f', param)))
         else:
