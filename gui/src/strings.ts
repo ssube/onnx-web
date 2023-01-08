@@ -1,11 +1,15 @@
 // TODO: set up i18next
 export const MODEL_LABELS = {
+  'stable-diffusion-onnx-v1-4': 'Stable Diffusion v1.4',
   'stable-diffusion-onnx-v1-5': 'Stable Diffusion v1.5',
+  'stable-diffusion-onnx-v2-0': 'Stable Diffusion v2.0',
+  'stable-diffusion-onnx-v2-1': 'Stable Diffusion v2.1',
 };
 
 export const PLATFORM_LABELS: Record<string, string> = {
   amd: 'AMD GPU',
   cpu: 'CPU',
+  nvidia: 'Nvidia GPU',
 };
 
 export const SCHEDULER_LABELS: Record<string, string> = {
