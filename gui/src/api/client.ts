@@ -26,6 +26,7 @@ export interface BaseImgParams {
 
 export interface Img2ImgParams extends BaseImgParams {
   source: File;
+  strength: number;
 }
 
 export type Img2ImgResponse = Required<Omit<Img2ImgParams, 'file'>>;

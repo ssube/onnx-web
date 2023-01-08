@@ -6,7 +6,7 @@ export interface ImageControlProps {
   label: string;
   min: number;
   max: number;
-  step: number;
+  step: number | 'any';
   value: number;
 
   onChange?: (value: number) => void;

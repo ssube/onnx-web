@@ -9,6 +9,7 @@ import { SCHEDULER_LABELS } from '../strings.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
 import { MutationHistory } from './MutationHistory.js';
+import { NumericField } from './NumericField.js';
 import { QueryList } from './QueryList.js';
 
 const { useState } = React;
@@ -31,6 +32,7 @@ export function Img2Img(props: Img2ImgProps) {
       model,
       platform,
       scheduler,
+      strength,
       source: mustExist(source), // TODO: show an error if this doesn't exist
     });
   }
@@ -50,6 +52,7 @@ export function Img2Img(props: Img2ImgProps) {
   });
 
   const [source, setSource] = useState<File>();
+  const [strength, setStrength] = useState(0.5);
   const [params, setParams] = useState<BaseImgParams>({
     cfg: 6,
     seed: -1,
@@ -76,6 +79,16 @@ export function Img2Img(props: Img2ImgProps) {
       <ImageControl params={params} onChange={(newParams) => {
         setParams(newParams);
       }} />
+      <NumericField
+        label='Width'
+        min={0}
+        max={1}
+        step='any'
+        value={strength}
+        onChange={(value) => {
+          setStrength(value);
+        }}
+      />
       <Button onClick={() => upload.mutate()}>Generate</Button>
       <MutationHistory result={upload} limit={4} element={ImageCard}
         isEqual={(a, b) => a.output === b.output}
