@@ -1,13 +1,14 @@
-import { Box, Button, Stack, TextField } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
-import { ApiClient } from '../api/client.js';
+import { ApiClient, BaseImgParams } from '../api/client.js';
 import { Config } from '../config.js';
 import { SCHEDULER_LABELS } from '../strings.js';
 import { ImageCard } from './ImageCard.js';
-import { ImageControl, ImageParams } from './ImageControl.js';
+import { ImageControl } from './ImageControl.js';
 import { MutationHistory } from './MutationHistory.js';
+import { NumericField } from './NumericField.js';
 import { QueryList } from './QueryList.js';
 
 const { useState } = React;
@@ -29,8 +30,9 @@ export function Txt2Img(props: Txt2ImgProps) {
       ...params,
       model,
       platform,
-      prompt,
       scheduler,
+      height,
+      width,
     });
   }
 
@@ -39,14 +41,14 @@ export function Txt2Img(props: Txt2ImgProps) {
     staleTime: STALE_TIME,
   });
 
-  const [params, setParams] = useState<ImageParams>({
+  const [height, setHeight] = useState(512);
+  const [width, setWidth] = useState(512);
+  const [params, setParams] = useState<BaseImgParams>({
     cfg: 6,
     seed: -1,
     steps: 25,
-    width: 512,
-    height: 512,
+    prompt: config.default.prompt,
   });
-  const [prompt, setPrompt] = useState(config.default.prompt);
   const [scheduler, setScheduler] = useState(config.default.scheduler);
 
   return <Box>
@@ -66,9 +68,28 @@ export function Txt2Img(props: Txt2ImgProps) {
       <ImageControl params={params} onChange={(newParams) => {
         setParams(newParams);
       }} />
-      <TextField label='Prompt' variant='outlined' value={prompt} onChange={(event) => {
-        setPrompt(event.target.value);
-      }} />
+      <Stack direction='row' spacing={4}>
+        <NumericField
+          label='Width'
+          min={8}
+          max={512}
+          step={8}
+          value={width}
+          onChange={(value) => {
+            setWidth(value);
+          }}
+        />
+        <NumericField
+          label='Height'
+          min={8}
+          max={512}
+          step={8}
+          value={height}
+          onChange={(value) => {
+            setHeight(value);
+          }}
+        />
+      </Stack>
       <Button onClick={() => generate.mutate()}>Generate</Button>
       <MutationHistory result={generate} limit={4} element={ImageCard}
         isEqual={(a, b) => a.output === b.output}

@@ -233,6 +233,8 @@ def pipeline_from_request(pipeline):
 
     # image params
     prompt = request.args.get('prompt', default_prompt)
+    negative_prompt = request.args.get('negative', None);
+
     cfg = get_and_clamp_int(request.args, 'cfg', default_cfg, max_cfg, 0)
     steps = get_and_clamp_int(request.args, 'steps', default_steps, max_steps)
     height = get_and_clamp_int(request.args, 'height', default_height, max_height)
@@ -246,7 +248,7 @@ def pipeline_from_request(pipeline):
           (user, steps, scheduler.__name__, model, provider, width, height, cfg, seed, prompt))
 
     pipe = load_pipeline(pipeline, model, provider, scheduler)
-    return (model, provider, scheduler, prompt, cfg, steps, height, width, seed, pipe)
+    return (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height, width, seed, pipe)
 
 
 @app.route('/img2img', methods=['POST'])
@@ -257,17 +259,18 @@ def img2img():
 
     strength = get_and_clamp_float(request.args, 'strength', 0.5, 1.0)
 
-    (model, provider, scheduler, prompt, cfg, steps, height,
+    (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
      width, seed, pipe) = pipeline_from_request(OnnxStableDiffusionImg2ImgPipeline)
 
     rng = np.random.RandomState(seed)
     image = pipe(
-        prompt=prompt,
-        image=input_image,
-        num_inference_steps=steps,
-        guidance_scale=cfg,
-        strength=strength,
+        prompt,
         generator=rng,
+        guidance_scale=cfg,
+        image=input_image,
+        negative_prompt=negative_prompt,
+        num_inference_steps=steps,
+        strength=strength,
     ).images[0]
 
     (output_file, output_full) = make_output_path('img2img', (prompt, cfg, steps, height, width, seed))
@@ -286,13 +289,14 @@ def img2img():
             'width': default_width,
             'prompt': prompt,
             'seed': seed,
+            'negativePrompt': negative_prompt,
         }
     })
 
 
 @app.route('/txt2img', methods=['POST'])
 def txt2img():
-    (model, provider, scheduler, prompt, cfg, steps, height,
+    (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
      width, seed, pipe) = pipeline_from_request(OnnxStableDiffusionPipeline)
 
     latents = get_latents_from_seed(seed, width, height)
@@ -302,10 +306,11 @@ def txt2img():
         prompt,
         height,
         width,
-        num_inference_steps=steps,
+        generator=rng,
         guidance_scale=cfg,
         latents=latents,
-        generator=rng,
+        negative_prompt=negative_prompt,
+        num_inference_steps=steps,
     ).images[0]
 
     (output_file, output_full) = make_output_path('txt2img', (prompt, cfg, steps, height, width, seed))
@@ -324,6 +329,7 @@ def txt2img():
             'width': width,
             'prompt': prompt,
             'seed': seed,
+            'negativePrompt': negative_prompt,
         }
     })
 

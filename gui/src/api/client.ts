@@ -1,42 +1,41 @@
 import { doesExist } from '@apextoaster/js-utils';
 
-export interface Img2ImgParams {
+export interface BaseImgParams {
+  /**
+   * Which ONNX model to use.
+   */
   model?: string;
+
+  /**
+   * Hardware accelerator or CPU mode.
+   */
   platform?: string;
+
+  /**
+   * Scheduling algorithm.
+   */
   scheduler?: string;
 
   prompt: string;
+  negativePrompt?: string;
+
   cfg: number;
   steps: number;
+  seed: number;
+}
 
-  seed?: number;
-
+export interface Img2ImgParams extends BaseImgParams {
   source: File;
 }
 
-export interface Txt2ImgParams {
-  model?: string;
-  platform?: string;
-  scheduler?: string;
+export type Img2ImgResponse = Required<Omit<Img2ImgParams, 'file'>>;
 
-  prompt: string;
-  cfg: number;
-  steps: number;
-
+export interface Txt2ImgParams extends BaseImgParams {
   width?: number;
   height?: number;
-  seed?: number;
 }
 
-export interface Txt2ImgResponse extends Txt2ImgParams {
-  model: string;
-  platform: string;
-  scheduler: string;
-
-  width: number;
-  height: number;
-  seed: number;
-}
+export type Txt2ImgResponse = Required<Txt2ImgParams>;
 
 export interface ApiResponse {
   output: string;
@@ -71,6 +70,37 @@ export async function imageFromResponse(root: string, res: Response): Promise<Ap
   }
 }
 
+export function makeImageURL(root: string, type: string, params: BaseImgParams): URL {
+  const url = new URL(type, root);
+  url.searchParams.append('cfg', params.cfg.toFixed(0));
+  url.searchParams.append('steps', params.steps.toFixed(0));
+
+  if (doesExist(params.model)) {
+    url.searchParams.append('model', params.model);
+  }
+
+  if (doesExist(params.platform)) {
+    url.searchParams.append('platform', params.platform);
+  }
+
+  if (doesExist(params.scheduler)) {
+    url.searchParams.append('scheduler', params.scheduler);
+  }
+
+  if (doesExist(params.seed)) {
+    url.searchParams.append('seed', params.seed.toFixed(0));
+  }
+
+  // put prompt last, in case a load balancer decides to truncate the URL
+  url.searchParams.append('prompt', params.prompt);
+
+  if (doesExist(params.negativePrompt)) {
+    url.searchParams.append('negativePrompt', params.negativePrompt);
+  }
+
+  return url;
+}
+
 export function makeClient(root: string, f = fetch): ApiClient {
   let pending: Promise<ApiResponse> | undefined;
 
@@ -95,27 +125,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
         return pending;
       }
 
-      const url = new URL('img2img', root);
-      url.searchParams.append('cfg', params.cfg.toFixed(0));
-      url.searchParams.append('steps', params.steps.toFixed(0));
-
-      if (doesExist(params.model)) {
-        url.searchParams.append('model', params.model);
-      }
-
-      if (doesExist(params.platform)) {
-        url.searchParams.append('platform', params.platform);
-      }
-
-      if (doesExist(params.scheduler)) {
-        url.searchParams.append('scheduler', params.scheduler);
-      }
-
-      if (doesExist(params.seed)) {
-        url.searchParams.append('seed', params.seed.toFixed(0));
-      }
-
-      url.searchParams.append('prompt', params.prompt);
+      const url = makeImageURL(root, 'img2img', params);
 
       const body = new FormData();
       body.append('source', params.source, 'source');
@@ -135,9 +145,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
         return pending;
       }
 
-      const url = new URL('txt2img', root);
-      url.searchParams.append('cfg', params.cfg.toFixed(0));
-      url.searchParams.append('steps', params.steps.toFixed(0));
+      const url = makeImageURL(root, 'txt2img', params);
 
       if (doesExist(params.width)) {
         url.searchParams.append('width', params.width.toFixed(0));
@@ -146,24 +154,6 @@ export function makeClient(root: string, f = fetch): ApiClient {
       if (doesExist(params.height)) {
         url.searchParams.append('height', params.height.toFixed(0));
       }
-
-      if (doesExist(params.seed)) {
-        url.searchParams.append('seed', params.seed.toFixed(0));
-      }
-
-      if (doesExist(params.model)) {
-        url.searchParams.append('model', params.model);
-      }
-
-      if (doesExist(params.platform)) {
-        url.searchParams.append('platform', params.platform);
-      }
-
-      if (doesExist(params.scheduler)) {
-        url.searchParams.append('scheduler', params.scheduler);
-      }
-
-      url.searchParams.append('prompt', params.prompt);
 
       pending = f(url, {
         method: 'POST',

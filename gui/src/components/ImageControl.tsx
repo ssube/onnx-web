@@ -1,21 +1,14 @@
 import { doesExist } from '@apextoaster/js-utils';
-import { IconButton, Stack } from '@mui/material';
+import { IconButton, Stack, TextField } from '@mui/material';
 import { Casino } from '@mui/icons-material';
 import * as React from 'react';
 
 import { NumericField } from './NumericField.js';
-
-export interface ImageParams {
-  cfg: number;
-  seed: number;
-  steps: number;
-  width: number;
-  height: number;
-}
+import { BaseImgParams } from '../api/client.js';
 
 export interface ImageControlProps {
-  params: ImageParams;
-  onChange?: (params: ImageParams) => void;
+  params: BaseImgParams;
+  onChange?: (params: BaseImgParams) => void;
 }
 
 export function ImageControl(props: ImageControlProps) {
@@ -56,38 +49,6 @@ export function ImageControl(props: ImageControlProps) {
     </Stack>
     <Stack direction='row' spacing={4}>
       <NumericField
-        label='Width'
-        min={8}
-        max={512}
-        step={8}
-        value={params.width}
-        onChange={(width) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
-              ...params,
-              width,
-            });
-          }
-        }}
-      />
-      <NumericField
-        label='Height'
-        min={8}
-        max={512}
-        step={8}
-        value={params.height}
-        onChange={(height) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
-              ...params,
-              height,
-            });
-          }
-        }}
-      />
-    </Stack>
-    <Stack direction='row' spacing={4}>
-      <NumericField
         label='Seed'
         min={-1}
         max={Number.MAX_SAFE_INTEGER}
@@ -114,5 +75,21 @@ export function ImageControl(props: ImageControlProps) {
         <Casino />
       </IconButton>
     </Stack>
+    <TextField label='Prompt' variant='outlined' value={params.prompt} onChange={(event) => {
+      if (doesExist(props.onChange)) {
+        props.onChange({
+          ...params,
+          prompt: event.target.value,
+        });
+      }
+    }} />
+    <TextField label='Negative Prompt' variant='outlined' value={params.negativePrompt} onChange={(event) => {
+      if (doesExist(props.onChange)) {
+        props.onChange({
+          ...params,
+          negativePrompt: event.target.value,
+        });
+      }
+    }} />
   </Stack>;
 }
