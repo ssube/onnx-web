@@ -47,8 +47,6 @@ export function ImageControl(props: ImageControlProps) {
           }
         }}
       />
-    </Stack>
-    <Stack direction='row' spacing={4}>
       <NumericField
         label='Seed'
         min={CONFIG_DEFAULTS.seed.min}

@@ -9,6 +9,7 @@ out/cache/
 out/coverage/
 out/coverage-*
 out/docs/
+out/test/
 out/typings/
 out/*.db
 out/*.html
