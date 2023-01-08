@@ -81,10 +81,10 @@ export function Img2Img(props: Img2ImgProps) {
       }} />
       <NumericField
         decimal
-        label='Width'
+        label='Weight'
         min={0}
         max={1}
-        step={0.1}
+        step={0.01}
         value={strength}
         onChange={(value) => {
           setStrength(value);
