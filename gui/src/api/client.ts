@@ -124,6 +124,12 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
 export function makeClient(root: string, f = fetch): ApiClient {
   let pending: Promise<ApiResponse> | undefined;
 
+  function throttleRequest(url: URL, options: RequestInit): Promise<ApiResponse> {
+    return f(url, options).then((res) => imageFromResponse(root, res)).finally(() => {
+      pending = undefined;
+    });
+  }
+
   return {
     async models(): Promise<Array<string>> {
       const path = new URL(joinPath('settings', 'models'), root);
@@ -150,11 +156,9 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const body = new FormData();
       body.append('source', params.source, 'source');
 
-      pending = f(url, {
+      pending = throttleRequest(url, {
         body,
         method: 'POST',
-      }).then((res) => imageFromResponse(root, res)).finally(() => {
-        pending = undefined;
       });
 
       // eslint-disable-next-line no-return-await
@@ -175,10 +179,8 @@ export function makeClient(root: string, f = fetch): ApiClient {
         url.searchParams.append('height', params.height.toFixed(0));
       }
 
-      pending = f(url, {
+      pending = throttleRequest(url, {
         method: 'POST',
-      }).then((res) => imageFromResponse(root, res)).finally(() => {
-        pending = undefined;
       });
 
       // eslint-disable-next-line no-return-await
@@ -195,11 +197,9 @@ export function makeClient(root: string, f = fetch): ApiClient {
       body.append('mask', params.mask, 'mask');
       body.append('source', params.source, 'source');
 
-      pending = f(url, {
+      pending = throttleRequest(url, {
         body,
         method: 'POST',
-      }).then((res) => imageFromResponse(root, res)).finally(() => {
-        pending = undefined;
       });
 
       // eslint-disable-next-line no-return-await
