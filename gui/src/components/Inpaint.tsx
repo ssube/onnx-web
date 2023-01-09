@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { FormatColorFill, Gradient } from '@mui/icons-material';
 import { Box, Button, Stack } from '@mui/material';
@@ -16,15 +15,23 @@ import { QueryList } from './QueryList.js';
 
 const { useEffect, useRef, useState } = React;
 
+export const DEFAULT_BRUSH = 8;
 export const FULL_CIRCLE = 2 * Math.PI;
+export const PIXEL_SIZE = 4;
+export const PIXEL_WEIGHT = 3;
 
 export const COLORS = {
   black: 0,
   white: 255,
 };
 
+export const THRESHOLDS = {
+  lower: 34,
+  upper: 224,
+};
+
 export function floodBelow(n: number): number {
-  if (n < 224) {
+  if (n < THRESHOLDS.upper) {
     return COLORS.black;
   } else {
     return COLORS.white;
@@ -32,7 +39,7 @@ export function floodBelow(n: number): number {
 }
 
 export function floodAbove(n: number): number {
-  if (n > 32) {
+  if (n > THRESHOLDS.lower) {
     return COLORS.white;
   } else {
     return COLORS.black;
@@ -104,8 +111,8 @@ export function Inpaint(props: InpaintProps) {
 
     for (let x = 0; x < canvas.width; ++x) {
       for (let y = 0; y < canvas.height; ++y) {
-        const i = (y * canvas.width * 4) + (x * 4);
-        const hue = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3;
+        const i = (y * canvas.width * PIXEL_SIZE) + (x * PIXEL_SIZE);
+        const hue = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / PIXEL_WEIGHT;
         pixels[i] = hue;
         pixels[i + 1] = hue;
         pixels[i + 2] = hue;
@@ -123,8 +130,8 @@ export function Inpaint(props: InpaintProps) {
 
     for (let x = 0; x < canvas.width; ++x) {
       for (let y = 0; y < canvas.height; ++y) {
-        const i = (y * canvas.width * 4) + (x * 4);
-        const hue = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3;
+        const i = (y * canvas.width * PIXEL_SIZE) + (x * PIXEL_SIZE);
+        const hue = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / PIXEL_WEIGHT;
         const final = flooder(hue);
 
         pixels[i] = final;
@@ -147,7 +154,7 @@ export function Inpaint(props: InpaintProps) {
 
   const [painting, setPainting] = useState(false);
   const [brushColor, setBrushColor] = useState(0);
-  const [brushSize, setBrushSize] = useState(4);
+  const [brushSize, setBrushSize] = useState(DEFAULT_BRUSH);
 
   const [source, setSource] = useState<File>();
   const [params, setParams] = useState<BaseImgParams>({
@@ -252,7 +259,7 @@ export function Inpaint(props: InpaintProps) {
           }}
         />
         <Button
-          startIcon={<FormatColorFill htmlColor='black' />}
+          startIcon={<FormatColorFill />}
           onClick={() => floodMask(floodBelow)}>
           Gray to black
         </Button>
@@ -262,7 +269,7 @@ export function Inpaint(props: InpaintProps) {
           Grayscale
         </Button>
         <Button
-          startIcon={<FormatColorFill htmlColor='white' sx={{ bgcolor: 'text.primary' }} />}
+          startIcon={<FormatColorFill />}
           onClick={() => floodMask(floodAbove)}>
             Gray to white
         </Button>
