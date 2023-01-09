@@ -38,8 +38,9 @@ export interface Txt2ImgParams extends BaseImgParams {
 
 export type Txt2ImgResponse = Required<Txt2ImgParams>;
 
-export interface InpaintParams extends Img2ImgParams {
+export interface InpaintParams extends BaseImgParams {
   mask: Blob;
+  source: File;
 }
 
 export interface OutpaintParams extends Img2ImgParams {
@@ -67,6 +68,10 @@ export interface ApiClient {
 }
 
 export const STATUS_SUCCESS = 200;
+
+export function equalResponse(a: ApiResponse, b: ApiResponse): boolean {
+  return a.output === b.output;
+}
 
 export function joinPath(...parts: Array<string>): string {
   return parts.join('/');
