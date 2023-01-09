@@ -345,21 +345,23 @@ def inpaint():
     mask_image = Image.open(BytesIO(mask_file.read())).convert('RGB')
     mask_image.thumbnail((default_width, default_height))
 
-    strength = get_and_clamp_float(request.args, 'strength', 0.5, 1.0)
-
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
      width, seed, pipe) = pipeline_from_request(OnnxStableDiffusionInpaintPipeline)
 
+    latents = get_latents_from_seed(seed, width, height)
     rng = np.random.RandomState(seed)
+
     image = pipe(
         prompt,
         generator=rng,
         guidance_scale=cfg,
+        height=height,
         image=source_image,
+        latents=latents,
         mask_image=mask_image,
         negative_prompt=negative_prompt,
         num_inference_steps=steps,
-        strength=strength,
+        width=width,
     ).images[0]
 
     (output_file, output_full) = make_output_path('inpaint', (prompt, cfg, steps, height, width, seed))
