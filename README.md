@@ -33,6 +33,9 @@ This is still an early project and the instructions are a little rough, but it w
 - txt2img mode
   - outputs are saved to file
   - show image history
+- img2img mode
+  - mask painting
+  - source to mask conversion tools
 
 ## Contents
 
@@ -249,13 +252,27 @@ Download the conversion script from the `huggingface/diffusers` repository to th
 Run the conversion script with your desired model(s):
 
 ```shell
+# on linux:
 > python convert_stable_diffusion_checkpoint_to_onnx.py --model_path="runwayml/stable-diffusion-v1-5" --output_path="./models/stable-diffusion-onnx-v1-5"
+
+# on windows:
+> python convert_stable_diffusion_checkpoint_to_onnx.py --model_path="runwayml/stable-diffusion-v1-5" --output_path=".\models\stable-diffusion-onnx-v1-5"
 ```
 
 This will take a little while to convert each model. Stable diffusion v1.4 is about 6GB, v1.5 is at least 10GB or so.
 
 You should verify that all of the steps up to this point have worked correctly by attempting to run the
 `api/test-setup.py` script, which is a slight variation on the original txt2img script.
+
+If you want to use inpainting, you will need a second model trained for that purpose:
+
+```shell
+# on linux:
+> python convert_stable_diffusion_checkpoint_to_onnx.py --model_path="runwayml/stable-diffusion-inpainting" --output_path="./models/stable-diffusion-inpainting"
+
+# on windows:
+> python convert_stable_diffusion_checkpoint_to_onnx.py --model_path="runwayml/stable-diffusion-inpainting" --output_path=".\models\stable-diffusion-inpainting"
+```
 
 ## Usage
 
