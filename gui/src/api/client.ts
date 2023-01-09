@@ -1,4 +1,4 @@
-import { doesExist } from '@apextoaster/js-utils';
+import { doesExist, NotImplementedError } from '@apextoaster/js-utils';
 
 export interface BaseImgParams {
   /**
@@ -38,6 +38,17 @@ export interface Txt2ImgParams extends BaseImgParams {
 
 export type Txt2ImgResponse = Required<Txt2ImgParams>;
 
+export interface InpaintParams extends Img2ImgParams {
+  mask: Blob;
+}
+
+export interface OutpaintParams extends Img2ImgParams {
+  up: boolean;
+  down: boolean;
+  left: boolean;
+  right: boolean;
+}
+
 export interface ApiResponse {
   output: string;
   params: Txt2ImgResponse;
@@ -48,8 +59,11 @@ export interface ApiClient {
   platforms(): Promise<Array<string>>;
   schedulers(): Promise<Array<string>>;
 
-  img2img(params: Img2ImgParams): Promise<ApiResponse>; // TODO: slightly different response type
+  img2img(params: Img2ImgParams): Promise<ApiResponse>;
   txt2img(params: Txt2ImgParams): Promise<ApiResponse>;
+
+  inpaint(params: InpaintParams): Promise<ApiResponse>;
+  outpaint(params: OutpaintParams): Promise<ApiResponse>;
 }
 
 export const STATUS_SUCCESS = 200;
@@ -164,6 +178,30 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       // eslint-disable-next-line no-return-await
       return await pending;
+    },
+    async inpaint(params: InpaintParams) {
+      if (doesExist(pending)) {
+        return pending;
+      }
+
+      const url = makeImageURL(root, 'inpaint', params);
+
+      const body = new FormData();
+      body.append('mask', params.mask, 'mask');
+      body.append('source', params.source, 'source');
+
+      pending = f(url, {
+        body,
+        method: 'POST',
+      }).then((res) => imageFromResponse(root, res)).finally(() => {
+        pending = undefined;
+      });
+
+      // eslint-disable-next-line no-return-await
+      return await pending;
+    },
+    async outpaint() {
+      throw new NotImplementedError();
     },
   };
 }

@@ -3,7 +3,7 @@ import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
-import { ApiClient, BaseImgParams } from '../api/client.js';
+import { ApiClient, ApiResponse, BaseImgParams } from '../api/client.js';
 import { Config, CONFIG_DEFAULTS, STALE_TIME } from '../config.js';
 import { SCHEDULER_LABELS } from '../strings.js';
 import { ImageCard } from './ImageCard.js';
@@ -26,13 +26,20 @@ export function Inpaint(props: InpaintProps) {
   const { client, config, model, platform } = props;
 
   async function uploadSource() {
-    return client.img2img({
-      ...params,
-      model,
-      platform,
-      scheduler,
-      strength,
-      source: mustExist(source), // TODO: show an error if this doesn't exist
+    const canvas = mustExist(canvasRef.current);
+    return new Promise<ApiResponse>((res, _rej) => {
+      canvas.toBlob((value) => {
+        const mask = mustExist(value);
+        res(client.inpaint({
+          ...params,
+          model,
+          platform,
+          scheduler,
+          strength,
+          mask,
+          source: mustExist(source),
+        }));
+      });
     });
   }
 
