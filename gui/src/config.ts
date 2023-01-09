@@ -37,6 +37,8 @@ export type ConfigRanges<T extends object> = {
   [K in KeyFilter<T>]: T[K] extends number ? ConfigRange : T[K] extends string ? string : never;
 };
 
+export const DEFAULT_BRUSH = 8;
+export const IMAGE_FILTER = '.bmp, .jpg, .jpeg, .png';
 export const IMAGE_STEP = 8;
 export const IMAGE_MAX = 512;
 

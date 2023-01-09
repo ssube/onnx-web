@@ -5,8 +5,9 @@ import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 import { ApiClient, ApiResponse, BaseImgParams, equalResponse } from '../api/client.js';
-import { Config, CONFIG_DEFAULTS, STALE_TIME } from '../config.js';
+import { Config, CONFIG_DEFAULTS, DEFAULT_BRUSH, IMAGE_FILTER, STALE_TIME } from '../config.js';
 import { SCHEDULER_LABELS } from '../strings.js';
+import { ImageInput } from './ImageInput.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
 import { MutationHistory } from './MutationHistory.js';
@@ -15,7 +16,6 @@ import { QueryList } from './QueryList.js';
 
 const { useEffect, useRef, useState } = React;
 
-export const DEFAULT_BRUSH = 8;
 export const FULL_CIRCLE = 2 * Math.PI;
 export const PIXEL_SIZE = 4;
 export const PIXEL_WEIGHT = 3;
@@ -69,14 +69,13 @@ export function Inpaint(props: InpaintProps) {
   async function uploadSource() {
     const canvas = mustExist(canvasRef.current);
     return new Promise<ApiResponse>((res, _rej) => {
-      canvas.toBlob((value) => {
-        const mask = mustExist(value);
+      canvas.toBlob((blob) => {
         res(client.inpaint({
           ...params,
           model,
           platform,
           scheduler,
-          mask,
+          mask: mustExist(blob),
           source: mustExist(source),
         }));
       });
@@ -93,13 +92,19 @@ export function Inpaint(props: InpaintProps) {
     image.src = URL.createObjectURL(file);
   }
 
-  function changeSource(event: React.ChangeEvent<HTMLInputElement>) {
-    if (doesExist(event.target.files)) {
-      const file = event.target.files[0];
-      if (doesExist(file)) {
-        setSource(file);
-        drawSource(file);
-      }
+  function changeMask(file: File) {
+    setMask(file);
+
+    // always draw the mask to the canvas
+    drawSource(file);
+  }
+
+  function changeSource(file: File) {
+    setSource(file);
+
+    // draw the source to the canvas if the mask has not been set
+    if (doesExist(mask) === false) {
+      drawSource(file);
     }
   }
 
@@ -156,6 +161,7 @@ export function Inpaint(props: InpaintProps) {
   const [brushColor, setBrushColor] = useState(0);
   const [brushSize, setBrushSize] = useState(DEFAULT_BRUSH);
 
+  const [mask, setMask] = useState<File>();
   const [source, setSource] = useState<File>();
   const [params, setParams] = useState<BaseImgParams>({
     cfg: CONFIG_DEFAULTS.cfg.default,
@@ -179,6 +185,50 @@ export function Inpaint(props: InpaintProps) {
     clicks.length = 0;
   }, [clicks.length]);
 
+  function renderCanvas() {
+    return <canvas
+      ref={canvasRef}
+      height={CONFIG_DEFAULTS.height.default}
+      width={CONFIG_DEFAULTS.width.default}
+      style={{
+        maxHeight: CONFIG_DEFAULTS.height.default,
+        maxWidth: CONFIG_DEFAULTS.width.default,
+      }}
+      onClick={(event) => {
+        const canvas = mustExist(canvasRef.current);
+        const bounds = canvas.getBoundingClientRect();
+
+        setClicks([...clicks, {
+          x: event.clientX - bounds.left,
+          y: event.clientY - bounds.top,
+        }]);
+      }}
+      onMouseDown={() => {
+        setPainting(true);
+      }}
+      onMouseLeave={() => {
+        setPainting(false);
+      }}
+      onMouseOut={() => {
+        setPainting(false);
+      }}
+      onMouseUp={() => {
+        setPainting(false);
+      }}
+      onMouseMove={(event) => {
+        if (painting) {
+          const canvas = mustExist(canvasRef.current);
+          const bounds = canvas.getBoundingClientRect();
+
+          setClicks([...clicks, {
+            x: event.clientX - bounds.left,
+            y: event.clientY - bounds.top,
+          }]);
+        }
+      }}
+    />;
+  }
+
   return <Box>
     <Stack spacing={2}>
       <Stack direction='row' spacing={2}>
@@ -193,48 +243,8 @@ export function Inpaint(props: InpaintProps) {
           }}
         />
       </Stack>
-      <input type='file' onChange={changeSource} />
-      <canvas
-        ref={canvasRef}
-        height={CONFIG_DEFAULTS.height.default}
-        width={CONFIG_DEFAULTS.width.default}
-        style={{
-          maxHeight: CONFIG_DEFAULTS.height.default,
-          maxWidth: CONFIG_DEFAULTS.width.default,
-        }}
-        onClick={(event) => {
-          const canvas = mustExist(canvasRef.current);
-          const bounds = canvas.getBoundingClientRect();
-
-          setClicks([...clicks, {
-            x: event.clientX - bounds.left,
-            y: event.clientY - bounds.top,
-          }]);
-        }}
-        onMouseDown={() => {
-          setPainting(true);
-        }}
-        onMouseLeave={() => {
-          setPainting(false);
-        }}
-        onMouseOut={() => {
-          setPainting(false);
-        }}
-        onMouseUp={() => {
-          setPainting(false);
-        }}
-        onMouseMove={(event) => {
-          if (painting) {
-            const canvas = mustExist(canvasRef.current);
-            const bounds = canvas.getBoundingClientRect();
-
-            setClicks([...clicks, {
-              x: event.clientX - bounds.left,
-              y: event.clientY - bounds.top,
-            }]);
-          }
-        }}
-      />
+      <ImageInput filter={IMAGE_FILTER} label='Source' onChange={changeSource} />
+      <ImageInput filter={IMAGE_FILTER} label='Mask' onChange={changeMask} renderImage={renderCanvas} />
       <Stack direction='row' spacing={4}>
         <NumericField
           decimal
@@ -271,7 +281,7 @@ export function Inpaint(props: InpaintProps) {
         <Button
           startIcon={<FormatColorFill />}
           onClick={() => floodMask(floodAbove)}>
-            Gray to white
+          Gray to white
         </Button>
       </Stack>
       <ImageControl params={params} onChange={(newParams) => {

@@ -18,6 +18,7 @@
 			"directml",
 			"ftfy",
 			"huggingface",
+			"Inpaint",
 			"Multistep",
 			"numpy",
 			"Onnx",

@@ -1,11 +1,12 @@
-import { doesExist, mustExist } from '@apextoaster/js-utils';
+import { mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 import { ApiClient, BaseImgParams } from '../api/client.js';
-import { Config, CONFIG_DEFAULTS, STALE_TIME } from '../config.js';
+import { Config, CONFIG_DEFAULTS, IMAGE_FILTER, STALE_TIME } from '../config.js';
 import { SCHEDULER_LABELS } from '../strings.js';
+import { ImageInput } from './ImageInput.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
 import { MutationHistory } from './MutationHistory.js';
@@ -34,15 +35,6 @@ export function Img2Img(props: Img2ImgProps) {
       strength,
       source: mustExist(source), // TODO: show an error if this doesn't exist
     });
-  }
-
-  function changeSource(event: React.ChangeEvent<HTMLInputElement>) {
-    if (doesExist(event.target.files)) {
-      const file = event.target.files[0];
-      if (doesExist(file)) {
-        setSource(file);
-      }
-    }
   }
 
   const upload = useMutation(uploadSource);
@@ -74,7 +66,7 @@ export function Img2Img(props: Img2ImgProps) {
           }}
         />
       </Stack>
-      <input type='file' onChange={changeSource} />
+      <ImageInput filter={IMAGE_FILTER} label='Source' onChange={setSource} />
       <ImageControl params={params} onChange={(newParams) => {
         setParams(newParams);
       }} />
