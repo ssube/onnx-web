@@ -15,6 +15,7 @@ from diffusers import (
     # onnx
     OnnxStableDiffusionPipeline,
     OnnxStableDiffusionImg2ImgPipeline,
+    OnnxStableDiffusionInpaintPipeline,
 )
 from flask import Flask, jsonify, request, send_from_directory, url_for
 from hashlib import sha256
@@ -327,6 +328,54 @@ def txt2img():
             'steps': steps,
             'height': height,
             'width': width,
+            'prompt': prompt,
+            'seed': seed,
+            'negativePrompt': negative_prompt,
+        }
+    })
+
+
+@app.route('/inpaint', methods=['POST'])
+def inpaint():
+    source_file = request.files.get('source')
+    source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
+    source_image.thumbnail((default_width, default_height))
+
+    mask_file = request.files.get('mask')
+    mask_image = Image.open(BytesIO(mask_file.read())).convert('RGB')
+    mask_image.thumbnail((default_width, default_height))
+
+    strength = get_and_clamp_float(request.args, 'strength', 0.5, 1.0)
+
+    (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
+     width, seed, pipe) = pipeline_from_request(OnnxStableDiffusionInpaintPipeline)
+
+    rng = np.random.RandomState(seed)
+    image = pipe(
+        prompt,
+        generator=rng,
+        guidance_scale=cfg,
+        image=source_image,
+        mask_image=mask_image,
+        negative_prompt=negative_prompt,
+        num_inference_steps=steps,
+        strength=strength,
+    ).images[0]
+
+    (output_file, output_full) = make_output_path('inpaint', (prompt, cfg, steps, height, width, seed))
+    print("inpaint output: %s" % output_full)
+    image.save(output_full)
+
+    return json_with_cors({
+        'output': output_file,
+        'params': {
+            'model': model,
+            'provider': provider,
+            'scheduler': scheduler.__name__,
+            'cfg': cfg,
+            'steps': steps,
+            'height': default_height,
+            'width': default_width,
             'prompt': prompt,
             'seed': seed,
             'negativePrompt': negative_prompt,
