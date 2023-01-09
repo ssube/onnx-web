@@ -37,15 +37,17 @@ export function ImageInput(props: ImageInputProps) {
         accept={props.filter}
         type='file'
         onChange={(event) => {
-          const files = mustExist(event.target.files);
-          const file = mustExist(files[0]);
+          const { files } = event.target;
+          if (doesExist(files) && files.length > 0) {
+            const file = mustExist(files[0]);
 
-          if (doesExist(image)) {
-            URL.revokeObjectURL(image);
+            if (doesExist(image)) {
+              URL.revokeObjectURL(image);
+            }
+
+            setImage(URL.createObjectURL(file));
+            props.onChange(file);
           }
-
-          setImage(URL.createObjectURL(file));
-          props.onChange(file);
         }}
       />
     </Button>

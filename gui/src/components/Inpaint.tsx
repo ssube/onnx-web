@@ -84,12 +84,14 @@ export function Inpaint(props: InpaintProps) {
 
   function drawSource(file: File) {
     const image = new Image();
+    const src = URL.createObjectURL(file);
     image.onload = () => {
       const canvas = mustExist(canvasRef.current);
       const ctx = mustExist(canvas.getContext('2d'));
       ctx.drawImage(image, 0, 0);
+      URL.revokeObjectURL(src);
     };
-    image.src = URL.createObjectURL(file);
+    image.src = src;
   }
 
   function changeMask(file: File) {
@@ -153,8 +155,8 @@ export function Inpaint(props: InpaintProps) {
     staleTime: STALE_TIME,
   });
 
-  // eslint-disable-next-line @typescript-eslint/ban-types, no-null/no-null
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  // eslint-disable-next-line no-null/no-null
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [clicks, setClicks] = useState<Array<Point>>([]);
 
   const [painting, setPainting] = useState(false);
