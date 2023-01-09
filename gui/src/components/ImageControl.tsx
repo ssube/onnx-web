@@ -18,6 +18,7 @@ export function ImageControl(props: ImageControlProps) {
   return <Stack spacing={2}>
     <Stack direction='row' spacing={4}>
       <NumericField
+        decimal
         label='CFG'
         min={CONFIG_DEFAULTS.cfg.min}
         max={CONFIG_DEFAULTS.cfg.max}
