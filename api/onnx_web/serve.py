@@ -23,7 +23,9 @@ from io import BytesIO
 from PIL import Image
 from struct import pack
 from os import environ, makedirs, path, scandir
-from typing import Tuple, Union
+from typing import Any, Tuple, Union
+
+import json
 import numpy as np
 
 # defaults
@@ -45,10 +47,12 @@ max_width = 512
 # paths
 model_path = environ.get('ONNX_WEB_MODEL_PATH', '../models')
 output_path = environ.get('ONNX_WEB_OUTPUT_PATH', '../outputs')
+params_path = environ.get('ONNX_WEB_PARAMS_PATH', './params.json')
 
 
 # pipeline caching
 available_models = []
+config_params = {}
 last_pipeline_instance = None
 last_pipeline_options = (None, None, None)
 last_pipeline_scheduler = None
@@ -189,8 +193,15 @@ def load_models():
     available_models = [f.name for f in scandir(model_path) if f.is_dir()]
 
 
+def load_params():
+    global config_params
+    with open(params_path) as f:
+        config_params = json.load(f)
+
+
 check_paths()
 load_models()
+load_params()
 app = Flask(__name__)
 
 # routes
@@ -210,6 +221,11 @@ def index():
 @app.route('/settings/models')
 def list_models():
     return json_with_cors(available_models)
+
+
+@app.route('/settings/params')
+def list_params():
+    return json_with_cors(config_params)
 
 
 @app.route('/settings/platforms')
@@ -274,7 +290,8 @@ def img2img():
         strength=strength,
     ).images[0]
 
-    (output_file, output_full) = make_output_path('img2img', (prompt, cfg, steps, height, width, seed))
+    (output_file, output_full) = make_output_path('img2img', seed,
+                                                  (prompt, cfg, negative_prompt, steps, strength, height, width))
     print("img2img output: %s" % output_full)
     image.save(output_full)
 
@@ -284,13 +301,13 @@ def img2img():
             'model': model,
             'provider': provider,
             'scheduler': scheduler.__name__,
+            'seed': seed,
+            'prompt': prompt,
             'cfg': cfg,
+            'negativePrompt': negative_prompt,
             'steps': steps,
             'height': default_height,
             'width': default_width,
-            'prompt': prompt,
-            'seed': seed,
-            'negativePrompt': negative_prompt,
         }
     })
 
@@ -314,7 +331,8 @@ def txt2img():
         num_inference_steps=steps,
     ).images[0]
 
-    (output_file, output_full) = make_output_path('txt2img', (prompt, cfg, steps, height, width, seed))
+    (output_file, output_full) = make_output_path('txt2img',
+                                                  seed, (prompt, cfg, negative_prompt, steps, height, width))
     print("txt2img output: %s" % output_full)
     image.save(output_full)
 
@@ -324,13 +342,13 @@ def txt2img():
             'model': model,
             'provider': provider,
             'scheduler': scheduler.__name__,
+            'seed': seed,
+            'prompt': prompt,
             'cfg': cfg,
+            'negativePrompt': negative_prompt,
             'steps': steps,
             'height': height,
             'width': width,
-            'prompt': prompt,
-            'seed': seed,
-            'negativePrompt': negative_prompt,
         }
     })
 
@@ -364,7 +382,8 @@ def inpaint():
         width=width,
     ).images[0]
 
-    (output_file, output_full) = make_output_path('inpaint', (prompt, cfg, steps, height, width, seed))
+    (output_file, output_full) = make_output_path(
+        'inpaint', (prompt, cfg, steps, height, width, seed))
     print("inpaint output: %s" % output_full)
     image.save(output_full)
 
@@ -374,13 +393,13 @@ def inpaint():
             'model': model,
             'provider': provider,
             'scheduler': scheduler.__name__,
+            'seed': seed,
+            'prompt': prompt,
             'cfg': cfg,
+            'negativePrompt': negative_prompt,
             'steps': steps,
             'height': default_height,
             'width': default_width,
-            'prompt': prompt,
-            'seed': seed,
-            'negativePrompt': negative_prompt,
         }
     })
 
