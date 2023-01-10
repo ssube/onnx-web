@@ -1,10 +1,10 @@
 import setuptools
 
-with open("../README.md", "r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="onnx_web",
+    name="onnx-web",
     version="0.2.1",
     author="ssube",
     author_email="seansube@gmail.com",

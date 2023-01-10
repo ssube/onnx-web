@@ -156,7 +156,9 @@ package-api-twine:
     - tags
   script:
     - cd api
-    - echo make package
+    - python -m build
+    - twine check dist/*
+    - twine upload dist/*
 
 package-gui-npm:
   extends:
