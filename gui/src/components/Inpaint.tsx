@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 import { ApiClient, ApiResponse, BaseImgParams, equalResponse } from '../api/client.js';
-import { Config, CONFIG_DEFAULTS, DEFAULT_BRUSH, IMAGE_FILTER, STALE_TIME } from '../config.js';
+import { Config, ConfigParams, DEFAULT_BRUSH, IMAGE_FILTER, STALE_TIME } from '../config.js';
 import { SCHEDULER_LABELS } from '../strings.js';
 import { ImageInput } from './ImageInput.js';
 import { ImageCard } from './ImageCard.js';
@@ -57,7 +57,7 @@ export interface Point {
 
 export interface InpaintProps {
   client: ApiClient;
-  config: Config;
+  config: ConfigParams;
 
   model: string;
   platform: string;
@@ -166,12 +166,12 @@ export function Inpaint(props: InpaintProps) {
   const [mask, setMask] = useState<File>();
   const [source, setSource] = useState<File>();
   const [params, setParams] = useState<BaseImgParams>({
-    cfg: CONFIG_DEFAULTS.cfg.default,
-    seed: CONFIG_DEFAULTS.seed.default,
-    steps: CONFIG_DEFAULTS.steps.default,
-    prompt: config.default.prompt,
+    cfg: config.cfg.default,
+    seed: config.seed.default,
+    steps: config.steps.default,
+    prompt: config.prompt.default,
   });
-  const [scheduler, setScheduler] = useState(config.default.scheduler);
+  const [scheduler, setScheduler] = useState(config.scheduler.default);
 
   useEffect(() => {
     const canvas = mustExist(canvasRef.current);
@@ -190,11 +190,11 @@ export function Inpaint(props: InpaintProps) {
   function renderCanvas() {
     return <canvas
       ref={canvasRef}
-      height={CONFIG_DEFAULTS.height.default}
-      width={CONFIG_DEFAULTS.width.default}
+      height={config.height.default}
+      width={config.width.default}
       style={{
-        maxHeight: CONFIG_DEFAULTS.height.default,
-        maxWidth: CONFIG_DEFAULTS.width.default,
+        maxHeight: config.height.default,
+        maxWidth: config.width.default,
       }}
       onClick={(event) => {
         const canvas = mustExist(canvasRef.current);
@@ -271,22 +271,25 @@ export function Inpaint(props: InpaintProps) {
           }}
         />
         <Button
+          variant='outlined'
           startIcon={<FormatColorFill />}
           onClick={() => floodMask(floodBelow)}>
           Gray to black
         </Button>
         <Button
+          variant='outlined'
           startIcon={<Gradient />}
           onClick={() => grayscaleMask()}>
           Grayscale
         </Button>
         <Button
+          variant='outlined'
           startIcon={<FormatColorFill />}
           onClick={() => floodMask(floodAbove)}>
           Gray to white
         </Button>
       </Stack>
-      <ImageControl params={params} onChange={(newParams) => {
+      <ImageControl config={config} params={params} onChange={(newParams) => {
         setParams(newParams);
       }} />
       <Button onClick={() => upload.mutate()}>Generate</Button>

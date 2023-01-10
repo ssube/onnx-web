@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 import { ApiClient, BaseImgParams } from '../api/client.js';
-import { Config, CONFIG_DEFAULTS, IMAGE_FILTER, STALE_TIME } from '../config.js';
+import { ConfigParams, IMAGE_FILTER, STALE_TIME } from '../config.js';
 import { SCHEDULER_LABELS } from '../strings.js';
 import { ImageInput } from './ImageInput.js';
 import { ImageCard } from './ImageCard.js';
@@ -17,7 +17,7 @@ const { useState } = React;
 
 export interface Img2ImgProps {
   client: ApiClient;
-  config: Config;
+  config: ConfigParams;
 
   model: string;
   platform: string;
@@ -43,14 +43,14 @@ export function Img2Img(props: Img2ImgProps) {
   });
 
   const [source, setSource] = useState<File>();
-  const [strength, setStrength] = useState(CONFIG_DEFAULTS.strength.default);
+  const [strength, setStrength] = useState(config.strength.default);
   const [params, setParams] = useState<BaseImgParams>({
-    cfg: CONFIG_DEFAULTS.cfg.default,
-    seed: CONFIG_DEFAULTS.seed.default,
-    steps: CONFIG_DEFAULTS.steps.default,
-    prompt: config.default.prompt,
+    cfg: config.cfg.default,
+    seed: config.seed.default,
+    steps: config.steps.default,
+    prompt: config.prompt.default,
   });
-  const [scheduler, setScheduler] = useState(config.default.scheduler);
+  const [scheduler, setScheduler] = useState(config.scheduler.default);
 
   return <Box>
     <Stack spacing={2}>
@@ -67,15 +67,15 @@ export function Img2Img(props: Img2ImgProps) {
         />
       </Stack>
       <ImageInput filter={IMAGE_FILTER} label='Source' onChange={setSource} />
-      <ImageControl params={params} onChange={(newParams) => {
+      <ImageControl config={config} params={params} onChange={(newParams) => {
         setParams(newParams);
       }} />
       <NumericField
         decimal
         label='Strength'
-        min={CONFIG_DEFAULTS.strength.min}
-        max={CONFIG_DEFAULTS.strength.max}
-        step={CONFIG_DEFAULTS.strength.step}
+        min={config.strength.min}
+        max={config.strength.max}
+        step={config.strength.step}
         value={strength}
         onChange={(value) => {
           setStrength(value);

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 import { ApiClient, BaseImgParams } from '../api/client.js';
-import { Config, CONFIG_DEFAULTS, STALE_TIME } from '../config.js';
+import { ConfigParams, STALE_TIME } from '../config.js';
 import { SCHEDULER_LABELS } from '../strings.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
@@ -15,7 +15,7 @@ const { useState } = React;
 
 export interface Txt2ImgProps {
   client: ApiClient;
-  config: Config;
+  config: ConfigParams;
 
   model: string;
   platform: string;
@@ -40,15 +40,15 @@ export function Txt2Img(props: Txt2ImgProps) {
     staleTime: STALE_TIME,
   });
 
-  const [height, setHeight] = useState(CONFIG_DEFAULTS.height.default);
-  const [width, setWidth] = useState(CONFIG_DEFAULTS.width.default);
+  const [height, setHeight] = useState(config.height.default);
+  const [width, setWidth] = useState(config.width.default);
   const [params, setParams] = useState<BaseImgParams>({
-    cfg: CONFIG_DEFAULTS.cfg.default,
-    seed: CONFIG_DEFAULTS.seed.default,
-    steps: CONFIG_DEFAULTS.steps.default,
-    prompt: config.default.prompt,
+    cfg: config.cfg.default,
+    seed: config.seed.default,
+    steps: config.steps.default,
+    prompt: config.prompt.default,
   });
-  const [scheduler, setScheduler] = useState(config.default.scheduler);
+  const [scheduler, setScheduler] = useState(config.scheduler.default);
 
   return <Box>
     <Stack spacing={2}>
@@ -64,15 +64,15 @@ export function Txt2Img(props: Txt2ImgProps) {
           }}
         />
       </Stack>
-      <ImageControl params={params} onChange={(newParams) => {
+      <ImageControl config={config} params={params} onChange={(newParams) => {
         setParams(newParams);
       }} />
       <Stack direction='row' spacing={4}>
         <NumericField
           label='Width'
-          min={CONFIG_DEFAULTS.width.min}
-          max={CONFIG_DEFAULTS.width.max}
-          step={CONFIG_DEFAULTS.width.step}
+          min={config.width.min}
+          max={config.width.max}
+          step={config.width.step}
           value={width}
           onChange={(value) => {
             setWidth(value);
@@ -80,9 +80,9 @@ export function Txt2Img(props: Txt2ImgProps) {
         />
         <NumericField
           label='Height'
-          min={CONFIG_DEFAULTS.height.min}
-          max={CONFIG_DEFAULTS.height.max}
-          step={CONFIG_DEFAULTS.height.step}
+          min={config.height.min}
+          max={config.height.max}
+          step={config.height.step}
           value={height}
           onChange={(value) => {
             setHeight(value);

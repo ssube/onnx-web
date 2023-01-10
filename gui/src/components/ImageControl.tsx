@@ -1,28 +1,30 @@
 import { doesExist } from '@apextoaster/js-utils';
 import { Casino } from '@mui/icons-material';
-import { IconButton, Stack, TextField } from '@mui/material';
+import { Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 
 import { BaseImgParams } from '../api/client.js';
-import { CONFIG_DEFAULTS } from '../config.js';
+import { ConfigParams } from '../config.js';
 import { NumericField } from './NumericField.js';
 
 export interface ImageControlProps {
+  config: ConfigParams;
   params: BaseImgParams;
+
   onChange?: (params: BaseImgParams) => void;
 }
 
 export function ImageControl(props: ImageControlProps) {
-  const { params } = props;
+  const { config, params } = props;
 
   return <Stack spacing={2}>
     <Stack direction='row' spacing={4}>
       <NumericField
         decimal
         label='CFG'
-        min={CONFIG_DEFAULTS.cfg.min}
-        max={CONFIG_DEFAULTS.cfg.max}
-        step={CONFIG_DEFAULTS.cfg.step}
+        min={config.cfg.min}
+        max={config.cfg.max}
+        step={config.cfg.step}
         value={params.cfg}
         onChange={(cfg) => {
           if (doesExist(props.onChange)) {
@@ -35,9 +37,9 @@ export function ImageControl(props: ImageControlProps) {
       />
       <NumericField
         label='Steps'
-        min={CONFIG_DEFAULTS.steps.min}
-        max={CONFIG_DEFAULTS.steps.max}
-        step={CONFIG_DEFAULTS.steps.step}
+        min={config.steps.min}
+        max={config.steps.max}
+        step={config.steps.step}
         value={params.steps}
         onChange={(steps) => {
           if (doesExist(props.onChange)) {
@@ -50,9 +52,9 @@ export function ImageControl(props: ImageControlProps) {
       />
       <NumericField
         label='Seed'
-        min={CONFIG_DEFAULTS.seed.min}
-        max={CONFIG_DEFAULTS.seed.max}
-        step={CONFIG_DEFAULTS.seed.step}
+        min={config.seed.min}
+        max={config.seed.max}
+        step={config.seed.step}
         value={params.seed}
         onChange={(seed) => {
           if (doesExist(props.onChange)) {
@@ -63,17 +65,21 @@ export function ImageControl(props: ImageControlProps) {
           }
         }}
       />
-      <IconButton onClick={() => {
-        const seed = Math.floor(Math.random() * CONFIG_DEFAULTS.seed.max);
-        if (doesExist(props.onChange)) {
-          props.onChange({
-            ...params,
-            seed,
-          });
-        }
-      }}>
-        <Casino />
-      </IconButton>
+      <Button
+        variant='outlined'
+        startIcon={<Casino />}
+        onClick={() => {
+          const seed = Math.floor(Math.random() * config.seed.max);
+          if (doesExist(props.onChange)) {
+            props.onChange({
+              ...params,
+              seed,
+            });
+          }
+        }}
+      >
+        New Seed
+      </Button>
     </Stack>
     <TextField label='Prompt' variant='outlined' value={params.prompt} onChange={(event) => {
       if (doesExist(props.onChange)) {

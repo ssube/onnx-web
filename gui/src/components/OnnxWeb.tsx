@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useQuery } from 'react-query';
 
 import { ApiClient } from '../api/client.js';
-import { Config, STALE_TIME } from '../config.js';
+import { Config, ConfigParams, STALE_TIME } from '../config.js';
 import { MODEL_LABELS, PLATFORM_LABELS } from '../strings.js';
 import { Img2Img } from './Img2Img.js';
 import { Inpaint } from './Inpaint.js';
@@ -15,15 +15,15 @@ const { useState } = React;
 
 export interface OnnxWebProps {
   client: ApiClient;
-  config: Config;
+  config: ConfigParams;
 }
 
 export function OnnxWeb(props: OnnxWebProps) {
   const { client, config } = props;
 
   const [tab, setTab] = useState('txt2img');
-  const [model, setModel] = useState(config.default.model);
-  const [platform, setPlatform] = useState(config.default.platform);
+  const [model, setModel] = useState(config.model.default);
+  const [platform, setPlatform] = useState(config.platform.default);
 
   const models = useQuery('models', async () => client.models(), {
     staleTime: STALE_TIME,

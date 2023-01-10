@@ -1,4 +1,5 @@
 import { doesExist, NotImplementedError } from '@apextoaster/js-utils';
+import { ConfigParams } from '../config';
 
 export interface BaseImgParams {
   /**
@@ -57,6 +58,7 @@ export interface ApiResponse {
 
 export interface ApiClient {
   models(): Promise<Array<string>>;
+  params(): Promise<ConfigParams>;
   platforms(): Promise<Array<string>>;
   schedulers(): Promise<Array<string>>;
 
@@ -135,6 +137,11 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const path = new URL(joinPath('settings', 'models'), root);
       const res = await f(path);
       return await res.json() as Array<string>;
+    },
+    async params(): Promise<ConfigParams> {
+      const path = new URL(joinPath('settings', 'params'), root);
+      const res = await f(path);
+      return await res.json() as ConfigParams;
     },
     async schedulers(): Promise<Array<string>> {
       const path = new URL(joinPath('settings', 'schedulers'), root);
