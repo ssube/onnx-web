@@ -7,19 +7,19 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { makeClient } from './api/client.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
-import { ConfigParams, loadConfig } from './config.js';
+import { loadConfig } from './config.js';
 
 export async function main() {
   const config = await loadConfig();
   const client = makeClient(config.api.root);
   const params = await client.params();
-  const merged = merge(params, config.params) as ConfigParams;
-  const query = new QueryClient();
+  merge(params, config.params);
 
+  const query = new QueryClient();
   const appElement = mustExist(document.getElementById('app'));
   const app = ReactDOM.createRoot(appElement);
   app.render(<QueryClientProvider client={query}>
-    <OnnxWeb client={client} config={merged} />
+    <OnnxWeb client={client} config={params} />
   </QueryClientProvider>);
 }
 

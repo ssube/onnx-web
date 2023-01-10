@@ -2,7 +2,7 @@ import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
-import { ApiClient, BaseImgParams } from '../api/client.js';
+import { ApiClient, BaseImgParams, paramsFromConfig } from '../api/client.js';
 import { ConfigParams, STALE_TIME } from '../config.js';
 import { SCHEDULER_LABELS } from '../strings.js';
 import { ImageCard } from './ImageCard.js';
@@ -42,12 +42,7 @@ export function Txt2Img(props: Txt2ImgProps) {
 
   const [height, setHeight] = useState(config.height.default);
   const [width, setWidth] = useState(config.width.default);
-  const [params, setParams] = useState<BaseImgParams>({
-    cfg: config.cfg.default,
-    seed: config.seed.default,
-    steps: config.steps.default,
-    prompt: config.prompt.default,
-  });
+  const [params, setParams] = useState<BaseImgParams>(paramsFromConfig(config));
   const [scheduler, setScheduler] = useState(config.scheduler.default);
 
   return <Box>

@@ -4,12 +4,12 @@ import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
-import { ApiClient, ApiResponse, BaseImgParams, equalResponse } from '../api/client.js';
-import { Config, ConfigParams, DEFAULT_BRUSH, IMAGE_FILTER, STALE_TIME } from '../config.js';
+import { ApiClient, ApiResponse, BaseImgParams, equalResponse, paramsFromConfig } from '../api/client.js';
+import { ConfigParams, DEFAULT_BRUSH, IMAGE_FILTER, STALE_TIME } from '../config.js';
 import { SCHEDULER_LABELS } from '../strings.js';
-import { ImageInput } from './ImageInput.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
+import { ImageInput } from './ImageInput.js';
 import { MutationHistory } from './MutationHistory.js';
 import { NumericField } from './NumericField.js';
 import { QueryList } from './QueryList.js';
@@ -165,12 +165,7 @@ export function Inpaint(props: InpaintProps) {
 
   const [mask, setMask] = useState<File>();
   const [source, setSource] = useState<File>();
-  const [params, setParams] = useState<BaseImgParams>({
-    cfg: config.cfg.default,
-    seed: config.seed.default,
-    steps: config.steps.default,
-    prompt: config.prompt.default,
-  });
+  const [params, setParams] = useState<BaseImgParams>(paramsFromConfig(config));
   const [scheduler, setScheduler] = useState(config.scheduler.default);
 
   useEffect(() => {

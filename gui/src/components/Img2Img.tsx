@@ -3,12 +3,12 @@ import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useMutation, useQuery } from 'react-query';
 
-import { ApiClient, BaseImgParams } from '../api/client.js';
+import { ApiClient, BaseImgParams, paramsFromConfig } from '../api/client.js';
 import { ConfigParams, IMAGE_FILTER, STALE_TIME } from '../config.js';
 import { SCHEDULER_LABELS } from '../strings.js';
-import { ImageInput } from './ImageInput.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
+import { ImageInput } from './ImageInput.js';
 import { MutationHistory } from './MutationHistory.js';
 import { NumericField } from './NumericField.js';
 import { QueryList } from './QueryList.js';
@@ -44,12 +44,7 @@ export function Img2Img(props: Img2ImgProps) {
 
   const [source, setSource] = useState<File>();
   const [strength, setStrength] = useState(config.strength.default);
-  const [params, setParams] = useState<BaseImgParams>({
-    cfg: config.cfg.default,
-    seed: config.seed.default,
-    steps: config.steps.default,
-    prompt: config.prompt.default,
-  });
+  const [params, setParams] = useState<BaseImgParams>(paramsFromConfig(config));
   const [scheduler, setScheduler] = useState(config.scheduler.default);
 
   return <Box>

@@ -1,5 +1,6 @@
 import { doesExist, NotImplementedError } from '@apextoaster/js-utils';
-import { ConfigParams } from '../config';
+
+import { ConfigParams } from '../config.js';
 
 export interface BaseImgParams {
   /**
@@ -70,6 +71,16 @@ export interface ApiClient {
 }
 
 export const STATUS_SUCCESS = 200;
+
+export function paramsFromConfig(defaults: ConfigParams): BaseImgParams {
+  return {
+    cfg: defaults.cfg.default,
+    negativePrompt: defaults.negativePrompt.default,
+    prompt: defaults.prompt.default,
+    steps: defaults.steps.default,
+    seed: defaults.seed.default,
+  };
+}
 
 export function equalResponse(a: ApiResponse, b: ApiResponse): boolean {
   return a.output === b.output;
