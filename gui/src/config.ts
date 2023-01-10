@@ -34,10 +34,11 @@ export interface Config {
   };
 }
 
-export const DEFAULT_BRUSH = 8;
+export const DEFAULT_BRUSH = {
+  color: 255,
+  size: 8,
+};
 export const IMAGE_FILTER = '.bmp, .jpg, .jpeg, .png';
-export const IMAGE_STEP = 8;
-export const IMAGE_MAX = 512;
 export const STALE_TIME = 3_000;
 
 export async function loadConfig(): Promise<Config> {

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useQuery } from 'react-query';
 
 import { ApiClient } from '../api/client.js';
-import { Config, ConfigParams, STALE_TIME } from '../config.js';
+import { ConfigParams, STALE_TIME } from '../config.js';
 import { MODEL_LABELS, PLATFORM_LABELS } from '../strings.js';
 import { Img2Img } from './Img2Img.js';
 import { Inpaint } from './Inpaint.js';

@@ -160,8 +160,8 @@ export function Inpaint(props: InpaintProps) {
   const [clicks, setClicks] = useState<Array<Point>>([]);
 
   const [painting, setPainting] = useState(false);
-  const [brushColor, setBrushColor] = useState(0);
-  const [brushSize, setBrushSize] = useState(DEFAULT_BRUSH);
+  const [brushColor, setBrushColor] = useState(DEFAULT_BRUSH.color);
+  const [brushSize, setBrushSize] = useState(DEFAULT_BRUSH.size);
 
   const [mask, setMask] = useState<File>();
   const [source, setSource] = useState<File>();
