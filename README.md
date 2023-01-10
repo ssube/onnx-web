@@ -31,9 +31,12 @@ This is still an early project and the instructions are a little rough, but it w
   - can be hosted alongside API or on a CDN
   - built with React and MUI
 - txt2img mode
-  - outputs are saved to file
-  - show image history
+  - image controls and scheduler selection
+  - with recent image history
 - img2img mode
+  - image upload with preview
+  - guided by prompt and negative prompt
+- inpainting mode
   - mask painting
   - source to mask conversion tools
 
@@ -47,10 +50,10 @@ This is still an early project and the instructions are a little rough, but it w
     - [Install Git and Python](#install-git-and-python)
     - [Create a virtual environment](#create-a-virtual-environment)
     - [Install pip packages](#install-pip-packages)
-      - [For AMD on Windows: Install ORT nightly package](#for-amd-on-windows-install-ort-nightly-package)
-      - [For CPU on Linux: Install CPU PyTorch](#for-cpu-on-linux-install-cpu-pytorch)
-      - [For CPU on Windows: Install CPU PyTorch](#for-cpu-on-windows-install-cpu-pytorch)
-      - [For Nvidia everywhere: Install GPU PyTorch and ONNX](#for-nvidia-everywhere-install-gpu-pytorch-and-onnx)
+      - [For AMD on Windows: Install ONNX DirectML](#for-amd-on-windows-install-onnx-directml)
+      - [For CPU on Linux: Install PyTorch CPU](#for-cpu-on-linux-install-pytorch-cpu)
+      - [For CPU on Windows: Install PyTorch CPU](#for-cpu-on-windows-install-pytorch-cpu)
+      - [For Nvidia everywhere: Install PyTorch GPU and ONNX GPU](#for-nvidia-everywhere-install-pytorch-gpu-and-onnx-gpu)
     - [Download and convert models](#download-and-convert-models)
   - [Usage](#usage)
     - [Configuring and running the server](#configuring-and-running-the-server)
@@ -180,7 +183,7 @@ sure you are not using `numpy>=1.24`.
 [This SO question](https://stackoverflow.com/questions/74844262/how-to-solve-error-numpy-has-no-attribute-float-in-python)
 has more details.
 
-#### For AMD on Windows: Install ORT nightly package
+#### For AMD on Windows: Install ONNX DirectML
 
 If you are running on Windows, install the DirectML ONNX runtime as well:
 
@@ -202,7 +205,7 @@ download the `cp39` package, and so on. Installing with pip will figure out the 
 Make sure to include the `--force-reinstall` flag, since it requires some older versions of other packages, and will
 overwrite the versions you currently have installed.
 
-#### For CPU on Linux: Install CPU PyTorch
+#### For CPU on Linux: Install PyTorch CPU
 
 If you are running with a CPU and no hardware acceleration, install `onnxruntime` and the CPU version of PyTorch:
 
@@ -210,7 +213,7 @@ If you are running with a CPU and no hardware acceleration, install `onnxruntime
 > pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
 ```
 
-#### For CPU on Windows: Install CPU PyTorch
+#### For CPU on Windows: Install PyTorch CPU
 
 If you are running with a CPU and no hardware acceleration, install `onnxruntime` and the CPU version of PyTorch:
 
@@ -218,7 +221,7 @@ If you are running with a CPU and no hardware acceleration, install `onnxruntime
 > pip install torch
 ```
 
-#### For Nvidia everywhere: Install GPU PyTorch and ONNX
+#### For Nvidia everywhere: Install PyTorch GPU and ONNX GPU
 
 If you are running with an Nvidia GPU, install `onnxruntime-gpu`:
 
@@ -398,10 +401,15 @@ custom config using:
   - make sure the API and GUI are both running
   - make sure you are using the correct hostname or IP address
   - open the appropriate firewall ports:
-    - TCP/5000 for the API
-    - TCP/3000 or TCP/8000 for the GUI (3000 is the dev server)
+    - TCP/5000 for the API dev server
+    - TCP/3000 for the GUI dev server
+    - TCP/80 for the GUI using nginx without a container
+    - TCP/8000 for the GUI using the nginx container
 - CUDA errors:
   - make sure you are using CUDA 11.x
   - https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements
 - numpy invalid combination of arguments:
   - make sure to export ONNX models using the same packages and versions that you use while running the API
+- numpy `np.float` missing
+  - reinstall `pip install "numpy>=1.20,<1.24 --force-reinstall"`
+  - another package may have upgraded numpy to 1.24, which removed that symbol
