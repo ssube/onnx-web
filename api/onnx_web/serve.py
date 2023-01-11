@@ -148,9 +148,9 @@ def json_with_cors(data, origin='*'):
     return res
 
 
-def make_output_path(type: str, seed: int, params: Tuple[Union[str, int, float]]):
+def make_output_path(mode: str, seed: int, params: Tuple[Union[str, int, float]]):
     sha = sha256()
-    sha.update(type.encode('utf-8'))
+    sha.update(mode.encode('utf-8'))
     for param in params:
         if isinstance(param, str):
             sha.update(param.encode('utf-8'))
@@ -161,7 +161,7 @@ def make_output_path(type: str, seed: int, params: Tuple[Union[str, int, float]]
         else:
             print('cannot hash param: %s, %s' % (param, type(param)))
 
-    output_file = '%s_%s_%s.png' % (type, seed, sha.hexdigest())
+    output_file = '%s_%s_%s.png' % (mode, seed, sha.hexdigest())
     output_full = safer_join(output_path, output_file)
 
     return (output_file, output_full)

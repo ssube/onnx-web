@@ -30,6 +30,7 @@
 			"numpy",
 			"Onnx",
 			"onnxruntime",
+			"outpaint",
 			"pndm",
 			"pretrained",
 			"protobuf",
