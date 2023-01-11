@@ -5,6 +5,7 @@ import { useStore } from 'zustand';
 
 import { ConfigParams } from '../config.js';
 import { StateContext } from '../main.js';
+import { NumericField } from './NumericField.js';
 
 const { useContext } = React;
 
@@ -16,12 +17,14 @@ export function Settings(_props: SettingsProps) {
   const state = useStore(mustExist(useContext(StateContext)));
 
   return <Stack spacing={2}>
-    <Stack direction='row' spacing={2}>
-      <Button onClick={() => state.resetTxt2Img()}>Reset Txt2Img</Button>
-      <Button onClick={() => state.resetImg2Img()}>Reset Img2Img</Button>
-      <Button onClick={() => state.resetInpaint()}>Reset Inpaint</Button>
-      <Button disabled>Reset All</Button>
-    </Stack>
+    <NumericField
+      label='Image History'
+      min={2}
+      max={20}
+      step={1}
+      value={state.history.limit}
+      onChange={(value) => state.setLimit(value)}
+    />
     <TextField variant='outlined' label='Default Model' value={state.defaults.model} onChange={(event) => {
       state.setDefaults({
         model: event.target.value,
@@ -42,5 +45,11 @@ export function Settings(_props: SettingsProps) {
         scheduler: event.target.value,
       });
     }} />
+    <Stack direction='row' spacing={2}>
+      <Button onClick={() => state.resetTxt2Img()}>Reset Txt2Img</Button>
+      <Button onClick={() => state.resetImg2Img()}>Reset Img2Img</Button>
+      <Button onClick={() => state.resetInpaint()}>Reset Inpaint</Button>
+      <Button disabled>Reset All</Button>
+    </Stack>
   </Stack>;
 }

@@ -1,6 +1,6 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, Stack, Tab, Typography } from '@mui/material';
+import { Box, Container, Divider, Stack, Tab, Typography } from '@mui/material';
 import * as React from 'react';
 import { useQuery } from 'react-query';
 
@@ -8,6 +8,7 @@ import { ApiClient } from '../api/client.js';
 import { ConfigParams, STALE_TIME } from '../config.js';
 import { ClientContext } from '../main.js';
 import { MODEL_LABELS, PLATFORM_LABELS } from '../strings.js';
+import { ImageHistory } from './ImageHistory.js';
 import { Img2Img } from './Img2Img.js';
 import { Inpaint } from './Inpaint.js';
 import { QueryList } from './QueryList.js';
@@ -44,7 +45,7 @@ export function OnnxWeb(props: OnnxWebProps) {
             ONNX Web
           </Typography>
         </Box>
-        <Box sx={{ my: 4 }}>
+        <Box sx={{ mx: 4, my: 4 }}>
           <Stack direction='row' spacing={2}>
             <QueryList
               id='models'
@@ -92,6 +93,10 @@ export function OnnxWeb(props: OnnxWebProps) {
             <Settings config={config} />
           </TabPanel>
         </TabContext>
+        <Divider variant='middle' />
+        <Box sx={{ mx: 4, my: 4 }}>
+          <ImageHistory />
+        </Box>
       </Container>
     </div>
   );

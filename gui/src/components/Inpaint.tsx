@@ -5,13 +5,11 @@ import * as React from 'react';
 import { useMutation } from 'react-query';
 import { useStore } from 'zustand';
 
-import { ApiResponse, equalResponse } from '../api/client.js';
+import { ApiResponse } from '../api/client.js';
 import { ConfigParams, DEFAULT_BRUSH, IMAGE_FILTER } from '../config.js';
 import { ClientContext, StateContext } from '../main.js';
-import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
-import { MutationHistory } from './MutationHistory.js';
 import { NumericField } from './NumericField.js';
 
 const { useContext, useEffect, useRef, useState } = React;
@@ -72,15 +70,20 @@ export function Inpaint(props: InpaintProps) {
 
   async function uploadSource() {
     const canvas = mustExist(canvasRef.current);
-    return new Promise<ApiResponse>((res, _rej) => {
+    state.setLoading(true);
+    return new Promise<void>((res, rej) => {
       canvas.toBlob((blob) => {
-        res(client.inpaint({
+        client.inpaint({
           ...state.inpaint,
           model,
           platform,
           mask: mustExist(blob),
           source: mustExist(source),
-        }));
+        }).then((output) => {
+          state.pushHistory(output);
+          state.setLoading(false);
+          res();
+        }).catch((err) => rej(err));
       });
     });
   }
@@ -262,9 +265,6 @@ export function Inpaint(props: InpaintProps) {
         }}
       />
       <Button onClick={() => upload.mutate()}>Generate</Button>
-      <MutationHistory result={upload} limit={4} element={ImageCard}
-        isEqual={equalResponse}
-      />
     </Stack>
   </Box>;
 }

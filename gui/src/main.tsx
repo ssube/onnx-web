@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { createStore, StoreApi } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { ApiClient, BaseImgParams, Img2ImgParams, InpaintParams, makeClient, paramsFromConfig, Txt2ImgParams } from './api/client.js';
+import { ApiClient, ApiResponse, BaseImgParams, Img2ImgParams, InpaintParams, makeClient, paramsFromConfig, Txt2ImgParams } from './api/client.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
 import { ConfigState, loadConfig } from './config.js';
 
@@ -27,6 +27,17 @@ interface OnnxState {
   resetTxt2Img(): void;
   resetImg2Img(): void;
   resetInpaint(): void;
+
+  history: {
+    images: Array<ApiResponse>;
+    limit: number;
+    loading: boolean;
+  };
+
+  setLimit(limit: number): void;
+  setLoading(loading: boolean): void;
+  setHistory(newHistory: Array<ApiResponse>): void;
+  pushHistory(newImage: ApiResponse): void;
 }
 
 export async function main() {
@@ -38,6 +49,11 @@ export async function main() {
   const defaults = paramsFromConfig(params);
   const state = createStore<OnnxState, [['zustand/persist', never]]>(persist((set) => ({
     defaults,
+    history: {
+      images: [],
+      limit: 4,
+      loading: false,
+    },
     txt2img: {
       ...defaults,
       height: params.height.default,
@@ -49,6 +65,45 @@ export async function main() {
     },
     inpaint: {
       ...defaults,
+    },
+    setLimit(limit) {
+      set((oldState) => ({
+        ...oldState,
+        history: {
+          ...oldState.history,
+          limit,
+        },
+      }));
+    },
+    setLoading(loading) {
+      set((oldState) => ({
+        ...oldState,
+        history: {
+          ...oldState.history,
+          loading,
+        },
+      }));
+    },
+    pushHistory(newImage: ApiResponse) {
+      set((oldState) => ({
+        ...oldState,
+        history: {
+          ...oldState.history,
+          images: [
+            newImage,
+            ...oldState.history.images,
+          ].slice(0, oldState.history.limit),
+        },
+      }));
+    },
+    setHistory(newHistory: Array<ApiResponse>) {
+      set((oldState) => ({
+        ...oldState,
+        history: {
+          ...oldState.history,
+          images: newHistory,
+        },
+      }));
     },
     setDefaults(newParams) {
       set((oldState) => ({

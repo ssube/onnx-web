@@ -4,15 +4,12 @@ import * as React from 'react';
 import { useMutation } from 'react-query';
 import { useStore } from 'zustand';
 
-import { BaseImgParams, equalResponse, paramsFromConfig } from '../api/client.js';
 import { ConfigParams } from '../config.js';
 import { ClientContext, StateContext } from '../main.js';
-import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
-import { MutationHistory } from './MutationHistory.js';
 import { NumericField } from './NumericField.js';
 
-const { useContext, useState } = React;
+const { useContext } = React;
 
 export interface Txt2ImgProps {
   config: ConfigParams;
@@ -25,11 +22,16 @@ export function Txt2Img(props: Txt2ImgProps) {
   const { config, model, platform } = props;
 
   async function generateImage() {
-    return client.txt2img({
+    state.setLoading(true);
+
+    const output = await client.txt2img({
       ...state.txt2img,
       model,
       platform,
     });
+
+    state.pushHistory(output);
+    state.setLoading(false);
   }
 
   const client = mustExist(useContext(ClientContext));
@@ -68,12 +70,6 @@ export function Txt2Img(props: Txt2ImgProps) {
         />
       </Stack>
       <Button onClick={() => generate.mutate()}>Generate</Button>
-      <MutationHistory
-        element={ImageCard}
-        limit={4}
-        isEqual={equalResponse}
-        result={generate}
-      />
     </Stack>
   </Box>;
 }

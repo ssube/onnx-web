@@ -4,13 +4,10 @@ import * as React from 'react';
 import { useMutation } from 'react-query';
 import { useStore } from 'zustand';
 
-import { equalResponse } from '../api/client.js';
 import { ConfigParams, IMAGE_FILTER } from '../config.js';
 import { ClientContext, StateContext } from '../main.js';
-import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
-import { MutationHistory } from './MutationHistory.js';
 import { NumericField } from './NumericField.js';
 
 const { useContext, useState } = React;
@@ -26,12 +23,17 @@ export function Img2Img(props: Img2ImgProps) {
   const { config, model, platform } = props;
 
   async function uploadSource() {
-    return client.img2img({
+    state.setLoading(true);
+
+    const output = await client.img2img({
       ...state.img2img,
       model,
       platform,
       source: mustExist(source), // TODO: show an error if this doesn't exist
     });
+
+    state.pushHistory(output);
+    state.setLoading(false);
   }
 
   const client = mustExist(useContext(ClientContext));
@@ -60,9 +62,6 @@ export function Img2Img(props: Img2ImgProps) {
         }}
       />
       <Button onClick={() => upload.mutate()}>Generate</Button>
-      <MutationHistory result={upload} limit={4} element={ImageCard}
-        isEqual={equalResponse}
-      />
     </Stack>
   </Box>;
 }
