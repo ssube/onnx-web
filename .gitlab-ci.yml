@@ -54,6 +54,10 @@ stages:
     - .build-base
   image: docker.io/python:3.10
 
+.build-curl:
+  extends:
+    - .build-python
+
 build-api-coverage:
   extends:
     - .build-python
