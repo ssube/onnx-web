@@ -389,7 +389,7 @@ def inpaint():
     ).images[0]
 
     (output_file, output_full) = make_output_path(
-        'inpaint', (prompt, cfg, steps, height, width, seed))
+        'inpaint', seed, (prompt, cfg, steps, height, width, seed))
     print("inpaint output: %s" % output_full)
     image.save(output_full)
 
