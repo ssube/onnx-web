@@ -254,6 +254,9 @@ def pipeline_from_request(pipeline: DiffusionPipeline):
     prompt = request.args.get('prompt', default_prompt)
     negative_prompt = request.args.get('negative', None)
 
+    if negative_prompt == '':
+        negative_prompt = None
+
     cfg = get_and_clamp_int(request.args, 'cfg', default_cfg, config_params.get('cfg').get('max'), 0)
     steps = get_and_clamp_int(request.args, 'steps', default_steps, config_params.get('steps').get('max'))
     height = get_and_clamp_int(
