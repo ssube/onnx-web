@@ -179,6 +179,41 @@ def url_from_rule(rule):
 
     return url_for(rule.endpoint, **options)
 
+
+def pipeline_from_request(pipeline: DiffusionPipeline):
+    user = request.remote_addr
+
+    # pipeline stuff
+    model = get_model_path(request.args.get('model', default_model))
+    provider = get_from_map(request.args, 'platform',
+                            platform_providers, default_platform)
+    scheduler = get_from_map(request.args, 'scheduler',
+                             pipeline_schedulers, default_scheduler)
+
+    # image params
+    prompt = request.args.get('prompt', default_prompt)
+    negative_prompt = request.args.get('negative', None)
+
+    if negative_prompt == '':
+        negative_prompt = None
+
+    cfg = get_and_clamp_int(request.args, 'cfg', default_cfg, config_params.get('cfg').get('max'), 0)
+    steps = get_and_clamp_int(request.args, 'steps', default_steps, config_params.get('steps').get('max'))
+    height = get_and_clamp_int(
+        request.args, 'height', default_height, config_params.get('height').get('max'))
+    width = get_and_clamp_int(request.args, 'width', default_width, config_params.get('width').get('max'))
+
+    seed = int(request.args.get('seed', -1))
+    if seed == -1:
+        seed = np.random.randint(np.iinfo(np.int32).max)
+
+    print("request from %s: %s rounds of %s using %s on %s, %sx%s, %s, %s - %s" %
+          (user, steps, scheduler.__name__, model, provider, width, height, cfg, seed, prompt))
+
+    pipe = load_pipeline(pipeline, model, provider, scheduler)
+    return (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height, width, seed, pipe)
+
+
 # setup
 
 
@@ -238,40 +273,6 @@ def list_platforms():
 @app.route('/settings/schedulers')
 def list_schedulers():
     return json_with_cors(list(pipeline_schedulers.keys()))
-
-
-def pipeline_from_request(pipeline: DiffusionPipeline):
-    user = request.remote_addr
-
-    # pipeline stuff
-    model = get_model_path(request.args.get('model', default_model))
-    provider = get_from_map(request.args, 'platform',
-                            platform_providers, default_platform)
-    scheduler = get_from_map(request.args, 'scheduler',
-                             pipeline_schedulers, default_scheduler)
-
-    # image params
-    prompt = request.args.get('prompt', default_prompt)
-    negative_prompt = request.args.get('negative', None)
-
-    if negative_prompt == '':
-        negative_prompt = None
-
-    cfg = get_and_clamp_int(request.args, 'cfg', default_cfg, config_params.get('cfg').get('max'), 0)
-    steps = get_and_clamp_int(request.args, 'steps', default_steps, config_params.get('steps').get('max'))
-    height = get_and_clamp_int(
-        request.args, 'height', default_height, config_params.get('height').get('max'))
-    width = get_and_clamp_int(request.args, 'width', default_width, config_params.get('width').get('max'))
-
-    seed = int(request.args.get('seed', -1))
-    if seed == -1:
-        seed = np.random.randint(np.iinfo(np.int32).max)
-
-    print("request from %s: %s rounds of %s using %s on %s, %sx%s, %s, %s - %s" %
-          (user, steps, scheduler.__name__, model, provider, width, height, cfg, seed, prompt))
-
-    pipe = load_pipeline(pipeline, model, provider, scheduler)
-    return (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height, width, seed, pipe)
 
 
 @app.route('/img2img', methods=['POST'])
