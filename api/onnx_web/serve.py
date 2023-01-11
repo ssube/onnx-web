@@ -25,7 +25,7 @@ from io import BytesIO
 from PIL import Image
 from struct import pack
 from os import environ, makedirs, path, scandir
-from typing import Any, Tuple, Union
+from typing import Any, Dict, Tuple, Union
 
 import json
 import numpy as np
@@ -89,7 +89,7 @@ def get_and_clamp_int(args, key: str, default_value: int, max_value: int, min_va
     return min(max(int(args.get(key, default_value)), min_value), max_value)
 
 
-def get_from_map(args, key: str, values: dict[str, Any], default: Any):
+def get_from_map(args, key: str, values: Dict[str, Any], default: Any):
     selected = args.get(key, default)
     if selected in values:
         return values[selected]
