@@ -1,3 +1,4 @@
+import { mustExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Container, Stack, Tab, Typography } from '@mui/material';
 import * as React from 'react';
@@ -5,13 +6,15 @@ import { useQuery } from 'react-query';
 
 import { ApiClient } from '../api/client.js';
 import { ConfigParams, STALE_TIME } from '../config.js';
+import { ClientContext } from '../main.js';
 import { MODEL_LABELS, PLATFORM_LABELS } from '../strings.js';
 import { Img2Img } from './Img2Img.js';
 import { Inpaint } from './Inpaint.js';
 import { QueryList } from './QueryList.js';
+import { Settings } from './Settings.js';
 import { Txt2Img } from './Txt2Img.js';
 
-const { useState } = React;
+const { useContext, useState } = React;
 
 export interface OnnxWebProps {
   client: ApiClient;
@@ -19,8 +22,9 @@ export interface OnnxWebProps {
 }
 
 export function OnnxWeb(props: OnnxWebProps) {
-  const { client, config } = props;
+  const { config } = props;
 
+  const client = mustExist(useContext(ClientContext));
   const [tab, setTab] = useState('txt2img');
   const [model, setModel] = useState(config.model.default);
   const [platform, setPlatform] = useState(config.platform.default);
@@ -76,18 +80,16 @@ export function OnnxWeb(props: OnnxWebProps) {
             </TabList>
           </Box>
           <TabPanel value='txt2img'>
-            <Txt2Img client={client} config={config} model={model} platform={platform} />
+            <Txt2Img config={config} model={model} platform={platform} />
           </TabPanel>
           <TabPanel value='img2img'>
-            <Img2Img client={client} config={config} model={model} platform={platform} />
+            <Img2Img config={config} model={model} platform={platform} />
           </TabPanel>
           <TabPanel value='inpaint'>
-            <Inpaint client={client} config={config} model={model} platform={platform} />
+            <Inpaint config={config} model={model} platform={platform} />
           </TabPanel>
           <TabPanel value='settings'>
-            <Box>
-              settings for onnx-web
-            </Box>
+            <Settings config={config} />
           </TabPanel>
         </TabContext>
       </Container>

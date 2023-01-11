@@ -72,11 +72,14 @@ export interface ApiClient {
 
 export const STATUS_SUCCESS = 200;
 
-export function paramsFromConfig(defaults: ConfigParams): BaseImgParams {
+export function paramsFromConfig(defaults: ConfigParams): Required<BaseImgParams> {
   return {
     cfg: defaults.cfg.default,
+    model: defaults.model.default,
     negativePrompt: defaults.negativePrompt.default,
+    platform: defaults.platform.default,
     prompt: defaults.prompt.default,
+    scheduler: defaults.scheduler.default,
     steps: defaults.steps.default,
     seed: defaults.seed.default,
   };

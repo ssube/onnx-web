@@ -2,19 +2,19 @@ import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { FormatColorFill, Gradient } from '@mui/icons-material';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
+import { useStore } from 'zustand';
 
-import { ApiClient, ApiResponse, BaseImgParams, equalResponse, paramsFromConfig } from '../api/client.js';
-import { ConfigParams, DEFAULT_BRUSH, IMAGE_FILTER, STALE_TIME } from '../config.js';
-import { SCHEDULER_LABELS } from '../strings.js';
+import { ApiResponse, equalResponse } from '../api/client.js';
+import { ConfigParams, DEFAULT_BRUSH, IMAGE_FILTER } from '../config.js';
+import { ClientContext, StateContext } from '../main.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
 import { MutationHistory } from './MutationHistory.js';
 import { NumericField } from './NumericField.js';
-import { QueryList } from './QueryList.js';
 
-const { useEffect, useRef, useState } = React;
+const { useContext, useEffect, useRef, useState } = React;
 
 export const FULL_CIRCLE = 2 * Math.PI;
 export const PIXEL_SIZE = 4;
@@ -46,6 +46,10 @@ export function floodAbove(n: number): number {
   }
 }
 
+export function floodGray(n: number): number {
+  return n;
+}
+
 export function grayToRGB(n: number): string {
   return `rgb(${n.toFixed(0)},${n.toFixed(0)},${n.toFixed(0)})`;
 }
@@ -56,7 +60,6 @@ export interface Point {
 }
 
 export interface InpaintProps {
-  client: ApiClient;
   config: ConfigParams;
 
   model: string;
@@ -64,17 +67,17 @@ export interface InpaintProps {
 }
 
 export function Inpaint(props: InpaintProps) {
-  const { client, config, model, platform } = props;
+  const { config, model, platform } = props;
+  const client = mustExist(useContext(ClientContext));
 
   async function uploadSource() {
     const canvas = mustExist(canvasRef.current);
     return new Promise<ApiResponse>((res, _rej) => {
       canvas.toBlob((blob) => {
         res(client.inpaint({
-          ...params,
+          ...state.inpaint,
           model,
           platform,
-          scheduler,
           mask: mustExist(blob),
           source: mustExist(source),
         }));
@@ -84,13 +87,14 @@ export function Inpaint(props: InpaintProps) {
 
   function drawSource(file: File) {
     const image = new Image();
-    const src = URL.createObjectURL(file);
     image.onload = () => {
       const canvas = mustExist(canvasRef.current);
       const ctx = mustExist(canvas.getContext('2d'));
       ctx.drawImage(image, 0, 0);
       URL.revokeObjectURL(src);
     };
+
+    const src = URL.createObjectURL(file);
     image.src = src;
   }
 
@@ -108,25 +112,6 @@ export function Inpaint(props: InpaintProps) {
     if (doesExist(mask) === false) {
       drawSource(file);
     }
-  }
-
-  function grayscaleMask() {
-    const canvas = mustExist(canvasRef.current);
-    const ctx = mustExist(canvas.getContext('2d'));
-    const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const pixels = image.data;
-
-    for (let x = 0; x < canvas.width; ++x) {
-      for (let y = 0; y < canvas.height; ++y) {
-        const i = (y * canvas.width * PIXEL_SIZE) + (x * PIXEL_SIZE);
-        const hue = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / PIXEL_WEIGHT;
-        pixels[i] = hue;
-        pixels[i + 1] = hue;
-        pixels[i + 2] = hue;
-      }
-    }
-
-    ctx.putImageData(image, 0, 0);
   }
 
   function floodMask(flooder: (n: number) => number) {
@@ -151,22 +136,19 @@ export function Inpaint(props: InpaintProps) {
   }
 
   const upload = useMutation(uploadSource);
-  const schedulers = useQuery('schedulers', async () => client.schedulers(), {
-    staleTime: STALE_TIME,
-  });
-
   // eslint-disable-next-line no-null/no-null
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [clicks, setClicks] = useState<Array<Point>>([]);
+  const state = useStore(mustExist(useContext(StateContext)));
 
+  // painting state
+  const [clicks, setClicks] = useState<Array<Point>>([]);
   const [painting, setPainting] = useState(false);
   const [brushColor, setBrushColor] = useState(DEFAULT_BRUSH.color);
   const [brushSize, setBrushSize] = useState(DEFAULT_BRUSH.size);
 
+  // image state
   const [mask, setMask] = useState<File>();
   const [source, setSource] = useState<File>();
-  const [params, setParams] = useState<BaseImgParams>(paramsFromConfig(config));
-  const [scheduler, setScheduler] = useState(config.scheduler.default);
 
   useEffect(() => {
     const canvas = mustExist(canvasRef.current);
@@ -228,18 +210,6 @@ export function Inpaint(props: InpaintProps) {
 
   return <Box>
     <Stack spacing={2}>
-      <Stack direction='row' spacing={2}>
-        <QueryList
-          id='schedulers'
-          labels={SCHEDULER_LABELS}
-          name='Scheduler'
-          result={schedulers}
-          value={scheduler}
-          onChange={(value) => {
-            setScheduler(value);
-          }}
-        />
-      </Stack>
       <ImageInput filter={IMAGE_FILTER} label='Source' onChange={changeSource} />
       <ImageInput filter={IMAGE_FILTER} label='Mask' onChange={changeMask} renderImage={renderCanvas} />
       <Stack direction='row' spacing={4}>
@@ -274,7 +244,7 @@ export function Inpaint(props: InpaintProps) {
         <Button
           variant='outlined'
           startIcon={<Gradient />}
-          onClick={() => grayscaleMask()}>
+          onClick={() => floodMask(floodGray)}>
           Grayscale
         </Button>
         <Button
@@ -284,9 +254,13 @@ export function Inpaint(props: InpaintProps) {
           Gray to white
         </Button>
       </Stack>
-      <ImageControl config={config} params={params} onChange={(newParams) => {
-        setParams(newParams);
-      }} />
+      <ImageControl
+        config={config}
+        params={state.inpaint}
+        onChange={(newParams) => {
+          state.setInpaint(newParams);
+        }}
+      />
       <Button onClick={() => upload.mutate()}>Generate</Button>
       <MutationHistory result={upload} limit={4} element={ImageCard}
         isEqual={equalResponse}

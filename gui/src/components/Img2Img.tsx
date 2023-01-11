@@ -1,22 +1,21 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
+import { useStore } from 'zustand';
 
-import { ApiClient, BaseImgParams, paramsFromConfig } from '../api/client.js';
-import { ConfigParams, IMAGE_FILTER, STALE_TIME } from '../config.js';
-import { SCHEDULER_LABELS } from '../strings.js';
+import { equalResponse } from '../api/client.js';
+import { ConfigParams, IMAGE_FILTER } from '../config.js';
+import { ClientContext, StateContext } from '../main.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
 import { MutationHistory } from './MutationHistory.js';
 import { NumericField } from './NumericField.js';
-import { QueryList } from './QueryList.js';
 
-const { useState } = React;
+const { useContext, useState } = React;
 
 export interface Img2ImgProps {
-  client: ApiClient;
   config: ConfigParams;
 
   model: string;
@@ -24,46 +23,28 @@ export interface Img2ImgProps {
 }
 
 export function Img2Img(props: Img2ImgProps) {
-  const { client, config, model, platform } = props;
+  const { config, model, platform } = props;
 
   async function uploadSource() {
     return client.img2img({
-      ...params,
+      ...state.img2img,
       model,
       platform,
-      scheduler,
-      strength,
       source: mustExist(source), // TODO: show an error if this doesn't exist
     });
   }
 
+  const client = mustExist(useContext(ClientContext));
   const upload = useMutation(uploadSource);
-  const schedulers = useQuery('schedulers', async () => client.schedulers(), {
-    staleTime: STALE_TIME,
-  });
+  const state = useStore(mustExist(useContext(StateContext)));
 
   const [source, setSource] = useState<File>();
-  const [strength, setStrength] = useState(config.strength.default);
-  const [params, setParams] = useState<BaseImgParams>(paramsFromConfig(config));
-  const [scheduler, setScheduler] = useState(config.scheduler.default);
 
   return <Box>
     <Stack spacing={2}>
-      <Stack direction='row' spacing={2}>
-        <QueryList
-          id='schedulers'
-          labels={SCHEDULER_LABELS}
-          name='Scheduler'
-          result={schedulers}
-          value={scheduler}
-          onChange={(value) => {
-            setScheduler(value);
-          }}
-        />
-      </Stack>
       <ImageInput filter={IMAGE_FILTER} label='Source' onChange={setSource} />
-      <ImageControl config={config} params={params} onChange={(newParams) => {
-        setParams(newParams);
+      <ImageControl config={config} params={state.img2img} onChange={(newParams) => {
+        state.setImg2Img(newParams);
       }} />
       <NumericField
         decimal
@@ -71,14 +52,16 @@ export function Img2Img(props: Img2ImgProps) {
         min={config.strength.min}
         max={config.strength.max}
         step={config.strength.step}
-        value={strength}
+        value={state.img2img.strength}
         onChange={(value) => {
-          setStrength(value);
+          state.setImg2Img({
+            strength: value,
+          });
         }}
       />
       <Button onClick={() => upload.mutate()}>Generate</Button>
       <MutationHistory result={upload} limit={4} element={ImageCard}
-        isEqual={(a, b) => a.output === b.output}
+        isEqual={equalResponse}
       />
     </Stack>
   </Box>;

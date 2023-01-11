@@ -1,20 +1,20 @@
+import { mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
+import { useStore } from 'zustand';
 
-import { ApiClient, BaseImgParams, paramsFromConfig } from '../api/client.js';
-import { ConfigParams, STALE_TIME } from '../config.js';
-import { SCHEDULER_LABELS } from '../strings.js';
+import { BaseImgParams, equalResponse, paramsFromConfig } from '../api/client.js';
+import { ConfigParams } from '../config.js';
+import { ClientContext, StateContext } from '../main.js';
 import { ImageCard } from './ImageCard.js';
 import { ImageControl } from './ImageControl.js';
 import { MutationHistory } from './MutationHistory.js';
 import { NumericField } from './NumericField.js';
-import { QueryList } from './QueryList.js';
 
-const { useState } = React;
+const { useContext, useState } = React;
 
 export interface Txt2ImgProps {
-  client: ApiClient;
   config: ConfigParams;
 
   model: string;
@@ -22,45 +22,24 @@ export interface Txt2ImgProps {
 }
 
 export function Txt2Img(props: Txt2ImgProps) {
-  const { client, config, model, platform } = props;
+  const { config, model, platform } = props;
 
   async function generateImage() {
     return client.txt2img({
-      ...params,
+      ...state.txt2img,
       model,
       platform,
-      scheduler,
-      height,
-      width,
     });
   }
 
+  const client = mustExist(useContext(ClientContext));
   const generate = useMutation(generateImage);
-  const schedulers = useQuery('schedulers', async () => client.schedulers(), {
-    staleTime: STALE_TIME,
-  });
-
-  const [height, setHeight] = useState(config.height.default);
-  const [width, setWidth] = useState(config.width.default);
-  const [params, setParams] = useState<BaseImgParams>(paramsFromConfig(config));
-  const [scheduler, setScheduler] = useState(config.scheduler.default);
+  const state = useStore(mustExist(useContext(StateContext)));
 
   return <Box>
     <Stack spacing={2}>
-      <Stack direction='row' spacing={2}>
-        <QueryList
-          id='schedulers'
-          labels={SCHEDULER_LABELS}
-          name='Scheduler'
-          result={schedulers}
-          value={scheduler}
-          onChange={(value) => {
-            setScheduler(value);
-          }}
-        />
-      </Stack>
-      <ImageControl config={config} params={params} onChange={(newParams) => {
-        setParams(newParams);
+      <ImageControl config={config} params={state.txt2img} onChange={(newParams) => {
+        state.setTxt2Img(newParams);
       }} />
       <Stack direction='row' spacing={4}>
         <NumericField
@@ -68,9 +47,11 @@ export function Txt2Img(props: Txt2ImgProps) {
           min={config.width.min}
           max={config.width.max}
           step={config.width.step}
-          value={width}
+          value={state.txt2img.width}
           onChange={(value) => {
-            setWidth(value);
+            state.setTxt2Img({
+              width: value,
+            });
           }}
         />
         <NumericField
@@ -78,15 +59,20 @@ export function Txt2Img(props: Txt2ImgProps) {
           min={config.height.min}
           max={config.height.max}
           step={config.height.step}
-          value={height}
+          value={state.txt2img.height}
           onChange={(value) => {
-            setHeight(value);
+            state.setTxt2Img({
+              height: value,
+            });
           }}
         />
       </Stack>
       <Button onClick={() => generate.mutate()}>Generate</Button>
-      <MutationHistory result={generate} limit={4} element={ImageCard}
-        isEqual={(a, b) => a.output === b.output}
+      <MutationHistory
+        element={ImageCard}
+        limit={4}
+        isEqual={equalResponse}
+        result={generate}
       />
     </Stack>
   </Box>;

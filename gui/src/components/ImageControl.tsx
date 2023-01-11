@@ -1,11 +1,17 @@
-import { doesExist } from '@apextoaster/js-utils';
+import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Casino } from '@mui/icons-material';
 import { Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
+import { useQuery } from 'react-query';
 
 import { BaseImgParams } from '../api/client.js';
-import { ConfigParams } from '../config.js';
+import { ConfigParams, STALE_TIME } from '../config.js';
+import { ClientContext } from '../main.js';
+import { SCHEDULER_LABELS } from '../strings.js';
 import { NumericField } from './NumericField.js';
+import { QueryList } from './QueryList.js';
+
+const { useContext } = React;
 
 export interface ImageControlProps {
   config: ConfigParams;
@@ -14,10 +20,33 @@ export interface ImageControlProps {
   onChange?: (params: BaseImgParams) => void;
 }
 
+/**
+ * doesn't need to use state, the parent component knows which params to pass
+ */
 export function ImageControl(props: ImageControlProps) {
   const { config, params } = props;
 
+  const client = mustExist(useContext(ClientContext));
+  const schedulers = useQuery('schedulers', async () => client.schedulers(), {
+    staleTime: STALE_TIME,
+  });
+
   return <Stack spacing={2}>
+    <QueryList
+      id='schedulers'
+      labels={SCHEDULER_LABELS}
+      name='Scheduler'
+      result={schedulers}
+      value={mustDefault(params.scheduler, '')}
+      onChange={(value) => {
+        if (doesExist(props.onChange)) {
+          props.onChange({
+            ...params,
+            scheduler: value,
+          });
+        }
+      }}
+    />
     <Stack direction='row' spacing={4}>
       <NumericField
         decimal

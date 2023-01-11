@@ -20,6 +20,10 @@ export type ConfigRanges<T extends object> = {
   [K in KeyFilter<T>]: T[K] extends number ? ConfigNumber : T[K] extends string ? ConfigString : never;
 };
 
+export type ConfigState<T extends object> = {
+  [K in KeyFilter<T>]: T[K] extends number ? number : T[K] extends string ? string : never;
+};
+
 export type ConfigParams = ConfigRanges<Required<Img2ImgParams & Txt2ImgParams>>;
 
 export interface Config {
