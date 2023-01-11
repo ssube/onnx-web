@@ -70,6 +70,7 @@ build-gui-bundle:
     - cd gui
     - make ci
 
+# packages, various
 .package-api-oci:
   extends:
     - .build-oci
@@ -146,6 +147,7 @@ package-gui-oci-node-buster:
     IMAGE_ARCH: node-buster
     IMAGE_FILE: Containerfile.node.buster
 
+# language-specific packages
 package-api-twine:
   extends:
     - .build-node
@@ -171,3 +173,27 @@ package-gui-npm:
   script:
     - cd gui
     - npm publish
+
+# commit status
+github-pending:
+  stage: status-pre
+  extends:
+    - .build-curl
+  script:
+    - ./common/scripts/github-status.sh pending
+
+github-failure:
+  stage: status-post
+  extends:
+    - .build-curl
+  when: on_failure
+  script:
+    - ./common/scripts/github-status.sh failure
+
+github-success:
+  stage: status-post
+  extends:
+    - .build-curl
+  when: on_success
+  script:
+    - ./common/scripts/github-status.sh success
