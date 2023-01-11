@@ -180,14 +180,14 @@ package-gui-npm:
 
 # commit status
 github-pending:
-  stage: status-pre
+  stage: .pre
   extends:
     - .build-curl
   script:
     - ./common/scripts/github-status.sh pending
 
 github-failure:
-  stage: status-post
+  stage: .post
   extends:
     - .build-curl
   when: on_failure
@@ -195,7 +195,7 @@ github-failure:
     - ./common/scripts/github-status.sh failure
 
 github-success:
-  stage: status-post
+  stage: .post
   extends:
     - .build-curl
   when: on_success
