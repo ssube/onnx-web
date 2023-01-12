@@ -47,7 +47,7 @@ export async function main() {
   merge(params, config.params);
 
   const defaults = paramsFromConfig(params);
-  const state = createStore<OnnxState, [['zustand/persist', never]]>(persist((set) => ({
+  const state = createStore<OnnxState, [['zustand/persist', OnnxState]]>(persist((set) => ({
     defaults,
     history: {
       images: [],
@@ -170,6 +170,13 @@ export async function main() {
     },
   }), {
     name: 'onnx-web',
+    partialize: (oldState) => ({
+      ...oldState,
+      history: {
+        ...oldState.history,
+        loading: false,
+      },
+    }),
     storage: createJSONStorage(() => localStorage),
   }));
 
