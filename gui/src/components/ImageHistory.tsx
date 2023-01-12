@@ -16,7 +16,7 @@ export function ImageHistory() {
   const children = [];
 
   if (state.history.loading) {
-    children.push(<LoadingCard height={512} width={512} />); // TODO: get dimensions from config
+    children.push(<LoadingCard key='loading' height={512} width={512} />); // TODO: get dimensions from config
   }
 
   function removeHistory(image: ApiResponse) {
@@ -24,7 +24,7 @@ export function ImageHistory() {
   }
 
   if (images.length > 0) {
-    children.push(...images.map((item) => <ImageCard value={item} onDelete={removeHistory} />));
+    children.push(...images.map((item) => <ImageCard key={item.output} value={item} onDelete={removeHistory} />));
   } else {
     if (state.history.loading === false) {
       children.push(<div>No results. Press Generate.</div>);

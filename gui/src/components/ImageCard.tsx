@@ -11,7 +11,7 @@ export interface ImageCardProps {
   onDelete?: (key: ApiResponse) => void;
 }
 
-export function GridItem(props: {xs: number; children: React.ReactNode}) {
+export function GridItem(props: { xs: number; children: React.ReactNode }) {
   return <Grid item xs={props.xs}>
     <Paper elevation={0} sx={{ padding: 1 }}>{props.children}</Paper>
   </Grid>;
@@ -20,6 +20,16 @@ export function GridItem(props: {xs: number; children: React.ReactNode}) {
 export function ImageCard(props: ImageCardProps) {
   const { value } = props;
   const { params, output } = value;
+
+  function deleteImage() {
+    if (doesExist(props.onDelete)) {
+      props.onDelete(value);
+    }
+  }
+
+  function downloadImage() {
+    window.open(output, '_blank');
+  }
 
   return <Card sx={{ maxWidth: params.width }} elevation={2}>
     <CardMedia sx={{ height: params.height }}
@@ -37,16 +47,12 @@ export function ImageCard(props: ImageCardProps) {
           <GridItem xs={8}>Scheduler: {params.scheduler}</GridItem>
           <GridItem xs={12}>{params.prompt}</GridItem>
           <GridItem xs={2}>
-            <Button onClick={() => window.open(output, '_blank')}>
+            <Button onClick={downloadImage}>
               <Download />
             </Button>
           </GridItem>
           <GridItem xs={2}>
-            <Button onClick={() => {
-              if (doesExist(props.onDelete)) {
-                props.onDelete(value);
-              }
-            }}>
+            <Button onClick={deleteImage}>
               <Delete />
             </Button>
           </GridItem>

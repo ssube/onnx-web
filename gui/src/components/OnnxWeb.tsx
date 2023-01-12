@@ -38,66 +38,64 @@ export function OnnxWeb(props: OnnxWebProps) {
   });
 
   return (
-    <div>
-      <Container>
-        <Box sx={{ my: 4 }}>
-          <Typography variant='h3' gutterBottom>
-            ONNX Web
-          </Typography>
+    <Container>
+      <Box sx={{ my: 4 }}>
+        <Typography variant='h3' gutterBottom>
+          ONNX Web
+        </Typography>
+      </Box>
+      <Box sx={{ mx: 4, my: 4 }}>
+        <Stack direction='row' spacing={2}>
+          <QueryList
+            id='models'
+            labels={MODEL_LABELS}
+            name='Model'
+            result={models}
+            value={model}
+            onChange={(value) => {
+              setModel(value);
+            }}
+          />
+          <QueryList
+            id='platforms'
+            labels={PLATFORM_LABELS}
+            name='Platform'
+            result={platforms}
+            value={platform}
+            onChange={(value) => {
+              setPlatform(value);
+            }}
+          />
+        </Stack>
+      </Box>
+      <TabContext value={tab}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <TabList onChange={(_e, idx) => {
+            setTab(idx);
+          }}>
+            <Tab label='txt2img' value='txt2img' />
+            <Tab label='img2img' value='img2img' />
+            <Tab label='inpaint' value='inpaint' />
+            <Tab label='settings' value='settings' />
+          </TabList>
         </Box>
-        <Box sx={{ mx: 4, my: 4 }}>
-          <Stack direction='row' spacing={2}>
-            <QueryList
-              id='models'
-              labels={MODEL_LABELS}
-              name='Model'
-              result={models}
-              value={model}
-              onChange={(value) => {
-                setModel(value);
-              }}
-            />
-            <QueryList
-              id='platforms'
-              labels={PLATFORM_LABELS}
-              name='Platform'
-              result={platforms}
-              value={platform}
-              onChange={(value) => {
-                setPlatform(value);
-              }}
-            />
-          </Stack>
-        </Box>
-        <TabContext value={tab}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <TabList onChange={(_e, idx) => {
-              setTab(idx);
-            }}>
-              <Tab label='txt2img' value='txt2img' />
-              <Tab label='img2img' value='img2img' />
-              <Tab label='inpaint' value='inpaint' />
-              <Tab label='settings' value='settings' />
-            </TabList>
-          </Box>
-          <TabPanel value='txt2img'>
-            <Txt2Img config={config} model={model} platform={platform} />
-          </TabPanel>
-          <TabPanel value='img2img'>
-            <Img2Img config={config} model={model} platform={platform} />
-          </TabPanel>
-          <TabPanel value='inpaint'>
-            <Inpaint config={config} model={model} platform={platform} />
-          </TabPanel>
-          <TabPanel value='settings'>
-            <Settings config={config} />
-          </TabPanel>
-        </TabContext>
-        <Divider variant='middle' />
-        <Box sx={{ mx: 4, my: 4 }}>
-          <ImageHistory />
-        </Box>
-      </Container>
-    </div>
+        <TabPanel value='txt2img'>
+          <Txt2Img config={config} model={model} platform={platform} />
+        </TabPanel>
+        <TabPanel value='img2img'>
+          <Img2Img config={config} model={model} platform={platform} />
+        </TabPanel>
+        <TabPanel value='inpaint'>
+          <Inpaint config={config} model={model} platform={platform} />
+        </TabPanel>
+        <TabPanel value='settings'>
+          <Settings config={config} />
+        </TabPanel>
+      </TabContext>
+      <Divider variant='middle' />
+      <Box sx={{ mx: 4, my: 4 }}>
+        <ImageHistory />
+      </Box>
+    </Container>
   );
 }
