@@ -9,6 +9,8 @@ RUN python3 -m venv onnx_env
 
 ENV PATH="/onnx-web/onnx_web/bin:$PATH"
 
+RUN pip3 install pip --upgrade
+
 COPY requirements.txt /onnx-web/requirements.txt
 
 RUN pip3 install -r requirements.txt

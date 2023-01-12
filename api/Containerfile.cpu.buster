@@ -2,13 +2,19 @@ FROM docker.io/python:3.10-buster
 
 WORKDIR /onnx-web
 
-# TODO: set up venv within the container
+RUN pip3 install virtualenv --upgrade
 
-RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+RUN python3 -m venv onnx_env
+
+ENV PATH="/onnx-web/onnx_web/bin:$PATH"
+
+RUN pip3 install pip --upgrade
 
 COPY requirements.txt /onnx-web/requirements.txt
 
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
+
+RUN pip3 install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu
 
 COPY onnx_web/ /onnx-web/onnx_web/
 
