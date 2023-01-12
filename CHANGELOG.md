@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.3.0](https://github.com/ssube/onnx-web/compare/v0.2.1...v0.3.0) (2023-01-12)
+
+
+### Features
+
+* **api:** add inpaint endpoint ([182ce6d](https://github.com/ssube/onnx-web/commit/182ce6de90361c2eb5d47861ab13570c8186db18))
+* **api:** add params endpoint, defaults file ([03fd728](https://github.com/ssube/onnx-web/commit/03fd728ab049187274c7208f530eaa9755d6ae98))
+* **api:** set up venv in CUDA container, add onnxruntime-gpu ([a3fe2ca](https://github.com/ssube/onnx-web/commit/a3fe2ca559e8c668b44220b41c4cdd2ada317e01))
+* **build:** add github status jobs (fixes [#28](https://github.com/ssube/onnx-web/issues/28)) ([c8b2abc](https://github.com/ssube/onnx-web/commit/c8b2abc110059d71b400aec30e3746b11c1b342d))
+* **build:** replace Buster image with CUDA-based Ubuntu ([07c18c2](https://github.com/ssube/onnx-web/commit/07c18c2245ec6f0063ed2278976c6704dd7f1404))
+* **build:** upload pip package (fixes [#29](https://github.com/ssube/onnx-web/issues/29)) ([8452b73](https://github.com/ssube/onnx-web/commit/8452b7384cb4ee4a50b7887cf0fadbd6e2c9d684))
+* **gui:** add inpaint call to API client ([15ab44f](https://github.com/ssube/onnx-web/commit/15ab44f2ad03fa691b8b9df6edc426d8f0cb71ce))
+* **gui:** add inpaint tab and basic image mask component ([11b9295](https://github.com/ssube/onnx-web/commit/11b9295efc8ebe8edac445e25a92cba8e143baae))
+* **gui:** display source images after selection ([f49fc96](https://github.com/ssube/onnx-web/commit/f49fc960c91ac786aacdb8662856c645da07d9bc))
+* **gui:** implement mask painting, flood fill ([5e71292](https://github.com/ssube/onnx-web/commit/5e712923db6a898275b22d35d0015eec6ee567aa))
+* **gui:** load and merge server params with config ([37efd51](https://github.com/ssube/onnx-web/commit/37efd513416b605c0d231432a88b292fc5275670))
+* **gui:** persist image control state (fixes [#11](https://github.com/ssube/onnx-web/issues/11)) ([07fa81a](https://github.com/ssube/onnx-web/commit/07fa81a66bce91850093c9718ff4d4aed05aa2e6))
+* **gui:** share image history between tabs, add setting to adjust length of history (fixes [#22](https://github.com/ssube/onnx-web/issues/22)) ([662bf42](https://github.com/ssube/onnx-web/commit/662bf42454c31df6f439d440f0f2cfe4d59397da))
+
+
+### Bug Fixes
+
+* **api:** add latents to inpaint, remove strength ([131cff6](https://github.com/ssube/onnx-web/commit/131cff6ba46dd35477333ee7998a4b304f89b4eb))
+* **api:** allow decimal CFG ([2f3b5c0](https://github.com/ssube/onnx-web/commit/2f3b5c06c7cd6b0864bac94666f5aa9f02abe25f))
+* **api:** omit negative prompt from pipeline ([9bb01cc](https://github.com/ssube/onnx-web/commit/9bb01cc01d47f39f3dda94bf228497f9cb70ded1))
+* **api:** pass seed when calculating inpaint filenames ([d20fb91](https://github.com/ssube/onnx-web/commit/d20fb910739b24cb295e4d5c38a470f866774d5d))
+* **api:** rename to avoid shadowing type ([48f42e5](https://github.com/ssube/onnx-web/commit/48f42e56fe1bcf495f7dfe4062330d83e486f664))
+* **api:** use correct dict for type hints ([4abf760](https://github.com/ssube/onnx-web/commit/4abf760716fc3baef44da8da323d28939e386e97))
+* **build:** add venv to CPU image ([362b732](https://github.com/ssube/onnx-web/commit/362b7327072aab7cc5ab3fcf50a3a46733db29cb))
+* **build:** define template for curl jobs ([9f7e16b](https://github.com/ssube/onnx-web/commit/9f7e16b62f8b646d508314ab666e038dd5bc0dff))
+* **build:** put Github status jobs in correct stages ([e704db5](https://github.com/ssube/onnx-web/commit/e704db50b1783cb6b24b32b58e2e49bc66c2a320))
+* bump package versions to 0.2.1 ([760b162](https://github.com/ssube/onnx-web/commit/760b162a5578ff5c5a091e6281f55452b520d157))
+* **docs:** describe how to install inpainting model ([2332c44](https://github.com/ssube/onnx-web/commit/2332c44cee05e1b98821041c6ca343cef606bea2))
+* **gui:** allow decimal steps for CFG ([2ff4aee](https://github.com/ssube/onnx-web/commit/2ff4aee8873194b932e47d7c20dd8ea91396094c))
+* **gui:** consistently load image controls from server params ([4a6458d](https://github.com/ssube/onnx-web/commit/4a6458d8f68e0ee262db1bbb94944d099152720a))
+* **gui:** default mask brush to white/full replacement ([63758b0](https://github.com/ssube/onnx-web/commit/63758b0e21314de96f1f3f6a82ac475ea44cfcf6))
+* **gui:** handle cancel from file input ([6b3c0fe](https://github.com/ssube/onnx-web/commit/6b3c0fea45e1ab8fc0ff249e125fa0c7d344e47c))
+* **gui:** move seed control onto same line with cfg and steps ([1aa2181](https://github.com/ssube/onnx-web/commit/1aa2181d901b7ab86e3268fe20aac2aeeda50946))
+
 ### [0.2.1](https://github.com/ssube/onnx-web/compare/v0.2.0...v0.2.1) (2023-01-08)
 
 
