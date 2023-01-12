@@ -31,13 +31,10 @@ export async function main() {
     name: 'onnx-web',
     partialize: (oldState) => ({
       ...oldState,
-      history: {
-        ...oldState.history,
-        loading: false,
-      },
+      loading: false,
     }),
     storage: createJSONStorage(() => localStorage),
-    version: 1,
+    version: 2,
   }));
 
   const query = new QueryClient();
