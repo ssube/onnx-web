@@ -108,7 +108,7 @@ export async function imageFromResponse(root: string, res: Response): Promise<Ap
 
 export function makeImageURL(root: string, type: string, params: BaseImgParams): URL {
   const url = new URL(type, root);
-  url.searchParams.append('cfg', params.cfg.toFixed(0));
+  url.searchParams.append('cfg', params.cfg.toFixed(1));
   url.searchParams.append('steps', params.steps.toFixed(0));
 
   if (doesExist(params.model)) {
