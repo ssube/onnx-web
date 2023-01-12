@@ -115,8 +115,9 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         pipe = last_pipeline_instance
     else:
         print('loading different pipeline')
-        pipe = pipeline.from_pretrained(
+        pipe = DiffusionPipeline.from_pretrained(
             model,
+            custom_pipeline='lpw_stable_diffusion_onnx',
             provider=provider,
             safety_checker=None,
             scheduler=scheduler.from_pretrained(model, subfolder='scheduler')
