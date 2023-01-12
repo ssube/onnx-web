@@ -192,9 +192,9 @@ def pipeline_from_request(pipeline: DiffusionPipeline):
 
     # image params
     prompt = request.args.get('prompt', default_prompt)
-    negative_prompt = request.args.get('negative', None)
+    negative_prompt = request.args.get('negativePrompt', None)
 
-    if negative_prompt == '':
+    if negative_prompt is not None and negative_prompt.strip() == '':
         negative_prompt = None
 
     cfg = get_and_clamp_float(request.args, 'cfg', default_cfg, config_params.get('cfg').get('max'), 0)
