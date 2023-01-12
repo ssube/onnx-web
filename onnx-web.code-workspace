@@ -42,7 +42,8 @@
 			"spinalcase",
 			"stringcase",
 			"venv",
-			"virtualenv"
+			"virtualenv",
+			"zustand"
 		]
 	}
 }

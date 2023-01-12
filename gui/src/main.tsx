@@ -7,38 +7,12 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { createStore, StoreApi } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { ApiClient, ApiResponse, BaseImgParams, Img2ImgParams, InpaintParams, makeClient, paramsFromConfig, Txt2ImgParams } from './api/client.js';
+import { ApiClient, makeClient } from './api/client.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
-import { ConfigState, loadConfig } from './config.js';
+import { loadConfig } from './config.js';
+import { createStateSlices, OnnxState } from './state.js';
 
 const { createContext } = React;
-
-interface OnnxState {
-  defaults: Required<BaseImgParams>;
-  txt2img: ConfigState<Required<Txt2ImgParams>>;
-  img2img: ConfigState<Required<Img2ImgParams>>;
-  inpaint: ConfigState<Required<InpaintParams>>;
-
-  setDefaults(newParams: Partial<BaseImgParams>): void;
-  setTxt2Img(newParams: Partial<ConfigState<Required<Txt2ImgParams>>>): void;
-  setImg2Img(newParams: Partial<ConfigState<Required<Img2ImgParams>>>): void;
-  setInpaint(newParams: Partial<ConfigState<Required<InpaintParams>>>): void;
-
-  resetTxt2Img(): void;
-  resetImg2Img(): void;
-  resetInpaint(): void;
-
-  history: {
-    images: Array<ApiResponse>;
-    limit: number;
-    loading: boolean;
-  };
-
-  setLimit(limit: number): void;
-  setLoading(loading: boolean): void;
-  setHistory(newHistory: Array<ApiResponse>): void;
-  pushHistory(newImage: ApiResponse): void;
-}
 
 export async function main() {
   const config = await loadConfig();
@@ -46,128 +20,13 @@ export async function main() {
   const params = await client.params();
   merge(params, config.params);
 
-  const defaults = paramsFromConfig(params);
-  const state = createStore<OnnxState, [['zustand/persist', OnnxState]]>(persist((set) => ({
-    defaults,
-    history: {
-      images: [],
-      limit: 4,
-      loading: false,
-    },
-    txt2img: {
-      ...defaults,
-      height: params.height.default,
-      width: params.width.default,
-    },
-    img2img: {
-      ...defaults,
-      strength: params.strength.default,
-    },
-    inpaint: {
-      ...defaults,
-    },
-    setDefaults(newParams) {
-      set((oldState) => ({
-        ...oldState,
-        defaults: {
-          ...oldState.defaults,
-          ...newParams,
-        },
-      }));
-    },
-    setTxt2Img(newParams) {
-      set((oldState) => ({
-        ...oldState,
-        txt2img: {
-          ...oldState.txt2img,
-          ...newParams,
-        },
-      }));
-    },
-    setImg2Img(newParams) {
-      set((oldState) => ({
-        ...oldState,
-        img2img: {
-          ...oldState.img2img,
-          ...newParams,
-        },
-      }));
-    },
-    setInpaint(newParams) {
-      set((oldState) => ({
-        ...oldState,
-        inpaint: {
-          ...oldState.inpaint,
-          ...newParams,
-        },
-      }));
-    },
-    resetTxt2Img() {
-      set((oldState) => ({
-        ...oldState,
-        txt2img: {
-          ...defaults,
-          height: params.height.default,
-          width: params.width.default,
-        },
-      }));
-    },
-    resetImg2Img() {
-      set((oldState) => ({
-        ...oldState,
-        img2img: {
-          ...defaults,
-          strength: params.strength.default,
-        },
-      }));
-    },
-    resetInpaint() {
-      set((oldState) => ({
-        ...oldState,
-        inpaint: {
-          ...defaults,
-        },
-      }));
-    },
-    setLimit(limit) {
-      set((oldState) => ({
-        ...oldState,
-        history: {
-          ...oldState.history,
-          limit,
-        },
-      }));
-    },
-    setLoading(loading) {
-      set((oldState) => ({
-        ...oldState,
-        history: {
-          ...oldState.history,
-          loading,
-        },
-      }));
-    },
-    pushHistory(newImage: ApiResponse) {
-      set((oldState) => ({
-        ...oldState,
-        history: {
-          ...oldState.history,
-          images: [
-            newImage,
-            ...oldState.history.images,
-          ].slice(0, oldState.history.limit),
-        },
-      }));
-    },
-    setHistory(newHistory: Array<ApiResponse>) {
-      set((oldState) => ({
-        ...oldState,
-        history: {
-          ...oldState.history,
-          images: newHistory,
-        },
-      }));
-    },
+  const { createDefaultSlice, createHistorySlice, createImg2ImgSlice, createInpaintSlice, createTxt2ImgSlice } = createStateSlices(params);
+  const state = createStore<OnnxState, [['zustand/persist', OnnxState]]>(persist((...slice) => ({
+    ...createTxt2ImgSlice(...slice),
+    ...createImg2ImgSlice(...slice),
+    ...createInpaintSlice(...slice),
+    ...createHistorySlice(...slice),
+    ...createDefaultSlice(...slice),
   }), {
     name: 'onnx-web',
     partialize: (oldState) => ({
@@ -178,6 +37,7 @@ export async function main() {
       },
     }),
     storage: createJSONStorage(() => localStorage),
+    version: 1,
   }));
 
   const query = new QueryClient();

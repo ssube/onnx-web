@@ -22,7 +22,7 @@ export function Settings(_props: SettingsProps) {
       min={2}
       max={20}
       step={1}
-      value={state.history.limit}
+      value={state.limit}
       onChange={(value) => state.setLimit(value)}
     />
     <TextField variant='outlined' label='Default Model' value={state.defaults.model} onChange={(event) => {
