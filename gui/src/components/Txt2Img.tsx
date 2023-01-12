@@ -22,26 +22,34 @@ export function Txt2Img(props: Txt2ImgProps) {
   const { config, model, platform } = props;
 
   async function generateImage() {
-    state.setLoading(true);
+    setLoading(true);
 
     const output = await client.txt2img({
-      ...state.txt2img,
+      ...params,
       model,
       platform,
     });
 
-    state.pushHistory(output);
-    state.setLoading(false);
+    pushHistory(output);
+    setLoading(false);
   }
 
   const client = mustExist(useContext(ClientContext));
   const generate = useMutation(generateImage);
-  const state = useStore(mustExist(useContext(StateContext)));
+
+  const state = mustExist(useContext(StateContext));
+  const params = useStore(state, (s) => s.txt2img);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setTxt2Img = useStore(state, (s) => s.setTxt2Img);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setLoading = useStore(state, (s) => s.setLoading);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const pushHistory = useStore(state, (s) => s.pushHistory);
 
   return <Box>
     <Stack spacing={2}>
-      <ImageControl config={config} params={state.txt2img} onChange={(newParams) => {
-        state.setTxt2Img(newParams);
+      <ImageControl config={config} params={params} onChange={(newParams) => {
+        setTxt2Img(newParams);
       }} />
       <Stack direction='row' spacing={4}>
         <NumericField
@@ -49,9 +57,9 @@ export function Txt2Img(props: Txt2ImgProps) {
           min={config.width.min}
           max={config.width.max}
           step={config.width.step}
-          value={state.txt2img.width}
+          value={params.width}
           onChange={(value) => {
-            state.setTxt2Img({
+            setTxt2Img({
               width: value,
             });
           }}
@@ -61,9 +69,9 @@ export function Txt2Img(props: Txt2ImgProps) {
           min={config.height.min}
           max={config.height.max}
           step={config.height.step}
-          value={state.txt2img.height}
+          value={params.height}
           onChange={(value) => {
-            state.setTxt2Img({
+            setTxt2Img({
               height: value,
             });
           }}

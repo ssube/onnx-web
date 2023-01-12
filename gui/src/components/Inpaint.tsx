@@ -70,18 +70,18 @@ export function Inpaint(props: InpaintProps) {
 
   async function uploadSource() {
     const canvas = mustExist(canvasRef.current);
-    state.setLoading(true);
+    setLoading(true);
     return new Promise<void>((res, rej) => {
       canvas.toBlob((blob) => {
         client.inpaint({
-          ...state.inpaint,
+          ...params,
           model,
           platform,
           mask: mustExist(blob),
           source: mustExist(source),
         }).then((output) => {
-          state.pushHistory(output);
-          state.setLoading(false);
+          pushHistory(output);
+          setLoading(false);
           res();
         }).catch((err) => rej(err));
       });
@@ -138,10 +138,18 @@ export function Inpaint(props: InpaintProps) {
     ctx.putImageData(image, 0, 0);
   }
 
+  const state = mustExist(useContext(StateContext));
+  const params = useStore(state, (s) => s.inpaint);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setInpaint = useStore(state, (s) => s.setInpaint);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setLoading = useStore(state, (s) => s.setLoading);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const pushHistory = useStore(state, (s) => s.pushHistory);
+
   const upload = useMutation(uploadSource);
   // eslint-disable-next-line no-null/no-null
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const state = useStore(mustExist(useContext(StateContext)));
 
   // painting state
   const [clicks, setClicks] = useState<Array<Point>>([]);
@@ -259,9 +267,9 @@ export function Inpaint(props: InpaintProps) {
       </Stack>
       <ImageControl
         config={config}
-        params={state.inpaint}
+        params={params}
         onChange={(newParams) => {
-          state.setInpaint(newParams);
+          setInpaint(newParams);
         }}
       />
       <Button onClick={() => upload.mutate()}>Generate</Button>

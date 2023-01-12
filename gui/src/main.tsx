@@ -66,45 +66,6 @@ export async function main() {
     inpaint: {
       ...defaults,
     },
-    setLimit(limit) {
-      set((oldState) => ({
-        ...oldState,
-        history: {
-          ...oldState.history,
-          limit,
-        },
-      }));
-    },
-    setLoading(loading) {
-      set((oldState) => ({
-        ...oldState,
-        history: {
-          ...oldState.history,
-          loading,
-        },
-      }));
-    },
-    pushHistory(newImage: ApiResponse) {
-      set((oldState) => ({
-        ...oldState,
-        history: {
-          ...oldState.history,
-          images: [
-            newImage,
-            ...oldState.history.images,
-          ].slice(0, oldState.history.limit),
-        },
-      }));
-    },
-    setHistory(newHistory: Array<ApiResponse>) {
-      set((oldState) => ({
-        ...oldState,
-        history: {
-          ...oldState.history,
-          images: newHistory,
-        },
-      }));
-    },
     setDefaults(newParams) {
       set((oldState) => ({
         ...oldState,
@@ -165,6 +126,45 @@ export async function main() {
         ...oldState,
         inpaint: {
           ...defaults,
+        },
+      }));
+    },
+    setLimit(limit) {
+      set((oldState) => ({
+        ...oldState,
+        history: {
+          ...oldState.history,
+          limit,
+        },
+      }));
+    },
+    setLoading(loading) {
+      set((oldState) => ({
+        ...oldState,
+        history: {
+          ...oldState.history,
+          loading,
+        },
+      }));
+    },
+    pushHistory(newImage: ApiResponse) {
+      set((oldState) => ({
+        ...oldState,
+        history: {
+          ...oldState.history,
+          images: [
+            newImage,
+            ...oldState.history.images,
+          ].slice(0, oldState.history.limit),
+        },
+      }));
+    },
+    setHistory(newHistory: Array<ApiResponse>) {
+      set((oldState) => ({
+        ...oldState,
+        history: {
+          ...oldState.history,
+          images: newHistory,
         },
       }));
     },
