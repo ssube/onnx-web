@@ -130,7 +130,10 @@ export function createStateSlices(base: ConfigParams) {
       }));
     },
     removeHistory(image) {
-      // ?
+      set((prev) => ({
+        ...prev,
+        history: prev.history.filter((it) => it.output !== image.output),
+      }));
     },
     setLimit(limit) {
       set((prev) => ({

@@ -1,9 +1,7 @@
 import { build } from 'esbuild';
-import { createRequire } from 'node:module';
 import { join } from 'path';
 import alias from 'esbuild-plugin-alias';
 
-const require = createRequire(import.meta.url);
 const root = process.cwd();
 
 build({
