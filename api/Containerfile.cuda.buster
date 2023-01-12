@@ -1,4 +1,7 @@
-FROM docker.io/python:3.10-buster
+FROM docker.io/nvidia/cuda:11.7.1-runtime-ubuntu20.04
+
+RUN apt -y update \
+ && apt -y install python3 python3-pip python3-venv
 
 WORKDIR /onnx-web
 
