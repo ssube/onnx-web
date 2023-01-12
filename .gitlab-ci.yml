@@ -120,8 +120,8 @@ package-api-oci-cuda-buster:
   extends:
     - .package-api-oci
   variables:
-    IMAGE_ARCH: cuda-buster
-    IMAGE_FILE: Containerfile.cuda.buster
+    IMAGE_ARCH: cuda-ubuntu
+    IMAGE_FILE: Containerfile.cuda.ubuntu
 
 package-gui-oci-nginx-alpine:
   extends:
