@@ -47,9 +47,9 @@ max_height = 512
 max_width = 512
 
 # paths
-model_path = environ.get('ONNX_WEB_MODEL_PATH', '../models')
-output_path = environ.get('ONNX_WEB_OUTPUT_PATH', '../outputs')
-params_path = environ.get('ONNX_WEB_PARAMS_PATH', './params.json')
+model_path = environ.get('ONNX_WEB_MODEL_PATH', path.join('..', 'models'))
+output_path = environ.get('ONNX_WEB_OUTPUT_PATH', path.join('..', 'outputs'))
+params_path = environ.get('ONNX_WEB_PARAMS_PATH', 'params.json')
 
 
 # pipeline caching
