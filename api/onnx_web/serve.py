@@ -225,7 +225,10 @@ def pipeline_from_request():
 
 def run_txt2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output, height, width):
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
-                         model, provider, scheduler)
+                         model, provider, scheduler,
+                         custom_pipeline='lpw_stable_diffusion_onnx',
+                         revision='onnx',
+                         )
 
     latents = get_latents_from_seed(seed, width, height)
     rng = np.random.RandomState(seed)
@@ -274,7 +277,8 @@ def run_inpaint_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
 
     if left > 0 or right > 0 or top > 0 or bottom > 0:
         print('expanding image for outpainting')
-        source_image, mask_image, _full_noise, _full_dims = expand_image(source_image, mask_image, (left, right, top, bottom))
+        source_image, mask_image, _full_noise, _full_dims = expand_image(
+            source_image, mask_image, (left, right, top, bottom))
 
     image = pipe(
         prompt,
@@ -446,10 +450,14 @@ def inpaint():
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
      width, seed) = pipeline_from_request()
 
-    left = get_and_clamp_int(request.args, 'left', 0, config_params.get('width').get('max'), 0)
-    right = get_and_clamp_int(request.args, 'right', 0, config_params.get('width').get('max'), 0)
-    top = get_and_clamp_int(request.args, 'top', 0, config_params.get('height').get('max'), 0)
-    bottom = get_and_clamp_int(request.args, 'bottom', 0, config_params.get('height').get('max'), 0)
+    left = get_and_clamp_int(request.args, 'left', 0,
+                             config_params.get('width').get('max'), 0)
+    right = get_and_clamp_int(request.args, 'right',
+                              0, config_params.get('width').get('max'), 0)
+    top = get_and_clamp_int(request.args, 'top', 0,
+                            config_params.get('height').get('max'), 0)
+    bottom = get_and_clamp_int(
+        request.args, 'bottom', 0, config_params.get('height').get('max'), 0)
 
     (output_file, output_full) = make_output_path(
         'inpaint', seed, (prompt, cfg, steps, height, width, seed, left, right, top, bottom))
