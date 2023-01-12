@@ -2,9 +2,9 @@
 
 This is a web UI for running [ONNX models](https://onnx.ai/) with GPU acceleration or in software, running locally or on a remote machine.
 
-The API runs on both Linux and Windows and provides access to the major functionality of `diffusers`, along with
-metadata about the available models and accelerators, and the output of previous runs. Hardware acceleration is
-supported for AMD and experimental for Nvidia, with a CPU fallback capable of running on laptop-class machines.
+The API runs on both Linux and Windows and provides access to the major functionality of [`diffusers`](https://huggingface.co/docs/diffusers/main/en/index),
+along with metadata about the available models and accelerators, and the output of previous runs. Hardware acceleration
+is supported on both AMD and Nvidia, with a CPU fallback capable of running on laptop-class machines.
 
 The GUI runs in all major browsers, including on mobile devices, and allows you to select the model and accelerator
 being used, along with the prompt and other image parameters. The last few output images are shown, making it easy to
@@ -18,8 +18,6 @@ Based on guides by:
 - https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674
 - https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs
 - https://www.travelneil.com/stable-diffusion-updates.html
-
-This is still an early project and the instructions are a little rough, but it works on my machine.
 
 ## Features
 
