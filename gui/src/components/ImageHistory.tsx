@@ -1,4 +1,4 @@
-import { mustExist } from '@apextoaster/js-utils';
+import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Grid } from '@mui/material';
 import { useContext } from 'react';
 import * as React from 'react';
@@ -17,14 +17,14 @@ export function ImageHistory() {
 
   const children = [];
 
-  if (loading) {
-    children.push(<LoadingCard key='loading' height={512} width={512} />); // TODO: get dimensions from config
+  if (doesExist(loading)) {
+    children.push(<LoadingCard key='loading' loading={loading} />);
   }
 
   if (history.length > 0) {
-    children.push(...history.map((item) => <ImageCard key={item.output} value={item} onDelete={removeHistory} />));
+    children.push(...history.map((item) => <ImageCard key={item.output.key} value={item} onDelete={removeHistory} />));
   } else {
-    if (loading === false) {
+    if (doesExist(loading) === false) {
       children.push(<div>No results. Press Generate.</div>);
     }
   }
