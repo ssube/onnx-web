@@ -181,7 +181,7 @@ def url_from_rule(rule):
     return url_for(rule.endpoint, **options)
 
 
-def pipeline_from_request(pipeline: DiffusionPipeline):
+def pipeline_from_request():
     user = request.remote_addr
 
     # pipeline stuff
@@ -214,13 +214,12 @@ def pipeline_from_request(pipeline: DiffusionPipeline):
     print("request from %s: %s rounds of %s using %s on %s, %sx%s, %s, %s - %s" %
           (user, steps, scheduler.__name__, model, provider, width, height, cfg, seed, prompt))
 
-    # pipe = load_pipeline(pipeline, model, provider, scheduler)
-    # , pipe)
     return (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height, width, seed)
 
 
-def run_txt2img_pipeline(pipeline, model, provider, scheduler, prompt, negative_prompt, cfg, steps, height, width, seed, output):
-    pipe = load_pipeline(pipeline, model, provider, scheduler)
+def run_txt2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output, height, width):
+    pipe = load_pipeline(OnnxStableDiffusionPipeline,
+                         model, provider, scheduler)
 
     latents = get_latents_from_seed(seed, width, height)
     rng = np.random.RandomState(seed)
@@ -238,6 +237,51 @@ def run_txt2img_pipeline(pipeline, model, provider, scheduler, prompt, negative_
     image.save(output)
 
     print('saved txt2img output: %s' % (output))
+
+
+def run_img2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output, strength, input_image):
+    pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
+                         model, provider, scheduler)
+
+    rng = np.random.RandomState(seed)
+
+    image = pipe(
+        prompt,
+        generator=rng,
+        guidance_scale=cfg,
+        image=input_image,
+        negative_prompt=negative_prompt,
+        num_inference_steps=steps,
+        strength=strength,
+    ).images[0]
+    image.save(output)
+
+    print('saved img2img output: %s' % (output))
+
+
+def run_inpaint_pipeline(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output, height, width, source_image, mask_image):
+    pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
+                         model, provider, scheduler)
+
+    latents = get_latents_from_seed(seed, width, height)
+    rng = np.random.RandomState(seed)
+
+    image = pipe(
+        prompt,
+        generator=rng,
+        guidance_scale=cfg,
+        height=height,
+        image=source_image,
+        latents=latents,
+        mask_image=mask_image,
+        negative_prompt=negative_prompt,
+        num_inference_steps=steps,
+        width=width,
+    ).images[0]
+
+    image.save(output)
+
+    print('saved inpaint output: %s' % (output))
 
 
 # setup
@@ -311,23 +355,14 @@ def img2img():
     strength = get_and_clamp_float(request.args, 'strength', 0.5, 1.0)
 
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
-     width, seed) = pipeline_from_request(OnnxStableDiffusionImg2ImgPipeline)
-
-    rng = np.random.RandomState(seed)
-    image = pipe(
-        prompt,
-        generator=rng,
-        guidance_scale=cfg,
-        image=input_image,
-        negative_prompt=negative_prompt,
-        num_inference_steps=steps,
-        strength=strength,
-    ).images[0]
+     width, seed) = pipeline_from_request()
 
     (output_file, output_full) = make_output_path('img2img', seed,
                                                   (prompt, cfg, negative_prompt, steps, strength, height, width))
-    print("img2img output: %s" % output_full)
-    image.save(output_full)
+    print("img2img output: %s" % (output_full))
+
+    executor.submit_stored(output_file, run_img2img_pipeline, model, provider,
+                    scheduler, prompt, negative_prompt, cfg, steps, seed, output_full, strength, input_image)
 
     return json_with_cors({
         'output': output_file,
@@ -349,14 +384,14 @@ def img2img():
 @app.route('/txt2img', methods=['POST'])
 def txt2img():
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
-     width, seed) = pipeline_from_request(OnnxStableDiffusionPipeline)
+     width, seed) = pipeline_from_request()
 
     (output_file, output_full) = make_output_path('txt2img',
                                                   seed, (prompt, cfg, negative_prompt, steps, height, width))
-    print("txt2img output: %s" % output_full)
+    print("txt2img output: %s" % (output_full))
 
-    executor.submit(run_txt2img_pipeline, OnnxStableDiffusionPipeline, model,
-                    provider, scheduler, prompt, negative_prompt, cfg, steps, height, width, seed, output_full)
+    executor.submit_stored(output_file, run_txt2img_pipeline, model,
+                    provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output_full, height, width)
 
     return json_with_cors({
         'output': output_file,
@@ -386,28 +421,14 @@ def inpaint():
     mask_image.thumbnail((default_width, default_height))
 
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
-     width, seed, pipe) = pipeline_from_request(OnnxStableDiffusionInpaintPipeline)
-
-    latents = get_latents_from_seed(seed, width, height)
-    rng = np.random.RandomState(seed)
-
-    image = pipe(
-        prompt,
-        generator=rng,
-        guidance_scale=cfg,
-        height=height,
-        image=source_image,
-        latents=latents,
-        mask_image=mask_image,
-        negative_prompt=negative_prompt,
-        num_inference_steps=steps,
-        width=width,
-    ).images[0]
+     width, seed) = pipeline_from_request()
 
     (output_file, output_full) = make_output_path(
         'inpaint', seed, (prompt, cfg, steps, height, width, seed))
     print("inpaint output: %s" % output_full)
-    image.save(output_full)
+
+    executor.submit_stored(output_file, run_inpaint_pipeline, model, provider, scheduler, prompt, negative_prompt,
+                    cfg, steps, seed, output_full, height, width, source_image, mask_image)
 
     return json_with_cors({
         'output': output_file,
@@ -423,6 +444,13 @@ def inpaint():
             'height': default_height,
             'width': default_width,
         }
+    })
+
+
+@app.route('/ready/<path:filename>')
+def ready(filename):
+    return json_with_cors({
+        'ready': executor.futures.done(filename),
     })
 
 
