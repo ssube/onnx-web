@@ -447,10 +447,12 @@ def inpaint():
     })
 
 
-@app.route('/ready/<path:filename>')
-def ready(filename):
+@app.route('/ready')
+def ready():
+    output_file = request.args.get('output', None)
+
     return json_with_cors({
-        'ready': executor.futures.done(filename),
+        'ready': executor.futures.done(output_file),
     })
 
 
