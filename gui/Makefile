@@ -1,4 +1,4 @@
-.PHONY: build ci clean docs docs-local lint package run test
+.PHONY: build bundle ci clean docs docs-local lint package run test
 
 # JS targets
 node_modules: deps
