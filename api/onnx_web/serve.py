@@ -48,9 +48,13 @@ max_height = 512
 max_width = 512
 
 # paths
-bundle_path = environ.get('ONNX_WEB_BUNDLE_PATH', path.join('..', '..', 'gui', 'out'))
+# paths used for Flask files must have ../..
+# paths used for fopen only need ../
+bundle_path = environ.get('ONNX_WEB_BUNDLE_PATH',
+                          path.join('..', '..', 'gui', 'out'))
 model_path = environ.get('ONNX_WEB_MODEL_PATH', path.join('..', 'models'))
-output_path = environ.get('ONNX_WEB_OUTPUT_PATH', path.join('..', 'outputs'))
+output_path = environ.get('ONNX_WEB_OUTPUT_PATH',
+                          path.join('..', '..', 'outputs'))
 params_path = environ.get('ONNX_WEB_PARAMS_PATH', 'params.json')
 
 
@@ -148,6 +152,10 @@ def json_with_cors(data, origin='*'):
     res = jsonify(data)
     res.access_control_allow_origin = origin
     return res
+
+
+def serve_bundle_file(filename='index.html'):
+    return send_from_directory(bundle_path, filename)
 
 
 def make_output_path(mode: str, seed: int, params: Tuple[Union[str, int, float]]):
@@ -315,20 +323,15 @@ executor = Executor(app)
 
 # routes
 
-def serve_file(filename = 'index.html'):
-    file = path.join(bundle_path, filename)
-    print('index', file)
-    return send_file(file)
-
 
 @app.route('/')
 def index():
-    return serve_file()
+    return serve_bundle_file()
 
 
 @app.route('/<path:filename>')
 def index_path(filename):
-    return serve_file(filename)
+    return serve_bundle_file(filename)
 
 
 @app.route('/api')
@@ -378,7 +381,7 @@ def img2img():
     print("img2img output: %s" % (output_full))
 
     executor.submit_stored(output_file, run_img2img_pipeline, model, provider,
-                    scheduler, prompt, negative_prompt, cfg, steps, seed, output_full, strength, input_image)
+                           scheduler, prompt, negative_prompt, cfg, steps, seed, output_full, strength, input_image)
 
     return json_with_cors({
         'output': output_file,
@@ -407,7 +410,7 @@ def txt2img():
     print("txt2img output: %s" % (output_full))
 
     executor.submit_stored(output_file, run_txt2img_pipeline, model,
-                    provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output_full, height, width)
+                           provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output_full, height, width)
 
     return json_with_cors({
         'output': output_file,
@@ -444,7 +447,7 @@ def inpaint():
     print("inpaint output: %s" % output_full)
 
     executor.submit_stored(output_file, run_inpaint_pipeline, model, provider, scheduler, prompt, negative_prompt,
-                    cfg, steps, seed, output_full, height, width, source_image, mask_image)
+                           cfg, steps, seed, output_full, height, width, source_image, mask_image)
 
     return json_with_cors({
         'output': output_file,
@@ -474,4 +477,4 @@ def ready():
 
 @app.route('/api/output/<path:filename>')
 def output(filename: str):
-    return send_from_directory(path.join('..', output_path), filename, as_attachment=False)
+    return send_from_directory(output_path, filename, as_attachment=False)
