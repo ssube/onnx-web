@@ -21,6 +21,12 @@ export const THRESHOLDS = {
   upper: 224,
 };
 
+export const MASK_STATE = {
+  clean: 'clean',
+  painting: 'painting',
+  dirty: 'dirty',
+};
+
 export function floodBelow(n: number): number {
   if (n < THRESHOLDS.upper) {
     return COLORS.black;
@@ -82,46 +88,57 @@ export function MaskCanvas(props: MaskCanvasProps) {
     }
 
     ctx.putImageData(image, 0, 0);
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     save();
   }
 
-  function saveMask(): Promise<void> {
+  function saveMask(): void {
     // eslint-disable-next-line no-console
     console.log('starting canvas save');
 
-    return new Promise((res, _rej) => {
-      if (doesExist(canvasRef.current)) {
-        canvasRef.current.toBlob((blob) => {
-          // eslint-disable-next-line no-console
-          console.log('finishing canvas save');
-
-          props.onSave(mustExist(blob));
-          res();
-        });
-      } else {
-        res();
+    if (doesExist(canvasRef.current)) {
+      if (state.current === MASK_STATE.clean) {
+        // eslint-disable-next-line no-console
+        console.log('attempting to save a clean canvas');
+        return;
       }
-    });
+
+      canvasRef.current.toBlob((blob) => {
+        // eslint-disable-next-line no-console
+        console.log('finishing canvas save');
+
+        state.current = MASK_STATE.clean;
+        props.onSave(mustExist(blob));
+      });
+    } else {
+      // eslint-disable-next-line no-console
+      console.log('canvas no longer exists');
+    }
   }
 
-  function drawSource(file: Blob): Promise<void> {
+  function drawCircle(ctx: CanvasRenderingContext2D, point: Point): void {
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, brushSize, 0, FULL_CIRCLE);
+    ctx.fill();
+  }
+
+  function drawSource(file: Blob): void {
     const image = new Image();
-    return new Promise<void>((res, _rej) => {
-      image.onload = () => {
-        const canvas = mustExist(canvasRef.current);
-        const ctx = mustExist(canvas.getContext('2d'));
-        ctx.drawImage(image, 0, 0);
-        URL.revokeObjectURL(src);
+    image.onload = () => {
+      const canvas = mustExist(canvasRef.current);
+      const ctx = mustExist(canvas.getContext('2d'));
+      ctx.drawImage(image, 0, 0);
+      URL.revokeObjectURL(src);
+    };
 
-        // putting a save call here has a tendency to go into an infinite loop
-        res();
-      };
+    const src = URL.createObjectURL(file);
+    image.src = src;
+  }
 
-      const src = URL.createObjectURL(file);
-      image.src = src;
-    });
+  function finishPainting() {
+    if (state.current === MASK_STATE.painting) {
+      state.current = MASK_STATE.dirty;
+      save();
+    }
   }
 
   const save = useMemo(() => throttle(saveMask, SAVE_TIME), []);
@@ -130,21 +147,19 @@ export function MaskCanvas(props: MaskCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // painting state
+  const state = useRef(MASK_STATE.clean);
   const [clicks, setClicks] = useState<Array<Point>>([]);
-  const [painting, setPainting] = useState(false);
   const [brushColor, setBrushColor] = useState(DEFAULT_BRUSH.color);
   const [brushSize, setBrushSize] = useState(DEFAULT_BRUSH.size);
 
   useEffect(() => {
     // including clicks.length prevents the initial render from saving a blank canvas
-    if (doesExist(canvasRef.current) && clicks.length > 0) {
+    if (doesExist(canvasRef.current) && state.current === MASK_STATE.painting && clicks.length > 0) {
       const ctx = mustExist(canvasRef.current.getContext('2d'));
       ctx.fillStyle = grayToRGB(brushColor);
 
       for (const click of clicks) {
-        ctx.beginPath();
-        ctx.arc(click.x, click.y, brushSize, 0, FULL_CIRCLE);
-        ctx.fill();
+        drawCircle(ctx, click);
       }
 
       clicks.length = 0;
@@ -152,15 +167,15 @@ export function MaskCanvas(props: MaskCanvasProps) {
   }, [clicks.length]);
 
   useEffect(() => {
-    if (painting === false) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    // eslint-disable-next-line no-console
+    console.log('state hook called', state.current);
+    if (state.current === MASK_STATE.dirty) {
       save();
     }
-  }, [painting]);
+  }, [state.current]);
 
   useEffect(() => {
     if (doesExist(canvasRef.current) && doesExist(source)) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       drawSource(source);
     }
   }, [source]);
@@ -177,26 +192,25 @@ export function MaskCanvas(props: MaskCanvasProps) {
       onClick={(event) => {
         const canvas = mustExist(canvasRef.current);
         const bounds = canvas.getBoundingClientRect();
+        const ctx = mustExist(canvas.getContext('2d'));
+        ctx.fillStyle = grayToRGB(brushColor);
 
-        setClicks([...clicks, {
+        drawCircle(ctx, {
           x: event.clientX - bounds.left,
           y: event.clientY - bounds.top,
-        }]);
+        });
+
+        state.current = MASK_STATE.dirty;
+        save();
       }}
       onMouseDown={() => {
-        setPainting(true);
+        state.current = MASK_STATE.painting;
       }}
-      onMouseLeave={() => {
-        setPainting(false);
-      }}
-      onMouseOut={() => {
-        setPainting(false);
-      }}
-      onMouseUp={() => {
-        setPainting(false);
-      }}
+      onMouseLeave={finishPainting}
+      onMouseOut={finishPainting}
+      onMouseUp={finishPainting}
       onMouseMove={(event) => {
-        if (painting) {
+        if (state.current === MASK_STATE.painting) {
           const canvas = mustExist(canvasRef.current);
           const bounds = canvas.getBoundingClientRect();
 
