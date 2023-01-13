@@ -45,6 +45,8 @@ export function grayToRGB(n: number): string {
   return `rgb(${n.toFixed(0)},${n.toFixed(0)},${n.toFixed(0)})`;
 }
 
+export type FloodFn = (n: number) => number;
+
 export interface Point {
   x: number;
   y: number;
@@ -61,7 +63,7 @@ export interface MaskCanvasProps {
 export function MaskCanvas(props: MaskCanvasProps) {
   const { config, source } = props;
 
-  function floodMask(flooder: (n: number) => number) {
+  function floodMask(flood: FloodFn) {
     const canvas = mustExist(canvasRef.current);
     const ctx = mustExist(canvas.getContext('2d'));
     const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -71,7 +73,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
       for (let y = 0; y < canvas.height; ++y) {
         const i = (y * canvas.width * PIXEL_SIZE) + (x * PIXEL_SIZE);
         const hue = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / PIXEL_WEIGHT;
-        const final = flooder(hue);
+        const final = flood(hue);
 
         pixels[i] = final;
         pixels[i + 1] = final;
@@ -146,11 +148,15 @@ export function MaskCanvas(props: MaskCanvasProps) {
       }
 
       clicks.length = 0;
+    }
+  }, [clicks.length]);
 
+  useEffect(() => {
+    if (painting === false) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       save();
     }
-  }, [clicks.length]);
+  }, [painting]);
 
   useEffect(() => {
     if (doesExist(canvasRef.current) && doesExist(source)) {
