@@ -39,12 +39,12 @@ interface InpaintSlice {
 interface HistorySlice {
   history: Array<ApiResponse>;
   limit: number;
-  loading: boolean;
+  loading: Maybe<ApiResponse>;
 
   pushHistory(image: ApiResponse): void;
   removeHistory(image: ApiResponse): void;
   setLimit(limit: number): void;
-  setLoading(loading: boolean): void;
+  setLoading(image: Maybe<ApiResponse>): void;
 }
 
 interface DefaultSlice {
@@ -130,7 +130,8 @@ export function createStateSlices(base: ConfigParams) {
   const createHistorySlice: StateCreator<OnnxState, [], [], HistorySlice> = (set) => ({
     history: [],
     limit: 4,
-    loading: false,
+    // eslint-disable-next-line no-null/no-null
+    loading: null,
     pushHistory(image) {
       set((prev) => ({
         ...prev,
@@ -138,6 +139,8 @@ export function createStateSlices(base: ConfigParams) {
           image,
           ...prev.history,
         ],
+        // eslint-disable-next-line no-null/no-null
+        loading: null,
       }));
     },
     removeHistory(image) {

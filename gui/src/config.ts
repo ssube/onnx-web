@@ -43,7 +43,8 @@ export const DEFAULT_BRUSH = {
   size: 8,
 };
 export const IMAGE_FILTER = '.bmp, .jpg, .jpeg, .png';
-export const STALE_TIME = 3_000;
+export const STALE_TIME = 300_000; // 5 minutes
+export const POLL_TIME = 5_000; // 5 seconds
 
 export async function loadConfig(): Promise<Config> {
   const configPath = new URL('./config.json', window.origin);

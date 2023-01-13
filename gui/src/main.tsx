@@ -41,12 +41,8 @@ export async function main() {
     ...createDefaultSlice(...slice),
   }), {
     name: 'onnx-web',
-    partialize: (oldState) => ({
-      ...oldState,
-      loading: false,
-    }),
     storage: createJSONStorage(() => localStorage),
-    version: 2,
+    version: 3,
   }));
 
   // prep react-query client

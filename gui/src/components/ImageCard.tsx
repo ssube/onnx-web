@@ -28,13 +28,13 @@ export function ImageCard(props: ImageCardProps) {
   }
 
   function downloadImage() {
-    window.open(output, '_blank');
+    window.open(output.url, '_blank');
   }
 
   return <Card sx={{ maxWidth: params.width }} elevation={2}>
     <CardMedia sx={{ height: params.height }}
       component='img'
-      image={output}
+      image={output.url}
       title={params.prompt}
     />
     <CardContent>

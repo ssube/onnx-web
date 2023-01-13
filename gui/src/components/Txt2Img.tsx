@@ -1,7 +1,7 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
 import { ConfigParams } from '../config.js';
@@ -22,20 +22,20 @@ export function Txt2Img(props: Txt2ImgProps) {
   const { config, model, platform } = props;
 
   async function generateImage() {
-    setLoading(true);
-
     const output = await client.txt2img({
       ...params,
       model,
       platform,
     });
 
-    pushHistory(output);
-    setLoading(false);
+    setLoading(output);
   }
 
   const client = mustExist(useContext(ClientContext));
-  const generate = useMutation(generateImage);
+  const query = useQueryClient();
+  const generate = useMutation(generateImage, {
+    onSuccess: () => query.invalidateQueries({ queryKey: 'ready '}),
+  });
 
   const state = mustExist(useContext(StateContext));
   const params = useStore(state, (s) => s.txt2img);

@@ -1,7 +1,7 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
 import { ConfigParams, IMAGE_FILTER } from '../config.js';
@@ -23,8 +23,6 @@ export function Img2Img(props: Img2ImgProps) {
   const { config, model, platform } = props;
 
   async function uploadSource() {
-    setLoading(true);
-
     const output = await client.img2img({
       ...params,
       model,
@@ -32,12 +30,14 @@ export function Img2Img(props: Img2ImgProps) {
       source: mustExist(source), // TODO: show an error if this doesn't exist
     });
 
-    pushHistory(output);
-    setLoading(false);
+    setLoading(output);
   }
 
   const client = mustExist(useContext(ClientContext));
-  const upload = useMutation(uploadSource);
+  const query = useQueryClient();
+  const upload = useMutation(uploadSource, {
+    onSuccess: () => query.invalidateQueries({ queryKey: 'ready '}),
+  });
 
   const state = mustExist(useContext(StateContext));
   const params = useStore(state, (s) => s.img2img);
@@ -45,8 +45,6 @@ export function Img2Img(props: Img2ImgProps) {
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setLoading = useStore(state, (s) => s.setLoading);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const pushHistory = useStore(state, (s) => s.pushHistory);
 
   const [source, setSource] = useState<File>();
 

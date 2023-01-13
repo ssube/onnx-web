@@ -53,7 +53,10 @@ export interface OutpaintParams extends Img2ImgParams {
 }
 
 export interface ApiResponse {
-  output: string;
+  output: {
+    key: string;
+    url: string;
+  };
   params: Txt2ImgResponse;
 }
 
@@ -68,6 +71,8 @@ export interface ApiClient {
 
   inpaint(params: InpaintParams): Promise<ApiResponse>;
   outpaint(params: OutpaintParams): Promise<ApiResponse>;
+
+  ready(params: ApiResponse): Promise<{ready: boolean}>;
 }
 
 export const STATUS_SUCCESS = 200;
@@ -94,11 +99,16 @@ export function joinPath(...parts: Array<string>): string {
 }
 
 export async function imageFromResponse(root: string, res: Response): Promise<ApiResponse> {
+  type LimitedResponse = Omit<ApiResponse, 'output'> & {output: string};
+
   if (res.status === STATUS_SUCCESS) {
-    const data = await res.json() as ApiResponse;
-    const output = new URL(joinPath('output', data.output), root).toString();
+    const data = await res.json() as LimitedResponse;
+    const url = new URL(joinPath('output', data.output), root).toString();
     return {
-      output,
+      output: {
+        key: data.output,
+        url,
+      },
       params: data.params,
     };
   } else {
@@ -229,5 +239,12 @@ export function makeClient(root: string, f = fetch): ApiClient {
     async outpaint() {
       throw new NotImplementedError();
     },
+    async ready(params: ApiResponse): Promise<{ready: boolean}> {
+      const path = new URL('ready', root);
+      path.searchParams.append('output', params.output.key);
+
+      const res = await f(path);
+      return await res.json() as {ready: boolean};
+    }
   };
 }

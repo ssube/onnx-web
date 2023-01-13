@@ -2,7 +2,7 @@ import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { FormatColorFill, Gradient } from '@mui/icons-material';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
 import { ConfigParams, DEFAULT_BRUSH, IMAGE_FILTER } from '../config.js';
@@ -69,7 +69,6 @@ export function Inpaint(props: InpaintProps) {
 
   async function uploadSource() {
     const canvas = mustExist(canvasRef.current);
-    setLoading(true);
     return new Promise<void>((res, rej) => {
       canvas.toBlob((blob) => {
         client.inpaint({
@@ -79,8 +78,7 @@ export function Inpaint(props: InpaintProps) {
           mask: mustExist(blob),
           source: mustExist(source),
         }).then((output) => {
-          pushHistory(output);
-          setLoading(false);
+          setLoading(output);
           res();
         }).catch((err) => rej(err));
       });
@@ -146,7 +144,10 @@ export function Inpaint(props: InpaintProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const pushHistory = useStore(state, (s) => s.pushHistory);
 
-  const upload = useMutation(uploadSource);
+  const query = useQueryClient();
+  const upload = useMutation(uploadSource, {
+    onSuccess: () => query.invalidateQueries({ queryKey: 'ready '}),
+  });
   // eslint-disable-next-line no-null/no-null
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
