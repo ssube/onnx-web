@@ -43,8 +43,6 @@ export function Txt2Img(props: Txt2ImgProps) {
   const setTxt2Img = useStore(state, (s) => s.setTxt2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setLoading = useStore(state, (s) => s.setLoading);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const pushHistory = useStore(state, (s) => s.pushHistory);
 
   return <Box>
     <Stack spacing={2}>

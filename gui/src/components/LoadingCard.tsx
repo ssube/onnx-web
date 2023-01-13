@@ -20,6 +20,8 @@ export function LoadingCard(props: LoadingCardProps) {
   const pushHistory = useStore(mustExist(useContext(StateContext)), (state) => state.pushHistory);
 
   const ready = useQuery('ready', () => client.ready(props.loading), {
+    // data will always be ready without this, even if the API says its not
+    cacheTime: 0,
     refetchInterval: POLL_TIME,
   });
 
