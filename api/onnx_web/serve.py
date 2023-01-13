@@ -162,12 +162,14 @@ def make_output_path(mode: str, seed: int, params: Tuple[Union[str, int, float]]
     sha = sha256()
     sha.update(mode.encode('utf-8'))
     for param in params:
-        if isinstance(param, str):
-            sha.update(param.encode('utf-8'))
-        elif isinstance(param, int):
-            sha.update(bytearray(pack('!I', param)))
+        if param is None:
+            continue
         elif isinstance(param, float):
             sha.update(bytearray(pack('!f', param)))
+        elif isinstance(param, int):
+            sha.update(bytearray(pack('!I', param)))
+        elif isinstance(param, str):
+            sha.update(param.encode('utf-8'))
         else:
             print('cannot hash param: %s, %s' % (param, type(param)))
 
