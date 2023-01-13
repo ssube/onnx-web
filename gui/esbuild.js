@@ -2,7 +2,17 @@ import { build } from 'esbuild';
 import { join } from 'path';
 import alias from 'esbuild-plugin-alias';
 
+const debug = process.env['DEBUG'] === 'TRUE'
 const root = process.cwd();
+
+const plugins = [];
+
+if (debug) {
+    plugins.push(alias({
+        'react-dom$': 'react-dom/profiling',
+        'scheduler/tracing': 'scheduler/tracing-profiling',
+    }));
+}
 
 build({
     bundle: true,
@@ -15,11 +25,6 @@ build({
     keepNames: true,
     outdir: 'out/bundle/',
     platform: 'browser',
-    plugins: [
-        alias({
-            'react-dom$': 'react-dom/profiling',
-            'scheduler/tracing': 'scheduler/tracing-profiling',
-        })
-    ],
+    plugins,
     sourcemap: true,
 }).catch(() => process.exit(1));
