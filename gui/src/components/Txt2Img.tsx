@@ -34,7 +34,7 @@ export function Txt2Img(props: Txt2ImgProps) {
   const client = mustExist(useContext(ClientContext));
   const query = useQueryClient();
   const generate = useMutation(generateImage, {
-    onSuccess: () => query.invalidateQueries({ queryKey: 'ready '}),
+    onSuccess: () => query.invalidateQueries({ queryKey: 'ready' }),
   });
 
   const state = mustExist(useContext(StateContext));
