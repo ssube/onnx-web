@@ -1,11 +1,13 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { FormatColorFill, Gradient } from '@mui/icons-material';
 import { Box, Button, Stack } from '@mui/material';
+import { throttle } from 'lodash';
 import * as React from 'react';
+import { useCallback } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
-import { ConfigParams, DEFAULT_BRUSH, IMAGE_FILTER } from '../config.js';
+import { ConfigParams, DEFAULT_BRUSH, IMAGE_FILTER, SAVE_TIME } from '../config.js';
 import { ClientContext, StateContext } from '../state.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
@@ -67,51 +69,49 @@ export function Inpaint(props: InpaintProps) {
   const { config, model, platform } = props;
   const client = mustExist(useContext(ClientContext));
 
-  async function uploadSource() {
-    const canvas = mustExist(canvasRef.current);
-    return new Promise<void>((res, rej) => {
-      canvas.toBlob((blob) => {
-        client.inpaint({
-          ...params,
-          model,
-          platform,
-          mask: mustExist(blob),
-          source: mustExist(source),
-        }).then((output) => {
-          setLoading(output);
-          res();
-        }).catch((err) => rej(err));
-      });
+  function drawSource(file: Blob): Promise<void> {
+    const image = new Image();
+    return new Promise<void>((res, _rej) => {
+      image.onload = () => {
+        const canvas = mustExist(canvasRef.current);
+        const ctx = mustExist(canvas.getContext('2d'));
+        ctx.drawImage(image, 0, 0);
+        URL.revokeObjectURL(src);
+
+        // putting a save call here has a tendency to go into an infinite loop
+        res();
+      };
+
+      const src = URL.createObjectURL(file);
+      image.src = src;
     });
   }
 
-  function drawSource(file: File) {
-    const image = new Image();
-    image.onload = () => {
-      const canvas = mustExist(canvasRef.current);
-      const ctx = mustExist(canvas.getContext('2d'));
-      ctx.drawImage(image, 0, 0);
-      URL.revokeObjectURL(src);
-    };
-
-    const src = URL.createObjectURL(file);
-    image.src = src;
+  function saveMask(): Promise<void> {
+    return new Promise((res, _rej) => {
+      if (doesExist(canvasRef.current)) {
+        canvasRef.current.toBlob((blob) => {
+          setInpaint({
+            mask: mustExist(blob),
+          });
+          res();
+        });
+      } else {
+        res();
+      }
+    });
   }
 
-  function changeMask(file: File) {
-    setMask(file);
+  async function uploadSource(): Promise<void> {
+    const output = await client.inpaint({
+      ...params,
+      model,
+      platform,
+      mask: mustExist(params.mask),
+      source: mustExist(params.source),
+    });
 
-    // always draw the mask to the canvas
-    drawSource(file);
-  }
-
-  function changeSource(file: File) {
-    setSource(file);
-
-    // draw the source to the canvas if the mask has not been set
-    if (doesExist(mask) === false) {
-      drawSource(file);
-    }
+    setLoading(output);
   }
 
   function floodMask(flooder: (n: number) => number) {
@@ -133,45 +133,10 @@ export function Inpaint(props: InpaintProps) {
     }
 
     ctx.putImageData(image, 0, 0);
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    save();
   }
-
-  const state = mustExist(useContext(StateContext));
-  const params = useStore(state, (s) => s.inpaint);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setInpaint = useStore(state, (s) => s.setInpaint);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setLoading = useStore(state, (s) => s.setLoading);
-
-  const query = useQueryClient();
-  const upload = useMutation(uploadSource, {
-    onSuccess: () => query.invalidateQueries({ queryKey: 'ready' }),
-  });
-  // eslint-disable-next-line no-null/no-null
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  // painting state
-  const [clicks, setClicks] = useState<Array<Point>>([]);
-  const [painting, setPainting] = useState(false);
-  const [brushColor, setBrushColor] = useState(DEFAULT_BRUSH.color);
-  const [brushSize, setBrushSize] = useState(DEFAULT_BRUSH.size);
-
-  // image state
-  const [mask, setMask] = useState<File>();
-  const [source, setSource] = useState<File>();
-
-  useEffect(() => {
-    const canvas = mustExist(canvasRef.current);
-    const ctx = mustExist(canvas.getContext('2d'));
-    ctx.fillStyle = grayToRGB(brushColor);
-
-    for (const click of clicks) {
-      ctx.beginPath();
-      ctx.arc(click.x, click.y, brushSize, 0, FULL_CIRCLE);
-      ctx.fill();
-    }
-
-    clicks.length = 0;
-  }, [clicks.length]);
 
   function renderCanvas() {
     return <canvas
@@ -217,10 +182,74 @@ export function Inpaint(props: InpaintProps) {
     />;
   }
 
+  const save = useCallback(throttle(saveMask, SAVE_TIME), []);
+  const state = mustExist(useContext(StateContext));
+  const params = useStore(state, (s) => s.inpaint);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setInpaint = useStore(state, (s) => s.setInpaint);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setLoading = useStore(state, (s) => s.setLoading);
+
+  const query = useQueryClient();
+  const upload = useMutation(uploadSource, {
+    onSuccess: () => query.invalidateQueries({ queryKey: 'ready' }),
+  });
+  // eslint-disable-next-line no-null/no-null
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // painting state
+  const [clicks, setClicks] = useState<Array<Point>>([]);
+  const [painting, setPainting] = useState(false);
+  const [brushColor, setBrushColor] = useState(DEFAULT_BRUSH.color);
+  const [brushSize, setBrushSize] = useState(DEFAULT_BRUSH.size);
+
+  useEffect(function changeMask() {
+    // always draw the new mask to the canvas
+    if (doesExist(params.mask)) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      drawSource(params.mask);
+    }
+  }, [params.mask]);
+
+  useEffect(function changeSource() {
+    // draw the source to the canvas if the mask has not been set
+    if (doesExist(params.source) && doesExist(params.mask) === false) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      drawSource(params.source);
+    }
+  }, [params.source]);
+
+  useEffect(() => {
+    // including clicks.length prevents the initial render from saving a blank canvas
+    if (doesExist(canvasRef.current) && clicks.length > 0) {
+      const ctx = mustExist(canvasRef.current.getContext('2d'));
+      ctx.fillStyle = grayToRGB(brushColor);
+
+      for (const click of clicks) {
+        ctx.beginPath();
+        ctx.arc(click.x, click.y, brushSize, 0, FULL_CIRCLE);
+        ctx.fill();
+      }
+
+      clicks.length = 0;
+
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      save();
+    }
+  }, [clicks.length]);
+
   return <Box>
     <Stack spacing={2}>
-      <ImageInput filter={IMAGE_FILTER} label='Source' onChange={changeSource} />
-      <ImageInput filter={IMAGE_FILTER} label='Mask' onChange={changeMask} renderImage={renderCanvas} />
+      <ImageInput filter={IMAGE_FILTER} image={params.source} label='Source' onChange={(file) => {
+        setInpaint({
+          source: file,
+        });
+      }} />
+      <ImageInput filter={IMAGE_FILTER} image={params.mask} label='Mask' onChange={(file) => {
+        setInpaint({
+          mask: file,
+        });
+      }} renderImage={renderCanvas} />
       <Stack direction='row' spacing={4}>
         <NumericField
           decimal

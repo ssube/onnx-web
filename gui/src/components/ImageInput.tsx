@@ -1,32 +1,33 @@
-import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
+import { doesExist, Maybe, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { PhotoCamera } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
 import * as React from 'react';
 
-const { useState } = React;
-
 export interface ImageInputProps {
   filter: string;
   hidden?: boolean;
+  image?: Maybe<Blob>;
   label: string;
 
   onChange: (file: File) => void;
-  renderImage?: (image: string | undefined) => React.ReactNode;
+  renderImage?: (image: Maybe<Blob>) => React.ReactNode;
 }
 
 export function ImageInput(props: ImageInputProps) {
-  const [image, setImage] = useState<string>();
-
   function renderImage() {
     if (mustDefault(props.hidden, false)) {
       return undefined;
     }
 
     if (doesExist(props.renderImage)) {
-      return props.renderImage(image);
+      return props.renderImage(props.image);
     }
 
-    return <img src={image} />;
+    if (doesExist(props.image)) {
+      return <img src={URL.createObjectURL(props.image)} />;
+    } else {
+      return <div>Please select an image.</div>;
+    }
   }
 
   return <Stack direction='row' spacing={2}>
@@ -41,11 +42,6 @@ export function ImageInput(props: ImageInputProps) {
           if (doesExist(files) && files.length > 0) {
             const file = mustExist(files[0]);
 
-            if (doesExist(image)) {
-              URL.revokeObjectURL(image);
-            }
-
-            setImage(URL.createObjectURL(file));
             props.onChange(file);
           }
         }}

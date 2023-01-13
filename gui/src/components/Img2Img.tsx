@@ -10,7 +10,7 @@ import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
 import { NumericField } from './NumericField.js';
 
-const { useContext, useState } = React;
+const { useContext } = React;
 
 export interface Img2ImgProps {
   config: ConfigParams;
@@ -27,7 +27,7 @@ export function Img2Img(props: Img2ImgProps) {
       ...params,
       model,
       platform,
-      source: mustExist(source), // TODO: show an error if this doesn't exist
+      source: mustExist(params.source), // TODO: show an error if this doesn't exist
     });
 
     setLoading(output);
@@ -46,11 +46,13 @@ export function Img2Img(props: Img2ImgProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setLoading = useStore(state, (s) => s.setLoading);
 
-  const [source, setSource] = useState<File>();
-
   return <Box>
     <Stack spacing={2}>
-      <ImageInput filter={IMAGE_FILTER} label='Source' onChange={setSource} />
+      <ImageInput filter={IMAGE_FILTER} image={params.source} label='Source' onChange={(file) => {
+        setImg2Img({
+          source: file,
+        });
+      }} />
       <ImageControl config={config} params={params} onChange={(newParams) => {
         setImg2Img(newParams);
       }} />

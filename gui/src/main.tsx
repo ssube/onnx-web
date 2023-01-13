@@ -12,8 +12,6 @@ import { OnnxWeb } from './components/OnnxWeb.js';
 import { loadConfig } from './config.js';
 import { ClientContext, createStateSlices, OnnxState, StateContext } from './state.js';
 
-const { createContext } = React;
-
 export async function main() {
   // load config from GUI server
   const config = await loadConfig();
@@ -41,6 +39,20 @@ export async function main() {
     ...createDefaultSlice(...slice),
   }), {
     name: 'onnx-web',
+    partialize(s) {
+      return {
+        ...s,
+        img2img: {
+          ...s.img2img,
+          source: undefined,
+        },
+        inpaint: {
+          ...s.inpaint,
+          mask: undefined,
+          source: undefined,
+        },
+      };
+    },
     storage: createJSONStorage(() => localStorage),
     version: 3,
   }));

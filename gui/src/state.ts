@@ -1,3 +1,4 @@
+/* eslint-disable no-null/no-null */
 import { Maybe } from '@apextoaster/js-utils';
 import { createContext } from 'react';
 import { StateCreator, StoreApi } from 'zustand';
@@ -11,9 +12,9 @@ import {
   paramsFromConfig,
   Txt2ImgParams,
 } from './api/client.js';
-import { ConfigParams, ConfigState } from './config.js';
+import { ConfigFiles, ConfigParams, ConfigState } from './config.js';
 
-type TabState<TabParams extends BaseImgParams> = ConfigState<Required<TabParams>>;
+type TabState<TabParams extends BaseImgParams> = ConfigFiles<Required<TabParams>> & ConfigState<Required<TabParams>>;
 
 interface Txt2ImgSlice {
   txt2img: TabState<Txt2ImgParams>;
@@ -86,6 +87,7 @@ export function createStateSlices(base: ConfigParams) {
   const createImg2ImgSlice: StateCreator<OnnxState, [], [], Img2ImgSlice> = (set) => ({
     img2img: {
       ...defaults,
+      source: null,
       strength: base.strength.default,
     },
     setImg2Img(params) {
@@ -100,6 +102,7 @@ export function createStateSlices(base: ConfigParams) {
       set({
         img2img: {
           ...defaults,
+          source: null,
           strength: base.strength.default,
         },
       });
@@ -109,6 +112,8 @@ export function createStateSlices(base: ConfigParams) {
   const createInpaintSlice: StateCreator<OnnxState, [], [], InpaintSlice> = (set) => ({
     inpaint: {
       ...defaults,
+      mask: null,
+      source: null,
     },
     setInpaint(params) {
       set((prev) => ({
@@ -122,6 +127,8 @@ export function createStateSlices(base: ConfigParams) {
       set({
         inpaint: {
           ...defaults,
+          mask: null,
+          source: null,
         },
       });
     },
@@ -130,7 +137,6 @@ export function createStateSlices(base: ConfigParams) {
   const createHistorySlice: StateCreator<OnnxState, [], [], HistorySlice> = (set) => ({
     history: [],
     limit: 4,
-    // eslint-disable-next-line no-null/no-null
     loading: null,
     pushHistory(image) {
       set((prev) => ({
@@ -139,7 +145,6 @@ export function createStateSlices(base: ConfigParams) {
           image,
           ...prev.history,
         ],
-        // eslint-disable-next-line no-null/no-null
         loading: null,
       }));
     },
