@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 
 import { ApiClient } from '../api/client.js';
 import { ConfigParams, STALE_TIME } from '../config.js';
-import { ClientContext } from '../main.js';
+import { ClientContext } from '../state.js';
 import { MODEL_LABELS, PLATFORM_LABELS } from '../strings.js';
 import { ImageHistory } from './ImageHistory.js';
 import { Img2Img } from './Img2Img.js';

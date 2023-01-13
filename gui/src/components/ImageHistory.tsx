@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import * as React from 'react';
 import { useStore } from 'zustand';
 
-import { StateContext } from '../main.js';
+import { StateContext } from '../state.js';
 import { ImageCard } from './ImageCard.js';
 import { LoadingCard } from './LoadingCard.js';
 

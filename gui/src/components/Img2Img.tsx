@@ -5,7 +5,7 @@ import { useMutation } from 'react-query';
 import { useStore } from 'zustand';
 
 import { ConfigParams, IMAGE_FILTER } from '../config.js';
-import { ClientContext, StateContext } from '../main.js';
+import { ClientContext, StateContext } from '../state.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
 import { NumericField } from './NumericField.js';

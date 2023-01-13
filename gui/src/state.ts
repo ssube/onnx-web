@@ -1,5 +1,16 @@
-import { createStore, StateCreator } from 'zustand';
-import { ApiResponse, BaseImgParams, Img2ImgParams, InpaintParams, paramsFromConfig, Txt2ImgParams } from './api/client.js';
+import { Maybe } from '@apextoaster/js-utils';
+import { createContext } from 'react';
+import { StateCreator, StoreApi } from 'zustand';
+
+import {
+  ApiClient,
+  ApiResponse,
+  BaseImgParams,
+  Img2ImgParams,
+  InpaintParams,
+  paramsFromConfig,
+  Txt2ImgParams,
+} from './api/client.js';
 import { ConfigParams, ConfigState } from './config.js';
 
 type TabState<TabParams extends BaseImgParams> = ConfigState<Required<TabParams>>;
@@ -171,3 +182,6 @@ export function createStateSlices(base: ConfigParams) {
     createTxt2ImgSlice,
   };
 }
+
+export const ClientContext = createContext<Maybe<ApiClient>>(undefined);
+export const StateContext = createContext<Maybe<StoreApi<OnnxState>>>(undefined);

@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 
 import { BaseImgParams } from '../api/client.js';
 import { ConfigParams, STALE_TIME } from '../config.js';
-import { ClientContext } from '../main.js';
+import { ClientContext } from '../state.js';
 import { SCHEDULER_LABELS } from '../strings.js';
 import { NumericField } from './NumericField.js';
 import { QueryList } from './QueryList.js';

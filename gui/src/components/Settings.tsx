@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useStore } from 'zustand';
 
 import { ConfigParams } from '../config.js';
-import { StateContext } from '../main.js';
+import { StateContext } from '../state.js';
 import { NumericField } from './NumericField.js';
 
 const { useContext } = React;
