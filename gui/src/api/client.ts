@@ -103,7 +103,7 @@ export async function imageFromResponse(root: string, res: Response): Promise<Ap
 
   if (res.status === STATUS_SUCCESS) {
     const data = await res.json() as LimitedResponse;
-    const url = new URL(joinPath('output', data.output), root).toString();
+    const url = new URL(joinPath('api', 'output', data.output), root).toString();
     return {
       output: {
         key: data.output,
@@ -117,7 +117,7 @@ export async function imageFromResponse(root: string, res: Response): Promise<Ap
 }
 
 export function makeImageURL(root: string, type: string, params: BaseImgParams): URL {
-  const url = new URL(type, root);
+  const url = new URL(joinPath('api', type), root);
   url.searchParams.append('cfg', params.cfg.toFixed(1));
   url.searchParams.append('steps', params.steps.toFixed(0));
 
@@ -158,22 +158,22 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
   return {
     async models(): Promise<Array<string>> {
-      const path = new URL(joinPath('settings', 'models'), root);
+      const path = new URL(joinPath('api', 'settings', 'models'), root);
       const res = await f(path);
       return await res.json() as Array<string>;
     },
     async params(): Promise<ConfigParams> {
-      const path = new URL(joinPath('settings', 'params'), root);
+      const path = new URL(joinPath('api', 'settings', 'params'), root);
       const res = await f(path);
       return await res.json() as ConfigParams;
     },
     async schedulers(): Promise<Array<string>> {
-      const path = new URL(joinPath('settings', 'schedulers'), root);
+      const path = new URL(joinPath('api', 'settings', 'schedulers'), root);
       const res = await f(path);
       return await res.json() as Array<string>;
     },
     async platforms(): Promise<Array<string>> {
-      const path = new URL(joinPath('settings', 'platforms'), root);
+      const path = new URL(joinPath('api', 'settings', 'platforms'), root);
       const res = await f(path);
       return await res.json() as Array<string>;
     },
@@ -240,7 +240,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
       throw new NotImplementedError();
     },
     async ready(params: ApiResponse): Promise<{ready: boolean}> {
-      const path = new URL('ready', root);
+      const path = new URL(joinPath('api', 'ready'), root);
       path.searchParams.append('output', params.output.key);
 
       const res = await f(path);

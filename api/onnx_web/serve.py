@@ -19,7 +19,7 @@ from diffusers import (
     # types
     DiffusionPipeline,
 )
-from flask import Flask, jsonify, request, send_from_directory, url_for
+from flask import Flask, jsonify, request, send_file, send_from_directory, url_for
 from flask_executor import Executor
 from hashlib import sha256
 from io import BytesIO
@@ -48,6 +48,7 @@ max_height = 512
 max_width = 512
 
 # paths
+bundle_path = environ.get('ONNX_WEB_BUNDLE_PATH', path.join('..', '..', 'gui', 'out'))
 model_path = environ.get('ONNX_WEB_MODEL_PATH', path.join('..', 'models'))
 output_path = environ.get('ONNX_WEB_OUTPUT_PATH', path.join('..', 'outputs'))
 params_path = environ.get('ONNX_WEB_PARAMS_PATH', 'params.json')
@@ -314,9 +315,24 @@ executor = Executor(app)
 
 # routes
 
+def serve_file(filename = 'index.html'):
+    file = path.join(bundle_path, filename)
+    print('index', file)
+    return send_file(file)
+
 
 @app.route('/')
 def index():
+    return serve_file()
+
+
+@app.route('/<path:filename>')
+def index_path(filename):
+    return serve_file(filename)
+
+
+@app.route('/api')
+def introspect():
     return {
         'name': 'onnx-web',
         'routes': [{
@@ -326,27 +342,27 @@ def index():
     }
 
 
-@app.route('/settings/models')
+@app.route('/api/settings/models')
 def list_models():
     return json_with_cors(available_models)
 
 
-@app.route('/settings/params')
+@app.route('/api/settings/params')
 def list_params():
     return json_with_cors(config_params)
 
 
-@app.route('/settings/platforms')
+@app.route('/api/settings/platforms')
 def list_platforms():
     return json_with_cors(list(platform_providers.keys()))
 
 
-@app.route('/settings/schedulers')
+@app.route('/api/settings/schedulers')
 def list_schedulers():
     return json_with_cors(list(pipeline_schedulers.keys()))
 
 
-@app.route('/img2img', methods=['POST'])
+@app.route('/api/img2img', methods=['POST'])
 def img2img():
     input_file = request.files.get('source')
     input_image = Image.open(BytesIO(input_file.read())).convert('RGB')
@@ -381,7 +397,7 @@ def img2img():
     })
 
 
-@app.route('/txt2img', methods=['POST'])
+@app.route('/api/txt2img', methods=['POST'])
 def txt2img():
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
      width, seed) = pipeline_from_request()
@@ -410,7 +426,7 @@ def txt2img():
     })
 
 
-@app.route('/inpaint', methods=['POST'])
+@app.route('/api/inpaint', methods=['POST'])
 def inpaint():
     source_file = request.files.get('source')
     source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
@@ -447,7 +463,7 @@ def inpaint():
     })
 
 
-@app.route('/ready')
+@app.route('/api/ready')
 def ready():
     output_file = request.args.get('output', None)
 
@@ -456,6 +472,6 @@ def ready():
     })
 
 
-@app.route('/output/<path:filename>')
+@app.route('/api/output/<path:filename>')
 def output(filename: str):
     return send_from_directory(path.join('..', output_path), filename, as_attachment=False)
