@@ -239,6 +239,12 @@ Make sure you have CUDA 11.x installed and that the version of PyTorch matches t
 Sign up for an account at https://huggingface.co and find the models you want to use. Popular options include:
 
 - https://huggingface.co/runwayml/stable-diffusion-v1-5
+- https://huggingface.co/runwayml/stable-diffusion-inpainting
+- https://huggingface.co/stabilityai/stable-diffusion-2-1
+- https://huggingface.co/stabilityai/stable-diffusion-2-inpainting
+
+You will need at least one of the base models for txt2img and img2img mode. If you want to use inpainting, you will
+also need one of the inpainting models.
 
 Log into the HuggingFace CLI:
 
