@@ -168,7 +168,7 @@ Install the following packages for AI:
 Install the following packages for the web UI:
 
 ```shell
-> pip install flask stringcase
+> pip install flask
 ```
 
 _Or_ install all of these packages at once using [the `requirements.txt` file](./api/requirements.txt):
