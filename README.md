@@ -44,8 +44,8 @@ Based on guides by:
   - [Features](#features)
   - [Contents](#contents)
   - [Setup](#setup)
-    - [Note about setup paths](#note-about-setup-paths)
     - [Install Git and Python](#install-git-and-python)
+    - [Note about setup paths](#note-about-setup-paths)
     - [Create a virtual environment](#create-a-virtual-environment)
     - [Install pip packages](#install-pip-packages)
       - [For AMD on Windows: Install ONNX DirectML](#for-amd-on-windows-install-onnx-directml)
@@ -75,29 +75,12 @@ steps:
    2. Install platform-specific packages for your GPU (or CPU)
 4. [Download and convert models](#download-and-convert-models)
 
-### Note about setup paths
-
-This project contains both Javascript and Python, for the client and server respectively. Make sure you are in the
-correct directory when working with each part.
-
-Most of these setup commands should be run in the Python environment and the `api/` directory:
-
-```shell
-> cd api
-> pwd
-/home/ssube/code/github/ssube/onnx-web/api
-```
-
-The Python virtual environment will be created within the `api/` directory.
-
-The Javascript client can be built and run within the `gui/` directory.
-
 ### Install Git and Python
 
 Install Git and Python 3.10 for your environment:
 
-- https://www.python.org/downloads/
 - https://gitforwindows.org/
+- https://www.python.org/downloads/
 
 The latest version of git should be fine. Python must be 3.10 or earlier, 3.10 seems to work well. If you already have
 Python installed for another form of Stable Diffusion, that should work, but make sure to verify the version in the next
@@ -117,6 +100,24 @@ Once you have those basic packages installed, clone this git repository:
 ```shell
 > git clone https://github.com/ssube/onnx-web.git
 ```
+
+### Note about setup paths
+
+This project contains both Javascript and Python, for the client and server respectively. Make sure you are in the
+correct directory when working with each part.
+
+Most of these setup commands should be run in the Python environment and the `api/` directory:
+
+```shell
+> cd api
+
+> pwd
+/home/ssube/code/github/ssube/onnx-web/api
+```
+
+The Python virtual environment will be created within the `api/` directory.
+
+The Javascript client can be built and run within the `gui/` directory.
 
 ### Create a virtual environment
 
@@ -187,6 +188,8 @@ If you are running on Windows, install the DirectML ONNX runtime as well:
 
 ```shell
 > pip install onnxruntime-directml --force-reinstall
+
+> pip install "numpy>=1.20,<1.24"   # the DirectML package will upgrade numpy to 1.24, which will not work
 ```
 
 You can optionally install the latest DirectML ORT nightly package, which may provide a substantial performance increase
@@ -309,8 +312,12 @@ consider using a web application firewall to help prevent malicious requests.
 
 ### Configuring and hosting the client
 
-From within the `gui/` directory, edit the `gui/examples/config.json` file so that `api.root` is the URL printed out by
-the `flask run` command from earlier. It should look something like this:
+If you plan on building the GUI bundle, rather than using a hosted version, you will also need to install NodeJS 18:
+
+- https://nodejs.org/en/download/
+
+From within the `gui/` directory, edit the `gui/examples/config.json` file so that `api.root` matches the URL printed
+out by the `flask run` command you ran earlier. It should look something like this:
 
 ```json
 {
@@ -323,6 +330,8 @@ the `flask run` command from earlier. It should look something like this:
 Still in the `gui/` directory, build the UI bundle and run the dev server with Node:
 
 ```shell
+> npm install -g yarn   # update the package manager
+
 > make bundle
 
 > node serve.js
