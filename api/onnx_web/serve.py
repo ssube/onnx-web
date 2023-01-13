@@ -54,6 +54,8 @@ model_path = environ.get('ONNX_WEB_MODEL_PATH', path.join('..', 'models'))
 output_path = environ.get('ONNX_WEB_OUTPUT_PATH', path.join('..', 'outputs'))
 params_path = environ.get('ONNX_WEB_PARAMS_PATH', 'params.json')
 
+# options
+num_workers = int(environ.get('ONNX_WEB_NUM_WORKERS', 2))
 
 # pipeline caching
 available_models = []
@@ -317,7 +319,10 @@ def load_params():
 check_paths()
 load_models()
 load_params()
+
 app = Flask(__name__)
+app.config['EXECUTOR_MAX_WORKERS'] = num_workers
+
 executor = Executor(app)
 
 # routes
