@@ -60,6 +60,10 @@ export interface ApiResponse {
   params: Txt2ImgResponse;
 }
 
+export interface ApiReady {
+  ready: boolean;
+}
+
 export interface ApiClient {
   models(): Promise<Array<string>>;
   params(): Promise<ConfigParams>;
@@ -72,7 +76,7 @@ export interface ApiClient {
   inpaint(params: InpaintParams): Promise<ApiResponse>;
   outpaint(params: OutpaintParams): Promise<ApiResponse>;
 
-  ready(params: ApiResponse): Promise<{ready: boolean}>;
+  ready(params: ApiResponse): Promise<ApiReady>;
 }
 
 export const STATUS_SUCCESS = 200;
@@ -98,26 +102,12 @@ export function joinPath(...parts: Array<string>): string {
   return parts.join('/');
 }
 
-export async function imageFromResponse(root: string, res: Response): Promise<ApiResponse> {
-  type LimitedResponse = Omit<ApiResponse, 'output'> & {output: string};
-
-  if (res.status === STATUS_SUCCESS) {
-    const data = await res.json() as LimitedResponse;
-    const url = new URL(joinPath('api', 'output', data.output), root).toString();
-    return {
-      output: {
-        key: data.output,
-        url,
-      },
-      params: data.params,
-    };
-  } else {
-    throw new Error('request error');
-  }
+export function makeApiUrl(root: string, ...path: Array<string>) {
+  return new URL(joinPath('api', ...path), root);
 }
 
 export function makeImageURL(root: string, type: string, params: BaseImgParams): URL {
-  const url = new URL(joinPath('api', type), root);
+  const url = makeApiUrl(root, type);
   url.searchParams.append('cfg', params.cfg.toFixed(1));
   url.searchParams.append('steps', params.steps.toFixed(0));
 
@@ -151,29 +141,29 @@ export function makeClient(root: string, f = fetch): ApiClient {
   let pending: Promise<ApiResponse> | undefined;
 
   function throttleRequest(url: URL, options: RequestInit): Promise<ApiResponse> {
-    return f(url, options).then((res) => imageFromResponse(root, res)).finally(() => {
+    return f(url, options).then((res) => parseApiResponse(root, res)).finally(() => {
       pending = undefined;
     });
   }
 
   return {
     async models(): Promise<Array<string>> {
-      const path = new URL(joinPath('api', 'settings', 'models'), root);
+      const path = makeApiUrl(root, 'settings', 'models');
       const res = await f(path);
       return await res.json() as Array<string>;
     },
     async params(): Promise<ConfigParams> {
-      const path = new URL(joinPath('api', 'settings', 'params'), root);
+      const path = makeApiUrl(root, 'settings', 'params');
       const res = await f(path);
       return await res.json() as ConfigParams;
     },
     async schedulers(): Promise<Array<string>> {
-      const path = new URL(joinPath('api', 'settings', 'schedulers'), root);
+      const path = makeApiUrl(root, 'settings', 'schedulers');
       const res = await f(path);
       return await res.json() as Array<string>;
     },
     async platforms(): Promise<Array<string>> {
-      const path = new URL(joinPath('api', 'settings', 'platforms'), root);
+      const path = makeApiUrl(root, 'settings', 'platforms');
       const res = await f(path);
       return await res.json() as Array<string>;
     },
@@ -239,12 +229,30 @@ export function makeClient(root: string, f = fetch): ApiClient {
     async outpaint() {
       throw new NotImplementedError();
     },
-    async ready(params: ApiResponse): Promise<{ready: boolean}> {
-      const path = new URL(joinPath('api', 'ready'), root);
+    async ready(params: ApiResponse): Promise<ApiReady> {
+      const path = makeApiUrl(root, 'ready');
       path.searchParams.append('output', params.output.key);
 
       const res = await f(path);
-      return await res.json() as {ready: boolean};
+      return await res.json() as ApiReady;
     }
   };
+}
+
+export async function parseApiResponse(root: string, res: Response): Promise<ApiResponse> {
+  type LimitedResponse = Omit<ApiResponse, 'output'> & {output: string};
+
+  if (res.status === STATUS_SUCCESS) {
+    const data = await res.json() as LimitedResponse;
+    const url = makeApiUrl(root, 'output', data.output).toString();
+    return {
+      output: {
+        key: data.output,
+        url,
+      },
+      params: data.params,
+    };
+  } else {
+    throw new Error('request error');
+  }
 }
