@@ -48,13 +48,10 @@ max_height = 512
 max_width = 512
 
 # paths
-# paths used for Flask files must have ../..
-# paths used for fopen only need ../
 bundle_path = environ.get('ONNX_WEB_BUNDLE_PATH',
-                          path.join('..', '..', 'gui', 'out'))
+                          path.join('..', 'gui', 'out'))
 model_path = environ.get('ONNX_WEB_MODEL_PATH', path.join('..', 'models'))
-output_path = environ.get('ONNX_WEB_OUTPUT_PATH',
-                          path.join('..', '..', 'outputs'))
+output_path = environ.get('ONNX_WEB_OUTPUT_PATH', path.join('..', 'outputs'))
 params_path = environ.get('ONNX_WEB_PARAMS_PATH', 'params.json')
 
 
@@ -155,7 +152,7 @@ def json_with_cors(data, origin='*'):
 
 
 def serve_bundle_file(filename='index.html'):
-    return send_from_directory(bundle_path, filename)
+    return send_from_directory(path.join('..', bundle_path), filename)
 
 
 def make_output_path(mode: str, seed: int, params: Tuple[Union[str, int, float]]):
@@ -479,4 +476,4 @@ def ready():
 
 @app.route('/api/output/<path:filename>')
 def output(filename: str):
-    return send_from_directory(output_path, filename, as_attachment=False)
+    return send_from_directory(path.join('..', output_path), filename, as_attachment=False)
