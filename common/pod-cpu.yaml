@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: onnx-web
+  labels:
+    name: onnx-web
+spec:
+  containers:
+  - name: onnx-web
+    image: docker.io/ssube/onnx-web-api:main-cpu-buster
+    ports:
+      - containerPort: 5000
+    resources: {}
