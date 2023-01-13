@@ -141,12 +141,10 @@ export function Inpaint(props: InpaintProps) {
   const setInpaint = useStore(state, (s) => s.setInpaint);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setLoading = useStore(state, (s) => s.setLoading);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const pushHistory = useStore(state, (s) => s.pushHistory);
 
   const query = useQueryClient();
   const upload = useMutation(uploadSource, {
-    onSuccess: () => query.invalidateQueries({ queryKey: 'ready '}),
+    onSuccess: () => query.invalidateQueries({ queryKey: 'ready' }),
   });
   // eslint-disable-next-line no-null/no-null
   const canvasRef = useRef<HTMLCanvasElement>(null);

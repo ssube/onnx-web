@@ -36,7 +36,7 @@ export function Img2Img(props: Img2ImgProps) {
   const client = mustExist(useContext(ClientContext));
   const query = useQueryClient();
   const upload = useMutation(uploadSource, {
-    onSuccess: () => query.invalidateQueries({ queryKey: 'ready '}),
+    onSuccess: () => query.invalidateQueries({ queryKey: 'ready' }),
   });
 
   const state = mustExist(useContext(StateContext));
