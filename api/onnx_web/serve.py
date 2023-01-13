@@ -20,6 +20,7 @@ from diffusers import (
     DiffusionPipeline,
 )
 from flask import Flask, jsonify, request, send_from_directory, url_for
+from flask_executor import Executor
 from hashlib import sha256
 from io import BytesIO
 from PIL import Image
@@ -197,11 +198,14 @@ def pipeline_from_request(pipeline: DiffusionPipeline):
     if negative_prompt is not None and negative_prompt.strip() == '':
         negative_prompt = None
 
-    cfg = get_and_clamp_float(request.args, 'cfg', default_cfg, config_params.get('cfg').get('max'), 0)
-    steps = get_and_clamp_int(request.args, 'steps', default_steps, config_params.get('steps').get('max'))
+    cfg = get_and_clamp_float(
+        request.args, 'cfg', default_cfg, config_params.get('cfg').get('max'), 0)
+    steps = get_and_clamp_int(
+        request.args, 'steps', default_steps, config_params.get('steps').get('max'))
     height = get_and_clamp_int(
         request.args, 'height', default_height, config_params.get('height').get('max'))
-    width = get_and_clamp_int(request.args, 'width', default_width, config_params.get('width').get('max'))
+    width = get_and_clamp_int(
+        request.args, 'width', default_width, config_params.get('width').get('max'))
 
     seed = int(request.args.get('seed', -1))
     if seed == -1:
@@ -210,8 +214,30 @@ def pipeline_from_request(pipeline: DiffusionPipeline):
     print("request from %s: %s rounds of %s using %s on %s, %sx%s, %s, %s - %s" %
           (user, steps, scheduler.__name__, model, provider, width, height, cfg, seed, prompt))
 
+    # pipe = load_pipeline(pipeline, model, provider, scheduler)
+    # , pipe)
+    return (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height, width, seed)
+
+
+def run_txt2img_pipeline(pipeline, model, provider, scheduler, prompt, negative_prompt, cfg, steps, height, width, seed, output):
     pipe = load_pipeline(pipeline, model, provider, scheduler)
-    return (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height, width, seed, pipe)
+
+    latents = get_latents_from_seed(seed, width, height)
+    rng = np.random.RandomState(seed)
+
+    image = pipe(
+        prompt,
+        height,
+        width,
+        generator=rng,
+        guidance_scale=cfg,
+        latents=latents,
+        negative_prompt=negative_prompt,
+        num_inference_steps=steps,
+    ).images[0]
+    image.save(output)
+
+    print('saved txt2img output: %s' % (output))
 
 
 # setup
@@ -240,6 +266,7 @@ check_paths()
 load_models()
 load_params()
 app = Flask(__name__)
+executor = Executor(app)
 
 # routes
 
@@ -284,7 +311,7 @@ def img2img():
     strength = get_and_clamp_float(request.args, 'strength', 0.5, 1.0)
 
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
-     width, seed, pipe) = pipeline_from_request(OnnxStableDiffusionImg2ImgPipeline)
+     width, seed) = pipeline_from_request(OnnxStableDiffusionImg2ImgPipeline)
 
     rng = np.random.RandomState(seed)
     image = pipe(
@@ -322,26 +349,14 @@ def img2img():
 @app.route('/txt2img', methods=['POST'])
 def txt2img():
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
-     width, seed, pipe) = pipeline_from_request(OnnxStableDiffusionPipeline)
-
-    latents = get_latents_from_seed(seed, width, height)
-    rng = np.random.RandomState(seed)
-
-    image = pipe(
-        prompt,
-        height,
-        width,
-        generator=rng,
-        guidance_scale=cfg,
-        latents=latents,
-        negative_prompt=negative_prompt,
-        num_inference_steps=steps,
-    ).images[0]
+     width, seed) = pipeline_from_request(OnnxStableDiffusionPipeline)
 
     (output_file, output_full) = make_output_path('txt2img',
                                                   seed, (prompt, cfg, negative_prompt, steps, height, width))
     print("txt2img output: %s" % output_full)
-    image.save(output_full)
+
+    executor.submit(run_txt2img_pipeline, OnnxStableDiffusionPipeline, model,
+                    provider, scheduler, prompt, negative_prompt, cfg, steps, height, width, seed, output_full)
 
     return json_with_cors({
         'output': output_file,
