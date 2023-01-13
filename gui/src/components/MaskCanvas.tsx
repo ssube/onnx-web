@@ -92,26 +92,15 @@ export function MaskCanvas(props: MaskCanvasProps) {
   }
 
   function saveMask(): void {
-    // eslint-disable-next-line no-console
-    console.log('starting canvas save');
-
     if (doesExist(canvasRef.current)) {
       if (state.current === MASK_STATE.clean) {
-        // eslint-disable-next-line no-console
-        console.log('attempting to save a clean canvas');
         return;
       }
 
       canvasRef.current.toBlob((blob) => {
-        // eslint-disable-next-line no-console
-        console.log('finishing canvas save');
-
         state.current = MASK_STATE.clean;
         props.onSave(mustExist(blob));
       });
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('canvas no longer exists');
     }
   }
 
@@ -167,8 +156,6 @@ export function MaskCanvas(props: MaskCanvasProps) {
   }, [clicks.length]);
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('state hook called', state.current);
     if (state.current === MASK_STATE.dirty) {
       save();
     }
