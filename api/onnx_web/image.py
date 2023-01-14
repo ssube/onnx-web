@@ -29,7 +29,7 @@ def blend_source_histogram(source_image: Image, dims: Tuple[int, int]) -> Tuple[
     noise_b = random.choice(256, p=np.divide(np.copy(hist_b), np.sum(hist_b)), size=size)
 
     noise_pixels = np.dstack((noise_r, noise_g, noise_b))
-    noise = Image.fromarray(np.reshape(noise_pixels), (width * 3, height)))
+    noise = Image.fromarray(np.reshape(noise_pixels, (width * 3, height)))
 
     return noise
 
@@ -59,4 +59,4 @@ def expand_image(source_image: Image, mask_image: Image, dims: Tuple[int, int, i
             if mask_color[0] > 0:
                 full_source.putpixel((x, y), blend_op(source_color, mask_color, noise_color))
 
-    return (full_source, full_mask, (full_width, full_height))
+    return (full_source, full_mask, full_noise, (full_width, full_height))
