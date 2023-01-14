@@ -83,8 +83,8 @@ build-gui-bundle:
     - build-api-coverage
     - build-gui-bundle
   script:
-    - mv -v gui/config.json gui/index.html api/gui/
-    - mv -v gui/bundle/main.js api/gui/bundle/
+    - mv -v gui/out/config.json gui/out/index.html api/gui/
+    - mv -v gui/out/bundle/main.js api/gui/bundle/
     - cd api
     - ${CI_PROJECT_DIR}/common/scripts/image-build.sh --push
   variables:
