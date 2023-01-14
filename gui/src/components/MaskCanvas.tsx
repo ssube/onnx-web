@@ -112,13 +112,14 @@ export function MaskCanvas(props: MaskCanvasProps) {
   const [background, setBackground] = useState<string>();
   const [clicks, setClicks] = useState<Array<Point>>([]);
   const [brushColor, setBrushColor] = useState(DEFAULT_BRUSH.color);
+  const [brushOpacity, setBrushOpacity] = useState(1.0);
   const [brushSize, setBrushSize] = useState(DEFAULT_BRUSH.size);
 
   useEffect(() => {
     // including clicks.length prevents the initial render from saving a blank canvas
     if (doesExist(bufferRef.current) && maskState.current === MASK_STATE.painting && clicks.length > 0) {
       const { ctx } = getContext(bufferRef);
-      ctx.fillStyle = grayToRGB(brushColor);
+      ctx.fillStyle = grayToRGB(brushColor, brushOpacity);
 
       for (const click of clicks) {
         drawCircle(ctx, click, brushSize);
@@ -187,7 +188,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
         const bounds = canvas.getBoundingClientRect();
 
         const { ctx } = getContext(bufferRef);
-        ctx.fillStyle = grayToRGB(brushColor);
+        ctx.fillStyle = grayToRGB(brushColor, brushOpacity);
 
         drawCircle(ctx, {
           x: event.clientX - bounds.left,
@@ -214,7 +215,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           }]);
         } else {
           const { ctx } = getClearContext(brushRef);
-          ctx.fillStyle = grayToRGB(brushColor);
+          ctx.fillStyle = grayToRGB(brushColor, brushOpacity);
 
           drawCircle(ctx, {
             x: event.clientX - bounds.left,
@@ -227,7 +228,6 @@ export function MaskCanvas(props: MaskCanvasProps) {
     />
     <Stack direction='row' spacing={4}>
       <NumericField
-        decimal
         label='Brush Shade'
         min={0}
         max={255}
@@ -238,7 +238,6 @@ export function MaskCanvas(props: MaskCanvasProps) {
         }}
       />
       <NumericField
-        decimal
         label='Brush Size'
         min={4}
         max={64}
@@ -246,6 +245,17 @@ export function MaskCanvas(props: MaskCanvasProps) {
         value={brushSize}
         onChange={(value) => {
           setBrushSize(value);
+        }}
+      />
+      <NumericField
+        decimal
+        label='Brush Strength'
+        min={0}
+        max={1}
+        step={0.01}
+        value={brushOpacity}
+        onChange={(value) => {
+          setBrushOpacity(value);
         }}
       />
       <Button
@@ -319,8 +329,8 @@ export function floodGray(n: number): number {
   return n;
 }
 
-export function grayToRGB(n: number): string {
-  return `rgb(${n.toFixed(0)},${n.toFixed(0)},${n.toFixed(0)})`;
+export function grayToRGB(n: number, o = 1.0): string {
+  return `rgba(${n.toFixed(0)},${n.toFixed(0)},${n.toFixed(0)},${o.toFixed(2)})`;
 }
 
 function floodCanvas(ref: RefObject<HTMLCanvasElement>, flood: FloodFn) {
