@@ -23,9 +23,13 @@ def blend_source_histogram(source_image: Image, dims: Tuple[int, int], sigma = 2
     hist_g = g.histogram()
     hist_b = b.histogram()
 
-    rng_r = random.choice(256, p=hist_r)
-    rng_g = random.choice(256, p=hist_g)
-    rng_b = random.choice(256, p=hist_b)
+    stat_r = ImageStat(hist_r)
+    stat_g = ImageStat(hist_g)
+    stat_b = ImageStat(hist_b)
+
+    rng_r = random.choice(256, p=np.divide(np.copy(hist_r), stat_r.sum))
+    rng_g = random.choice(256, p=np.divide(np.copy(hist_g), stat_g.sum))
+    rng_b = random.choice(256, p=np.divide(np.copy(hist_b), stat_b.sum))
 
     noise_r = rng_r.integers(0, size=width * height)
     noise_g = rng_g.integers(0, size=width * height)
