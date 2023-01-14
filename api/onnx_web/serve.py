@@ -267,8 +267,6 @@ def run_img2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
 
     rng = np.random.RandomState(seed)
 
-    input_image = expand_image(input_image, (256, 256, 256, 256))
-
     image = pipe(
         prompt,
         generator=rng,
@@ -290,14 +288,18 @@ def run_inpaint_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
     latents = get_latents_from_seed(seed, width, height)
     rng = np.random.RandomState(seed)
 
+    full_mask = expand_image(mask_image, (256, 256, 256, 256))
+    full_source = expand_image(source_image, (256, 256, 256, 256))
+    # full_source.thumbnail((512, 512))
+
     image = pipe(
         prompt,
         generator=rng,
         guidance_scale=cfg,
         height=height,
-        image=source_image,
+        image=full_source,
         latents=latents,
-        mask_image=mask_image,
+        mask_image=full_mask,
         negative_prompt=negative_prompt,
         num_inference_steps=steps,
         width=width,
