@@ -47,15 +47,6 @@ export function Inpaint(props: InpaintProps) {
     onSuccess: () => query.invalidateQueries({ queryKey: 'ready' }),
   });
 
-  useEffect(function changeSource() {
-    // draw the source to the canvas if the mask has not been set
-    if (doesExist(params.source) && doesExist(params.mask) === false) {
-      setInpaint({
-        mask: params.source,
-      });
-    }
-  }, [params.source]);
-
   return <Box>
     <Stack spacing={2}>
       <ImageInput
@@ -78,11 +69,16 @@ export function Inpaint(props: InpaintProps) {
           });
         }}
         renderImage={(image) =>
-          <MaskCanvas config={config} source={image} onSave={(mask) => {
-            setInpaint({
-              mask,
-            });
-          }} />
+          <MaskCanvas
+            config={config}
+            base={params.source}
+            source={image}
+            onSave={(mask) => {
+              setInpaint({
+                mask,
+              });
+            }}
+          />
         }
       />
       <ImageControl
