@@ -56637,7 +56637,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   var POLL_TIME = 5e3;
   var SAVE_TIME = 5e3;
   async function loadConfig() {
-    const configPath = new URL("./config.json", window.origin);
+    const configPath = new URL("./config.json", window.location.href);
     const configReq = await fetch(configPath);
     if (configReq.status === STATUS_SUCCESS) {
       return configReq.json();
