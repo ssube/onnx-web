@@ -16,7 +16,7 @@ def blend_mask_inverse_source(source: Tuple[int, int, int], mask: Tuple[int, int
     return (
         int((source[0] * blend_imult(noise[0])) + (mask[0] * blend_mult(noise[0]))),
         int((source[1] * blend_imult(noise[1])) + (mask[1] * blend_mult(noise[1]))),
-        int((source[2] * blend_imult[noise[2]]) + (mask[2] * blend_mult(noise[2]))),
+        int((source[2] * blend_imult(noise[2])) + (mask[2] * blend_mult(noise[2]))),
     )
 
 
