@@ -103,11 +103,13 @@ def get_latents_from_seed(seed: int, width: int, height: int) -> np.ndarray:
 
 
 def blend_pixel(source: Tuple[int, int, int], mask: Tuple[int, int, int], noise: int) -> Tuple[int, int, int]:
-    offset = (float(noise) / 256) - 0.25
+    m = float(noise) / 256
+    n = 1.0 - m
+
     return (
-        int(source[0] + (mask[0] * offset)),
-        int(source[1] + (mask[1] * offset)),
-        int(source[2] + (mask[2] * offset)),
+        int((source[0] * n) + (mask[0] * m)),
+        int((source[1] * n) + (mask[1] * m)),
+        int((source[2] * n) + (mask[2] * m)),
     )
 
 
@@ -124,19 +126,16 @@ def expand_image(source_image: Image, mask_image: Image, dims: Tuple[int, int, i
     full_mask = Image.new('RGB', (full_width, full_height), 'white')
     full_mask.paste(mask_image, (left, top))
 
-    full_noise = Image.effect_noise((full_width, full_height), 2)
+    full_noise = Image.effect_noise((full_width, full_height), 200)
 
     for x in range(full_source.width):
         for y in range(full_source.height):
             mask_color = full_mask.getpixel((x, y))
             noise_color = full_noise.getpixel((x, y))
             source_color = full_source.getpixel((x, y))
-            blend_color = blend_pixel(source_color, mask_color, noise_color)
-
-            print('pixel %s %s %s %s' % (mask_color, noise_color, source_color, blend_color))
 
             if mask_color[0] > 0:
-                full_source.putpixel((x, y), blend_color)
+                full_source.putpixel((x, y), blend_pixel(source_color, mask_color, noise_color))
 
     return (full_source, full_mask, (full_width, full_height))
 
