@@ -80,11 +80,6 @@ export function ImageCard(props: ImageCardProps) {
             </Button>
           </GridItem>
           <GridItem xs={2}>
-            <Button onClick={deleteImage}>
-              <Delete />
-            </Button>
-          </GridItem>
-          <GridItem xs={2}>
             <Button onClick={copySourceToImg2Img}>
               <ContentCopy />
             </Button>
@@ -92,6 +87,11 @@ export function ImageCard(props: ImageCardProps) {
           <GridItem xs={2}>
             <Button onClick={copySourceToInpaint}>
               <ContentCopyTwoTone />
+            </Button>
+          </GridItem>
+          <GridItem xs={2}>
+            <Button onClick={deleteImage}>
+              <Delete />
             </Button>
           </GridItem>
         </Grid>
