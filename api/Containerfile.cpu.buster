@@ -12,7 +12,7 @@ RUN pip3 install pip --upgrade
 
 RUN pip3 install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu --no-cache-dir --ignore-installed
 
-COPY requirements.txt /onnx-web/requirements.txt
+COPY requirements.txt /onnx-web/api/requirements.txt
 
 RUN pip3 install -r requirements.txt --no-cache-dir
 
