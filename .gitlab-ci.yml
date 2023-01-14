@@ -81,6 +81,7 @@ build-gui-bundle:
   stage: package
   needs:
     - build-api-coverage
+    - build-gui-bundle
   script:
     - cd api
     - ${CI_PROJECT_DIR}/common/scripts/image-build.sh --push
@@ -102,54 +103,23 @@ build-gui-bundle:
     IMAGE_SUFFIX: gui
 
 # no API image for alpine: https://github.com/microsoft/onnxruntime/issues/2909#issuecomment-593591317
-# package-api-oci-alpine:
-#   extends:
-#     - .package-api-oci
-#   variables:
-#     IMAGE_ARCH: alpine
-#     IMAGE_FILE: Containerfile.alpine
-
-package-api-oci-cpu-buster:
+package-api-oci:
   extends:
     - .package-api-oci
-  variables:
-    IMAGE_ARCH: cpu-buster
-    IMAGE_FILE: Containerfile.cpu.buster
-
-package-api-oci-cuda-buster:
-  extends:
-    - .package-api-oci
-  variables:
-    IMAGE_ARCH: cuda-ubuntu
-    IMAGE_FILE: Containerfile.cuda.ubuntu
-
-package-gui-oci-nginx-alpine:
-  extends:
-    - .package-gui-oci
-  variables:
-    IMAGE_ARCH: nginx-alpine
-    IMAGE_FILE: Containerfile.nginx.alpine
-
-package-gui-oci-nginx-bullseye:
-  extends:
-    - .package-gui-oci
-  variables:
-    IMAGE_ARCH: nginx-bullseye
-    IMAGE_FILE: Containerfile.nginx.bullseye
-
-package-gui-oci-node-alpine:
-  extends:
-    - .package-gui-oci
-  variables:
-    IMAGE_ARCH: node-alpine
-    IMAGE_FILE: Containerfile.node.alpine
-
-package-gui-oci-node-buster:
-  extends:
-    - .package-gui-oci
-  variables:
-    IMAGE_ARCH: node-buster
-    IMAGE_FILE: Containerfile.node.buster
+  parallel:
+    matrix:
+      - IMAGE_ARCH: cpu-buster
+        IMAGE_FILE: Containerfile.cpu.buster
+      - IMAGE_ARCH: cuda-ubuntu
+        IMAGE_FILE: Containerfile.cuda.ubuntu
+      - IMAGE_ARCH: nginx-alpine
+        IMAGE_FILE: Containerfile.nginx.alpine
+      - IMAGE_ARCH: nginx-bullseye
+        IMAGE_FILE: Containerfile.nginx.bullseye
+      - IMAGE_ARCH: node-alpine
+        IMAGE_FILE: Containerfile.node.alpine
+      - IMAGE_ARCH: node-buster
+        IMAGE_FILE: Containerfile.node.buster
 
 # language-specific packages
 package-api-twine:
