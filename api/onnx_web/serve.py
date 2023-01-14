@@ -102,6 +102,15 @@ def get_latents_from_seed(seed: int, width: int, height: int) -> np.ndarray:
     return image_latents
 
 
+def blend_pixel(source: Tuple[int, int, int], mask: Tuple[int, int, int], noise: int) -> Tuple[int, int, int]:
+    return (
+        source[0] + (mask[0] * noise),
+        source[1] + (mask[1] * noise),
+        source[2] + (mask[2] * noise),
+    )
+    # source_color + (mask_color * (noise_color, noise_color, noise_color))
+
+
 # based on https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/scripts/outpainting_mk_2.py#L175-L232
 def expand_image(source_image: Image, mask_image: Image, dims: Tuple[int, int, int, int]):
     (left, right, top, bottom) = dims
@@ -122,9 +131,12 @@ def expand_image(source_image: Image, mask_image: Image, dims: Tuple[int, int, i
             mask_color = full_mask.getpixel((x, y))
             noise_color = full_noise.getpixel((x, y))
             source_color = full_source.getpixel((x, y))
+            blend_color = blend_pixel(source_color, mask_color, noise_color)
+
+            print('pixel %s %s %s %s' % (mask_color, noise_color, source_color, blend_color))
 
             if mask_color[0] > 0:
-                full_source.putpixel((x, y), source_color + (mask_color * noise_color))
+                full_source.putpixel((x, y), blend_color)
 
     return (full_source, full_mask, (full_width, full_height))
 
@@ -345,6 +357,7 @@ load_params()
 
 app = Flask(__name__)
 app.config['EXECUTOR_MAX_WORKERS'] = num_workers
+app.config['EXECUTOR_PROPAGATE_EXCEPTIONS'] = True
 
 CORS(app, origins=cors_origin)
 executor = Executor(app)
