@@ -1,5 +1,5 @@
 from numpy import random
-from PIL import Image, ImageStat
+from PIL import Image
 from typing import Tuple
 
 import numpy as np
@@ -15,7 +15,7 @@ def blend_mask_inverse_source(source: Tuple[int, int, int], mask: Tuple[int, int
     )
 
 
-def blend_source_histogram(source_image: Image, dims: Tuple[int, int], sigma = 200) -> Tuple[float, float, float]:
+def blend_source_histogram(source_image: Image, dims: Tuple[int, int]) -> Tuple[float, float, float]:
     r, g, b = source_image.split()
     width, height = dims
 
@@ -23,12 +23,9 @@ def blend_source_histogram(source_image: Image, dims: Tuple[int, int], sigma = 2
     hist_g = g.histogram()
     hist_b = b.histogram()
 
-    stats = ImageStat.Stat(source_image)
-    sum_r, sum_g, sum_b = stats.sum
-
-    noise_r = random.choice(256, p=np.divide(np.copy(hist_r), sum_r), size=width*height)
-    noise_g = random.choice(256, p=np.divide(np.copy(hist_g), sum_g), size=width*height)
-    noise_b = random.choice(256, p=np.divide(np.copy(hist_b), sum_b), size=width*height)
+    noise_r = random.choice(256, p=np.divide(np.copy(hist_r), np.sum(hist_r)), size=width*height)
+    noise_g = random.choice(256, p=np.divide(np.copy(hist_g), np.sum(hist_g)), size=width*height)
+    noise_b = random.choice(256, p=np.divide(np.copy(hist_b), np.sum(hist_b)), size=width*height)
 
     noise = Image.fromarray(zip(noise_r, noise_g, noise_b))
 
