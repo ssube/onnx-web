@@ -1,9 +1,12 @@
-import { doesExist } from '@apextoaster/js-utils';
-import { Delete, Download } from '@mui/icons-material';
+import { doesExist, mustExist } from '@apextoaster/js-utils';
+import { ContentCopy, ContentCopyTwoTone, Delete, Download } from '@mui/icons-material';
 import { Box, Button, Card, CardContent, CardMedia, Grid, Paper } from '@mui/material';
 import * as React from 'react';
+import { useContext } from 'react';
+import { useStore } from 'zustand';
 
 import { ApiResponse } from '../api/client.js';
+import { StateContext } from '../state.js';
 
 export interface ImageCardProps {
   value: ApiResponse;
@@ -20,6 +23,31 @@ export function GridItem(props: { xs: number; children: React.ReactNode }) {
 export function ImageCard(props: ImageCardProps) {
   const { value } = props;
   const { params, output } = value;
+
+  const state = mustExist(useContext(StateContext));
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setImg2Img = useStore(state, (s) => s.setImg2Img);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setInpaint = useStore(state, (s) => s.setInpaint);
+
+  async function loadSource() {
+    const req = await fetch(output.url);
+    return req.blob();
+  }
+
+  async function copySourceToImg2Img() {
+    const blob = await loadSource();
+    setImg2Img({
+      source: blob,
+    });
+  }
+
+  async function copySourceToInpaint() {
+    const blob = await loadSource();
+    setInpaint({
+      source: blob,
+    });
+  }
 
   function deleteImage() {
     if (doesExist(props.onDelete)) {
@@ -54,6 +82,16 @@ export function ImageCard(props: ImageCardProps) {
           <GridItem xs={2}>
             <Button onClick={deleteImage}>
               <Delete />
+            </Button>
+          </GridItem>
+          <GridItem xs={2}>
+            <Button onClick={copySourceToImg2Img}>
+              <ContentCopy />
+            </Button>
+          </GridItem>
+          <GridItem xs={2}>
+            <Button onClick={copySourceToInpaint}>
+              <ContentCopyTwoTone />
             </Button>
           </GridItem>
         </Grid>

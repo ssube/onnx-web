@@ -27,7 +27,7 @@ export interface BaseImgParams {
 }
 
 export interface Img2ImgParams extends BaseImgParams {
-  source: File;
+  source: Blob;
   strength: number;
 }
 
@@ -42,7 +42,7 @@ export type Txt2ImgResponse = Required<Txt2ImgParams>;
 
 export interface InpaintParams extends BaseImgParams {
   mask: Blob;
-  source: File;
+  source: Blob;
 }
 
 export interface OutpaintParams extends Img2ImgParams {

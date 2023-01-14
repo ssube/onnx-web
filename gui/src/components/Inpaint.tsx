@@ -10,7 +10,7 @@ import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
 import { MaskCanvas } from './MaskCanvas.js';
 
-const { useContext, useEffect } = React;
+const { useContext } = React;
 
 export interface InpaintProps {
   config: ConfigParams;
