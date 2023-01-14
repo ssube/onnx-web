@@ -169,6 +169,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
       }
 
       const url = makeImageURL(root, 'img2img', params);
+      url.searchParams.append('strength', params.strength.toFixed(2));
 
       const body = new FormData();
       body.append('source', params.source, 'source');
