@@ -24,7 +24,7 @@ from flask_cors import CORS
 from flask_executor import Executor
 from hashlib import sha256
 from io import BytesIO
-from PIL import Image
+from PIL import Image, ImageDraw
 from struct import pack
 from os import environ, makedirs, path, scandir
 from typing import Any, Dict, Tuple, Union
@@ -100,6 +100,25 @@ def get_latents_from_seed(seed: int, width: int, height: int) -> np.ndarray:
     rng = np.random.default_rng(seed)
     image_latents = rng.standard_normal(latents_shape).astype(np.float32)
     return image_latents
+
+
+# based on https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/scripts/outpainting_mk_2.py#L175-L232
+def expand_image(source_image: Image, dims: Tuple[int, int, int, int]):
+    (left, right, top, bottom) = dims
+
+    full_width = left + source_image.width + right
+    full_height = top + source_image.height + bottom
+
+    full_image = Image.new('RGB', (full_width, full_height), 'white')
+    full_image.paste(source_image, (left, top))
+
+    # draw = ImageDraw.Draw(full_image)
+    # draw.rectangle((0, 0, left, full_height), 'white')
+    # draw.rectangle((0, 0, full_width, top), 'white')
+    # draw.rectangle((full_width - right, 0, full_width, full_height), 'white')
+    # draw.rectangle((0, full_height - bottom, full_width, full_height), 'white')
+
+    return full_image
 
 
 def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, scheduler):
@@ -247,6 +266,8 @@ def run_img2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
                          model, provider, scheduler)
 
     rng = np.random.RandomState(seed)
+
+    input_image = expand_image(input_image, (256, 256, 256, 256))
 
     image = pipe(
         prompt,
