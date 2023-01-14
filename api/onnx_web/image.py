@@ -28,8 +28,16 @@ def blend_source_histogram(source_image: Image, dims: Tuple[int, int]) -> Tuple[
     noise_g = random.choice(256, p=np.divide(np.copy(hist_g), np.sum(hist_g)), size=size)
     noise_b = random.choice(256, p=np.divide(np.copy(hist_b), np.sum(hist_b)), size=size)
 
-    noise_pixels = np.dstack((noise_r, noise_g, noise_b))
-    noise = Image.fromarray(np.reshape(noise_pixels, (width * 3, height)))
+    noise = Image.new('RGB', (width, height))
+
+    for x in range(width):
+        for y in range(height):
+            i = x * y
+            noise.putpixel((x, y), (
+                noise_r[i],
+                noise_g[i],
+                noise_b[i]
+            ))
 
     return noise
 
