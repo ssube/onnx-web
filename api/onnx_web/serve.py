@@ -272,22 +272,20 @@ def run_inpaint_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
     rng = np.random.RandomState(seed)
 
     extra = 256
-    (full_source, full_mask, full_noise, full_dims) = expand_image(source_image, mask_image, (extra, extra, extra, extra))
-
-    full_source.save('%s-source' % (output))
-    full_noise.save('%s-noise' % (output))
+    full_source, full_mask, full_noise, full_dims = expand_image(source_image, mask_image, (extra, extra, extra, extra))
+    full_width, full_height = full_dims
 
     image = pipe(
         prompt,
         generator=rng,
         guidance_scale=cfg,
-        height=height,
+        height=full_height,
         image=full_source,
         latents=latents,
         mask_image=full_mask,
         negative_prompt=negative_prompt,
         num_inference_steps=steps,
-        width=width,
+        width=full_width,
     ).images[0]
 
     image.save(output)
