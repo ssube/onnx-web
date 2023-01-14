@@ -4,14 +4,19 @@ from typing import Tuple
 
 import numpy as np
 
-def blend_mask_inverse_source(source: Tuple[int, int, int], mask: Tuple[int, int, int], noise: int) -> Tuple[int, int, int]:
-    m = float(noise) / 256
-    n = 1.0 - m
+def blend_mult(a):
+    return float(a) / 256
 
+
+def blend_imult(a):
+    return 1.0 - blend_mult(a)
+
+
+def blend_mask_inverse_source(source: Tuple[int, int, int], mask: Tuple[int, int, int], noise: Tuple[int, int, int]) -> Tuple[int, int, int]:
     return (
-        int((source[0] * n) + (mask[0] * m)),
-        int((source[1] * n) + (mask[1] * m)),
-        int((source[2] * n) + (mask[2] * m)),
+        int((source[0] * blend_imult(noise[0])) + (mask[0] * blend_mult(noise[0]))),
+        int((source[1] * blend_imult(noise[1])) + (mask[1] * blend_mult(noise[1]))),
+        int((source[2] * blend_imult[noise[2]]) + (mask[2] * blend_mult(noise[2]))),
     )
 
 
