@@ -196,7 +196,7 @@ def pipeline_from_request():
     model = get_model_path(request.args.get(
         'model', config_params.get('model').get('default')))
     provider = get_from_map(request.args, 'platform',
-                            platform_providers, config_params.get('provider').get('default'))
+                            platform_providers, config_params.get('platform').get('default'))
     scheduler = get_from_map(request.args, 'scheduler',
                              pipeline_schedulers, config_params.get('scheduler').get('default'))
 
