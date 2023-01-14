@@ -9,6 +9,7 @@ import { ClientContext, StateContext } from '../state.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
 import { MaskCanvas } from './MaskCanvas.js';
+import { OutpaintControl } from './OutpaintControl.js';
 
 const { useContext } = React;
 
@@ -88,6 +89,7 @@ export function Inpaint(props: InpaintProps) {
           setInpaint(newParams);
         }}
       />
+      <OutpaintControl config={config} />
       <Button onClick={() => upload.mutate()}>Generate</Button>
     </Stack>
   </Box>;

@@ -1,4 +1,4 @@
-import { doesExist, NotImplementedError } from '@apextoaster/js-utils';
+import { doesExist } from '@apextoaster/js-utils';
 
 import { ConfigParams } from '../config.js';
 
@@ -43,13 +43,11 @@ export type Txt2ImgResponse = Required<Txt2ImgParams>;
 export interface InpaintParams extends BaseImgParams {
   mask: Blob;
   source: Blob;
-}
 
-export interface OutpaintParams extends Img2ImgParams {
-  up: boolean;
-  down: boolean;
-  left: boolean;
-  right: boolean;
+  left?: number;
+  right?: number;
+  top?: number;
+  bottom?: number;
 }
 
 export interface ApiResponse {
@@ -72,9 +70,7 @@ export interface ApiClient {
 
   img2img(params: Img2ImgParams): Promise<ApiResponse>;
   txt2img(params: Txt2ImgParams): Promise<ApiResponse>;
-
   inpaint(params: InpaintParams): Promise<ApiResponse>;
-  outpaint(params: OutpaintParams): Promise<ApiResponse>;
 
   ready(params: ApiResponse): Promise<ApiReady>;
 }
@@ -214,6 +210,23 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       const url = makeImageURL(root, 'inpaint', params);
 
+      if (doesExist(params.left)) {
+        url.searchParams.append('left', params.left.toFixed(0));
+      }
+
+
+      if (doesExist(params.right)) {
+        url.searchParams.append('right', params.right.toFixed(0));
+      }
+
+      if (doesExist(params.top)) {
+        url.searchParams.append('top', params.top.toFixed(0));
+      }
+
+      if (doesExist(params.bottom)) {
+        url.searchParams.append('bottom', params.bottom.toFixed(0));
+      }
+
       const body = new FormData();
       body.append('mask', params.mask, 'mask');
       body.append('source', params.source, 'source');
@@ -226,9 +239,6 @@ export function makeClient(root: string, f = fetch): ApiClient {
       // eslint-disable-next-line no-return-await
       return await pending;
     },
-    async outpaint() {
-      throw new NotImplementedError();
-    },
     async ready(params: ApiResponse): Promise<ApiReady> {
       const path = makeApiUrl(root, 'ready');
       path.searchParams.append('output', params.output.key);
@@ -240,7 +250,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
 }
 
 export async function parseApiResponse(root: string, res: Response): Promise<ApiResponse> {
-  type LimitedResponse = Omit<ApiResponse, 'output'> & {output: string};
+  type LimitedResponse = Omit<ApiResponse, 'output'> & { output: string };
 
   if (res.status === STATUS_SUCCESS) {
     const data = await res.json() as LimitedResponse;
