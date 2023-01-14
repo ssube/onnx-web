@@ -103,12 +103,12 @@ def get_latents_from_seed(seed: int, width: int, height: int) -> np.ndarray:
 
 
 def blend_pixel(source: Tuple[int, int, int], mask: Tuple[int, int, int], noise: int) -> Tuple[int, int, int]:
+    offset = (float(noise) / 256) - 0.25
     return (
-        source[0] + (mask[0] * noise),
-        source[1] + (mask[1] * noise),
-        source[2] + (mask[2] * noise),
+        source[0] + (mask[0] * offset),
+        source[1] + (mask[1] * offset),
+        source[2] + (mask[2] * offset),
     )
-    # source_color + (mask_color * (noise_color, noise_color, noise_color))
 
 
 # based on https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/scripts/outpainting_mk_2.py#L175-L232
