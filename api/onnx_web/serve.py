@@ -24,10 +24,12 @@ from flask_cors import CORS
 from flask_executor import Executor
 from hashlib import sha256
 from io import BytesIO
-from PIL import Image, ImageDraw
+from PIL import Image
 from struct import pack
 from os import environ, makedirs, path, scandir
 from typing import Any, Dict, Tuple, Union
+
+from .image import expand_image
 
 import json
 import numpy as np
@@ -100,44 +102,6 @@ def get_latents_from_seed(seed: int, width: int, height: int) -> np.ndarray:
     rng = np.random.default_rng(seed)
     image_latents = rng.standard_normal(latents_shape).astype(np.float32)
     return image_latents
-
-
-def blend_pixel(source: Tuple[int, int, int], mask: Tuple[int, int, int], noise: int) -> Tuple[int, int, int]:
-    m = float(noise) / 256
-    n = 1.0 - m
-
-    return (
-        int((source[0] * n) + (mask[0] * m)),
-        int((source[1] * n) + (mask[1] * m)),
-        int((source[2] * n) + (mask[2] * m)),
-    )
-
-
-# based on https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/scripts/outpainting_mk_2.py#L175-L232
-def expand_image(source_image: Image, mask_image: Image, dims: Tuple[int, int, int, int]):
-    (left, right, top, bottom) = dims
-
-    full_width = left + source_image.width + right
-    full_height = top + source_image.height + bottom
-
-    full_source = Image.new('RGB', (full_width, full_height), 'white')
-    full_source.paste(source_image, (left, top))
-
-    full_mask = Image.new('RGB', (full_width, full_height), 'white')
-    full_mask.paste(mask_image, (left, top))
-
-    full_noise = Image.effect_noise((full_width, full_height), 200)
-
-    for x in range(full_source.width):
-        for y in range(full_source.height):
-            mask_color = full_mask.getpixel((x, y))
-            noise_color = full_noise.getpixel((x, y))
-            source_color = full_source.getpixel((x, y))
-
-            if mask_color[0] > 0:
-                full_source.putpixel((x, y), blend_pixel(source_color, mask_color, noise_color))
-
-    return (full_source, full_mask, (full_width, full_height))
 
 
 def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, scheduler):
