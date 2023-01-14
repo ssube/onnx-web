@@ -83,6 +83,8 @@ build-gui-bundle:
     - build-api-coverage
     - build-gui-bundle
   script:
+    - mv -v gui/config.json gui/index.html api/gui/
+    - mv -v gui/bundle/main.js api/gui/bundle/
     - cd api
     - ${CI_PROJECT_DIR}/common/scripts/image-build.sh --push
   variables:
@@ -112,6 +114,12 @@ package-api-oci:
         IMAGE_FILE: Containerfile.cpu.buster
       - IMAGE_ARCH: cuda-ubuntu
         IMAGE_FILE: Containerfile.cuda.ubuntu
+
+package-gui-oci:
+  extends:
+    - .package-gui-oci
+  parallel:
+    matrix:
       - IMAGE_ARCH: nginx-alpine
         IMAGE_FILE: Containerfile.nginx.alpine
       - IMAGE_ARCH: nginx-bullseye
