@@ -41,7 +41,7 @@ export function OnnxWeb(props: OnnxWebProps) {
     <Container>
       <Box sx={{ my: 4 }}>
         <Typography variant='h3' gutterBottom>
-          ONNX Web
+          <a href='https://github.com/ssube/onnx-web'>ONNX Web</a>
         </Typography>
       </Box>
       <Box sx={{ mx: 4, my: 4 }}>
