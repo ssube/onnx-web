@@ -374,7 +374,6 @@ def list_schedulers():
 def img2img():
     input_file = request.files.get('source')
     input_image = Image.open(BytesIO(input_file.read())).convert('RGB')
-    input_image.thumbnail((width, height))
 
     strength = get_and_clamp_float(request.args, 'strength', 0.5, 1.0)
 
@@ -385,6 +384,7 @@ def img2img():
                                                   (prompt, cfg, negative_prompt, steps, strength, height, width))
     print("img2img output: %s" % (output_full))
 
+    input_image.thumbnail((width, height))
     executor.submit_stored(output_file, run_img2img_pipeline, model, provider,
                            scheduler, prompt, negative_prompt, cfg, steps, seed, output_full, strength, input_image)
 
@@ -438,11 +438,9 @@ def txt2img():
 def inpaint():
     source_file = request.files.get('source')
     source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
-    source_image.thumbnail((width, height))
 
     mask_file = request.files.get('mask')
     mask_image = Image.open(BytesIO(mask_file.read())).convert('RGB')
-    mask_image.thumbnail((width, height))
 
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
      width, seed) = pipeline_from_request()
@@ -456,6 +454,8 @@ def inpaint():
         'inpaint', seed, (prompt, cfg, steps, height, width, seed, left, right, top, bottom))
     print("inpaint output: %s" % output_full)
 
+    source_image.thumbnail((width, height))
+    mask_image.thumbnail((width, height))
     executor.submit_stored(output_file, run_inpaint_pipeline, model, provider, scheduler, prompt, negative_prompt,
                            cfg, steps, seed, output_full, height, width, source_image, mask_image, left, right, top, bottom)
 
