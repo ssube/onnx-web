@@ -7441,7 +7441,7 @@
             }
           }
           __name(setCurrentlyValidatingElement, "setCurrentlyValidatingElement");
-          function checkPropTypes(typeSpecs, values3, location, componentName, element) {
+          function checkPropTypes(typeSpecs, values3, location2, componentName, element) {
             {
               var has = Function.call.bind(hasOwnProperty2);
               for (var typeSpecName in typeSpecs) {
@@ -7449,23 +7449,23 @@
                   var error$1 = void 0;
                   try {
                     if (typeof typeSpecs[typeSpecName] !== "function") {
-                      var err = Error((componentName || "React class") + ": " + location + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
+                      var err = Error((componentName || "React class") + ": " + location2 + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
                       err.name = "Invariant Violation";
                       throw err;
                     }
-                    error$1 = typeSpecs[typeSpecName](values3, typeSpecName, componentName, location, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
+                    error$1 = typeSpecs[typeSpecName](values3, typeSpecName, componentName, location2, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
                   } catch (ex) {
                     error$1 = ex;
                   }
                   if (error$1 && !(error$1 instanceof Error)) {
                     setCurrentlyValidatingElement(element);
-                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location, typeSpecName, typeof error$1);
+                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location2, typeSpecName, typeof error$1);
                     setCurrentlyValidatingElement(null);
                   }
                   if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
                     loggedTypeFailures[error$1.message] = true;
                     setCurrentlyValidatingElement(element);
-                    error("Failed %s type: %s", location, error$1.message);
+                    error("Failed %s type: %s", location2, error$1.message);
                     setCurrentlyValidatingElement(null);
                   }
                 }
@@ -17285,7 +17285,7 @@
             }
           }
           __name(setCurrentlyValidatingElement, "setCurrentlyValidatingElement");
-          function checkPropTypes(typeSpecs, values3, location, componentName, element) {
+          function checkPropTypes(typeSpecs, values3, location2, componentName, element) {
             {
               var has2 = Function.call.bind(hasOwnProperty2);
               for (var typeSpecName in typeSpecs) {
@@ -17293,23 +17293,23 @@
                   var error$1 = void 0;
                   try {
                     if (typeof typeSpecs[typeSpecName] !== "function") {
-                      var err = Error((componentName || "React class") + ": " + location + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
+                      var err = Error((componentName || "React class") + ": " + location2 + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
                       err.name = "Invariant Violation";
                       throw err;
                     }
-                    error$1 = typeSpecs[typeSpecName](values3, typeSpecName, componentName, location, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
+                    error$1 = typeSpecs[typeSpecName](values3, typeSpecName, componentName, location2, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
                   } catch (ex) {
                     error$1 = ex;
                   }
                   if (error$1 && !(error$1 instanceof Error)) {
                     setCurrentlyValidatingElement(element);
-                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location, typeSpecName, typeof error$1);
+                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location2, typeSpecName, typeof error$1);
                     setCurrentlyValidatingElement(null);
                   }
                   if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
                     loggedTypeFailures[error$1.message] = true;
                     setCurrentlyValidatingElement(element);
-                    error("Failed %s type: %s", location, error$1.message);
+                    error("Failed %s type: %s", location2, error$1.message);
                     setCurrentlyValidatingElement(null);
                   }
                 }
@@ -31030,7 +31030,7 @@
       var ReactPropTypesSecret;
       var loggedTypeFailures;
       var has;
-      function checkPropTypes(typeSpecs, values3, location, componentName, getStack) {
+      function checkPropTypes(typeSpecs, values3, location2, componentName, getStack) {
         if (true) {
           for (var typeSpecName in typeSpecs) {
             if (has(typeSpecs, typeSpecName)) {
@@ -31038,25 +31038,25 @@
               try {
                 if (typeof typeSpecs[typeSpecName] !== "function") {
                   var err = Error(
-                    (componentName || "React class") + ": " + location + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`."
+                    (componentName || "React class") + ": " + location2 + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`."
                   );
                   err.name = "Invariant Violation";
                   throw err;
                 }
-                error = typeSpecs[typeSpecName](values3, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+                error = typeSpecs[typeSpecName](values3, typeSpecName, componentName, location2, null, ReactPropTypesSecret);
               } catch (ex) {
                 error = ex;
               }
               if (error && !(error instanceof Error)) {
                 printWarning(
-                  (componentName || "React class") + ": type specification of " + location + " `" + typeSpecName + "` is invalid; the type checker function must return `null` or an `Error` but returned a " + typeof error + ". You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument)."
+                  (componentName || "React class") + ": type specification of " + location2 + " `" + typeSpecName + "` is invalid; the type checker function must return `null` or an `Error` but returned a " + typeof error + ". You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument)."
                 );
               }
               if (error instanceof Error && !(error.message in loggedTypeFailures)) {
                 loggedTypeFailures[error.message] = true;
                 var stack = getStack ? getStack() : "";
                 printWarning(
-                  "Failed " + location + " type: " + error.message + (stack != null ? stack : "")
+                  "Failed " + location2 + " type: " + error.message + (stack != null ? stack : "")
                 );
               }
             }
@@ -31152,7 +31152,7 @@
             var manualPropTypeCallCache = {};
             var manualPropTypeWarningCount = 0;
           }
-          function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+          function checkType(isRequired, props, propName, componentName, location2, propFullName, secret) {
             componentName = componentName || ANONYMOUS;
             propFullName = propFullName || propName;
             if (secret !== ReactPropTypesSecret) {
@@ -31177,13 +31177,13 @@
             if (props[propName] == null) {
               if (isRequired) {
                 if (props[propName] === null) {
-                  return new PropTypeError("The " + location + " `" + propFullName + "` is marked as required " + ("in `" + componentName + "`, but its value is `null`."));
+                  return new PropTypeError("The " + location2 + " `" + propFullName + "` is marked as required " + ("in `" + componentName + "`, but its value is `null`."));
                 }
-                return new PropTypeError("The " + location + " `" + propFullName + "` is marked as required in " + ("`" + componentName + "`, but its value is `undefined`."));
+                return new PropTypeError("The " + location2 + " `" + propFullName + "` is marked as required in " + ("`" + componentName + "`, but its value is `undefined`."));
               }
               return null;
             } else {
-              return validate(props, propName, componentName, location, propFullName);
+              return validate(props, propName, componentName, location2, propFullName);
             }
           }
           __name(checkType, "checkType");
@@ -31193,13 +31193,13 @@
         }
         __name(createChainableTypeChecker, "createChainableTypeChecker");
         function createPrimitiveTypeChecker(expectedType) {
-          function validate(props, propName, componentName, location, propFullName, secret) {
+          function validate(props, propName, componentName, location2, propFullName, secret) {
             var propValue = props[propName];
             var propType = getPropType(propValue);
             if (propType !== expectedType) {
               var preciseType = getPreciseType(propValue);
               return new PropTypeError(
-                "Invalid " + location + " `" + propFullName + "` of type " + ("`" + preciseType + "` supplied to `" + componentName + "`, expected ") + ("`" + expectedType + "`."),
+                "Invalid " + location2 + " `" + propFullName + "` of type " + ("`" + preciseType + "` supplied to `" + componentName + "`, expected ") + ("`" + expectedType + "`."),
                 { expectedType }
               );
             }
@@ -31214,17 +31214,17 @@
         }
         __name(createAnyTypeChecker, "createAnyTypeChecker");
         function createArrayOfTypeChecker(typeChecker) {
-          function validate(props, propName, componentName, location, propFullName) {
+          function validate(props, propName, componentName, location2, propFullName) {
             if (typeof typeChecker !== "function") {
               return new PropTypeError("Property `" + propFullName + "` of component `" + componentName + "` has invalid PropType notation inside arrayOf.");
             }
             var propValue = props[propName];
             if (!Array.isArray(propValue)) {
               var propType = getPropType(propValue);
-              return new PropTypeError("Invalid " + location + " `" + propFullName + "` of type " + ("`" + propType + "` supplied to `" + componentName + "`, expected an array."));
+              return new PropTypeError("Invalid " + location2 + " `" + propFullName + "` of type " + ("`" + propType + "` supplied to `" + componentName + "`, expected an array."));
             }
             for (var i = 0; i < propValue.length; i++) {
-              var error = typeChecker(propValue, i, componentName, location, propFullName + "[" + i + "]", ReactPropTypesSecret);
+              var error = typeChecker(propValue, i, componentName, location2, propFullName + "[" + i + "]", ReactPropTypesSecret);
               if (error instanceof Error) {
                 return error;
               }
@@ -31236,11 +31236,11 @@
         }
         __name(createArrayOfTypeChecker, "createArrayOfTypeChecker");
         function createElementTypeChecker() {
-          function validate(props, propName, componentName, location, propFullName) {
+          function validate(props, propName, componentName, location2, propFullName) {
             var propValue = props[propName];
             if (!isValidElement11(propValue)) {
               var propType = getPropType(propValue);
-              return new PropTypeError("Invalid " + location + " `" + propFullName + "` of type " + ("`" + propType + "` supplied to `" + componentName + "`, expected a single ReactElement."));
+              return new PropTypeError("Invalid " + location2 + " `" + propFullName + "` of type " + ("`" + propType + "` supplied to `" + componentName + "`, expected a single ReactElement."));
             }
             return null;
           }
@@ -31249,11 +31249,11 @@
         }
         __name(createElementTypeChecker, "createElementTypeChecker");
         function createElementTypeTypeChecker() {
-          function validate(props, propName, componentName, location, propFullName) {
+          function validate(props, propName, componentName, location2, propFullName) {
             var propValue = props[propName];
             if (!ReactIs.isValidElementType(propValue)) {
               var propType = getPropType(propValue);
-              return new PropTypeError("Invalid " + location + " `" + propFullName + "` of type " + ("`" + propType + "` supplied to `" + componentName + "`, expected a single ReactElement type."));
+              return new PropTypeError("Invalid " + location2 + " `" + propFullName + "` of type " + ("`" + propType + "` supplied to `" + componentName + "`, expected a single ReactElement type."));
             }
             return null;
           }
@@ -31262,11 +31262,11 @@
         }
         __name(createElementTypeTypeChecker, "createElementTypeTypeChecker");
         function createInstanceTypeChecker(expectedClass) {
-          function validate(props, propName, componentName, location, propFullName) {
+          function validate(props, propName, componentName, location2, propFullName) {
             if (!(props[propName] instanceof expectedClass)) {
               var expectedClassName = expectedClass.name || ANONYMOUS;
               var actualClassName = getClassName(props[propName]);
-              return new PropTypeError("Invalid " + location + " `" + propFullName + "` of type " + ("`" + actualClassName + "` supplied to `" + componentName + "`, expected ") + ("instance of `" + expectedClassName + "`."));
+              return new PropTypeError("Invalid " + location2 + " `" + propFullName + "` of type " + ("`" + actualClassName + "` supplied to `" + componentName + "`, expected ") + ("instance of `" + expectedClassName + "`."));
             }
             return null;
           }
@@ -31287,7 +31287,7 @@
             }
             return emptyFunctionThatReturnsNull;
           }
-          function validate(props, propName, componentName, location, propFullName) {
+          function validate(props, propName, componentName, location2, propFullName) {
             var propValue = props[propName];
             for (var i = 0; i < expectedValues.length; i++) {
               if (is(propValue, expectedValues[i])) {
@@ -31301,25 +31301,25 @@
               }
               return value;
             }, "replacer"));
-            return new PropTypeError("Invalid " + location + " `" + propFullName + "` of value `" + String(propValue) + "` " + ("supplied to `" + componentName + "`, expected one of " + valuesString + "."));
+            return new PropTypeError("Invalid " + location2 + " `" + propFullName + "` of value `" + String(propValue) + "` " + ("supplied to `" + componentName + "`, expected one of " + valuesString + "."));
           }
           __name(validate, "validate");
           return createChainableTypeChecker(validate);
         }
         __name(createEnumTypeChecker, "createEnumTypeChecker");
         function createObjectOfTypeChecker(typeChecker) {
-          function validate(props, propName, componentName, location, propFullName) {
+          function validate(props, propName, componentName, location2, propFullName) {
             if (typeof typeChecker !== "function") {
               return new PropTypeError("Property `" + propFullName + "` of component `" + componentName + "` has invalid PropType notation inside objectOf.");
             }
             var propValue = props[propName];
             var propType = getPropType(propValue);
             if (propType !== "object") {
-              return new PropTypeError("Invalid " + location + " `" + propFullName + "` of type " + ("`" + propType + "` supplied to `" + componentName + "`, expected an object."));
+              return new PropTypeError("Invalid " + location2 + " `" + propFullName + "` of type " + ("`" + propType + "` supplied to `" + componentName + "`, expected an object."));
             }
             for (var key in propValue) {
               if (has(propValue, key)) {
-                var error = typeChecker(propValue, key, componentName, location, propFullName + "." + key, ReactPropTypesSecret);
+                var error = typeChecker(propValue, key, componentName, location2, propFullName + "." + key, ReactPropTypesSecret);
                 if (error instanceof Error) {
                   return error;
                 }
@@ -31345,11 +31345,11 @@
               return emptyFunctionThatReturnsNull;
             }
           }
-          function validate(props, propName, componentName, location, propFullName) {
+          function validate(props, propName, componentName, location2, propFullName) {
             var expectedTypes = [];
             for (var i2 = 0; i2 < arrayOfTypeCheckers.length; i2++) {
               var checker2 = arrayOfTypeCheckers[i2];
-              var checkerResult = checker2(props, propName, componentName, location, propFullName, ReactPropTypesSecret);
+              var checkerResult = checker2(props, propName, componentName, location2, propFullName, ReactPropTypesSecret);
               if (checkerResult == null) {
                 return null;
               }
@@ -31358,16 +31358,16 @@
               }
             }
             var expectedTypesMessage = expectedTypes.length > 0 ? ", expected one of type [" + expectedTypes.join(", ") + "]" : "";
-            return new PropTypeError("Invalid " + location + " `" + propFullName + "` supplied to " + ("`" + componentName + "`" + expectedTypesMessage + "."));
+            return new PropTypeError("Invalid " + location2 + " `" + propFullName + "` supplied to " + ("`" + componentName + "`" + expectedTypesMessage + "."));
           }
           __name(validate, "validate");
           return createChainableTypeChecker(validate);
         }
         __name(createUnionTypeChecker, "createUnionTypeChecker");
         function createNodeChecker() {
-          function validate(props, propName, componentName, location, propFullName) {
+          function validate(props, propName, componentName, location2, propFullName) {
             if (!isNode(props[propName])) {
-              return new PropTypeError("Invalid " + location + " `" + propFullName + "` supplied to " + ("`" + componentName + "`, expected a ReactNode."));
+              return new PropTypeError("Invalid " + location2 + " `" + propFullName + "` supplied to " + ("`" + componentName + "`, expected a ReactNode."));
             }
             return null;
           }
@@ -31375,25 +31375,25 @@
           return createChainableTypeChecker(validate);
         }
         __name(createNodeChecker, "createNodeChecker");
-        function invalidValidatorError(componentName, location, propFullName, key, type) {
+        function invalidValidatorError(componentName, location2, propFullName, key, type) {
           return new PropTypeError(
-            (componentName || "React class") + ": " + location + " type `" + propFullName + "." + key + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + type + "`."
+            (componentName || "React class") + ": " + location2 + " type `" + propFullName + "." + key + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + type + "`."
           );
         }
         __name(invalidValidatorError, "invalidValidatorError");
         function createShapeTypeChecker(shapeTypes) {
-          function validate(props, propName, componentName, location, propFullName) {
+          function validate(props, propName, componentName, location2, propFullName) {
             var propValue = props[propName];
             var propType = getPropType(propValue);
             if (propType !== "object") {
-              return new PropTypeError("Invalid " + location + " `" + propFullName + "` of type `" + propType + "` " + ("supplied to `" + componentName + "`, expected `object`."));
+              return new PropTypeError("Invalid " + location2 + " `" + propFullName + "` of type `" + propType + "` " + ("supplied to `" + componentName + "`, expected `object`."));
             }
             for (var key in shapeTypes) {
               var checker = shapeTypes[key];
               if (typeof checker !== "function") {
-                return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+                return invalidValidatorError(componentName, location2, propFullName, key, getPreciseType(checker));
               }
-              var error = checker(propValue, key, componentName, location, propFullName + "." + key, ReactPropTypesSecret);
+              var error = checker(propValue, key, componentName, location2, propFullName + "." + key, ReactPropTypesSecret);
               if (error) {
                 return error;
               }
@@ -31405,24 +31405,24 @@
         }
         __name(createShapeTypeChecker, "createShapeTypeChecker");
         function createStrictShapeTypeChecker(shapeTypes) {
-          function validate(props, propName, componentName, location, propFullName) {
+          function validate(props, propName, componentName, location2, propFullName) {
             var propValue = props[propName];
             var propType = getPropType(propValue);
             if (propType !== "object") {
-              return new PropTypeError("Invalid " + location + " `" + propFullName + "` of type `" + propType + "` " + ("supplied to `" + componentName + "`, expected `object`."));
+              return new PropTypeError("Invalid " + location2 + " `" + propFullName + "` of type `" + propType + "` " + ("supplied to `" + componentName + "`, expected `object`."));
             }
             var allKeys = assign2({}, props[propName], shapeTypes);
             for (var key in allKeys) {
               var checker = shapeTypes[key];
               if (has(shapeTypes, key) && typeof checker !== "function") {
-                return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+                return invalidValidatorError(componentName, location2, propFullName, key, getPreciseType(checker));
               }
               if (!checker) {
                 return new PropTypeError(
-                  "Invalid " + location + " `" + propFullName + "` key `" + key + "` supplied to `" + componentName + "`.\nBad object: " + JSON.stringify(props[propName], null, "  ") + "\nValid keys: " + JSON.stringify(Object.keys(shapeTypes), null, "  ")
+                  "Invalid " + location2 + " `" + propFullName + "` key `" + key + "` supplied to `" + componentName + "`.\nBad object: " + JSON.stringify(props[propName], null, "  ") + "\nValid keys: " + JSON.stringify(Object.keys(shapeTypes), null, "  ")
                 );
               }
-              var error = checker(propValue, key, componentName, location, propFullName + "." + key, ReactPropTypesSecret);
+              var error = checker(propValue, key, componentName, location2, propFullName + "." + key, ReactPropTypesSecret);
               if (error) {
                 return error;
               }
@@ -32484,7 +32484,7 @@
             }
           }
           __name(setCurrentlyValidatingElement, "setCurrentlyValidatingElement");
-          function checkPropTypes(typeSpecs, values3, location, componentName, element) {
+          function checkPropTypes(typeSpecs, values3, location2, componentName, element) {
             {
               var has = Function.call.bind(hasOwnProperty2);
               for (var typeSpecName in typeSpecs) {
@@ -32492,23 +32492,23 @@
                   var error$1 = void 0;
                   try {
                     if (typeof typeSpecs[typeSpecName] !== "function") {
-                      var err = Error((componentName || "React class") + ": " + location + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
+                      var err = Error((componentName || "React class") + ": " + location2 + " type `" + typeSpecName + "` is invalid; it must be a function, usually from the `prop-types` package, but received `" + typeof typeSpecs[typeSpecName] + "`.This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.");
                       err.name = "Invariant Violation";
                       throw err;
                     }
-                    error$1 = typeSpecs[typeSpecName](values3, typeSpecName, componentName, location, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
+                    error$1 = typeSpecs[typeSpecName](values3, typeSpecName, componentName, location2, null, "SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED");
                   } catch (ex) {
                     error$1 = ex;
                   }
                   if (error$1 && !(error$1 instanceof Error)) {
                     setCurrentlyValidatingElement(element);
-                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location, typeSpecName, typeof error$1);
+                    error("%s: type specification of %s `%s` is invalid; the type checker function must return `null` or an `Error` but returned a %s. You may have forgotten to pass an argument to the type checker creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and shape all require an argument).", componentName || "React class", location2, typeSpecName, typeof error$1);
                     setCurrentlyValidatingElement(null);
                   }
                   if (error$1 instanceof Error && !(error$1.message in loggedTypeFailures)) {
                     loggedTypeFailures[error$1.message] = true;
                     setCurrentlyValidatingElement(element);
-                    error("Failed %s type: %s", location, error$1.message);
+                    error("Failed %s type: %s", location2, error$1.message);
                     setCurrentlyValidatingElement(null);
                   }
                 }
@@ -36438,7 +36438,7 @@
     return Boolean(prototype.isReactComponent);
   }
   __name(isClassComponent, "isClassComponent");
-  function acceptingRef(props, propName, componentName, location, propFullName) {
+  function acceptingRef(props, propName, componentName, location2, propFullName) {
     const element = props[propName];
     const safePropName = propFullName || propName;
     if (element == null || // When server-side rendering React doesn't warn either.
@@ -36454,7 +36454,7 @@
       warningHint = "Did you accidentally use a plain function component for an element instead?";
     }
     if (warningHint !== void 0) {
-      return new Error(`Invalid ${location} \`${safePropName}\` supplied to \`${componentName}\`. Expected an element that can hold a ref. ${warningHint} For more information see https://mui.com/r/caveat-with-refs-guide`);
+      return new Error(`Invalid ${location2} \`${safePropName}\` supplied to \`${componentName}\`. Expected an element that can hold a ref. ${warningHint} For more information see https://mui.com/r/caveat-with-refs-guide`);
     }
     return null;
   }
@@ -36472,7 +36472,7 @@
     return Boolean(prototype.isReactComponent);
   }
   __name(isClassComponent2, "isClassComponent");
-  function elementTypeAcceptingRef(props, propName, componentName, location, propFullName) {
+  function elementTypeAcceptingRef(props, propName, componentName, location2, propFullName) {
     const propValue = props[propName];
     const safePropName = propFullName || propName;
     if (propValue == null || // When server-side rendering React doesn't warn either.
@@ -36487,7 +36487,7 @@
       warningHint = "Did you accidentally provide a plain function component instead?";
     }
     if (warningHint !== void 0) {
-      return new Error(`Invalid ${location} \`${safePropName}\` supplied to \`${componentName}\`. Expected an element type that can hold a ref. ${warningHint} For more information see https://mui.com/r/caveat-with-refs-guide`);
+      return new Error(`Invalid ${location2} \`${safePropName}\` supplied to \`${componentName}\`. Expected an element type that can hold a ref. ${warningHint} For more information see https://mui.com/r/caveat-with-refs-guide`);
     }
     return null;
   }
@@ -36555,7 +36555,7 @@
   __name(getDisplayName, "getDisplayName");
 
   // node_modules/@mui/utils/esm/HTMLElementType.js
-  function HTMLElementType(props, propName, componentName, location, propFullName) {
+  function HTMLElementType(props, propName, componentName, location2, propFullName) {
     if (false) {
       return null;
     }
@@ -36565,7 +36565,7 @@
       return null;
     }
     if (propValue && propValue.nodeType !== 1) {
-      return new Error(`Invalid ${location} \`${safePropName}\` supplied to \`${componentName}\`. Expected an HTMLElement.`);
+      return new Error(`Invalid ${location2} \`${safePropName}\` supplied to \`${componentName}\`. Expected an HTMLElement.`);
     }
     return null;
   }
@@ -36644,11 +36644,11 @@
       return () => null;
     }
     const prevPropTypes = Component ? _extends({}, Component.propTypes) : null;
-    const requireProp = /* @__PURE__ */ __name((requiredProp) => (props, propName, componentName, location, propFullName, ...args) => {
+    const requireProp = /* @__PURE__ */ __name((requiredProp) => (props, propName, componentName, location2, propFullName, ...args) => {
       const propFullNameSafe = propFullName || propName;
       const defaultTypeChecker = prevPropTypes == null ? void 0 : prevPropTypes[propFullNameSafe];
       if (defaultTypeChecker) {
-        const typeCheckerResult = defaultTypeChecker(props, propName, componentName, location, propFullName, ...args);
+        const typeCheckerResult = defaultTypeChecker(props, propName, componentName, location2, propFullName, ...args);
         if (typeCheckerResult) {
           return typeCheckerResult;
         }
@@ -36703,7 +36703,7 @@
   __name(useId2, "useId");
 
   // node_modules/@mui/utils/esm/unsupportedProp.js
-  function unsupportedProp(props, propName, componentName, location, propFullName) {
+  function unsupportedProp(props, propName, componentName, location2, propFullName) {
     if (false) {
       return null;
     }
@@ -36991,11 +36991,11 @@
   }
   __name(ponyfillIsInteger, "ponyfillIsInteger");
   var isInteger = Number.isInteger || ponyfillIsInteger;
-  function requiredInteger(props, propName, componentName, location) {
+  function requiredInteger(props, propName, componentName, location2) {
     const propValue = props[propName];
     if (propValue == null || !isInteger(propValue)) {
       const propType = getTypeByValue(propValue);
-      return new RangeError(`Invalid ${location} \`${propName}\` of type \`${propType}\` supplied to \`${componentName}\`, expected \`integer\`.`);
+      return new RangeError(`Invalid ${location2} \`${propName}\` of type \`${propType}\` supplied to \`${componentName}\`, expected \`integer\`.`);
     }
     return null;
   }
@@ -44367,9 +44367,9 @@ Please use another name.` : formatMuiErrorMessage(18));
      *     [test/CSSTransition-test.js](https://github.com/reactjs/react-transition-group/blob/13435f897b3ab71f6e19d724f145596f5910581c/test/CSSTransition-test.js#L362-L437)).
      */
     nodeRef: import_prop_types15.default.shape({
-      current: typeof Element === "undefined" ? import_prop_types15.default.any : function(propValue, key, componentName, location, propFullName, secret) {
+      current: typeof Element === "undefined" ? import_prop_types15.default.any : function(propValue, key, componentName, location2, propFullName, secret) {
         var value = propValue[key];
-        return import_prop_types15.default.instanceOf(value && "ownerDocument" in value ? value.ownerDocument.defaultView.Element : Element)(propValue, key, componentName, location, propFullName, secret);
+        return import_prop_types15.default.instanceOf(value && "ownerDocument" in value ? value.ownerDocument.defaultView.Element : Element)(propValue, key, componentName, location2, propFullName, secret);
       }
     }),
     /**
@@ -57051,6 +57051,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   // out/src/components/OnnxError.js
   var React88 = __toESM(require_react(), 1);
   function OnnxError(props) {
+    const linkback = location.href.replace(location.search, "");
     return React88.createElement(
       Container_default,
       null,
@@ -57098,7 +57099,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             React88.createElement(
               "code",
               null,
-              window.location.origin,
+              linkback,
               "?api=http://localhost:5001"
             ),
             "."
