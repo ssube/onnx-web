@@ -260,27 +260,30 @@ export function MaskCanvas(props: MaskCanvasProps) {
       />
       <Button
         variant='outlined'
-        startIcon={<FormatColorFill />}
+        startIcon={<Gradient />}
         onClick={() => {
           floodCanvas(bufferRef, floodBelow);
+          drawBuffer();
           save();
         }}>
         Gray to black
       </Button>
       <Button
         variant='outlined'
-        startIcon={<Gradient />}
+        startIcon={<FormatColorFill />}
         onClick={() => {
-          floodCanvas(bufferRef, floodGray);
+          floodCanvas(bufferRef, floodBlack);
+          drawBuffer();
           save();
         }}>
-        Grayscale
+        Fill with black
       </Button>
       <Button
         variant='outlined'
-        startIcon={<FormatColorFill />}
+        startIcon={<Gradient />}
         onClick={() => {
           floodCanvas(bufferRef, floodAbove);
+          drawBuffer();
           save();
         }}>
         Gray to white
@@ -325,8 +328,8 @@ export function floodAbove(n: number): number {
   }
 }
 
-export function floodGray(n: number): number {
-  return n;
+export function floodBlack(): number {
+  return 0;
 }
 
 export function grayToRGB(n: number, o = 1.0): string {
@@ -347,6 +350,8 @@ function floodCanvas(ref: RefObject<HTMLCanvasElement>, flood: FloodFn) {
       pixels[i] = final;
       pixels[i + 1] = final;
       pixels[i + 2] = final;
+      // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+      pixels[i + 3] = 255;
     }
   }
 
