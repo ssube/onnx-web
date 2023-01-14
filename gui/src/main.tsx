@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { mustExist } from '@apextoaster/js-utils';
+import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { merge } from 'lodash';
 import * as React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -9,15 +9,27 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { makeClient } from './api/client.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
-import { loadConfig } from './config.js';
+import { Config, loadConfig } from './config.js';
 import { ClientContext, createStateSlices, OnnxState, StateContext } from './state.js';
+
+export function getApiRoot(config: Config): string {
+  const query = new URLSearchParams(window.location.search);
+  const api = query.get('api');
+
+  if (doesExist(api)) {
+    return api;
+  } else {
+    return config.api.root;
+  }
+}
 
 export async function main() {
   // load config from GUI server
   const config = await loadConfig();
 
   // use that to create an API client
-  const client = makeClient(config.api.root);
+  const root = getApiRoot(config);
+  const client = makeClient(root);
 
   // load full params from the API server and merge with the initial client config
   const params = await client.params();
