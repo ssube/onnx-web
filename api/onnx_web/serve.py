@@ -20,6 +20,7 @@ from diffusers import (
     DiffusionPipeline,
 )
 from flask import Flask, jsonify, request, send_file, send_from_directory, url_for
+from flask_cors import CORS
 from flask_executor import Executor
 from hashlib import sha256
 from io import BytesIO
@@ -55,7 +56,8 @@ output_path = environ.get('ONNX_WEB_OUTPUT_PATH', path.join('..', 'outputs'))
 params_path = environ.get('ONNX_WEB_PARAMS_PATH', 'params.json')
 
 # options
-num_workers = int(environ.get('ONNX_WEB_NUM_WORKERS', 2))
+cors_origin = environ.get('ONNX_WEB_CORS_ORIGIN', '*').split(',')
+num_workers = int(environ.get('ONNX_WEB_NUM_WORKERS', 1))
 
 # pipeline caching
 available_models = []
@@ -144,13 +146,6 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         last_pipeline_scheduler = scheduler
 
     return pipe
-
-
-def json_with_cors(data, origin='*'):
-    """Build a JSON response with CORS headers allowing `origin`"""
-    res = jsonify(data)
-    res.access_control_allow_origin = origin
-    return res
 
 
 def serve_bundle_file(filename='index.html'):
@@ -323,6 +318,7 @@ load_params()
 app = Flask(__name__)
 app.config['EXECUTOR_MAX_WORKERS'] = num_workers
 
+CORS(app, origins=cors_origin)
 executor = Executor(app)
 
 # routes
@@ -351,22 +347,22 @@ def introspect():
 
 @app.route('/api/settings/models')
 def list_models():
-    return json_with_cors(available_models)
+    return jsonify(available_models)
 
 
 @app.route('/api/settings/params')
 def list_params():
-    return json_with_cors(config_params)
+    return jsonify(config_params)
 
 
 @app.route('/api/settings/platforms')
 def list_platforms():
-    return json_with_cors(list(platform_providers.keys()))
+    return jsonify(list(platform_providers.keys()))
 
 
 @app.route('/api/settings/schedulers')
 def list_schedulers():
-    return json_with_cors(list(pipeline_schedulers.keys()))
+    return jsonify(list(pipeline_schedulers.keys()))
 
 
 @app.route('/api/img2img', methods=['POST'])
@@ -387,7 +383,7 @@ def img2img():
     executor.submit_stored(output_file, run_img2img_pipeline, model, provider,
                            scheduler, prompt, negative_prompt, cfg, steps, seed, output_full, strength, input_image)
 
-    return json_with_cors({
+    return jsonify({
         'output': output_file,
         'params': {
             'model': model,
@@ -416,7 +412,7 @@ def txt2img():
     executor.submit_stored(output_file, run_txt2img_pipeline, model,
                            provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output_full, height, width)
 
-    return json_with_cors({
+    return jsonify({
         'output': output_file,
         'params': {
             'model': model,
@@ -453,7 +449,7 @@ def inpaint():
     executor.submit_stored(output_file, run_inpaint_pipeline, model, provider, scheduler, prompt, negative_prompt,
                            cfg, steps, seed, output_full, height, width, source_image, mask_image)
 
-    return json_with_cors({
+    return jsonify({
         'output': output_file,
         'params': {
             'model': model,
@@ -474,7 +470,7 @@ def inpaint():
 def ready():
     output_file = request.args.get('output', None)
 
-    return json_with_cors({
+    return jsonify({
         'ready': executor.futures.done(output_file),
     })
 

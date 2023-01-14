@@ -9,4 +9,5 @@ transformers
 
 ### Server packages ###
 flask
+flask-cors
 flask_executor

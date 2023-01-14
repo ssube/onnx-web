@@ -169,10 +169,10 @@ Install the following packages for AI:
 > pip install accelerate diffusers ftfy onnx onnxruntime spacy scipy transformers
 ```
 
-Install the following packages for the web UI:
+Install the following packages for the API:
 
 ```shell
-> pip install flask
+> pip install flask flask-cors flask_executor
 ```
 
 _Or_ install all of these packages at once using [the `requirements.txt` file](./api/requirements.txt):
