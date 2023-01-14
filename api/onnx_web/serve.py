@@ -264,25 +264,25 @@ def run_img2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
     print('saved img2img output: %s' % (output))
 
 
-def run_inpaint_pipeline(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output, height, width, source_image, mask_image):
+def run_inpaint_pipeline(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output, height, width, source_image, mask_image, left, right, top, bottom):
     pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                          model, provider, scheduler)
 
     latents = get_latents_from_seed(seed, width, height)
     rng = np.random.RandomState(seed)
 
-    extra = 256
-    full_source, full_mask, full_noise, full_dims = expand_image(source_image, mask_image, (extra, extra, extra, extra))
-    full_width, full_height = full_dims
+    if left > 0 or right > 0 or top > 0 or bottom > 0:
+        print('expanding image for outpainting')
+        source_image, mask_image, _full_noise, _full_dims = expand_image(source_image, mask_image, (left, right, top, bottom))
 
     image = pipe(
         prompt,
         generator=rng,
         guidance_scale=cfg,
         height=height,
-        image=full_source,
+        image=source_image,
         latents=latents,
-        mask_image=full_mask,
+        mask_image=mask_image,
         negative_prompt=negative_prompt,
         num_inference_steps=steps,
         width=width,
@@ -374,6 +374,7 @@ def list_schedulers():
 def img2img():
     input_file = request.files.get('source')
     input_image = Image.open(BytesIO(input_file.read())).convert('RGB')
+    input_image.thumbnail((width, height))
 
     strength = get_and_clamp_float(request.args, 'strength', 0.5, 1.0)
 
@@ -384,7 +385,6 @@ def img2img():
                                                   (prompt, cfg, negative_prompt, steps, strength, height, width))
     print("img2img output: %s" % (output_full))
 
-    input_image.thumbnail((width, height))
     executor.submit_stored(output_file, run_img2img_pipeline, model, provider,
                            scheduler, prompt, negative_prompt, cfg, steps, seed, output_full, strength, input_image)
 
@@ -438,21 +438,26 @@ def txt2img():
 def inpaint():
     source_file = request.files.get('source')
     source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
+    source_image.thumbnail((width, height))
 
     mask_file = request.files.get('mask')
     mask_image = Image.open(BytesIO(mask_file.read())).convert('RGB')
+    mask_image.thumbnail((width, height))
 
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
      width, seed) = pipeline_from_request()
 
+    left = get_and_clamp_int(request.args, 'left', 0, source_file.width)
+    right = get_and_clamp_int(request.args, 'right', 0, source_file.width)
+    top = get_and_clamp_int(request.args, 'top', 0, source_file.height)
+    bottom = get_and_clamp_int(request.args, 'bottom', 0, source_file.height)
+
     (output_file, output_full) = make_output_path(
-        'inpaint', seed, (prompt, cfg, steps, height, width, seed))
+        'inpaint', seed, (prompt, cfg, steps, height, width, seed, left, right, top, bottom))
     print("inpaint output: %s" % output_full)
 
-    source_image.thumbnail((width, height))
-    mask_image.thumbnail((width, height))
     executor.submit_stored(output_file, run_inpaint_pipeline, model, provider, scheduler, prompt, negative_prompt,
-                           cfg, steps, seed, output_full, height, width, source_image, mask_image)
+                           cfg, steps, seed, output_full, height, width, source_image, mask_image, left, right, top, bottom)
 
     return jsonify({
         'output': output_file,
