@@ -6,6 +6,8 @@ export interface OnnxErrorProps {
 }
 
 export function OnnxError(props: OnnxErrorProps) {
+  const linkback = location.href.replace(location.search, '');
+
   return (
     <Container>
       <Box sx={{ my: 4 }}>
@@ -44,7 +46,7 @@ export function OnnxError(props: OnnxErrorProps) {
           </Typography>
           <Typography variant='body1' gutterBottom>
             If you are trying to use a remote API server or an alternative port, you can put the address into the
-            query string, like <code>{window.location.origin}?api=http://localhost:5001</code>.
+            query string, like <code>{linkback}?api=http://localhost:5001</code>.
           </Typography>
         </Stack>
       </Box>
