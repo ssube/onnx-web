@@ -57172,6 +57172,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   var import_lodash = __toESM(require_lodash(), 1);
   var import_react21 = __toESM(require_react(), 1);
   var FULL_CIRCLE = 2 * Math.PI;
+  var MASK_OPACITY = 0.75;
   var PIXEL_SIZE = 4;
   var PIXEL_WEIGHT = 3;
   var COLORS = {
@@ -57187,6 +57188,186 @@ Please use another name.` : formatMuiErrorMessage(18));
     painting: "painting",
     dirty: "dirty"
   };
+  function MaskCanvas(props) {
+    const { base, config, source } = props;
+    function saveMask() {
+      if (doesExist2(bufferRef.current)) {
+        if (maskState.current === MASK_STATE.clean) {
+          return;
+        }
+        bufferRef.current.toBlob((blob) => {
+          maskState.current = MASK_STATE.clean;
+          props.onSave(mustExist(blob));
+        });
+      }
+    }
+    __name(saveMask, "saveMask");
+    function drawBuffer() {
+      if (doesExist2(brushRef.current) && doesExist2(bufferRef.current) && doesExist2(canvasRef.current)) {
+        const { ctx } = getClearContext(canvasRef);
+        ctx.globalAlpha = MASK_OPACITY;
+        ctx.drawImage(bufferRef.current, 0, 0);
+        if (maskState.current !== MASK_STATE.painting) {
+          ctx.drawImage(brushRef.current, 0, 0);
+        }
+      }
+    }
+    __name(drawBuffer, "drawBuffer");
+    function drawSource(file) {
+      const image = new Image();
+      image.onload = () => {
+        const { ctx } = getContext(bufferRef);
+        ctx.drawImage(image, 0, 0);
+        URL.revokeObjectURL(src);
+        drawBuffer();
+      };
+      const src = URL.createObjectURL(file);
+      image.src = src;
+    }
+    __name(drawSource, "drawSource");
+    function finishPainting() {
+      if (doesExist2(brushRef.current)) {
+        getClearContext(brushRef);
+        drawBuffer();
+      }
+      if (maskState.current === MASK_STATE.painting) {
+        maskState.current = MASK_STATE.dirty;
+        save();
+      }
+    }
+    __name(finishPainting, "finishPainting");
+    const save = (0, import_react21.useMemo)(() => (0, import_lodash.throttle)(saveMask, SAVE_TIME), []);
+    const brushRef = (0, import_react21.useRef)(null);
+    const bufferRef = (0, import_react21.useRef)(null);
+    const canvasRef = (0, import_react21.useRef)(null);
+    const maskState = (0, import_react21.useRef)(MASK_STATE.clean);
+    const [background, setBackground] = (0, import_react21.useState)();
+    const [clicks, setClicks] = (0, import_react21.useState)([]);
+    const [brushColor, setBrushColor] = (0, import_react21.useState)(DEFAULT_BRUSH.color);
+    const [brushOpacity, setBrushOpacity] = (0, import_react21.useState)(1);
+    const [brushSize, setBrushSize] = (0, import_react21.useState)(DEFAULT_BRUSH.size);
+    (0, import_react21.useEffect)(() => {
+      if (doesExist2(bufferRef.current) && maskState.current === MASK_STATE.painting && clicks.length > 0) {
+        const { ctx } = getContext(bufferRef);
+        ctx.fillStyle = grayToRGB(brushColor, brushOpacity);
+        for (const click of clicks) {
+          drawCircle(ctx, click, brushSize);
+        }
+        clicks.length = 0;
+        drawBuffer();
+      }
+    }, [clicks.length]);
+    (0, import_react21.useEffect)(() => {
+      if (maskState.current === MASK_STATE.dirty) {
+        save();
+      }
+    }, [maskState.current]);
+    (0, import_react21.useEffect)(() => {
+      if (doesExist2(bufferRef.current) && doesExist2(source)) {
+        drawSource(source);
+      }
+    }, [source]);
+    (0, import_react21.useEffect)(() => {
+      if (doesExist2(base)) {
+        if (doesExist2(background)) {
+          URL.revokeObjectURL(background);
+        }
+        setBackground(URL.createObjectURL(base));
+      }
+    }, [base]);
+    const styles5 = {
+      maxHeight: config.height.default,
+      maxWidth: config.width.default
+    };
+    if (doesExist2(background)) {
+      styles5.backgroundImage = `url(${background})`;
+    }
+    return import_react21.default.createElement(
+      Stack_default,
+      { spacing: 2 },
+      import_react21.default.createElement("canvas", { ref: brushRef, height: config.height.default, width: config.width.default, style: {
+        display: "none"
+      } }),
+      import_react21.default.createElement("canvas", { ref: bufferRef, height: config.height.default, width: config.width.default, style: {
+        display: "none"
+      } }),
+      import_react21.default.createElement("canvas", { ref: canvasRef, height: config.height.default, width: config.width.default, style: styles5, onClick: (event) => {
+        const canvas = mustExist(canvasRef.current);
+        const bounds = canvas.getBoundingClientRect();
+        const { ctx } = getContext(bufferRef);
+        ctx.fillStyle = grayToRGB(brushColor, brushOpacity);
+        drawCircle(ctx, {
+          x: event.clientX - bounds.left,
+          y: event.clientY - bounds.top
+        }, brushSize);
+        maskState.current = MASK_STATE.dirty;
+        save();
+      }, onMouseDown: () => {
+        maskState.current = MASK_STATE.painting;
+      }, onMouseLeave: finishPainting, onMouseOut: finishPainting, onMouseUp: finishPainting, onMouseMove: (event) => {
+        const canvas = mustExist(canvasRef.current);
+        const bounds = canvas.getBoundingClientRect();
+        if (maskState.current === MASK_STATE.painting) {
+          setClicks([...clicks, {
+            x: event.clientX - bounds.left,
+            y: event.clientY - bounds.top
+          }]);
+        } else {
+          const { ctx } = getClearContext(brushRef);
+          ctx.fillStyle = grayToRGB(brushColor, brushOpacity);
+          drawCircle(ctx, {
+            x: event.clientX - bounds.left,
+            y: event.clientY - bounds.top
+          }, brushSize);
+          drawBuffer();
+        }
+      } }),
+      import_react21.default.createElement(
+        Stack_default,
+        { direction: "row", spacing: 4 },
+        import_react21.default.createElement(NumericField, { label: "Brush Shade", min: 0, max: 255, step: 1, value: brushColor, onChange: (value) => {
+          setBrushColor(value);
+        } }),
+        import_react21.default.createElement(NumericField, { label: "Brush Size", min: 4, max: 64, step: 1, value: brushSize, onChange: (value) => {
+          setBrushSize(value);
+        } }),
+        import_react21.default.createElement(NumericField, { decimal: true, label: "Brush Strength", min: 0, max: 1, step: 0.01, value: brushOpacity, onChange: (value) => {
+          setBrushOpacity(value);
+        } }),
+        import_react21.default.createElement(Button_default, { variant: "outlined", startIcon: import_react21.default.createElement(FormatColorFill_default, null), onClick: () => {
+          floodCanvas(bufferRef, floodBelow);
+          save();
+        } }, "Gray to black"),
+        import_react21.default.createElement(Button_default, { variant: "outlined", startIcon: import_react21.default.createElement(Gradient_default, null), onClick: () => {
+          floodCanvas(bufferRef, floodGray);
+          save();
+        } }, "Grayscale"),
+        import_react21.default.createElement(Button_default, { variant: "outlined", startIcon: import_react21.default.createElement(FormatColorFill_default, null), onClick: () => {
+          floodCanvas(bufferRef, floodAbove);
+          save();
+        } }, "Gray to white")
+      )
+    );
+  }
+  __name(MaskCanvas, "MaskCanvas");
+  function getContext(ref) {
+    const canvas = mustExist(ref.current);
+    const ctx = mustExist(canvas.getContext("2d"));
+    return { canvas, ctx };
+  }
+  __name(getContext, "getContext");
+  function getClearContext(ref) {
+    const ret = getContext(ref);
+    ret.ctx.clearRect(0, 0, ret.canvas.width, ret.canvas.height);
+    return ret;
+  }
+  __name(getClearContext, "getClearContext");
+  function drawCircle(ctx, point, size) {
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, size, 0, FULL_CIRCLE);
+    ctx.fill();
+  }
+  __name(drawCircle, "drawCircle");
   function floodBelow(n) {
     if (n < THRESHOLDS.upper) {
       return COLORS.black;
@@ -57207,139 +57388,27 @@ Please use another name.` : formatMuiErrorMessage(18));
     return n;
   }
   __name(floodGray, "floodGray");
-  function grayToRGB(n) {
-    return `rgb(${n.toFixed(0)},${n.toFixed(0)},${n.toFixed(0)})`;
+  function grayToRGB(n, o = 1) {
+    return `rgba(${n.toFixed(0)},${n.toFixed(0)},${n.toFixed(0)},${o.toFixed(2)})`;
   }
   __name(grayToRGB, "grayToRGB");
-  function MaskCanvas(props) {
-    const { config, source } = props;
-    function floodMask(flood) {
-      const canvas = mustExist(canvasRef.current);
-      const ctx = mustExist(canvas.getContext("2d"));
-      const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const pixels = image.data;
-      for (let x = 0; x < canvas.width; ++x) {
-        for (let y = 0; y < canvas.height; ++y) {
-          const i = y * canvas.width * PIXEL_SIZE + x * PIXEL_SIZE;
-          const hue = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / PIXEL_WEIGHT;
-          const final = flood(hue);
-          pixels[i] = final;
-          pixels[i + 1] = final;
-          pixels[i + 2] = final;
-        }
-      }
-      ctx.putImageData(image, 0, 0);
-      save();
-    }
-    __name(floodMask, "floodMask");
-    function saveMask() {
-      if (doesExist2(canvasRef.current)) {
-        if (state.current === MASK_STATE.clean) {
-          return;
-        }
-        canvasRef.current.toBlob((blob) => {
-          state.current = MASK_STATE.clean;
-          props.onSave(mustExist(blob));
-        });
+  function floodCanvas(ref, flood) {
+    const { canvas, ctx } = getContext(ref);
+    const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = image.data;
+    for (let x = 0; x < canvas.width; ++x) {
+      for (let y = 0; y < canvas.height; ++y) {
+        const i = y * canvas.width * PIXEL_SIZE + x * PIXEL_SIZE;
+        const hue = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / PIXEL_WEIGHT;
+        const final = flood(hue);
+        pixels[i] = final;
+        pixels[i + 1] = final;
+        pixels[i + 2] = final;
       }
     }
-    __name(saveMask, "saveMask");
-    function drawCircle(ctx, point) {
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, brushSize, 0, FULL_CIRCLE);
-      ctx.fill();
-    }
-    __name(drawCircle, "drawCircle");
-    function drawSource(file) {
-      const image = new Image();
-      image.onload = () => {
-        const canvas = mustExist(canvasRef.current);
-        const ctx = mustExist(canvas.getContext("2d"));
-        ctx.drawImage(image, 0, 0);
-        URL.revokeObjectURL(src);
-      };
-      const src = URL.createObjectURL(file);
-      image.src = src;
-    }
-    __name(drawSource, "drawSource");
-    function finishPainting() {
-      if (state.current === MASK_STATE.painting) {
-        state.current = MASK_STATE.dirty;
-        save();
-      }
-    }
-    __name(finishPainting, "finishPainting");
-    const save = (0, import_react21.useMemo)(() => (0, import_lodash.throttle)(saveMask, SAVE_TIME), []);
-    const canvasRef = (0, import_react21.useRef)(null);
-    const state = (0, import_react21.useRef)(MASK_STATE.clean);
-    const [clicks, setClicks] = (0, import_react21.useState)([]);
-    const [brushColor, setBrushColor] = (0, import_react21.useState)(DEFAULT_BRUSH.color);
-    const [brushSize, setBrushSize] = (0, import_react21.useState)(DEFAULT_BRUSH.size);
-    (0, import_react21.useEffect)(() => {
-      if (doesExist2(canvasRef.current) && state.current === MASK_STATE.painting && clicks.length > 0) {
-        const ctx = mustExist(canvasRef.current.getContext("2d"));
-        ctx.fillStyle = grayToRGB(brushColor);
-        for (const click of clicks) {
-          drawCircle(ctx, click);
-        }
-        clicks.length = 0;
-      }
-    }, [clicks.length]);
-    (0, import_react21.useEffect)(() => {
-      if (state.current === MASK_STATE.dirty) {
-        save();
-      }
-    }, [state.current]);
-    (0, import_react21.useEffect)(() => {
-      if (doesExist2(canvasRef.current) && doesExist2(source)) {
-        drawSource(source);
-      }
-    }, [source]);
-    return import_react21.default.createElement(
-      Stack_default,
-      { spacing: 2 },
-      import_react21.default.createElement("canvas", { ref: canvasRef, height: config.height.default, width: config.width.default, style: {
-        maxHeight: config.height.default,
-        maxWidth: config.width.default
-      }, onClick: (event) => {
-        const canvas = mustExist(canvasRef.current);
-        const bounds = canvas.getBoundingClientRect();
-        const ctx = mustExist(canvas.getContext("2d"));
-        ctx.fillStyle = grayToRGB(brushColor);
-        drawCircle(ctx, {
-          x: event.clientX - bounds.left,
-          y: event.clientY - bounds.top
-        });
-        state.current = MASK_STATE.dirty;
-        save();
-      }, onMouseDown: () => {
-        state.current = MASK_STATE.painting;
-      }, onMouseLeave: finishPainting, onMouseOut: finishPainting, onMouseUp: finishPainting, onMouseMove: (event) => {
-        if (state.current === MASK_STATE.painting) {
-          const canvas = mustExist(canvasRef.current);
-          const bounds = canvas.getBoundingClientRect();
-          setClicks([...clicks, {
-            x: event.clientX - bounds.left,
-            y: event.clientY - bounds.top
-          }]);
-        }
-      } }),
-      import_react21.default.createElement(
-        Stack_default,
-        { direction: "row", spacing: 4 },
-        import_react21.default.createElement(NumericField, { decimal: true, label: "Brush Shade", min: 0, max: 255, step: 1, value: brushColor, onChange: (value) => {
-          setBrushColor(value);
-        } }),
-        import_react21.default.createElement(NumericField, { decimal: true, label: "Brush Size", min: 4, max: 64, step: 1, value: brushSize, onChange: (value) => {
-          setBrushSize(value);
-        } }),
-        import_react21.default.createElement(Button_default, { variant: "outlined", startIcon: import_react21.default.createElement(FormatColorFill_default, null), onClick: () => floodMask(floodBelow) }, "Gray to black"),
-        import_react21.default.createElement(Button_default, { variant: "outlined", startIcon: import_react21.default.createElement(Gradient_default, null), onClick: () => floodMask(floodGray) }, "Grayscale"),
-        import_react21.default.createElement(Button_default, { variant: "outlined", startIcon: import_react21.default.createElement(FormatColorFill_default, null), onClick: () => floodMask(floodAbove) }, "Gray to white")
-      )
-    );
+    ctx.putImageData(image, 0, 0);
   }
-  __name(MaskCanvas, "MaskCanvas");
+  __name(floodCanvas, "floodCanvas");
 
   // out/src/components/Inpaint.js
   var { useContext: useContext15, useEffect: useEffect20 } = React92;
@@ -57364,13 +57433,6 @@ Please use another name.` : formatMuiErrorMessage(18));
     const upload = useMutation(uploadSource, {
       onSuccess: () => query.invalidateQueries({ queryKey: "ready" })
     });
-    useEffect20(/* @__PURE__ */ __name(function changeSource() {
-      if (doesExist2(params.source) && doesExist2(params.mask) === false) {
-        setInpaint({
-          mask: params.source
-        });
-      }
-    }, "changeSource"), [params.source]);
     return React92.createElement(
       Box_default,
       null,
@@ -57386,7 +57448,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           setInpaint({
             mask: file
           });
-        }, renderImage: (image) => React92.createElement(MaskCanvas, { config, source: image, onSave: (mask) => {
+        }, renderImage: (image) => React92.createElement(MaskCanvas, { config, base: params.source, source: image, onSave: (mask) => {
           setInpaint({
             mask
           });
@@ -57577,9 +57639,20 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(OnnxWeb, "OnnxWeb");
 
   // out/src/main.js
+  function getApiRoot(config) {
+    const query = new URLSearchParams(window.location.search);
+    const api = query.get("api");
+    if (doesExist2(api)) {
+      return api;
+    } else {
+      return config.api.root;
+    }
+  }
+  __name(getApiRoot, "getApiRoot");
   async function main() {
     const config = await loadConfig();
-    const client = makeClient(config.api.root);
+    const root = getApiRoot(config);
+    const client = makeClient(root);
     const params = await client.params();
     (0, import_lodash2.merge)(params, config.params);
     const { createDefaultSlice, createHistorySlice, createImg2ImgSlice, createInpaintSlice, createTxt2ImgSlice } = createStateSlices(params);
