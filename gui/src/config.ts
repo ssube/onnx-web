@@ -54,7 +54,7 @@ export const POLL_TIME = 5_000; // 5 seconds
 export const SAVE_TIME = 5_000; // 5 seconds
 
 export async function loadConfig(): Promise<Config> {
-  const configPath = new URL('./config.json', window.origin);
+  const configPath = new URL('./config.json', window.location.href);
   const configReq = await fetch(configPath);
   if (configReq.status === STATUS_SUCCESS) {
     return configReq.json();
