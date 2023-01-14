@@ -268,24 +268,24 @@ def run_inpaint_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
     pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                          model, provider, scheduler)
 
+    latents = get_latents_from_seed(seed, width, height)
     rng = np.random.RandomState(seed)
 
     extra = 256
     full_source, full_mask, full_noise, full_dims = expand_image(source_image, mask_image, (extra, extra, extra, extra))
     full_width, full_height = full_dims
-    latents = get_latents_from_seed(seed, full_width, full_height)
 
     image = pipe(
         prompt,
         generator=rng,
         guidance_scale=cfg,
-        height=full_height,
+        height=height,
         image=full_source,
         latents=latents,
         mask_image=full_mask,
         negative_prompt=negative_prompt,
         num_inference_steps=steps,
-        width=full_width,
+        width=width,
     ).images[0]
 
     image.save(output)
