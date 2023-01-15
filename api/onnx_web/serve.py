@@ -387,7 +387,7 @@ def introspect():
 
 
 @app.route('/api/settings/blends')
-def list_noise_sources():
+def list_blend_sources():
     return jsonify(list(blend_modes.keys()))
 
 
