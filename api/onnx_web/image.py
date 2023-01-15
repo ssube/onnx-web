@@ -77,9 +77,7 @@ def noise_source_gaussian(source_image: Image, dims: Tuple[int, int], origin: Tu
     '''
     Gaussian blur, source image centered on white canvas.
     '''
-    width, height = dims
-
-    noise = Image.new('RGB', (width, height), 'white')
+    noise = noise_source_uniform(source_image, dims, origin)
     noise.paste(source_image, origin)
 
     for i in range(rounds):
