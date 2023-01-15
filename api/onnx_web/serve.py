@@ -45,6 +45,7 @@ from .image import (
 
 import json
 import numpy as np
+import time
 
 # paths
 bundle_path = environ.get('ONNX_WEB_BUNDLE_PATH',
@@ -163,8 +164,10 @@ def serve_bundle_file(filename='index.html'):
 
 
 def make_output_path(mode: str, seed: int, params: Tuple[Union[str, int, float]]):
+    now = int(time.time())
     sha = sha256()
     sha.update(mode.encode('utf-8'))
+
     for param in params:
         if param is None:
             continue
@@ -177,7 +180,7 @@ def make_output_path(mode: str, seed: int, params: Tuple[Union[str, int, float]]
         else:
             print('cannot hash param: %s, %s' % (param, type(param)))
 
-    output_file = '%s_%s_%s.png' % (mode, seed, sha.hexdigest())
+    output_file = '%s_%s_%s_%s.png' % (mode, seed, sha.hexdigest(), now)
     output_full = safer_join(output_path, output_file)
 
     return (output_file, output_full)
