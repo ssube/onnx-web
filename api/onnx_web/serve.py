@@ -322,9 +322,9 @@ def run_inpaint_pipeline(
         mask_filter=mask_filter)
 
     if environ.get('DEBUG') is not None:
-        source_image.save('./last-source.png')
-        mask_image.save('./last-mask.png')
-        noise_image.save('./last-noise.png')
+        source_image.save(safer_join(output_path, 'last-source.png'))
+        mask_image.save(safer_join(output_path, 'last-mask.png'))
+        noise_image.save(safer_join(output_path, 'last-noise.png'))
 
     image = pipe(
         prompt,

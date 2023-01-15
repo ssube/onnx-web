@@ -5,30 +5,6 @@ from typing import Tuple
 import numpy as np
 
 
-def blend_mult(a):
-    return float(a) / 256
-
-
-def blend_imult(a):
-    return 1.0 - blend_mult(a)
-
-
-def blend_source_mask(source: Tuple[int, int, int], mask: Tuple[int, int, int], noise: Tuple[int, int, int]) -> Tuple[int, int, int]:
-    '''
-    Blend operation, linear interpolation from source to noise based on mask: `(s * (1 - m)) + (n * m)`
-    Black = source
-    White = noise
-    '''
-    return (
-        int((source[0] * blend_imult(mask[0])) +
-            (noise[0] * blend_mult(mask[0]))),
-        int((source[1] * blend_imult(mask[1])) +
-            (noise[1] * blend_mult(mask[1]))),
-        int((source[2] * blend_imult(mask[2])) +
-            (noise[2] * blend_mult(mask[2]))),
-    )
-
-
 def mask_filter_none(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], fill='white') -> Image:
     width, height = dims
 
@@ -158,7 +134,6 @@ def expand_image(
         fill='white',
         noise_source=noise_source_histogram,
         mask_filter=mask_filter_gaussian,
-        blend_op=blend_source_mask
 ):
     left, right, top, bottom = expand_by
 
@@ -172,19 +147,7 @@ def expand_image(
     full_source.paste(source_image, origin)
 
     full_mask = mask_filter(mask_image, dims, origin)
-    # full_mask = Image.new('RGB', dims, fill)
-    # full_mask.paste(mask_image, origin)
-
     full_noise = noise_source(source_image, dims, origin)
-
-    for x in range(full_source.width):
-        for y in range(full_source.height):
-            mask_color = full_mask.getpixel((x, y))
-            noise_color = full_noise.getpixel((x, y))
-            source_color = full_source.getpixel((x, y))
-
-            if mask_color[0] > 0:
-                full_source.putpixel((x, y), blend_op(
-                    source_color, mask_color, noise_color))
+    full_source = Image.composite(full_source, full_noise, full_mask)
 
     return (full_source, full_mask, full_noise, (full_width, full_height))
