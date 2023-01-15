@@ -112,30 +112,32 @@ export function Inpaint(props: InpaintProps) {
           setInpaint(newParams);
         }}
       />
-      <QueryList
-        id='blends'
-        labels={BLEND_LABELS}
-        name='Blend Mode'
-        result={blends}
-        value={params.blend}
-        onChange={(blend) => {
-          setInpaint({
-            blend,
-          });
-        }}
-      />
-      <QueryList
-        id='noises'
-        labels={NOISE_LABELS}
-        name='Noise Source'
-        result={noises}
-        value={params.noise}
-        onChange={(noise) => {
-          setInpaint({
-            noise,
-          });
-        }}
-      />
+      <Stack direction='row' spacing={2}>
+        <QueryList
+          id='blends'
+          labels={BLEND_LABELS}
+          name='Blend Mode'
+          result={blends}
+          value={params.blend}
+          onChange={(blend) => {
+            setInpaint({
+              blend,
+            });
+          }}
+        />
+        <QueryList
+          id='noises'
+          labels={NOISE_LABELS}
+          name='Noise Source'
+          result={noises}
+          value={params.noise}
+          onChange={(noise) => {
+            setInpaint({
+              noise,
+            });
+          }}
+        />
+      </Stack>
       <OutpaintControl config={config} />
       <Button onClick={() => upload.mutate()}>Generate</Button>
     </Stack>
