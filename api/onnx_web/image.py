@@ -1,5 +1,5 @@
 from numpy import random
-from PIL import Image
+from PIL import Image, ImageFilter
 from typing import Tuple
 
 import numpy as np
@@ -27,6 +27,25 @@ def blend_mask_inverse_source(source: Tuple[int, int, int], mask: Tuple[int, int
     )
 
 
+def noise_source_original(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Tuple[float, float, float]:
+    width, height = dims
+
+    noise = Image.new('RGB', (width, height), 'white')
+    noise.paste(source_image, origin)
+
+    return noise
+
+
+def noise_source_gaussian(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Tuple[float, float, float]:
+    width, height = dims
+
+    noise = Image.new('RGB', (width, height), 'white')
+    noise.paste(source_image, origin)
+    noise.filter(ImageFilter.GaussianBlur(5))
+
+    return noise
+
+
 def noise_source_uniform(source_image: Image, dims: Tuple[int, int]) -> Tuple[float, float, float]:
     width, height = dims
     size = width * height
@@ -49,7 +68,7 @@ def noise_source_uniform(source_image: Image, dims: Tuple[int, int]) -> Tuple[fl
     return noise
 
 
-def noise_source_gaussian(source_image: Image, dims: Tuple[int, int]) -> Tuple[float, float, float]:
+def noise_source_normal(source_image: Image, dims: Tuple[int, int]) -> Tuple[float, float, float]:
     width, height = dims
     size = width * height
 
@@ -121,7 +140,7 @@ def expand_image(
     full_mask = Image.new('RGB', (full_width, full_height), fill)
     full_mask.paste(mask_image, (left, top))
 
-    full_noise = noise_source(source_image, (full_width, full_height))
+    full_noise = noise_source(source_image, (full_width, full_height), (top, left))
 
     for x in range(full_source.width):
         for y in range(full_source.height):
