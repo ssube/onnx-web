@@ -36140,8 +36140,18 @@
     }
     __name(throttleRequest, "throttleRequest");
     return {
+      async masks() {
+        const path = makeApiUrl(root, "settings", "masks");
+        const res = await f(path);
+        return await res.json();
+      },
       async models() {
         const path = makeApiUrl(root, "settings", "models");
+        const res = await f(path);
+        return await res.json();
+      },
+      async noises() {
+        const path = makeApiUrl(root, "settings", "noises");
         const res = await f(path);
         return await res.json();
       },
@@ -36195,6 +36205,8 @@
           return pending;
         }
         const url = makeImageURL(root, "inpaint", params);
+        url.searchParams.append("filter", params.filter);
+        url.searchParams.append("noise", params.noise);
         const body = new FormData();
         body.append("mask", params.mask, "mask");
         body.append("source", params.source, "source");
@@ -36209,6 +36221,8 @@
           return pending;
         }
         const url = makeImageURL(root, "inpaint", params);
+        url.searchParams.append("filter", params.filter);
+        url.searchParams.append("noise", params.noise);
         if (doesExist2(params.left)) {
           url.searchParams.append("left", params.left.toFixed(0));
         }
@@ -57835,7 +57849,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }), "createImg2ImgSlice");
     const createInpaintSlice = /* @__PURE__ */ __name((set) => ({
-      inpaint: Object.assign(Object.assign({}, defaults), { mask: null, source: null }),
+      inpaint: Object.assign(Object.assign({}, defaults), { filter: "none", mask: null, noise: "histogram", source: null }),
       setInpaint(params) {
         set((prev2) => ({
           inpaint: Object.assign(Object.assign({}, prev2.inpaint), params)
@@ -57843,7 +57857,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       },
       resetInpaint() {
         set({
-          inpaint: Object.assign(Object.assign({}, defaults), { mask: null, source: null })
+          inpaint: Object.assign(Object.assign({}, defaults), { filter: "none", mask: null, noise: "histogram", source: null })
         });
       }
     }), "createInpaintSlice");
@@ -57940,6 +57954,17 @@ Please use another name.` : formatMuiErrorMessage(18));
     "karras-ve": "Karras Ve",
     "lms-discrete": "LMS",
     "pndm": "PNDM"
+  };
+  var NOISE_LABELS = {
+    fill: "Fill Edges",
+    gaussian: "Gaussian Blur",
+    histogram: "Histogram Noise",
+    normal: "Gaussian Noise",
+    uniform: "Uniform Noise"
+  };
+  var MASK_LABELS = {
+    gaussian: "Gaussian Blur",
+    none: "None"
   };
 
   // out/src/components/ImageHistory.js
@@ -58720,6 +58745,12 @@ Please use another name.` : formatMuiErrorMessage(18));
   function Inpaint(props) {
     const { config, model, platform } = props;
     const client = mustExist(useContext18(ClientContext));
+    const masks = useQuery("masks", async () => client.masks(), {
+      staleTime: STALE_TIME
+    });
+    const noises = useQuery("noises", async () => client.noises(), {
+      staleTime: STALE_TIME
+    });
     async function uploadSource() {
       const outpaint = state.getState().outpaint;
       if (outpaint.enabled) {
@@ -58772,6 +58803,20 @@ Please use another name.` : formatMuiErrorMessage(18));
         React104.createElement(ImageControl, { config, params, onChange: (newParams) => {
           setInpaint(newParams);
         } }),
+        React104.createElement(
+          Stack_default,
+          { direction: "row", spacing: 2 },
+          React104.createElement(QueryList, { id: "masks", labels: MASK_LABELS, name: "Mask Filter", result: masks, value: params.filter, onChange: (filter) => {
+            setInpaint({
+              filter
+            });
+          } }),
+          React104.createElement(QueryList, { id: "noises", labels: NOISE_LABELS, name: "Noise Source", result: noises, value: params.noise, onChange: (noise) => {
+            setInpaint({
+              noise
+            });
+          } })
+        ),
         React104.createElement(OutpaintControl, { config }),
         React104.createElement(Button_default, { onClick: () => upload.mutate() }, "Generate")
       )
