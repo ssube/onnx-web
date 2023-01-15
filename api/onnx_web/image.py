@@ -146,7 +146,7 @@ def expand_image(
         expand_by: Tuple[int, int, int, int],
         fill='white',
         noise_source=noise_source_histogram,
-        mask_filter=mask_filter_gaussian,
+        mask_filter=mask_filter_none,
 ):
     left, right, top, bottom = expand_by
 
