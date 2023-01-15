@@ -128,6 +128,8 @@ export function createStateSlices(base: ConfigParams) {
       ...defaults,
       mask: null,
       source: null,
+      noise: '',
+      blend: '',
     },
     setInpaint(params) {
       set((prev) => ({
@@ -143,6 +145,8 @@ export function createStateSlices(base: ConfigParams) {
           ...defaults,
           mask: null,
           source: null,
+          noise: '',
+          blend: '',
         },
       });
     },

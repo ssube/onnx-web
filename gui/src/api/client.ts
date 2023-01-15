@@ -43,6 +43,9 @@ export type Txt2ImgResponse = Required<Txt2ImgParams>;
 export interface InpaintParams extends BaseImgParams {
   mask: Blob;
   source: Blob;
+
+  blend: string;
+  noise: string;
 }
 
 export interface OutpaintPixels {
@@ -75,7 +78,9 @@ export interface ApiReady {
 }
 
 export interface ApiClient {
+  blends(): Promise<Array<string>>;
   models(): Promise<Array<string>>;
+  noises(): Promise<Array<string>>;
   params(): Promise<ConfigParams>;
   platforms(): Promise<Array<string>>;
   schedulers(): Promise<Array<string>>;
@@ -156,8 +161,18 @@ export function makeClient(root: string, f = fetch): ApiClient {
   }
 
   return {
+    async blends(): Promise<Array<string>> {
+      const path = makeApiUrl(root, 'settings', 'blends');
+      const res = await f(path);
+      return await res.json() as Array<string>;
+    },
     async models(): Promise<Array<string>> {
       const path = makeApiUrl(root, 'settings', 'models');
+      const res = await f(path);
+      return await res.json() as Array<string>;
+    },
+    async noises(): Promise<Array<string>> {
+      const path = makeApiUrl(root, 'settings', 'noises');
       const res = await f(path);
       return await res.json() as Array<string>;
     },
@@ -223,6 +238,8 @@ export function makeClient(root: string, f = fetch): ApiClient {
       }
 
       const url = makeImageURL(root, 'inpaint', params);
+      url.searchParams.append('noise', params.noise);
+      url.searchParams.append('blend', params.blend);
 
       const body = new FormData();
       body.append('mask', params.mask, 'mask');
@@ -242,6 +259,8 @@ export function makeClient(root: string, f = fetch): ApiClient {
       }
 
       const url = makeImageURL(root, 'inpaint', params);
+      url.searchParams.append('noise', params.noise);
+      url.searchParams.append('blend', params.blend);
 
       if (doesExist(params.left)) {
         url.searchParams.append('left', params.left.toFixed(0));

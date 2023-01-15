@@ -1,15 +1,17 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
-import { ConfigParams, IMAGE_FILTER } from '../config.js';
+import { ConfigParams, IMAGE_FILTER, STALE_TIME } from '../config.js';
 import { ClientContext, StateContext } from '../state.js';
+import { BLEND_LABELS, NOISE_LABELS } from '../strings.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
 import { MaskCanvas } from './MaskCanvas.js';
 import { OutpaintControl } from './OutpaintControl.js';
+import { QueryList } from './QueryList.js';
 
 const { useContext } = React;
 
@@ -23,6 +25,12 @@ export interface InpaintProps {
 export function Inpaint(props: InpaintProps) {
   const { config, model, platform } = props;
   const client = mustExist(useContext(ClientContext));
+  const blends = useQuery('blends', async () => client.blends(), {
+    staleTime: STALE_TIME,
+  });
+  const noises = useQuery('noises', async () => client.noises(), {
+    staleTime: STALE_TIME,
+  });
 
   async function uploadSource(): Promise<void> {
     const outpaint = state.getState().outpaint; // TODO: seems shady
@@ -102,6 +110,30 @@ export function Inpaint(props: InpaintProps) {
         params={params}
         onChange={(newParams) => {
           setInpaint(newParams);
+        }}
+      />
+      <QueryList
+        id='blends'
+        labels={BLEND_LABELS}
+        name='Blend Mode'
+        result={blends}
+        value={params.blend}
+        onChange={(blend) => {
+          setInpaint({
+            blend,
+          });
+        }}
+      />
+      <QueryList
+        id='noises'
+        labels={NOISE_LABELS}
+        name='Noise Source'
+        result={noises}
+        value={params.noise}
+        onChange={(noise) => {
+          setInpaint({
+            noise,
+          });
         }}
       />
       <OutpaintControl config={config} />

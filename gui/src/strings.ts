@@ -26,3 +26,16 @@ export const SCHEDULER_LABELS: Record<string, string> = {
   'lms-discrete': 'LMS',
   'pndm': 'PNDM',
 };
+
+export const NOISE_LABELS: Record<string, string> = {
+  fill: 'Fill Edges',
+  guassian: 'Gaussian Blur',
+  histogram: 'Histogram Noise',
+  normal: 'Gaussian Noise',
+  uniform: 'Uniform Noise',
+};
+
+export const BLEND_LABELS: Record<string, string> = {
+  'mask-source': 'Noise -> Source',
+  'source-mask': 'Source -> Noise',
+};
