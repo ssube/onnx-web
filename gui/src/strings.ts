@@ -29,7 +29,7 @@ export const SCHEDULER_LABELS: Record<string, string> = {
 
 export const NOISE_LABELS: Record<string, string> = {
   fill: 'Fill Edges',
-  guassian: 'Gaussian Blur',
+  gaussian: 'Gaussian Blur',
   histogram: 'Histogram Noise',
   normal: 'Gaussian Noise',
   uniform: 'Uniform Noise',
