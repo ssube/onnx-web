@@ -386,9 +386,19 @@ def introspect():
     }
 
 
+@app.route('/api/settings/blends')
+def list_noise_sources():
+    return jsonify(list(blend_modes.keys()))
+
+
 @app.route('/api/settings/models')
 def list_models():
     return jsonify(available_models)
+
+
+@app.route('/api/settings/noises')
+def list_noise_sources():
+    return jsonify(list(noise_sources.keys()))
 
 
 @app.route('/api/settings/params')
