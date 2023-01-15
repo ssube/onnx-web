@@ -54,8 +54,7 @@ def mask_filter_gaussian(mask_image: Image, dims: Tuple[int, int], origin: Tuple
     noise.paste(mask_image, origin)
 
     for i in range(rounds):
-        blur = noise.copy()
-        blur.filter(ImageFilter.GaussianBlur(5))
+        blur = noise.filter(ImageFilter.GaussianBlur(5))
         noise = ImageChops.screen(noise, blur)
 
     return noise
@@ -81,7 +80,7 @@ def noise_source_gaussian(source_image: Image, dims: Tuple[int, int], origin: Tu
     noise.paste(source_image, origin)
 
     for i in range(rounds):
-        noise.filter(ImageFilter.GaussianBlur(5))
+        noise = noise.filter(ImageFilter.GaussianBlur(5))
 
     return noise
 
