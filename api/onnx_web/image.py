@@ -1,5 +1,5 @@
 from numpy import random
-from PIL import Image, ImageFilter
+from PIL import Image, ImageChops, ImageFilter
 from typing import Tuple
 
 import numpy as np
@@ -42,6 +42,23 @@ def blend_source_mask(source: Tuple[int, int, int], mask: Tuple[int, int, int], 
         int((source[2] * blend_imult(mask[2])) +
             (noise[2] * blend_mult(mask[2]))),
     )
+
+
+def mask_filter_gaussian(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], rounds=3) -> Tuple[float, float, float]:
+    '''
+    Gaussian blur, source image centered on white canvas.
+    '''
+    width, height = dims
+
+    noise = Image.new('RGB', (width, height), 'white')
+    noise.paste(mask_image, origin)
+
+    for i in range(rounds):
+        blur = noise.copy()
+        blur.filter(ImageFilter.GaussianBlur(5))
+        noise = ImageChops.screen(noise, blur)
+
+    return noise
 
 
 def noise_source_fill(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], fill='white') -> Tuple[float, float, float]:
@@ -152,6 +169,7 @@ def expand_image(
         expand_by: Tuple[int, int, int, int],
         fill='white',
         noise_source=noise_source_histogram,
+        mask_filter=mask_filter_gaussian,
         blend_op=blend_source_mask
 ):
     left, right, top, bottom = expand_by
@@ -159,13 +177,17 @@ def expand_image(
     full_width = left + source_image.width + right
     full_height = top + source_image.height + bottom
 
-    full_source = Image.new('RGB', (full_width, full_height), fill)
-    full_source.paste(source_image, (left, top))
+    dims = (full_width, full_height)
+    origin = (top, left)
 
-    full_mask = Image.new('RGB', (full_width, full_height), fill)
-    full_mask.paste(mask_image, (left, top))
+    full_source = Image.new('RGB', dims, fill)
+    full_source.paste(source_image, origin)
 
-    full_noise = noise_source(source_image, (full_width, full_height), (top, left))
+    full_mask = Image.new('RGB', dims, fill)
+    full_mask = mask_filter_gaussian(full_mask, dims, origin)
+    full_mask.paste(mask_image, origin)
+
+    full_noise = noise_source(source_image, dims, origin)
 
     for x in range(full_source.width):
         for y in range(full_source.height):
