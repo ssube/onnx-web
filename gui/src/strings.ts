@@ -35,7 +35,7 @@ export const NOISE_LABELS: Record<string, string> = {
   uniform: 'Uniform Noise',
 };
 
-export const BLEND_LABELS: Record<string, string> = {
-  'mask-source': 'Noise -> Source',
-  'source-mask': 'Source -> Noise',
+export const MASK_LABELS: Record<string, string> = {
+  gaussian: 'Gaussian Blur',
+  none: 'None',
 };

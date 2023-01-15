@@ -6,7 +6,7 @@ import { useStore } from 'zustand';
 
 import { ConfigParams, IMAGE_FILTER, STALE_TIME } from '../config.js';
 import { ClientContext, StateContext } from '../state.js';
-import { BLEND_LABELS, NOISE_LABELS } from '../strings.js';
+import { MASK_LABELS, NOISE_LABELS } from '../strings.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
 import { MaskCanvas } from './MaskCanvas.js';
@@ -25,7 +25,7 @@ export interface InpaintProps {
 export function Inpaint(props: InpaintProps) {
   const { config, model, platform } = props;
   const client = mustExist(useContext(ClientContext));
-  const blends = useQuery('blends', async () => client.blends(), {
+  const masks = useQuery('masks', async () => client.masks(), {
     staleTime: STALE_TIME,
   });
   const noises = useQuery('noises', async () => client.noises(), {
@@ -114,14 +114,14 @@ export function Inpaint(props: InpaintProps) {
       />
       <Stack direction='row' spacing={2}>
         <QueryList
-          id='blends'
-          labels={BLEND_LABELS}
-          name='Blend Mode'
-          result={blends}
-          value={params.blend}
-          onChange={(blend) => {
+          id='masks'
+          labels={MASK_LABELS}
+          name='Mask Filter'
+          result={masks}
+          value={params.filter}
+          onChange={(filter) => {
             setInpaint({
-              blend,
+              filter,
             });
           }}
         />
