@@ -13,9 +13,26 @@ def blend_imult(a):
     return 1.0 - blend_mult(a)
 
 
-def blend_mask_inverse_source(source: Tuple[int, int, int], mask: Tuple[int, int, int], noise: Tuple[int, int, int]) -> Tuple[int, int, int]:
+def blend_mask_source(source: Tuple[int, int, int], mask: Tuple[int, int, int], noise: Tuple[int, int, int]) -> Tuple[int, int, int]:
+    '''
+    Blend operation, linear interpolation from noise to source based on mask: `(s * (1 - m)) + (n * m)`
+    Black = noise
+    White = source
+    '''
+    return (
+        int((source[0] * blend_mult(mask[0])) +
+            (noise[0] * blend_imult(mask[0]))),
+        int((source[1] * blend_mult(mask[1])) +
+            (noise[1] * blend_imult(mask[1]))),
+        int((source[2] * blend_mult(mask[2])) +
+            (noise[2] * blend_imult(mask[2]))),
+    )
+
+def blend_source_mask(source: Tuple[int, int, int], mask: Tuple[int, int, int], noise: Tuple[int, int, int]) -> Tuple[int, int, int]:
     '''
     Blend operation, linear interpolation from source to noise based on mask: `(s * (1 - m)) + (n * m)`
+    Black = source
+    White = noise
     '''
     return (
         int((source[0] * blend_imult(mask[0])) +
@@ -27,21 +44,29 @@ def blend_mask_inverse_source(source: Tuple[int, int, int], mask: Tuple[int, int
     )
 
 
-def noise_source_original(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Tuple[float, float, float]:
+def noise_source_fill(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], fill='white') -> Tuple[float, float, float]:
+    '''
+    Identity transform, source image centered on white canvas.
+    '''
     width, height = dims
 
-    noise = Image.new('RGB', (width, height), 'white')
+    noise = Image.new('RGB', (width, height), fill)
     noise.paste(source_image, origin)
 
     return noise
 
 
-def noise_source_gaussian(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Tuple[float, float, float]:
+def noise_source_gaussian(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], rounds=3) -> Tuple[float, float, float]:
+    '''
+    Gaussian blur, source image centered on white canvas.
+    '''
     width, height = dims
 
     noise = Image.new('RGB', (width, height), 'white')
     noise.paste(source_image, origin)
-    noise.filter(ImageFilter.GaussianBlur(5))
+
+    for i in range(rounds):
+        noise.filter(ImageFilter.GaussianBlur(5))
 
     return noise
 
@@ -127,7 +152,7 @@ def expand_image(
         expand_by: Tuple[int, int, int, int],
         fill='white',
         noise_source=noise_source_histogram,
-        blend_op=blend_mask_inverse_source
+        blend_op=blend_source_mask
 ):
     left, right, top, bottom = expand_by
 

@@ -29,7 +29,7 @@ from struct import pack
 from os import environ, makedirs, path, scandir
 from typing import Any, Dict, Tuple, Union
 
-from .image import expand_image
+from .image import expand_image, noise_source_gaussian, noise_source_histogram, noise_source_normal, noise_source_fill, noise_source_uniform, blend_source_mask, blend_imult, blend_mask_source, blend_mult
 
 import json
 import numpy as np
@@ -71,6 +71,17 @@ pipeline_schedulers = {
     'karras-ve': KarrasVeScheduler,
     'lms-discrete': LMSDiscreteScheduler,
     'pndm': PNDMScheduler,
+}
+noise_sources = {
+    'fill': noise_source_fill,
+    'gaussian': noise_source_gaussian,
+    'histogram': noise_source_histogram,
+    'normal': noise_source_normal,
+    'uniform': noise_source_uniform,
+}
+blend_modes = {
+    'mask-source': blend_mask_source,
+    'source-mask': blend_source_mask,
 }
 
 
@@ -264,7 +275,27 @@ def run_img2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
     print('saved img2img output: %s' % (output))
 
 
-def run_inpaint_pipeline(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output, height, width, source_image, mask_image, left, right, top, bottom):
+def run_inpaint_pipeline(
+    model: str,
+    provider: str,
+    scheduler: Any,
+    prompt: str,
+    negative_prompt: Union[str, None],
+    cfg: float,
+    steps: int,
+    seed: int,
+    output: str,
+    height: int,
+    width: int,
+    source_image: Image,
+    mask_image: Image,
+    left: int,
+    right: int,
+    top: int,
+    bottom: int,
+    noise_source: Any,
+    blend_op: Any
+):
     pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                          model, provider, scheduler)
 
@@ -273,7 +304,12 @@ def run_inpaint_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
 
     if left > 0 or right > 0 or top > 0 or bottom > 0:
         print('expanding image for outpainting')
-        source_image, mask_image, _full_noise, _full_dims = expand_image(source_image, mask_image, (left, right, top, bottom))
+        source_image, mask_image, _full_noise, _full_dims = expand_image(
+            source_image,
+            mask_image,
+            (left, right, top, bottom),
+            noise_source=noise_source,
+            blend_op=blend_op)
 
     image = pipe(
         prompt,
@@ -445,10 +481,18 @@ def inpaint():
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
      width, seed) = pipeline_from_request()
 
-    left = get_and_clamp_int(request.args, 'left', 0, config_params.get('width').get('max'), 0)
-    right = get_and_clamp_int(request.args, 'right', 0, config_params.get('width').get('max'), 0)
-    top = get_and_clamp_int(request.args, 'top', 0, config_params.get('height').get('max'), 0)
-    bottom = get_and_clamp_int(request.args, 'bottom', 0, config_params.get('height').get('max'), 0)
+    left = get_and_clamp_int(request.args, 'left', 0,
+                             config_params.get('width').get('max'), 0)
+    right = get_and_clamp_int(request.args, 'right',
+                              0, config_params.get('width').get('max'), 0)
+    top = get_and_clamp_int(request.args, 'top', 0,
+                            config_params.get('height').get('max'), 0)
+    bottom = get_and_clamp_int(
+        request.args, 'bottom', 0, config_params.get('height').get('max'), 0)
+
+    noise_source = get_from_map(
+        request.args, 'noise', noise_sources, 'histogram')
+    blend_op = get_from_map(request.args, 'blend', blend_modes, 'mask-source')
 
     (output_file, output_full) = make_output_path(
         'inpaint', seed, (prompt, cfg, steps, height, width, seed, left, right, top, bottom))
@@ -456,8 +500,28 @@ def inpaint():
 
     source_image.thumbnail((width, height))
     mask_image.thumbnail((width, height))
-    executor.submit_stored(output_file, run_inpaint_pipeline, model, provider, scheduler, prompt, negative_prompt,
-                           cfg, steps, seed, output_full, height, width, source_image, mask_image, left, right, top, bottom)
+    executor.submit_stored(
+        output_file,
+        run_inpaint_pipeline,
+        model,
+        provider,
+        scheduler,
+        prompt,
+        negative_prompt,
+        cfg,
+        steps,
+        seed,
+        output_full,
+        height,
+        width,
+        source_image,
+        mask_image,
+        left,
+        right,
+        top,
+        bottom,
+        noise_source,
+        blend_op)
 
     return jsonify({
         'output': output_file,
