@@ -71,7 +71,7 @@ def noise_source_gaussian(source_image: Image, dims: Tuple[int, int], origin: Tu
     return noise
 
 
-def noise_source_uniform(source_image: Image, dims: Tuple[int, int]) -> Tuple[float, float, float]:
+def noise_source_uniform(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Tuple[float, float, float]:
     width, height = dims
     size = width * height
 
@@ -93,7 +93,7 @@ def noise_source_uniform(source_image: Image, dims: Tuple[int, int]) -> Tuple[fl
     return noise
 
 
-def noise_source_normal(source_image: Image, dims: Tuple[int, int]) -> Tuple[float, float, float]:
+def noise_source_normal(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Tuple[float, float, float]:
     width, height = dims
     size = width * height
 
@@ -115,7 +115,7 @@ def noise_source_normal(source_image: Image, dims: Tuple[int, int]) -> Tuple[flo
     return noise
 
 
-def noise_source_histogram(source_image: Image, dims: Tuple[int, int]) -> Tuple[float, float, float]:
+def noise_source_histogram(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Tuple[float, float, float]:
     r, g, b = source_image.split()
     width, height = dims
     size = width * height
