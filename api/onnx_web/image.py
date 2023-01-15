@@ -148,6 +148,6 @@ def expand_image(
 
     full_mask = mask_filter(mask_image, dims, origin)
     full_noise = noise_source(source_image, dims, origin)
-    full_source = Image.composite(full_source, full_noise, full_mask.convert('L'))
+    full_source = Image.composite(full_noise, full_source, full_mask.convert('L'))
 
     return (full_source, full_mask, full_noise, (full_width, full_height))
