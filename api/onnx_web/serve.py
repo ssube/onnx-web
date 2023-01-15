@@ -442,8 +442,19 @@ def img2img():
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
      width, seed) = pipeline_from_request()
 
-    (output_file, output_full) = make_output_path('img2img', seed,
-                                                  (prompt, cfg, negative_prompt, steps, strength, height, width))
+    (output_file, output_full) = make_output_path(
+        'img2img',
+        seed, (
+            model,
+            provider.__name__,
+            scheduler.__name__,
+            prompt,
+            negative_prompt,
+            cfg,
+            steps,
+            strength,
+            height,
+            width))
     print("img2img output: %s" % (output_full))
 
     input_image.thumbnail((width, height))
@@ -472,8 +483,18 @@ def txt2img():
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
      width, seed) = pipeline_from_request()
 
-    (output_file, output_full) = make_output_path('txt2img',
-                                                  seed, (prompt, cfg, negative_prompt, steps, height, width))
+    (output_file, output_full) = make_output_path(
+        'txt2img',
+        seed, (
+            model,
+            provider.__name__,
+            scheduler.__name__,
+            prompt,
+            negative_prompt,
+            cfg,
+            steps,
+            height,
+            width))
     print("txt2img output: %s" % (output_full))
 
     executor.submit_stored(output_file, run_txt2img_pipeline, model,
@@ -516,12 +537,28 @@ def inpaint():
     bottom = get_and_clamp_int(
         request.args, 'bottom', 0, config_params.get('height').get('max'), 0)
 
-    mask_filter= get_from_map(request.args, 'filter', mask_filters, 'none')
+    mask_filter = get_from_map(request.args, 'filter', mask_filters, 'none')
     noise_source = get_from_map(
         request.args, 'noise', noise_sources, 'histogram')
 
     (output_file, output_full) = make_output_path(
-        'inpaint', seed, (prompt, cfg, steps, height, width, seed, left, right, top, bottom))
+        'inpaint', seed, (
+            model,
+            provider.__name__,
+            scheduler.__name__,
+            prompt,
+            negative_prompt,
+            cfg,
+            steps,
+            height,
+            width,
+            left,
+            right,
+            top,
+            bottom,
+            mask_filter.__name__,
+            noise_source.__name__,
+        ))
     print("inpaint output: %s" % output_full)
 
     source_image.thumbnail((width, height))
