@@ -126,9 +126,9 @@ export function createStateSlices(base: ConfigParams) {
   const createInpaintSlice: StateCreator<OnnxState, [], [], InpaintSlice> = (set) => ({
     inpaint: {
       ...defaults,
-      filter: '',
+      filter: 'none',
       mask: null,
-      noise: '',
+      noise: 'histogram',
       source: null,
     },
     setInpaint(params) {
@@ -143,10 +143,10 @@ export function createStateSlices(base: ConfigParams) {
       set({
         inpaint: {
           ...defaults,
-          filter: '',
+          filter: 'none',
           mask: null,
+          noise: 'histogram',
           source: null,
-          noise: '',
         },
       });
     },
