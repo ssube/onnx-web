@@ -36,6 +36,7 @@ export const NOISE_LABELS: Record<string, string> = {
 };
 
 export const MASK_LABELS: Record<string, string> = {
-  gaussian: 'Gaussian Blur',
-  none: 'None',
+  'none': 'None',
+  'gaussian-multiply': 'Gaussian Multiply',
+  'gaussian-screen': 'Gaussian Screen',
 };

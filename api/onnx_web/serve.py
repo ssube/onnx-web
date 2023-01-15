@@ -32,7 +32,8 @@ from typing import Any, Dict, Tuple, Union
 from .image import (
     expand_image,
     # mask filters
-    mask_filter_gaussian,
+    mask_filter_gaussian_multiply,
+    mask_filter_gaussian_screen,
     mask_filter_none,
     # noise sources
     noise_source_gaussian,
@@ -92,7 +93,8 @@ noise_sources = {
 }
 mask_filters = {
     'none': mask_filter_none,
-    'gaussian': mask_filter_gaussian,
+    'gaussian-multiply': mask_filter_gaussian_multiply,
+    'gaussian-screen': mask_filter_gaussian_screen,
 }
 
 

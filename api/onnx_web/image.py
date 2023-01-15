@@ -14,7 +14,20 @@ def mask_filter_none(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int
     return noise
 
 
-def mask_filter_gaussian(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], rounds=3) -> Image:
+def mask_filter_gaussian_multiply(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], rounds=3) -> Image:
+    '''
+    Gaussian blur with multiply, source image centered on white canvas.
+    '''
+    noise = mask_filter_none(mask_image, dims, origin)
+
+    for i in range(rounds):
+        blur = noise.filter(ImageFilter.GaussianBlur(5))
+        noise = ImageChops.multiply(noise, blur)
+
+    return noise
+
+
+def mask_filter_gaussian_screen(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], rounds=3) -> Image:
     '''
     Gaussian blur, source image centered on white canvas.
     '''
