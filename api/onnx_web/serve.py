@@ -118,6 +118,7 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         pipe = DiffusionPipeline.from_pretrained(
             model,
             custom_pipeline='lpw_stable_diffusion_onnx',
+            revision='onnx',
             provider=provider,
             safety_checker=None,
             scheduler=scheduler.from_pretrained(model, subfolder='scheduler')
@@ -226,8 +227,6 @@ def pipeline_from_request():
 def run_txt2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output, height, width):
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
                          model, provider, scheduler,
-                         custom_pipeline='lpw_stable_diffusion_onnx',
-                         revision='onnx',
                          )
 
     latents = get_latents_from_seed(seed, width, height)
