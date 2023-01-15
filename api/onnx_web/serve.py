@@ -29,7 +29,18 @@ from struct import pack
 from os import environ, makedirs, path, scandir
 from typing import Any, Dict, Tuple, Union
 
-from .image import expand_image, noise_source_gaussian, noise_source_histogram, noise_source_normal, noise_source_fill, noise_source_uniform, blend_source_mask, blend_imult, blend_mask_source, blend_mult
+from .image import (
+    expand_image,
+    # mask filters
+    mask_filter_gaussian,
+    mask_filter_none,
+    # noise sources
+    noise_source_gaussian,
+    noise_source_histogram,
+    noise_source_normal,
+    noise_source_fill,
+    noise_source_uniform,
+)
 
 import json
 import numpy as np
@@ -79,9 +90,9 @@ noise_sources = {
     'normal': noise_source_normal,
     'uniform': noise_source_uniform,
 }
-blend_modes = {
-    'mask-source': blend_mask_source,
-    'source-mask': blend_source_mask,
+mask_filters = {
+    'none': mask_filter_none,
+    'gaussian': mask_filter_gaussian,
 }
 
 
@@ -294,7 +305,7 @@ def run_inpaint_pipeline(
     top: int,
     bottom: int,
     noise_source: Any,
-    blend_op: Any
+    mask_filter: Any
 ):
     pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                          model, provider, scheduler)
@@ -309,7 +320,7 @@ def run_inpaint_pipeline(
             mask_image,
             (left, right, top, bottom),
             noise_source=noise_source,
-            blend_op=blend_op)
+            mask_filter=mask_filter)
 
         if environ.get('DEBUG') is not None:
             source_image.save('./last-source.png')
@@ -391,9 +402,9 @@ def introspect():
     }
 
 
-@app.route('/api/settings/blends')
-def list_blend_sources():
-    return jsonify(list(blend_modes.keys()))
+@app.route('/api/settings/masks')
+def list_mask_filters():
+    return jsonify(list(mask_filters.keys()))
 
 
 @app.route('/api/settings/models')
@@ -505,9 +516,9 @@ def inpaint():
     bottom = get_and_clamp_int(
         request.args, 'bottom', 0, config_params.get('height').get('max'), 0)
 
+    mask_filter= get_from_map(request.args, 'filter', mask_filters, 'none')
     noise_source = get_from_map(
         request.args, 'noise', noise_sources, 'histogram')
-    blend_op = get_from_map(request.args, 'blend', blend_modes, 'mask-source')
 
     (output_file, output_full) = make_output_path(
         'inpaint', seed, (prompt, cfg, steps, height, width, seed, left, right, top, bottom))
@@ -536,7 +547,7 @@ def inpaint():
         top,
         bottom,
         noise_source,
-        blend_op)
+        mask_filter)
 
     return jsonify({
         'output': output_file,

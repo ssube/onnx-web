@@ -13,21 +13,6 @@ def blend_imult(a):
     return 1.0 - blend_mult(a)
 
 
-def blend_mask_source(source: Tuple[int, int, int], mask: Tuple[int, int, int], noise: Tuple[int, int, int]) -> Tuple[int, int, int]:
-    '''
-    Blend operation, linear interpolation from noise to source based on mask: `(s * (1 - m)) + (n * m)`
-    Black = noise
-    White = source
-    '''
-    return (
-        int((source[0] * blend_mult(mask[0])) +
-            (noise[0] * blend_imult(mask[0]))),
-        int((source[1] * blend_mult(mask[1])) +
-            (noise[1] * blend_imult(mask[1]))),
-        int((source[2] * blend_mult(mask[2])) +
-            (noise[2] * blend_imult(mask[2]))),
-    )
-
 def blend_source_mask(source: Tuple[int, int, int], mask: Tuple[int, int, int], noise: Tuple[int, int, int]) -> Tuple[int, int, int]:
     '''
     Blend operation, linear interpolation from source to noise based on mask: `(s * (1 - m)) + (n * m)`
@@ -44,14 +29,20 @@ def blend_source_mask(source: Tuple[int, int, int], mask: Tuple[int, int, int], 
     )
 
 
-def mask_filter_gaussian(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], rounds=3) -> Tuple[float, float, float]:
+def mask_filter_none(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], fill='white') -> Image:
+    width, height = dims
+
+    noise = Image.new('RGB', (width, height), fill)
+    noise.paste(mask_image, origin)
+
+    return noise
+
+
+def mask_filter_gaussian(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], rounds=3) -> Image:
     '''
     Gaussian blur, source image centered on white canvas.
     '''
-    width, height = dims
-
-    noise = Image.new('RGB', (width, height), 'white')
-    noise.paste(mask_image, origin)
+    noise = mask_filter_none(mask_image, dims, origin)
 
     for i in range(rounds):
         blur = noise.filter(ImageFilter.GaussianBlur(5))
@@ -60,7 +51,7 @@ def mask_filter_gaussian(mask_image: Image, dims: Tuple[int, int], origin: Tuple
     return noise
 
 
-def noise_source_fill(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], fill='white') -> Tuple[float, float, float]:
+def noise_source_fill(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], fill='white') -> Image:
     '''
     Identity transform, source image centered on white canvas.
     '''
@@ -72,7 +63,7 @@ def noise_source_fill(source_image: Image, dims: Tuple[int, int], origin: Tuple[
     return noise
 
 
-def noise_source_gaussian(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], rounds=3) -> Tuple[float, float, float]:
+def noise_source_gaussian(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], rounds=3) -> Image:
     '''
     Gaussian blur, source image centered on white canvas.
     '''
@@ -85,7 +76,7 @@ def noise_source_gaussian(source_image: Image, dims: Tuple[int, int], origin: Tu
     return noise
 
 
-def noise_source_uniform(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Tuple[float, float, float]:
+def noise_source_uniform(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Image:
     width, height = dims
     size = width * height
 
@@ -107,7 +98,7 @@ def noise_source_uniform(source_image: Image, dims: Tuple[int, int], origin: Tup
     return noise
 
 
-def noise_source_normal(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Tuple[float, float, float]:
+def noise_source_normal(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Image:
     width, height = dims
     size = width * height
 
@@ -129,7 +120,7 @@ def noise_source_normal(source_image: Image, dims: Tuple[int, int], origin: Tupl
     return noise
 
 
-def noise_source_histogram(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Tuple[float, float, float]:
+def noise_source_histogram(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Image:
     r, g, b = source_image.split()
     width, height = dims
     size = width * height
@@ -180,9 +171,9 @@ def expand_image(
     full_source = Image.new('RGB', dims, fill)
     full_source.paste(source_image, origin)
 
-    full_mask = Image.new('RGB', dims, fill)
-    full_mask = mask_filter_gaussian(full_mask, dims, origin)
-    full_mask.paste(mask_image, origin)
+    full_mask = mask_filter(mask_image, dims, origin)
+    # full_mask = Image.new('RGB', dims, fill)
+    # full_mask.paste(mask_image, origin)
 
     full_noise = noise_source(source_image, dims, origin)
 
