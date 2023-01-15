@@ -33,7 +33,7 @@ export function OnnxError(props: OnnxErrorProps) {
             acceleration is supported on both AMD and Nvidia, with a CPU fallback capable of running on laptop-class
             machines.
           </Typography>
-          <Typography variant='body1'>
+          <Typography variant='body1' gutterBottom>
             The GUI runs in all major browsers, including on mobile devices, and allows you to select the model and
             accelerator being used, along with the prompt and other image parameters. The last few output images are
             shown below the image controls, making it easy to refer back to previous parameters or save an image from
@@ -44,9 +44,20 @@ export function OnnxError(props: OnnxErrorProps) {
             make sure that <a href='https://github.com/ssube/onnx-web#configuring-and-running-the-server'>your API
             server is running</a> at <a href={props.root}>{props.root}</a>.
           </Typography>
-          <Typography variant='body1' gutterBottom>
+          <Typography variant='body1'>
             If you are trying to use a remote API server or an alternative port, you can put the address into the
             query string, like <code>{linkback}?api=http://localhost:5001</code>.
+          </Typography>
+          <Typography variant='body1' gutterBottom>
+            If your server is running and available at <a href={props.root}>{props.root}</a>, make sure you are on
+            the `main` branch and try updating to the latest version:
+            <pre>
+              &gt; git branch{'\n'}
+              * main{'\n'}
+              {'\n'}
+              &gt; git pull{'\n'}
+            </pre>
+            You can also use <a href='https://github.com/ssube/onnx-web/releases'>a recent release</a>.
           </Typography>
         </Stack>
       </Box>
