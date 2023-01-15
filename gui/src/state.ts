@@ -184,6 +184,7 @@ export function createStateSlices(base: ConfigParams) {
 
   const createOutpaintSlice: StateCreator<OnnxState, [], [], OutpaintSlice> = (set) => ({
     outpaint: {
+      enabled: false,
       left: 0,
       right: 0,
       top: 0,

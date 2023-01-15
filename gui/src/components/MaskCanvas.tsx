@@ -233,8 +233,8 @@ export function MaskCanvas(props: MaskCanvasProps) {
     <Stack direction='row' spacing={4}>
       <NumericField
         label='Brush Color'
-        min={0}
-        max={255}
+        min={COLORS.black}
+        max={COLORS.white}
         step={1}
         value={brush.color}
         onChange={(color) => {
@@ -243,7 +243,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
       />
       <NumericField
         label='Brush Size'
-        min={4}
+        min={1}
         max={64}
         step={1}
         value={brush.size}
@@ -281,6 +281,16 @@ export function MaskCanvas(props: MaskCanvasProps) {
           save();
         }}>
         Fill with black
+      </Button>
+      <Button
+        variant='outlined'
+        startIcon={<FormatColorFill />}
+        onClick={() => {
+          floodCanvas(bufferRef, floodWhite);
+          drawBuffer();
+          save();
+        }}>
+        Fill with white
       </Button>
       <Button
         variant='outlined'
@@ -333,7 +343,11 @@ export function floodAbove(n: number): number {
 }
 
 export function floodBlack(): number {
-  return 0;
+  return COLORS.black;
+}
+
+export function floodWhite(): number {
+  return COLORS.white;
 }
 
 export function grayToRGB(n: number, o = 1.0): string {
@@ -355,7 +369,7 @@ function floodCanvas(ref: RefObject<HTMLCanvasElement>, flood: FloodFn) {
       pixels[i + 1] = final;
       pixels[i + 2] = final;
       // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-      pixels[i + 3] = 255;
+      pixels[i + 3] = COLORS.white; // fully opaque
     }
   }
 

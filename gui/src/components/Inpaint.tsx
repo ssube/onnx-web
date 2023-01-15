@@ -27,7 +27,7 @@ export function Inpaint(props: InpaintProps) {
   async function uploadSource(): Promise<void> {
     const outpaint = state.getState().outpaint; // TODO: seems shady
 
-    if (outpaint.bottom > 0 || outpaint.left > 0 || outpaint.right > 0 || outpaint.top > 0) {
+    if (outpaint.enabled) {
       const output = await client.outpaint({
         ...params,
         ...outpaint,

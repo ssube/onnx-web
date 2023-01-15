@@ -12,6 +12,7 @@ export function parseNumber(num: string, decimal = false): number {
 
 export interface ImageControlProps {
   decimal?: boolean;
+  disabled?: boolean;
   label: string;
   min: number;
   max: number;
@@ -22,10 +23,12 @@ export interface ImageControlProps {
 }
 
 export function NumericField(props: ImageControlProps) {
-  const { decimal, label, min, max, step, value } = props;
+  const { decimal = false, disabled = false, label, min, max, step, value } = props;
+
   return <Stack spacing={2}>
     <TextField
       label={label}
+      disabled={disabled}
       variant='outlined'
       type='number'
       inputProps={{ min, max, step }}
@@ -37,6 +40,7 @@ export function NumericField(props: ImageControlProps) {
       }}
     />
     <Slider
+      disabled={disabled}
       min={min}
       max={max}
       step={step}

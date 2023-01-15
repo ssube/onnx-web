@@ -46,6 +46,8 @@ export interface InpaintParams extends BaseImgParams {
 }
 
 export interface OutpaintPixels {
+  enabled: boolean;
+
   left: number;
   right: number;
   top: number;
