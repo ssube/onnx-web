@@ -446,7 +446,7 @@ def img2img():
         'img2img',
         seed, (
             model,
-            provider.__name__,
+            provider,
             scheduler.__name__,
             prompt,
             negative_prompt,
@@ -487,7 +487,7 @@ def txt2img():
         'txt2img',
         seed, (
             model,
-            provider.__name__,
+            provider,
             scheduler.__name__,
             prompt,
             negative_prompt,
@@ -544,7 +544,7 @@ def inpaint():
     (output_file, output_full) = make_output_path(
         'inpaint', seed, (
             model,
-            provider.__name__,
+            provider,
             scheduler.__name__,
             prompt,
             negative_prompt,
