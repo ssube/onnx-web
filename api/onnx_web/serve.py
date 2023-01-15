@@ -247,17 +247,17 @@ def run_txt2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
     print('saved txt2img output: %s' % (output))
 
 
-def run_img2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output, strength, input_image):
+def run_img2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output, strength, source_image):
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
                          model, provider, scheduler)
 
     rng = np.random.RandomState(seed)
 
     image = pipe.img2img(
+        source_image,
         prompt,
         generator=rng,
         guidance_scale=cfg,
-        image=input_image,
         negative_prompt=negative_prompt,
         num_inference_steps=steps,
         strength=strength,
@@ -280,13 +280,13 @@ def run_inpaint_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
             source_image, mask_image, (left, right, top, bottom))
 
     image = pipe.inpaint(
+        source_image,
+        mask_image,
         prompt,
         generator=rng,
         guidance_scale=cfg,
         height=height,
-        image=source_image,
         latents=latents,
-        mask_image=mask_image,
         negative_prompt=negative_prompt,
         num_inference_steps=steps,
         width=width,
