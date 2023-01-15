@@ -304,12 +304,17 @@ def run_inpaint_pipeline(
 
     if left > 0 or right > 0 or top > 0 or bottom > 0:
         print('expanding image for outpainting')
-        source_image, mask_image, _full_noise, _full_dims = expand_image(
+        source_image, mask_image, noise_image, _full_dims = expand_image(
             source_image,
             mask_image,
             (left, right, top, bottom),
             noise_source=noise_source,
             blend_op=blend_op)
+
+        if environ.get('DEBUG') is not None:
+            source_image.save('./last-source.png')
+            mask_image.save('./last-mask.png')
+            noise_image.save('./last-noise.png')
 
     image = pipe(
         prompt,
