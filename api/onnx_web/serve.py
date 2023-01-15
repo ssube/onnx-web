@@ -605,9 +605,13 @@ def inpaint():
 @app.route('/api/ready')
 def ready():
     output_file = request.args.get('output', None)
+    done = executor.futures.done(output_file)
+
+    if done == True:
+        executor.futures.pop(output_file)
 
     return jsonify({
-        'ready': executor.futures.done(output_file),
+        'ready': done,
     })
 
 
