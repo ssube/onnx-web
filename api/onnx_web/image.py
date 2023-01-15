@@ -40,7 +40,7 @@ def mask_filter_gaussian_screen(mask_image: Image, dims: Tuple[int, int], origin
     return noise
 
 
-def noise_source_fill(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], fill='white') -> Image:
+def noise_source_fill_edge(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], fill='white') -> Image:
     '''
     Identity transform, source image centered on white canvas.
     '''
@@ -48,6 +48,17 @@ def noise_source_fill(source_image: Image, dims: Tuple[int, int], origin: Tuple[
 
     noise = Image.new('RGB', (width, height), fill)
     noise.paste(source_image, origin)
+
+    return noise
+
+
+def noise_source_fill_mask(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], fill='white') -> Image:
+    '''
+    Fill the whole canvas, no source or noise.
+    '''
+    width, height = dims
+
+    noise = Image.new('RGB', (width, height), fill)
 
     return noise
 

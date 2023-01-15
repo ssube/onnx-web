@@ -36,10 +36,11 @@ from .image import (
     mask_filter_gaussian_screen,
     mask_filter_none,
     # noise sources
+    noise_source_fill_edge,
+    noise_source_fill_mask,
     noise_source_gaussian,
     noise_source_histogram,
     noise_source_normal,
-    noise_source_fill,
     noise_source_uniform,
 )
 
@@ -86,7 +87,8 @@ pipeline_schedulers = {
     'pndm': PNDMScheduler,
 }
 noise_sources = {
-    'fill': noise_source_fill,
+    'fill-edge': noise_source_fill_edge,
+    'fill-mask': noise_source_fill_mask,
     'gaussian': noise_source_gaussian,
     'histogram': noise_source_histogram,
     'normal': noise_source_normal,

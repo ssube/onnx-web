@@ -28,11 +28,12 @@ export const SCHEDULER_LABELS: Record<string, string> = {
 };
 
 export const NOISE_LABELS: Record<string, string> = {
-  fill: 'Fill Edges',
-  gaussian: 'Gaussian Blur',
-  histogram: 'Histogram Noise',
-  normal: 'Gaussian Noise',
-  uniform: 'Uniform Noise',
+  'fill-edge': 'Fill Edges',
+  'fill-mask': 'Fill Masked',
+  'gaussian': 'Gaussian Blur',
+  'histogram': 'Histogram Noise',
+  'normal': 'Gaussian Noise',
+  'uniform': 'Uniform Noise',
 };
 
 export const MASK_LABELS: Record<string, string> = {
