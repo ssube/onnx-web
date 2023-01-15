@@ -232,10 +232,10 @@ def run_txt2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
     latents = get_latents_from_seed(seed, width, height)
     rng = np.random.RandomState(seed)
 
-    image = pipe(
+    image = pipe.text2img(
         prompt,
-        height,
-        width,
+        height=height,
+        width=width,
         generator=rng,
         guidance_scale=cfg,
         latents=latents,
