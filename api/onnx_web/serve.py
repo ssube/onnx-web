@@ -445,10 +445,10 @@ def inpaint():
     (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
      width, seed) = pipeline_from_request()
 
-    left = get_and_clamp_int(request.args, 'left', 0, config_params.get('width').get('max'))
-    right = get_and_clamp_int(request.args, 'right', 0, config_params.get('width').get('max'))
-    top = get_and_clamp_int(request.args, 'top', 0, config_params.get('height').get('max'))
-    bottom = get_and_clamp_int(request.args, 'bottom', 0, config_params.get('height').get('max'))
+    left = get_and_clamp_int(request.args, 'left', 0, config_params.get('width').get('max'), 0)
+    right = get_and_clamp_int(request.args, 'right', 0, config_params.get('width').get('max'), 0)
+    top = get_and_clamp_int(request.args, 'top', 0, config_params.get('height').get('max'), 0)
+    bottom = get_and_clamp_int(request.args, 'bottom', 0, config_params.get('height').get('max'), 0)
 
     (output_file, output_full) = make_output_path(
         'inpaint', seed, (prompt, cfg, steps, height, width, seed, left, right, top, bottom))
