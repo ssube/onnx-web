@@ -57564,7 +57564,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           ),
           React90.createElement(Typography_default, { variant: "body1" }, "This is a web UI for running ONNX models with GPU acceleration or in software, running locally or on a remote machine."),
           React90.createElement(Typography_default, { variant: "body1" }, "The API runs on both Linux and Windows and provides access to the major functionality of diffusers, along with metadata about the available models and accelerators, and the output of previous runs. Hardware acceleration is supported on both AMD and Nvidia, with a CPU fallback capable of running on laptop-class machines."),
-          React90.createElement(Typography_default, { variant: "body1" }, "The GUI runs in all major browsers, including on mobile devices, and allows you to select the model and accelerator being used, along with the prompt and other image parameters. The last few output images are shown below the image controls, making it easy to refer back to previous parameters or save an image from earlier."),
+          React90.createElement(Typography_default, { variant: "body1", gutterBottom: true }, "The GUI runs in all major browsers, including on mobile devices, and allows you to select the model and accelerator being used, along with the prompt and other image parameters. The last few output images are shown below the image controls, making it easy to refer back to previous parameters or save an image from earlier."),
           React90.createElement(
             Typography_default,
             { variant: "body1" },
@@ -57578,7 +57578,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           ),
           React90.createElement(
             Typography_default,
-            { variant: "body1", gutterBottom: true },
+            { variant: "body1" },
             "If you are trying to use a remote API server or an alternative port, you can put the address into the query string, like ",
             React90.createElement(
               "code",
@@ -57586,6 +57586,27 @@ Please use another name.` : formatMuiErrorMessage(18));
               linkback,
               "?api=http://localhost:5001"
             ),
+            "."
+          ),
+          React90.createElement(
+            Typography_default,
+            { variant: "body1", gutterBottom: true },
+            "If your server is running and available at ",
+            React90.createElement("a", { href: props.root }, props.root),
+            ", make sure you are on the `main` branch and try updating to the latest version:",
+            React90.createElement(
+              "pre",
+              null,
+              "> git branch",
+              "\n",
+              "* main",
+              "\n",
+              "\n",
+              "> git pull",
+              "\n"
+            ),
+            "You can also use ",
+            React90.createElement("a", { href: "https://github.com/ssube/onnx-web/releases" }, "a recent release"),
             "."
           )
         )
@@ -57956,15 +57977,17 @@ Please use another name.` : formatMuiErrorMessage(18));
     "pndm": "PNDM"
   };
   var NOISE_LABELS = {
-    fill: "Fill Edges",
-    gaussian: "Gaussian Blur",
-    histogram: "Histogram Noise",
-    normal: "Gaussian Noise",
-    uniform: "Uniform Noise"
+    "fill-edge": "Fill Edges",
+    "fill-mask": "Fill Masked",
+    "gaussian": "Gaussian Blur",
+    "histogram": "Histogram Noise",
+    "normal": "Gaussian Noise",
+    "uniform": "Uniform Noise"
   };
   var MASK_LABELS = {
-    gaussian: "Gaussian Blur",
-    none: "None"
+    "none": "None",
+    "gaussian-multiply": "Gaussian Multiply",
+    "gaussian-screen": "Gaussian Screen"
   };
 
   // out/src/components/ImageHistory.js
