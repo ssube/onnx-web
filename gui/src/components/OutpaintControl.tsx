@@ -16,9 +16,9 @@ export function OutpaintControl(props: OutpaintControlProps) {
   const { config } = props;
 
   const state = mustExist(useContext(StateContext));
-  const params = useStore(state, (s) => s.inpaint);
+  const params = useStore(state, (s) => s.outpaint);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setInpaint = useStore(state, (s) => s.setInpaint);
+  const setOutpaint = useStore(state, (s) => s.setOutpaint);
 
   return <Stack direction='row' spacing={4}>
     <NumericField
@@ -28,7 +28,7 @@ export function OutpaintControl(props: OutpaintControlProps) {
       step={config.width.step}
       value={params.left}
       onChange={(left) => {
-        setInpaint({
+        setOutpaint({
           left,
         });
       }}
@@ -40,7 +40,7 @@ export function OutpaintControl(props: OutpaintControlProps) {
       step={config.width.step}
       value={params.right}
       onChange={(right) => {
-        setInpaint({
+        setOutpaint({
           right,
         });
       }}
@@ -52,7 +52,7 @@ export function OutpaintControl(props: OutpaintControlProps) {
       step={config.height.step}
       value={params.top}
       onChange={(top) => {
-        setInpaint({
+        setOutpaint({
           top,
         });
       }}
@@ -64,7 +64,7 @@ export function OutpaintControl(props: OutpaintControlProps) {
       step={config.height.step}
       value={params.bottom}
       onChange={(bottom) => {
-        setInpaint({
+        setOutpaint({
           bottom,
         });
       }}

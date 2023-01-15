@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Box, Container, Stack, Typography } from '@mui/material';
+import { Alert, AlertTitle, Box, Container, Link, Stack, Typography } from '@mui/material';
 import * as React from 'react';
 
 export interface OnnxErrorProps {
@@ -12,7 +12,7 @@ export function OnnxError(props: OnnxErrorProps) {
     <Container>
       <Box sx={{ my: 4 }}>
         <Typography variant='h3' gutterBottom>
-          <a href='https://github.com/ssube/onnx-web'>ONNX Web</a>
+          <Link href='https://github.com/ssube/onnx-web' target='_blank' underline='hover'>ONNX Web</Link>
         </Typography>
       </Box>
       <Box sx={{ my: 4 }}>

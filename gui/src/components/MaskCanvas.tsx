@@ -2,9 +2,11 @@ import { doesExist, Maybe, mustExist } from '@apextoaster/js-utils';
 import { FormatColorFill, Gradient } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
 import { throttle } from 'lodash';
-import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import React, { RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useStore } from 'zustand';
 
-import { ConfigParams, DEFAULT_BRUSH, SAVE_TIME } from '../config.js';
+import { ConfigParams, SAVE_TIME } from '../config.js';
+import { StateContext } from '../state.js';
 import { NumericField } from './NumericField';
 
 export const FULL_CIRCLE = 2 * Math.PI;
@@ -111,18 +113,20 @@ export function MaskCanvas(props: MaskCanvasProps) {
   const maskState = useRef(MASK_STATE.clean);
   const [background, setBackground] = useState<string>();
   const [clicks, setClicks] = useState<Array<Point>>([]);
-  const [brushColor, setBrushColor] = useState(DEFAULT_BRUSH.color);
-  const [brushOpacity, setBrushOpacity] = useState(1.0);
-  const [brushSize, setBrushSize] = useState(DEFAULT_BRUSH.size);
+
+  const state = mustExist(useContext(StateContext));
+  const brush = useStore(state, (s) => s.brush);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setBrush = useStore(state, (s) => s.setBrush);
 
   useEffect(() => {
     // including clicks.length prevents the initial render from saving a blank canvas
     if (doesExist(bufferRef.current) && maskState.current === MASK_STATE.painting && clicks.length > 0) {
       const { ctx } = getContext(bufferRef);
-      ctx.fillStyle = grayToRGB(brushColor, brushOpacity);
+      ctx.fillStyle = grayToRGB(brush.color, brush.strength);
 
       for (const click of clicks) {
-        drawCircle(ctx, click, brushSize);
+        drawCircle(ctx, click, brush.size);
       }
 
       clicks.length = 0;
@@ -188,12 +192,12 @@ export function MaskCanvas(props: MaskCanvasProps) {
         const bounds = canvas.getBoundingClientRect();
 
         const { ctx } = getContext(bufferRef);
-        ctx.fillStyle = grayToRGB(brushColor, brushOpacity);
+        ctx.fillStyle = grayToRGB(brush.color, brush.strength);
 
         drawCircle(ctx, {
           x: event.clientX - bounds.left,
           y: event.clientY - bounds.top,
-        }, brushSize);
+        }, brush.size);
 
         maskState.current = MASK_STATE.dirty;
         save();
@@ -215,12 +219,12 @@ export function MaskCanvas(props: MaskCanvasProps) {
           }]);
         } else {
           const { ctx } = getClearContext(brushRef);
-          ctx.fillStyle = grayToRGB(brushColor, brushOpacity);
+          ctx.fillStyle = grayToRGB(brush.color, brush.strength);
 
           drawCircle(ctx, {
             x: event.clientX - bounds.left,
             y: event.clientY - bounds.top,
-          }, brushSize);
+          }, brush.size);
 
           drawBuffer();
         }
@@ -228,13 +232,13 @@ export function MaskCanvas(props: MaskCanvasProps) {
     />
     <Stack direction='row' spacing={4}>
       <NumericField
-        label='Brush Shade'
+        label='Brush Color'
         min={0}
         max={255}
         step={1}
-        value={brushColor}
-        onChange={(value) => {
-          setBrushColor(value);
+        value={brush.color}
+        onChange={(color) => {
+          setBrush({ color });
         }}
       />
       <NumericField
@@ -242,9 +246,9 @@ export function MaskCanvas(props: MaskCanvasProps) {
         min={4}
         max={64}
         step={1}
-        value={brushSize}
-        onChange={(value) => {
-          setBrushSize(value);
+        value={brush.size}
+        onChange={(size) => {
+          setBrush({ size });
         }}
       />
       <NumericField
@@ -253,9 +257,9 @@ export function MaskCanvas(props: MaskCanvasProps) {
         min={0}
         max={1}
         step={0.01}
-        value={brushOpacity}
-        onChange={(value) => {
-          setBrushOpacity(value);
+        value={brush.strength}
+        onChange={(strength) => {
+          setBrush({ strength });
         }}
       />
       <Button

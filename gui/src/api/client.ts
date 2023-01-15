@@ -43,11 +43,21 @@ export type Txt2ImgResponse = Required<Txt2ImgParams>;
 export interface InpaintParams extends BaseImgParams {
   mask: Blob;
   source: Blob;
+}
 
-  left?: number;
-  right?: number;
-  top?: number;
-  bottom?: number;
+export interface OutpaintPixels {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+}
+
+export type OutpaintParams = InpaintParams & OutpaintPixels;
+
+export interface BrushParams {
+  color: number;
+  size: number;
+  strength: number;
 }
 
 export interface ApiResponse {
@@ -71,6 +81,7 @@ export interface ApiClient {
   img2img(params: Img2ImgParams): Promise<ApiResponse>;
   txt2img(params: Txt2ImgParams): Promise<ApiResponse>;
   inpaint(params: InpaintParams): Promise<ApiResponse>;
+  outpaint(params: OutpaintParams): Promise<ApiResponse>;
 
   ready(params: ApiResponse): Promise<ApiReady>;
 }
@@ -211,10 +222,28 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       const url = makeImageURL(root, 'inpaint', params);
 
+      const body = new FormData();
+      body.append('mask', params.mask, 'mask');
+      body.append('source', params.source, 'source');
+
+      pending = throttleRequest(url, {
+        body,
+        method: 'POST',
+      });
+
+      // eslint-disable-next-line no-return-await
+      return await pending;
+    },
+    async outpaint(params: OutpaintParams) {
+      if (doesExist(pending)) {
+        return pending;
+      }
+
+      const url = makeImageURL(root, 'inpaint', params);
+
       if (doesExist(params.left)) {
         url.searchParams.append('left', params.left.toFixed(0));
       }
-
 
       if (doesExist(params.right)) {
         url.searchParams.append('right', params.right.toFixed(0));

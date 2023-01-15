@@ -7,8 +7,10 @@ import {
   ApiClient,
   ApiResponse,
   BaseImgParams,
+  BrushParams,
   Img2ImgParams,
   InpaintParams,
+  OutpaintPixels,
   paramsFromConfig,
   Txt2ImgParams,
 } from './api/client.js';
@@ -54,7 +56,19 @@ interface DefaultSlice {
   setDefaults(param: Partial<BaseImgParams>): void;
 }
 
-export type OnnxState = Txt2ImgSlice & Img2ImgSlice & InpaintSlice & HistorySlice & DefaultSlice;
+interface OutpaintSlice {
+  outpaint: OutpaintPixels;
+
+  setOutpaint(pixels: Partial<OutpaintPixels>): void;
+}
+
+interface BrushSlice {
+  brush: BrushParams;
+
+  setBrush(brush: Partial<BrushParams>): void;
+}
+
+export type OnnxState = Txt2ImgSlice & Img2ImgSlice & InpaintSlice & HistorySlice & DefaultSlice & OutpaintSlice & BrushSlice;
 
 export function createStateSlices(base: ConfigParams) {
   const defaults = paramsFromConfig(base);
@@ -114,10 +128,6 @@ export function createStateSlices(base: ConfigParams) {
       ...defaults,
       mask: null,
       source: null,
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
     },
     setInpaint(params) {
       set((prev) => ({
@@ -133,10 +143,6 @@ export function createStateSlices(base: ConfigParams) {
           ...defaults,
           mask: null,
           source: null,
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
         },
       });
     },
@@ -176,6 +182,39 @@ export function createStateSlices(base: ConfigParams) {
     },
   });
 
+  const createOutpaintSlice: StateCreator<OnnxState, [], [], OutpaintSlice> = (set) => ({
+    outpaint: {
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    },
+    setOutpaint(pixels) {
+      set((prev) => ({
+        outpaint: {
+          ...prev.outpaint,
+          ...pixels,
+        }
+      }));
+    },
+  });
+
+  const createBrushSlice: StateCreator<OnnxState, [], [], BrushSlice> = (set) => ({
+    brush: {
+      color: 255,
+      size: 8,
+      strength: 0.5,
+    },
+    setBrush(brush) {
+      set((prev) => ({
+        brush: {
+          ...prev.brush,
+          ...brush,
+        },
+      }));
+    },
+  });
+
   const createDefaultSlice: StateCreator<OnnxState, [], [], DefaultSlice> = (set) => ({
     defaults: {
       ...defaults,
@@ -196,6 +235,8 @@ export function createStateSlices(base: ConfigParams) {
     createImg2ImgSlice,
     createInpaintSlice,
     createTxt2ImgSlice,
+    createOutpaintSlice,
+    createBrushSlice,
   };
 }
 

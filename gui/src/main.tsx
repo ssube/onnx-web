@@ -3,7 +3,7 @@ import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { merge } from 'lodash';
 import * as React from 'react';
 import ReactDOM from 'react-dom/client';
-import { QueryCache, QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { createStore } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
@@ -48,6 +48,8 @@ export async function main() {
       createImg2ImgSlice,
       createInpaintSlice,
       createTxt2ImgSlice,
+      createBrushSlice,
+      createOutpaintSlice,
     } = createStateSlices(params);
     const state = createStore<OnnxState, [['zustand/persist', OnnxState]]>(persist((...slice) => ({
       ...createTxt2ImgSlice(...slice),
@@ -55,6 +57,8 @@ export async function main() {
       ...createInpaintSlice(...slice),
       ...createHistorySlice(...slice),
       ...createDefaultSlice(...slice),
+      ...createBrushSlice(...slice),
+      ...createOutpaintSlice(...slice),
     }), {
       name: 'onnx-web',
       partialize(s) {

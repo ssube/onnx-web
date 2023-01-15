@@ -1,6 +1,6 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, Divider, Stack, Tab, Typography } from '@mui/material';
+import { Box, Container, Divider, Link, Stack, Tab, Typography } from '@mui/material';
 import * as React from 'react';
 import { useQuery } from 'react-query';
 
@@ -41,7 +41,7 @@ export function OnnxWeb(props: OnnxWebProps) {
     <Container>
       <Box sx={{ my: 4 }}>
         <Typography variant='h3' gutterBottom>
-          <a href='https://github.com/ssube/onnx-web'>ONNX Web</a>
+          <Link href='https://github.com/ssube/onnx-web' target='_blank' underline='hover'>ONNX Web</Link>
         </Typography>
       </Box>
       <Box sx={{ mx: 4, my: 4 }}>

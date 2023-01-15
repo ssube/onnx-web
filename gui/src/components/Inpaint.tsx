@@ -1,4 +1,4 @@
-import { doesExist, mustExist } from '@apextoaster/js-utils';
+import { mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -25,15 +25,30 @@ export function Inpaint(props: InpaintProps) {
   const client = mustExist(useContext(ClientContext));
 
   async function uploadSource(): Promise<void> {
-    const output = await client.inpaint({
-      ...params,
-      model,
-      platform,
-      mask: mustExist(params.mask),
-      source: mustExist(params.source),
-    });
+    const outpaint = state.getState().outpaint; // TODO: seems shady
 
-    setLoading(output);
+    if (outpaint.bottom > 0 || outpaint.left > 0 || outpaint.right > 0 || outpaint.top > 0) {
+      const output = await client.outpaint({
+        ...params,
+        ...outpaint,
+        model,
+        platform,
+        mask: mustExist(params.mask),
+        source: mustExist(params.source),
+      });
+
+      setLoading(output);
+    } else {
+      const output = await client.inpaint({
+        ...params,
+        model,
+        platform,
+        mask: mustExist(params.mask),
+        source: mustExist(params.source),
+      });
+
+      setLoading(output);
+    }
   }
 
   const state = mustExist(useContext(StateContext));
