@@ -159,7 +159,7 @@ def noise_source_histogram(source_image: Image, dims: Point, origin: Point) -> I
     return noise
 
 
-# based on https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/scripts/outpainting_mk_2.py#L175-L232
+# very loosely based on https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/scripts/outpainting_mk_2.py#L175-L232
 def expand_image(
         source_image: Image,
         mask_image: Image,
@@ -179,6 +179,7 @@ def expand_image(
 
     full_mask = mask_filter(mask_image, dims, origin)
     full_noise = noise_source(source_image, dims, origin)
+    # TODO: multiply noise by mask before compositing
     full_source = Image.composite(full_noise, full_source, full_mask.convert('L'))
 
     return (full_source, full_mask, full_noise, (full_width, full_height))

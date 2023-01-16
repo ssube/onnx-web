@@ -8,30 +8,31 @@ from realesrgan import RealESRGANer
 import numpy as np
 
 denoise_strength = 0.5
-gfpgan_url = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth'
-resrgan_url = [
-    'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth']
 fp16 = False
-model_name = 'RealESRGAN_x4plus'
 netscale = 4
 outscale = 4
 pre_pad = 0
 tile = 0
 tile_pad = 10
 
+gfpgan_url = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth'
+resrgan_name = 'RealESRGAN_x4plus'
+resrgan_url = [
+    'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth']
+
 
 def make_resrgan(model_path):
-    model_path = path.join(model_path, model_name + '.pth')
+    model_path = path.join(model_path, resrgan_name + '.onnx')
     if not path.isfile(model_path):
         for url in resrgan_url:
             model_path = load_file_from_url(
-                url=url, model_dir=path.join(model_path, model_name), progress=True, file_name=None)
+                url=url, model_dir=path.join(model_path, resrgan_name), progress=True, file_name=None)
 
     model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64,
                     num_block=23, num_grow_ch=32, scale=4)
 
     dni_weight = None
-    if model_name == 'realesr-general-x4v3' and denoise_strength != 1:
+    if resrgan_name == 'realesr-general-x4v3' and denoise_strength != 1:
         wdn_model_path = model_path.replace(
             'realesr-general-x4v3', 'realesr-general-wdn-x4v3')
         model_path = [model_path, wdn_model_path]
