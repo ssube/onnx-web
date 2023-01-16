@@ -24,12 +24,14 @@ export function Img2Img(props: Img2ImgProps) {
   const { config, model, platform } = props;
 
   async function uploadSource() {
+    const upscale = state.getState().upscale;
+
     const output = await client.img2img({
       ...params,
       model,
       platform,
       source: mustExist(params.source), // TODO: show an error if this doesn't exist
-    });
+    }, upscale);
 
     setLoading(output);
   }

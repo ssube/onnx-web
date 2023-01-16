@@ -23,11 +23,12 @@ export function Txt2Img(props: Txt2ImgProps) {
   const { config, model, platform } = props;
 
   async function generateImage() {
+    const upscale = state.getState().upscale;
     const output = await client.txt2img({
       ...params,
       model,
       platform,
-    });
+    }, upscale);
 
     setLoading(output);
   }

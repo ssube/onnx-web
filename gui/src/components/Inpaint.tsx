@@ -34,7 +34,9 @@ export function Inpaint(props: InpaintProps) {
   });
 
   async function uploadSource(): Promise<void> {
-    const outpaint = state.getState().outpaint; // TODO: seems shady
+    // these are not watched by the component, only sent by the mutation
+    const outpaint = state.getState().outpaint;
+    const upscale = state.getState().upscale;
 
     if (outpaint.enabled) {
       const output = await client.outpaint({
@@ -44,7 +46,7 @@ export function Inpaint(props: InpaintProps) {
         platform,
         mask: mustExist(params.mask),
         source: mustExist(params.source),
-      });
+      }, upscale);
 
       setLoading(output);
     } else {
@@ -54,7 +56,7 @@ export function Inpaint(props: InpaintProps) {
         platform,
         mask: mustExist(params.mask),
         source: mustExist(params.source),
-      });
+      }, upscale);
 
       setLoading(output);
     }

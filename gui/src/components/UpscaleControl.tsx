@@ -50,6 +50,7 @@ export function UpscaleControl(props: UpscaleControlProps) {
     />
     <NumericField
       label='Denoise'
+      decimal
       disabled={params.enabled === false}
       min={config.denoise.min}
       max={config.denoise.max}

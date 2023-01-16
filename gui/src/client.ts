@@ -97,10 +97,10 @@ export interface ApiClient {
   platforms(): Promise<Array<string>>;
   schedulers(): Promise<Array<string>>;
 
-  img2img(params: Img2ImgParams): Promise<ApiResponse>;
-  txt2img(params: Txt2ImgParams): Promise<ApiResponse>;
-  inpaint(params: InpaintParams): Promise<ApiResponse>;
-  outpaint(params: OutpaintParams): Promise<ApiResponse>;
+  img2img(params: Img2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse>;
+  txt2img(params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse>;
+  inpaint(params: InpaintParams, upscale?: UpscaleParams): Promise<ApiResponse>;
+  outpaint(params: OutpaintParams, upscale?: UpscaleParams): Promise<ApiResponse>;
 
   ready(params: ApiResponse): Promise<ApiReady>;
 }
