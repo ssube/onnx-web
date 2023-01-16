@@ -16,12 +16,10 @@ from diffusers import (
 from flask import Flask, jsonify, request, send_from_directory, url_for
 from flask_cors import CORS
 from flask_executor import Executor
-from hashlib import sha256
 from io import BytesIO
 from PIL import Image
-from struct import pack
 from os import environ, makedirs, path, scandir
-from typing import Tuple, Union
+from typing import Tuple
 
 from .image import (
     # mask filters
@@ -47,16 +45,14 @@ from .utils import (
     get_and_clamp_float,
     get_and_clamp_int,
     get_from_map,
-    safer_join,
+    make_output_path,
     BaseParams,
     Border,
-    OutputPath,
     Size,
 )
 
 import json
 import numpy as np
-import time
 
 # paths
 bundle_path = environ.get('ONNX_WEB_BUNDLE_PATH',
@@ -110,44 +106,6 @@ mask_filters = {
 
 def serve_bundle_file(filename='index.html'):
     return send_from_directory(path.join('..', bundle_path), filename)
-
-
-def hash_value(sha, param):
-    if param is None:
-        return
-    elif isinstance(param, float):
-        sha.update(bytearray(pack('!f', param)))
-    elif isinstance(param, int):
-        sha.update(bytearray(pack('!I', param)))
-    elif isinstance(param, str):
-        sha.update(param.encode('utf-8'))
-    else:
-        print('cannot hash param: %s, %s' % (param, type(param)))
-
-
-def make_output_path(mode: str, params: BaseParams, size: Size, extras: Tuple[Union[str, int, float]]) -> OutputPath:
-    now = int(time.time())
-    sha = sha256()
-
-    hash_value(mode)
-    hash_value(params.model)
-    hash_value(params.provider)
-    hash_value(params.scheduler)
-    hash_value(params.prompt)
-    hash_value(params.negative_prompt)
-    hash_value(params.cfg)
-    hash_value(params.steps)
-    hash_value(params.seed)
-    hash_value(size.width)
-    hash_value(size.height)
-
-    for param in extras:
-        hash_value(sha, param)
-
-    output_file = '%s_%s_%s_%s.png' % (mode, params.seed, sha.hexdigest(), now)
-    output_full = safer_join(output_path, output_file)
-
-    return OutputPath(output_full, output_file)
 
 
 def url_from_rule(rule) -> str:
@@ -306,6 +264,7 @@ def img2img():
     params, size = pipeline_from_request()
 
     output = make_output_path(
+        output_path,
         'img2img',
         params,
         size,
@@ -328,6 +287,7 @@ def txt2img():
     params, size = pipeline_from_request()
 
     output = make_output_path(
+        output_path,
         'txt2img',
         params,
         size)
@@ -368,6 +328,7 @@ def inpaint():
         request.args, 'noise', noise_sources, 'histogram')
 
     output = make_output_path(
+        output_path,
         'inpaint',
         params,
         size,
