@@ -193,7 +193,6 @@ def load_params():
 
 
 check_paths()
-set_model_path(model_path)
 load_models()
 load_params()
 
