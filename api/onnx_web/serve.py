@@ -98,6 +98,9 @@ mask_filters = {
 # TODO: load from model_path
 upscale_models = [
     'RealESRGAN_x4plus',
+]
+
+face_models = [
     'GFPGANv1.3',
 ]
 
@@ -186,7 +189,7 @@ def upscale_from_request() -> UpscaleParams:
         scale=scale,
         outscale=outscale,
         faces=faces,
-        face_model=upscale_models[1],
+        face_model=face_models[0],
         platform='onnx',
         denoise=denoise,
     )
