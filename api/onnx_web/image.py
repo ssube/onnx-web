@@ -10,6 +10,10 @@ from .utils import (
 )
 
 
+def get_pixel_index(x: int, y: int, width: int) -> int:
+    return (y * width) + x
+
+
 def mask_filter_none(mask_image: Image, dims: Point, origin: Point, fill='white') -> Image:
     width, height = dims
 
@@ -93,7 +97,7 @@ def noise_source_uniform(source_image: Image, dims: Point, origin: Point) -> Ima
 
     for x in range(width):
         for y in range(height):
-            i = x * y
+            i = get_pixel_index(x, y, width)
             noise.putpixel((x, y), (
                 int(noise_r[i]),
                 int(noise_g[i]),
@@ -115,7 +119,7 @@ def noise_source_normal(source_image: Image, dims: Point, origin: Point) -> Imag
 
     for x in range(width):
         for y in range(height):
-            i = x * y
+            i = get_pixel_index(x, y, width)
             noise.putpixel((x, y), (
                 int(noise_r[i]),
                 int(noise_g[i]),
@@ -145,7 +149,7 @@ def noise_source_histogram(source_image: Image, dims: Point, origin: Point) -> I
 
     for x in range(width):
         for y in range(height):
-            i = x * y
+            i = get_pixel_index(x, y, width)
             noise.putpixel((x, y), (
                 noise_r[i],
                 noise_g[i],
