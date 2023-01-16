@@ -308,7 +308,6 @@ def txt2img():
     params, size = pipeline_from_request()
 
     output = make_output_name(
-        output_path,
         'txt2img',
         params,
         size)
@@ -340,7 +339,6 @@ def inpaint():
         request.args, 'noise', noise_sources, 'histogram')
 
     output = make_output_name(
-        output_path,
         'inpaint',
         params,
         size,
