@@ -173,6 +173,19 @@ def pipeline_from_request() -> Tuple[BaseParams, Size]:
     return (params, size)
 
 
+def border_from_request() -> Border:
+    left = get_and_clamp_int(request.args, 'left', 0,
+                             config_params.get('width').get('max'), 0)
+    right = get_and_clamp_int(request.args, 'right',
+                              0, config_params.get('width').get('max'), 0)
+    top = get_and_clamp_int(request.args, 'top', 0,
+                            config_params.get('height').get('max'), 0)
+    bottom = get_and_clamp_int(
+        request.args, 'bottom', 0, config_params.get('height').get('max'), 0)
+
+    return Border(left, right, top, bottom)
+
+
 def check_paths():
     if not path.exists(model_path):
         raise RuntimeError('model path must exist')
@@ -264,13 +277,13 @@ def img2img():
     source_file = request.files.get('source')
     source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
 
+    params, size = pipeline_from_request()
+
     strength = get_and_clamp_float(
         request.args,
         'strength',
         config_params.get('strength').get('default'),
         config_params.get('strength').get('max'))
-
-    params, size = pipeline_from_request()
 
     output = make_output_name(
         'img2img',
@@ -320,16 +333,7 @@ def inpaint():
     mask_image = Image.open(BytesIO(mask_file.read())).convert('RGB')
 
     params, size = pipeline_from_request()
-
-    left = get_and_clamp_int(request.args, 'left', 0,
-                             config_params.get('width').get('max'), 0)
-    right = get_and_clamp_int(request.args, 'right',
-                              0, config_params.get('width').get('max'), 0)
-    top = get_and_clamp_int(request.args, 'top', 0,
-                            config_params.get('height').get('max'), 0)
-    bottom = get_and_clamp_int(
-        request.args, 'bottom', 0, config_params.get('height').get('max'), 0)
-    expand = Border(left, right, top, bottom)
+    expand = border_from_request()
 
     mask_filter = get_from_map(request.args, 'filter', mask_filters, 'none')
     noise_source = get_from_map(
@@ -341,10 +345,10 @@ def inpaint():
         params,
         size,
         extras=(
-            left,
-            right,
-            top,
-            bottom,
+            expand.left,
+            expand.right,
+            expand.top,
+            expand.bottom,
             mask_filter.__name__,
             noise_source.__name__,
         )
