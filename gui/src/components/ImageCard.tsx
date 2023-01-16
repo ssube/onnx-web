@@ -1,5 +1,5 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
-import { ContentCopy, ContentCopyTwoTone, Delete, Download } from '@mui/icons-material';
+import { Brush, ContentCopy, ContentCopyTwoTone, Delete, Download } from '@mui/icons-material';
 import { Box, Button, Card, CardContent, CardMedia, Grid, Paper } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
@@ -86,7 +86,7 @@ export function ImageCard(props: ImageCardProps) {
           </GridItem>
           <GridItem xs={2}>
             <Button onClick={copySourceToInpaint}>
-              <ContentCopyTwoTone />
+              <Brush />
             </Button>
           </GridItem>
           <GridItem xs={2}>

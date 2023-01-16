@@ -34,6 +34,7 @@
 			"Onnx",
 			"onnxruntime",
 			"outpaint",
+			"outscale",
 			"pndm",
 			"pretrained",
 			"protobuf",

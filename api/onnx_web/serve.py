@@ -106,6 +106,12 @@ mask_filters = {
     'gaussian-screen': mask_filter_gaussian_screen,
 }
 
+# TODO: load from model_path
+upscale_models = [
+    'RealESRGAN_x4plus',
+    'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth', # TODO: convert GFPGAN
+]
+
 
 def serve_bundle_file(filename='index.html'):
     return send_from_directory(path.join('..', bundle_path), filename)
@@ -192,9 +198,17 @@ def border_from_request() -> Border:
 def upscale_from_request() -> UpscaleParams:
     denoise = get_and_clamp_float(request.args, 'denoise', 0.5, 1.0, 0.0)
     scale = get_and_clamp_int(request.args, 'scale', 1, 4, 1)
+    outscale = get_and_clamp_int(request.args, 'outscale', 1, 4, 1)
     faces = request.args.get('faces', 'false') == 'true'
-    platform = 'onnx'
-    return UpscaleParams(scale=scale, faces=faces, platform=platform, denoise=denoise)
+    return UpscaleParams(
+        upscale_models[0],
+        scale=scale,
+        outscale=outscale,
+        faces=faces,
+        face_model=upscale_models[1],
+        platform='onnx',
+        denoise=denoise,
+    )
 
 def check_paths():
     if not path.exists(model_path):

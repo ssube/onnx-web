@@ -1,11 +1,10 @@
 from basicsr.archs.rrdbnet_arch import RRDBNet
-from basicsr.utils.download_util import load_file_from_url
 from gfpgan import GFPGANer
 from onnxruntime import InferenceSession
 from os import path
 from PIL import Image
 from realesrgan import RealESRGANer
-from typing import Any
+from typing import Any, Union
 
 import numpy as np
 import torch
@@ -15,15 +14,8 @@ from .utils import (
 )
 
 # TODO: these should all be params or config
-fp16 = False
-outscale = 4
 pre_pad = 0
 tile_pad = 10
-
-gfpgan_url = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth'
-resrgan_name = 'RealESRGAN_x4plus'
-resrgan_url = [
-    'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth']
 
 
 class ONNXImage():
@@ -50,6 +42,9 @@ class ONNXImage():
 
     def numpy(self):
         return self.source
+
+    def size(self):
+        return np.shape(self.source)
 
 
 class ONNXNet():
@@ -87,29 +82,44 @@ class ONNXNet():
 
 
 class UpscaleParams():
-    def __init__(self, scale=4, faces=True, platform='onnx', denoise=0.5) -> None:
-        self.denoise = denoise
+    def __init__(
+        self,
+        upscale_model: str,
+        scale: int = 4,
+        outscale: int = 1,
+        denoise: float = 0.5,
+        faces=True,
+        face_model: Union[str, None] = None,
+        platform: str = 'onnx',
+        half=False
+    ) -> None:
+        self.upscale_model = upscale_model
         self.scale = scale
+        self.outscale = outscale
+        self.denoise = denoise
         self.faces = faces
+        self.face_model = face_model
         self.platform = platform
+        self.half = half
 
 
 def make_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
-    model_path = path.join(ctx.model_path, resrgan_name + '.pth')
+    model_path = path.join(ctx.model_path, '%s.%s' %
+                           (params.upscale_model, params.platform))
     if not path.isfile(model_path):
-        for url in resrgan_url:
-            model_path = load_file_from_url(
-                url=url, model_dir=path.join(model_path, resrgan_name), progress=True, file_name=None)
+        raise Exception('Real ESRGAN model not found at %s' % model_path)
 
     # use ONNX acceleration, if available
     if params.platform == 'onnx':
         model = ONNXNet(ctx)
-    else:
+    elif params.platform == 'pth':
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64,
                         num_block=23, num_grow_ch=32, scale=params.scale)
+    else:
+        raise Exception('unknown platform %s' % params.platform)
 
     dni_weight = None
-    if resrgan_name == 'realesr-general-x4v3' and params.denoise != 1:
+    if params.upscale_model == 'realesr-general-x4v3' and params.denoise != 1:
         wdn_model_path = model_path.replace(
             'realesr-general-x4v3', 'realesr-general-wdn-x4v3')
         model_path = [model_path, wdn_model_path]
@@ -123,7 +133,7 @@ def make_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
         tile=tile,
         tile_pad=tile_pad,
         pre_pad=pre_pad,
-        half=fp16)
+        half=params.half)
 
     return upsampler
 
@@ -134,8 +144,7 @@ def upscale_resrgan(ctx: ServerContext, params: UpscaleParams, source_image: Ima
     image = np.array(source_image)
     upsampler = make_resrgan(ctx, params)
 
-    # TODO: what is outscale for here?
-    output, _ = upsampler.enhance(image, outscale=outscale)
+    output, _ = upsampler.enhance(image, outscale=params.outscale)
 
     if params.faces:
         output = upscale_gfpgan(ctx, params, output)
@@ -144,14 +153,18 @@ def upscale_resrgan(ctx: ServerContext, params: UpscaleParams, source_image: Ima
 
 
 def upscale_gfpgan(ctx: ServerContext, params: UpscaleParams, image, upsampler=None) -> Image:
-    print('correcting faces with GFPGAN')
+    print('correcting faces with GFPGAN model: %s' % params.face_model)
+
+    if params.face_model is None:
+        print('no face model given, skipping')
+        return image
 
     if upsampler is None:
         upsampler = make_resrgan(ctx, params, tile=512)
 
     face_enhancer = GFPGANer(
-        model_path=gfpgan_url,
-        upscale=outscale,
+        model_path=params.face_model,
+        upscale=params.outscale,
         arch='clean',
         channel_multiplier=2,
         bg_upsampler=upsampler)

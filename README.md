@@ -59,6 +59,7 @@ Based on guides by:
       - [For Nvidia everywhere: Install PyTorch GPU and ONNX GPU](#for-nvidia-everywhere-install-pytorch-gpu-and-onnx-gpu)
     - [Download and convert models](#download-and-convert-models)
     - [Test the models](#test-the-models)
+    - [Upscaling and face correction](#upscaling-and-face-correction)
   - [Usage](#usage)
     - [Running the containers](#running-the-containers)
     - [Configuring and running the server](#configuring-and-running-the-server)
@@ -309,6 +310,13 @@ You should verify that all of the steps up to this point have worked correctly b
 If the script works, there will be an image of an astronaut in `outputs/test.png`.
 
 If you get any errors, check [the known errors section](#known-errors-and-solutions).
+
+### Upscaling and face correction
+
+Models:
+
+- https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth
+- https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth
 
 ## Usage
 

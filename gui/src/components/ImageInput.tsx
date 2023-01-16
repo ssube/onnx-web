@@ -24,7 +24,13 @@ export function ImageInput(props: ImageInputProps) {
     }
 
     if (doesExist(props.image)) {
-      return <img src={URL.createObjectURL(props.image)} />;
+      return <img
+        src={URL.createObjectURL(props.image)}
+        style={{
+          maxWidth: 512,
+          maxHeight: 512,
+        }}
+      />;
     } else {
       return <div>Please select an image.</div>;
     }

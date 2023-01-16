@@ -71,6 +71,7 @@ export interface UpscaleParams {
   denoise: number;
   faces: boolean;
   scale: number;
+  outscale: number;
 }
 
 export interface ApiResponse {
@@ -170,6 +171,7 @@ export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
   url.searchParams.append('denoise', upscale.denoise.toFixed(FIXED_FLOAT));
   url.searchParams.append('faces', String(upscale.faces));
   url.searchParams.append('scale', upscale.scale.toFixed(FIXED_INTEGER));
+  url.searchParams.append('outscale', upscale.outscale.toFixed(FIXED_INTEGER));
 }
 
 export function makeClient(root: string, f = fetch): ApiClient {

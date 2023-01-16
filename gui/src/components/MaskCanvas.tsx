@@ -1,6 +1,6 @@
 import { doesExist, Maybe, mustExist } from '@apextoaster/js-utils';
 import { FormatColorFill, Gradient } from '@mui/icons-material';
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { throttle } from 'lodash';
 import React, { RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
@@ -230,6 +230,9 @@ export function MaskCanvas(props: MaskCanvasProps) {
         }
       }}
     />
+    <Typography variant='body1'>
+      Black pixels in the mask will stay the same, white pixels will be replaced with pixels from the noise source.
+    </Typography>
     <Stack direction='row' spacing={4}>
       <NumericField
         label='Brush Color'

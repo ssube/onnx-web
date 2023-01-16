@@ -49,6 +49,19 @@ export function UpscaleControl(props: UpscaleControlProps) {
       }}
     />
     <NumericField
+      label='Outscale'
+      disabled={params.enabled === false}
+      min={config.outscale.min}
+      max={config.outscale.max}
+      step={config.outscale.step}
+      value={params.outscale}
+      onChange={(outscale) => {
+        setUpscale({
+          outscale,
+        });
+      }}
+    />
+    <NumericField
       label='Denoise'
       decimal
       disabled={params.enabled === false}

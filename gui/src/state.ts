@@ -241,6 +241,7 @@ export function createStateSlices(base: ConfigParams) {
       enabled: false,
       faces: false,
       scale: 1,
+      outscale: 1,
     },
     setUpscale(upscale) {
       set((prev) => ({
