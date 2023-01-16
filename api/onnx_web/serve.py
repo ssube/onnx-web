@@ -24,7 +24,6 @@ from os import environ, makedirs, path, scandir
 from typing import Tuple, Union
 
 from .image import (
-    expand_image,
     # mask filters
     mask_filter_gaussian_multiply,
     mask_filter_gaussian_screen,
@@ -38,9 +37,11 @@ from .image import (
     noise_source_uniform,
 )
 from .pipeline import (
+    get_model_path,
     run_img2img_pipeline,
     run_inpaint_pipeline,
     run_txt2img_pipeline,
+    set_model_path,
 )
 from .utils import (
     get_and_clamp_float,
@@ -48,6 +49,7 @@ from .utils import (
     get_from_map,
     safer_join,
     BaseParams,
+    Border,
     OutputPath,
     Size,
 )
@@ -106,33 +108,41 @@ mask_filters = {
 }
 
 
-def get_model_path(model: str):
-    return safer_join(model_path, model)
-
-
 def serve_bundle_file(filename='index.html'):
     return send_from_directory(path.join('..', bundle_path), filename)
+
+
+def hash_value(sha, param):
+    if param is None:
+        return
+    elif isinstance(param, float):
+        sha.update(bytearray(pack('!f', param)))
+    elif isinstance(param, int):
+        sha.update(bytearray(pack('!I', param)))
+    elif isinstance(param, str):
+        sha.update(param.encode('utf-8'))
+    else:
+        print('cannot hash param: %s, %s' % (param, type(param)))
 
 
 def make_output_path(mode: str, params: BaseParams, size: Size, extras: Tuple[Union[str, int, float]]) -> OutputPath:
     now = int(time.time())
     sha = sha256()
-    sha.update(mode.encode('utf-8'))
 
-    # TODO: add params
-    # TODO: add size
+    hash_value(mode)
+    hash_value(params.model)
+    hash_value(params.provider)
+    hash_value(params.scheduler)
+    hash_value(params.prompt)
+    hash_value(params.negative_prompt)
+    hash_value(params.cfg)
+    hash_value(params.steps)
+    hash_value(params.seed)
+    hash_value(size.width)
+    hash_value(size.height)
 
-    for param in params:
-        if param is None:
-            continue
-        elif isinstance(param, float):
-            sha.update(bytearray(pack('!f', param)))
-        elif isinstance(param, int):
-            sha.update(bytearray(pack('!I', param)))
-        elif isinstance(param, str):
-            sha.update(param.encode('utf-8'))
-        else:
-            print('cannot hash param: %s, %s' % (param, type(param)))
+    for param in extras:
+        hash_value(sha, param)
 
     output_file = '%s_%s_%s_%s.png' % (mode, params.seed, sha.hexdigest(), now)
     output_full = safer_join(output_path, output_file)
@@ -140,7 +150,7 @@ def make_output_path(mode: str, params: BaseParams, size: Size, extras: Tuple[Un
     return OutputPath(output_full, output_file)
 
 
-def url_from_rule(rule):
+def url_from_rule(rule) -> str:
     options = {}
     for arg in rule.arguments:
         options[arg] = ":%s" % (arg)
@@ -195,7 +205,8 @@ def pipeline_from_request() -> Tuple[BaseParams, Size]:
     print("request from %s: %s rounds of %s using %s on %s, %sx%s, %s, %s - %s" %
           (user, steps, scheduler.__name__, model, provider, width, height, cfg, seed, prompt))
 
-    params = BaseParams(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed)
+    params = BaseParams(model, provider, scheduler, prompt,
+                        negative_prompt, cfg, steps, seed)
     size = Size(width, height)
     return (params, size)
 
@@ -220,6 +231,7 @@ def load_params():
 
 
 check_paths()
+set_model_path(model_path)
 load_models()
 load_params()
 
@@ -301,61 +313,33 @@ def img2img():
     print("img2img output: %s" % (output.path))
 
     input_image.thumbnail((size.width, size.height))
-    executor.submit_stored(output.file, run_img2img_pipeline, params, output, strength, input_image)
+    executor.submit_stored(output.file, run_img2img_pipeline,
+                           params, output, strength, input_image)
 
     return jsonify({
-        'output': output_file,
-        'params': {
-            'model': model,
-            'provider': provider,
-            'scheduler': scheduler.__name__,
-            'seed': seed,
-            'prompt': prompt,
-            'cfg': cfg,
-            'negativePrompt': negative_prompt,
-            'steps': steps,
-            'height': height,
-            'width': width,
-        }
+        'output': output.file,
+        'params': params.tojson(),
+        'size': size.tojson(),
     })
 
 
 @app.route('/api/txt2img', methods=['POST'])
 def txt2img():
-    (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
-     width, seed) = pipeline_from_request()
+    params, size = pipeline_from_request()
 
-    (output_file, output_full) = make_output_path(
+    output = make_output_path(
         'txt2img',
-        seed, (
-            model,
-            provider,
-            scheduler.__name__,
-            prompt,
-            negative_prompt,
-            cfg,
-            steps,
-            height,
-            width))
-    print("txt2img output: %s" % (output_full))
+        params,
+        size)
+    print("txt2img output: %s" % (output.file))
 
-    executor.submit_stored(output_file, run_txt2img_pipeline, model,
-                           provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output_full, height, width)
+    executor.submit_stored(
+        output.file, run_txt2img_pipeline, params, size, output)
 
     return jsonify({
-        'output': output_file,
-        'params': {
-            'model': model,
-            'provider': provider,
-            'scheduler': scheduler.__name__,
-            'seed': seed,
-            'prompt': prompt,
-            'cfg': cfg,
-            'negativePrompt': negative_prompt,
-            'steps': steps,
-            'height': height,
-            'width': width,
-        }
+        'output': output.file,
+        'params': params.tojson(),
+        'size': size.tojson(),
     })
 
 
@@ -367,8 +351,7 @@ def inpaint():
     mask_file = request.files.get('mask')
     mask_image = Image.open(BytesIO(mask_file.read())).convert('RGB')
 
-    (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
-     width, seed) = pipeline_from_request()
+    params, size = pipeline_from_request()
 
     left = get_and_clamp_int(request.args, 'left', 0,
                              config_params.get('width').get('max'), 0)
@@ -378,70 +361,45 @@ def inpaint():
                             config_params.get('height').get('max'), 0)
     bottom = get_and_clamp_int(
         request.args, 'bottom', 0, config_params.get('height').get('max'), 0)
+    expand = Border(left, right, top, bottom)
 
     mask_filter = get_from_map(request.args, 'filter', mask_filters, 'none')
     noise_source = get_from_map(
         request.args, 'noise', noise_sources, 'histogram')
 
-    (output_file, output_full) = make_output_path(
-        'inpaint', seed, (
-            model,
-            provider,
-            scheduler.__name__,
-            prompt,
-            negative_prompt,
-            cfg,
-            steps,
-            height,
-            width,
+    output = make_output_path(
+        'inpaint',
+        params,
+        size,
+        extras=(
             left,
             right,
             top,
             bottom,
             mask_filter.__name__,
             noise_source.__name__,
-        ))
-    print("inpaint output: %s" % output_full)
+        )
+    )
+    print("inpaint output: %s" % output.file)
 
-    source_image.thumbnail((width, height))
-    mask_image.thumbnail((width, height))
+    source_image.thumbnail((size.width, size.height))
+    mask_image.thumbnail((size.width, size.height))
     executor.submit_stored(
-        output_file,
+        output.file,
         run_inpaint_pipeline,
-        model,
-        provider,
-        scheduler,
-        prompt,
-        negative_prompt,
-        cfg,
-        steps,
-        seed,
-        output_full,
-        height,
-        width,
+        params,
+        size,
+        output,
         source_image,
         mask_image,
-        left,
-        right,
-        top,
-        bottom,
+        expand,
         noise_source,
         mask_filter)
 
     return jsonify({
-        'output': output_file,
-        'params': {
-            'model': model,
-            'provider': provider,
-            'scheduler': scheduler.__name__,
-            'seed': seed,
-            'prompt': prompt,
-            'cfg': cfg,
-            'negativePrompt': negative_prompt,
-            'steps': steps,
-            'height': height,
-            'width': width,
-        }
+        'output': output.file,
+        'params': params.tojson(),
+        'size': size.tojson(),
     })
 
 

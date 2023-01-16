@@ -21,12 +21,14 @@ from .utils import (
     safer_join,
     BaseParams,
     Border,
+    OutputPath,
     Size,
 )
 
 last_pipeline_instance = None
 last_pipeline_options = (None, None, None)
 last_pipeline_scheduler = None
+model_path = None
 
 # from https://www.travelneil.com/stable-diffusion-updates.html
 
@@ -38,6 +40,16 @@ def get_latents_from_seed(seed: int, size: Size) -> np.ndarray:
     rng = np.random.default_rng(seed)
     image_latents = rng.standard_normal(latents_shape).astype(np.float32)
     return image_latents
+
+
+def get_model_path(model: str):
+    return safer_join(model_path, model)
+
+
+# TODO: hax
+def set_model_path(model: str):
+  global model_path
+  model_path = model
 
 
 def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, scheduler):
@@ -70,7 +82,7 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
     return pipe
 
 
-def run_txt2img_pipeline(params: BaseParams, size: Size):
+def run_txt2img_pipeline(params: BaseParams, size: Size, output: OutputPath):
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
                          params.model, params.provider, params.scheduler)
 
@@ -88,12 +100,12 @@ def run_txt2img_pipeline(params: BaseParams, size: Size):
         num_inference_steps=params.steps,
     ).images[0]
     image = upscale_resrgan(image, model_path)
-    image.save(params.output.file)
+    image.save(output.file)
 
-    print('saved txt2img output: %s' % (params.output.file))
+    print('saved txt2img output: %s' % (output.file))
 
 
-def run_img2img_pipeline(params: BaseParams, strength, input_image):
+def run_img2img_pipeline(params: BaseParams, output: OutputPath, strength: float, input_image: Image):
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
                          params.model, params.provider, params.scheduler)
 
@@ -117,6 +129,7 @@ def run_img2img_pipeline(params: BaseParams, strength, input_image):
 def run_inpaint_pipeline(
     params: BaseParams,
     size: Size,
+    output: OutputPath,
     source_image: Image,
     mask_image: Image,
     expand: Border,
@@ -138,9 +151,9 @@ def run_inpaint_pipeline(
         mask_filter=mask_filter)
 
     if environ.get('DEBUG') is not None:
-        source_image.save(safer_join(output_path, 'last-source.png'))
-        mask_image.save(safer_join(output_path, 'last-mask.png'))
-        noise_image.save(safer_join(output_path, 'last-noise.png'))
+        source_image.save(safer_join(output.path, 'last-source.png'))
+        mask_image.save(safer_join(output.path, 'last-mask.png'))
+        noise_image.save(safer_join(output.path, 'last-noise.png'))
 
     image = pipe(
         params.prompt,
@@ -155,6 +168,6 @@ def run_inpaint_pipeline(
         width=size.width,
     ).images[0]
 
-    image.save(params.output.file)
+    image.save(output.file)
 
-    print('saved inpaint output: %s' % (params.output.file))
+    print('saved inpaint output: %s' % (output.file))

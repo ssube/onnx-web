@@ -26,6 +26,7 @@ def safer_join(base, tail):
     return path.join(base, safer_path)
 
 
+# TODO: .path is only used in one place, can probably just be a str
 class OutputPath:
     def __init__(self, path, file):
         self.path = path
@@ -42,7 +43,18 @@ class BaseParams:
         self.cfg = cfg
         self.steps = steps
         self.seed = seed
-        self.output = output
+
+    def tojson(self) -> Dict[str, Any]:
+        return {
+            'model': self.model,
+            'provider': self.provider,
+            'scheduler': self.scheduler.__name__,
+            'seed': self.seed,
+            'prompt': self.prompt,
+            'cfg': self.cfg,
+            'negativePrompt': self.negative_prompt,
+            'steps': self.steps,
+        }
 
 
 class Border:
@@ -57,3 +69,9 @@ class Size:
     def __init__(self, width, height):
         self.width = width
         self.height = height
+
+    def tojson(self) -> Dict[str, Any]:
+        return {
+            'height': self.height,
+            'width': self.width,
+        }
