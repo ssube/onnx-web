@@ -43,7 +43,7 @@ from .utils import (
     get_and_clamp_float,
     get_and_clamp_int,
     get_from_map,
-    make_output_path,
+    make_output_name,
     safer_join,
     BaseParams,
     Border,
@@ -272,20 +272,19 @@ def img2img():
 
     params, size = pipeline_from_request()
 
-    output = make_output_path(
-        output_path,
+    output = make_output_name(
         'img2img',
         params,
         size,
         extras=(strength))
-    print("img2img output: %s" % (output.path))
+    print("img2img output: %s" % (output))
 
     source_image.thumbnail((size.width, size.height))
-    executor.submit_stored(output.file, run_img2img_pipeline,
+    executor.submit_stored(output, run_img2img_pipeline,
                            context, params, output, source_image, strength)
 
     return jsonify({
-        'output': output.file,
+        'output': output,
         'params': params.tojson(),
         'size': size.tojson(),
     })
@@ -295,18 +294,18 @@ def img2img():
 def txt2img():
     params, size = pipeline_from_request()
 
-    output = make_output_path(
+    output = make_output_name(
         output_path,
         'txt2img',
         params,
         size)
-    print("txt2img output: %s" % (output.file))
+    print("txt2img output: %s" % (output))
 
     executor.submit_stored(
-        output.file, run_txt2img_pipeline, context, params, size, output)
+        output, run_txt2img_pipeline, context, params, size, output)
 
     return jsonify({
-        'output': output.file,
+        'output': output,
         'params': params.tojson(),
         'size': size.tojson(),
     })
@@ -336,7 +335,7 @@ def inpaint():
     noise_source = get_from_map(
         request.args, 'noise', noise_sources, 'histogram')
 
-    output = make_output_path(
+    output = make_output_name(
         output_path,
         'inpaint',
         params,
@@ -350,12 +349,12 @@ def inpaint():
             noise_source.__name__,
         )
     )
-    print("inpaint output: %s" % output.file)
+    print("inpaint output: %s" % output)
 
     source_image.thumbnail((size.width, size.height))
     mask_image.thumbnail((size.width, size.height))
     executor.submit_stored(
-        output.file,
+        output,
         run_inpaint_pipeline,
         context,
         params,
@@ -368,7 +367,7 @@ def inpaint():
         mask_filter)
 
     return jsonify({
-        'output': output.file,
+        'output': output,
         'params': params.tojson(),
         'size': size.tojson(),
     })

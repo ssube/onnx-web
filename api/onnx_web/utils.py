@@ -51,16 +51,6 @@ class Border:
         self.bottom = bottom
 
 
-class OutputPath:
-    '''
-    TODO: .path is only used in one place, can probably just be a str
-    '''
-
-    def __init__(self, path, file) -> None:
-        self.path = path
-        self.file = file
-
-
 class ServerContext:
     def __init__(
         self,
@@ -121,13 +111,12 @@ def hash_value(sha, param: Param):
         print('cannot hash param: %s, %s' % (param, type(param)))
 
 
-def make_output_path(
-    root: str,
+def make_output_name(
     mode: str,
     params: BaseParams,
     size: Size,
     extras: Union[None, Tuple[Param]] = None
-) -> OutputPath:
+) -> str:
     now = int(time())
     sha = sha256()
 
@@ -147,7 +136,4 @@ def make_output_path(
         for param in extras:
             hash_value(sha, param)
 
-    output_file = '%s_%s_%s_%s.png' % (mode, params.seed, sha.hexdigest(), now)
-    output_full = safer_join(root, output_file)
-
-    return OutputPath(output_full, output_file)
+    return '%s_%s_%s_%s.png' % (mode, params.seed, sha.hexdigest(), now)

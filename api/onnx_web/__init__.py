@@ -27,7 +27,6 @@ from .utils import (
   safer_join,
   BaseParams,
   Border,
-  OutputPath,
   Point,
   Size,
 )

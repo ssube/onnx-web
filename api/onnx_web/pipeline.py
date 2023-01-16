@@ -21,7 +21,6 @@ from .utils import (
     safer_join,
     BaseParams,
     Border,
-    OutputPath,
     ServerContext,
     Size,
 )
@@ -76,7 +75,7 @@ def run_txt2img_pipeline(
     ctx: ServerContext,
     params: BaseParams,
     size: Size,
-    output: OutputPath
+    output: str
 ):
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
                          params.model, params.provider, params.scheduler)
@@ -95,15 +94,17 @@ def run_txt2img_pipeline(
         num_inference_steps=params.steps,
     ).images[0]
     image = upscale_resrgan(image, ctx.model_path)
-    image.save(output.path)
 
-    print('saved txt2img output: %s' % (output.file))
+    dest = safer_join(ctx.output_path, output)
+    image.save(dest)
+
+    print('saved txt2img output: %s' % (dest))
 
 
 def run_img2img_pipeline(
     ctx: ServerContext,
     params: BaseParams,
-    output: OutputPath,
+    output: str,
     source_image: Image,
     strength: float
 ):
@@ -122,16 +123,18 @@ def run_img2img_pipeline(
         strength=strength,
     ).images[0]
     image = upscale_resrgan(image, ctx.model_path)
-    image.save(output.path)
 
-    print('saved img2img output: %s' % (output.file))
+    dest = safer_join(ctx.output_path, output)
+    image.save(dest)
+
+    print('saved img2img output: %s' % (dest))
 
 
 def run_inpaint_pipeline(
     ctx: ServerContext,
     params: BaseParams,
     size: Size,
-    output: OutputPath,
+    output: str,
     source_image: Image,
     mask_image: Image,
     expand: Border,
@@ -170,6 +173,7 @@ def run_inpaint_pipeline(
         width=size.width,
     ).images[0]
 
-    image.save(output.path)
+    dest = safer_join(ctx.output_path, output)
+    image.save(dest)
 
-    print('saved inpaint output: %s' % (output.file))
+    print('saved inpaint output: %s' % (dest))
