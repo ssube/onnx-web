@@ -25,8 +25,25 @@ resrgan_url = [
 resrgan_path = path.join('..', 'models', 'RealESRGAN_x4plus.onnx')
 
 class ONNXImage():
-    def __init__(self, data) -> None:
-        self.data = data
+    def __init__(self, source) -> None:
+        self.source = source
+        self.data = self
+
+    def squeeze(self):
+        self.source = np.squeeze(self.source, (0))
+        return self
+
+    def float(self):
+        return self
+
+    def cpu(self):
+        return self
+
+    def clamp(self, min, max):
+        self.source = np.clip(self.source, min, max)
+
+    def numpy(self):
+        return self.source
 
 
 class ONNXNet():
