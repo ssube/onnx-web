@@ -10,19 +10,21 @@ from typing import Any
 import numpy as np
 import torch
 
-denoise_strength = 0.5
+from .utils import (
+    ServerContext
+)
+
+# TODO: these should all be params or config
 fp16 = False
-netscale = 4
 outscale = 4
 pre_pad = 0
-tile = 0
 tile_pad = 10
 
 gfpgan_url = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth'
 resrgan_name = 'RealESRGAN_x4plus'
 resrgan_url = [
     'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth']
-resrgan_path = path.join('..', 'models', 'RealESRGAN_x4plus.onnx')
+
 
 class ONNXImage():
     def __init__(self, source) -> None:
@@ -55,9 +57,13 @@ class ONNXNet():
     Provides the RRDBNet interface but using ONNX.
     '''
 
-    def __init__(self) -> None:
+    def __init__(self, ctx: ServerContext) -> None:
+        '''
+        TODO: get platform provider from request params
+        '''
+        model_path = path.join(ctx.model_path, resrgan_name + '.onnx')
         self.session = InferenceSession(
-            resrgan_path, providers=['DmlExecutionProvider'])
+            model_path, providers=['DmlExecutionProvider'])
 
     def __call__(self, image: Any) -> Any:
         input_name = self.session.get_inputs()[0].name
@@ -80,26 +86,37 @@ class ONNXNet():
         return self
 
 
-def make_resrgan(model_path, tile=0):
-    model_path = path.join(model_path, resrgan_name + '.pth')
+class UpscaleParams():
+    def __init__(self, scale=4, faces=True, platform='onnx', denoise=0.5) -> None:
+        self.denoise = denoise
+        self.scale = scale
+        self.faces = faces
+        self.platform = platform
+
+
+def make_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
+    model_path = path.join(ctx.model_path, resrgan_name + '.pth')
     if not path.isfile(model_path):
         for url in resrgan_url:
             model_path = load_file_from_url(
                 url=url, model_dir=path.join(model_path, resrgan_name), progress=True, file_name=None)
 
-    # model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64,
-    #                 num_block=23, num_grow_ch=32, scale=4)
-    model = ONNXNet()
+    # use ONNX acceleration, if available
+    if params.platform == 'onnx':
+        model = ONNXNet(ctx)
+    else:
+        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64,
+                        num_block=23, num_grow_ch=32, scale=params.scale)
 
     dni_weight = None
-    if resrgan_name == 'realesr-general-x4v3' and denoise_strength != 1:
+    if resrgan_name == 'realesr-general-x4v3' and params.denoise != 1:
         wdn_model_path = model_path.replace(
             'realesr-general-x4v3', 'realesr-general-wdn-x4v3')
         model_path = [model_path, wdn_model_path]
-        dni_weight = [denoise_strength, 1 - denoise_strength]
+        dni_weight = [params.denoise, 1 - params.denoise]
 
     upsampler = RealESRGANer(
-        scale=netscale,
+        scale=params.scale,
         model_path=model_path,
         dni_weight=dni_weight,
         model=model,
@@ -111,19 +128,23 @@ def make_resrgan(model_path, tile=0):
     return upsampler
 
 
-def upscale_resrgan(source_image: Image, model_path: str, faces=True) -> Image:
+def upscale_resrgan(ctx: ServerContext, source_image: Image, params: UpscaleParams) -> Image:
     image = np.array(source_image)
-    upsampler = make_resrgan(model_path)
+    upsampler = make_resrgan(ctx.model_path)
 
+    # TODO: what is outscale for here?
     output, _ = upsampler.enhance(image, outscale=outscale)
 
-    if faces:
-        output = upscale_gfpgan(output, make_resrgan(model_path, 512))
+    if params.faces:
+        output = upscale_gfpgan(ctx, output)
 
     return Image.fromarray(output, 'RGB')
 
 
-def upscale_gfpgan(image, upsampler) -> Image:
+def upscale_gfpgan(ctx: ServerContext, image, upsampler=None) -> Image:
+    if upsampler is None:
+        upsampler = make_resrgan(ctx.model_path, 512)
+
     face_enhancer = GFPGANer(
         model_path=gfpgan_url,
         upscale=outscale,
