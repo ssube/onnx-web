@@ -22,7 +22,7 @@ export function GridItem(props: { xs: number; children: React.ReactNode }) {
 
 export function ImageCard(props: ImageCardProps) {
   const { value } = props;
-  const { params, output } = value;
+  const { params, output, size } = value;
 
   const state = mustExist(useContext(StateContext));
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -59,8 +59,8 @@ export function ImageCard(props: ImageCardProps) {
     window.open(output.url, '_blank');
   }
 
-  return <Card sx={{ maxWidth: params.width }} elevation={2}>
-    <CardMedia sx={{ height: params.height }}
+  return <Card sx={{ maxWidth: size.width }} elevation={2}>
+    <CardMedia sx={{ height: size.height }}
       component='img'
       image={output.url}
       title={params.prompt}
@@ -70,7 +70,7 @@ export function ImageCard(props: ImageCardProps) {
         <Grid container spacing={2}>
           <GridItem xs={4}>CFG: {params.cfg}</GridItem>
           <GridItem xs={4}>Steps: {params.steps}</GridItem>
-          <GridItem xs={4}>Size: {params.width}x{params.height}</GridItem>
+          <GridItem xs={4}>Size: {size.width}x{size.height}</GridItem>
           <GridItem xs={4}>Seed: {params.seed}</GridItem>
           <GridItem xs={8}>Scheduler: {params.scheduler}</GridItem>
           <GridItem xs={12}>{params.prompt}</GridItem>

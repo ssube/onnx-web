@@ -70,7 +70,11 @@ export interface ApiResponse {
     key: string;
     url: string;
   };
-  params: Txt2ImgResponse;
+  params: Required<BaseImgParams>;
+  size: {
+    width: number;
+    height: number;
+  };
 }
 
 export interface ApiReady {
@@ -307,11 +311,11 @@ export async function parseApiResponse(root: string, res: Response): Promise<Api
     const data = await res.json() as LimitedResponse;
     const url = makeApiUrl(root, 'output', data.output).toString();
     return {
+      ...data,
       output: {
         key: data.output,
         url,
       },
-      params: data.params,
     };
   } else {
     throw new Error('request error');

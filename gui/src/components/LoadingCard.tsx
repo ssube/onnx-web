@@ -31,9 +31,9 @@ export function LoadingCard(props: LoadingCardProps) {
     }
   }, [ready.status, ready.data?.ready]);
 
-  return <Card sx={{ maxWidth: props.loading.params.width }}>
-    <CardContent sx={{ height: props.loading.params.height }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: props.loading.params.height }}>
+  return <Card sx={{ maxWidth: props.loading.size.width }}>
+    <CardContent sx={{ height: props.loading.size.height }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: props.loading.size.height }}>
         <CircularProgress />
       </div>
     </CardContent>
