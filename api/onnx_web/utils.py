@@ -110,17 +110,17 @@ def make_output_path(
     now = int(time.time())
     sha = sha256()
 
-    hash_value(mode)
-    hash_value(params.model)
-    hash_value(params.provider)
-    hash_value(params.scheduler.__name__)
-    hash_value(params.prompt)
-    hash_value(params.negative_prompt)
-    hash_value(params.cfg)
-    hash_value(params.steps)
-    hash_value(params.seed)
-    hash_value(size.width)
-    hash_value(size.height)
+    hash_value(sha, mode)
+    hash_value(sha, params.model)
+    hash_value(sha, params.provider)
+    hash_value(sha, params.scheduler.__name__)
+    hash_value(sha, params.prompt)
+    hash_value(sha, params.negative_prompt)
+    hash_value(sha, params.cfg)
+    hash_value(sha, params.steps)
+    hash_value(sha, params.seed)
+    hash_value(sha, size.width)
+    hash_value(sha, size.height)
 
     if extras is not None:
         for param in extras:
