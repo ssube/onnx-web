@@ -46,7 +46,10 @@ from .utils import (
     get_and_clamp_float,
     get_and_clamp_int,
     get_from_map,
-    safer_join
+    safer_join,
+    BaseParams,
+    OutputPath,
+    Size,
 )
 
 import json
@@ -111,10 +114,13 @@ def serve_bundle_file(filename='index.html'):
     return send_from_directory(path.join('..', bundle_path), filename)
 
 
-def make_output_path(mode: str, seed: int, params: Tuple[Union[str, int, float]]):
+def make_output_path(mode: str, params: BaseParams, size: Size, extras: Tuple[Union[str, int, float]]) -> OutputPath:
     now = int(time.time())
     sha = sha256()
     sha.update(mode.encode('utf-8'))
+
+    # TODO: add params
+    # TODO: add size
 
     for param in params:
         if param is None:
@@ -128,10 +134,10 @@ def make_output_path(mode: str, seed: int, params: Tuple[Union[str, int, float]]
         else:
             print('cannot hash param: %s, %s' % (param, type(param)))
 
-    output_file = '%s_%s_%s_%s.png' % (mode, seed, sha.hexdigest(), now)
+    output_file = '%s_%s_%s_%s.png' % (mode, params.seed, sha.hexdigest(), now)
     output_full = safer_join(output_path, output_file)
 
-    return (output_file, output_full)
+    return OutputPath(output_full, output_file)
 
 
 def url_from_rule(rule):
@@ -142,7 +148,7 @@ def url_from_rule(rule):
     return url_for(rule.endpoint, **options)
 
 
-def pipeline_from_request():
+def pipeline_from_request() -> Tuple[BaseParams, Size]:
     user = request.remote_addr
 
     # pipeline stuff
@@ -189,7 +195,9 @@ def pipeline_from_request():
     print("request from %s: %s rounds of %s using %s on %s, %sx%s, %s, %s - %s" %
           (user, steps, scheduler.__name__, model, provider, width, height, cfg, seed, prompt))
 
-    return (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height, width, seed)
+    params = BaseParams(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed)
+    size = Size(width, height)
+    return (params, size)
 
 
 def check_paths():
@@ -283,27 +291,17 @@ def img2img():
 
     strength = get_and_clamp_float(request.args, 'strength', 0.5, 1.0)
 
-    (model, provider, scheduler, prompt, negative_prompt, cfg, steps, height,
-     width, seed) = pipeline_from_request()
+    params, size = pipeline_from_request()
 
-    (output_file, output_full) = make_output_path(
+    output = make_output_path(
         'img2img',
-        seed, (
-            model,
-            provider,
-            scheduler.__name__,
-            prompt,
-            negative_prompt,
-            cfg,
-            steps,
-            strength,
-            height,
-            width))
-    print("img2img output: %s" % (output_full))
+        params,
+        size,
+        extras=(strength))
+    print("img2img output: %s" % (output.path))
 
-    input_image.thumbnail((width, height))
-    executor.submit_stored(output_file, run_img2img_pipeline, model, provider,
-                           scheduler, prompt, negative_prompt, cfg, steps, seed, output_full, strength, input_image)
+    input_image.thumbnail((size.width, size.height))
+    executor.submit_stored(output.file, run_img2img_pipeline, params, output, strength, input_image)
 
     return jsonify({
         'output': output_file,

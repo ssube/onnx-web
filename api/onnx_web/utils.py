@@ -2,9 +2,7 @@ from os import path
 from typing import Any, Dict, Tuple
 
 
-Border = Tuple[int, int, int, int]
 Point = Tuple[int, int]
-Size = Tuple[int, int]
 
 
 def get_and_clamp_float(args, key: str, default_value: float, max_value: float, min_value=0.0) -> float:
@@ -26,3 +24,36 @@ def get_from_map(args, key: str, values: Dict[str, Any], default: Any):
 def safer_join(base, tail):
     safer_path = path.relpath(path.normpath(path.join('/', tail)), '/')
     return path.join(base, safer_path)
+
+
+class OutputPath:
+    def __init__(self, path, file):
+        self.path = path
+        self.file = file
+
+
+class BaseParams:
+    def __init__(self, model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed):
+        self.model = model
+        self.provider = provider
+        self.scheduler = scheduler
+        self.prompt = prompt
+        self.negative_prompt = negative_prompt
+        self.cfg = cfg
+        self.steps = steps
+        self.seed = seed
+        self.output = output
+
+
+class Border:
+    def __init__(self, left, right, top, bottom):
+        self.left = left
+        self.right = right
+        self.top = top
+        self.bottom = bottom
+
+
+class Size:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height

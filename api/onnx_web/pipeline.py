@@ -7,7 +7,7 @@ from diffusers import (
 )
 from os import environ
 from PIL import Image
-from typing import Any, Union
+from typing import Any
 
 import numpy as np
 
@@ -18,7 +18,10 @@ from .upscale import (
     upscale_resrgan,
 )
 from .utils import (
-    safer_join
+    safer_join,
+    BaseParams,
+    Border,
+    Size,
 )
 
 last_pipeline_instance = None
@@ -28,9 +31,9 @@ last_pipeline_scheduler = None
 # from https://www.travelneil.com/stable-diffusion-updates.html
 
 
-def get_latents_from_seed(seed: int, width: int, height: int) -> np.ndarray:
+def get_latents_from_seed(seed: int, size: Size) -> np.ndarray:
     # 1 is batch size
-    latents_shape = (1, 4, height // 8, width // 8)
+    latents_shape = (1, 4, size.height // 8, size.width // 8)
     # Gotta use numpy instead of torch, because torch's randn() doesn't support DML
     rng = np.random.default_rng(seed)
     image_latents = rng.standard_normal(latents_shape).astype(np.float32)
@@ -67,82 +70,70 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
     return pipe
 
 
-def run_txt2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output, height, width):
+def run_txt2img_pipeline(params: BaseParams, size: Size):
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
-                         model, provider, scheduler)
+                         params.model, params.provider, params.scheduler)
 
-    latents = get_latents_from_seed(seed, width, height)
-    rng = np.random.RandomState(seed)
+    latents = get_latents_from_seed(params.seed, size.width, size.height)
+    rng = np.random.RandomState(params.seed)
 
     image = pipe(
-        prompt,
-        height,
-        width,
+        params.prompt,
+        size.width,
+        size.height,
         generator=rng,
-        guidance_scale=cfg,
+        guidance_scale=params.cfg,
         latents=latents,
-        negative_prompt=negative_prompt,
-        num_inference_steps=steps,
+        negative_prompt=params.negative_prompt,
+        num_inference_steps=params.steps,
     ).images[0]
     image = upscale_resrgan(image, model_path)
-    image.save(output)
+    image.save(params.output.file)
 
-    print('saved txt2img output: %s' % (output))
+    print('saved txt2img output: %s' % (params.output.file))
 
 
-def run_img2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed, output, strength, input_image):
+def run_img2img_pipeline(params: BaseParams, strength, input_image):
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
-                         model, provider, scheduler)
+                         params.model, params.provider, params.scheduler)
 
-    rng = np.random.RandomState(seed)
+    rng = np.random.RandomState(params.seed)
 
     image = pipe(
-        prompt,
+        params.prompt,
         generator=rng,
-        guidance_scale=cfg,
+        guidance_scale=params.cfg,
         image=input_image,
-        negative_prompt=negative_prompt,
-        num_inference_steps=steps,
+        negative_prompt=params.negative_prompt,
+        num_inference_steps=params.steps,
         strength=strength,
     ).images[0]
     image = upscale_resrgan(image, model_path)
-    image.save(output)
+    image.save(params.output.file)
 
-    print('saved img2img output: %s' % (output))
+    print('saved img2img output: %s' % (params.output.file))
 
 
 def run_inpaint_pipeline(
-    model: str,
-    provider: str,
-    scheduler: Any,
-    prompt: str,
-    negative_prompt: Union[str, None],
-    cfg: float,
-    steps: int,
-    seed: int,
-    output: str,
-    height: int,
-    width: int,
+    params: BaseParams,
+    size: Size,
     source_image: Image,
     mask_image: Image,
-    left: int,
-    right: int,
-    top: int,
-    bottom: int,
+    expand: Border,
     noise_source: Any,
     mask_filter: Any
 ):
     pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
-                         model, provider, scheduler)
+                         params.model, params.provider, params.scheduler)
 
-    latents = get_latents_from_seed(seed, width, height)
-    rng = np.random.RandomState(seed)
+    latents = get_latents_from_seed(params.seed, size)
+    rng = np.random.RandomState(params.seed)
 
     print('applying mask filter and generating noise source')
     source_image, mask_image, noise_image, _full_dims = expand_image(
         source_image,
         mask_image,
-        (left, right, top, bottom),
+        expand,
         noise_source=noise_source,
         mask_filter=mask_filter)
 
@@ -152,18 +143,18 @@ def run_inpaint_pipeline(
         noise_image.save(safer_join(output_path, 'last-noise.png'))
 
     image = pipe(
-        prompt,
+        params.prompt,
         generator=rng,
-        guidance_scale=cfg,
-        height=height,
+        guidance_scale=params.cfg,
+        height=size.height,
         image=source_image,
         latents=latents,
         mask_image=mask_image,
-        negative_prompt=negative_prompt,
-        num_inference_steps=steps,
-        width=width,
+        negative_prompt=params.negative_prompt,
+        num_inference_steps=params.steps,
+        width=size.width,
     ).images[0]
 
-    image.save(output)
+    image.save(params.output.file)
 
-    print('saved inpaint output: %s' % (output))
+    print('saved inpaint output: %s' % (params.output.file))

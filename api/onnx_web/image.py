@@ -4,8 +4,13 @@ from typing import Tuple
 
 import numpy as np
 
+from .utils import (
+    Border,
+    Point,
+)
 
-def mask_filter_none(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], fill='white') -> Image:
+
+def mask_filter_none(mask_image: Image, dims: Point, origin: Point, fill='white') -> Image:
     width, height = dims
 
     noise = Image.new('RGB', (width, height), fill)
@@ -14,7 +19,7 @@ def mask_filter_none(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int
     return noise
 
 
-def mask_filter_gaussian_multiply(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], rounds=3) -> Image:
+def mask_filter_gaussian_multiply(mask_image: Image, dims: Point, origin: Point, rounds=3) -> Image:
     '''
     Gaussian blur with multiply, source image centered on white canvas.
     '''
@@ -27,7 +32,7 @@ def mask_filter_gaussian_multiply(mask_image: Image, dims: Tuple[int, int], orig
     return noise
 
 
-def mask_filter_gaussian_screen(mask_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], rounds=3) -> Image:
+def mask_filter_gaussian_screen(mask_image: Image, dims: Point, origin: Point, rounds=3) -> Image:
     '''
     Gaussian blur, source image centered on white canvas.
     '''
@@ -40,7 +45,7 @@ def mask_filter_gaussian_screen(mask_image: Image, dims: Tuple[int, int], origin
     return noise
 
 
-def noise_source_fill_edge(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], fill='white') -> Image:
+def noise_source_fill_edge(source_image: Image, dims: Point, origin: Point, fill='white') -> Image:
     '''
     Identity transform, source image centered on white canvas.
     '''
@@ -52,7 +57,7 @@ def noise_source_fill_edge(source_image: Image, dims: Tuple[int, int], origin: T
     return noise
 
 
-def noise_source_fill_mask(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], fill='white') -> Image:
+def noise_source_fill_mask(source_image: Image, dims: Point, origin: Point, fill='white') -> Image:
     '''
     Fill the whole canvas, no source or noise.
     '''
@@ -63,7 +68,7 @@ def noise_source_fill_mask(source_image: Image, dims: Tuple[int, int], origin: T
     return noise
 
 
-def noise_source_gaussian(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int], rounds=3) -> Image:
+def noise_source_gaussian(source_image: Image, dims: Point, origin: Point, rounds=3) -> Image:
     '''
     Gaussian blur, source image centered on white canvas.
     '''
@@ -76,7 +81,7 @@ def noise_source_gaussian(source_image: Image, dims: Tuple[int, int], origin: Tu
     return noise
 
 
-def noise_source_uniform(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Image:
+def noise_source_uniform(source_image: Image, dims: Point, origin: Point) -> Image:
     width, height = dims
     size = width * height
 
@@ -98,7 +103,7 @@ def noise_source_uniform(source_image: Image, dims: Tuple[int, int], origin: Tup
     return noise
 
 
-def noise_source_normal(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Image:
+def noise_source_normal(source_image: Image, dims: Point, origin: Point) -> Image:
     width, height = dims
     size = width * height
 
@@ -120,7 +125,7 @@ def noise_source_normal(source_image: Image, dims: Tuple[int, int], origin: Tupl
     return noise
 
 
-def noise_source_histogram(source_image: Image, dims: Tuple[int, int], origin: Tuple[int, int]) -> Image:
+def noise_source_histogram(source_image: Image, dims: Point, origin: Point) -> Image:
     r, g, b = source_image.split()
     width, height = dims
     size = width * height
@@ -154,18 +159,16 @@ def noise_source_histogram(source_image: Image, dims: Tuple[int, int], origin: T
 def expand_image(
         source_image: Image,
         mask_image: Image,
-        expand_by: Tuple[int, int, int, int],
+        expand: Border,
         fill='white',
         noise_source=noise_source_histogram,
         mask_filter=mask_filter_none,
 ):
-    left, right, top, bottom = expand_by
-
-    full_width = left + source_image.width + right
-    full_height = top + source_image.height + bottom
+    full_width = expand.left + source_image.width + expand.right
+    full_height = expand.top + source_image.height + expand.bottom
 
     dims = (full_width, full_height)
-    origin = (top, left)
+    origin = (expand.top, expand.left)
 
     full_source = Image.new('RGB', dims, fill)
     full_source.paste(source_image, origin)
