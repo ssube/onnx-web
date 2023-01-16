@@ -29,6 +29,9 @@ class ONNXImage():
         self.source = source
         self.data = self
 
+    def __getitem__(self, *args):
+        return torch.from_numpy(self.source.__getitem__(*args)).to(torch.float32)
+
     def squeeze(self):
         self.source = np.squeeze(self.source, (0))
         return self
