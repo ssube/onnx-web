@@ -20,7 +20,7 @@ tile = 0
 tile_pad = 10
 
 
-def upscale_resrgan(source_image: Image) -> Image:
+def upscale_resrgan(source_image: Image, faces=True) -> Image:
     model_path = path.join('weights', model_name + '.pth')
     if not path.isfile(model_path):
         ROOT_DIR = path.dirname(path.abspath(__file__))
@@ -51,7 +51,10 @@ def upscale_resrgan(source_image: Image) -> Image:
     image = np.array(source_image)
     output, _ = upsampler.enhance(image, outscale=outscale)
 
-    return upscale_gfpgan(image, upsampler)
+    if faces:
+      output = upscale_gfpgan(output, upsampler)
+
+    return Image.fromarray(output, 'RGB')
 
 
 def upscale_gfpgan(image, upsampler) -> Image:
