@@ -52,13 +52,13 @@ class ONNXNet():
     Provides the RRDBNet interface but using ONNX.
     '''
 
-    def __init__(self, ctx: ServerContext) -> None:
+    def __init__(self, ctx: ServerContext, model: str, provider='DmlExecutionProvider') -> None:
         '''
         TODO: get platform provider from request params
         '''
-        model_path = path.join(ctx.model_path, resrgan_name + '.onnx')
+        model_path = path.join(ctx.model_path, model)
         self.session = InferenceSession(
-            model_path, providers=['DmlExecutionProvider'])
+            model_path, providers=[provider])
 
     def __call__(self, image: Any) -> Any:
         input_name = self.session.get_inputs()[0].name
@@ -104,14 +104,14 @@ class UpscaleParams():
 
 
 def make_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
-    model_path = path.join(ctx.model_path, '%s.%s' %
-                           (params.upscale_model, params.platform))
+    model_file = '%s.%s' % (params.upscale_model, params.platform)
+    model_path = path.join(ctx.model_path, model_file)
     if not path.isfile(model_path):
         raise Exception('Real ESRGAN model not found at %s' % model_path)
 
     # use ONNX acceleration, if available
     if params.platform == 'onnx':
-        model = ONNXNet(ctx)
+        model = ONNXNet(ctx, model_file)
     elif params.platform == 'pth':
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64,
                         num_block=23, num_grow_ch=32, scale=params.scale)
