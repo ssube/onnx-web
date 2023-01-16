@@ -76,7 +76,7 @@ class ONNXNet():
         return self
 
 
-def make_resrgan(model_path):
+def make_resrgan(model_path, tile=0):
     model_path = path.join(model_path, resrgan_name + '.pth')
     if not path.isfile(model_path):
         for url in resrgan_url:
@@ -114,7 +114,7 @@ def upscale_resrgan(source_image: Image, model_path: str, faces=True) -> Image:
     output, _ = upsampler.enhance(image, outscale=outscale)
 
     if faces:
-        output = upscale_gfpgan(output, upsampler)
+        output = upscale_gfpgan(output, make_resrgan(model_path, 512))
 
     return Image.fromarray(output, 'RGB')
 
