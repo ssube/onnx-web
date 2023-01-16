@@ -24,13 +24,13 @@ export function Img2Img(props: Img2ImgProps) {
   const { config, model, platform } = props;
 
   async function uploadSource() {
-    const upscale = state.getState().upscale;
+    const { img2img, upscale } = state.getState();
 
     const output = await client.img2img({
-      ...params,
+      ...img2img,
       model,
       platform,
-      source: mustExist(params.source), // TODO: show an error if this doesn't exist
+      source: mustExist(img2img.source), // TODO: show an error if this doesn't exist
     }, upscale);
 
     setLoading(output);
@@ -43,7 +43,8 @@ export function Img2Img(props: Img2ImgProps) {
   });
 
   const state = mustExist(useContext(StateContext));
-  const params = useStore(state, (s) => s.img2img);
+  const source = useStore(state, (s) => s.img2img.source);
+  const strength = useStore(state, (s) => s.img2img.strength);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -51,21 +52,19 @@ export function Img2Img(props: Img2ImgProps) {
 
   return <Box>
     <Stack spacing={2}>
-      <ImageInput filter={IMAGE_FILTER} image={params.source} label='Source' onChange={(file) => {
+      <ImageInput filter={IMAGE_FILTER} image={source} label='Source' onChange={(file) => {
         setImg2Img({
           source: file,
         });
       }} />
-      <ImageControl config={config} params={params} onChange={(newParams) => {
-        setImg2Img(newParams);
-      }} />
+      <ImageControl config={config} selector={(s) => s.img2img} onChange={setImg2Img} />
       <NumericField
         decimal
         label='Strength'
         min={config.strength.min}
         max={config.strength.max}
         step={config.strength.step}
-        value={params.strength}
+        value={strength}
         onChange={(value) => {
           setImg2Img({
             strength: value,

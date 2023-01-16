@@ -3,10 +3,11 @@ import { Casino } from '@mui/icons-material';
 import { Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 import { useQuery } from 'react-query';
+import { useStore } from 'zustand';
 
 import { BaseImgParams } from '../client.js';
 import { ConfigParams, STALE_TIME } from '../config.js';
-import { ClientContext } from '../state.js';
+import { ClientContext, OnnxState, StateContext } from '../state.js';
 import { SCHEDULER_LABELS } from '../strings.js';
 import { NumericField } from './NumericField.js';
 import { QueryList } from './QueryList.js';
@@ -15,7 +16,8 @@ const { useContext } = React;
 
 export interface ImageControlProps {
   config: ConfigParams;
-  params: BaseImgParams;
+
+  selector: (state: OnnxState) => BaseImgParams;
 
   onChange?: (params: BaseImgParams) => void;
 }
@@ -24,7 +26,10 @@ export interface ImageControlProps {
  * doesn't need to use state, the parent component knows which params to pass
  */
 export function ImageControl(props: ImageControlProps) {
-  const { config, params } = props;
+  const { config } = props;
+
+  const state = mustExist(useContext(StateContext));
+  const params = useStore(state, props.selector);
 
   const client = mustExist(useContext(ClientContext));
   const schedulers = useQuery('schedulers', async () => client.schedulers(), {

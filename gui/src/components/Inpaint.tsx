@@ -35,27 +35,26 @@ export function Inpaint(props: InpaintProps) {
 
   async function uploadSource(): Promise<void> {
     // these are not watched by the component, only sent by the mutation
-    const outpaint = state.getState().outpaint;
-    const upscale = state.getState().upscale;
+    const { inpaint, outpaint, upscale } = state.getState();
 
     if (outpaint.enabled) {
       const output = await client.outpaint({
-        ...params,
+        ...inpaint,
         ...outpaint,
         model,
         platform,
-        mask: mustExist(params.mask),
-        source: mustExist(params.source),
+        mask: mustExist(mask),
+        source: mustExist(source),
       }, upscale);
 
       setLoading(output);
     } else {
       const output = await client.inpaint({
-        ...params,
+        ...inpaint,
         model,
         platform,
-        mask: mustExist(params.mask),
-        source: mustExist(params.source),
+        mask: mustExist(mask),
+        source: mustExist(source),
       }, upscale);
 
       setLoading(output);
@@ -63,7 +62,10 @@ export function Inpaint(props: InpaintProps) {
   }
 
   const state = mustExist(useContext(StateContext));
-  const params = useStore(state, (s) => s.inpaint);
+  const filter = useStore(state, (s) => s.inpaint.filter);
+  const noise = useStore(state, (s) => s.inpaint.noise);
+  const mask = useStore(state, (s) => s.inpaint.mask);
+  const source = useStore(state, (s) => s.inpaint.source);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setInpaint = useStore(state, (s) => s.setInpaint);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -78,7 +80,7 @@ export function Inpaint(props: InpaintProps) {
     <Stack spacing={2}>
       <ImageInput
         filter={IMAGE_FILTER}
-        image={params.source}
+        image={source}
         label='Source'
         onChange={(file) => {
           setInpaint({
@@ -88,7 +90,7 @@ export function Inpaint(props: InpaintProps) {
       />
       <ImageInput
         filter={IMAGE_FILTER}
-        image={params.mask}
+        image={mask}
         label='Mask'
         onChange={(file) => {
           setInpaint({
@@ -98,11 +100,11 @@ export function Inpaint(props: InpaintProps) {
         renderImage={(image) =>
           <MaskCanvas
             config={config}
-            base={params.source}
+            base={source}
             source={image}
-            onSave={(mask) => {
+            onSave={(file) => {
               setInpaint({
-                mask,
+                mask: file,
               });
             }}
           />
@@ -110,7 +112,7 @@ export function Inpaint(props: InpaintProps) {
       />
       <ImageControl
         config={config}
-        params={params}
+        selector={(s) => s.inpaint}
         onChange={(newParams) => {
           setInpaint(newParams);
         }}
@@ -121,10 +123,10 @@ export function Inpaint(props: InpaintProps) {
           labels={MASK_LABELS}
           name='Mask Filter'
           result={masks}
-          value={params.filter}
-          onChange={(filter) => {
+          value={filter}
+          onChange={(newFilter) => {
             setInpaint({
-              filter,
+              filter: newFilter,
             });
           }}
         />
@@ -133,10 +135,10 @@ export function Inpaint(props: InpaintProps) {
           labels={NOISE_LABELS}
           name='Noise Source'
           result={noises}
-          value={params.noise}
-          onChange={(noise) => {
+          value={noise}
+          onChange={(newNoise) => {
             setInpaint({
-              noise,
+              noise: newNoise,
             });
           }}
         />

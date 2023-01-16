@@ -23,9 +23,9 @@ export function Txt2Img(props: Txt2ImgProps) {
   const { config, model, platform } = props;
 
   async function generateImage() {
-    const upscale = state.getState().upscale;
+    const { txt2img, upscale } = state.getState();
     const output = await client.txt2img({
-      ...params,
+      ...txt2img,
       model,
       platform,
     }, upscale);
@@ -40,7 +40,8 @@ export function Txt2Img(props: Txt2ImgProps) {
   });
 
   const state = mustExist(useContext(StateContext));
-  const params = useStore(state, (s) => s.txt2img);
+  const height = useStore(state, (s) => s.txt2img.height);
+  const width = useStore(state, (s) => s.txt2img.width);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setTxt2Img = useStore(state, (s) => s.setTxt2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -48,16 +49,14 @@ export function Txt2Img(props: Txt2ImgProps) {
 
   return <Box>
     <Stack spacing={2}>
-      <ImageControl config={config} params={params} onChange={(newParams) => {
-        setTxt2Img(newParams);
-      }} />
+      <ImageControl config={config} selector={(s) => s.txt2img} onChange={setTxt2Img} />
       <Stack direction='row' spacing={4}>
         <NumericField
           label='Width'
           min={config.width.min}
           max={config.width.max}
           step={config.width.step}
-          value={params.width}
+          value={width}
           onChange={(value) => {
             setTxt2Img({
               width: value,
@@ -69,7 +68,7 @@ export function Txt2Img(props: Txt2ImgProps) {
           min={config.height.min}
           max={config.height.max}
           step={config.height.step}
-          value={params.height}
+          value={height}
           onChange={(value) => {
             setTxt2Img({
               height: value,
