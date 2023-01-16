@@ -7,6 +7,12 @@ onnxruntime
 protobuf<4,>=3.20.2
 transformers
 
+#### Upscaling and face correction
+basicsr
+facexlib
+gfpgan
+realesrgan
+
 ### Server packages ###
 flask
 flask-cors
