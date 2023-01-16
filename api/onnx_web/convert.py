@@ -3,9 +3,9 @@ from basicsr.archs.rrdbnet_arch import RRDBNet
 from basicsr.utils.download_util import load_file_from_url
 from os import path, environ
 from sys import exit
+from torch.onnx import export
 
 import torch
-import torch.onnx
 
 from .upscale import (
     gfpgan_url,
@@ -17,6 +17,7 @@ model_path = environ.get('ONNX_WEB_MODEL_PATH',
                              path.join('..', 'models'))
 
 
+@torch.no_grad()
 def convert_real_esrgan():
     dest_path = path.join(model_path, resrgan_name + '.pth')
     print('converting Real ESRGAN into %s' % dest_path)
@@ -44,7 +45,7 @@ def convert_real_esrgan():
     with torch.no_grad():
         dest_onnx = path.join(model_path, resrgan_name + '.onnx')
         print('exporting Real ESRGAN model to %s' % dest_onnx)
-        torch.onnx.export(
+        export(
             model,
             rng,
             dest_onnx,

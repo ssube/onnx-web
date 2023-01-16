@@ -97,7 +97,7 @@ def run_txt2img_pipeline(
     ).images[0]
 
     if upscale.faces or upscale.scale > 1:
-        image = upscale_resrgan(ctx, image, upscale)
+        image = upscale_resrgan(ctx, upscale, image)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
@@ -129,7 +129,7 @@ def run_img2img_pipeline(
     ).images[0]
 
     if upscale.faces or upscale.scale > 1:
-        image = upscale_resrgan(ctx, image, upscale)
+        image = upscale_resrgan(ctx, upscale, image)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
@@ -182,7 +182,7 @@ def run_inpaint_pipeline(
     ).images[0]
 
     if upscale.faces or upscale.scale > 1:
-        image = upscale_resrgan(ctx, image, upscale)
+        image = upscale_resrgan(ctx, upscale, image)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
