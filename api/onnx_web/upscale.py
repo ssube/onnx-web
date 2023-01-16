@@ -5,6 +5,8 @@ from os import path
 from PIL import Image
 from realesrgan import RealESRGANer
 
+import numpy as np
+
 denoise_strength = 0.5
 gfpgan_url = 'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth'
 resrgan_url = [
@@ -21,7 +23,7 @@ tile_pad = 10
 def upscale_resrgan(source_image: Image) -> Image:
     model_path = path.join('weights', model_name + '.pth')
     if not path.isfile(model_path):
-        ROOT_DIR = os.path.dirname(path.abspath(__file__))
+        ROOT_DIR = path.dirname(path.abspath(__file__))
         for url in resrgan_url:
             model_path = load_file_from_url(
                 url=url, model_dir=path.join(ROOT_DIR, 'weights'), progress=True, file_name=None)
@@ -46,12 +48,13 @@ def upscale_resrgan(source_image: Image) -> Image:
         pre_pad=pre_pad,
         half=fp32)
 
-    output, _ = upsampler.enhance(source_image, outscale=outscale)
+    image = np.array(source_image)
+    output, _ = upsampler.enhance(image, outscale=outscale)
 
-    return upscale_gfpgan(output, upsampler)
+    return upscale_gfpgan(image, upsampler)
 
 
-def upscale_gfpgan(source_image: Image, upsampler) -> Image:
+def upscale_gfpgan(image, upsampler) -> Image:
     face_enhancer = GFPGANer(
         model_path=gfpgan_url,
         upscale=outscale,
@@ -59,6 +62,6 @@ def upscale_gfpgan(source_image: Image, upsampler) -> Image:
         channel_multiplier=2,
         bg_upsampler=upsampler)
 
-    _, _, output = face_enhancer.enhance(source_image, has_aligned=False, only_center_face=False, paste_back=True)
+    _, _, output = face_enhancer.enhance(image, has_aligned=False, only_center_face=False, paste_back=True)
 
     return output
