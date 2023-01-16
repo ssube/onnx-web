@@ -167,8 +167,10 @@ def upscale_gfpgan(ctx: ServerContext, params: UpscaleParams, image, upsampler=N
     if upsampler is None:
         upsampler = make_resrgan(ctx, params, tile=512)
 
+    face_path = path.join(ctx.model_path, '%s.pth' % (params.face_model)) # TODO: convert to ONNX
+
     face_enhancer = GFPGANer(
-        model_path=params.face_model,
+        model_path=face_path,
         upscale=params.outscale,
         arch='clean',
         channel_multiplier=2,
