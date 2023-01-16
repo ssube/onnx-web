@@ -39,7 +39,7 @@ class ONNXImage():
     def cpu(self):
         return self
 
-    def clamp(self, min, max):
+    def clamp_(self, min, max):
         self.source = np.clip(self.source, min, max)
 
     def numpy(self):
