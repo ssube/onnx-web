@@ -94,7 +94,7 @@ def run_txt2img_pipeline(
         negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
     ).images[0]
-    image = upscale_resrgan(image, ctx.models)
+    image = upscale_resrgan(image, ctx.model_path)
     image.save(output.path)
 
     print('saved txt2img output: %s' % (output.file))
