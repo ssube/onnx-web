@@ -259,7 +259,11 @@ def img2img():
     input_file = request.files.get('source')
     input_image = Image.open(BytesIO(input_file.read())).convert('RGB')
 
-    strength = get_and_clamp_float(request.args, 'strength', 0.5, 1.0)
+    strength = get_and_clamp_float(
+        request.args,
+        'strength',
+        config_params.get('strength').get('default'),
+        config_params.get('strength').get('max'))
 
     params, size = pipeline_from_request()
 

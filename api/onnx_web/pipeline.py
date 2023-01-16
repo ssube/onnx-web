@@ -100,7 +100,7 @@ def run_txt2img_pipeline(params: BaseParams, size: Size, output: OutputPath):
         num_inference_steps=params.steps,
     ).images[0]
     image = upscale_resrgan(image, model_path)
-    image.save(output.file)
+    image.save(output.path)
 
     print('saved txt2img output: %s' % (output.file))
 
@@ -121,9 +121,9 @@ def run_img2img_pipeline(params: BaseParams, output: OutputPath, strength: float
         strength=strength,
     ).images[0]
     image = upscale_resrgan(image, model_path)
-    image.save(params.output.file)
+    image.save(output.path)
 
-    print('saved img2img output: %s' % (params.output.file))
+    print('saved img2img output: %s' % (output.file))
 
 
 def run_inpaint_pipeline(
@@ -168,6 +168,6 @@ def run_inpaint_pipeline(
         width=size.width,
     ).images[0]
 
-    image.save(output.file)
+    image.save(output.path)
 
     print('saved inpaint output: %s' % (output.file))
