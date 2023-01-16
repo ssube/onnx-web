@@ -11,14 +11,17 @@ from .image import (
   noise_source_uniform,
 )
 from .pipeline import (
+  get_latents_from_seed,
+  load_pipeline,
   run_img2img_pipeline,
   run_inpaint_pipeline,
   run_txt2img_pipeline,
 )
 from .upscale import (
-  gfpgan_url,
   make_resrgan,
-  resrgan_url,
+  upscale_gfpgan,
+  upscale_resrgan,
+  UpscaleParams,
 )
 from .utils import (
   get_and_clamp_float,
@@ -28,5 +31,6 @@ from .utils import (
   BaseParams,
   Border,
   Point,
+  ServerContext,
   Size,
 )
