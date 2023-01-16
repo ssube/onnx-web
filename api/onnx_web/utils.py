@@ -69,7 +69,7 @@ class ServerContext:
         self.num_workers = num_workers
 
     @classmethod
-    def from_environ():
+    def from_environ(cls):
         return ServerContext(
             bundle_path=environ.get('ONNX_WEB_BUNDLE_PATH',
                                     path.join('..', 'gui', 'out')),
