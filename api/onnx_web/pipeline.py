@@ -86,7 +86,7 @@ def run_txt2img_pipeline(params: BaseParams, size: Size, output: OutputPath):
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
                          params.model, params.provider, params.scheduler)
 
-    latents = get_latents_from_seed(params.seed, size.width, size.height)
+    latents = get_latents_from_seed(params.seed, size)
     rng = np.random.RandomState(params.seed)
 
     image = pipe(
