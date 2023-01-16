@@ -41,6 +41,7 @@ class ONNXImage():
 
     def clamp_(self, min, max):
         self.source = np.clip(self.source, min, max)
+        return self
 
     def numpy(self):
         return self.source
