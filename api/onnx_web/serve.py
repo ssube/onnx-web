@@ -215,7 +215,7 @@ def load_params(context: ServerContext):
         config_params = json.load(f)
 
 
-context = ServerContext()
+context = ServerContext.from_environ()
 
 check_paths(context)
 load_models(context)
