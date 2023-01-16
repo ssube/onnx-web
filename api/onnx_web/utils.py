@@ -76,6 +76,9 @@ class Size:
             'width': self.width,
         }
 
+    def with_border(self, border: Border):
+        return Size(border.left + self.width + border.right, border.top + self.height + border.right)
+
 
 def get_and_clamp_float(args: Any, key: str, default_value: float, max_value: float, min_value=0.0) -> float:
     return min(max(float(args.get(key, default_value)), min_value), max_value)

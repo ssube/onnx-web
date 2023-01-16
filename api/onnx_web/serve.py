@@ -324,7 +324,7 @@ def img2img():
     return jsonify({
         'output': output,
         'params': params.tojson(),
-        'size': size.tojson(),
+        'size': upscale.resize(size).tojson(),
     })
 
 
@@ -345,7 +345,7 @@ def txt2img():
     return jsonify({
         'output': output,
         'params': params.tojson(),
-        'size': size.tojson(),
+        'size': upscale.resize(size).tojson(),
     })
 
 
@@ -399,7 +399,7 @@ def inpaint():
     return jsonify({
         'output': output,
         'params': params.tojson(),
-        'size': size.tojson(),
+        'size': upscale.resize(size.with_border(expand)).tojson(),
     })
 
 

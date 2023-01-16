@@ -10,7 +10,8 @@ import numpy as np
 import torch
 
 from .utils import (
-    ServerContext
+    ServerContext,
+    Size,
 )
 
 # TODO: these should all be params or config
@@ -49,7 +50,7 @@ class ONNXImage():
 
 class ONNXNet():
     '''
-    Provides the RRDBNet interface but using ONNX.
+    Provides the RRDBNet interface using an ONNX session for DirectML acceleration.
     '''
 
     def __init__(self, ctx: ServerContext, model: str, provider='DmlExecutionProvider') -> None:
@@ -102,6 +103,9 @@ class UpscaleParams():
         self.platform = platform
         self.half = half
 
+    def resize(self, size: Size) -> Size:
+        return Size(size.width * self.scale * self.outscale, size.height * self.scale * self.outscale)
+
 
 def make_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
     model_file = '%s.%s' % (params.upscale_model, params.platform)
@@ -125,9 +129,10 @@ def make_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
         model_path = [model_path, wdn_model_path]
         dni_weight = [params.denoise, 1 - params.denoise]
 
+    # TODO: shouldn't need the PTH file
     upsampler = RealESRGANer(
         scale=params.scale,
-        model_path=model_path,
+        model_path=path.join(ctx.model_path, '%s.pth' % params.upscale_model),
         dni_weight=dni_weight,
         model=model,
         tile=tile,
