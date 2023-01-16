@@ -203,8 +203,7 @@ app.config['EXECUTOR_PROPAGATE_EXCEPTIONS'] = True
 CORS(app, origins=cors_origin)
 executor = Executor(app)
 
-context = ServerContext(app, executor, bundle_path,
-                        model_path, output_path, params_path)
+context = ServerContext(bundle_path, model_path, output_path, params_path)
 
 # routes
 
