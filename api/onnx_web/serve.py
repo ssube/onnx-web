@@ -44,6 +44,11 @@ from .image import (
     noise_source_uniform,
 )
 
+from .upscale import (
+    upscale_gfpgan,
+    upscale_resrgan,
+)
+
 import json
 import numpy as np
 import time
@@ -268,6 +273,8 @@ def run_txt2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
         negative_prompt=negative_prompt,
         num_inference_steps=steps,
     ).images[0]
+
+    image = upscale_resrgan(image)
     image.save(output)
 
     print('saved txt2img output: %s' % (output))

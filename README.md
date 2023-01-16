@@ -52,6 +52,7 @@ Based on guides by:
     - [Note about setup paths](#note-about-setup-paths)
     - [Create a virtual environment](#create-a-virtual-environment)
     - [Install pip packages](#install-pip-packages)
+      - [For upscaling and face correction](#for-upscaling-and-face-correction)
       - [For AMD on Windows: Install ONNX DirectML](#for-amd-on-windows-install-onnx-directml)
       - [For CPU on Linux: Install PyTorch CPU](#for-cpu-on-linux-install-pytorch-cpu)
       - [For CPU on Windows: Install PyTorch CPU](#for-cpu-on-windows-install-pytorch-cpu)
@@ -189,6 +190,12 @@ At the moment, only `numpy` and `protobuf` seem to need a specific version. If y
 sure you are not using `numpy>=1.24`.
 [This SO question](https://stackoverflow.com/questions/74844262/how-to-solve-error-numpy-has-no-attribute-float-in-python)
 has more details.
+
+#### For upscaling and face correction
+
+```shell
+> pip install basicsr facexlib gfpgan realesrgan
+```
 
 #### For AMD on Windows: Install ONNX DirectML
 
