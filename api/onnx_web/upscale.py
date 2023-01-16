@@ -167,8 +167,9 @@ def upscale_gfpgan(ctx: ServerContext, params: UpscaleParams, image, upsampler=N
     if upsampler is None:
         upsampler = make_resrgan(ctx, params, tile=512)
 
-    face_path = path.join(ctx.model_path, '%s.pth' % (params.face_model)) # TODO: convert to ONNX
+    face_path = path.join(ctx.model_path, '%s.pth' % (params.face_model))
 
+    # TODO: doesn't have a model param, not sure how to pass ONNX model
     face_enhancer = GFPGANer(
         model_path=face_path,
         upscale=params.outscale,
