@@ -46,8 +46,10 @@ from .utils import (
     get_and_clamp_int,
     get_from_map,
     make_output_path,
+    safer_join,
     BaseParams,
     Border,
+    ServerContext,
     Size,
 )
 
@@ -114,6 +116,10 @@ def url_from_rule(rule) -> str:
         options[arg] = ":%s" % (arg)
 
     return url_for(rule.endpoint, **options)
+
+
+def get_model_path(model: str):
+    return safer_join(model_path, model)
 
 
 def pipeline_from_request() -> Tuple[BaseParams, Size]:
@@ -200,6 +206,9 @@ app.config['EXECUTOR_PROPAGATE_EXCEPTIONS'] = True
 CORS(app, origins=cors_origin)
 executor = Executor(app)
 
+context = ServerContext(app, executor, bundle_path,
+                        model_path, output_path, params_path)
+
 # routes
 
 
@@ -256,8 +265,8 @@ def list_schedulers():
 
 @app.route('/api/img2img', methods=['POST'])
 def img2img():
-    input_file = request.files.get('source')
-    input_image = Image.open(BytesIO(input_file.read())).convert('RGB')
+    source_file = request.files.get('source')
+    source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
 
     strength = get_and_clamp_float(
         request.args,
@@ -275,9 +284,9 @@ def img2img():
         extras=(strength))
     print("img2img output: %s" % (output.path))
 
-    input_image.thumbnail((size.width, size.height))
+    source_image.thumbnail((size.width, size.height))
     executor.submit_stored(output.file, run_img2img_pipeline,
-                           params, output, strength, input_image)
+                           context, params, output, source_image, strength)
 
     return jsonify({
         'output': output.file,
@@ -298,7 +307,7 @@ def txt2img():
     print("txt2img output: %s" % (output.file))
 
     executor.submit_stored(
-        output.file, run_txt2img_pipeline, params, size, output)
+        output.file, run_txt2img_pipeline, context, params, size, output)
 
     return jsonify({
         'output': output.file,
@@ -352,6 +361,7 @@ def inpaint():
     executor.submit_stored(
         output.file,
         run_inpaint_pipeline,
+        context,
         params,
         size,
         output,

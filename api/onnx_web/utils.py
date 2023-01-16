@@ -1,5 +1,5 @@
 from os import path
-import time
+from time import time
 from struct import pack
 from typing import Any, Dict, Tuple, Union
 from hashlib import sha256
@@ -9,18 +9,18 @@ Param = Union[str, int, float]
 Point = Tuple[int, int]
 
 
-class OutputPath:
-    '''
-    TODO: .path is only used in one place, can probably just be a str
-    '''
-
-    def __init__(self, path, file):
-        self.path = path
-        self.file = file
-
-
 class BaseParams:
-    def __init__(self, model, provider, scheduler, prompt, negative_prompt, cfg, steps, seed):
+    def __init__(
+        self,
+        model: str,
+        provider: str,
+        scheduler: Any,
+        prompt: str,
+        negative_prompt: Union[None, str],
+        cfg: float,
+        steps: int,
+        seed: int
+    ) -> None:
         self.model = model
         self.provider = provider
         self.scheduler = scheduler
@@ -44,15 +44,39 @@ class BaseParams:
 
 
 class Border:
-    def __init__(self, left: int, right: int, top: int, bottom: int):
+    def __init__(self, left: int, right: int, top: int, bottom: int) -> None:
         self.left = left
         self.right = right
         self.top = top
         self.bottom = bottom
 
 
+class OutputPath:
+    '''
+    TODO: .path is only used in one place, can probably just be a str
+    '''
+
+    def __init__(self, path, file) -> None:
+        self.path = path
+        self.file = file
+
+
+class ServerContext:
+    def __init__(
+        self,
+        bundle_path: str,
+        model_path: str,
+        output_path: str,
+        params_path: str
+    ) -> None:
+        self.bundle_path = bundle_path
+        self.model_path = model_path
+        self.output_path = output_path
+        self.params_path = params_path
+
+
 class Size:
-    def __init__(self, width: int, height: int):
+    def __init__(self, width: int, height: int) -> None:
         self.width = width
         self.height = height
 
@@ -85,9 +109,6 @@ def safer_join(base: str, tail: str) -> str:
 
 
 def hash_value(sha, param: Param):
-    '''
-    TODO: include functions by name
-    '''
     if param is None:
         return
     elif isinstance(param, float):
@@ -107,7 +128,7 @@ def make_output_path(
     size: Size,
     extras: Union[None, Tuple[Param]] = None
 ) -> OutputPath:
-    now = int(time.time())
+    now = int(time())
     sha = sha256()
 
     hash_value(sha, mode)

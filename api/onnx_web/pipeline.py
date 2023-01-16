@@ -22,13 +22,13 @@ from .utils import (
     BaseParams,
     Border,
     OutputPath,
+    ServerContext,
     Size,
 )
 
 last_pipeline_instance = None
 last_pipeline_options = (None, None, None)
 last_pipeline_scheduler = None
-model_path = None
 
 # from https://www.travelneil.com/stable-diffusion-updates.html
 
@@ -42,17 +42,7 @@ def get_latents_from_seed(seed: int, size: Size) -> np.ndarray:
     return image_latents
 
 
-def get_model_path(model: str):
-    return safer_join(model_path, model)
-
-
-# TODO: hax
-def set_model_path(model: str):
-  global model_path
-  model_path = model
-
-
-def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, scheduler):
+def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, scheduler: Any):
     global last_pipeline_instance
     global last_pipeline_scheduler
     global last_pipeline_options
@@ -82,7 +72,12 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
     return pipe
 
 
-def run_txt2img_pipeline(params: BaseParams, size: Size, output: OutputPath):
+def run_txt2img_pipeline(
+    ctx: ServerContext,
+    params: BaseParams,
+    size: Size,
+    output: OutputPath
+):
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
                          params.model, params.provider, params.scheduler)
 
@@ -99,13 +94,19 @@ def run_txt2img_pipeline(params: BaseParams, size: Size, output: OutputPath):
         negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
     ).images[0]
-    image = upscale_resrgan(image, model_path)
+    image = upscale_resrgan(image, ctx.models)
     image.save(output.path)
 
     print('saved txt2img output: %s' % (output.file))
 
 
-def run_img2img_pipeline(params: BaseParams, output: OutputPath, strength: float, input_image: Image):
+def run_img2img_pipeline(
+    ctx: ServerContext,
+    params: BaseParams,
+    output: OutputPath,
+    source_image: Image,
+    strength: float
+):
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
                          params.model, params.provider, params.scheduler)
 
@@ -115,18 +116,19 @@ def run_img2img_pipeline(params: BaseParams, output: OutputPath, strength: float
         params.prompt,
         generator=rng,
         guidance_scale=params.cfg,
-        image=input_image,
+        image=source_image,
         negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
         strength=strength,
     ).images[0]
-    image = upscale_resrgan(image, model_path)
+    image = upscale_resrgan(image, ctx.model_path)
     image.save(output.path)
 
     print('saved img2img output: %s' % (output.file))
 
 
 def run_inpaint_pipeline(
+    ctx: ServerContext,
     params: BaseParams,
     size: Size,
     output: OutputPath,
