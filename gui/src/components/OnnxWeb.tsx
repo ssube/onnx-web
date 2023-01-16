@@ -4,7 +4,7 @@ import { Box, Container, Divider, Link, Stack, Tab, Typography } from '@mui/mate
 import * as React from 'react';
 import { useQuery } from 'react-query';
 
-import { ApiClient } from '../api/client.js';
+import { ApiClient } from '../client.js';
 import { ConfigParams, STALE_TIME } from '../config.js';
 import { ClientContext } from '../state.js';
 import { MODEL_LABELS, PLATFORM_LABELS } from '../strings.js';

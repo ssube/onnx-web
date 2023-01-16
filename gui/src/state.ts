@@ -14,7 +14,7 @@ import {
   paramsFromConfig,
   Txt2ImgParams,
   UpscaleParams,
-} from './api/client.js';
+} from './client.js';
 import { ConfigFiles, ConfigParams, ConfigState } from './config.js';
 
 type TabState<TabParams extends BaseImgParams> = ConfigFiles<Required<TabParams>> & ConfigState<Required<TabParams>>;

@@ -4,7 +4,7 @@ import { Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 import { useQuery } from 'react-query';
 
-import { BaseImgParams } from '../api/client.js';
+import { BaseImgParams } from '../client.js';
 import { ConfigParams, STALE_TIME } from '../config.js';
 import { ClientContext } from '../state.js';
 import { SCHEDULER_LABELS } from '../strings.js';

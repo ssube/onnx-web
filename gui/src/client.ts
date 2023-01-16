@@ -1,6 +1,6 @@
 import { doesExist } from '@apextoaster/js-utils';
 
-import { ConfigParams } from '../config.js';
+import { ConfigParams } from './config.js';
 
 export interface BaseImgParams {
   /**

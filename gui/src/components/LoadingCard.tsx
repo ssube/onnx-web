@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { useQuery } from 'react-query';
 import { useStore } from 'zustand';
 
-import { ApiResponse } from '../api/client.js';
+import { ApiResponse } from '../client.js';
 import { POLL_TIME } from '../config.js';
 import { ClientContext, StateContext } from '../state.js';
 

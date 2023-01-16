@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useStore } from 'zustand';
 
-import { ApiResponse } from '../api/client.js';
+import { ApiResponse } from '../client.js';
 import { StateContext } from '../state.js';
 
 export interface ImageCardProps {

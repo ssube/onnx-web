@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { createStore } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { makeClient } from './api/client.js';
+import { makeClient } from './client.js';
 import { OnnxError } from './components/OnnxError.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
 import { Config, loadConfig } from './config.js';

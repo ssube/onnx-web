@@ -1,6 +1,6 @@
 import { Maybe } from '@apextoaster/js-utils';
 
-import { Img2ImgParams, InpaintParams, OutpaintParams, STATUS_SUCCESS, Txt2ImgParams, UpscaleParams } from './api/client.js';
+import { Img2ImgParams, InpaintParams, OutpaintParams, STATUS_SUCCESS, Txt2ImgParams, UpscaleParams } from './client.js';
 
 export interface ConfigNumber {
   default: number;
