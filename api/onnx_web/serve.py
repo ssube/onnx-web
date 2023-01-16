@@ -273,8 +273,7 @@ def run_txt2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
         negative_prompt=negative_prompt,
         num_inference_steps=steps,
     ).images[0]
-
-    image = upscale_resrgan(image)
+    image = upscale_resrgan(image, model_path)
     image.save(output)
 
     print('saved txt2img output: %s' % (output))
@@ -295,6 +294,7 @@ def run_img2img_pipeline(model, provider, scheduler, prompt, negative_prompt, cf
         num_inference_steps=steps,
         strength=strength,
     ).images[0]
+    image = upscale_resrgan(image, model_path)
     image.save(output)
 
     print('saved img2img output: %s' % (output))
