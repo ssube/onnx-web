@@ -63,7 +63,8 @@ export function UpscaleControl(props: UpscaleControlProps) {
     />
     <ToggleButton
       color='primary'
-      selected={params.enabled}
+      disabled={params.enabled === false}
+      selected={params.faces}
       value='check'
       onChange={(event) => {
         setUpscale({
