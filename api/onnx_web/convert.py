@@ -350,20 +350,25 @@ def main() -> int:
     parser = ArgumentParser(
         prog='onnx-web model converter',
         description='convert checkpoint models to ONNX')
+
+    # model groups
     parser.add_argument('--diffusers', action='store_true', default=True)
     parser.add_argument('--gfpgan', action='store_true', default=False)
     parser.add_argument('--resrgan', action='store_true', default=False)
-    parser.add_argument(
-        '--opset',
-        default=14,
-        type=int,
-        help="The version of the ONNX operator set to use.",
-    )
+    parser.add_argument('--skip', nargs='*', type=str, default=[])
+
+    # export options
     parser.add_argument(
         '--half',
         action='store_true',
         default=False,
         help='Export models for half precision, faster on some Nvidia cards'
+    )
+    parser.add_argument(
+        '--opset',
+        default=14,
+        type=int,
+        help="The version of the ONNX operator set to use.",
     )
 
     args = parser.parse_args()
@@ -371,15 +376,24 @@ def main() -> int:
 
     if args.diffusers:
         for source in sources.get('diffusers'):
-            convert_diffuser(*source, args.opset, args.half)
+            if source[0] in args.skip:
+                print('Skipping model: %s' % source[0])
+            else:
+                convert_diffuser(*source, args.opset, args.half)
 
     if args.resrgan:
         for source in sources.get('real_esrgan'):
-            convert_real_esrgan(*source, args.opset)
+            if source[0] in args.skip:
+                print('Skipping model: %s' % source[0])
+            else:
+                convert_real_esrgan(*source, args.opset)
 
     if args.gfpgan:
         for source in sources.get('gfpgan'):
-            convert_gfpgan(*source, args.opset)
+            if source[0] in args.skip:
+                print('Skipping model: %s' % source[0])
+            else:
+                convert_gfpgan(*source, args.opset)
 
     return 0
 
