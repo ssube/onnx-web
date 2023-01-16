@@ -35,11 +35,9 @@ from .image import (
     noise_source_uniform,
 )
 from .pipeline import (
-    get_model_path,
     run_img2img_pipeline,
     run_inpaint_pipeline,
     run_txt2img_pipeline,
-    set_model_path,
 )
 from .utils import (
     get_and_clamp_float,
