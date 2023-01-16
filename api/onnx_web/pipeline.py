@@ -16,6 +16,7 @@ from .image import (
 )
 from .upscale import (
     upscale_resrgan,
+    UpscaleParams,
 )
 from .utils import (
     safer_join,
@@ -75,7 +76,8 @@ def run_txt2img_pipeline(
     ctx: ServerContext,
     params: BaseParams,
     size: Size,
-    output: str
+    output: str,
+    upscale: UpscaleParams
 ):
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
                          params.model, params.provider, params.scheduler)
@@ -93,7 +95,9 @@ def run_txt2img_pipeline(
         negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
     ).images[0]
-    image = upscale_resrgan(image, ctx.model_path)
+
+    if upscale.faces or upscale.scale > 1:
+        image = upscale_resrgan(ctx, image, upscale)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
@@ -105,8 +109,9 @@ def run_img2img_pipeline(
     ctx: ServerContext,
     params: BaseParams,
     output: str,
+    upscale: UpscaleParams,
     source_image: Image,
-    strength: float
+    strength: float,
 ):
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
                          params.model, params.provider, params.scheduler)
@@ -122,7 +127,9 @@ def run_img2img_pipeline(
         num_inference_steps=params.steps,
         strength=strength,
     ).images[0]
-    image = upscale_resrgan(image, ctx.model_path)
+
+    if upscale.faces or upscale.scale > 1:
+        image = upscale_resrgan(ctx, image, upscale)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
@@ -135,6 +142,7 @@ def run_inpaint_pipeline(
     params: BaseParams,
     size: Size,
     output: str,
+    upscale: UpscaleParams,
     source_image: Image,
     mask_image: Image,
     expand: Border,
@@ -172,6 +180,9 @@ def run_inpaint_pipeline(
         num_inference_steps=params.steps,
         width=size.width,
     ).images[0]
+
+    if upscale.faces or upscale.scale > 1:
+        image = upscale_resrgan(ctx, image, upscale)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)

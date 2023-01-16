@@ -39,6 +39,9 @@ from .pipeline import (
     run_inpaint_pipeline,
     run_txt2img_pipeline,
 )
+from .upscale import (
+    UpscaleParams,
+)
 from .utils import (
     get_and_clamp_float,
     get_and_clamp_int,
@@ -186,6 +189,13 @@ def border_from_request() -> Border:
     return Border(left, right, top, bottom)
 
 
+def upscale_from_request() -> UpscaleParams:
+    denoise = get_and_clamp_float(request.args, 'denoise', 0.5, 1.0, 0.0)
+    scale = get_and_clamp_int(request.args, 'scale', 1, 4, 1)
+    faces = request.args.get('faces', 'false') == 'true'
+    platform = 'onnx'
+    return UpscaleParams(scale=scale, faces=faces, platform=platform, denoise=denoise)
+
 def check_paths():
     if not path.exists(model_path):
         raise RuntimeError('model path must exist')
@@ -278,6 +288,7 @@ def img2img():
     source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
 
     params, size = pipeline_from_request()
+    upscale = upscale_from_request()
 
     strength = get_and_clamp_float(
         request.args,
@@ -294,7 +305,7 @@ def img2img():
 
     source_image.thumbnail((size.width, size.height))
     executor.submit_stored(output, run_img2img_pipeline,
-                           context, params, output, source_image, strength)
+                           context, params, output, upscale, source_image, strength)
 
     return jsonify({
         'output': output,
@@ -306,6 +317,7 @@ def img2img():
 @app.route('/api/txt2img', methods=['POST'])
 def txt2img():
     params, size = pipeline_from_request()
+    upscale = upscale_from_request()
 
     output = make_output_name(
         'txt2img',
@@ -314,7 +326,7 @@ def txt2img():
     print("txt2img output: %s" % (output))
 
     executor.submit_stored(
-        output, run_txt2img_pipeline, context, params, size, output)
+        output, run_txt2img_pipeline, context, params, size, output, upscale)
 
     return jsonify({
         'output': output,
@@ -333,6 +345,7 @@ def inpaint():
 
     params, size = pipeline_from_request()
     expand = border_from_request()
+    upscale = upscale_from_request()
 
     mask_filter = get_from_map(request.args, 'filter', mask_filters, 'none')
     noise_source = get_from_map(
@@ -362,6 +375,7 @@ def inpaint():
         params,
         size,
         output,
+        upscale,
         source_image,
         mask_image,
         expand,
