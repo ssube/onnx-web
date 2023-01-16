@@ -1,4 +1,4 @@
-from os import path
+from os import environ, path
 from time import time
 from struct import pack
 from typing import Any, Dict, Tuple, Union
@@ -54,15 +54,34 @@ class Border:
 class ServerContext:
     def __init__(
         self,
-        bundle_path: str,
-        model_path: str,
-        output_path: str,
-        params_path: str
+        bundle_path: str = '.',
+        model_path: str = '.',
+        output_path: str = '.',
+        params_path: str = '.',
+        cors_origin: str = '*',
+        num_workers: int = 1,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
         self.output_path = output_path
         self.params_path = params_path
+        self.cors_origin = cors_origin
+        self.num_workers = num_workers
+
+    @classmethod
+    def from_environ():
+        return ServerContext(
+            bundle_path=environ.get('ONNX_WEB_BUNDLE_PATH',
+                                    path.join('..', 'gui', 'out')),
+            model_path=environ.get('ONNX_WEB_MODEL_PATH',
+                                   path.join('..', 'models')),
+            output_path=environ.get(
+                'ONNX_WEB_OUTPUT_PATH', path.join('..', 'outputs')),
+            params_path=environ.get('ONNX_WEB_PARAMS_PATH', '.'),
+            # others
+            cors_origin=environ.get('ONNX_WEB_CORS_ORIGIN', '*').split(','),
+            num_workers=int(environ.get('ONNX_WEB_NUM_WORKERS', 1)),
+        )
 
 
 class Size:
