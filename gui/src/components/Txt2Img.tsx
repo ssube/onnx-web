@@ -8,6 +8,7 @@ import { ConfigParams } from '../config.js';
 import { ClientContext, StateContext } from '../state.js';
 import { ImageControl } from './ImageControl.js';
 import { NumericField } from './NumericField.js';
+import { UpscaleControl } from './UpscaleControl.js';
 
 const { useContext } = React;
 
@@ -75,6 +76,7 @@ export function Txt2Img(props: Txt2ImgProps) {
           }}
         />
       </Stack>
+      <UpscaleControl config={config} />
       <Button onClick={() => generate.mutate()}>Generate</Button>
     </Stack>
   </Box>;

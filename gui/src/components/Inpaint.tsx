@@ -12,6 +12,7 @@ import { ImageInput } from './ImageInput.js';
 import { MaskCanvas } from './MaskCanvas.js';
 import { OutpaintControl } from './OutpaintControl.js';
 import { QueryList } from './QueryList.js';
+import { UpscaleControl } from './UpscaleControl.js';
 
 const { useContext } = React;
 
@@ -139,6 +140,7 @@ export function Inpaint(props: InpaintProps) {
         />
       </Stack>
       <OutpaintControl config={config} />
+      <UpscaleControl config={config} />
       <Button onClick={() => upload.mutate()}>Generate</Button>
     </Stack>
   </Box>;

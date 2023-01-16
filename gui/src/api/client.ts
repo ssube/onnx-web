@@ -65,6 +65,14 @@ export interface BrushParams {
   strength: number;
 }
 
+export interface UpscaleParams {
+  enabled: boolean;
+
+  denoise: number;
+  faces: boolean;
+  scale: number;
+}
+
 export interface ApiResponse {
   output: {
     key: string;
@@ -112,6 +120,9 @@ export function paramsFromConfig(defaults: ConfigParams): Required<BaseImgParams
   };
 }
 
+export const FIXED_INTEGER = 0;
+export const FIXED_FLOAT = 2;
+
 export function equalResponse(a: ApiResponse, b: ApiResponse): boolean {
   return a.output === b.output;
 }
@@ -126,8 +137,8 @@ export function makeApiUrl(root: string, ...path: Array<string>) {
 
 export function makeImageURL(root: string, type: string, params: BaseImgParams): URL {
   const url = makeApiUrl(root, type);
-  url.searchParams.append('cfg', params.cfg.toFixed(1));
-  url.searchParams.append('steps', params.steps.toFixed(0));
+  url.searchParams.append('cfg', params.cfg.toFixed(FIXED_FLOAT));
+  url.searchParams.append('steps', params.steps.toFixed(FIXED_INTEGER));
 
   if (doesExist(params.model)) {
     url.searchParams.append('model', params.model);
@@ -142,7 +153,7 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
   }
 
   if (doesExist(params.seed)) {
-    url.searchParams.append('seed', params.seed.toFixed(0));
+    url.searchParams.append('seed', params.seed.toFixed(FIXED_INTEGER));
   }
 
   // put prompt last, in case a load balancer decides to truncate the URL
@@ -153,6 +164,12 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
   }
 
   return url;
+}
+
+export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
+  url.searchParams.append('denoise', upscale.denoise.toFixed(FIXED_FLOAT));
+  url.searchParams.append('faces', String(upscale.faces));
+  url.searchParams.append('scale', upscale.scale.toFixed(FIXED_INTEGER));
 }
 
 export function makeClient(root: string, f = fetch): ApiClient {
@@ -195,13 +212,17 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const res = await f(path);
       return await res.json() as Array<string>;
     },
-    async img2img(params: Img2ImgParams): Promise<ApiResponse> {
+    async img2img(params: Img2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse> {
       if (doesExist(pending)) {
         return pending;
       }
 
       const url = makeImageURL(root, 'img2img', params);
-      url.searchParams.append('strength', params.strength.toFixed(2));
+      url.searchParams.append('strength', params.strength.toFixed(FIXED_FLOAT));
+
+      if (doesExist(upscale)) {
+        appendUpscaleToURL(url, upscale);
+      }
 
       const body = new FormData();
       body.append('source', params.source, 'source');
@@ -214,7 +235,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
       // eslint-disable-next-line no-return-await
       return await pending;
     },
-    async txt2img(params: Txt2ImgParams): Promise<ApiResponse> {
+    async txt2img(params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse> {
       if (doesExist(pending)) {
         return pending;
       }
@@ -222,11 +243,15 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const url = makeImageURL(root, 'txt2img', params);
 
       if (doesExist(params.width)) {
-        url.searchParams.append('width', params.width.toFixed(0));
+        url.searchParams.append('width', params.width.toFixed(FIXED_INTEGER));
       }
 
       if (doesExist(params.height)) {
-        url.searchParams.append('height', params.height.toFixed(0));
+        url.searchParams.append('height', params.height.toFixed(FIXED_INTEGER));
+      }
+
+      if (doesExist(upscale)) {
+        appendUpscaleToURL(url, upscale);
       }
 
       pending = throttleRequest(url, {
@@ -236,7 +261,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
       // eslint-disable-next-line no-return-await
       return await pending;
     },
-    async inpaint(params: InpaintParams) {
+    async inpaint(params: InpaintParams, upscale?: UpscaleParams) {
       if (doesExist(pending)) {
         return pending;
       }
@@ -244,6 +269,9 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const url = makeImageURL(root, 'inpaint', params);
       url.searchParams.append('filter', params.filter);
       url.searchParams.append('noise', params.noise);
+      if (doesExist(upscale)) {
+        appendUpscaleToURL(url, upscale);
+      }
 
       const body = new FormData();
       body.append('mask', params.mask, 'mask');
@@ -257,7 +285,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
       // eslint-disable-next-line no-return-await
       return await pending;
     },
-    async outpaint(params: OutpaintParams) {
+    async outpaint(params: OutpaintParams, upscale?: UpscaleParams) {
       if (doesExist(pending)) {
         return pending;
       }
@@ -266,20 +294,24 @@ export function makeClient(root: string, f = fetch): ApiClient {
       url.searchParams.append('filter', params.filter);
       url.searchParams.append('noise', params.noise);
 
+      if (doesExist(upscale)) {
+        appendUpscaleToURL(url, upscale);
+      }
+
       if (doesExist(params.left)) {
-        url.searchParams.append('left', params.left.toFixed(0));
+        url.searchParams.append('left', params.left.toFixed(FIXED_INTEGER));
       }
 
       if (doesExist(params.right)) {
-        url.searchParams.append('right', params.right.toFixed(0));
+        url.searchParams.append('right', params.right.toFixed(FIXED_INTEGER));
       }
 
       if (doesExist(params.top)) {
-        url.searchParams.append('top', params.top.toFixed(0));
+        url.searchParams.append('top', params.top.toFixed(FIXED_INTEGER));
       }
 
       if (doesExist(params.bottom)) {
-        url.searchParams.append('bottom', params.bottom.toFixed(0));
+        url.searchParams.append('bottom', params.bottom.toFixed(FIXED_INTEGER));
       }
 
       const body = new FormData();

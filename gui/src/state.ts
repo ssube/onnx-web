@@ -13,6 +13,7 @@ import {
   OutpaintPixels,
   paramsFromConfig,
   Txt2ImgParams,
+  UpscaleParams,
 } from './api/client.js';
 import { ConfigFiles, ConfigParams, ConfigState } from './config.js';
 
@@ -68,7 +69,21 @@ interface BrushSlice {
   setBrush(brush: Partial<BrushParams>): void;
 }
 
-export type OnnxState = Txt2ImgSlice & Img2ImgSlice & InpaintSlice & HistorySlice & DefaultSlice & OutpaintSlice & BrushSlice;
+interface UpscaleSlice {
+  upscale: UpscaleParams;
+
+  setUpscale(upscale: Partial<UpscaleParams>): void;
+}
+
+export type OnnxState
+  = BrushSlice
+  & DefaultSlice
+  & HistorySlice
+  & Img2ImgSlice
+  & InpaintSlice
+  & OutpaintSlice
+  & Txt2ImgSlice
+  & UpscaleSlice;
 
 export function createStateSlices(base: ConfigParams) {
   const defaults = paramsFromConfig(base);
@@ -220,6 +235,23 @@ export function createStateSlices(base: ConfigParams) {
     },
   });
 
+  const createUpscaleSlice: StateCreator<OnnxState, [], [], UpscaleSlice> = (set) => ({
+    upscale: {
+      denoise: 0.5,
+      enabled: false,
+      faces: false,
+      scale: 1,
+    },
+    setUpscale(upscale) {
+      set((prev) => ({
+        upscale: {
+          ...prev.upscale,
+          ...upscale,
+        }
+      }));
+    },
+  });
+
   const createDefaultSlice: StateCreator<OnnxState, [], [], DefaultSlice> = (set) => ({
     defaults: {
       ...defaults,
@@ -235,13 +267,14 @@ export function createStateSlices(base: ConfigParams) {
   });
 
   return {
+    createBrushSlice,
     createDefaultSlice,
     createHistorySlice,
     createImg2ImgSlice,
     createInpaintSlice,
-    createTxt2ImgSlice,
     createOutpaintSlice,
-    createBrushSlice,
+    createTxt2ImgSlice,
+    createUpscaleSlice,
   };
 }
 

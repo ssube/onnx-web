@@ -9,6 +9,7 @@ import { ClientContext, StateContext } from '../state.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
 import { NumericField } from './NumericField.js';
+import { UpscaleControl } from './UpscaleControl.js';
 
 const { useContext } = React;
 
@@ -69,6 +70,7 @@ export function Img2Img(props: Img2ImgProps) {
           });
         }}
       />
+      <UpscaleControl config={config} />
       <Button onClick={() => upload.mutate()}>Generate</Button>
     </Stack>
   </Box>;

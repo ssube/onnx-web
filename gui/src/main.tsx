@@ -43,22 +43,24 @@ export async function main() {
 
     // prep zustand with a slice for each tab, using local storage
     const {
+      createBrushSlice,
       createDefaultSlice,
       createHistorySlice,
       createImg2ImgSlice,
       createInpaintSlice,
-      createTxt2ImgSlice,
-      createBrushSlice,
       createOutpaintSlice,
+      createTxt2ImgSlice,
+      createUpscaleSlice,
     } = createStateSlices(params);
     const state = createStore<OnnxState, [['zustand/persist', OnnxState]]>(persist((...slice) => ({
-      ...createTxt2ImgSlice(...slice),
+      ...createBrushSlice(...slice),
+      ...createDefaultSlice(...slice),
+      ...createHistorySlice(...slice),
       ...createImg2ImgSlice(...slice),
       ...createInpaintSlice(...slice),
-      ...createHistorySlice(...slice),
-      ...createDefaultSlice(...slice),
-      ...createBrushSlice(...slice),
+      ...createTxt2ImgSlice(...slice),
       ...createOutpaintSlice(...slice),
+      ...createUpscaleSlice(...slice),
     }), {
       name: 'onnx-web',
       partialize(s) {
