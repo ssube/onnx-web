@@ -103,6 +103,18 @@ class UpscaleParams():
         self.platform = platform
         self.half = half
 
+    def rescale(self, scale: int, outscale: int = 1):
+        return UpscaleParams(
+            self.upscale_model,
+            correction_model=self.correction_model,
+            scale=scale,
+            outscale=outscale,
+            denoise=self.denoise,
+            faces=self.faces,
+            platform=self.platform,
+            half=self.half,
+        )
+
     def resize(self, size: Size) -> Size:
         return Size(size.width * self.scale * self.outscale, size.height * self.scale * self.outscale)
 
@@ -165,7 +177,8 @@ def upscale_gfpgan(ctx: ServerContext, params: UpscaleParams, image, upsampler=N
         return image
 
     if upsampler is None:
-        upsampler = make_resrgan(ctx, params, tile=512)
+        bg_params = params.rescale(params.outscale)
+        upsampler = make_resrgan(ctx, bg_params, tile=512)
 
     face_path = path.join(ctx.model_path, '%s.pth' % (params.correction_model))
 
