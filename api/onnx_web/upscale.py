@@ -159,12 +159,12 @@ def upscale_resrgan(ctx: ServerContext, params: UpscaleParams, source_image: Ima
     print('upscaling image with Real ESRGAN', params)
 
     image = np.array(source_image)
-    upsampler = make_resrgan(ctx, params)
+    upsampler = make_resrgan(ctx, params, tile=512)
 
     output, _ = upsampler.enhance(image, outscale=params.outscale)
 
     if params.faces:
-        output = upscale_gfpgan(ctx, params, output)
+        output = upscale_gfpgan(ctx, params, output, upsampler=upsampler)
 
     return Image.fromarray(output, 'RGB')
 
@@ -177,7 +177,7 @@ def upscale_gfpgan(ctx: ServerContext, params: UpscaleParams, image, upsampler=N
         return image
 
     if upsampler is None:
-        upsampler = make_resrgan(ctx, params, tile=512)
+        upsampler = make_resrgan(ctx, params)
 
     face_path = path.join(ctx.model_path, '%s.pth' % (params.correction_model))
 
