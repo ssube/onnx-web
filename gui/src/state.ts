@@ -157,6 +157,7 @@ export function createStateSlices(base: ConfigParams) {
       mask: null,
       noise: 'histogram',
       source: null,
+      strength: 1.0,
     },
     setInpaint(params) {
       set((prev) => ({
@@ -174,6 +175,7 @@ export function createStateSlices(base: ConfigParams) {
           mask: null,
           noise: 'histogram',
           source: null,
+          strength: 1.0,
         },
       });
     },

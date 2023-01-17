@@ -10,6 +10,7 @@ import { MASK_LABELS, NOISE_LABELS } from '../strings.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
 import { MaskCanvas } from './MaskCanvas.js';
+import { NumericField } from './NumericField.js';
 import { OutpaintControl } from './OutpaintControl.js';
 import { QueryList } from './QueryList.js';
 import { UpscaleControl } from './UpscaleControl.js';
@@ -56,6 +57,8 @@ export function Inpaint() {
   const noise = useStore(state, (s) => s.inpaint.noise);
   const mask = useStore(state, (s) => s.inpaint.mask);
   const source = useStore(state, (s) => s.inpaint.source);
+  const strength = useStore(state, (s) => s.inpaint.strength);
+
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setInpaint = useStore(state, (s) => s.setInpaint);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -108,6 +111,18 @@ export function Inpaint() {
         }}
       />
       <Stack direction='row' spacing={2}>
+        <NumericField
+          label='Strength'
+          min={config.strength.min}
+          max={config.strength.max}
+          step={config.strength.step}
+          value={strength}
+          onChange={(value) => {
+            setInpaint({
+              strength: value,
+            });
+          }}
+        />
         {/* TODO: numeric input for blend strength */}
         <QueryList
           id='masks'

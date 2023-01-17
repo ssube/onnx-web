@@ -47,6 +47,7 @@ export interface InpaintParams extends BaseImgParams {
 
   filter: string;
   noise: string;
+  strength: number;
 }
 
 export interface OutpaintPixels {
@@ -289,6 +290,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       url.searchParams.append('filter', params.filter);
       url.searchParams.append('noise', params.noise);
+      url.searchParams.append('strength', params.strength.toFixed(FIXED_FLOAT));
 
       if (doesExist(upscale)) {
         appendUpscaleToURL(url, upscale);
