@@ -30,10 +30,11 @@ last_pipeline_instance = None
 last_pipeline_options = (None, None, None)
 last_pipeline_scheduler = None
 
-# from https://www.travelneil.com/stable-diffusion-updates.html
-
 
 def get_latents_from_seed(seed: int, size: Size) -> np.ndarray:
+    '''
+    From https://www.travelneil.com/stable-diffusion-updates.html
+    '''
     # 1 is batch size
     latents_shape = (1, 4, size.height // 8, size.width // 8)
     # Gotta use numpy instead of torch, because torch's randn() doesn't support DML
@@ -147,7 +148,8 @@ def run_inpaint_pipeline(
     mask_image: Image,
     expand: Border,
     noise_source: Any,
-    mask_filter: Any
+    mask_filter: Any,
+    strength: float,
 ):
     pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                          params.model, params.provider, params.scheduler)
@@ -180,6 +182,7 @@ def run_inpaint_pipeline(
         num_inference_steps=params.steps,
         width=size.width,
     ).images[0]
+    image = ImageChops.blend(source_image, image, strength)
 
     if upscale.faces or upscale.scale > 1:
         image = upscale_resrgan(ctx, upscale, image)
@@ -189,17 +192,16 @@ def run_inpaint_pipeline(
 
     print('saved inpaint output: %s' % (dest))
 
+
 def run_upscale_pipeline(
     ctx: ServerContext,
     _params: BaseParams,
     _size: Size,
     output: str,
     upscale: UpscaleParams,
-    source_image: Image,
-    strength: float,
+    source_image: Image
 ):
     image = upscale_resrgan(ctx, upscale, source_image)
-    image = ImageChops.blend(source_image, image, strength)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)

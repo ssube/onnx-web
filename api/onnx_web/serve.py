@@ -343,7 +343,7 @@ def img2img():
         'img2img',
         params,
         size,
-        extras=(strength))
+        extras=(strength,))
     print("img2img output: %s" % (output))
 
     source_image.thumbnail((size.width, size.height))
@@ -393,6 +393,11 @@ def inpaint():
     mask_filter = get_from_map(request.args, 'filter', mask_filters, 'none')
     noise_source = get_from_map(
         request.args, 'noise', noise_sources, 'histogram')
+    strength = get_and_clamp_float(
+        request.args,
+        'strength',
+        config_params.get('strength').get('default'),
+        config_params.get('strength').get('max'))
 
     output = make_output_name(
         'inpaint',
@@ -405,6 +410,7 @@ def inpaint():
             expand.bottom,
             mask_filter.__name__,
             noise_source.__name__,
+            strength,
         )
     )
     print("inpaint output: %s" % output)
@@ -423,7 +429,8 @@ def inpaint():
         mask_image,
         expand,
         noise_source,
-        mask_filter)
+        mask_filter,
+        strength)
 
     return jsonify({
         'output': output,
@@ -440,22 +447,15 @@ def upscale():
     params, size = pipeline_from_request()
     upscale = upscale_from_request()
 
-    strength = get_and_clamp_float(
-        request.args,
-        'strength',
-        config_params.get('strength').get('default'),
-        config_params.get('strength').get('max'))
-
     output = make_output_name(
-        'img2img',
+        'upscale',
         params,
-        size,
-        extras=(strength))
-    print("img2img output: %s" % (output))
+        size)
+    print("upscale output: %s" % (output))
 
     source_image.thumbnail((size.width, size.height))
     executor.submit_stored(output, run_upscale_pipeline,
-                           context, params, output, upscale, source_image, strength)
+                           context, params, output, upscale, source_image)
 
     return jsonify({
         'output': output,
