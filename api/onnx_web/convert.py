@@ -24,9 +24,7 @@ sources: Dict[str, List[Tuple[str, str]]] = {
          'stabilityai/stable-diffusion-2-inpainting'),
     ],
     'gfpgan': [
-        ('correction-gfpgan-v1-3-x2',
-         'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth', 2),
-        ('correction-gfpgan-v1-3-x4',
+        ('correction-gfpgan-v1-3',
          'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth', 4),
     ],
     'real_esrgan': [
@@ -57,7 +55,7 @@ def convert_real_esrgan(name: str, url: str, scale: int, opset: int):
     if not path.isfile(dest_path):
         print('PTH model not found, downloading...')
         download_path = load_file_from_url(
-            url=url, model_dir=dest_path + '.cache', progress=True, file_name=None)
+            url=url, model_dir=dest_path + '-cache', progress=True, file_name=None)
         copyfile(download_path, dest_path)
 
     print('loading and training model')
@@ -106,7 +104,7 @@ def convert_gfpgan(name: str, url: str, scale: int, opset: int):
     if not path.isfile(dest_path):
         print('PTH model not found, downloading...')
         download_path = load_file_from_url(
-            url=url, model_dir=dest_path + '.cache', progress=True, file_name=None)
+            url=url, model_dir=dest_path + '-cache', progress=True, file_name=None)
         copyfile(download_path, dest_path)
 
     print('loading and training model')

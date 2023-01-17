@@ -11,8 +11,7 @@ export const MODEL_LABELS = {
   'upscaling-real-esrgan-x4-plus': 'Real ESRGAN x4 Plus',
   'upscaling-real-esrgan-x4-v3': 'Real ESRGAN x4 v3',
   // correction
-  'correction-gfpgan-v1-3-x2': 'GFPGAN v1.3 x2',
-  'correction-gfpgan-v1-3-x4': 'GFPGAN v1.3 x4',
+  'correction-gfpgan-v1-3': 'GFPGAN v1.3',
 
 };
 
