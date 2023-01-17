@@ -92,7 +92,7 @@ export function UpscaleControl(props: UpscaleControlProps) {
     <NumericField
       label='Strength'
       decimal
-      disabled={params.enabled === false && params.faces}
+      disabled={params.enabled === false && params.faces === false}
       min={config.faceStrength.min}
       max={config.faceStrength.max}
       step={config.faceStrength.step}
