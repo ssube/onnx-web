@@ -209,7 +209,7 @@ def load_models(context: ServerContext):
     global upscaling_models
 
     diffusion_models = glob(path.join(context.model_path, 'diffusion-*'))
-    diffusion_models.append(glob(path.join(context.model_path, 'stable-diffusion-*')))
+    diffusion_models.extend(glob(path.join(context.model_path, 'stable-diffusion-*')))
 
     correction_models = glob(path.join(context.model_path, 'correction-*'))
     upscaling_models = glob(path.join(context.model_path, 'upscaling-*'))
