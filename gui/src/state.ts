@@ -258,7 +258,6 @@ export function createStateSlices(base: ConfigParams) {
     },
     upscaleTab: {
       source: null,
-      strength: 1.0,
     },
     setUpscale(upscale) {
       set((prev) => ({
@@ -280,7 +279,6 @@ export function createStateSlices(base: ConfigParams) {
       set({
         upscaleTab: {
           source: null,
-          strength: 1.0,
         },
       });
     },

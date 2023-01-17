@@ -231,7 +231,8 @@ export function MaskCanvas(props: MaskCanvasProps) {
       }}
     />
     <Typography variant='body1'>
-      Black pixels in the mask will stay the same, white pixels will be replaced with pixels from the noise source.
+      Black pixels in the mask will stay the same, white pixels will be replaced. The masked pixels will be blended
+      with the noise source before the diffusion model runs, giving it more variety to use.
     </Typography>
     <Stack direction='row' spacing={4}>
       <NumericField

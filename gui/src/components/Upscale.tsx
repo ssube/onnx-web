@@ -7,7 +7,6 @@ import { useStore } from 'zustand';
 import { IMAGE_FILTER } from '../config.js';
 import { ClientContext, ConfigContext, StateContext } from '../state.js';
 import { ImageInput } from './ImageInput.js';
-import { NumericField } from './NumericField.js';
 import { UpscaleControl } from './UpscaleControl.js';
 
 const { useContext } = React;
@@ -46,19 +45,6 @@ export function Upscale() {
           source: file,
         });
       }} />
-      <NumericField
-        decimal
-        label='Strength'
-        min={config.strength.min}
-        max={config.strength.max}
-        step={config.strength.step}
-        value={params.strength}
-        onChange={(value) => {
-          setSource({
-            strength: value,
-          });
-        }}
-      />
       <UpscaleControl config={config} />
       <Button onClick={() => upload.mutate()}>Generate</Button>
     </Stack>

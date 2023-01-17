@@ -108,6 +108,7 @@ export function Inpaint() {
         }}
       />
       <Stack direction='row' spacing={2}>
+        {/* TODO: numeric input for blend strength */}
         <QueryList
           id='masks'
           labels={MASK_LABELS}

@@ -78,7 +78,6 @@ export interface UpscaleParams {
 
 export interface UpscaleReqParams {
   source: Blob;
-  strength: number;
 }
 
 export interface ImageResponse {
