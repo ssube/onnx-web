@@ -91,6 +91,7 @@ class UpscaleParams():
         outscale: int = 1,
         denoise: float = 0.5,
         faces=True,
+        face_strength: float = 0.5,
         platform: str = 'onnx',
         half=False
     ) -> None:
@@ -100,20 +101,9 @@ class UpscaleParams():
         self.outscale = outscale
         self.denoise = denoise
         self.faces = faces
+        self.face_strength = face_strength
         self.platform = platform
         self.half = half
-
-    def rescale(self, scale: int, outscale: int = 1):
-        return UpscaleParams(
-            self.upscale_model,
-            correction_model=self.correction_model,
-            scale=scale,
-            outscale=outscale,
-            denoise=self.denoise,
-            faces=self.faces,
-            platform=self.platform,
-            half=self.half,
-        )
 
     def resize(self, size: Size) -> Size:
         return Size(size.width * self.scale * self.outscale, size.height * self.scale * self.outscale)
@@ -190,6 +180,6 @@ def upscale_gfpgan(ctx: ServerContext, params: UpscaleParams, image, upsampler=N
         bg_upsampler=upsampler)
 
     _, _, output = face_enhancer.enhance(
-        image, has_aligned=False, only_center_face=False, paste_back=True)
+        image, has_aligned=False, only_center_face=False, paste_back=True, weight=params.face_strength)
 
     return output

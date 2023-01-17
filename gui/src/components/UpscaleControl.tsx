@@ -89,5 +89,19 @@ export function UpscaleControl(props: UpscaleControlProps) {
       <FaceRetouchingNatural />
       Face Correction
     </ToggleButton>
+    <NumericField
+      label='Strength'
+      decimal
+      disabled={params.enabled === false}
+      min={config.faceStrength.min}
+      max={config.faceStrength.max}
+      step={config.faceStrength.step}
+      value={params.faceStrength}
+      onChange={(faceStrength) => {
+        setUpscale({
+          faceStrength,
+        });
+      }}
+    />
   </Stack>;
 }

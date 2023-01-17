@@ -183,6 +183,7 @@ def upscale_from_request() -> UpscaleParams:
     upscaling = get_from_list(request.args, 'upscaling', upscaling_models)
     correction = get_from_list(request.args, 'correction', correction_models)
     faces = request.args.get('faces', 'false') == 'true'
+    face_strength = get_and_clamp_float(request.args, 'faceStrength', 0.5, 1.0, 0.0)
 
     return UpscaleParams(
         upscaling,
@@ -192,6 +193,7 @@ def upscale_from_request() -> UpscaleParams:
         faces=faces,
         platform='onnx',
         denoise=denoise,
+        face_strength=face_strength,
     )
 
 

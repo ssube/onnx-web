@@ -73,6 +73,7 @@ export interface UpscaleParams {
   faces: boolean;
   scale: number;
   outscale: number;
+  faceStrength: number;
 }
 
 export interface ApiResponse {
@@ -167,6 +168,8 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
 export function appendModelToURL(url: URL, params: ModelParams) {
   url.searchParams.append('model', params.model);
   url.searchParams.append('platform', params.platform);
+  url.searchParams.append('upscaling', params.upscaling);
+  url.searchParams.append('correction', params.correction);
 }
 
 export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
@@ -175,6 +178,7 @@ export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
     url.searchParams.append('faces', String(upscale.faces));
     url.searchParams.append('scale', upscale.scale.toFixed(FIXED_INTEGER));
     url.searchParams.append('outscale', upscale.outscale.toFixed(FIXED_INTEGER));
+    url.searchParams.append('faceStrength', upscale.faceStrength.toFixed(FIXED_FLOAT));
   }
 }
 
