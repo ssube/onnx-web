@@ -177,8 +177,7 @@ def upscale_gfpgan(ctx: ServerContext, params: UpscaleParams, image, upsampler=N
         return image
 
     if upsampler is None:
-        bg_params = params.rescale(params.outscale)
-        upsampler = make_resrgan(ctx, bg_params, tile=512)
+        upsampler = make_resrgan(ctx, params, tile=512)
 
     face_path = path.join(ctx.model_path, '%s.pth' % (params.correction_model))
 
