@@ -5,7 +5,7 @@ import { StateCreator, StoreApi } from 'zustand';
 
 import {
   ApiClient,
-  ApiResponse,
+  ImageResponse,
   BaseImgParams,
   BrushParams,
   Img2ImgParams,
@@ -15,10 +15,11 @@ import {
   paramsFromConfig,
   Txt2ImgParams,
   UpscaleParams,
+  UpscaleReqParams,
 } from './client.js';
 import { ConfigFiles, ConfigParams, ConfigState } from './config.js';
 
-type TabState<TabParams extends BaseImgParams> = ConfigFiles<Required<TabParams>> & ConfigState<Required<TabParams>>;
+type TabState<TabParams> = ConfigFiles<Required<TabParams>> & ConfigState<Required<TabParams>>;
 
 interface Txt2ImgSlice {
   txt2img: TabState<Txt2ImgParams>;
@@ -42,14 +43,14 @@ interface InpaintSlice {
 }
 
 interface HistorySlice {
-  history: Array<ApiResponse>;
+  history: Array<ImageResponse>;
   limit: number;
-  loading: Maybe<ApiResponse>;
+  loading: Maybe<ImageResponse>;
 
-  pushHistory(image: ApiResponse): void;
-  removeHistory(image: ApiResponse): void;
+  pushHistory(image: ImageResponse): void;
+  removeHistory(image: ImageResponse): void;
   setLimit(limit: number): void;
-  setLoading(image: Maybe<ApiResponse>): void;
+  setLoading(image: Maybe<ImageResponse>): void;
 }
 
 interface DefaultSlice {
@@ -72,8 +73,11 @@ interface BrushSlice {
 
 interface UpscaleSlice {
   upscale: UpscaleParams;
+  upscaleTab: TabState<UpscaleReqParams>;
 
   setUpscale(upscale: Partial<UpscaleParams>): void;
+  setUpscaleTab(params: Partial<UpscaleReqParams>): void;
+  resetUpscaleTab(): void;
 }
 
 interface ModelSlice {
@@ -252,13 +256,33 @@ export function createStateSlices(base: ConfigParams) {
       outscale: 1,
       faceStrength: 0.5,
     },
+    upscaleTab: {
+      source: null,
+      strength: 1.0,
+    },
     setUpscale(upscale) {
       set((prev) => ({
         upscale: {
           ...prev.upscale,
           ...upscale,
-        }
+        },
       }));
+    },
+    setUpscaleTab(source) {
+      set((prev) => ({
+        upscaleTab: {
+          ...prev.upscaleTab,
+          ...source,
+        },
+      }));
+    },
+    resetUpscaleTab() {
+      set({
+        upscaleTab: {
+          source: null,
+          strength: 1.0,
+        },
+      });
     },
   });
 

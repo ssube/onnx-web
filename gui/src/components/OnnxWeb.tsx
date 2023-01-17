@@ -8,6 +8,7 @@ import { Inpaint } from './Inpaint.js';
 import { ModelControl } from './ModelControl.js';
 import { Settings } from './Settings.js';
 import { Txt2Img } from './Txt2Img.js';
+import { Upscale } from './Upscale.js';
 
 const { useState } = React;
 
@@ -32,6 +33,7 @@ export function OnnxWeb() {
             <Tab label='txt2img' value='txt2img' />
             <Tab label='img2img' value='img2img' />
             <Tab label='inpaint' value='inpaint' />
+            <Tab label='upscale' value='upscale' />
             <Tab label='settings' value='settings' />
           </TabList>
         </Box>
@@ -43,6 +45,9 @@ export function OnnxWeb() {
         </TabPanel>
         <TabPanel value='inpaint'>
           <Inpaint />
+        </TabPanel>
+        <TabPanel value='upscale'>
+          <Upscale />
         </TabPanel>
         <TabPanel value='settings'>
           <Settings />

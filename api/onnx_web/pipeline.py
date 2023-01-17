@@ -6,7 +6,7 @@ from diffusers import (
     OnnxStableDiffusionInpaintPipeline,
 )
 from os import environ
-from PIL import Image
+from PIL import Image, ImageChops
 from typing import Any
 
 import numpy as np
@@ -188,3 +188,20 @@ def run_inpaint_pipeline(
     image.save(dest)
 
     print('saved inpaint output: %s' % (dest))
+
+def run_upscale_pipeline(
+    ctx: ServerContext,
+    _params: BaseParams,
+    _size: Size,
+    output: str,
+    upscale: UpscaleParams,
+    source_image: Image,
+    strength: float,
+):
+    image = upscale_resrgan(ctx, upscale, source_image)
+    image = ImageChops.blend(source_image, image, strength)
+
+    dest = safer_join(ctx.output_path, output)
+    image.save(dest)
+
+    print('saved img2img output: %s' % (dest))

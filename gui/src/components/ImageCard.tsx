@@ -5,13 +5,13 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useStore } from 'zustand';
 
-import { ApiResponse } from '../client.js';
+import { ImageResponse } from '../client.js';
 import { StateContext } from '../state.js';
 
 export interface ImageCardProps {
-  value: ApiResponse;
+  value: ImageResponse;
 
-  onDelete?: (key: ApiResponse) => void;
+  onDelete?: (key: ImageResponse) => void;
 }
 
 export function GridItem(props: { xs: number; children: React.ReactNode }) {

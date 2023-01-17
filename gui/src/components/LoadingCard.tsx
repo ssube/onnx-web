@@ -5,12 +5,12 @@ import { useContext } from 'react';
 import { useQuery } from 'react-query';
 import { useStore } from 'zustand';
 
-import { ApiResponse } from '../client.js';
+import { ImageResponse } from '../client.js';
 import { POLL_TIME } from '../config.js';
 import { ClientContext, StateContext } from '../state.js';
 
 export interface LoadingCardProps {
-  loading: ApiResponse;
+  loading: ImageResponse;
 }
 
 export function LoadingCard(props: LoadingCardProps) {

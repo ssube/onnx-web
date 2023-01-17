@@ -39,6 +39,7 @@ from .pipeline import (
     run_img2img_pipeline,
     run_inpaint_pipeline,
     run_txt2img_pipeline,
+    run_upscale_pipeline,
 )
 from .upscale import (
     UpscaleParams,
@@ -183,7 +184,8 @@ def upscale_from_request() -> UpscaleParams:
     upscaling = get_from_list(request.args, 'upscaling', upscaling_models)
     correction = get_from_list(request.args, 'correction', correction_models)
     faces = request.args.get('faces', 'false') == 'true'
-    face_strength = get_and_clamp_float(request.args, 'faceStrength', 0.5, 1.0, 0.0)
+    face_strength = get_and_clamp_float(
+        request.args, 'faceStrength', 0.5, 1.0, 0.0)
 
     return UpscaleParams(
         upscaling,
@@ -427,6 +429,38 @@ def inpaint():
         'output': output,
         'params': params.tojson(),
         'size': upscale.resize(size.add_border(expand)).tojson(),
+    })
+
+
+@app.route('/api/upscale', methods=['POST'])
+def upscale():
+    source_file = request.files.get('source')
+    source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
+
+    params, size = pipeline_from_request()
+    upscale = upscale_from_request()
+
+    strength = get_and_clamp_float(
+        request.args,
+        'strength',
+        config_params.get('strength').get('default'),
+        config_params.get('strength').get('max'))
+
+    output = make_output_name(
+        'img2img',
+        params,
+        size,
+        extras=(strength))
+    print("img2img output: %s" % (output))
+
+    source_image.thumbnail((size.width, size.height))
+    executor.submit_stored(output, run_upscale_pipeline,
+                           context, params, output, upscale, source_image, strength)
+
+    return jsonify({
+        'output': output,
+        'params': params.tojson(),
+        'size': upscale.resize(size).tojson(),
     })
 
 

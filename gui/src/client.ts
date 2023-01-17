@@ -76,7 +76,12 @@ export interface UpscaleParams {
   faceStrength: number;
 }
 
-export interface ApiResponse {
+export interface UpscaleReqParams {
+  source: Blob;
+  strength: number;
+}
+
+export interface ImageResponse {
   output: {
     key: string;
     url: string;
@@ -88,11 +93,11 @@ export interface ApiResponse {
   };
 }
 
-export interface ApiReady {
+export interface ReadyResponse {
   ready: boolean;
 }
 
-export interface ApiModels {
+export interface ModelsResponse {
   diffusion: Array<string>;
   correction: Array<string>;
   upscaling: Array<string>;
@@ -100,18 +105,19 @@ export interface ApiModels {
 
 export interface ApiClient {
   masks(): Promise<Array<string>>;
-  models(): Promise<ApiModels>;
+  models(): Promise<ModelsResponse>;
   noises(): Promise<Array<string>>;
   params(): Promise<ConfigParams>;
   platforms(): Promise<Array<string>>;
   schedulers(): Promise<Array<string>>;
 
-  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse>;
-  txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse>;
-  inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams): Promise<ApiResponse>;
-  outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams): Promise<ApiResponse>;
+  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+  txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+  inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+  outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+  upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams): Promise<ImageResponse>;
 
-  ready(params: ApiResponse): Promise<ApiReady>;
+  ready(params: ImageResponse): Promise<ReadyResponse>;
 }
 
 export const STATUS_SUCCESS = 200;
@@ -130,7 +136,7 @@ export function paramsFromConfig(defaults: ConfigParams): Required<BaseImgParams
 export const FIXED_INTEGER = 0;
 export const FIXED_FLOAT = 2;
 
-export function equalResponse(a: ApiResponse, b: ApiResponse): boolean {
+export function equalResponse(a: ImageResponse, b: ImageResponse): boolean {
   return a.output === b.output;
 }
 
@@ -183,9 +189,9 @@ export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
 }
 
 export function makeClient(root: string, f = fetch): ApiClient {
-  let pending: Promise<ApiResponse> | undefined;
+  let pending: Promise<ImageResponse> | undefined;
 
-  function throttleRequest(url: URL, options: RequestInit): Promise<ApiResponse> {
+  function throttleRequest(url: URL, options: RequestInit): Promise<ImageResponse> {
     return f(url, options).then((res) => parseApiResponse(root, res)).finally(() => {
       pending = undefined;
     });
@@ -197,10 +203,10 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const res = await f(path);
       return await res.json() as Array<string>;
     },
-    async models(): Promise<ApiModels> {
+    async models(): Promise<ModelsResponse> {
       const path = makeApiUrl(root, 'settings', 'models');
       const res = await f(path);
-      return await res.json() as ApiModels;
+      return await res.json() as ModelsResponse;
     },
     async noises(): Promise<Array<string>> {
       const path = makeApiUrl(root, 'settings', 'noises');
@@ -222,7 +228,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const res = await f(path);
       return await res.json() as Array<string>;
     },
-    async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse> {
+    async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse> {
       if (doesExist(pending)) {
         return pending;
       }
@@ -247,7 +253,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
       // eslint-disable-next-line no-return-await
       return await pending;
     },
-    async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse> {
+    async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse> {
       if (doesExist(pending)) {
         return pending;
       }
@@ -344,18 +350,41 @@ export function makeClient(root: string, f = fetch): ApiClient {
       // eslint-disable-next-line no-return-await
       return await pending;
     },
-    async ready(params: ApiResponse): Promise<ApiReady> {
+    async upscale(model: ModelParams, params: UpscaleReqParams, upscale: UpscaleParams): Promise<ImageResponse> {
+      if (doesExist(pending)) {
+        return pending;
+      }
+
+      const url = makeApiUrl(root, 'upscale');
+      appendModelToURL(url, model);
+
+      if (doesExist(upscale)) {
+        appendUpscaleToURL(url, upscale);
+      }
+
+      const body = new FormData();
+      body.append('source', params.source, 'source');
+
+      pending = throttleRequest(url, {
+        body,
+        method: 'POST',
+      });
+
+      // eslint-disable-next-line no-return-await
+      return await pending;
+    },
+    async ready(params: ImageResponse): Promise<ReadyResponse> {
       const path = makeApiUrl(root, 'ready');
       path.searchParams.append('output', params.output.key);
 
       const res = await f(path);
-      return await res.json() as ApiReady;
+      return await res.json() as ReadyResponse;
     }
   };
 }
 
-export async function parseApiResponse(root: string, res: Response): Promise<ApiResponse> {
-  type LimitedResponse = Omit<ApiResponse, 'output'> & { output: string };
+export async function parseApiResponse(root: string, res: Response): Promise<ImageResponse> {
+  type LimitedResponse = Omit<ImageResponse, 'output'> & { output: string };
 
   if (res.status === STATUS_SUCCESS) {
     const data = await res.json() as LimitedResponse;
