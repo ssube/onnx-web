@@ -33,7 +33,7 @@ export function OutpaintControl(props: OutpaintControlProps) {
       }}
     >
       <Check />
-      Outpainting
+      Outpaint
     </ToggleButton>
     <NumericField
       label='Left'
