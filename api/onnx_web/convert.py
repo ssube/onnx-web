@@ -28,8 +28,12 @@ sources: Dict[str, List[Tuple[str, str]]] = {
          'https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth'),
     ],
     'real_esrgan': [
+        ('upscaling-real-esrgan-x2-plus',
+         'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth', 2)
         ('upscaling-real-esrgan-x4-plus',
          'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth', 4),
+        ('upscaling-real-esrgan-x4-v3',
+         'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth', 4),
     ],
 }
 

@@ -2,8 +2,16 @@
 export const MODEL_LABELS = {
   'stable-diffusion-onnx-v1-4': 'Stable Diffusion v1.4',
   'stable-diffusion-onnx-v1-5': 'Stable Diffusion v1.5',
+  'stable-diffusion-onnx-v1-inpainting': 'SD Inpainting v1',
   'stable-diffusion-onnx-v2-0': 'Stable Diffusion v2.0',
   'stable-diffusion-onnx-v2-1': 'Stable Diffusion v2.1',
+  'stable-diffusion-onnx-v2-inpainting': 'SD Inpainting v2',
+  // upscaling
+  'upscaling-real-esrgan-x2-plus': 'Real ESRGAN x2 Plus',
+  'upscaling-real-esrgan-x4-plus': 'Real ESRGAN x4 Plus',
+  'upscaling-real-esrgan-x4-v3': 'Real ESRGAN x4 v3',
+  // correction
+  'correction-gfpgan-v1-3': 'GFPGAN v1.3',
 };
 
 export const PLATFORM_LABELS: Record<string, string> = {
