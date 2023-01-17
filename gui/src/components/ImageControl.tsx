@@ -41,7 +41,9 @@ export function ImageControl(props: ImageControlProps) {
       id='schedulers'
       labels={SCHEDULER_LABELS}
       name='Scheduler'
-      result={schedulers}
+      query={{
+        result: schedulers,
+      }}
       value={mustDefault(params.scheduler, '')}
       onChange={(value) => {
         if (doesExist(props.onChange)) {

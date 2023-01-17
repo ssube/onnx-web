@@ -10,6 +10,7 @@ import {
   BrushParams,
   Img2ImgParams,
   InpaintParams,
+  ModelParams,
   OutpaintPixels,
   paramsFromConfig,
   Txt2ImgParams,
@@ -75,12 +76,19 @@ interface UpscaleSlice {
   setUpscale(upscale: Partial<UpscaleParams>): void;
 }
 
+interface ModelSlice {
+  model: ModelParams;
+
+  setModel(model: Partial<ModelParams>): void;
+}
+
 export type OnnxState
   = BrushSlice
   & DefaultSlice
   & HistorySlice
   & Img2ImgSlice
   & InpaintSlice
+  & ModelSlice
   & OutpaintSlice
   & Txt2ImgSlice
   & UpscaleSlice;
@@ -267,12 +275,30 @@ export function createStateSlices(base: ConfigParams) {
     },
   });
 
+  const createModelSlice: StateCreator<OnnxState, [], [], ModelSlice> = (set) => ({
+    model: {
+      model: '',
+      platform: '',
+      upscaling: '',
+      correction: '',
+    },
+    setModel(params) {
+      set((prev) => ({
+        model: {
+          ...prev.model,
+          ...params,
+        }
+      }));
+    },
+  });
+
   return {
     createBrushSlice,
     createDefaultSlice,
     createHistorySlice,
     createImg2ImgSlice,
     createInpaintSlice,
+    createModelSlice,
     createOutpaintSlice,
     createTxt2ImgSlice,
     createUpscaleSlice,
@@ -280,4 +306,5 @@ export function createStateSlices(base: ConfigParams) {
 }
 
 export const ClientContext = createContext<Maybe<ApiClient>>(undefined);
+export const ConfigContext = createContext<Maybe<ConfigParams>>(undefined);
 export const StateContext = createContext<Maybe<StoreApi<OnnxState>>>(undefined);

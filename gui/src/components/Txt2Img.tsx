@@ -4,31 +4,19 @@ import * as React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
-import { ConfigParams } from '../config.js';
-import { ClientContext, StateContext } from '../state.js';
+import { ClientContext, ConfigContext, StateContext } from '../state.js';
 import { ImageControl } from './ImageControl.js';
 import { NumericField } from './NumericField.js';
 import { UpscaleControl } from './UpscaleControl.js';
 
 const { useContext } = React;
 
-export interface Txt2ImgProps {
-  config: ConfigParams;
-
-  model: string;
-  platform: string;
-}
-
-export function Txt2Img(props: Txt2ImgProps) {
-  const { config, model, platform } = props;
+export function Txt2Img() {
+  const config = mustExist(useContext(ConfigContext));
 
   async function generateImage() {
-    const { txt2img, upscale } = state.getState();
-    const output = await client.txt2img({
-      ...txt2img,
-      model,
-      platform,
-    }, upscale);
+    const { model, txt2img, upscale } = state.getState();
+    const output = await client.txt2img(model, txt2img, upscale);
 
     setLoading(output);
   }

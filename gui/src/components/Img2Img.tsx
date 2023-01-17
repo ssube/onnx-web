@@ -4,8 +4,8 @@ import * as React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
-import { ConfigParams, IMAGE_FILTER } from '../config.js';
-import { ClientContext, StateContext } from '../state.js';
+import { IMAGE_FILTER } from '../config.js';
+import { ClientContext, ConfigContext, StateContext } from '../state.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
 import { NumericField } from './NumericField.js';
@@ -13,23 +13,14 @@ import { UpscaleControl } from './UpscaleControl.js';
 
 const { useContext } = React;
 
-export interface Img2ImgProps {
-  config: ConfigParams;
-
-  model: string;
-  platform: string;
-}
-
-export function Img2Img(props: Img2ImgProps) {
-  const { config, model, platform } = props;
+export function Img2Img() {
+  const config = mustExist(useContext(ConfigContext));
 
   async function uploadSource() {
-    const { img2img, upscale } = state.getState();
+    const { model, img2img, upscale } = state.getState();
 
-    const output = await client.img2img({
+    const output = await client.img2img(model, {
       ...img2img,
-      model,
-      platform,
       source: mustExist(img2img.source), // TODO: show an error if this doesn't exist
     }, upscale);
 

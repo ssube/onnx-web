@@ -3,18 +3,42 @@ import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import * as React from 'react';
 import { UseQueryResult } from 'react-query';
 
-export interface QueryListProps {
+export interface QueryListComplete {
+  result: UseQueryResult<Array<string>>;
+}
+
+export interface QueryListFilter<T> {
+  result: UseQueryResult<T>;
+  selector: (result: T) => Array<string>;
+}
+
+export interface QueryListProps<T> {
   id: string;
   labels: Record<string, string>;
   name: string;
-  result: UseQueryResult<Array<string>>;
   value: string;
+
+  query: QueryListComplete | QueryListFilter<T>;
 
   onChange?: (value: string) => void;
 }
 
-export function QueryList(props: QueryListProps) {
-  const { labels, result, value } = props;
+export function hasFilter<T>(query: QueryListComplete | QueryListFilter<T>): query is QueryListFilter<T> {
+  return Reflect.has(query, 'selector');
+}
+
+export function filterQuery<T>(query: QueryListComplete | QueryListFilter<T>): Array<string> {
+  if (hasFilter(query)) {
+    const data = mustExist(query.result.data);
+    return (query as QueryListFilter<unknown>).selector(data);
+  } else {
+    return mustExist(query.result.data);
+  }
+}
+
+export function QueryList<T>(props: QueryListProps<T>) {
+  const { labels, query, value } = props;
+  const { result } = query;
 
   if (result.status === 'error') {
     if (result.error instanceof Error) {
@@ -34,7 +58,8 @@ export function QueryList(props: QueryListProps) {
 
   // else: success
   const labelID = `query-list-${props.id}-labels`;
-  const data = mustExist(result.data);
+  const data = filterQuery(query);
+
   return <FormControl>
     <InputLabel id={labelID}>{props.name}</InputLabel>
     <Select

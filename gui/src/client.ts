@@ -2,22 +2,23 @@ import { doesExist } from '@apextoaster/js-utils';
 
 import { ConfigParams } from './config.js';
 
-export interface BaseImgParams {
+export interface ModelParams {
   /**
    * Which ONNX model to use.
    */
-  model?: string;
+  model: string;
 
   /**
    * Hardware accelerator or CPU mode.
    */
-  platform?: string;
+  platform: string;
 
-  /**
-   * Scheduling algorithm.
-   */
-  scheduler?: string;
+  upscaling: string;
+  correction: string;
+}
 
+export interface BaseImgParams {
+  scheduler: string;
   prompt: string;
   negativePrompt?: string;
 
@@ -90,18 +91,24 @@ export interface ApiReady {
   ready: boolean;
 }
 
+export interface ApiModels {
+  diffusion: Array<string>;
+  correction: Array<string>;
+  upscaling: Array<string>;
+}
+
 export interface ApiClient {
   masks(): Promise<Array<string>>;
-  models(): Promise<Array<string>>;
+  models(): Promise<ApiModels>;
   noises(): Promise<Array<string>>;
   params(): Promise<ConfigParams>;
   platforms(): Promise<Array<string>>;
   schedulers(): Promise<Array<string>>;
 
-  img2img(params: Img2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse>;
-  txt2img(params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse>;
-  inpaint(params: InpaintParams, upscale?: UpscaleParams): Promise<ApiResponse>;
-  outpaint(params: OutpaintParams, upscale?: UpscaleParams): Promise<ApiResponse>;
+  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse>;
+  txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse>;
+  inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams): Promise<ApiResponse>;
+  outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams): Promise<ApiResponse>;
 
   ready(params: ApiResponse): Promise<ApiReady>;
 }
@@ -111,9 +118,7 @@ export const STATUS_SUCCESS = 200;
 export function paramsFromConfig(defaults: ConfigParams): Required<BaseImgParams> {
   return {
     cfg: defaults.cfg.default,
-    model: defaults.model.default,
     negativePrompt: defaults.negativePrompt.default,
-    platform: defaults.platform.default,
     prompt: defaults.prompt.default,
     scheduler: defaults.scheduler.default,
     steps: defaults.steps.default,
@@ -141,14 +146,6 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
   url.searchParams.append('cfg', params.cfg.toFixed(FIXED_FLOAT));
   url.searchParams.append('steps', params.steps.toFixed(FIXED_INTEGER));
 
-  if (doesExist(params.model)) {
-    url.searchParams.append('model', params.model);
-  }
-
-  if (doesExist(params.platform)) {
-    url.searchParams.append('platform', params.platform);
-  }
-
   if (doesExist(params.scheduler)) {
     url.searchParams.append('scheduler', params.scheduler);
   }
@@ -165,6 +162,11 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
   }
 
   return url;
+}
+
+export function appendModelToURL(url: URL, params: ModelParams) {
+  url.searchParams.append('model', params.model);
+  url.searchParams.append('platform', params.platform);
 }
 
 export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
@@ -191,10 +193,10 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const res = await f(path);
       return await res.json() as Array<string>;
     },
-    async models(): Promise<Array<string>> {
+    async models(): Promise<ApiModels> {
       const path = makeApiUrl(root, 'settings', 'models');
       const res = await f(path);
-      return await res.json() as Array<string>;
+      return await res.json() as ApiModels;
     },
     async noises(): Promise<Array<string>> {
       const path = makeApiUrl(root, 'settings', 'noises');
@@ -216,12 +218,14 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const res = await f(path);
       return await res.json() as Array<string>;
     },
-    async img2img(params: Img2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse> {
+    async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse> {
       if (doesExist(pending)) {
         return pending;
       }
 
       const url = makeImageURL(root, 'img2img', params);
+      appendModelToURL(url, model);
+
       url.searchParams.append('strength', params.strength.toFixed(FIXED_FLOAT));
 
       if (doesExist(upscale)) {
@@ -239,12 +243,13 @@ export function makeClient(root: string, f = fetch): ApiClient {
       // eslint-disable-next-line no-return-await
       return await pending;
     },
-    async txt2img(params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse> {
+    async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ApiResponse> {
       if (doesExist(pending)) {
         return pending;
       }
 
       const url = makeImageURL(root, 'txt2img', params);
+      appendModelToURL(url, model);
 
       if (doesExist(params.width)) {
         url.searchParams.append('width', params.width.toFixed(FIXED_INTEGER));
@@ -265,14 +270,17 @@ export function makeClient(root: string, f = fetch): ApiClient {
       // eslint-disable-next-line no-return-await
       return await pending;
     },
-    async inpaint(params: InpaintParams, upscale?: UpscaleParams) {
+    async inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams) {
       if (doesExist(pending)) {
         return pending;
       }
 
       const url = makeImageURL(root, 'inpaint', params);
+      appendModelToURL(url, model);
+
       url.searchParams.append('filter', params.filter);
       url.searchParams.append('noise', params.noise);
+
       if (doesExist(upscale)) {
         appendUpscaleToURL(url, upscale);
       }
@@ -289,12 +297,14 @@ export function makeClient(root: string, f = fetch): ApiClient {
       // eslint-disable-next-line no-return-await
       return await pending;
     },
-    async outpaint(params: OutpaintParams, upscale?: UpscaleParams) {
+    async outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams) {
       if (doesExist(pending)) {
         return pending;
       }
 
       const url = makeImageURL(root, 'inpaint', params);
+      appendModelToURL(url, model);
+
       url.searchParams.append('filter', params.filter);
       url.searchParams.append('noise', params.noise);
 

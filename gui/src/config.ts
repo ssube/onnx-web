@@ -1,6 +1,6 @@
 import { Maybe } from '@apextoaster/js-utils';
 
-import { Img2ImgParams, InpaintParams, OutpaintParams, STATUS_SUCCESS, Txt2ImgParams, UpscaleParams } from './client.js';
+import { Img2ImgParams, InpaintParams, ModelParams, OutpaintParams, STATUS_SUCCESS, Txt2ImgParams, UpscaleParams } from './client.js';
 
 export interface ConfigNumber {
   default: number;
@@ -30,7 +30,16 @@ export type ConfigState<T extends object, TValid = number | string> = {
   [K in KeyFilter<T, TValid>]: T[K] extends TValid ? T[K] : never;
 };
 
-export type ConfigParams = ConfigRanges<Required<Img2ImgParams & Txt2ImgParams & InpaintParams & OutpaintParams & UpscaleParams>>;
+/* eslint-disable */
+export type ConfigParams = ConfigRanges<Required<
+  Img2ImgParams &
+  Txt2ImgParams &
+  InpaintParams &
+  ModelParams &
+  OutpaintParams &
+  UpscaleParams
+>>;
+/* eslint-enable */
 
 export interface Config {
   api: {

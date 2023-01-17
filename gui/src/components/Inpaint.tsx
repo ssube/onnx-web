@@ -4,8 +4,8 @@ import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
-import { ConfigParams, IMAGE_FILTER, STALE_TIME } from '../config.js';
-import { ClientContext, StateContext } from '../state.js';
+import { IMAGE_FILTER, STALE_TIME } from '../config.js';
+import { ClientContext, ConfigContext, StateContext } from '../state.js';
 import { MASK_LABELS, NOISE_LABELS } from '../strings.js';
 import { ImageControl } from './ImageControl.js';
 import { ImageInput } from './ImageInput.js';
@@ -16,16 +16,10 @@ import { UpscaleControl } from './UpscaleControl.js';
 
 const { useContext } = React;
 
-export interface InpaintProps {
-  config: ConfigParams;
-
-  model: string;
-  platform: string;
-}
-
-export function Inpaint(props: InpaintProps) {
-  const { config, model, platform } = props;
+export function Inpaint() {
+  const config = mustExist(useContext(ConfigContext));
   const client = mustExist(useContext(ClientContext));
+
   const masks = useQuery('masks', async () => client.masks(), {
     staleTime: STALE_TIME,
   });
@@ -35,24 +29,20 @@ export function Inpaint(props: InpaintProps) {
 
   async function uploadSource(): Promise<void> {
     // these are not watched by the component, only sent by the mutation
-    const { inpaint, outpaint, upscale } = state.getState();
+    const { model, inpaint, outpaint, upscale } = state.getState();
 
     if (outpaint.enabled) {
-      const output = await client.outpaint({
+      const output = await client.outpaint(model, {
         ...inpaint,
         ...outpaint,
-        model,
-        platform,
         mask: mustExist(mask),
         source: mustExist(source),
       }, upscale);
 
       setLoading(output);
     } else {
-      const output = await client.inpaint({
+      const output = await client.inpaint(model, {
         ...inpaint,
-        model,
-        platform,
         mask: mustExist(mask),
         source: mustExist(source),
       }, upscale);
@@ -122,7 +112,9 @@ export function Inpaint(props: InpaintProps) {
           id='masks'
           labels={MASK_LABELS}
           name='Mask Filter'
-          result={masks}
+          query={{
+            result: masks,
+          }}
           value={filter}
           onChange={(newFilter) => {
             setInpaint({
@@ -134,7 +126,9 @@ export function Inpaint(props: InpaintProps) {
           id='noises'
           labels={NOISE_LABELS}
           name='Noise Source'
-          result={noises}
+          query={{
+            result: noises,
+          }}
           value={noise}
           onChange={(newNoise) => {
             setInpaint({

@@ -11,7 +11,7 @@ import { makeClient } from './client.js';
 import { OnnxError } from './components/OnnxError.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
 import { Config, loadConfig } from './config.js';
-import { ClientContext, createStateSlices, OnnxState, StateContext } from './state.js';
+import { ClientContext, ConfigContext, createStateSlices, OnnxState, StateContext } from './state.js';
 
 export function getApiRoot(config: Config): string {
   const query = new URLSearchParams(window.location.search);
@@ -48,6 +48,7 @@ export async function main() {
       createHistorySlice,
       createImg2ImgSlice,
       createInpaintSlice,
+      createModelSlice,
       createOutpaintSlice,
       createTxt2ImgSlice,
       createUpscaleSlice,
@@ -58,6 +59,7 @@ export async function main() {
       ...createHistorySlice(...slice),
       ...createImg2ImgSlice(...slice),
       ...createInpaintSlice(...slice),
+      ...createModelSlice(...slice),
       ...createTxt2ImgSlice(...slice),
       ...createOutpaintSlice(...slice),
       ...createUpscaleSlice(...slice),
@@ -87,9 +89,11 @@ export async function main() {
     // go
     app.render(<QueryClientProvider client={query}>
       <ClientContext.Provider value={client}>
-        <StateContext.Provider value={state}>
-          <OnnxWeb client={client} config={params} />
-        </StateContext.Provider>
+        <ConfigContext.Provider value={params}>
+          <StateContext.Provider value={state}>
+            <OnnxWeb />
+          </StateContext.Provider>
+        </ConfigContext.Provider>
       </ClientContext.Provider>
     </QueryClientProvider>);
   } catch (err) {
