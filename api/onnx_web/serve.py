@@ -16,6 +16,7 @@ from diffusers import (
 from flask import Flask, jsonify, request, send_from_directory, url_for
 from flask_cors import CORS
 from flask_executor import Executor
+from glob import glob
 from io import BytesIO
 from PIL import Image
 from os import makedirs, path, scandir
@@ -45,6 +46,7 @@ from .upscale import (
 from .utils import (
     get_and_clamp_float,
     get_and_clamp_int,
+    get_from_list,
     get_from_map,
     make_output_name,
     safer_join,
@@ -58,7 +60,6 @@ import json
 import numpy as np
 
 # pipeline caching
-available_models = []
 config_params = {}
 
 # pipeline params
@@ -95,14 +96,10 @@ mask_filters = {
     'gaussian-screen': mask_filter_gaussian_screen,
 }
 
-# TODO: load from model_path
-upscale_models = [
-    'RealESRGAN_x4plus',
-]
-
-face_models = [
-    'GFPGANv1.3',
-]
+# loaded from model_path
+diffusion_models = []
+correction_models = []
+upscaling_models = []
 
 
 def url_from_rule(rule) -> str:
@@ -183,13 +180,16 @@ def upscale_from_request() -> UpscaleParams:
     denoise = get_and_clamp_float(request.args, 'denoise', 0.5, 1.0, 0.0)
     scale = get_and_clamp_int(request.args, 'scale', 1, 4, 1)
     outscale = get_and_clamp_int(request.args, 'outscale', 1, 4, 1)
+    upscaling = get_from_list(request.args, 'upscaling', upscaling_models)
+    correction = get_from_list(request.args, 'correction', correction_models)
     faces = request.args.get('faces', 'false') == 'true'
+
     return UpscaleParams(
-        upscale_models[0],
+        upscaling,
+        correction_model=correction,
         scale=scale,
         outscale=outscale,
         faces=faces,
-        face_model=face_models[0],
         platform='onnx',
         denoise=denoise,
     )
@@ -204,9 +204,16 @@ def check_paths(context: ServerContext):
 
 
 def load_models(context: ServerContext):
-    global available_models
-    available_models = [f.name for f in scandir(
-        context.model_path) if f.is_dir()]
+    global diffusion_models
+    global correction_models
+    global upscaling_models
+
+    diffusion_models = glob(context.model_path, 'diffusion-*')
+    diffusion_models.append(glob(context.model_path, 'stable-diffusion-*'))
+
+    correction_models = glob(context.model_path, 'correction-*')
+    upscaling_models = glob(context.model_path, 'upscaling-*')
+
 
 
 def load_params(context: ServerContext):
@@ -271,7 +278,11 @@ def list_mask_filters():
 
 @app.route('/api/settings/models')
 def list_models():
-    return jsonify(available_models)
+    return jsonify({
+        'diffusion': diffusion_models,
+        'correction': correction_models,
+        'upscaling': upscaling_models,
+    })
 
 
 @app.route('/api/settings/noises')
@@ -397,7 +408,7 @@ def inpaint():
     return jsonify({
         'output': output,
         'params': params.tojson(),
-        'size': upscale.resize(size.with_border(expand)).tojson(),
+        'size': upscale.resize(size.add_border(expand)).tojson(),
     })
 
 

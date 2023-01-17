@@ -1,7 +1,7 @@
 from os import environ, path
 from time import time
 from struct import pack
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 from hashlib import sha256
 
 
@@ -89,14 +89,14 @@ class Size:
         self.width = width
         self.height = height
 
+    def add_border(self, border: Border):
+        return Size(border.left + self.width + border.right, border.top + self.height + border.right)
+
     def tojson(self) -> Dict[str, int]:
         return {
             'height': self.height,
             'width': self.width,
         }
-
-    def with_border(self, border: Border):
-        return Size(border.left + self.width + border.right, border.top + self.height + border.right)
 
 
 def get_and_clamp_float(args: Any, key: str, default_value: float, max_value: float, min_value=0.0) -> float:
@@ -105,6 +105,15 @@ def get_and_clamp_float(args: Any, key: str, default_value: float, max_value: fl
 
 def get_and_clamp_int(args: Any, key: str, default_value: int, max_value: int, min_value=1) -> int:
     return min(max(int(args.get(key, default_value)), min_value), max_value)
+
+
+def get_from_list(args: Any, key: str, values: List[Any]):
+    selected = args.get(key, values[0])
+    if selected in values:
+        return selected
+    else:
+        print('invalid selection: %s' % (selected))
+        return values[0]
 
 
 def get_from_map(args: Any, key: str, values: Dict[str, Any], default: Any):

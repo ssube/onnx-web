@@ -86,20 +86,20 @@ class UpscaleParams():
     def __init__(
         self,
         upscale_model: str,
+        correction_model: Union[str, None] = None,
         scale: int = 4,
         outscale: int = 1,
         denoise: float = 0.5,
         faces=True,
-        face_model: Union[str, None] = None,
         platform: str = 'onnx',
         half=False
     ) -> None:
         self.upscale_model = upscale_model
+        self.correction_model = correction_model
         self.scale = scale
         self.outscale = outscale
         self.denoise = denoise
         self.faces = faces
-        self.face_model = face_model
         self.platform = platform
         self.half = half
 
@@ -158,16 +158,16 @@ def upscale_resrgan(ctx: ServerContext, params: UpscaleParams, source_image: Ima
 
 
 def upscale_gfpgan(ctx: ServerContext, params: UpscaleParams, image, upsampler=None) -> Image:
-    print('correcting faces with GFPGAN model: %s' % params.face_model)
+    print('correcting faces with GFPGAN model: %s' % params.correction_model)
 
-    if params.face_model is None:
+    if params.correction_model is None:
         print('no face model given, skipping')
         return image
 
     if upsampler is None:
         upsampler = make_resrgan(ctx, params, tile=512)
 
-    face_path = path.join(ctx.model_path, '%s.pth' % (params.face_model))
+    face_path = path.join(ctx.model_path, '%s.pth' % (params.correction_model))
 
     # TODO: doesn't have a model param, not sure how to pass ONNX model
     face_enhancer = GFPGANer(
