@@ -218,11 +218,15 @@ def load_models(context: ServerContext):
         path.join(context.model_path, 'diffusion-*'))]
     diffusion_models.extend([
         get_model_name(f) for f in glob(path.join(context.model_path, 'stable-diffusion-*'))])
+    diffusion_models = list(set(diffusion_models))
 
     correction_models = [
         get_model_name(f) for f in glob(path.join(context.model_path, 'correction-*'))]
+    correction_models = list(set(correction_models))
+
     upscaling_models = [
         get_model_name(f) for f in glob(path.join(context.model_path, 'upscaling-*'))]
+    upscaling_models = list(set(upscaling_models))
 
 
 def load_params(context: ServerContext):
