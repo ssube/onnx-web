@@ -62,10 +62,10 @@ export function ModelControl() {
         result: models,
         selector: (result) => result.upscaling,
       }}
-      value={params.model}
-      onChange={(model) => {
+      value={params.upscaling}
+      onChange={(upscaling) => {
         setModel({
-          model,
+          upscaling,
         });
       }}
     />
@@ -77,10 +77,10 @@ export function ModelControl() {
         result: models,
         selector: (result) => result.correction,
       }}
-      value={params.model}
-      onChange={(model) => {
+      value={params.correction}
+      onChange={(correction) => {
         setModel({
-          model,
+          correction,
         });
       }}
     />
