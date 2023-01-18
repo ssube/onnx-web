@@ -1,6 +1,6 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { Refresh } from '@mui/icons-material';
-import { Button, Stack, TextField } from '@mui/material';
+import { Alert, Button, Chip, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useStore } from 'zustand';
@@ -43,6 +43,9 @@ export function Settings() {
         query.set('api', root);
         window.location.search = query.toString();
       }} />
+      <Alert variant='outlined' severity='success'>
+        {config.params.version}
+      </Alert>
     </Stack>
     <Stack direction='row' spacing={2}>
       <Button onClick={() => state.resetTxt2Img()}>Reset Txt2Img</Button>
