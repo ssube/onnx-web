@@ -455,7 +455,7 @@ def upscale():
 
     source_image.thumbnail((size.width, size.height))
     executor.submit_stored(output, run_upscale_pipeline,
-                           context, params, output, upscale, source_image)
+                           context, params, size, output, upscale, source_image)
 
     return jsonify({
         'output': output,
