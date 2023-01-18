@@ -156,6 +156,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
   }, [source]);
 
   const styles: React.CSSProperties = {
+    border: '1px solid black',
     maxHeight: params.height.default,
     maxWidth: params.width.default,
   };
