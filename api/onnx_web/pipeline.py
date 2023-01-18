@@ -182,7 +182,11 @@ def run_inpaint_pipeline(
         num_inference_steps=params.steps,
         width=size.width,
     ).images[0]
-    image = ImageChops.blend(source_image, image, strength)
+
+    if image.size == source_image.size:
+        image = ImageChops.blend(source_image, image, strength)
+    else:
+        print('output image size does not match source, skipping post-blend')
 
     if upscale.faces or upscale.scale > 1:
         image = upscale_resrgan(ctx, upscale, image)
