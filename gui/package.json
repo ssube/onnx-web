@@ -20,6 +20,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-query": "^3.39.2",
+    "semver": "^7.3.8",
     "tslib": "^2.4.1",
     "zustand": "^4.3.1"
   },

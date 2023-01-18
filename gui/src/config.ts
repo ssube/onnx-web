@@ -38,7 +38,9 @@ export type ConfigParams = ConfigRanges<Required<
   ModelParams &
   OutpaintParams &
   UpscaleParams
->>;
+>> & {
+  version: string;
+};
 /* eslint-enable */
 
 export interface Config {
@@ -57,7 +59,10 @@ export const DEFAULT_BRUSH = {
   color: 255,
   size: 8,
 };
+
 export const IMAGE_FILTER = '.bmp, .jpg, .jpeg, .png';
+export const PARAM_VERSION = '>=0.4.0';
+
 export const STALE_TIME = 300_000; // 5 minutes
 export const POLL_TIME = 5_000; // 5 seconds
 export const SAVE_TIME = 5_000; // 5 seconds

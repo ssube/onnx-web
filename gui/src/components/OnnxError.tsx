@@ -1,7 +1,9 @@
-import { Alert, AlertTitle, Box, Container, Link, Stack, Typography } from '@mui/material';
+import { Box, Container, Link, Stack, Typography } from '@mui/material';
 import * as React from 'react';
+import { ReactNode } from 'react';
 
 export interface OnnxErrorProps {
+  children?: ReactNode;
   root: string;
 }
 
@@ -17,12 +19,8 @@ export function OnnxError(props: OnnxErrorProps) {
       </Box>
       <Box sx={{ my: 4 }}>
         <Stack spacing={2}>
-          <Alert severity='error'>
-            <AlertTitle>
-              Server Error
-            </AlertTitle>
-            Could not fetch parameters from the ONNX web API server at <code>{props.root}</code>.
-          </Alert>
+          {props.children}
+
           <Typography variant='body1'>
             This is a web UI for running ONNX models with GPU acceleration or in software, running locally or on a
             remote machine.
@@ -50,7 +48,7 @@ export function OnnxError(props: OnnxErrorProps) {
           </Typography>
           <Typography variant='body1' gutterBottom>
             If your server is running and available at <a href={props.root}>{props.root}</a>, make sure you are on
-            the `main` branch and try updating to the latest version:
+            the <code>main</code> branch and try updating to the latest version:
             <pre>
               &gt; git branch{'\n'}
               * main{'\n'}
