@@ -1,5 +1,5 @@
 import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { Alert, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import * as React from 'react';
 import { UseQueryResult } from 'react-query';
 
@@ -42,18 +42,18 @@ export function QueryList<T>(props: QueryListProps<T>) {
 
   if (result.status === 'error') {
     if (result.error instanceof Error) {
-      return <div>Error: {result.error.message}</div>;
+      return <Alert severity='error'>Error: {result.error.message}</Alert>;
     } else {
-      return <div>Unknown Error</div>;
+      return <Alert severity='error'>Unknown Error</Alert>;
     }
   }
 
   if (result.status === 'loading') {
-    return <div>Loading...</div>;
+    return <Typography>Loading...</Typography>;
   }
 
   if (result.status === 'idle') {
-    return <div>Idle?</div>;
+    return <Typography>Idle?</Typography>;
   }
 
   // else: success

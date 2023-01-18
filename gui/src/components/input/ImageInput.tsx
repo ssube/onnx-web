@@ -1,6 +1,6 @@
 import { doesExist, Maybe, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { PhotoCamera } from '@mui/icons-material';
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import * as React from 'react';
 
 export interface ImageInputProps {
@@ -28,13 +28,13 @@ export function ImageInput(props: ImageInputProps) {
         }}
       />;
     } else {
-      return <div>Please select an image.</div>;
+      return <Typography>Please select an image.</Typography>;
     }
   }
 
   return <Stack direction='row' spacing={2}>
     <Stack>
-      <Button component='label' startIcon={<PhotoCamera />}>
+      <Button component='label' startIcon={<PhotoCamera />} variant='outlined'>
         {props.label}
         <input
           hidden

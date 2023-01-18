@@ -20,7 +20,6 @@ export function OnnxError(props: OnnxErrorProps) {
       <Box sx={{ my: 4 }}>
         <Stack spacing={2}>
           {props.children}
-
           <Typography variant='body1'>
             This is a web UI for running ONNX models with GPU acceleration or in software, running locally or on a
             remote machine.

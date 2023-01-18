@@ -1,5 +1,5 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { useContext } from 'react';
 import * as React from 'react';
 import { useStore } from 'zustand';
@@ -25,7 +25,7 @@ export function ImageHistory() {
     children.push(...history.map((item) => <ImageCard key={item.output.key} value={item} onDelete={removeHistory} />));
   } else {
     if (doesExist(loading) === false) {
-      children.push(<div>No results. Press Generate.</div>);
+      children.push(<Typography>No results. Press Generate.</Typography>);
     }
   }
 
