@@ -36,6 +36,7 @@
 			"onnxruntime",
 			"opset",
 			"outpaint",
+			"outpainting",
 			"outscale",
 			"pndm",
 			"pretrained",
