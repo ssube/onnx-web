@@ -1,4 +1,4 @@
-import { Maybe } from '@apextoaster/js-utils';
+import { doesExist, Maybe } from '@apextoaster/js-utils';
 
 import { Img2ImgParams, InpaintParams, ModelParams, OutpaintParams, STATUS_SUCCESS, Txt2ImgParams, UpscaleParams } from './client.js';
 
@@ -74,5 +74,16 @@ export async function loadConfig(): Promise<Config> {
     return configReq.json();
   } else {
     throw new Error('could not load config');
+  }
+}
+
+export function getApiRoot(config: Config): string {
+  const query = new URLSearchParams(window.location.search);
+  const api = query.get('api');
+
+  if (doesExist(api)) {
+    return api;
+  } else {
+    return config.api.root;
   }
 }

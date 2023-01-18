@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
+import { mustDefault, mustExist } from '@apextoaster/js-utils';
 import { merge } from 'lodash';
 import * as React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -13,19 +13,8 @@ import { ParamsVersionError } from './components/error/ParamsVersion.js';
 import { ServerParamsError } from './components/error/ServerParams.js';
 import { OnnxError } from './components/OnnxError.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
-import { Config, loadConfig, PARAM_VERSION } from './config.js';
+import { getApiRoot, loadConfig, PARAM_VERSION } from './config.js';
 import { ClientContext, ConfigContext, createStateSlices, OnnxState, StateContext } from './state.js';
-
-export function getApiRoot(config: Config): string {
-  const query = new URLSearchParams(window.location.search);
-  const api = query.get('api');
-
-  if (doesExist(api)) {
-    return api;
-  } else {
-    return config.api.root;
-  }
-}
 
 export async function main() {
   // load config from GUI server
