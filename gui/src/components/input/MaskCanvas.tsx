@@ -38,14 +38,14 @@ export interface Point {
 }
 
 export interface MaskCanvasProps {
-  base?: Maybe<Blob>;
   source?: Maybe<Blob>;
+  mask?: Maybe<Blob>;
 
   onSave: (blob: Blob) => void;
 }
 
 export function MaskCanvas(props: MaskCanvasProps) {
-  const { base, source } = props;
+  const { source, mask } = props;
   const { params } = mustExist(useContext(ConfigContext));
 
   function saveMask(): void {
@@ -140,20 +140,20 @@ export function MaskCanvas(props: MaskCanvasProps) {
   }, [maskState.current]);
 
   useEffect(() => {
-    if (doesExist(bufferRef.current) && doesExist(source)) {
-      drawSource(source);
+    if (doesExist(bufferRef.current) && doesExist(mask)) {
+      drawSource(mask);
     }
-  }, [source]);
+  }, [mask]);
 
   useEffect(() => {
-    if (doesExist(base)) {
+    if (doesExist(source)) {
       if (doesExist(background)) {
         URL.revokeObjectURL(background);
       }
 
-      setBackground(URL.createObjectURL(base));
+      setBackground(URL.createObjectURL(source));
     }
-  }, [base]);
+  }, [source]);
 
   const styles: React.CSSProperties = {
     maxHeight: params.height.default,

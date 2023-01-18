@@ -75,6 +75,7 @@ export function Inpaint() {
         filter={IMAGE_FILTER}
         image={source}
         label='Source'
+        hideSelection={true}
         onChange={(file) => {
           setInpaint({
             source: file,
@@ -85,22 +86,21 @@ export function Inpaint() {
         filter={IMAGE_FILTER}
         image={mask}
         label='Mask'
+        hideSelection={true}
         onChange={(file) => {
           setInpaint({
             mask: file,
           });
         }}
-        renderImage={(image) =>
-          <MaskCanvas
-            base={source}
-            source={image}
-            onSave={(file) => {
-              setInpaint({
-                mask: file,
-              });
-            }}
-          />
-        }
+      />
+      <MaskCanvas
+        source={source}
+        mask={mask}
+        onSave={(file) => {
+          setInpaint({
+            mask: file,
+          });
+        }}
       />
       <ImageControl
         selector={(s) => s.inpaint}
