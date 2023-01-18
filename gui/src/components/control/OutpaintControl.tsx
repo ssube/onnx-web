@@ -1,5 +1,5 @@
 import { mustExist } from '@apextoaster/js-utils';
-import { Check } from '@mui/icons-material';
+import { ZoomOutMap } from '@mui/icons-material';
 import { Stack, ToggleButton } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
@@ -26,7 +26,7 @@ export function OutpaintControl() {
         });
       }}
     >
-      <Check />
+      <ZoomOutMap />
       Outpaint
     </ToggleButton>
     <NumericField
