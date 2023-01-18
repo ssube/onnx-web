@@ -390,6 +390,7 @@ def inpaint():
     expand = border_from_request()
     upscale = upscale_from_request()
 
+    fill_color = request.args.get('fillColor', 'white')
     mask_filter = get_from_map(request.args, 'filter', mask_filters, 'none')
     noise_source = get_from_map(
         request.args, 'noise', noise_sources, 'histogram')
@@ -411,6 +412,7 @@ def inpaint():
             mask_filter.__name__,
             noise_source.__name__,
             strength,
+            fill_color,
         )
     )
     print("inpaint output: %s" % output)
@@ -430,7 +432,8 @@ def inpaint():
         expand,
         noise_source,
         mask_filter,
-        strength)
+        strength,
+        fill_color)
 
     return jsonify({
         'output': output,

@@ -150,6 +150,7 @@ def run_inpaint_pipeline(
     noise_source: Any,
     mask_filter: Any,
     strength: float,
+    fill_color: str,
 ):
     pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                          params.model, params.provider, params.scheduler)
@@ -162,6 +163,7 @@ def run_inpaint_pipeline(
         source_image,
         mask_image,
         expand,
+        fill=fill_color,
         noise_source=noise_source,
         mask_filter=mask_filter)
 

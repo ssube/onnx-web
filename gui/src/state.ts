@@ -153,6 +153,7 @@ export function createStateSlices(base: ServerParams) {
   const createInpaintSlice: StateCreator<OnnxState, [], [], InpaintSlice> = (set) => ({
     inpaint: {
       ...defaults,
+      fillColor: '',
       filter: 'none',
       mask: null,
       noise: 'histogram',
@@ -171,6 +172,7 @@ export function createStateSlices(base: ServerParams) {
       set({
         inpaint: {
           ...defaults,
+          fillColor: '',
           filter: 'none',
           mask: null,
           noise: 'histogram',

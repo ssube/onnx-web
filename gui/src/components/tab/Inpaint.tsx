@@ -53,6 +53,7 @@ export function Inpaint() {
   }
 
   const state = mustExist(useContext(StateContext));
+  const fillColor = useStore(state, (s) => s.inpaint.fillColor);
   const filter = useStore(state, (s) => s.inpaint.filter);
   const noise = useStore(state, (s) => s.inpaint.noise);
   const mask = useStore(state, (s) => s.inpaint.mask);
@@ -109,19 +110,6 @@ export function Inpaint() {
         }}
       />
       <Stack direction='row' spacing={2}>
-        <NumericField
-          label='Strength'
-          min={params.strength.min}
-          max={params.strength.max}
-          step={params.strength.step}
-          value={strength}
-          onChange={(value) => {
-            setInpaint({
-              strength: value,
-            });
-          }}
-        />
-        {/* TODO: numeric input for blend strength */}
         <QueryList
           id='masks'
           labels={MASK_LABELS}
@@ -150,6 +138,26 @@ export function Inpaint() {
             });
           }}
         />
+        <NumericField
+          label='Strength'
+          min={params.strength.min}
+          max={params.strength.max}
+          step={params.strength.step}
+          value={strength}
+          onChange={(value) => {
+            setInpaint({
+              strength: value,
+            });
+          }}
+        />
+        <Stack direction='row' spacing={2}>
+          <input name='fill-color' type='color' value={fillColor} onChange={(event) => {
+            setInpaint({
+              fillColor: event.target.value,
+            });
+          }} />
+          <label htmlFor='fill-color'>Fill Color</label>
+        </Stack>
       </Stack>
       <OutpaintControl />
       <UpscaleControl />

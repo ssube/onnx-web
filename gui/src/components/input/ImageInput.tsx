@@ -44,7 +44,6 @@ export function ImageInput(props: ImageInputProps) {
             const { files } = event.target;
             if (doesExist(files) && files.length > 0) {
               const file = mustExist(files[0]);
-
               props.onChange(file);
             }
           }}

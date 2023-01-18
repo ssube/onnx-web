@@ -48,6 +48,7 @@ export interface InpaintParams extends BaseImgParams {
   filter: string;
   noise: string;
   strength: number;
+  fillColor: string;
 }
 
 export interface OutpaintPixels {
