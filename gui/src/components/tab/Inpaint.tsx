@@ -109,6 +109,18 @@ export function Inpaint() {
           setInpaint(newParams);
         }}
       />
+      <NumericField
+        label='Strength'
+        min={params.strength.min}
+        max={params.strength.max}
+        step={params.strength.step}
+        value={strength}
+        onChange={(value) => {
+          setInpaint({
+            strength: value,
+          });
+        }}
+      />
       <Stack direction='row' spacing={2}>
         <QueryList
           id='masks'
@@ -138,20 +150,8 @@ export function Inpaint() {
             });
           }}
         />
-        <NumericField
-          label='Strength'
-          min={params.strength.min}
-          max={params.strength.max}
-          step={params.strength.step}
-          value={strength}
-          onChange={(value) => {
-            setInpaint({
-              strength: value,
-            });
-          }}
-        />
         <Stack direction='row' spacing={2}>
-          <input name='fill-color' type='color' value={fillColor} onChange={(event) => {
+          <input name='fill-color' type='color' defaultValue={fillColor} onBlur={(event) => {
             setInpaint({
               fillColor: event.target.value,
             });
