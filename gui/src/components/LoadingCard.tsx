@@ -7,7 +7,7 @@ import { useStore } from 'zustand';
 
 import { ImageResponse } from '../client.js';
 import { POLL_TIME } from '../config.js';
-import { ClientContext, StateContext } from '../state.js';
+import { ClientContext, ConfigContext, StateContext } from '../state.js';
 
 export interface LoadingCardProps {
   loading: ImageResponse;
@@ -15,6 +15,7 @@ export interface LoadingCardProps {
 
 export function LoadingCard(props: LoadingCardProps) {
   const client = mustExist(React.useContext(ClientContext));
+  const config = mustExist(useContext(ConfigContext));
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const pushHistory = useStore(mustExist(useContext(StateContext)), (state) => state.pushHistory);
@@ -31,9 +32,14 @@ export function LoadingCard(props: LoadingCardProps) {
     }
   }, [ready.status, ready.data?.ready]);
 
-  return <Card sx={{ maxWidth: props.loading.size.width }}>
-    <CardContent sx={{ height: props.loading.size.height }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: props.loading.size.height }}>
+  return <Card sx={{ maxWidth: config.width.default }}>
+    <CardContent sx={{ height: config.height.default }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: config.height.default,
+      }}>
         <CircularProgress />
       </div>
     </CardContent>

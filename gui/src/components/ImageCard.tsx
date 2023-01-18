@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import { useStore } from 'zustand';
 
 import { ImageResponse } from '../client.js';
-import { StateContext } from '../state.js';
+import { ConfigContext, StateContext } from '../state.js';
 
 export interface ImageCardProps {
   value: ImageResponse;
@@ -24,6 +24,7 @@ export function ImageCard(props: ImageCardProps) {
   const { value } = props;
   const { params, output, size } = value;
 
+  const config = mustExist(useContext(ConfigContext));
   const state = mustExist(useContext(StateContext));
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
@@ -59,8 +60,8 @@ export function ImageCard(props: ImageCardProps) {
     window.open(output.url, '_blank');
   }
 
-  return <Card sx={{ maxWidth: 512 }} elevation={2}>
-    <CardMedia sx={{ height: 512 }}
+  return <Card sx={{ maxWidth: config.width.default }} elevation={2}>
+    <CardMedia sx={{ height: config.height.default }}
       component='img'
       image={output.url}
       title={params.prompt}
