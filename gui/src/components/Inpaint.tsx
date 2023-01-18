@@ -18,7 +18,7 @@ import { UpscaleControl } from './UpscaleControl.js';
 const { useContext } = React;
 
 export function Inpaint() {
-  const config = mustExist(useContext(ConfigContext));
+  const { params } = mustExist(useContext(ConfigContext));
   const client = mustExist(useContext(ClientContext));
 
   const masks = useQuery('masks', async () => client.masks(), {
@@ -92,7 +92,6 @@ export function Inpaint() {
         }}
         renderImage={(image) =>
           <MaskCanvas
-            config={config}
             base={source}
             source={image}
             onSave={(file) => {
@@ -104,7 +103,6 @@ export function Inpaint() {
         }
       />
       <ImageControl
-        config={config}
         selector={(s) => s.inpaint}
         onChange={(newParams) => {
           setInpaint(newParams);
@@ -113,9 +111,9 @@ export function Inpaint() {
       <Stack direction='row' spacing={2}>
         <NumericField
           label='Strength'
-          min={config.strength.min}
-          max={config.strength.max}
-          step={config.strength.step}
+          min={params.strength.min}
+          max={params.strength.max}
+          step={params.strength.step}
           value={strength}
           onChange={(value) => {
             setInpaint({
@@ -153,8 +151,8 @@ export function Inpaint() {
           }}
         />
       </Stack>
-      <OutpaintControl config={config} />
-      <UpscaleControl config={config} />
+      <OutpaintControl />
+      <UpscaleControl />
       <Button onClick={() => upload.mutate()}>Generate</Button>
     </Stack>
   </Box>;

@@ -13,7 +13,7 @@ import { ParamsVersionError } from './components/error/ParamsVersion.js';
 import { ServerParamsError } from './components/error/ServerParams.js';
 import { OnnxError } from './components/OnnxError.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
-import { getApiRoot, loadConfig, PARAM_VERSION } from './config.js';
+import { getApiRoot, loadConfig, mergeConfig, PARAM_VERSION } from './config.js';
 import { ClientContext, ConfigContext, createStateSlices, OnnxState, StateContext } from './state.js';
 
 export async function main() {
@@ -33,8 +33,7 @@ export async function main() {
     const params = await client.params();
     const version = mustDefault(params.version, '0.0.0');
     if (satisfies(version, PARAM_VERSION)) {
-      // check version here
-      merge(params, config.params);
+      const completeConfig = mergeConfig(config, params);
 
       // prep zustand with a slice for each tab, using local storage
       const {
@@ -88,7 +87,7 @@ export async function main() {
       // go
       app.render(<QueryClientProvider client={query}>
         <ClientContext.Provider value={client}>
-          <ConfigContext.Provider value={params}>
+          <ConfigContext.Provider value={completeConfig}>
             <StateContext.Provider value={state}>
               <OnnxWeb />
             </StateContext.Provider>

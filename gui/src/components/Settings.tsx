@@ -1,14 +1,19 @@
 import { mustExist } from '@apextoaster/js-utils';
+import { Refresh } from '@mui/icons-material';
 import { Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useStore } from 'zustand';
 
-import { StateContext } from '../state.js';
+import { getApiRoot } from '../config.js';
+import { ConfigContext, StateContext } from '../state.js';
 import { NumericField } from './NumericField.js';
 
 export function Settings() {
+  const config = mustExist(useContext(ConfigContext));
   const state = useStore(mustExist(useContext(StateContext)));
+
+  const [root, setRoot] = useState(getApiRoot(config));
 
   return <Stack spacing={2}>
     <NumericField
@@ -29,6 +34,16 @@ export function Settings() {
         scheduler: event.target.value,
       });
     }} />
+    <Stack direction='row' spacing={2}>
+      <TextField variant='outlined' label='API Server' value={root} onChange={(event) => {
+        setRoot(event.target.value);
+      }} />
+      <Button startIcon={<Refresh />} onClick={() => {
+        const query = new URLSearchParams(window.location.search);
+        query.set('api', root);
+        window.location.search = query.toString();
+      }} />
+    </Stack>
     <Stack direction='row' spacing={2}>
       <Button onClick={() => state.resetTxt2Img()}>Reset Txt2Img</Button>
       <Button onClick={() => state.resetImg2Img()}>Reset Img2Img</Button>

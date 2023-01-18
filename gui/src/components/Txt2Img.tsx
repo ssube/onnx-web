@@ -12,7 +12,7 @@ import { UpscaleControl } from './UpscaleControl.js';
 const { useContext } = React;
 
 export function Txt2Img() {
-  const config = mustExist(useContext(ConfigContext));
+  const { params } = mustExist(useContext(ConfigContext));
 
   async function generateImage() {
     const { model, txt2img, upscale } = state.getState();
@@ -37,13 +37,13 @@ export function Txt2Img() {
 
   return <Box>
     <Stack spacing={2}>
-      <ImageControl config={config} selector={(s) => s.txt2img} onChange={setTxt2Img} />
+      <ImageControl selector={(s) => s.txt2img} onChange={setTxt2Img} />
       <Stack direction='row' spacing={4}>
         <NumericField
           label='Width'
-          min={config.width.min}
-          max={config.width.max}
-          step={config.width.step}
+          min={params.width.min}
+          max={params.width.max}
+          step={params.width.step}
           value={width}
           onChange={(value) => {
             setTxt2Img({
@@ -53,9 +53,9 @@ export function Txt2Img() {
         />
         <NumericField
           label='Height'
-          min={config.height.min}
-          max={config.height.max}
-          step={config.height.step}
+          min={params.height.min}
+          max={params.height.max}
+          step={params.height.step}
           value={height}
           onChange={(value) => {
             setTxt2Img({
@@ -64,7 +64,7 @@ export function Txt2Img() {
           }}
         />
       </Stack>
-      <UpscaleControl config={config} />
+      <UpscaleControl />
       <Button onClick={() => generate.mutate()}>Generate</Button>
     </Stack>
   </Box>;

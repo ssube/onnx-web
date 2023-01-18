@@ -14,7 +14,7 @@ import { UpscaleControl } from './UpscaleControl.js';
 const { useContext } = React;
 
 export function Img2Img() {
-  const config = mustExist(useContext(ConfigContext));
+  const { params } = mustExist(useContext(ConfigContext));
 
   async function uploadSource() {
     const { model, img2img, upscale } = state.getState();
@@ -48,13 +48,13 @@ export function Img2Img() {
           source: file,
         });
       }} />
-      <ImageControl config={config} selector={(s) => s.img2img} onChange={setImg2Img} />
+      <ImageControl selector={(s) => s.img2img} onChange={setImg2Img} />
       <NumericField
         decimal
         label='Strength'
-        min={config.strength.min}
-        max={config.strength.max}
-        step={config.strength.step}
+        min={params.strength.min}
+        max={params.strength.max}
+        step={params.strength.step}
         value={strength}
         onChange={(value) => {
           setImg2Img({
@@ -62,7 +62,7 @@ export function Img2Img() {
           });
         }}
       />
-      <UpscaleControl config={config} />
+      <UpscaleControl />
       <Button onClick={() => upload.mutate()}>Generate</Button>
     </Stack>
   </Box>;

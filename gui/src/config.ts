@@ -1,5 +1,5 @@
 import { doesExist, Maybe } from '@apextoaster/js-utils';
-
+import { merge } from 'lodash';
 import { Img2ImgParams, InpaintParams, ModelParams, OutpaintParams, STATUS_SUCCESS, Txt2ImgParams, UpscaleParams } from './client.js';
 
 export interface ConfigNumber {
@@ -31,7 +31,7 @@ export type ConfigState<T extends object, TValid = number | string> = {
 };
 
 /* eslint-disable */
-export type ConfigParams = ConfigRanges<Required<
+export type ServerParams = ConfigRanges<Required<
   Img2ImgParams &
   Txt2ImgParams &
   InpaintParams &
@@ -43,16 +43,18 @@ export type ConfigParams = ConfigRanges<Required<
 };
 /* eslint-enable */
 
-export interface Config {
+export interface ClientParams {
+  model: ConfigString;
+  platform: ConfigString;
+  scheduler: ConfigString;
+  prompt: ConfigString;
+}
+
+export interface Config<T = ClientParams> {
   api: {
     root: string;
   };
-  params: {
-    model: ConfigString;
-    platform: ConfigString;
-    scheduler: ConfigString;
-    prompt: ConfigString;
-  };
+  params: T;
 }
 
 export const DEFAULT_BRUSH = {
@@ -75,6 +77,15 @@ export async function loadConfig(): Promise<Config> {
   } else {
     throw new Error('could not load config');
   }
+}
+
+export function mergeConfig(client: Config, server: ServerParams): Config<ServerParams> {
+  const full = merge({}, server, client.params);;
+
+  return {
+    ...client,
+    params: full,
+  };
 }
 
 export function getApiRoot(config: Config): string {

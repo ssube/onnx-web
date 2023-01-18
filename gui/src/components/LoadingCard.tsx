@@ -15,7 +15,7 @@ export interface LoadingCardProps {
 
 export function LoadingCard(props: LoadingCardProps) {
   const client = mustExist(React.useContext(ClientContext));
-  const config = mustExist(useContext(ConfigContext));
+  const { params } = mustExist(useContext(ConfigContext));
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const pushHistory = useStore(mustExist(useContext(StateContext)), (state) => state.pushHistory);
@@ -32,13 +32,13 @@ export function LoadingCard(props: LoadingCardProps) {
     }
   }, [ready.status, ready.data?.ready]);
 
-  return <Card sx={{ maxWidth: config.width.default }}>
-    <CardContent sx={{ height: config.height.default }}>
+  return <Card sx={{ maxWidth: params.width.default }}>
+    <CardContent sx={{ height: params.height.default }}>
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: config.height.default,
+        minHeight: params.height.default,
       }}>
         <CircularProgress />
       </div>

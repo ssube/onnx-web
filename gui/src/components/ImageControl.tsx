@@ -6,8 +6,8 @@ import { useQuery } from 'react-query';
 import { useStore } from 'zustand';
 
 import { BaseImgParams } from '../client.js';
-import { ConfigParams, STALE_TIME } from '../config.js';
-import { ClientContext, OnnxState, StateContext } from '../state.js';
+import { STALE_TIME } from '../config.js';
+import { ClientContext, ConfigContext, OnnxState, StateContext } from '../state.js';
 import { SCHEDULER_LABELS } from '../strings.js';
 import { NumericField } from './NumericField.js';
 import { QueryList } from './QueryList.js';
@@ -15,8 +15,6 @@ import { QueryList } from './QueryList.js';
 const { useContext } = React;
 
 export interface ImageControlProps {
-  config: ConfigParams;
-
   selector: (state: OnnxState) => BaseImgParams;
 
   onChange?: (params: BaseImgParams) => void;
@@ -26,10 +24,9 @@ export interface ImageControlProps {
  * doesn't need to use state, the parent component knows which params to pass
  */
 export function ImageControl(props: ImageControlProps) {
-  const { config } = props;
-
+  const { params } = mustExist(useContext(ConfigContext));
   const state = mustExist(useContext(StateContext));
-  const params = useStore(state, props.selector);
+  const controlState = useStore(state, props.selector);
 
   const client = mustExist(useContext(ClientContext));
   const schedulers = useQuery('schedulers', async () => client.schedulers(), {
@@ -44,11 +41,11 @@ export function ImageControl(props: ImageControlProps) {
       query={{
         result: schedulers,
       }}
-      value={mustDefault(params.scheduler, '')}
+      value={mustDefault(controlState.scheduler, '')}
       onChange={(value) => {
         if (doesExist(props.onChange)) {
           props.onChange({
-            ...params,
+            ...controlState,
             scheduler: value,
           });
         }
@@ -58,14 +55,14 @@ export function ImageControl(props: ImageControlProps) {
       <NumericField
         decimal
         label='CFG'
-        min={config.cfg.min}
-        max={config.cfg.max}
-        step={config.cfg.step}
-        value={params.cfg}
+        min={params.cfg.min}
+        max={params.cfg.max}
+        step={params.cfg.step}
+        value={controlState.cfg}
         onChange={(cfg) => {
           if (doesExist(props.onChange)) {
             props.onChange({
-              ...params,
+              ...controlState,
               cfg,
             });
           }
@@ -73,14 +70,14 @@ export function ImageControl(props: ImageControlProps) {
       />
       <NumericField
         label='Steps'
-        min={config.steps.min}
-        max={config.steps.max}
-        step={config.steps.step}
-        value={params.steps}
+        min={params.steps.min}
+        max={params.steps.max}
+        step={params.steps.step}
+        value={controlState.steps}
         onChange={(steps) => {
           if (doesExist(props.onChange)) {
             props.onChange({
-              ...params,
+              ...controlState,
               steps,
             });
           }
@@ -88,14 +85,14 @@ export function ImageControl(props: ImageControlProps) {
       />
       <NumericField
         label='Seed'
-        min={config.seed.min}
-        max={config.seed.max}
-        step={config.seed.step}
-        value={params.seed}
+        min={params.seed.min}
+        max={params.seed.max}
+        step={params.seed.step}
+        value={controlState.seed}
         onChange={(seed) => {
           if (doesExist(props.onChange)) {
             props.onChange({
-              ...params,
+              ...controlState,
               seed,
             });
           }
@@ -105,10 +102,10 @@ export function ImageControl(props: ImageControlProps) {
         variant='outlined'
         startIcon={<Casino />}
         onClick={() => {
-          const seed = Math.floor(Math.random() * config.seed.max);
+          const seed = Math.floor(Math.random() * params.seed.max);
           if (doesExist(props.onChange)) {
             props.onChange({
-              ...params,
+              ...controlState,
               seed,
             });
           }
@@ -117,18 +114,18 @@ export function ImageControl(props: ImageControlProps) {
         New Seed
       </Button>
     </Stack>
-    <TextField label='Prompt' variant='outlined' value={params.prompt} onChange={(event) => {
+    <TextField label='Prompt' variant='outlined' value={controlState.prompt} onChange={(event) => {
       if (doesExist(props.onChange)) {
         props.onChange({
-          ...params,
+          ...controlState,
           prompt: event.target.value,
         });
       }
     }} />
-    <TextField label='Negative Prompt' variant='outlined' value={params.negativePrompt} onChange={(event) => {
+    <TextField label='Negative Prompt' variant='outlined' value={controlState.negativePrompt} onChange={(event) => {
       if (doesExist(props.onChange)) {
         props.onChange({
-          ...params,
+          ...controlState,
           negativePrompt: event.target.value,
         });
       }

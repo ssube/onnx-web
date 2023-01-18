@@ -5,9 +5,9 @@ import { StateCreator, StoreApi } from 'zustand';
 
 import {
   ApiClient,
-  ImageResponse,
   BaseImgParams,
   BrushParams,
+  ImageResponse,
   Img2ImgParams,
   InpaintParams,
   ModelParams,
@@ -17,7 +17,7 @@ import {
   UpscaleParams,
   UpscaleReqParams,
 } from './client.js';
-import { ConfigFiles, ConfigParams, ConfigState } from './config.js';
+import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
 
 type TabState<TabParams> = ConfigFiles<Required<TabParams>> & ConfigState<Required<TabParams>>;
 
@@ -97,7 +97,7 @@ export type OnnxState
   & Txt2ImgSlice
   & UpscaleSlice;
 
-export function createStateSlices(base: ConfigParams) {
+export function createStateSlices(base: ServerParams) {
   const defaults = paramsFromConfig(base);
 
   const createTxt2ImgSlice: StateCreator<OnnxState, [], [], Txt2ImgSlice> = (set) => ({
@@ -331,5 +331,5 @@ export function createStateSlices(base: ConfigParams) {
 }
 
 export const ClientContext = createContext<Maybe<ApiClient>>(undefined);
-export const ConfigContext = createContext<Maybe<ConfigParams>>(undefined);
+export const ConfigContext = createContext<Maybe<Config<ServerParams>>>(undefined);
 export const StateContext = createContext<Maybe<StoreApi<OnnxState>>>(undefined);

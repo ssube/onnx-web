@@ -1,6 +1,6 @@
 import { doesExist } from '@apextoaster/js-utils';
 
-import { ConfigParams } from './config.js';
+import { ServerParams } from './config.js';
 
 export interface ModelParams {
   /**
@@ -107,7 +107,7 @@ export interface ApiClient {
   masks(): Promise<Array<string>>;
   models(): Promise<ModelsResponse>;
   noises(): Promise<Array<string>>;
-  params(): Promise<ConfigParams>;
+  params(): Promise<ServerParams>;
   platforms(): Promise<Array<string>>;
   schedulers(): Promise<Array<string>>;
 
@@ -122,7 +122,7 @@ export interface ApiClient {
 
 export const STATUS_SUCCESS = 200;
 
-export function paramsFromConfig(defaults: ConfigParams): Required<BaseImgParams> {
+export function paramsFromConfig(defaults: ServerParams): Required<BaseImgParams> {
   return {
     cfg: defaults.cfg.default,
     negativePrompt: defaults.negativePrompt.default,
@@ -213,10 +213,10 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const res = await f(path);
       return await res.json() as Array<string>;
     },
-    async params(): Promise<ConfigParams> {
+    async params(): Promise<ServerParams> {
       const path = makeApiUrl(root, 'settings', 'params');
       const res = await f(path);
-      return await res.json() as ConfigParams;
+      return await res.json() as ServerParams;
     },
     async schedulers(): Promise<Array<string>> {
       const path = makeApiUrl(root, 'settings', 'schedulers');

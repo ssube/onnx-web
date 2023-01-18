@@ -5,30 +5,24 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useStore } from 'zustand';
 
-import { ConfigParams } from '../config.js';
-import { StateContext } from '../state.js';
+import { ConfigContext, StateContext } from '../state.js';
 import { NumericField } from './NumericField.js';
 
-export interface OutpaintControlProps {
-  config: ConfigParams;
-}
-
-export function OutpaintControl(props: OutpaintControlProps) {
-  const { config } = props;
-
+export function OutpaintControl() {
+  const { params } = mustExist(useContext(ConfigContext));
   const state = mustExist(useContext(StateContext));
-  const params = useStore(state, (s) => s.outpaint);
+  const outpaint = useStore(state, (s) => s.outpaint);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setOutpaint = useStore(state, (s) => s.setOutpaint);
 
   return <Stack direction='row' spacing={4}>
     <ToggleButton
       color='primary'
-      selected={params.enabled}
+      selected={outpaint.enabled}
       value='check'
       onChange={(event) => {
         setOutpaint({
-          enabled: params.enabled === false,
+          enabled: outpaint.enabled === false,
         });
       }}
     >
@@ -37,11 +31,11 @@ export function OutpaintControl(props: OutpaintControlProps) {
     </ToggleButton>
     <NumericField
       label='Left'
-      disabled={params.enabled === false}
+      disabled={outpaint.enabled === false}
       min={0}
-      max={config.width.max}
-      step={config.width.step}
-      value={params.left}
+      max={params.width.max}
+      step={params.width.step}
+      value={outpaint.left}
       onChange={(left) => {
         setOutpaint({
           left,
@@ -50,11 +44,11 @@ export function OutpaintControl(props: OutpaintControlProps) {
     />
     <NumericField
       label='Right'
-      disabled={params.enabled === false}
+      disabled={outpaint.enabled === false}
       min={0}
-      max={config.width.max}
-      step={config.width.step}
-      value={params.right}
+      max={params.width.max}
+      step={params.width.step}
+      value={outpaint.right}
       onChange={(right) => {
         setOutpaint({
           right,
@@ -63,11 +57,11 @@ export function OutpaintControl(props: OutpaintControlProps) {
     />
     <NumericField
       label='Top'
-      disabled={params.enabled === false}
+      disabled={outpaint.enabled === false}
       min={0}
-      max={config.height.max}
-      step={config.height.step}
-      value={params.top}
+      max={params.height.max}
+      step={params.height.step}
+      value={outpaint.top}
       onChange={(top) => {
         setOutpaint({
           top,
@@ -76,11 +70,11 @@ export function OutpaintControl(props: OutpaintControlProps) {
     />
     <NumericField
       label='Bottom'
-      disabled={params.enabled === false}
+      disabled={outpaint.enabled === false}
       min={0}
-      max={config.height.max}
-      step={config.height.step}
-      value={params.bottom}
+      max={params.height.max}
+      step={params.height.step}
+      value={outpaint.bottom}
       onChange={(bottom) => {
         setOutpaint({
           bottom,

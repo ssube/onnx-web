@@ -5,8 +5,8 @@ import { throttle } from 'lodash';
 import React, { RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
 
-import { ConfigParams, SAVE_TIME } from '../config.js';
-import { StateContext } from '../state.js';
+import { SAVE_TIME } from '../config.js';
+import { ConfigContext, StateContext } from '../state.js';
 import { NumericField } from './NumericField';
 
 export const FULL_CIRCLE = 2 * Math.PI;
@@ -38,8 +38,6 @@ export interface Point {
 }
 
 export interface MaskCanvasProps {
-  config: ConfigParams;
-
   base?: Maybe<Blob>;
   source?: Maybe<Blob>;
 
@@ -47,7 +45,8 @@ export interface MaskCanvasProps {
 }
 
 export function MaskCanvas(props: MaskCanvasProps) {
-  const { base, config, source } = props;
+  const { base, source } = props;
+  const { params } = mustExist(useContext(ConfigContext));
 
   function saveMask(): void {
     if (doesExist(bufferRef.current)) {
@@ -157,8 +156,8 @@ export function MaskCanvas(props: MaskCanvasProps) {
   }, [base]);
 
   const styles: React.CSSProperties = {
-    maxHeight: config.height.default,
-    maxWidth: config.width.default,
+    maxHeight: params.height.default,
+    maxWidth: params.width.default,
   };
 
   if (doesExist(background)) {
@@ -168,24 +167,24 @@ export function MaskCanvas(props: MaskCanvasProps) {
   return <Stack spacing={2}>
     <canvas
       ref={brushRef}
-      height={config.height.default}
-      width={config.width.default}
+      height={params.height.default}
+      width={params.width.default}
       style={{
         display: 'none',
       }}
     />
     <canvas
       ref={bufferRef}
-      height={config.height.default}
-      width={config.width.default}
+      height={params.height.default}
+      width={params.width.default}
       style={{
         display: 'none',
       }}
     />
     <canvas
       ref={canvasRef}
-      height={config.height.default}
-      width={config.width.default}
+      height={params.height.default}
+      width={params.width.default}
       style={styles}
       onClick={(event) => {
         const canvas = mustExist(canvasRef.current);

@@ -60,8 +60,8 @@ export function ImageCard(props: ImageCardProps) {
     window.open(output.url, '_blank');
   }
 
-  return <Card sx={{ maxWidth: config.width.default }} elevation={2}>
-    <CardMedia sx={{ height: config.height.default }}
+  return <Card sx={{ maxWidth: config.params.width.default }} elevation={2}>
+    <CardMedia sx={{ height: config.params.height.default }}
       component='img'
       image={output.url}
       title={params.prompt}

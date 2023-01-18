@@ -45,7 +45,7 @@ export function Upscale() {
           source: file,
         });
       }} />
-      <UpscaleControl config={config} />
+      <UpscaleControl />
       <Button onClick={() => upload.mutate()}>Generate</Button>
     </Stack>
   </Box>;
