@@ -3,12 +3,12 @@ import { Box, Container, Divider, Link, Tab, Typography } from '@mui/material';
 import * as React from 'react';
 
 import { ImageHistory } from './ImageHistory.js';
-import { Img2Img } from './Img2Img.js';
-import { Inpaint } from './Inpaint.js';
-import { ModelControl } from './ModelControl.js';
-import { Settings } from './Settings.js';
-import { Txt2Img } from './Txt2Img.js';
-import { Upscale } from './Upscale.js';
+import { Img2Img } from './tab/Img2Img.js';
+import { Inpaint } from './tab/Inpaint.js';
+import { ModelControl } from './control/ModelControl.js';
+import { Settings } from './tab/Settings.js';
+import { Txt2Img } from './tab/Txt2Img.js';
+import { Upscale } from './tab/Upscale.js';
 
 const { useState } = React;
 

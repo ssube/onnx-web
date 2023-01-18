@@ -4,12 +4,12 @@ import * as React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
-import { IMAGE_FILTER } from '../config.js';
-import { ClientContext, ConfigContext, StateContext } from '../state.js';
-import { ImageControl } from './ImageControl.js';
-import { ImageInput } from './ImageInput.js';
-import { NumericField } from './NumericField.js';
-import { UpscaleControl } from './UpscaleControl.js';
+import { IMAGE_FILTER } from '../../config.js';
+import { ClientContext, ConfigContext, StateContext } from '../../state.js';
+import { ImageControl } from '../control/ImageControl.js';
+import { ImageInput } from '../input/ImageInput.js';
+import { NumericField } from '../input/NumericField.js';
+import { UpscaleControl } from '../control/UpscaleControl.js';
 
 const { useContext } = React;
 

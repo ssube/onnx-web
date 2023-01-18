@@ -5,9 +5,9 @@ import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useStore } from 'zustand';
 
-import { getApiRoot } from '../config.js';
-import { ConfigContext, StateContext } from '../state.js';
-import { NumericField } from './NumericField.js';
+import { getApiRoot } from '../../config.js';
+import { ConfigContext, StateContext } from '../../state.js';
+import { NumericField } from '../input/NumericField.js';
 
 export function Settings() {
   const config = mustExist(useContext(ConfigContext));

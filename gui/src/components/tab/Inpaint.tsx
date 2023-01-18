@@ -4,16 +4,16 @@ import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
-import { IMAGE_FILTER, STALE_TIME } from '../config.js';
-import { ClientContext, ConfigContext, StateContext } from '../state.js';
-import { MASK_LABELS, NOISE_LABELS } from '../strings.js';
-import { ImageControl } from './ImageControl.js';
-import { ImageInput } from './ImageInput.js';
-import { MaskCanvas } from './MaskCanvas.js';
-import { NumericField } from './NumericField.js';
-import { OutpaintControl } from './OutpaintControl.js';
-import { QueryList } from './QueryList.js';
-import { UpscaleControl } from './UpscaleControl.js';
+import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
+import { ClientContext, ConfigContext, StateContext } from '../../state.js';
+import { MASK_LABELS, NOISE_LABELS } from '../../strings.js';
+import { ImageControl } from '../control/ImageControl.js';
+import { ImageInput } from '../input/ImageInput.js';
+import { MaskCanvas } from '../input/MaskCanvas.js';
+import { NumericField } from '../input/NumericField.js';
+import { OutpaintControl } from '../control/OutpaintControl.js';
+import { QueryList } from '../input/QueryList.js';
+import { UpscaleControl } from '../control/UpscaleControl.js';
 
 const { useContext } = React;
 

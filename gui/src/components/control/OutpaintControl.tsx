@@ -5,8 +5,8 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useStore } from 'zustand';
 
-import { ConfigContext, StateContext } from '../state.js';
-import { NumericField } from './NumericField.js';
+import { ConfigContext, StateContext } from '../../state.js';
+import { NumericField } from '../input/NumericField.js';
 
 export function OutpaintControl() {
   const { params } = mustExist(useContext(ConfigContext));

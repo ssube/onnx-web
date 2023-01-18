@@ -5,12 +5,12 @@ import * as React from 'react';
 import { useQuery } from 'react-query';
 import { useStore } from 'zustand';
 
-import { BaseImgParams } from '../client.js';
-import { STALE_TIME } from '../config.js';
-import { ClientContext, ConfigContext, OnnxState, StateContext } from '../state.js';
-import { SCHEDULER_LABELS } from '../strings.js';
-import { NumericField } from './NumericField.js';
-import { QueryList } from './QueryList.js';
+import { BaseImgParams } from '../../client.js';
+import { STALE_TIME } from '../../config.js';
+import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
+import { SCHEDULER_LABELS } from '../../strings.js';
+import { NumericField } from '../input/NumericField.js';
+import { QueryList } from '../input/QueryList.js';
 
 const { useContext } = React;
 

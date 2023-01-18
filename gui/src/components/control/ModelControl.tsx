@@ -5,10 +5,10 @@ import { useContext } from 'react';
 import { useQuery } from 'react-query';
 import { useStore } from 'zustand';
 
-import { STALE_TIME } from '../config.js';
-import { ClientContext, StateContext } from '../state.js';
-import { MODEL_LABELS, PLATFORM_LABELS } from '../strings.js';
-import { QueryList } from './QueryList.js';
+import { STALE_TIME } from '../../config.js';
+import { ClientContext, StateContext } from '../../state.js';
+import { MODEL_LABELS, PLATFORM_LABELS } from '../../strings.js';
+import { QueryList } from '../input/QueryList.js';
 
 export function ModelControl() {
   const client = mustExist(useContext(ClientContext));

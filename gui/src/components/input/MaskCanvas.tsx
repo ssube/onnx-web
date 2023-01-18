@@ -5,8 +5,8 @@ import { throttle } from 'lodash';
 import React, { RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
 
-import { SAVE_TIME } from '../config.js';
-import { ConfigContext, StateContext } from '../state.js';
+import { SAVE_TIME } from '../../config.js';
+import { ConfigContext, StateContext } from '../../state.js';
 import { NumericField } from './NumericField';
 
 export const FULL_CIRCLE = 2 * Math.PI;

@@ -4,10 +4,10 @@ import * as React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
-import { ClientContext, ConfigContext, StateContext } from '../state.js';
-import { ImageControl } from './ImageControl.js';
-import { NumericField } from './NumericField.js';
-import { UpscaleControl } from './UpscaleControl.js';
+import { ClientContext, ConfigContext, StateContext } from '../../state.js';
+import { ImageControl } from '../control/ImageControl.js';
+import { NumericField } from '../input/NumericField.js';
+import { UpscaleControl } from '../control/UpscaleControl.js';
 
 const { useContext } = React;
 
