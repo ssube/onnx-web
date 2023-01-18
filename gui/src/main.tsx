@@ -77,6 +77,10 @@ export async function main() {
             mask: undefined,
             source: undefined,
           },
+          upscaleTab: {
+            ...s.upscaleTab,
+            source: undefined,
+          },
         };
       },
       storage: createJSONStorage(() => localStorage),
