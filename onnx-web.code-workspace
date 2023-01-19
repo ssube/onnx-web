@@ -29,6 +29,7 @@
 			"jsonify",
 			"Karras",
 			"KDPM",
+			"Lanczos",
 			"Multistep",
 			"ndarray",
 			"numpy",
