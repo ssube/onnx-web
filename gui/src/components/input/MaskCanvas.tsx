@@ -48,19 +48,6 @@ export function MaskCanvas(props: MaskCanvasProps) {
   const { source, mask } = props;
   const { params } = mustExist(useContext(ConfigContext));
 
-  function saveMask(): void {
-    if (doesExist(bufferRef.current)) {
-      if (maskState.current === MASK_STATE.clean) {
-        return;
-      }
-
-      bufferRef.current.toBlob((blob) => {
-        maskState.current = MASK_STATE.clean;
-        props.onSave(mustExist(blob));
-      });
-    }
-  }
-
   function drawBuffer() {
     if (doesExist(brushRef.current) && doesExist(bufferRef.current) && doesExist(canvasRef.current)) {
       const { ctx } = getClearContext(canvasRef);
@@ -73,10 +60,38 @@ export function MaskCanvas(props: MaskCanvasProps) {
     }
   }
 
+  function drawBrush(point: Point): void {
+    const { ctx } = getClearContext(brushRef);
+    ctx.fillStyle = grayToRGB(brush.color, brush.strength);
+
+    drawCircle(ctx, {
+      x: point.x,
+      y: point.y,
+    }, brush.size);
+
+    drawBuffer();
+  }
+
+  function drawClicks(): void {
+    if (clicks.length > 0) {
+      const { ctx } = getContext(bufferRef);
+      ctx.fillStyle = grayToRGB(brush.color, brush.strength);
+
+      for (const click of clicks) {
+        drawCircle(ctx, click, brush.size);
+      }
+
+      clicks.length = 0;
+
+      drawBuffer();
+    }
+  }
+
   function drawSource(file: Blob): void {
     const image = new Image();
     image.onload = () => {
-      const { ctx } = getContext(bufferRef);
+      const { ctx } = getClearContext(bufferRef);
+      ctx.globalAlpha = 1.0;
       ctx.drawImage(image, 0, 0);
       URL.revokeObjectURL(src);
 
@@ -90,12 +105,25 @@ export function MaskCanvas(props: MaskCanvasProps) {
   function finishPainting() {
     if (doesExist(brushRef.current)) {
       getClearContext(brushRef);
-      drawBuffer();
     }
+
+    drawClicks();
 
     if (maskState.current === MASK_STATE.painting) {
       maskState.current = MASK_STATE.dirty;
-      save();
+    }
+  }
+
+  function saveMask(): void {
+    if (doesExist(bufferRef.current)) {
+      if (maskState.current === MASK_STATE.clean) {
+        return;
+      }
+
+      bufferRef.current.toBlob((blob) => {
+        maskState.current = MASK_STATE.clean;
+        props.onSave(mustExist(blob));
+      });
     }
   }
 
@@ -119,21 +147,6 @@ export function MaskCanvas(props: MaskCanvasProps) {
   const setBrush = useStore(state, (s) => s.setBrush);
 
   useEffect(() => {
-    // including clicks.length prevents the initial render from saving a blank canvas
-    if (doesExist(bufferRef.current) && maskState.current === MASK_STATE.painting && clicks.length > 0) {
-      const { ctx } = getContext(bufferRef);
-      ctx.fillStyle = grayToRGB(brush.color, brush.strength);
-
-      for (const click of clicks) {
-        drawCircle(ctx, click, brush.size);
-      }
-
-      clicks.length = 0;
-      drawBuffer();
-    }
-  }, [clicks.length]);
-
-  useEffect(() => {
     if (maskState.current === MASK_STATE.dirty) {
       save();
     }
@@ -154,6 +167,9 @@ export function MaskCanvas(props: MaskCanvasProps) {
       setBackground(URL.createObjectURL(source));
     }
   }, [source]);
+
+  // last resort to draw lost clicks
+  drawClicks();
 
   const styles: React.CSSProperties = {
     border: '1px solid black',
@@ -191,16 +207,13 @@ export function MaskCanvas(props: MaskCanvasProps) {
         const canvas = mustExist(canvasRef.current);
         const bounds = canvas.getBoundingClientRect();
 
-        const { ctx } = getContext(bufferRef);
-        ctx.fillStyle = grayToRGB(brush.color, brush.strength);
-
-        drawCircle(ctx, {
+        setClicks([...clicks, {
           x: event.clientX - bounds.left,
           y: event.clientY - bounds.top,
-        }, brush.size);
+        }]);
 
+        drawClicks();
         maskState.current = MASK_STATE.dirty;
-        save();
       }}
       onMouseDown={() => {
         maskState.current = MASK_STATE.painting;
@@ -218,15 +231,10 @@ export function MaskCanvas(props: MaskCanvasProps) {
             y: event.clientY - bounds.top,
           }]);
         } else {
-          const { ctx } = getClearContext(brushRef);
-          ctx.fillStyle = grayToRGB(brush.color, brush.strength);
-
-          drawCircle(ctx, {
+          drawBrush({
             x: event.clientX - bounds.left,
             y: event.clientY - bounds.top,
-          }, brush.size);
-
-          drawBuffer();
+          });
         }
       }}
     />
@@ -272,7 +280,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
         onClick={() => {
           floodCanvas(bufferRef, floodBelow);
           drawBuffer();
-          save();
+          maskState.current = MASK_STATE.dirty;
         }}>
         Gray to black
       </Button>
@@ -282,7 +290,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
         onClick={() => {
           floodCanvas(bufferRef, floodBlack);
           drawBuffer();
-          save();
+          maskState.current = MASK_STATE.dirty;
         }}>
         Fill with black
       </Button>
@@ -292,7 +300,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
         onClick={() => {
           floodCanvas(bufferRef, floodWhite);
           drawBuffer();
-          save();
+          maskState.current = MASK_STATE.dirty;
         }}>
         Fill with white
       </Button>
@@ -302,7 +310,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
         onClick={() => {
           floodCanvas(bufferRef, floodAbove);
           drawBuffer();
-          save();
+          maskState.current = MASK_STATE.dirty;
         }}>
         Gray to white
       </Button>
