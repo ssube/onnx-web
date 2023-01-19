@@ -161,7 +161,7 @@ export function Inpaint() {
       </Stack>
       <OutpaintControl />
       <UpscaleControl />
-      <Button onClick={() => upload.mutate()}>Generate</Button>
+      <Button variant='outlined' onClick={() => upload.mutate()}>Generate</Button>
     </Stack>
   </Box>;
 }

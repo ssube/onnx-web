@@ -63,7 +63,7 @@ export function Img2Img() {
         }}
       />
       <UpscaleControl />
-      <Button onClick={() => upload.mutate()}>Generate</Button>
+      <Button variant='outlined' onClick={() => upload.mutate()}>Generate</Button>
     </Stack>
   </Box>;
 }

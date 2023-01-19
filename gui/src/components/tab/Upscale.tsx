@@ -46,7 +46,7 @@ export function Upscale() {
         });
       }} />
       <UpscaleControl />
-      <Button onClick={() => upload.mutate()}>Generate</Button>
+      <Button variant='outlined' onClick={() => upload.mutate()}>Generate</Button>
     </Stack>
   </Box>;
 }
