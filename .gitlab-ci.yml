@@ -114,6 +114,10 @@ package-api-oci:
         IMAGE_FILE: Containerfile.cpu.buster
       - IMAGE_ARCH: cuda-ubuntu
         IMAGE_FILE: Containerfile.cuda.ubuntu
+      - IMAGE_ARCH: directml-buster
+        IMAGE_FILE: Containerfile.directml.buster
+      - IMAGE_ARCH: rocm-ubuntu
+        IMAGE_FILE: Containerfile.rocm.ubuntu
 
 package-gui-oci:
   extends:
