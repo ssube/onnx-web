@@ -193,7 +193,7 @@ export function createStateSlices(base: ServerParams) {
         history: [
           image,
           ...prev.history,
-        ],
+        ].slice(0, prev.limit),
         loading: null,
       }));
     },
