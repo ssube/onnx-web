@@ -1,6 +1,7 @@
 import { Alert, AlertTitle, Typography } from '@mui/material';
 import * as React from 'react';
-import { PARAM_VERSION } from '../../config';
+
+import { PARAM_VERSION } from '../../config.js';
 
 export interface ParamsVersionErrorProps {
   root: string;
@@ -10,7 +11,7 @@ export interface ParamsVersionErrorProps {
 export function ParamsVersionError(props: ParamsVersionErrorProps) {
   return <Alert severity='error'>
     <AlertTitle>
-      Parameter Version Error
+      Parameter version error
     </AlertTitle>
     <Typography>
       The server returned parameters that are too old for the client to load.

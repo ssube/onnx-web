@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
-import { mustDefault, mustExist } from '@apextoaster/js-utils';
-import { merge } from 'lodash';
+import { mustDefault, mustExist, timeout } from '@apextoaster/js-utils';
 import * as React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -16,6 +15,8 @@ import { OnnxWeb } from './components/OnnxWeb.js';
 import { getApiRoot, loadConfig, mergeConfig, PARAM_VERSION } from './config.js';
 import { ClientContext, ConfigContext, createStateSlices, OnnxState, StateContext } from './state.js';
 
+export const INITIAL_LOAD_TIMEOUT = 5_000;
+
 export async function main() {
   // load config from GUI server
   const config = await loadConfig();
@@ -30,7 +31,7 @@ export async function main() {
 
   try {
     // load full params from the API server and merge with the initial client config
-    const params = await client.params();
+    const params = await timeout(INITIAL_LOAD_TIMEOUT, client.params());
     const version = mustDefault(params.version, '0.0.0');
     if (satisfies(version, PARAM_VERSION)) {
       const completeConfig = mergeConfig(config, params);

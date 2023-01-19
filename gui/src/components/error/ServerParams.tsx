@@ -19,7 +19,7 @@ function getErrorMessage(error: unknown): string {
 export function ServerParamsError(props: ServerParamsErrorProps) {
   return <Alert severity='error'>
     <AlertTitle>
-      Server Error
+      Error fetching server parameters
     </AlertTitle>
     <Typography>
       Could not fetch parameters from the ONNX web API server at <code>{props.root}</code>.
