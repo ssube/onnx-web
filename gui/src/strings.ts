@@ -18,7 +18,9 @@ export const MODEL_LABELS = {
 export const PLATFORM_LABELS: Record<string, string> = {
   amd: 'AMD GPU',
   cpu: 'CPU',
-  nvidia: 'Nvidia GPU',
+  directml: 'DirectML',
+  nvidia: 'CUDA',
+  rocm: 'ROCm',
 };
 
 export const SCHEDULER_LABELS: Record<string, string> = {
