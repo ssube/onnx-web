@@ -1,6 +1,5 @@
 import { mustExist } from '@apextoaster/js-utils';
-import { ZoomOutMap } from '@mui/icons-material';
-import { Stack, ToggleButton } from '@mui/material';
+import { Checkbox, FormControlLabel, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useStore } from 'zustand';
@@ -16,19 +15,18 @@ export function OutpaintControl() {
   const setOutpaint = useStore(state, (s) => s.setOutpaint);
 
   return <Stack direction='row' spacing={4}>
-    <ToggleButton
-      color='primary'
-      selected={outpaint.enabled}
-      value='check'
-      onChange={(event) => {
-        setOutpaint({
-          enabled: outpaint.enabled === false,
-        });
-      }}
-    >
-      <ZoomOutMap />
-      Outpaint
-    </ToggleButton>
+    <FormControlLabel
+      label='Outpaint'
+      control={<Checkbox
+        checked={outpaint.enabled}
+        value='check'
+        onChange={(event) => {
+          setOutpaint({
+            enabled: outpaint.enabled === false,
+          });
+        }}
+      />}
+    />
     <NumericField
       label='Left'
       disabled={outpaint.enabled === false}

@@ -1,6 +1,5 @@
 import { mustExist } from '@apextoaster/js-utils';
-import { FaceRetouchingNatural, ZoomIn } from '@mui/icons-material';
-import { Stack, ToggleButton } from '@mui/material';
+import { Checkbox, FormControlLabel, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useStore } from 'zustand';
@@ -16,19 +15,18 @@ export function UpscaleControl() {
   const setUpscale = useStore(state, (s) => s.setUpscale);
 
   return <Stack direction='row' spacing={4}>
-    <ToggleButton
-      color='primary'
-      selected={upscale.enabled}
-      value='check'
-      onChange={(event) => {
-        setUpscale({
-          enabled: upscale.enabled === false,
-        });
-      }}
-    >
-      <ZoomIn />
-      Upscale
-    </ToggleButton>
+    <FormControlLabel
+      label='Upscale'
+      control={<Checkbox
+        checked={upscale.enabled}
+        value='check'
+        onChange={(event) => {
+          setUpscale({
+            enabled: upscale.enabled === false,
+          });
+        }}
+      />}
+    />
     <NumericField
       label='Scale'
       disabled={upscale.enabled === false}
@@ -69,24 +67,23 @@ export function UpscaleControl() {
         });
       }}
     />
-    <ToggleButton
-      color='primary'
-      disabled={upscale.enabled === false}
-      selected={upscale.enabled && upscale.faces}
-      value='check'
-      onChange={(event) => {
-        setUpscale({
-          faces: upscale.faces === false,
-        });
-      }}
-    >
-      <FaceRetouchingNatural />
-      Face Correction
-    </ToggleButton>
+    <FormControlLabel
+      label='Face Correction'
+      control={<Checkbox
+        disabled={upscale.enabled === false}
+        checked={upscale.enabled && upscale.faces}
+        value='check'
+        onChange={(event) => {
+          setUpscale({
+            faces: upscale.faces === false,
+          });
+        }}
+      />}
+    />
     <NumericField
       label='Strength'
       decimal
-      disabled={upscale.enabled === false && upscale.faces === false}
+      disabled={upscale.enabled === false || upscale.faces === false}
       min={params.faceStrength.min}
       max={params.faceStrength.max}
       step={params.faceStrength.step}
