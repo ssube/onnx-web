@@ -362,7 +362,6 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool):
     _ = OnnxStableDiffusionPipeline.from_pretrained(
         output_path, provider="CPUExecutionProvider")
     print("ONNX pipeline is loadable")
-    pass
 
 
 def main() -> int:
