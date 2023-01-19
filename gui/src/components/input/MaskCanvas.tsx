@@ -10,6 +10,7 @@ import { ConfigContext, StateContext } from '../../state.js';
 import { NumericField } from './NumericField';
 
 export const FULL_CIRCLE = 2 * Math.PI;
+export const FULL_OPACITY = 1.0;
 export const MASK_OPACITY = 0.75;
 export const PIXEL_SIZE = 4;
 export const PIXEL_WEIGHT = 3;
@@ -90,9 +91,9 @@ export function MaskCanvas(props: MaskCanvasProps) {
   function drawSource(file: Blob): void {
     const image = new Image();
     image.onload = () => {
-      const { ctx } = getClearContext(bufferRef);
-      ctx.globalAlpha = 1.0;
-      ctx.drawImage(image, 0, 0);
+      const { canvas, ctx } = getClearContext(bufferRef);
+      ctx.globalAlpha = FULL_OPACITY;
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
       URL.revokeObjectURL(src);
 
       drawBuffer();
@@ -172,6 +173,8 @@ export function MaskCanvas(props: MaskCanvasProps) {
   drawClicks();
 
   const styles: React.CSSProperties = {
+    backgroundPosition: 'top left',
+    backgroundRepeat: 'no-repeat',
     border: '1px solid black',
     maxHeight: params.height.default,
     maxWidth: params.width.default,
