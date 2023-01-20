@@ -21,7 +21,7 @@
   "height": {
     "default": 512,
     "min": 64,
-    "max": 512,
+    "max": 1024,
     "step": 8
   },
   "model": {
@@ -77,7 +77,7 @@
   "width": {
     "default": 512,
     "min": 64,
-    "max": 512,
+    "max": 1024,
     "step": 8
   }
 }

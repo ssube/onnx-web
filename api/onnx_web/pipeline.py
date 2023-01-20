@@ -37,7 +37,7 @@ def get_latents_from_seed(seed: int, size: Size) -> np.ndarray:
     From https://www.travelneil.com/stable-diffusion-updates.html
     '''
     # 1 is batch size
-    latents_shape = (1, 4, size.width // 8, size.height // 8)
+    latents_shape = (1, 4, size.height // 8, size.width // 8)
     # Gotta use numpy instead of torch, because torch's randn() doesn't support DML
     rng = np.random.default_rng(seed)
     image_latents = rng.standard_normal(latents_shape).astype(np.float32)
@@ -92,8 +92,8 @@ def run_txt2img_pipeline(
 
     image = pipe(
         params.prompt,
-        size.width,
-        size.height,
+        height=size.height,
+        width=size.width,
         generator=rng,
         guidance_scale=params.cfg,
         latents=latents,
