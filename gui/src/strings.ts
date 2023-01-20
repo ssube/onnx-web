@@ -18,8 +18,9 @@ export const MODEL_LABELS = {
 export const PLATFORM_LABELS: Record<string, string> = {
   amd: 'AMD GPU',
   cpu: 'CPU',
+  cuda: 'CUDA',
   directml: 'DirectML',
-  nvidia: 'CUDA',
+  nvidia: 'Nvidia GPU',
   rocm: 'ROCm',
 };
 
