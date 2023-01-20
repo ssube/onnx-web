@@ -87,15 +87,27 @@ produce the same image.
 
 #### CFG parameter
 
-Classifier free guidance.
+Classifier free guidance. How strictly the model should follow the prompt. Anything from 5 to 15 usually works. More is
+not always better, setting this too high can result in noisy, solarized images.
+
+Roughly:
+
+- 2-6 allows the AI to be creative
+- 7-11 treats the prompt as a suggestion
+- 12-15 strongly encourages the AI to follow the prompt
+- 16-20 follows the prompt whether it makes sense or not
 
 #### Steps parameter
 
-The number of scheduler steps to run.
+The number of scheduler steps to run. Using more steps often results in an image with more details, but also takes
+longer to run. The Euler Ancestral scheduler can usually produce decent results in 30-45 steps, while some of the
+others need 80-100 or more. Inpainting may need more steps, up to 120 or 150 in some cases.
 
 #### Seed parameter
 
-The random seed.
+The seed value used for the random number generators.
+
+Using -1 will generate a new seed on the server for each image.
 
 #### Prompt parameter
 
@@ -111,6 +123,8 @@ Resize the output image before returning it to the client.
 
 Enabling this will run Real ESRGAN and requires an upscaling model.
 
+Check out [the Real ESRGAN Github](https://github.com/xinntao/Real-ESRGAN) for more details.
+
 #### Scale parameter
 
 The output scale for Real ESRGAN.
@@ -122,11 +136,15 @@ output. Lanczos interpolation is used when the outscale is greater than the scal
 
 #### Denoise parameter
 
+The amount of denoising to apply when using the RealESR x4 v4 model. Can be used to avoid over-smoothing the results.
+
 #### Face correction and strength
 
 Run face correction the the output image before returning it to the client.
 
 Enabling this will run GFPGAN and requires a correction model.
+
+Check out [the GFPGAN Github](https://github.com/TencentARC/GFPGAN) for more details.
 
 ### Scheduler comparison
 
