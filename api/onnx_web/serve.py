@@ -45,6 +45,7 @@ from .upscale import (
     UpscaleParams,
 )
 from .utils import (
+    is_debug,
     get_and_clamp_float,
     get_and_clamp_int,
     get_from_list,
@@ -57,6 +58,7 @@ from .utils import (
     Size,
 )
 
+import gc
 import json
 import numpy as np
 
@@ -258,6 +260,9 @@ app.config['EXECUTOR_PROPAGATE_EXCEPTIONS'] = True
 
 CORS(app, origins=context.cors_origin)
 executor = Executor(app)
+
+if is_debug():
+    gc.set_debug(gc.DEBUG_STATS)
 
 
 # TODO: these two use context

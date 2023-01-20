@@ -99,6 +99,10 @@ class Size:
         }
 
 
+def is_debug() -> bool:
+    return environ.get('DEBUG') is not None
+
+
 def get_and_clamp_float(args: Any, key: str, default_value: float, max_value: float, min_value=0.0) -> float:
     return min(max(float(args.get(key, default_value)), min_value), max_value)
 

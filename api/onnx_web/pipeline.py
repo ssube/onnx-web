@@ -5,10 +5,10 @@ from diffusers import (
     OnnxStableDiffusionImg2ImgPipeline,
     OnnxStableDiffusionInpaintPipeline,
 )
-from os import environ
 from PIL import Image, ImageChops
 from typing import Any
 
+import gc
 import numpy as np
 
 from .image import (
@@ -19,6 +19,7 @@ from .upscale import (
     UpscaleParams,
 )
 from .utils import (
+    is_debug,
     safer_join,
     BaseParams,
     Border,
@@ -69,6 +70,9 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         pipe.scheduler = scheduler.from_pretrained(
             model, subfolder='scheduler')
         last_pipeline_scheduler = scheduler
+
+    print('running garbage collection during pipeline change')
+    gc.collect()
 
     return pipe
 
@@ -167,7 +171,7 @@ def run_inpaint_pipeline(
         noise_source=noise_source,
         mask_filter=mask_filter)
 
-    if environ.get('DEBUG') is not None:
+    if is_debug():
         source_image.save(safer_join(ctx.output_path, 'last-source.png'))
         mask_image.save(safer_join(ctx.output_path, 'last-mask.png'))
         noise_image.save(safer_join(ctx.output_path, 'last-noise.png'))
