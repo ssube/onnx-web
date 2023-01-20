@@ -128,11 +128,6 @@ def get_from_map(args: Any, key: str, values: Dict[str, Any], default: Any):
         return values[default]
 
 
-def safer_join(base: str, tail: str) -> str:
-    safer_path = path.relpath(path.normpath(path.join('/', tail)), '/')
-    return path.join(base, safer_path)
-
-
 def hash_value(sha, param: Param):
     if param is None:
         return
@@ -172,3 +167,8 @@ def make_output_name(
             hash_value(sha, param)
 
     return '%s_%s_%s_%s.png' % (mode, params.seed, sha.hexdigest(), now)
+
+
+def safer_join(base: str, tail: str) -> str:
+    safer_path = path.relpath(path.normpath(path.join('/', tail)), '/')
+    return path.join(base, safer_path)
