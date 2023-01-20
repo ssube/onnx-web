@@ -175,6 +175,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
   const styles: React.CSSProperties = {
     backgroundPosition: 'top left',
     backgroundRepeat: 'no-repeat',
+    backgroundSize: 'contain',
     border: '1px solid black',
     maxHeight: params.height.default,
     maxWidth: params.width.default,
