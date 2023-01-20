@@ -106,7 +106,7 @@ class UpscaleParams():
         self.half = half
 
     def resize(self, size: Size) -> Size:
-        return Size(size.width * self.scale * self.outscale, size.height * self.scale * self.outscale)
+        return Size(size.width * self.outscale, size.height * self.outscale)
 
 
 def make_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
