@@ -1,5 +1,5 @@
 import { doesExist, Maybe, mustExist } from '@apextoaster/js-utils';
-import { FormatColorFill, Gradient } from '@mui/icons-material';
+import { FormatColorFill, Gradient, InvertColors } from '@mui/icons-material';
 import { Button, Stack, Typography } from '@mui/material';
 import { throttle } from 'lodash';
 import React, { RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -280,16 +280,6 @@ export function MaskCanvas(props: MaskCanvasProps) {
       />
       <Button
         variant='outlined'
-        startIcon={<Gradient />}
-        onClick={() => {
-          floodCanvas(bufferRef, floodBelow);
-          drawBuffer();
-          maskState.current = MASK_STATE.dirty;
-        }}>
-        Gray to black
-      </Button>
-      <Button
-        variant='outlined'
         startIcon={<FormatColorFill />}
         onClick={() => {
           floodCanvas(bufferRef, floodBlack);
@@ -307,6 +297,26 @@ export function MaskCanvas(props: MaskCanvasProps) {
           maskState.current = MASK_STATE.dirty;
         }}>
         Fill with white
+      </Button>
+      <Button
+        variant='outlined'
+        startIcon={<InvertColors />}
+        onClick={() => {
+          floodCanvas(bufferRef, floodInvert);
+          drawBuffer();
+          maskState.current = MASK_STATE.dirty;
+        }}>
+        Invert
+      </Button>
+      <Button
+        variant='outlined'
+        startIcon={<Gradient />}
+        onClick={() => {
+          floodCanvas(bufferRef, floodBelow);
+          drawBuffer();
+          maskState.current = MASK_STATE.dirty;
+        }}>
+        Gray to black
       </Button>
       <Button
         variant='outlined'
@@ -364,6 +374,10 @@ export function floodBlack(): number {
 
 export function floodWhite(): number {
   return COLORS.white;
+}
+
+export function floodInvert(n: number): number {
+  return COLORS.white - n;
 }
 
 export function grayToRGB(n: number, o = 1.0): string {
