@@ -26,6 +26,8 @@ RUN pip3 install onnxruntime-gpu --no-cache-dir
 
 COPY onnx_web/ /onnx-web/api/onnx_web/
 
+COPY params.json /onnx-web/api/params.json
+
 ENV ONNX_WEB_BUNDLE_PATH="/onnx-web/gui"
 
 COPY gui/ /onnx-web/gui/
