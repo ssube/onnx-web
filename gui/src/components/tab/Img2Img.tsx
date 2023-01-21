@@ -65,7 +65,7 @@ export function Img2Img() {
       <UpscaleControl />
       <Button
         disabled={doesExist(source) === false}
-        variant='outlined'
+        variant='contained'
         onClick={() => upload.mutate()}
       >Generate</Button>
     </Stack>

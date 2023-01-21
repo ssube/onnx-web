@@ -1,5 +1,5 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
-import { Box, Button, Stack } from '@mui/material';
+import { Box, Button, FormControlLabel, Stack } from '@mui/material';
 import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
@@ -151,19 +151,29 @@ export function Inpaint() {
           }}
         />
         <Stack direction='row' spacing={2}>
-          <input name='fill-color' type='color' defaultValue={fillColor} onBlur={(event) => {
-            setInpaint({
-              fillColor: event.target.value,
-            });
-          }} />
-          <label htmlFor='fill-color'>Fill Color</label>
+          <FormControlLabel
+            label='Fill Color'
+            sx={{ mx: 1 }}
+            control={
+              <input
+                defaultValue={fillColor}
+                name='fill-color'
+                type='color'
+                onBlur={(event) => {
+                  setInpaint({
+                    fillColor: event.target.value,
+                  });
+                }}
+              />
+            }
+          />
         </Stack>
       </Stack>
       <OutpaintControl />
       <UpscaleControl />
       <Button
         disabled={doesExist(source) === false || doesExist(mask) === false}
-        variant='outlined'
+        variant='contained'
         onClick={() => upload.mutate()}
       >Generate</Button>
     </Stack>

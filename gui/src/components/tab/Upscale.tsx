@@ -46,7 +46,7 @@ export function Upscale() {
       <UpscaleControl />
       <Button
         disabled={doesExist(params.source) === false}
-        variant='outlined'
+        variant='contained'
         onClick={() => upload.mutate()}
       >Generate</Button>
     </Stack>

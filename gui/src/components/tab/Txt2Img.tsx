@@ -66,7 +66,7 @@ export function Txt2Img() {
       </Stack>
       <UpscaleControl />
       <Button
-        variant='outlined'
+        variant='contained'
         onClick={() => generate.mutate()}
       >Generate</Button>
     </Stack>

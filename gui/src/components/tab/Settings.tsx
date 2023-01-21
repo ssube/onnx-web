@@ -38,7 +38,7 @@ export function Settings() {
       <TextField variant='outlined' label='API Server' value={root} onChange={(event) => {
         setRoot(event.target.value);
       }} />
-      <Button startIcon={<Refresh />} onClick={() => {
+      <Button variant='contained' startIcon={<Refresh />} onClick={() => {
         const query = new URLSearchParams(window.location.search);
         query.set('api', root);
         window.location.search = query.toString();
