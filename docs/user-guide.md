@@ -7,26 +7,21 @@ This is the user guide for ONNX web, a web GUI for running hardware-accelerated 
 - [User Guide](#user-guide)
   - [Contents](#contents)
   - [Outline](#outline)
-    - [ONNX Models](#onnx-models)
+    - [ONNX models](#onnx-models)
     - [Modes and tabs](#modes-and-tabs)
-    - [Common parameters](#common-parameters)
+    - [Scheduler comparison](#scheduler-comparison)
+  - [Tabs](#tabs)
+    - [Txt2img tab](#txt2img-tab)
       - [Scheduler parameter](#scheduler-parameter)
       - [CFG parameter](#cfg-parameter)
       - [Steps parameter](#steps-parameter)
       - [Seed parameter](#seed-parameter)
       - [Prompt parameter](#prompt-parameter)
       - [Negative prompt parameter](#negative-prompt-parameter)
-    - [Upscaling parameters](#upscaling-parameters)
-      - [Scale parameter](#scale-parameter)
-      - [Outscale parameter](#outscale-parameter)
-      - [Denoise parameter](#denoise-parameter)
-      - [Face correction and strength](#face-correction-and-strength)
-    - [Scheduler comparison](#scheduler-comparison)
-  - [Tabs](#tabs)
-    - [Txt2img tab](#txt2img-tab)
       - [Width and height parameters](#width-and-height-parameters)
     - [Img2img tab](#img2img-tab)
       - [Img2img source image](#img2img-source-image)
+      - [Strength parameter](#strength-parameter)
     - [Inpaint tab](#inpaint-tab)
       - [Inpaint source image](#inpaint-source-image)
       - [Mask canvas and brush parameters](#mask-canvas-and-brush-parameters)
@@ -34,7 +29,13 @@ This is the user guide for ONNX web, a web GUI for running hardware-accelerated 
       - [Noise source parameter](#noise-source-parameter)
       - [Outpaint parameters](#outpaint-parameters)
     - [Upscale tab](#upscale-tab)
+      - [Scale parameter](#scale-parameter)
+      - [Outscale parameter](#outscale-parameter)
+      - [Denoise parameter](#denoise-parameter)
+      - [Face correction and strength](#face-correction-and-strength)
     - [Settings tab](#settings-tab)
+      - [API server setting](#api-server-setting)
+      - [Reset tab buttons](#reset-tab-buttons)
   - [Known Errors](#known-errors)
     - [Image Errors](#image-errors)
       - [Empty black images](#empty-black-images)
@@ -56,18 +57,21 @@ This is the user guide for ONNX web, a web GUI for running hardware-accelerated 
 
 ## Outline
 
-### ONNX Models
+### ONNX models
 
 Models are split up into three groups:
 
 1. Diffusion
    1. Stable Diffusion
+   2. Knollingcase
+   3. OpenJourney
+   4. specialized models
 2. Upscaling
    1. Real ESRGAN
 3. Correction
    1. GFPGAN
 
-There are many models, variations, and versions available.
+There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles.
 
 ### Modes and tabs
 
@@ -81,15 +85,21 @@ There are many models, variations, and versions available.
 - [upscale](#upscale-tab)
   - resize an existing image
 
-### Common parameters
+### Scheduler comparison
 
-These are common parameters shared by the diffusion models and all tabs that use diffusers (txt2img, img2img, and
-inpaint).
+https://huggingface.co/docs/diffusers/main/en/using-diffusers/schedulers#compare-schedulers
 
-Using the same prompt and seed should produce similar images. Using the same prompt, seed, steps, and CFG should
-produce the same image.
+## Tabs
+
+### Txt2img tab
+
+The txt2img tab turns your wildest ideas into something resembling them, maybe.
+
+This mode takes a text prompt along with various other parameters and produces a new image.
 
 #### Scheduler parameter
+
+This selects the scheduler algorithm used to resolve the latent noise into a coherent image.
 
 #### CFG parameter
 
@@ -106,12 +116,17 @@ Roughly:
 #### Steps parameter
 
 The number of scheduler steps to run. Using more steps often results in an image with more details, but also takes
-longer to run. The Euler Ancestral scheduler can usually produce decent results in 30-45 steps, while some of the
-others need 80-100 or more. Inpainting may need more steps, up to 120 or 150 in some cases.
+longer to run.
+
+The Euler Ancestral scheduler can usually produce decent results in 30-45 steps, while some of the others need 80-100 or
+more. Inpainting may need more steps, up to 120 or 150 in some cases.
 
 #### Seed parameter
 
 The seed value used for the random number generators.
+
+Using the same prompt and seed should produce similar images. Using the same prompt, seed, steps, and CFG should
+produce exactly the same image.
 
 Using -1 will generate a new seed on the server for each image.
 
@@ -122,47 +137,6 @@ The input text for your image, things that should be included.
 #### Negative prompt parameter
 
 The opposite of [the prompt parameter](#prompt-parameter), things that should _not_ be included.
-
-### Upscaling parameters
-
-Resize the output image before returning it to the client.
-
-Enabling this will run Real ESRGAN and requires an upscaling model.
-
-Check out [the Real ESRGAN Github](https://github.com/xinntao/Real-ESRGAN) for more details.
-
-#### Scale parameter
-
-The output scale for Real ESRGAN.
-
-#### Outscale parameter
-
-The final output scale after running Real ESRGAN. This can increase _or_ decrease the size of the final
-output. Lanczos interpolation is used when the outscale is greater than the scale.
-
-#### Denoise parameter
-
-The amount of denoising to apply when using the RealESR x4 v4 model. Can be used to avoid over-smoothing the results.
-
-#### Face correction and strength
-
-Run face correction the the output image before returning it to the client.
-
-Enabling this will run GFPGAN and requires a correction model.
-
-Check out [the GFPGAN Github](https://github.com/TencentARC/GFPGAN) for more details.
-
-### Scheduler comparison
-
-https://huggingface.co/docs/diffusers/main/en/using-diffusers/schedulers#compare-schedulers
-
-## Tabs
-
-### Txt2img tab
-
-The txt2img tab turns your wildest ideas into something resembling them, maybe.
-
-This mode takes a text prompt along with various other parameters and produces a new image.
 
 #### Width and height parameters
 
@@ -178,6 +152,10 @@ The output image will be the same size as the input, unless upscaling is turned 
 #### Img2img source image
 
 Upload a source image for img2img.
+
+#### Strength parameter
+
+Blending strength. 0 uses the source image without changing it, 1 will replace it almost entirely.
 
 ### Inpaint tab
 
@@ -264,12 +242,45 @@ The number of pixels to add in each direction.
 The upscale tab provides a dedicated way to upscale an image and run face correction using Real ESRGAN and GFPGAN,
 without running a diffusion pipeline at all. This can be faster and avoids making unnecessary changes to the image.
 
+Resize the output image before returning it to the client.
+
+Enabling this will run Real ESRGAN and requires an upscaling model.
+
+Check out [the Real ESRGAN Github](https://github.com/xinntao/Real-ESRGAN) for more details.
+
+#### Scale parameter
+
+The output scale for Real ESRGAN.
+
+#### Outscale parameter
+
+The final output scale after running Real ESRGAN. This can increase _or_ decrease the size of the final
+output. Lanczos interpolation is used when the outscale is greater than the scale.
+
+#### Denoise parameter
+
+The amount of denoising to apply when using the RealESR x4 v4 model. Can be used to avoid over-smoothing the results.
+
+#### Face correction and strength
+
+Run face correction the the output image before returning it to the client.
+
+Enabling this will run GFPGAN and requires a correction model.
+
+Check out [the GFPGAN Github](https://github.com/TencentARC/GFPGAN) for more details.
+
 ### Settings tab
 
 The settings tab provides access to some of the settings and allows you to reset the state of the other tabs
 to the defaults, if they get out of control.
 
+#### API server setting
+
 Changing the API server will reload the client.
+
+#### Reset tab buttons
+
+Resets the state of each tab to the default, if some controls become glitchy.
 
 ## Known Errors
 
