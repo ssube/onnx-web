@@ -35,7 +35,7 @@ This is the user guide for ONNX web, a web GUI for running hardware-accelerated 
       - [Outpaint parameters](#outpaint-parameters)
     - [Upscale tab](#upscale-tab)
     - [Settings tab](#settings-tab)
-  - [Errors](#errors)
+  - [Known Errors](#known-errors)
     - [Image Errors](#image-errors)
       - [Empty black images](#empty-black-images)
       - [Distorted and noisy images](#distorted-and-noisy-images)
@@ -45,6 +45,12 @@ This is the user guide for ONNX web, a web GUI for running hardware-accelerated 
       - [Parameter version error](#parameter-version-error)
     - [Server Errors](#server-errors)
       - [Very slow with high CPU usage, max fan speed during image generation](#very-slow-with-high-cpu-usage-max-fan-speed-during-image-generation)
+      - [Connection refused or timeouts](#connection-refused-or-timeouts)
+      - [Error: name 'cmd' is not defined](#error-name-cmd-is-not-defined)
+      - [CUDA driver version is insufficient for CUDA runtime version](#cuda-driver-version-is-insufficient-for-cuda-runtime-version)
+      - [Command 'python' not found or Command 'pip' not found](#command-python-not-found-or-command-pip-not-found)
+      - [AttributeError: module 'numpy' has no attribute 'float'](#attributeerror-module-numpy-has-no-attribute-float)
+      - [Numpy invalid combination of arguments](#numpy-invalid-combination-of-arguments)
       - [ONNXRuntimeError: The parameter is incorrect](#onnxruntimeerror-the-parameter-is-incorrect)
       - [The expanded size of the tensor must match the existing size](#the-expanded-size-of-the-tensor-must-match-the-existing-size)
 
@@ -265,7 +271,7 @@ to the defaults, if they get out of control.
 
 Changing the API server will reload the client.
 
-## Errors
+## Known Errors
 
 ### Image Errors
 
@@ -312,12 +318,89 @@ C:\Users\ssube\stabdiff\onnx-web\api\onnx_env\lib\site-packages\onnxruntime\capi
 
 The `CPUExecutionProvider` is used as a fallback, but has a tendency to max out all of your real CPU cores.
 
+#### Connection refused or timeouts
+
+This can happen in a few situations:
+
+- when your API server is not running
+- when your client is attempting to use the wrong API server
+- when your firewall is blocking the API server's port
+
+If you are using a remote server, not on your local machine, check the Settings tab and make sure the API Server is
+set to the correct DNS name or IP address and port number.
+
+If you have a firewall running (which you should), make sure that the correct port has been opened and the API server
+is allowed to use that port.
+
+The default ports are:
+
+- TCP/5000 for the API server
+
+If you are running the GUI separately, such as when using nginx or for development:
+
+- TCP/80 for the GUI using nginx without a container
+- TCP/8000 for the GUI using the nginx container
+- TCP/3000 for the GUI dev server
+
+#### Error: name 'cmd' is not defined
+
+This can happen when you attempt to create the Python virtual environment on a Debian system, and appears to be a bug
+in the Python `venv` module: https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1884072.html
+
+Installing the `venv` module through `apt` appears to resolve the issue:
+
+```shell
+> sudo apt install python3-venv
+```
+
+#### CUDA driver version is insufficient for CUDA runtime version
+
+This can happen when your CUDA drivers are too new or too old for the API server and ONNX runtime.
+
+Make sure you are using CUDA 11.x drivers. The 11.6 version is recommended by ONNX, but 11.7 appears to work as well.
+
+Please see [the ONNX runtime docs](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements)
+for more details.
+
+#### Command 'python' not found or Command 'pip' not found
+
+This can happen when your operating system has both Python 2 and 3 installed and uses different commands to
+differentiate between them.
+
+Using `python3` and `pip3` _instead of_ `python` and `pip` in the commands should resolve this issue:
+
+```shell
+> pip3 install -r requirements.txt    # for example, you may be running a different command
+```
+
+#### AttributeError: module 'numpy' has no attribute 'float'
+
+This can happen when you have numpy 1.24 or a newer version installed. The `float` attribute has been deprecated and
+was removed in 1.24. Some of the dependencies will automatically install the latest version, while others need a 1.23
+version.
+
+Reinstalling numpy 1.23 should resolve this issue:
+
+```shell
+> pip install "numpy>=1.20,<1.24" --force-reinstall
+```
+
+#### Numpy invalid combination of arguments
+
+This can happen when you attempt to use an ONNX model that was exported using an older version of the ONNX libraries.
+
+This often means that you need to re-export your models to ONNX format using the current version of the server and the
+libraries it depends on.
+
 #### ONNXRuntimeError: The parameter is incorrect
 
-This can happen when you attempt to use an inpainting model with txt2img or img2img mode, or a regular model for inpaint
-mode.
+This can happen in a few situations:
 
-This often means that you are using an invalid model for the current tab.
+- when you attempt to use an inpainting model from the txt2img or img2img tabs, or vice versa
+- when you attempt to use img2img with a non-square, non-power-of-2 source
+
+This often means that you are using an invalid model for the current tab or an invalid source image for the current
+model.
 
 Example error:
 

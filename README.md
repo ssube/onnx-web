@@ -1,46 +1,43 @@
 # ONNX Web
 
-This is a web UI for running [ONNX models](https://onnx.ai/) with GPU acceleration or in software, running locally or on a remote machine.
+This is a web UI for running [ONNX models](https://onnx.ai/) with hardware acceleration on both AMD and Nvidia system,
+with a CPU software fallback.
 
 The API runs on both Linux and Windows and provides access to the major functionality of [`diffusers`](https://huggingface.co/docs/diffusers/main/en/index),
 along with metadata about the available models and accelerators, and the output of previous runs. Hardware acceleration
-is supported on both AMD and Nvidia, with a CPU fallback capable of running on laptop-class machines.
+is supported on both AMD and Nvidia for both Linux and Windows, with a CPU fallback capable of running on laptop-class
+machines.
 
 The GUI is [hosted on Github Pages](https://ssube.github.io/onnx-web/) and runs in all major browsers, including on
-mobile devices, and allows you to select the model and accelerator being used. Image parameters are shown for each of
-the major modes, and you can upload or paint a mask for inpainting and outpainting. The last few output images are shown
-below the image controls, making it easy to refer back to previous parameters or save an image from earlier.
+mobile devices. It allows you to select the model and accelerator being used for each image pipeline. Image parameters
+are shown for each of the major modes, and you can either upload or paint the mask for inpainting and outpainting. The
+last few output images are shown below the image controls, making it easy to refer back to previous parameters or save
+an image from earlier.
+
+Please [see the User Guide](https://github.com/ssube/onnx-web/blob/main/docs/user-guide.md) for more details.
 
 ![txt2img with example astronaut prompt and image](./docs/readme-preview.png)
 
-Based on guides by:
-
-- https://gist.github.com/harishanand95/75f4515e6187a6aa3261af6ac6f61269
-- https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674
-- https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs
-- https://www.travelneil.com/stable-diffusion-updates.html
-
 ## Features
 
-- REST API server capable of running ONNX models with DirectML acceleration
-  - AMD and Nvidia hardware acceleration
-  - CPU software fallback
-  - multiple schedulers
+- supports AMD and Nvidia hardware acceleration using CUDA, DirectML, or ROCm
 - web app to generate and view images
   - [hosted on Github Pages](https://ssube.github.io/onnx-web), from your CDN, or locally
-  - built with React and MUI
-- OCI containers
-  - for both API and GUI
-  - for each hardware platform
-- txt2img mode
-  - image controls and scheduler selection
-  - with recent image history
-- img2img mode
-  - image upload with preview
-  - guided by prompt and negative prompt
-- inpainting mode
-  - mask painting
-  - source to mask conversion tools
+  - keeps your recent image history as you change tabs
+- supports many common pipelines
+  - txt2img mode
+  - img2img mode
+  - inpainting mode
+- supports upscaling and face correction
+  - using Real ESRGAN and GFPGAN
+- API server can run models on a remote GPU
+  - REST API can be served over HTTPS or HTTP
+  - background processing for all image pipelines
+  - polling for image status, plays nice with load balancers
+- OCI containers provided
+  - for all supported hardware accelerators
+  - includes both the API and GUI bundle in a single container
+  - runs well on [RunPod](https://www.runpod.io/) and other GPU container hosting services
 
 ## Contents
 
@@ -52,14 +49,12 @@ Based on guides by:
     - [Note about setup paths](#note-about-setup-paths)
     - [Create a virtual environment](#create-a-virtual-environment)
     - [Install pip packages](#install-pip-packages)
-      - [For upscaling and face correction](#for-upscaling-and-face-correction)
       - [For AMD on Windows: Install ONNX DirectML](#for-amd-on-windows-install-onnx-directml)
       - [For CPU on Linux: Install PyTorch CPU](#for-cpu-on-linux-install-pytorch-cpu)
       - [For CPU on Windows: Install PyTorch CPU](#for-cpu-on-windows-install-pytorch-cpu)
       - [For Nvidia everywhere: Install PyTorch GPU and ONNX GPU](#for-nvidia-everywhere-install-pytorch-gpu-and-onnx-gpu)
     - [Download and convert models](#download-and-convert-models)
     - [Test the models](#test-the-models)
-    - [Upscaling and face correction](#upscaling-and-face-correction)
   - [Usage](#usage)
     - [Running the containers](#running-the-containers)
     - [Configuring and running the server](#configuring-and-running-the-server)
@@ -69,17 +64,18 @@ Based on guides by:
     - [Hosting the client](#hosting-the-client)
     - [Customizing the client config](#customizing-the-client-config)
     - [Known errors and solutions](#known-errors-and-solutions)
+  - [Credits](#credits)
 
 ## Setup
 
 This is a very similar process to what [harishanand95](https://gist.github.com/harishanand95/75f4515e6187a6aa3261af6ac6f61269)
-and [averad's](https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674) gists recommend, split up into a few
-steps:
+and [averad](https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674) recommend in their gists, split up into a
+few steps:
 
 1. [Install Git and Python](#install-git-and-python), if you have not already
 2. [Create a virtual environment](#create-a-virtual-environment)
 3. [Install pip packages](#install-pip-packages)
-   1. Install common packages
+   1. Install common packages used by the server
    2. Install platform-specific packages for your GPU (or CPU)
 4. [Download and convert models](#download-and-convert-models)
 
@@ -101,7 +97,8 @@ Make sure you have Python 3.10 or earlier:
 Python 3.10
 ```
 
-If your system uses `python3` and `pip3` for the Python 3.x tools, make sure to adjust the commands shown here.
+If your system differentiates between Python 2 and 3, and uses `python3` and `pip3` for the Python 3.x tools, make sure
+to adjust the commands shown here. They should otherwise be the same: `python3 --version`.
 
 Once you have those basic packages installed, clone this git repository:
 
@@ -165,38 +162,33 @@ Update pip itself:
 
 ### Install pip packages
 
-Install the following packages for AI:
+You can install of the necessary packages at once using [the `requirements.txt` file](./api/requirements.txt):
+
+```shell
+> pip install -r requirements.txt
+```
+
+_Or_ you can install them manually using pip:
 
 ```shell
 > pip install "numpy>=1.20,<1.24"
 
 > pip install "protobuf<4,>=3.20.2"
 
+# stable diffusion and friends
 > pip install accelerate diffusers ftfy onnx onnxruntime spacy scipy transformers
-```
 
-Install the following packages for the API:
+# upscaling and face correction
+> pip install basicsr facexlib gfpgan realesrgan
 
-```shell
+# API server
 > pip install flask flask-cors flask_executor
-```
-
-_Or_ install all of these packages at once using [the `requirements.txt` file](./api/requirements.txt):
-
-```shell
-> pip install -r requirements.txt
 ```
 
 At the moment, only `numpy` and `protobuf` seem to need a specific version. If you see an error about `np.float`, make
 sure you are not using `numpy>=1.24`.
 [This SO question](https://stackoverflow.com/questions/74844262/how-to-solve-error-numpy-has-no-attribute-float-in-python)
 has more details.
-
-#### For upscaling and face correction
-
-```shell
-> pip install basicsr facexlib gfpgan realesrgan
-```
 
 #### For AMD on Windows: Install ONNX DirectML
 
@@ -253,7 +245,8 @@ Make sure you have CUDA 11.x installed and that the version of PyTorch matches t
 
 ### Download and convert models
 
-Sign up for an account at https://huggingface.co and find the models you want to use. Popular options include:
+Sign up for an account at https://huggingface.co and find the models you want to use. Some popular options are
+already listed in the `convert.py` script, including:
 
 - https://huggingface.co/runwayml/stable-diffusion-v1-5
 - https://huggingface.co/runwayml/stable-diffusion-inpainting
@@ -261,7 +254,8 @@ Sign up for an account at https://huggingface.co and find the models you want to
 - https://huggingface.co/stabilityai/stable-diffusion-2-inpainting
 
 You will need at least one of the base models for txt2img and img2img mode. If you want to use inpainting, you will
-also need one of the inpainting models.
+also need one of the inpainting models. The upscaling and face correction models are downloaded from Github by the
+same script.
 
 Log into the HuggingFace CLI:
 
@@ -276,31 +270,22 @@ Log into the HuggingFace CLI:
 Issue an API token from https://huggingface.co/settings/tokens, naming it something memorable like `onnx-web`, and then
 paste it into the prompt.
 
-Download the conversion script from the `huggingface/diffusers` repository to the root of this project:
-
-- https://raw.githubusercontent.com/huggingface/diffusers/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
-
-Run the conversion script with your desired model(s):
+Run the provided conversion script from the `api/` directory:
 
 ```shell
-# on linux:
-> python convert_stable_diffusion_checkpoint_to_onnx.py --model_path="runwayml/stable-diffusion-v1-5" --output_path="./models/stable-diffusion-onnx-v1-5"
-
-# on windows:
-> python convert_stable_diffusion_checkpoint_to_onnx.py --model_path="runwayml/stable-diffusion-v1-5" --output_path=".\models\stable-diffusion-onnx-v1-5"
+> python -m onnx_web.convert --diffusers --gfpgan --resrgan
 ```
+
+The conversion script has a few other options, which can be printed using `python -m onnx_web.convert --help`. If you
+are using CUDA on Nvidia hardware, using the `--half` option may make things faster.
+
+Models that have already been downloaded and converted will be skipped, so it should be safe to run this script after
+every update.
 
 This will take a little while to convert each model. Stable diffusion v1.4 is about 6GB, v1.5 is at least 10GB or so.
-
-If you want to use inpainting, you will need a second model trained for that purpose:
-
-```shell
-# on linux:
-> python convert_stable_diffusion_checkpoint_to_onnx.py --model_path="runwayml/stable-diffusion-inpainting" --output_path="./models/stable-diffusion-inpainting"
-
-# on windows:
-> python convert_stable_diffusion_checkpoint_to_onnx.py --model_path="runwayml/stable-diffusion-inpainting" --output_path=".\models\stable-diffusion-inpainting"
-```
+You can skip certain models by including a `--skip name` argument if you want to save time or disk space. For example,
+using `--skip stable-diffusion-onnx-v2-inpainting --skip stable-diffusion-onnx-v2-1` will not download the Stable
+Diffusion v2 models.
 
 ### Test the models
 
@@ -311,13 +296,6 @@ If the script works, there will be an image of an astronaut in `outputs/test.png
 
 If you get any errors, check [the known errors section](#known-errors-and-solutions).
 
-### Upscaling and face correction
-
-Models:
-
-- https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth
-- https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth
-
 ## Usage
 
 ### Running the containers
@@ -325,8 +303,8 @@ Models:
 OCI images are available for both the API and GUI, `ssube/onnx-web-api` and `ssube/onnx-web-gui`, respectively. These
 are regularly built from the `main` branch and for all tags.
 
-The `ssube/onnx-web-gui` image is available in both Debian and Alpine-based versions, but the `ssube/onnx-web-api`
-image is only available as a Debian-based image, due to [this Github issue with `onnxruntime`](https://github.com/microsoft/onnxruntime/issues/2909#issuecomment-593591317).
+While two containers are provided, the API container also includes the GUI bundle. In most cases, you will only need to
+run the API container. You may need both if you are hosting the API and GUI from separate pods or on different machines.
 
 When using the containers, make sure to mount the `models/` and `outputs/` directories. The models directory can be
 read-only, but outputs should be read-write.
@@ -336,6 +314,9 @@ read-only, but outputs should be read-write.
 
 > podman run -p 8000:80 --rm docker.io/ssube/onnx-web-gui:main-nginx-bullseye
 ```
+
+The `ssube/onnx-web-gui` image is available in both Debian and Alpine-based versions, but the `ssube/onnx-web-api`
+image is only available as a Debian-based image, due to [this Github issue with `onnxruntime`](https://github.com/microsoft/onnxruntime/issues/2909#issuecomment-593591317).
 
 ### Configuring and running the server
 
@@ -460,24 +441,20 @@ custom config using:
 
 ### Known errors and solutions
 
-- `Error: name 'cmd' is not defined` while setting up the virtual environment:
-  - install venv through apt: `sudo apt install python3-venv`
-  - see https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1884072.html
-- command not found `python` or `pip`:
-  - some systems differentiate between Python 2 and 3, and reserve the `python` command for 2
-- connection refused:
-  - make sure the API and GUI are both running
-  - make sure you are using the correct hostname or IP address
-  - open the appropriate firewall ports:
-    - TCP/5000 for the API dev server
-    - TCP/3000 for the GUI dev server
-    - TCP/80 for the GUI using nginx without a container
-    - TCP/8000 for the GUI using the nginx container
-- CUDA errors:
-  - make sure you are using CUDA 11.x
-  - https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements
-- numpy invalid combination of arguments:
-  - make sure to export ONNX models using the same packages and versions that you use while running the API
-- numpy `np.float` missing
-  - reinstall `pip install "numpy>=1.20,<1.24 --force-reinstall"`
-  - another package may have upgraded numpy to 1.24, which removed that symbol
+Please see [the Known Errors section of the user guide](https://github.com/ssube/onnx-web/blob/main/docs/user-guide.md#known-errors).
+
+## Credits
+
+Getting this set up and running on AMD would not have been possible without guides by:
+
+- https://gist.github.com/harishanand95/75f4515e6187a6aa3261af6ac6f61269
+- https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674
+- https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs
+- https://www.travelneil.com/stable-diffusion-updates.html
+- https://github.com/Amblyopius/AMD-Stable-Diffusion-ONNX-FP16
+
+There are many other good options for using Stable Diffusion with hardware acceleration, including:
+
+- https://github.com/azuritecoin/OnnxDiffusersUI
+- https://github.com/pingzing/stable-diffusion-playground
+- https://github.com/quickwick/stable-diffusion-win-amd-ui
