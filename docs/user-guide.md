@@ -1,6 +1,16 @@
 # User Guide
 
-This is the user guide for ONNX web, a web GUI for running hardware-accelerated ONNX models.
+This is the user guide for ONNX web, a web GUI for running ONNX models with hardware acceleration on both AMD and Nvidia
+system, with a CPU software fallback.
+
+The API runs on both Linux and Windows and provides access to the major functionality of diffusers, along with metadata
+about the available models and accelerators, and the output of previous runs. Hardware acceleration is supported on both
+AMD and Nvidia for both Linux and Windows, with a CPU fallback capable of running on laptop-class machines.
+
+The GUI is hosted on Github Pages and runs in all major browsers, including on mobile devices. It allows you to select
+the model and accelerator being used for each image pipeline. Image parameters are shown for each of the major modes,
+and you can either upload or paint the mask for inpainting and outpainting. The last few output images are shown below
+the image controls, making it easy to refer back to previous parameters or save an image from earlier.
 
 ## Contents
 
@@ -59,17 +69,19 @@ This is the user guide for ONNX web, a web GUI for running hardware-accelerated 
 
 ### ONNX models
 
+The [ONNX runtime](https://onnxruntime.ai/) is a library for accelerating neural networks and machine learning models,
+using [the ONNX file format](https://onnx.ai/) to share them across different platforms. ONNX web is a server to run
+hardware-accelerated inference using those models and a web client to provide the parameters and view the results.
+
 Models are split up into three groups:
 
 1. Diffusion
-   1. Stable Diffusion
-   2. Knollingcase
-   3. OpenJourney
-   4. specialized models
+   1. general models like [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5)
+   2. specialized models like [Knollingcase](https://huggingface.co/Aybeeceedee/knollingcase) or [OpenJourney](https://huggingface.co/prompthero/openjourney)
 2. Upscaling
-   1. Real ESRGAN
+   1. [Real ESRGAN](https://github.com/xinntao/Real-ESRGAN)
 3. Correction
-   1. GFPGAN
+   1. [GFPGAN](https://github.com/TencentARC/GFPGAN)
 
 There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles.
 
@@ -101,6 +113,8 @@ This mode takes a text prompt along with various other parameters and produces a
 
 This selects the scheduler algorithm used to resolve the latent noise into a coherent image.
 
+See [the scheduler comparison](#scheduler-comparison) for more details.
+
 #### CFG parameter
 
 Classifier free guidance. How strictly the model should follow the prompt. Anything from 5 to 15 usually works. More is
@@ -119,20 +133,29 @@ The number of scheduler steps to run. Using more steps often results in an image
 longer to run.
 
 The Euler Ancestral scheduler can usually produce decent results in 30-45 steps, while some of the others need 80-100 or
-more. Inpainting may need more steps, up to 120 or 150 in some cases.
+more. Inpainting may need more steps, up to 120 or 150 in some cases. Using too many steps can increase the contrast
+of your image too much, almost like a posterize effect.
 
 #### Seed parameter
 
-The seed value used for the random number generators.
+The seed value used for the random number generators. This is a lot like the seed in a game like Minecraft and can be
+shared, but producing exactly the same image requires the same model, scheduler, and all of the other parameters as
+well.
 
-Using the same prompt and seed should produce similar images. Using the same prompt, seed, steps, and CFG should
-produce exactly the same image.
+You can use the same prompt and seed, while varying the steps and CFG, to produce similar images with small variations.
 
 Using -1 will generate a new seed on the server for each image.
 
 #### Prompt parameter
 
 The input text for your image, things that should be included.
+
+The [OpenArt Stable Diffusion Prompt Book](https://cdn.openart.ai/assets/Stable%20Diffusion%20Prompt%20Book%20From%20OpenArt%2011-13.pdf)
+has a lot of useful tips on how to build a good prompt. You can include keywords to describe the subject, setting,
+style, and level of detail. Throwing a few extra keywords into the end of the prompt can help add specific details,
+like the color and intensity of the lighting.
+
+> TODO
 
 #### Negative prompt parameter
 
@@ -186,12 +209,15 @@ Upload or draw a mask image.
 
 White pixels will be replaced with noise and then regenerated, black pixels will be kept as-is in the output.
 
-- Gray to black
-  - Convert gray parts of the mask to black (keep them)
 - Fill with black
   - Keep all pixels
 - Fill with white
   - Replace all pixels
+- Invert
+  - Replace black pixels with white and vice versa
+  - If you accidentally painted a good mask in the wrong color, this can save it
+- Gray to black
+  - Convert gray parts of the mask to black (keep them)
 - Gray to white
   - Convert gray parts of the mask to white (replace them)
 
