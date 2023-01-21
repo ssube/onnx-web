@@ -182,7 +182,7 @@ def onnx_export(
 
 
 @torch.no_grad()
-def convert_diffuser(name: str, url: str, opset: int, half: bool):
+def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str):
     '''
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
     '''
@@ -201,7 +201,7 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool):
             'Half precision model export is only supported on GPUs with CUDA')
 
     pipeline = StableDiffusionPipeline.from_pretrained(
-        url, torch_dtype=dtype).to(training_device)
+        url, torch_dtype=dtype, use_auth_token=token).to(training_device)
     output_path = Path(dest_path)
 
     # TEXT ENCODER
@@ -387,7 +387,7 @@ def load_models(args, models: Models):
             if source[0] in args.skip:
                 print('Skipping model: %s' % source[0])
             else:
-                convert_diffuser(*source, args.opset, args.half)
+                convert_diffuser(*source, args.opset, args.half, args.token)
 
     if args.upscaling:
         for source in models.get('upscaling'):
@@ -428,6 +428,11 @@ def main() -> int:
         default=14,
         type=int,
         help="The version of the ONNX operator set to use.",
+    )
+    parser.add_argument(
+        '--token',
+        type=str,
+        help="HuggingFace token with read permissions for downloading models.",
     )
 
     args = parser.parse_args()
