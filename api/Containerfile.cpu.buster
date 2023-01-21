@@ -28,4 +28,4 @@ ENV ONNX_WEB_BUNDLE_PATH="/onnx-web/gui"
 
 COPY gui/ /onnx-web/gui/
 
-CMD [ "flask", "--app=onnx_web.serve", "run", "--host=0.0.0.0" ]
+CMD [ "sh", "-c", "python -m onnx_web.convert --diffusion --upscaling --correction --extras && flask --app=onnx_web.serve run --host=0.0.0.0" ]
