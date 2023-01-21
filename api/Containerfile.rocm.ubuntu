@@ -2,6 +2,10 @@ FROM docker.io/rocm/pytorch:rocm5.4_ubuntu20.04_py3.8_pytorch_1.12.1
 
 WORKDIR /onnx-web/api
 
+RUN apt-get -y update \
+ && apt-get install -y ffmpeg libsm6 libxext6 \
+ && rm -rf /var/lib/apt/lists/*
+
 RUN pip3 install virtualenv --upgrade
 
 RUN python3 -m venv onnx_env
