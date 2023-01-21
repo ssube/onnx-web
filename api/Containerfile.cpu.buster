@@ -2,6 +2,10 @@ FROM docker.io/python:3.10-buster
 
 WORKDIR /onnx-web/api
 
+RUN apt-get -y update \
+ && apt-get install -y ffmpeg libsm6 libxext6 \
+ && rm -rf /var/lib/apt/lists/*
+
 RUN pip3 install virtualenv --upgrade
 
 RUN python3 -m venv onnx_env
@@ -17,6 +21,8 @@ COPY requirements.txt /onnx-web/api/requirements.txt
 RUN pip3 install -r requirements.txt --no-cache-dir
 
 COPY onnx_web/ /onnx-web/api/onnx_web/
+
+COPY params.json /onnx-web/api/params.json
 
 ENV ONNX_WEB_BUNDLE_PATH="/onnx-web/gui"
 
