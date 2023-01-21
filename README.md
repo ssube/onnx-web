@@ -252,6 +252,8 @@ already listed in the `convert.py` script, including:
 - https://huggingface.co/runwayml/stable-diffusion-inpainting
 - https://huggingface.co/stabilityai/stable-diffusion-2-1
 - https://huggingface.co/stabilityai/stable-diffusion-2-inpainting
+- https://huggingface.co/Aybeeceedee/knollingcase
+- https://huggingface.co/prompthero/openjourney
 
 You will need at least one of the base models for txt2img and img2img mode. If you want to use inpainting, you will
 also need one of the inpainting models. The upscaling and face correction models are downloaded from Github by the
@@ -273,14 +275,14 @@ paste it into the prompt.
 Run the provided conversion script from the `api/` directory:
 
 ```shell
-> python -m onnx_web.convert --diffusers --gfpgan --resrgan
+> python -m onnx_web.convert --diffusion --correction --upscaling
 ```
+
+Models that have already been downloaded and converted will be skipped, so it should be safe to run this script after
+every update. Some additional, more specialized models are available using the `--extras` flag.
 
 The conversion script has a few other options, which can be printed using `python -m onnx_web.convert --help`. If you
 are using CUDA on Nvidia hardware, using the `--half` option may make things faster.
-
-Models that have already been downloaded and converted will be skipped, so it should be safe to run this script after
-every update.
 
 This will take a little while to convert each model. Stable diffusion v1.4 is about 6GB, v1.5 is at least 10GB or so.
 You can skip certain models by including a `--skip name` argument if you want to save time or disk space. For example,
