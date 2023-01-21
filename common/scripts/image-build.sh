@@ -13,7 +13,10 @@ docker pull "${IMAGE_FULL}" || echo "Failed to load last image."
 
 echo "Building image: ${IMAGE_FULL}"
 
-docker build -f "${IMAGE_FILE}" -t "${IMAGE_FULL}" . || { echo "Failed to build image!"; exit 1; }
+docker build \
+  --cache-from "${IMAGE_FULL}" \
+  -f "${IMAGE_FILE}" \
+  -t "${IMAGE_FULL}" . || { echo "Failed to build image!"; exit 1; }
 
 if [[ "${IMAGE_PUSH}" == "--push" ]];
 then
