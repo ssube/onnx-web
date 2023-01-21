@@ -1,4 +1,4 @@
-import { mustExist } from '@apextoaster/js-utils';
+import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -63,7 +63,11 @@ export function Img2Img() {
         }}
       />
       <UpscaleControl />
-      <Button variant='outlined' onClick={() => upload.mutate()}>Generate</Button>
+      <Button
+        disabled={doesExist(source) === false}
+        variant='outlined'
+        onClick={() => upload.mutate()}
+      >Generate</Button>
     </Stack>
   </Box>;
 }

@@ -94,6 +94,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
       const { canvas, ctx } = getClearContext(bufferRef);
       ctx.globalAlpha = FULL_OPACITY;
       ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
       URL.revokeObjectURL(src);
 
       drawBuffer();
@@ -166,6 +167,12 @@ export function MaskCanvas(props: MaskCanvasProps) {
       }
 
       setBackground(URL.createObjectURL(source));
+
+      // initialize the mask if it does not exist
+      if (doesExist(mask) === false) {
+        getClearContext(bufferRef);
+        maskState.current = MASK_STATE.dirty;
+      }
     }
   }, [source]);
 

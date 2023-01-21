@@ -1,4 +1,4 @@
-import { mustExist } from '@apextoaster/js-utils';
+import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -12,8 +12,6 @@ import { UpscaleControl } from '../control/UpscaleControl.js';
 const { useContext } = React;
 
 export function Upscale() {
-  const config = mustExist(useContext(ConfigContext));
-
   async function uploadSource() {
     const { model, upscale } = state.getState();
 
@@ -46,7 +44,11 @@ export function Upscale() {
         });
       }} />
       <UpscaleControl />
-      <Button variant='outlined' onClick={() => upload.mutate()}>Generate</Button>
+      <Button
+        disabled={doesExist(params.source) === false}
+        variant='outlined'
+        onClick={() => upload.mutate()}
+      >Generate</Button>
     </Stack>
   </Box>;
 }
