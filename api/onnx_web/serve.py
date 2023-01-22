@@ -187,7 +187,7 @@ def border_from_request() -> Border:
     return Border(left, right, top, bottom)
 
 
-def upscale_from_request() -> UpscaleParams:
+def upscale_from_request(provider: str) -> UpscaleParams:
     denoise = get_and_clamp_float(request.args, 'denoise', 0.5, 1.0, 0.0)
     scale = get_and_clamp_int(request.args, 'scale', 1, 4, 1)
     outscale = get_and_clamp_int(request.args, 'outscale', 1, 4, 1)
@@ -199,13 +199,14 @@ def upscale_from_request() -> UpscaleParams:
 
     return UpscaleParams(
         upscaling,
+        provider,
         correction_model=correction,
-        scale=scale,
-        outscale=outscale,
-        faces=faces,
-        platform='onnx',
         denoise=denoise,
+        faces=faces,
         face_strength=face_strength,
+        format='onnx',
+        outscale=outscale,
+        scale=scale,
     )
 
 
@@ -355,7 +356,7 @@ def img2img():
     source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
 
     params, size = pipeline_from_request()
-    upscale = upscale_from_request()
+    upscale = upscale_from_request(params.provider)
 
     strength = get_and_clamp_float(
         request.args,
@@ -385,7 +386,7 @@ def img2img():
 @app.route('/api/txt2img', methods=['POST'])
 def txt2img():
     params, size = pipeline_from_request()
-    upscale = upscale_from_request()
+    upscale = upscale_from_request(params.provider)
 
     output = make_output_name(
         'txt2img',
@@ -413,7 +414,7 @@ def inpaint():
 
     params, size = pipeline_from_request()
     expand = border_from_request()
-    upscale = upscale_from_request()
+    upscale = upscale_from_request(params.provider)
 
     fill_color = get_not_empty(request.args, 'fillColor', 'white')
     mask_filter = get_from_map(request.args, 'filter', mask_filters, 'none')
@@ -474,7 +475,7 @@ def upscale():
     source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
 
     params, size = pipeline_from_request()
-    upscale = upscale_from_request()
+    upscale = upscale_from_request(params.provider)
 
     output = make_output_name(
         'upscale',
