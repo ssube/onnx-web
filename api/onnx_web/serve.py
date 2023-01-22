@@ -339,7 +339,7 @@ def list_params():
 
 @app.route('/api/settings/platforms')
 def list_platforms():
-    return jsonify(list(platform_providers.keys()))
+    return jsonify(list(available_platforms))
 
 
 @app.route('/api/settings/schedulers')
