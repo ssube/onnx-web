@@ -12,6 +12,8 @@ the model and accelerator being used for each image pipeline. Image parameters a
 and you can either upload or paint the mask for inpainting and outpainting. The last few output images are shown below
 the image controls, making it easy to refer back to previous parameters or save an image from earlier.
 
+Please see [the server admin guide](server-admin.md) for details on how to configure and run the server.
+
 ## Contents
 
 - [User Guide](#user-guide)
