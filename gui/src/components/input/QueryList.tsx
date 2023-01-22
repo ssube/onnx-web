@@ -40,6 +40,14 @@ export function QueryList<T>(props: QueryListProps<T>) {
   const { labels, query, value } = props;
   const { result } = query;
 
+  function firstValidValue(): string {
+    if (doesExist(value) && data.includes(value)) {
+      return value;
+    } else {
+      return data[0];
+    }
+  }
+
   if (result.status === 'error') {
     if (result.error instanceof Error) {
       return <Alert severity='error'>Error: {result.error.message}</Alert>;
@@ -65,7 +73,7 @@ export function QueryList<T>(props: QueryListProps<T>) {
     <Select
       labelId={labelID}
       label={props.name}
-      value={value}
+      value={firstValidValue()}
       onChange={(e) => {
         if (doesExist(props.onChange)) {
           props.onChange(e.target.value);
