@@ -56,11 +56,18 @@ Requires ROCm driver on the host.
 Run with podman using:
 
 ```shell
-> TODO
+> podman run -it \
+    --device=/dev/dri \
+    --device=/dev/kfd \
+    --group-add video \
+    --security-opt seccomp=unconfined \
+    -e ONNX_WEB_MODEL_PATH=/data/models \
+    -e ONNX_WEB_OUTPUT_PATH=/data/outputs \
+    -v /var/lib/onnx-web/models:/data/models:rw \
+    -v /var/lib/onnx-web/outputs:/data/outputs:rw \
+    -p 5000:5000 \
+    docker.io/ssube/onnx-web-api:main-rocm-ubuntu
 ```
 
-Rootless podman does not appear to work:
-
-```none
-root is not video error
-```
+Rootless podman does not appear to work and will show a `root does not belong to group 'video'` error, which does
+not make much sense on its own, but appears to refers to the user who launched the container.
