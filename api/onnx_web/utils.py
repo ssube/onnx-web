@@ -128,6 +128,15 @@ def get_from_map(args: Any, key: str, values: Dict[str, Any], default: Any):
         return values[default]
 
 
+def get_not_empty(args: Any, key: str, default: Any):
+    val = args.get(key, default)
+
+    if val is None or len(val) == 0:
+        val = default
+
+    return val
+
+
 def hash_value(sha, param: Param):
     if param is None:
         return
