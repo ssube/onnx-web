@@ -111,16 +111,19 @@ def get_and_clamp_int(args: Any, key: str, default_value: int, max_value: int, m
     return min(max(int(args.get(key, default_value)), min_value), max_value)
 
 
-def get_from_list(args: Any, key: str, values: List[Any]):
-    selected = args.get(key, values[0])
+def get_from_list(args: Any, key: str, values: List[Any]) -> Union[Any, None]:
+    selected = args.get(key, None)
     if selected in values:
         return selected
-    else:
-        print('invalid selection: %s' % (selected))
+
+    print('invalid selection: %s' % (selected))
+    if len(values) > 0:
         return values[0]
 
+    return None
 
-def get_from_map(args: Any, key: str, values: Dict[str, Any], default: Any):
+
+def get_from_map(args: Any, key: str, values: Dict[str, Any], default: Any) -> Any:
     selected = args.get(key, default)
     if selected in values:
         return values[selected]
@@ -128,7 +131,7 @@ def get_from_map(args: Any, key: str, values: Dict[str, Any], default: Any):
         return values[default]
 
 
-def get_not_empty(args: Any, key: str, default: Any):
+def get_not_empty(args: Any, key: str, default: Any) -> Any:
     val = args.get(key, default)
 
     if val is None or len(val) == 0:
