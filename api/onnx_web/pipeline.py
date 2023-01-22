@@ -10,6 +10,7 @@ from typing import Any, Union
 
 import gc
 import numpy as np
+import torch
 
 from .image import (
     expand_image,
@@ -54,6 +55,12 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         print('reusing existing pipeline')
         pipe = last_pipeline_instance
     else:
+        print('unloading previous pipeline')
+        last_pipeline_instance = None
+        last_pipeline_scheduler = None
+        gc.collect()
+        torch.cuda.empty_cache()
+
         print('loading different pipeline')
         pipe = pipeline.from_pretrained(
             model,
