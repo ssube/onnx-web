@@ -1,15 +1,14 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
+import { useContext } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
 import { ClientContext, ConfigContext, StateContext } from '../../state.js';
 import { ImageControl } from '../control/ImageControl.js';
-import { NumericField } from '../input/NumericField.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
-
-const { useContext } = React;
+import { NumericField } from '../input/NumericField.js';
 
 export function Txt2Img() {
   const { params } = mustExist(useContext(ConfigContext));

@@ -9,11 +9,13 @@ export interface ServerParamsErrorProps {
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
-  } else if (typeof error === 'string') {
-    return error;
-  } else {
-    return 'unknown error';
   }
+
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  return 'unknown error';
 }
 
 export function ServerParamsError(props: ServerParamsErrorProps) {

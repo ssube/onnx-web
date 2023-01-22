@@ -2,6 +2,7 @@ import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Casino } from '@mui/icons-material';
 import { Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
+import { useContext } from 'react';
 import { useQuery } from 'react-query';
 import { useStore } from 'zustand';
 
@@ -11,8 +12,6 @@ import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../sta
 import { SCHEDULER_LABELS } from '../../strings.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
-
-const { useContext } = React;
 
 export const PROMPT_LIMIT = 70;
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { mustDefault, mustExist, timeout } from '@apextoaster/js-utils';
 import * as React from 'react';
-import ReactDOM from 'react-dom/client';
+import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { satisfies } from 'semver';
 import { createStore } from 'zustand';
@@ -27,7 +27,7 @@ export async function main() {
 
   // prep react-dom
   const appElement = mustExist(document.getElementById('app'));
-  const app = ReactDOM.createRoot(appElement);
+  const app = createRoot(appElement);
 
   try {
     // load full params from the API server and merge with the initial client config

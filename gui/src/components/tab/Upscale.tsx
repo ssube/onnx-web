@@ -1,15 +1,14 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
+import { useContext } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
 import { IMAGE_FILTER } from '../../config.js';
-import { ClientContext, ConfigContext, StateContext } from '../../state.js';
-import { ImageInput } from '../input/ImageInput.js';
+import { ClientContext, StateContext } from '../../state.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
-
-const { useContext } = React;
+import { ImageInput } from '../input/ImageInput.js';
 
 export function Upscale() {
   async function uploadSource() {
@@ -38,11 +37,16 @@ export function Upscale() {
 
   return <Box>
     <Stack spacing={2}>
-      <ImageInput filter={IMAGE_FILTER} image={params.source} label='Source' onChange={(file) => {
-        setSource({
-          source: file,
-        });
-      }} />
+      <ImageInput
+        filter={IMAGE_FILTER}
+        image={params.source}
+        label='Source'
+        onChange={(file) => {
+          setSource({
+            source: file,
+          });
+        }}
+      />
       <UpscaleControl />
       <Button
         disabled={doesExist(params.source) === false}

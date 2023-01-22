@@ -229,7 +229,12 @@
         "no-redeclare": "off",
         "no-restricted-syntax": [
             "error",
-            "ForInStatement"
+            "ForInStatement",
+            "WithStatement",
+            "MemberExpression[optional=true]",
+            "IfStatement[alternate.type='IfStatement']",
+            "UnaryExpression[operator='!']",
+            "BinaryExpression[operator='==='][right.value=true]"
         ],
         "no-return-await": "error",
         "no-sequences": "error",

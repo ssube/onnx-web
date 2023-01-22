@@ -1,17 +1,16 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
+import { useContext } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
 import { IMAGE_FILTER } from '../../config.js';
 import { ClientContext, ConfigContext, StateContext } from '../../state.js';
 import { ImageControl } from '../control/ImageControl.js';
+import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { NumericField } from '../input/NumericField.js';
-import { UpscaleControl } from '../control/UpscaleControl.js';
-
-const { useContext } = React;
 
 export function Img2Img() {
   const { params } = mustExist(useContext(ConfigContext));

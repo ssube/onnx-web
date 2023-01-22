@@ -1,6 +1,7 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, FormControlLabel, Stack } from '@mui/material';
 import * as React from 'react';
+import { useContext } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
@@ -8,14 +9,12 @@ import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, StateContext } from '../../state.js';
 import { MASK_LABELS, NOISE_LABELS } from '../../strings.js';
 import { ImageControl } from '../control/ImageControl.js';
+import { OutpaintControl } from '../control/OutpaintControl.js';
+import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { MaskCanvas } from '../input/MaskCanvas.js';
 import { NumericField } from '../input/NumericField.js';
-import { OutpaintControl } from '../control/OutpaintControl.js';
 import { QueryList } from '../input/QueryList.js';
-import { UpscaleControl } from '../control/UpscaleControl.js';
-
-const { useContext } = React;
 
 export function Inpaint() {
   const { params } = mustExist(useContext(ConfigContext));

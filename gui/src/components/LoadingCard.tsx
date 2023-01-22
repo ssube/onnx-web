@@ -1,4 +1,4 @@
-import { mustExist } from '@apextoaster/js-utils';
+import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Card, CardContent, CircularProgress } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
@@ -20,17 +20,21 @@ export function LoadingCard(props: LoadingCardProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const pushHistory = useStore(mustExist(useContext(StateContext)), (state) => state.pushHistory);
 
-  const ready = useQuery('ready', () => client.ready(props.loading), {
+  const query = useQuery('ready', () => client.ready(props.loading), {
     // data will always be ready without this, even if the API says its not
     cacheTime: 0,
     refetchInterval: POLL_TIME,
   });
 
+  function ready() {
+    return doesExist(query.data) && query.data.ready;
+  }
+
   React.useEffect(() => {
-    if (ready.status === 'success' && ready.data.ready) {
+    if (query.status === 'success' && query.data.ready) {
       pushHistory(props.loading);
     }
-  }, [ready.status, ready.data?.ready]);
+  }, [query.status, ready()]);
 
   return <Card sx={{ maxWidth: params.width.default }}>
     <CardContent sx={{ height: params.height.default }}>
