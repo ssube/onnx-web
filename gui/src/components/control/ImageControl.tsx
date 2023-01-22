@@ -14,6 +14,8 @@ import { QueryList } from '../input/QueryList.js';
 
 const { useContext } = React;
 
+export const PROMPT_LIMIT = 70;
+
 export interface ImageControlProps {
   selector: (state: OnnxState) => BaseImgParams;
 
@@ -32,6 +34,17 @@ export function ImageControl(props: ImageControlProps) {
   const schedulers = useQuery('schedulers', async () => client.schedulers(), {
     staleTime: STALE_TIME,
   });
+
+  const promptLength = controlState.prompt.split(' ').length;
+  const error = promptLength > PROMPT_LIMIT;
+
+  function promptHelper() {
+    if (error) {
+      return `Too many tokens: ${promptLength}/${PROMPT_LIMIT}`;
+    } else {
+      return `Tokens: ${promptLength}/${PROMPT_LIMIT}`;
+    }
+  }
 
   return <Stack spacing={2}>
     <QueryList
@@ -114,21 +127,33 @@ export function ImageControl(props: ImageControlProps) {
         New Seed
       </Button>
     </Stack>
-    <TextField label='Prompt' variant='outlined' value={controlState.prompt} onChange={(event) => {
-      if (doesExist(props.onChange)) {
-        props.onChange({
-          ...controlState,
-          prompt: event.target.value,
-        });
-      }
-    }} />
-    <TextField label='Negative Prompt' variant='outlined' value={controlState.negativePrompt} onChange={(event) => {
-      if (doesExist(props.onChange)) {
-        props.onChange({
-          ...controlState,
-          negativePrompt: event.target.value,
-        });
-      }
-    }} />
+    <TextField
+      error={error}
+      label='Prompt'
+      helperText={promptHelper()}
+      variant='outlined'
+      value={controlState.prompt}
+      onChange={(event) => {
+        if (doesExist(props.onChange)) {
+          props.onChange({
+            ...controlState,
+            prompt: event.target.value,
+          });
+        }
+      }}
+    />
+    <TextField
+      label='Negative Prompt'
+      variant='outlined'
+      value={controlState.negativePrompt}
+      onChange={(event) => {
+        if (doesExist(props.onChange)) {
+          props.onChange({
+            ...controlState,
+            negativePrompt: event.target.value,
+          });
+        }
+      }}
+    />
   </Stack>;
 }

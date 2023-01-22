@@ -25,9 +25,13 @@ export interface ImageControlProps {
 export function NumericField(props: ImageControlProps) {
   const { decimal = false, disabled = false, label, min, max, step, value } = props;
 
+  const error = (value < min) || (value > max);
+
   return <Stack spacing={2}>
     <TextField
+      error={error}
       label={label}
+      helperText={error && 'Out of range'}
       disabled={disabled}
       variant='outlined'
       type='number'
