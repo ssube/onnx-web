@@ -19,6 +19,7 @@ the image controls, making it easy to refer back to previous parameters or save 
   - [Outline](#outline)
     - [ONNX models](#onnx-models)
     - [Modes and tabs](#modes-and-tabs)
+    - [Image history](#image-history)
     - [Scheduler comparison](#scheduler-comparison)
   - [Tabs](#tabs)
     - [Txt2img tab](#txt2img-tab)
@@ -96,10 +97,21 @@ There are many other models available and specialized variations for anime, TV s
 - [upscale](#upscale-tab)
   - resize an existing image
 
+### Image history
+
+Below the tab control is the image history section. The [image history setting](#image-history-setting) controls the
+number of images that are shown. You can use the controls in each image card to download the output, copy to the
+source image parameters for [img2img](#img2img-source-image) and [inpaint](#inpaint-source-image), and delete the
+image from history if you don't like it.
+
+![TODO](output/astronaut-hamburger.png)
+
 ### Scheduler comparison
 
 - https://huggingface.co/docs/diffusers/main/en/using-diffusers/schedulers#compare-schedulers
 - https://i.imgur.com/2pQPgf0.jpeg
+
+![TODO](output/excavator-pipe.png)
 
 ## Tabs
 
@@ -171,6 +183,8 @@ More complex scenes will often need more steps to get good results in the periph
 #### Negative prompt parameter
 
 The opposite of [the prompt parameter](#prompt-parameter), things that should _not_ be included.
+
+> poorly drawn faces, poorly drawn hands, distorted
 
 #### Width and height parameters
 
