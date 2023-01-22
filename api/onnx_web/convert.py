@@ -11,6 +11,11 @@ from torch.onnx import export
 from typing import Dict, List, Tuple, Union
 
 import torch
+import warnings
+
+# suppress common but harmless warnings, https://github.com/ssube/onnx-web/issues/75
+warnings.filterwarnings('ignore', '.*The shape inference of prim::Constant type is missing.*')
+warnings.filterwarnings('ignore', '.*Only steps=1 can be constant folded.*')
 
 Models = Dict[str, List[Tuple[str, str, Union[int, None]]]]
 
