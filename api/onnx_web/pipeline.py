@@ -106,7 +106,7 @@ def run_txt2img_pipeline(
     latents = get_latents_from_seed(params.seed, size)
     rng = np.random.RandomState(params.seed)
 
-    image = pipe(
+    result = pipe(
         params.prompt,
         height=size.height,
         width=size.width,
@@ -115,13 +115,17 @@ def run_txt2img_pipeline(
         latents=latents,
         negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
-    ).images[0]
+    )
+    image = result.images[0]
 
     if upscale.faces or upscale.scale > 1:
         image = upscale_resrgan(ctx, upscale, image)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
+
+    del image
+    del result
 
     print('saved txt2img output: %s' % (dest))
 
@@ -139,7 +143,7 @@ def run_img2img_pipeline(
 
     rng = np.random.RandomState(params.seed)
 
-    image = pipe(
+    result = pipe(
         params.prompt,
         generator=rng,
         guidance_scale=params.cfg,
@@ -147,13 +151,17 @@ def run_img2img_pipeline(
         negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
         strength=strength,
-    ).images[0]
+    )
+    image = result.images[0]
 
     if upscale.faces or upscale.scale > 1:
         image = upscale_resrgan(ctx, upscale, image)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
+
+    del image
+    del result
 
     print('saved img2img output: %s' % (dest))
 
@@ -192,7 +200,7 @@ def run_inpaint_pipeline(
         mask_image.save(safer_join(ctx.output_path, 'last-mask.png'))
         noise_image.save(safer_join(ctx.output_path, 'last-noise.png'))
 
-    image = pipe(
+    result = pipe(
         params.prompt,
         generator=rng,
         guidance_scale=params.cfg,
@@ -203,7 +211,8 @@ def run_inpaint_pipeline(
         negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
         width=size.width,
-    ).images[0]
+    )
+    image = result.images[0]
 
     if image.size == source_image.size:
         image = ImageChops.blend(source_image, image, strength)
@@ -215,6 +224,9 @@ def run_inpaint_pipeline(
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
+
+    del image
+    del result
 
     print('saved inpaint output: %s' % (dest))
 
@@ -231,5 +243,7 @@ def run_upscale_pipeline(
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
+
+    del image
 
     print('saved img2img output: %s' % (dest))
