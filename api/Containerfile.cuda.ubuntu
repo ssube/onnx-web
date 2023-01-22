@@ -26,10 +26,12 @@ RUN pip3 install onnxruntime-gpu --no-cache-dir
 
 COPY onnx_web/ /onnx-web/api/onnx_web/
 
+COPY launch.sh /onnx-web/launch.sh
+
 COPY params.json /onnx-web/api/params.json
 
 ENV ONNX_WEB_BUNDLE_PATH="/onnx-web/gui"
 
 COPY gui/ /onnx-web/gui/
 
-CMD [ "sh", "-c", "python -m onnx_web.convert --diffusion --upscaling --correction --extras && flask --app=onnx_web.serve run --host=0.0.0.0" ]
+CMD [ "sh", "-c", "/onnx-web/launch.sh" ]
