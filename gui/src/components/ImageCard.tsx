@@ -75,24 +75,28 @@ export function ImageCard(props: ImageCardProps) {
           <GridItem xs={4}>Seed: {params.seed}</GridItem>
           <GridItem xs={8}>Scheduler: {params.scheduler}</GridItem>
           <GridItem xs={12}>{params.prompt}</GridItem>
-          <GridItem xs={2}>
+          <GridItem xs={3}>
             <Button onClick={downloadImage}>
               <Download />
+              Save
             </Button>
           </GridItem>
-          <GridItem xs={2}>
+          <GridItem xs={3}>
             <Button onClick={copySourceToImg2Img}>
               <ContentCopy />
+              Img2img
             </Button>
           </GridItem>
-          <GridItem xs={2}>
+          <GridItem xs={3}>
             <Button onClick={copySourceToInpaint}>
               <Brush />
+              Inpaint
             </Button>
           </GridItem>
-          <GridItem xs={2}>
+          <GridItem xs={3}>
             <Button onClick={deleteImage}>
               <Delete />
+              Delete
             </Button>
           </GridItem>
         </Grid>
