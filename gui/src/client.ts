@@ -393,7 +393,7 @@ export async function parseApiResponse(root: string, res: Response): Promise<Ima
 
   if (res.status === STATUS_SUCCESS) {
     const data = await res.json() as LimitedResponse;
-    const url = makeApiUrl(root, 'output', data.output).toString();
+    const url = new URL(joinPath('output', data.output), root).toString();
     return {
       ...data,
       output: {

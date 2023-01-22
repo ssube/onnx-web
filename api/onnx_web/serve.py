@@ -256,7 +256,8 @@ def load_platforms():
     global available_platforms
 
     providers = get_available_providers()
-    available_platforms = [p for p in platform_providers if (platform_providers[p] in providers)]
+    available_platforms = [p for p in platform_providers if (
+        platform_providers[p] in providers)]
 
     print('available acceleration platforms: %s' % (available_platforms))
 
@@ -502,6 +503,6 @@ def ready():
     })
 
 
-@app.route('/api/output/<path:filename>')
+@app.route('/output/<path:filename>')
 def output(filename: str):
     return send_from_directory(path.join('..', context.output_path), filename, as_attachment=False)
