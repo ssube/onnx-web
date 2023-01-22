@@ -44,16 +44,15 @@ the image controls, making it easy to refer back to previous parameters or save 
       - [Denoise parameter](#denoise-parameter)
       - [Face correction and strength](#face-correction-and-strength)
     - [Settings tab](#settings-tab)
+      - [Image history setting](#image-history-setting)
       - [API server setting](#api-server-setting)
       - [Reset tab buttons](#reset-tab-buttons)
   - [Known Errors](#known-errors)
-    - [Image Errors](#image-errors)
-      - [Empty black images](#empty-black-images)
-      - [Distorted and noisy images](#distorted-and-noisy-images)
-      - [Scattered image tiles](#scattered-image-tiles)
     - [Client Errors](#client-errors)
       - [Error fetching server parameters](#error-fetching-server-parameters)
       - [Parameter version error](#parameter-version-error)
+      - [Distorted and noisy images](#distorted-and-noisy-images)
+      - [Scattered image tiles](#scattered-image-tiles)
     - [Server Errors](#server-errors)
       - [Very slow with high CPU usage, max fan speed during image generation](#very-slow-with-high-cpu-usage-max-fan-speed-during-image-generation)
       - [Connection refused or timeouts](#connection-refused-or-timeouts)
@@ -99,7 +98,8 @@ There are many other models available and specialized variations for anime, TV s
 
 ### Scheduler comparison
 
-https://huggingface.co/docs/diffusers/main/en/using-diffusers/schedulers#compare-schedulers
+- https://huggingface.co/docs/diffusers/main/en/using-diffusers/schedulers#compare-schedulers
+- https://i.imgur.com/2pQPgf0.jpeg
 
 ## Tabs
 
@@ -139,8 +139,8 @@ of your image too much, almost like a posterize effect.
 #### Seed parameter
 
 The seed value used for the random number generators. This is a lot like the seed in a game like Minecraft and can be
-shared, but producing exactly the same image requires the same model, scheduler, and all of the other parameters as
-well.
+shared to produce similar images, but producing exactly the same image requires the same model, scheduler, and all of
+the other parameters as well.
 
 You can use the same prompt and seed, while varying the steps and CFG, to produce similar images with small variations.
 
@@ -155,7 +155,18 @@ has a lot of useful tips on how to build a good prompt. You can include keywords
 style, and level of detail. Throwing a few extra keywords into the end of the prompt can help add specific details,
 like the color and intensity of the lighting.
 
-> TODO
+> A puppy dog with wings flying over a deciduous forest, drone, detailed, daylight, wide angle, sports, action camera
+
+![two txt2img images based on the flying puppy dog prompt, one successful and one with a slightly distorted puppy](output/flying-puppy.png)
+
+The models will not always follow the prompt exactly, even with a fairly large CFG value, and you may need to try a
+few times.
+
+> A stone magnifying glass with a leather handle showing a portal to another dimension, steam punk, etc
+
+![TODO](output/stone-glass.png)
+
+More complex scenes will often need more steps to get good results in the peripheral details.
 
 #### Negative prompt parameter
 
@@ -231,10 +242,10 @@ the diffusion pipeline.
   - usually a fine option
 - Gaussian Multiply
   - blur and darken the mask
-  - good when you want to soften the edges of the area to be kept, without shrinking it
+  - good when you want to soften and expand the edges of the area to be kept
 - Gaussian Screen
   - blur and lighten the mask
-  - good when you want to soften the edges of the area to be kept and do not mind shrinking it slightly
+  - good when you want to soften and expand the edges of the area to be replaced
 
 #### Noise source parameter
 
@@ -276,7 +287,7 @@ Check out [the Real ESRGAN Github](https://github.com/xinntao/Real-ESRGAN) for m
 
 #### Scale parameter
 
-The output scale for Real ESRGAN.
+The output scale for Real ESRGAN. This output will be rescaled using the outscale parameter.
 
 #### Outscale parameter
 
@@ -300,6 +311,12 @@ Check out [the GFPGAN Github](https://github.com/TencentARC/GFPGAN) for more det
 The settings tab provides access to some of the settings and allows you to reset the state of the other tabs
 to the defaults, if they get out of control.
 
+#### Image history setting
+
+The image history setting allows you to change the number of images kept in the recent image history. If you are
+generating very large images or have limited memory, reducing this may improve performance. Increasing this will
+keep more images in history. Output is always kept on the server.
+
 #### API server setting
 
 Changing the API server will reload the client.
@@ -310,13 +327,11 @@ Resets the state of each tab to the default, if some controls become glitchy.
 
 ## Known Errors
 
-### Image Errors
+This section attempts to cover all of the known errors and their solutions.
 
-#### Empty black images
-
-#### Distorted and noisy images
-
-#### Scattered image tiles
+If you encounter an error that does not show up here, please [open a Github issue](https://github.com/ssube/onnx-web/issues/new/choose)
+and include as many details as possible. Screenshots of the client and logs from the server are especially helpful,
+and please include any stacktraces that appear in the server logs.
 
 ### Client Errors
 
@@ -333,6 +348,19 @@ This can happen when the version in the server parameters is too old for the cur
 was the case before version v0.5.0.
 
 This often means that the API server is running but out-of-date.
+
+#### Distorted and noisy images
+
+This can happen when the selected diffusion or upscaling models are not trained for the current resolution or aspect
+ratio.
+
+This often means that the scale parameter does not match the upscaling model.
+
+#### Scattered image tiles
+
+This can happen when the selected upscaling model is not trained for the current resolution.
+
+This often means that the scale parameter does not match the upscaling model.
 
 ### Server Errors
 
