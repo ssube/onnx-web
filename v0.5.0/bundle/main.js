@@ -38697,7 +38697,7 @@
   async function parseApiResponse(root, res) {
     if (res.status === STATUS_SUCCESS) {
       const data = await res.json();
-      const url = makeApiUrl(root, "output", data.output).toString();
+      const url = new URL(joinPath("output", data.output), root).toString();
       return Object.assign(Object.assign({}, data), { output: {
         key: data.output,
         url
@@ -60978,6 +60978,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   var ClientContext = (0, import_react18.createContext)(void 0);
   var ConfigContext = (0, import_react18.createContext)(void 0);
   var StateContext = (0, import_react18.createContext)(void 0);
+  var STATE_VERSION = 4;
 
   // node_modules/@mui/icons-material/esm/Brush.js
   var import_jsx_runtime92 = __toESM(require_jsx_runtime());
@@ -61264,8 +61265,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var PLATFORM_LABELS = {
     amd: "AMD GPU",
     cpu: "CPU",
+    cuda: "CUDA",
     directml: "DirectML",
-    nvidia: "CUDA",
+    nvidia: "Nvidia GPU",
     rocm: "ROCm"
   };
   var SCHEDULER_LABELS = {
@@ -61347,6 +61349,14 @@ Please use another name.` : formatMuiErrorMessage(18));
   function QueryList(props) {
     const { labels, query, value } = props;
     const { result } = query;
+    function firstValidValue() {
+      if (doesExist2(value) && data.includes(value)) {
+        return value;
+      } else {
+        return data[0];
+      }
+    }
+    __name(firstValidValue, "firstValidValue");
     if (result.status === "error") {
       if (result.error instanceof Error) {
         return React105.createElement(
@@ -61371,7 +61381,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       FormControl_default,
       null,
       React105.createElement(InputLabel_default, { id: labelID }, props.name),
-      React105.createElement(Select_default, { labelId: labelID, label: props.name, value, onChange: (e) => {
+      React105.createElement(Select_default, { labelId: labelID, label: props.name, value: firstValidValue(), onChange: (e) => {
         if (doesExist2(props.onChange)) {
           props.onChange(e.target.value);
         }
@@ -61563,7 +61573,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           });
         } }),
         React109.createElement(UpscaleControl, null),
-        React109.createElement(Button_default, { variant: "outlined", onClick: () => upload.mutate() }, "Generate")
+        React109.createElement(Button_default, { disabled: doesExist2(source) === false, variant: "contained", onClick: () => upload.mutate() }, "Generate")
       )
     );
   }
@@ -61690,6 +61700,10 @@ Please use another name.` : formatMuiErrorMessage(18));
           URL.revokeObjectURL(background);
         }
         setBackground(URL.createObjectURL(source));
+        if (doesExist2(mask) === false) {
+          getClearContext(bufferRef);
+          maskState.current = MASK_STATE.dirty;
+        }
       }
     }, [source]);
     drawClicks();
@@ -61974,17 +61988,16 @@ Please use another name.` : formatMuiErrorMessage(18));
           React112.createElement(
             Stack_default,
             { direction: "row", spacing: 2 },
-            React112.createElement("input", { name: "fill-color", type: "color", defaultValue: fillColor, onBlur: (event) => {
+            React112.createElement(FormControlLabel_default, { label: "Fill Color", sx: { mx: 1 }, control: React112.createElement("input", { defaultValue: fillColor, name: "fill-color", type: "color", onBlur: (event) => {
               setInpaint({
                 fillColor: event.target.value
               });
-            } }),
-            React112.createElement("label", { htmlFor: "fill-color" }, "Fill Color")
+            } }) })
           )
         ),
         React112.createElement(OutpaintControl, null),
         React112.createElement(UpscaleControl, null),
-        React112.createElement(Button_default, { variant: "outlined", onClick: () => upload.mutate() }, "Generate")
+        React112.createElement(Button_default, { disabled: doesExist2(source) === false || doesExist2(mask) === false, variant: "contained", onClick: () => upload.mutate() }, "Generate")
       )
     );
   }
@@ -62069,7 +62082,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         React114.createElement(TextField_default, { variant: "outlined", label: "API Server", value: root, onChange: (event) => {
           setRoot(event.target.value);
         } }),
-        React114.createElement(Button_default, { startIcon: React114.createElement(Refresh_default, null), onClick: () => {
+        React114.createElement(Button_default, { variant: "contained", startIcon: React114.createElement(Refresh_default, null), onClick: () => {
           const query = new URLSearchParams(window.location.search);
           query.set("api", root);
           window.location.search = query.toString();
@@ -62131,7 +62144,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           } })
         ),
         React115.createElement(UpscaleControl, null),
-        React115.createElement(Button_default, { variant: "outlined", onClick: () => generate.mutate() }, "Generate")
+        React115.createElement(Button_default, { variant: "contained", onClick: () => generate.mutate() }, "Generate")
       )
     );
   }
@@ -62141,7 +62154,6 @@ Please use another name.` : formatMuiErrorMessage(18));
   var React116 = __toESM(require_react(), 1);
   var { useContext: useContext23 } = React116;
   function Upscale() {
-    const config = mustExist(useContext23(ConfigContext));
     async function uploadSource() {
       const { model, upscale } = state.getState();
       const output = await client.upscale(model, Object.assign(Object.assign({}, params), { source: mustExist(params.source) }), upscale);
@@ -62169,7 +62181,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           });
         } }),
         React116.createElement(UpscaleControl, null),
-        React116.createElement(Button_default, { variant: "outlined", onClick: () => upload.mutate() }, "Generate")
+        React116.createElement(Button_default, { disabled: doesExist2(params.source) === false, variant: "contained", onClick: () => upload.mutate() }, "Generate")
       )
     );
   }
@@ -62270,7 +62282,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             return Object.assign(Object.assign({}, s), { img2img: Object.assign(Object.assign({}, s.img2img), { source: void 0 }), inpaint: Object.assign(Object.assign({}, s.inpaint), { mask: void 0, source: void 0 }), upscaleTab: Object.assign(Object.assign({}, s.upscaleTab), { source: void 0 }) });
           },
           storage: createJSONStorage(() => localStorage),
-          version: 3
+          version: STATE_VERSION
         }));
         const query = new QueryClient();
         app.render(React118.createElement(
