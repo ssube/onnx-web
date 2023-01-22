@@ -201,6 +201,8 @@ The output image will be the same size as the input, unless upscaling is turned 
 
 Upload a source image for img2img.
 
+Image sources are _not_ persisted when you reload the page, unlike other parameters.
+
 #### Strength parameter
 
 Blending strength. 0 uses the source image without changing it, 1 will replace it almost entirely.
@@ -228,11 +230,16 @@ When all of the options are used together, the process is:
 
 Upload a source image for inpaint.
 
+Image sources are _not_ persisted when you reload the page, unlike other parameters.
+
 #### Mask canvas and brush parameters
 
 Upload or draw a mask image.
 
 White pixels will be replaced with noise and then regenerated, black pixels will be kept as-is in the output.
+
+Image sources are _not_ persisted when you reload the page, unlike other parameters. If you want to keep a mask
+you have painted in the browser, right click on the canvas and use the "Save image as..." option.
 
 - Fill with black
   - Keep all pixels
