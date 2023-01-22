@@ -335,3 +335,4 @@ export function createStateSlices(base: ServerParams) {
 export const ClientContext = createContext<Maybe<ApiClient>>(undefined);
 export const ConfigContext = createContext<Maybe<Config<ServerParams>>>(undefined);
 export const StateContext = createContext<Maybe<StoreApi<OnnxState>>>(undefined);
+export const STATE_VERSION = 4;

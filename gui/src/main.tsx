@@ -13,7 +13,7 @@ import { ServerParamsError } from './components/error/ServerParams.js';
 import { OnnxError } from './components/OnnxError.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
 import { getApiRoot, loadConfig, mergeConfig, PARAM_VERSION } from './config.js';
-import { ClientContext, ConfigContext, createStateSlices, OnnxState, StateContext } from './state.js';
+import { ClientContext, ConfigContext, createStateSlices, OnnxState, STATE_VERSION, StateContext } from './state.js';
 
 export const INITIAL_LOAD_TIMEOUT = 5_000;
 
@@ -79,7 +79,7 @@ export async function main() {
           };
         },
         storage: createJSONStorage(() => localStorage),
-        version: 3,
+        version: STATE_VERSION,
       }));
 
       // prep react-query client
