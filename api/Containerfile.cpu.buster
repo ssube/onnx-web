@@ -10,7 +10,7 @@ RUN pip3 install virtualenv --upgrade
 
 RUN python3 -m venv onnx_env
 
-ENV PATH="/onnx-web/api/onnx_web/bin:$PATH"
+ENV PATH="/onnx-web/api/onnx_env/bin:$PATH"
 
 RUN pip3 install pip --upgrade
 

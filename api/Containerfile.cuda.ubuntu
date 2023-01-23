@@ -12,7 +12,7 @@ RUN apt-get -y update \
 
 RUN python3 -m venv onnx_env
 
-ENV PATH="/onnx-web/api/onnx_web/bin:$PATH"
+ENV PATH="/onnx-web/api/onnx_env/bin:$PATH"
 
 RUN pip3 install pip --upgrade
 
