@@ -172,7 +172,7 @@ def expand_image(
     full_height = expand.top + source_image.height + expand.bottom
 
     dims = (full_width, full_height)
-    origin = (expand.top, expand.left)
+    origin = (expand.left, expand.top)
 
     full_source = Image.new('RGB', dims, fill)
     full_source.paste(source_image, origin)
@@ -181,6 +181,7 @@ def expand_image(
     full_noise = noise_source(source_image, dims, origin, fill=fill)
     full_noise = ImageChops.multiply(full_noise, full_mask)
 
-    full_source = Image.composite(full_noise, full_source, full_mask.convert('L'))
+    full_source = Image.composite(
+        full_noise, full_source, full_mask.convert('L'))
 
     return (full_source, full_mask, full_noise, (full_width, full_height))
