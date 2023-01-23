@@ -23,7 +23,7 @@ stages:
   cache:
     key:
       files:
-        - yarn.lock
+        - gui/yarn.lock
     paths:
       - gui/node_modules/
     policy: pull-push
@@ -53,10 +53,18 @@ stages:
   extends:
     - .build-base
   image: docker.io/python:3.10
+  cache:
+    key:
+      files:
+        - api/requirements.txt
+    paths:
+      - api/onnx_env/
+    policy: pull-push
 
 .build-curl:
   extends:
     - .build-python
+  cache: {}
 
 build-api-coverage:
   extends:
@@ -64,6 +72,7 @@ build-api-coverage:
   stage: build
   script:
     - cd api
+    - ${CI_PROJECT_DIR}/common/scripts/make-venv.sh
     - make ci
 
 build-gui-bundle:
