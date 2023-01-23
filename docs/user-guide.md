@@ -19,6 +19,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
 - [User Guide](#user-guide)
   - [Contents](#contents)
   - [Outline](#outline)
+    - [What is ONNX web (and what it is not)](#what-is-onnx-web-and-what-it-is-not)
     - [ONNX models](#onnx-models)
     - [Modes and tabs](#modes-and-tabs)
     - [Image history](#image-history)
@@ -69,13 +70,37 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
 
 ## Outline
 
+### What is ONNX web (and what it is not)
+
+ONNX web is a responsive web GUI, in both style and performance, for running ONNX models using hardware acceleration on
+any reasonable platform (one with sufficient memory for the models, that can build scipy within 24 hours, etc).
+
+The client should do some reasonable validation of input parameters should be done, such as prompt length, pipeline and
+scheduler combinations, and output size. Tabs and options should be disabled when they are not compatible with the
+selected models.
+
+Models should be run with hardware acceleration whenever possible, even if that means converting the data files and
+helpers. When models cannot be run using the available hardware providers, a CPU fallback should be available to
+provide the same features across as many platforms as possible.
+
+The API should be easy to use with command line tools, for testing and in real usage. It should behave well when placed
+behind a load balancer, restrictive firewall (including restrictions on outgoing traffic), and when being used by more
+people than there are available GPU resources. It should be easy to run on a laptop or use in a hosted notebook.
+
+This is _not_ a general purpose image editor. There are better tools for that already. The inpainting and blending tabs
+will need a simple drawing component, but anything more complicated, like layers and blending modes, should be done in
+the Gimp, Krita, or Photoshop.
+
+This is _not_ a tool for building new ML models. While I am open to some training features, like Dreambooth and anything
+needed to convert models, that is not the focus and should be limited features that support the other tabs.
+
 ### ONNX models
 
 The [ONNX runtime](https://onnxruntime.ai/) is a library for accelerating neural networks and machine learning models,
 using [the ONNX file format](https://onnx.ai/) to share them across different platforms. ONNX web is a server to run
 hardware-accelerated inference using those models and a web client to provide the parameters and view the results.
 
-Models are split up into three groups:
+The models used by ONNX web are split up into three groups:
 
 1. Diffusion
    1. general models like [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5)
@@ -106,14 +131,18 @@ number of images that are shown. You can use the controls in each image card to 
 source image parameters for [img2img](#img2img-source-image) and [inpaint](#inpaint-source-image), and delete the
 image from history if you don't like it.
 
-![TODO](output/astronaut-hamburger.png)
+> An astronaut eating a hamburger
+
+![a smiling astronaut holding a hamburger and another astronaut whose head is a hamburger](output/astronaut-hamburger.png)
 
 ### Scheduler comparison
 
 - https://huggingface.co/docs/diffusers/main/en/using-diffusers/schedulers#compare-schedulers
 - https://i.imgur.com/2pQPgf0.jpeg
 
-![TODO](output/excavator-pipe.png)
+> An excavator digging up a pipe, construction site, tilt shift, professional photograph, studio lighting
+
+![tilt shift photographs of excavators over a pile of loose dirt](output/excavator-pipe.png)
 
 ## Tabs
 
@@ -176,11 +205,14 @@ like the color and intensity of the lighting.
 The models will not always follow the prompt exactly, even with a fairly large CFG value, and you may need to try a
 few times.
 
-> A stone magnifying glass with a leather handle showing a portal to another dimension, steam punk, etc
+> A stone magnifying glass showing a portal to another dimension, steam punk, mysterious, alternate universe,
+> highly detailed, digital illustration
 
-![TODO](output/stone-glass.png)
+![an intricate and glowing metal lens next to a magnifying glass showing a mysterious sewer](output/stone-glass.png)
 
-More complex scenes will often need more steps to get good results in the peripheral details.
+More complex scenes will often need more steps to get good results in the peripheral details. You can adjust the
+level of detail with keywords like "highly detailed" and "intricate" and adjust the art style with "digital
+illustration" or "oil painting."
 
 #### Negative prompt parameter
 
