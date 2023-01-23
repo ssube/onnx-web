@@ -179,10 +179,14 @@ def pipeline_from_request() -> Tuple[BaseParams, Size]:
 
 
 def border_from_request() -> Border:
-    left = get_and_clamp_int(request.args, 'left', 0, get_config_value('width', 'max'), 0)
-    right = get_and_clamp_int(request.args, 'right', 0, get_config_value('width', 'max'), 0)
-    top = get_and_clamp_int(request.args, 'top', 0, get_config_value('height', 'max'), 0)
-    bottom = get_and_clamp_int(request.args, 'bottom', 0, get_config_value('height', 'max'), 0)
+    left = get_and_clamp_int(request.args, 'left', 0,
+                             get_config_value('width', 'max'), 0)
+    right = get_and_clamp_int(request.args, 'right',
+                              0, get_config_value('width', 'max'), 0)
+    top = get_and_clamp_int(request.args, 'top', 0,
+                            get_config_value('height', 'max'), 0)
+    bottom = get_and_clamp_int(
+        request.args, 'bottom', 0, get_config_value('height', 'max'), 0)
 
     return Border(left, right, top, bottom)
 
@@ -497,9 +501,16 @@ def upscale():
 @app.route('/api/ready')
 def ready():
     output_file = request.args.get('output', None)
+
     done = executor.futures.done(output_file)
 
-    if done == True:
+    if done is None:
+        file = safer_join(context.output_path, output_file)
+        if path.exists(file):
+            return jsonify({
+                'ready': True,
+            })
+    elif done == True:
         executor.futures.pop(output_file)
 
     return jsonify({
