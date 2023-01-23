@@ -14,6 +14,23 @@ ENV PATH="/onnx-web/api/onnx_env/bin:$PATH"
 
 RUN pip3 install pip --upgrade
 
+# build custom ORT, from https://github.com/microsoft/onnxruntime/blob/v1.13.1/dockerfiles/Dockerfile.rocm
+ARG ONNXRUNTIME_REPO=https://github.com/Microsoft/onnxruntime
+ARG ONNXRUNTIME_BRANCH=main
+
+WORKDIR /code
+
+ENV PATH /opt/miniconda/bin:/code/cmake-3.24.3-linux-x86_64/bin:${PATH}
+
+# Prepare onnxruntime repository & build onnxruntime
+RUN git clone --single-branch --branch ${ONNXRUNTIME_BRANCH} --recursive ${ONNXRUNTIME_REPO} onnxruntime &&\
+    /bin/sh onnxruntime/dockerfiles/scripts/install_common_deps.sh &&\
+    cd onnxruntime &&\
+    /bin/sh ./build.sh --config Release --build_wheel --update --build --parallel --cmake_extra_defines\
+            ONNXRUNTIME_VERSION=$(cat ./VERSION_NUMBER) --use_rocm --rocm_home=/opt/rocm &&\
+    pip install /code/onnxruntime/build/Linux/Release/dist/*.whl &&\
+    cd ..
+
 COPY requirements.txt /onnx-web/api/requirements.txt
 
 RUN pip3 install -r requirements.txt --no-cache-dir
