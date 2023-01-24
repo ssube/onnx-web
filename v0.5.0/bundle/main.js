@@ -24033,7 +24033,7 @@
               unmarkContainerAsRoot(container);
             }
           };
-          function createRoot(container, options2) {
+          function createRoot2(container, options2) {
             if (!isValidContainer(container)) {
               throw new Error("createRoot(...): Target container is not a DOM element.");
             }
@@ -24072,7 +24072,7 @@
             listenToAllSupportedEvents(rootContainerElement);
             return new ReactDOMRoot(root2);
           }
-          __name(createRoot, "createRoot");
+          __name(createRoot2, "createRoot");
           function ReactDOMHydrationRoot(internalRoot) {
             this._internalRoot = internalRoot;
           }
@@ -24423,7 +24423,7 @@
                 error('You are importing createRoot from "react-dom" which is not supported. You should instead import it from "react-dom/client".');
               }
             }
-            return createRoot(container, options2);
+            return createRoot2(container, options2);
           }
           __name(createRoot$1, "createRoot$1");
           function hydrateRoot$1(container, initialChildren, options2) {
@@ -60508,11 +60508,11 @@ Please use another name.` : formatMuiErrorMessage(18));
   function getErrorMessage(error) {
     if (error instanceof Error) {
       return error.message;
-    } else if (typeof error === "string") {
-      return error;
-    } else {
-      return "unknown error";
     }
+    if (typeof error === "string") {
+      return error;
+    }
+    return "unknown error";
   }
   __name(getErrorMessage, "getErrorMessage");
   function ServerParamsError(props) {
@@ -60817,10 +60817,11 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/OnnxWeb.js
   var React117 = __toESM(require_react(), 1);
+  var import_react32 = __toESM(require_react(), 1);
 
-  // out/src/components/ImageHistory.js
-  var import_react21 = __toESM(require_react(), 1);
-  var React103 = __toESM(require_react(), 1);
+  // out/src/components/control/ModelControl.js
+  var React102 = __toESM(require_react(), 1);
+  var import_react19 = __toESM(require_react(), 1);
 
   // out/src/state.js
   var import_react18 = __toESM(require_react(), 1);
@@ -60853,7 +60854,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }), "createImg2ImgSlice");
     const createInpaintSlice = /* @__PURE__ */ __name((set) => ({
-      inpaint: Object.assign(Object.assign({}, defaults), { fillColor: "", filter: "none", mask: null, noise: "histogram", source: null, strength: 1 }),
+      inpaint: Object.assign(Object.assign({}, defaults), { fillColor: "#000000", filter: "none", mask: null, noise: "histogram", source: null, strength: 1 }),
       setInpaint(params) {
         set((prev2) => ({
           inpaint: Object.assign(Object.assign({}, prev2.inpaint), params)
@@ -60861,7 +60862,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       },
       resetInpaint() {
         set({
-          inpaint: Object.assign(Object.assign({}, defaults), { fillColor: "", filter: "none", mask: null, noise: "histogram", source: null, strength: 1 })
+          inpaint: Object.assign(Object.assign({}, defaults), { fillColor: "#000000", filter: "none", mask: null, noise: "histogram", source: null, strength: 1 })
         });
       }
     }), "createInpaintSlice");
@@ -60980,6 +60981,170 @@ Please use another name.` : formatMuiErrorMessage(18));
   var StateContext = (0, import_react18.createContext)(void 0);
   var STATE_VERSION = 4;
 
+  // out/src/strings.js
+  var MODEL_LABELS = {
+    "stable-diffusion-onnx-v1-4": "Stable Diffusion v1.4",
+    "stable-diffusion-onnx-v1-5": "Stable Diffusion v1.5",
+    "stable-diffusion-onnx-v1-inpainting": "SD Inpainting v1",
+    "stable-diffusion-onnx-v2-0": "Stable Diffusion v2.0",
+    "stable-diffusion-onnx-v2-1": "Stable Diffusion v2.1",
+    "stable-diffusion-onnx-v2-inpainting": "SD Inpainting v2",
+    // upscaling
+    "upscaling-real-esrgan-x2-plus": "Real ESRGAN x2 Plus",
+    "upscaling-real-esrgan-x4-plus": "Real ESRGAN x4 Plus",
+    "upscaling-real-esrgan-x4-v3": "Real ESRGAN x4 v3",
+    // correction
+    "correction-gfpgan-v1-3": "GFPGAN v1.3"
+  };
+  var PLATFORM_LABELS = {
+    amd: "AMD GPU",
+    cpu: "CPU",
+    cuda: "CUDA",
+    directml: "DirectML",
+    nvidia: "Nvidia GPU",
+    rocm: "ROCm"
+  };
+  var SCHEDULER_LABELS = {
+    "ddim": "DDIM",
+    "ddpm": "DDPM",
+    "dpm-multi": "DPM Multistep",
+    "dpm-single": "DPM Singlestep",
+    "euler": "Euler",
+    "euler-a": "Euler Ancestral",
+    "heun": "Heun",
+    "k-dpm-2-a": "KDPM2 Ancestral",
+    "k-dpm-2": "KDPM2",
+    "karras-ve": "Karras Ve",
+    "lms-discrete": "LMS",
+    "pndm": "PNDM"
+  };
+  var NOISE_LABELS = {
+    "fill-edge": "Fill Edges",
+    "fill-mask": "Fill Masked",
+    "gaussian": "Gaussian Blur",
+    "histogram": "Histogram Noise",
+    "normal": "Gaussian Noise",
+    "uniform": "Uniform Noise"
+  };
+  var MASK_LABELS = {
+    "none": "None",
+    "gaussian-multiply": "Gaussian Multiply",
+    "gaussian-screen": "Gaussian Screen"
+  };
+
+  // out/src/components/input/QueryList.js
+  var React101 = __toESM(require_react(), 1);
+  function hasFilter(query) {
+    return Reflect.has(query, "selector");
+  }
+  __name(hasFilter, "hasFilter");
+  function filterQuery(query) {
+    if (hasFilter(query)) {
+      const data = mustExist(query.result.data);
+      return query.selector(data);
+    } else {
+      return mustExist(query.result.data);
+    }
+  }
+  __name(filterQuery, "filterQuery");
+  function QueryList(props) {
+    const { labels, query, value } = props;
+    const { result } = query;
+    function firstValidValue() {
+      if (doesExist2(value) && data.includes(value)) {
+        return value;
+      } else {
+        return data[0];
+      }
+    }
+    __name(firstValidValue, "firstValidValue");
+    if (result.status === "error") {
+      if (result.error instanceof Error) {
+        return React101.createElement(
+          Alert_default,
+          { severity: "error" },
+          "Error: ",
+          result.error.message
+        );
+      } else {
+        return React101.createElement(Alert_default, { severity: "error" }, "Unknown Error");
+      }
+    }
+    if (result.status === "loading") {
+      return React101.createElement(Typography_default, null, "Loading...");
+    }
+    if (result.status === "idle") {
+      return React101.createElement(Typography_default, null, "Idle?");
+    }
+    const labelID = `query-list-${props.id}-labels`;
+    const data = filterQuery(query);
+    return React101.createElement(
+      FormControl_default,
+      null,
+      React101.createElement(InputLabel_default, { id: labelID }, props.name),
+      React101.createElement(Select_default, { labelId: labelID, label: props.name, value: firstValidValue(), onChange: (e) => {
+        if (doesExist2(props.onChange)) {
+          props.onChange(e.target.value);
+        }
+      } }, data.map((name) => React101.createElement(MenuItem_default, { key: name, value: name }, mustDefault(labels[name], name))))
+    );
+  }
+  __name(QueryList, "QueryList");
+
+  // out/src/components/control/ModelControl.js
+  function ModelControl() {
+    const client = mustExist((0, import_react19.useContext)(ClientContext));
+    const state = mustExist((0, import_react19.useContext)(StateContext));
+    const params = useStore(state, (s) => s.model);
+    const setModel = useStore(state, (s) => s.setModel);
+    const models = useQuery("models", async () => client.models(), {
+      staleTime: STALE_TIME
+    });
+    const platforms = useQuery("platforms", async () => client.platforms(), {
+      staleTime: STALE_TIME
+    });
+    return React102.createElement(
+      Stack_default,
+      { direction: "row", spacing: 2 },
+      React102.createElement(QueryList, { id: "platforms", labels: PLATFORM_LABELS, name: "Platform", query: {
+        result: platforms
+      }, value: params.platform, onChange: (platform) => {
+        setModel({
+          platform
+        });
+      } }),
+      React102.createElement(QueryList, { id: "diffusion", labels: MODEL_LABELS, name: "Diffusion Model", query: {
+        result: models,
+        selector: (result) => result.diffusion
+      }, value: params.model, onChange: (model) => {
+        setModel({
+          model
+        });
+      } }),
+      React102.createElement(QueryList, { id: "upscaling", labels: MODEL_LABELS, name: "Upscaling Model", query: {
+        result: models,
+        selector: (result) => result.upscaling
+      }, value: params.upscaling, onChange: (upscaling) => {
+        setModel({
+          upscaling
+        });
+      } }),
+      React102.createElement(QueryList, { id: "correction", labels: MODEL_LABELS, name: "Correction Model", query: {
+        result: models,
+        selector: (result) => result.correction
+      }, value: params.correction, onChange: (correction) => {
+        setModel({
+          correction
+        });
+      } })
+    );
+  }
+  __name(ModelControl, "ModelControl");
+
+  // out/src/components/ImageHistory.js
+  var import_react22 = __toESM(require_react(), 1);
+  var React105 = __toESM(require_react(), 1);
+
   // node_modules/@mui/icons-material/esm/Brush.js
   var import_jsx_runtime92 = __toESM(require_jsx_runtime());
   var Brush_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime92.jsx)("path", {
@@ -61045,21 +61210,21 @@ Please use another name.` : formatMuiErrorMessage(18));
   }), "Refresh");
 
   // out/src/components/ImageCard.js
-  var React101 = __toESM(require_react(), 1);
-  var import_react19 = __toESM(require_react(), 1);
+  var React103 = __toESM(require_react(), 1);
+  var import_react20 = __toESM(require_react(), 1);
   function GridItem(props) {
-    return React101.createElement(
+    return React103.createElement(
       Grid_default,
       { item: true, xs: props.xs },
-      React101.createElement(Paper_default, { elevation: 0, sx: { padding: 1 } }, props.children)
+      React103.createElement(Paper_default, { elevation: 0, sx: { padding: 1 } }, props.children)
     );
   }
   __name(GridItem, "GridItem");
   function ImageCard(props) {
     const { value } = props;
     const { params, output, size } = value;
-    const config = mustExist((0, import_react19.useContext)(ConfigContext));
-    const state = mustExist((0, import_react19.useContext)(StateContext));
+    const config = mustExist((0, import_react20.useContext)(ConfigContext));
+    const state = mustExist((0, import_react20.useContext)(StateContext));
     const setImg2Img = useStore(state, (s) => s.setImg2Img);
     const setInpaint = useStore(state, (s) => s.setInpaint);
     async function loadSource() {
@@ -61091,32 +61256,32 @@ Please use another name.` : formatMuiErrorMessage(18));
       window.open(output.url, "_blank");
     }
     __name(downloadImage, "downloadImage");
-    return React101.createElement(
+    return React103.createElement(
       Card_default,
       { sx: { maxWidth: config.params.width.default }, elevation: 2 },
-      React101.createElement(CardMedia_default, { sx: { height: config.params.height.default }, component: "img", image: output.url, title: params.prompt }),
-      React101.createElement(
+      React103.createElement(CardMedia_default, { sx: { height: config.params.height.default }, component: "img", image: output.url, title: params.prompt }),
+      React103.createElement(
         CardContent_default,
         null,
-        React101.createElement(
+        React103.createElement(
           Box_default,
           null,
-          React101.createElement(
+          React103.createElement(
             Grid_default,
             { container: true, spacing: 2 },
-            React101.createElement(
+            React103.createElement(
               GridItem,
               { xs: 4 },
               "CFG: ",
               params.cfg
             ),
-            React101.createElement(
+            React103.createElement(
               GridItem,
               { xs: 4 },
               "Steps: ",
               params.steps
             ),
-            React101.createElement(
+            React103.createElement(
               GridItem,
               { xs: 4 },
               "Size: ",
@@ -61124,53 +61289,57 @@ Please use another name.` : formatMuiErrorMessage(18));
               "x",
               size.height
             ),
-            React101.createElement(
+            React103.createElement(
               GridItem,
               { xs: 4 },
               "Seed: ",
               params.seed
             ),
-            React101.createElement(
+            React103.createElement(
               GridItem,
               { xs: 8 },
               "Scheduler: ",
               params.scheduler
             ),
-            React101.createElement(GridItem, { xs: 12 }, params.prompt),
-            React101.createElement(
+            React103.createElement(GridItem, { xs: 12 }, params.prompt),
+            React103.createElement(
               GridItem,
-              { xs: 2 },
-              React101.createElement(
+              { xs: 3 },
+              React103.createElement(
                 Button_default,
                 { onClick: downloadImage },
-                React101.createElement(Download_default, null)
+                React103.createElement(Download_default, null),
+                "Save"
               )
             ),
-            React101.createElement(
+            React103.createElement(
               GridItem,
-              { xs: 2 },
-              React101.createElement(
+              { xs: 3 },
+              React103.createElement(
                 Button_default,
                 { onClick: copySourceToImg2Img },
-                React101.createElement(ContentCopy_default, null)
+                React103.createElement(ContentCopy_default, null),
+                "Img2img"
               )
             ),
-            React101.createElement(
+            React103.createElement(
               GridItem,
-              { xs: 2 },
-              React101.createElement(
+              { xs: 3 },
+              React103.createElement(
                 Button_default,
                 { onClick: copySourceToInpaint },
-                React101.createElement(Brush_default, null)
+                React103.createElement(Brush_default, null),
+                "Inpaint"
               )
             ),
-            React101.createElement(
+            React103.createElement(
               GridItem,
-              { xs: 2 },
-              React101.createElement(
+              { xs: 3 },
+              React103.createElement(
                 Button_default,
                 { onClick: deleteImage },
-                React101.createElement(Delete_default, null)
+                React103.createElement(Delete_default, null),
+                "Delete"
               )
             )
           )
@@ -61181,30 +61350,33 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(ImageCard, "ImageCard");
 
   // out/src/components/LoadingCard.js
-  var React102 = __toESM(require_react(), 1);
-  var import_react20 = __toESM(require_react(), 1);
+  var React104 = __toESM(require_react(), 1);
+  var import_react21 = __toESM(require_react(), 1);
   function LoadingCard(props) {
-    var _a;
-    const client = mustExist(React102.useContext(ClientContext));
-    const { params } = mustExist((0, import_react20.useContext)(ConfigContext));
-    const pushHistory = useStore(mustExist((0, import_react20.useContext)(StateContext)), (state) => state.pushHistory);
-    const ready = useQuery("ready", () => client.ready(props.loading), {
+    const client = mustExist(React104.useContext(ClientContext));
+    const { params } = mustExist((0, import_react21.useContext)(ConfigContext));
+    const pushHistory = useStore(mustExist((0, import_react21.useContext)(StateContext)), (state) => state.pushHistory);
+    const query = useQuery("ready", () => client.ready(props.loading), {
       // data will always be ready without this, even if the API says its not
       cacheTime: 0,
       refetchInterval: POLL_TIME
     });
-    React102.useEffect(() => {
-      if (ready.status === "success" && ready.data.ready) {
+    function ready() {
+      return doesExist2(query.data) && query.data.ready;
+    }
+    __name(ready, "ready");
+    React104.useEffect(() => {
+      if (query.status === "success" && query.data.ready) {
         pushHistory(props.loading);
       }
-    }, [ready.status, (_a = ready.data) === null || _a === void 0 ? void 0 : _a.ready]);
-    return React102.createElement(
+    }, [query.status, ready()]);
+    return React104.createElement(
       Card_default,
       { sx: { maxWidth: params.width.default } },
-      React102.createElement(
+      React104.createElement(
         CardContent_default,
         { sx: { height: params.height.default } },
-        React102.createElement(
+        React104.createElement(
           "div",
           { style: {
             display: "flex",
@@ -61212,7 +61384,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             justifyContent: "center",
             minHeight: params.height.default
           } },
-          React102.createElement(CircularProgress_default, null)
+          React104.createElement(CircularProgress_default, null)
         )
       )
     );
@@ -61221,85 +61393,36 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/ImageHistory.js
   function ImageHistory() {
-    const history = useStore(mustExist((0, import_react21.useContext)(StateContext)), (state) => state.history);
-    const limit = useStore(mustExist((0, import_react21.useContext)(StateContext)), (state) => state.limit);
-    const loading = useStore(mustExist((0, import_react21.useContext)(StateContext)), (state) => state.loading);
-    const removeHistory = useStore(mustExist((0, import_react21.useContext)(StateContext)), (state) => state.removeHistory);
+    const history = useStore(mustExist((0, import_react22.useContext)(StateContext)), (state) => state.history);
+    const limit = useStore(mustExist((0, import_react22.useContext)(StateContext)), (state) => state.limit);
+    const loading = useStore(mustExist((0, import_react22.useContext)(StateContext)), (state) => state.loading);
+    const removeHistory = useStore(mustExist((0, import_react22.useContext)(StateContext)), (state) => state.removeHistory);
     const children = [];
     if (doesExist2(loading)) {
-      children.push(React103.createElement(LoadingCard, { key: "loading", loading }));
+      children.push(React105.createElement(LoadingCard, { key: "loading", loading }));
     }
     if (history.length > 0) {
-      children.push(...history.map((item) => React103.createElement(ImageCard, { key: item.output.key, value: item, onDelete: removeHistory })));
+      children.push(...history.map((item) => React105.createElement(ImageCard, { key: item.output.key, value: item, onDelete: removeHistory })));
     } else {
       if (doesExist2(loading) === false) {
-        children.push(React103.createElement(Typography_default, null, "No results. Press Generate."));
+        children.push(React105.createElement(Typography_default, null, "No results. Press Generate."));
       }
     }
     const limited = children.slice(0, limit);
-    return React103.createElement(Grid_default, { container: true, spacing: 2 }, limited.map((child, idx) => React103.createElement(Grid_default, { item: true, key: idx, xs: 6 }, child)));
+    return React105.createElement(Grid_default, { container: true, spacing: 2 }, limited.map((child, idx) => React105.createElement(Grid_default, { item: true, key: idx, xs: 6 }, child)));
   }
   __name(ImageHistory, "ImageHistory");
 
   // out/src/components/tab/Img2Img.js
-  var React109 = __toESM(require_react(), 1);
+  var React110 = __toESM(require_react(), 1);
+  var import_react25 = __toESM(require_react(), 1);
 
   // out/src/components/control/ImageControl.js
-  var React106 = __toESM(require_react(), 1);
-
-  // out/src/strings.js
-  var MODEL_LABELS = {
-    "stable-diffusion-onnx-v1-4": "Stable Diffusion v1.4",
-    "stable-diffusion-onnx-v1-5": "Stable Diffusion v1.5",
-    "stable-diffusion-onnx-v1-inpainting": "SD Inpainting v1",
-    "stable-diffusion-onnx-v2-0": "Stable Diffusion v2.0",
-    "stable-diffusion-onnx-v2-1": "Stable Diffusion v2.1",
-    "stable-diffusion-onnx-v2-inpainting": "SD Inpainting v2",
-    // upscaling
-    "upscaling-real-esrgan-x2-plus": "Real ESRGAN x2 Plus",
-    "upscaling-real-esrgan-x4-plus": "Real ESRGAN x4 Plus",
-    "upscaling-real-esrgan-x4-v3": "Real ESRGAN x4 v3",
-    // correction
-    "correction-gfpgan-v1-3": "GFPGAN v1.3"
-  };
-  var PLATFORM_LABELS = {
-    amd: "AMD GPU",
-    cpu: "CPU",
-    cuda: "CUDA",
-    directml: "DirectML",
-    nvidia: "Nvidia GPU",
-    rocm: "ROCm"
-  };
-  var SCHEDULER_LABELS = {
-    "ddim": "DDIM",
-    "ddpm": "DDPM",
-    "dpm-multi": "DPM Multistep",
-    "dpm-single": "DPM Singlestep",
-    "euler": "Euler",
-    "euler-a": "Euler Ancestral",
-    "heun": "Heun",
-    "k-dpm-2-a": "KDPM2 Ancestral",
-    "k-dpm-2": "KDPM2",
-    "karras-ve": "Karras Ve",
-    "lms-discrete": "LMS",
-    "pndm": "PNDM"
-  };
-  var NOISE_LABELS = {
-    "fill-edge": "Fill Edges",
-    "fill-mask": "Fill Masked",
-    "gaussian": "Gaussian Blur",
-    "histogram": "Histogram Noise",
-    "normal": "Gaussian Noise",
-    "uniform": "Uniform Noise"
-  };
-  var MASK_LABELS = {
-    "none": "None",
-    "gaussian-multiply": "Gaussian Multiply",
-    "gaussian-screen": "Gaussian Screen"
-  };
+  var React107 = __toESM(require_react(), 1);
+  var import_react23 = __toESM(require_react(), 1);
 
   // out/src/components/input/NumericField.js
-  var React104 = __toESM(require_react(), 1);
+  var React106 = __toESM(require_react(), 1);
   function parseNumber(num, decimal = false) {
     if (decimal) {
       return parseFloat(num);
@@ -61310,15 +61433,16 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(parseNumber, "parseNumber");
   function NumericField(props) {
     const { decimal = false, disabled = false, label, min, max, step, value } = props;
-    return React104.createElement(
+    const error = value < min || value > max;
+    return React106.createElement(
       Stack_default,
       { spacing: 2 },
-      React104.createElement(TextField_default, { label, disabled, variant: "outlined", type: "number", inputProps: { min, max, step }, value, onChange: (event) => {
+      React106.createElement(TextField_default, { error, label, helperText: error && "Out of range", disabled, variant: "outlined", type: "number", inputProps: { min, max, step }, value, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange(parseNumber(event.target.value, decimal));
         }
       } }),
-      React104.createElement(Slider_default, { disabled, min, max, step, value, onChange: (_event, newValue) => {
+      React106.createElement(Slider_default, { disabled, min, max, step, value, onChange: (_event, newValue) => {
         if (doesExist2(props.onChange)) {
           if (Array.isArray(newValue)) {
             props.onChange(newValue[0]);
@@ -61331,116 +61455,67 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(NumericField, "NumericField");
 
-  // out/src/components/input/QueryList.js
-  var React105 = __toESM(require_react(), 1);
-  function hasFilter(query) {
-    return Reflect.has(query, "selector");
-  }
-  __name(hasFilter, "hasFilter");
-  function filterQuery(query) {
-    if (hasFilter(query)) {
-      const data = mustExist(query.result.data);
-      return query.selector(data);
-    } else {
-      return mustExist(query.result.data);
-    }
-  }
-  __name(filterQuery, "filterQuery");
-  function QueryList(props) {
-    const { labels, query, value } = props;
-    const { result } = query;
-    function firstValidValue() {
-      if (doesExist2(value) && data.includes(value)) {
-        return value;
-      } else {
-        return data[0];
-      }
-    }
-    __name(firstValidValue, "firstValidValue");
-    if (result.status === "error") {
-      if (result.error instanceof Error) {
-        return React105.createElement(
-          Alert_default,
-          { severity: "error" },
-          "Error: ",
-          result.error.message
-        );
-      } else {
-        return React105.createElement(Alert_default, { severity: "error" }, "Unknown Error");
-      }
-    }
-    if (result.status === "loading") {
-      return React105.createElement(Typography_default, null, "Loading...");
-    }
-    if (result.status === "idle") {
-      return React105.createElement(Typography_default, null, "Idle?");
-    }
-    const labelID = `query-list-${props.id}-labels`;
-    const data = filterQuery(query);
-    return React105.createElement(
-      FormControl_default,
-      null,
-      React105.createElement(InputLabel_default, { id: labelID }, props.name),
-      React105.createElement(Select_default, { labelId: labelID, label: props.name, value: firstValidValue(), onChange: (e) => {
-        if (doesExist2(props.onChange)) {
-          props.onChange(e.target.value);
-        }
-      } }, data.map((name) => React105.createElement(MenuItem_default, { key: name, value: name }, mustDefault(labels[name], name))))
-    );
-  }
-  __name(QueryList, "QueryList");
-
   // out/src/components/control/ImageControl.js
-  var { useContext: useContext14 } = React106;
+  var PROMPT_LIMIT = 70;
   function ImageControl(props) {
-    const { params } = mustExist(useContext14(ConfigContext));
-    const state = mustExist(useContext14(StateContext));
+    const { params } = mustExist((0, import_react23.useContext)(ConfigContext));
+    const state = mustExist((0, import_react23.useContext)(StateContext));
     const controlState = useStore(state, props.selector);
-    const client = mustExist(useContext14(ClientContext));
+    const client = mustExist((0, import_react23.useContext)(ClientContext));
     const schedulers = useQuery("schedulers", async () => client.schedulers(), {
       staleTime: STALE_TIME
     });
-    return React106.createElement(
+    const promptLength = controlState.prompt.split(" ").length;
+    const error = promptLength > PROMPT_LIMIT;
+    function promptHelper() {
+      if (error) {
+        return `Too many tokens: ${promptLength}/${PROMPT_LIMIT}`;
+      } else {
+        return `Tokens: ${promptLength}/${PROMPT_LIMIT}`;
+      }
+    }
+    __name(promptHelper, "promptHelper");
+    return React107.createElement(
       Stack_default,
       { spacing: 2 },
-      React106.createElement(QueryList, { id: "schedulers", labels: SCHEDULER_LABELS, name: "Scheduler", query: {
+      React107.createElement(QueryList, { id: "schedulers", labels: SCHEDULER_LABELS, name: "Scheduler", query: {
         result: schedulers
       }, value: mustDefault(controlState.scheduler, ""), onChange: (value) => {
         if (doesExist2(props.onChange)) {
           props.onChange(Object.assign(Object.assign({}, controlState), { scheduler: value }));
         }
       } }),
-      React106.createElement(
+      React107.createElement(
         Stack_default,
         { direction: "row", spacing: 4 },
-        React106.createElement(NumericField, { decimal: true, label: "CFG", min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: controlState.cfg, onChange: (cfg) => {
+        React107.createElement(NumericField, { decimal: true, label: "CFG", min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: controlState.cfg, onChange: (cfg) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { cfg }));
           }
         } }),
-        React106.createElement(NumericField, { label: "Steps", min: params.steps.min, max: params.steps.max, step: params.steps.step, value: controlState.steps, onChange: (steps) => {
+        React107.createElement(NumericField, { label: "Steps", min: params.steps.min, max: params.steps.max, step: params.steps.step, value: controlState.steps, onChange: (steps) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { steps }));
           }
         } }),
-        React106.createElement(NumericField, { label: "Seed", min: params.seed.min, max: params.seed.max, step: params.seed.step, value: controlState.seed, onChange: (seed) => {
+        React107.createElement(NumericField, { label: "Seed", min: params.seed.min, max: params.seed.max, step: params.seed.step, value: controlState.seed, onChange: (seed) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { seed }));
           }
         } }),
-        React106.createElement(Button_default, { variant: "outlined", startIcon: React106.createElement(Casino_default, null), onClick: () => {
+        React107.createElement(Button_default, { variant: "outlined", startIcon: React107.createElement(Casino_default, null), onClick: () => {
           const seed = Math.floor(Math.random() * params.seed.max);
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { seed }));
           }
         } }, "New Seed")
       ),
-      React106.createElement(TextField_default, { label: "Prompt", variant: "outlined", value: controlState.prompt, onChange: (event) => {
+      React107.createElement(TextField_default, { error, label: "Prompt", helperText: promptHelper(), variant: "outlined", value: controlState.prompt, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange(Object.assign(Object.assign({}, controlState), { prompt: event.target.value }));
         }
       } }),
-      React106.createElement(TextField_default, { label: "Negative Prompt", variant: "outlined", value: controlState.negativePrompt, onChange: (event) => {
+      React107.createElement(TextField_default, { label: "Negative Prompt", variant: "outlined", value: controlState.negativePrompt, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange(Object.assign(Object.assign({}, controlState), { negativePrompt: event.target.value }));
         }
@@ -61449,53 +61524,12 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(ImageControl, "ImageControl");
 
-  // out/src/components/input/ImageInput.js
-  var React107 = __toESM(require_react(), 1);
-  function ImageInput(props) {
-    function renderImage() {
-      if (doesExist2(props.image)) {
-        if (mustDefault(props.hideSelection, false)) {
-          return void 0;
-        }
-        return React107.createElement("img", { src: URL.createObjectURL(props.image), style: {
-          maxWidth: 512,
-          maxHeight: 512
-        } });
-      } else {
-        return React107.createElement(Typography_default, null, "Please select an image.");
-      }
-    }
-    __name(renderImage, "renderImage");
-    return React107.createElement(
-      Stack_default,
-      { direction: "row", spacing: 2 },
-      React107.createElement(
-        Stack_default,
-        null,
-        React107.createElement(
-          Button_default,
-          { component: "label", startIcon: React107.createElement(PhotoCamera_default, null), variant: "outlined" },
-          props.label,
-          React107.createElement("input", { hidden: true, accept: props.filter, type: "file", onChange: (event) => {
-            const { files } = event.target;
-            if (doesExist2(files) && files.length > 0) {
-              const file = mustExist(files[0]);
-              props.onChange(file);
-            }
-          } })
-        )
-      ),
-      renderImage()
-    );
-  }
-  __name(ImageInput, "ImageInput");
-
   // out/src/components/control/UpscaleControl.js
   var React108 = __toESM(require_react(), 1);
-  var import_react22 = __toESM(require_react(), 1);
+  var import_react24 = __toESM(require_react(), 1);
   function UpscaleControl() {
-    const { params } = mustExist((0, import_react22.useContext)(ConfigContext));
-    const state = mustExist((0, import_react22.useContext)(StateContext));
+    const { params } = mustExist((0, import_react24.useContext)(ConfigContext));
+    const state = mustExist((0, import_react24.useContext)(StateContext));
     const upscale = useStore(state, (s) => s.upscale);
     const setUpscale = useStore(state, (s) => s.setUpscale);
     return React108.createElement(
@@ -61535,56 +61569,137 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(UpscaleControl, "UpscaleControl");
 
+  // out/src/components/input/ImageInput.js
+  var React109 = __toESM(require_react(), 1);
+  function ImageInput(props) {
+    function renderImage() {
+      if (doesExist2(props.image)) {
+        if (mustDefault(props.hideSelection, false)) {
+          return void 0;
+        }
+        return React109.createElement("img", { src: URL.createObjectURL(props.image), style: {
+          maxWidth: 512,
+          maxHeight: 512
+        } });
+      } else {
+        return React109.createElement(Typography_default, null, "Please select an image.");
+      }
+    }
+    __name(renderImage, "renderImage");
+    return React109.createElement(
+      Stack_default,
+      { direction: "row", spacing: 2 },
+      React109.createElement(
+        Stack_default,
+        null,
+        React109.createElement(
+          Button_default,
+          { component: "label", startIcon: React109.createElement(PhotoCamera_default, null), variant: "outlined" },
+          props.label,
+          React109.createElement("input", { hidden: true, accept: props.filter, type: "file", onChange: (event) => {
+            const { files } = event.target;
+            if (doesExist2(files) && files.length > 0) {
+              const file = mustExist(files[0]);
+              props.onChange(file);
+            }
+          } })
+        )
+      ),
+      renderImage()
+    );
+  }
+  __name(ImageInput, "ImageInput");
+
   // out/src/components/tab/Img2Img.js
-  var { useContext: useContext16 } = React109;
   function Img2Img() {
-    const { params } = mustExist(useContext16(ConfigContext));
+    const { params } = mustExist((0, import_react25.useContext)(ConfigContext));
     async function uploadSource() {
       const { model, img2img, upscale } = state.getState();
       const output = await client.img2img(model, Object.assign(Object.assign({}, img2img), { source: mustExist(img2img.source) }), upscale);
       setLoading(output);
     }
     __name(uploadSource, "uploadSource");
-    const client = mustExist(useContext16(ClientContext));
+    const client = mustExist((0, import_react25.useContext)(ClientContext));
     const query = useQueryClient();
     const upload = useMutation(uploadSource, {
       onSuccess: () => query.invalidateQueries({ queryKey: "ready" })
     });
-    const state = mustExist(useContext16(StateContext));
+    const state = mustExist((0, import_react25.useContext)(StateContext));
     const source = useStore(state, (s) => s.img2img.source);
     const strength = useStore(state, (s) => s.img2img.strength);
     const setImg2Img = useStore(state, (s) => s.setImg2Img);
     const setLoading = useStore(state, (s) => s.setLoading);
-    return React109.createElement(
+    return React110.createElement(
       Box_default,
       null,
-      React109.createElement(
+      React110.createElement(
         Stack_default,
         { spacing: 2 },
-        React109.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: "Source", onChange: (file) => {
+        React110.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: "Source", onChange: (file) => {
           setImg2Img({
             source: file
           });
         } }),
-        React109.createElement(ImageControl, { selector: (s) => s.img2img, onChange: setImg2Img }),
-        React109.createElement(NumericField, { decimal: true, label: "Strength", min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
+        React110.createElement(ImageControl, { selector: (s) => s.img2img, onChange: setImg2Img }),
+        React110.createElement(NumericField, { decimal: true, label: "Strength", min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
           setImg2Img({
             strength: value
           });
         } }),
-        React109.createElement(UpscaleControl, null),
-        React109.createElement(Button_default, { disabled: doesExist2(source) === false, variant: "contained", onClick: () => upload.mutate() }, "Generate")
+        React110.createElement(UpscaleControl, null),
+        React110.createElement(Button_default, { disabled: doesExist2(source) === false, variant: "contained", onClick: () => upload.mutate() }, "Generate")
       )
     );
   }
   __name(Img2Img, "Img2Img");
 
   // out/src/components/tab/Inpaint.js
-  var React112 = __toESM(require_react(), 1);
+  var React113 = __toESM(require_react(), 1);
+  var import_react28 = __toESM(require_react(), 1);
+
+  // out/src/components/control/OutpaintControl.js
+  var React111 = __toESM(require_react(), 1);
+  var import_react26 = __toESM(require_react(), 1);
+  function OutpaintControl() {
+    const { params } = mustExist((0, import_react26.useContext)(ConfigContext));
+    const state = mustExist((0, import_react26.useContext)(StateContext));
+    const outpaint = useStore(state, (s) => s.outpaint);
+    const setOutpaint = useStore(state, (s) => s.setOutpaint);
+    return React111.createElement(
+      Stack_default,
+      { direction: "row", spacing: 4 },
+      React111.createElement(FormControlLabel_default, { label: "Outpaint", control: React111.createElement(Checkbox_default, { checked: outpaint.enabled, value: "check", onChange: (event) => {
+        setOutpaint({
+          enabled: outpaint.enabled === false
+        });
+      } }) }),
+      React111.createElement(NumericField, { label: "Left", disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.left, onChange: (left) => {
+        setOutpaint({
+          left
+        });
+      } }),
+      React111.createElement(NumericField, { label: "Right", disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.right, onChange: (right) => {
+        setOutpaint({
+          right
+        });
+      } }),
+      React111.createElement(NumericField, { label: "Top", disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.top, onChange: (top) => {
+        setOutpaint({
+          top
+        });
+      } }),
+      React111.createElement(NumericField, { label: "Bottom", disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.bottom, onChange: (bottom) => {
+        setOutpaint({
+          bottom
+        });
+      } })
+    );
+  }
+  __name(OutpaintControl, "OutpaintControl");
 
   // out/src/components/input/MaskCanvas.js
   var import_lodash2 = __toESM(require_lodash(), 1);
-  var import_react23 = __toESM(require_react(), 1);
+  var import_react27 = __toESM(require_react(), 1);
   var FULL_CIRCLE = 2 * Math.PI;
   var FULL_OPACITY = 1;
   var MASK_OPACITY = 0.75;
@@ -61605,7 +61720,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   };
   function MaskCanvas(props) {
     const { source, mask } = props;
-    const { params } = mustExist((0, import_react23.useContext)(ConfigContext));
+    const { params } = mustExist((0, import_react27.useContext)(ConfigContext));
     function drawBuffer() {
       if (doesExist2(brushRef.current) && doesExist2(bufferRef.current) && doesExist2(canvasRef.current)) {
         const { ctx } = getClearContext(canvasRef);
@@ -61674,27 +61789,27 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }
     __name(saveMask, "saveMask");
-    const save = (0, import_react23.useMemo)(() => (0, import_lodash2.throttle)(saveMask, SAVE_TIME), []);
-    const brushRef = (0, import_react23.useRef)(null);
-    const bufferRef = (0, import_react23.useRef)(null);
-    const canvasRef = (0, import_react23.useRef)(null);
-    const maskState = (0, import_react23.useRef)(MASK_STATE.clean);
-    const [background, setBackground] = (0, import_react23.useState)();
-    const [clicks, setClicks] = (0, import_react23.useState)([]);
-    const state = mustExist((0, import_react23.useContext)(StateContext));
+    const save = (0, import_react27.useMemo)(() => (0, import_lodash2.throttle)(saveMask, SAVE_TIME), []);
+    const brushRef = (0, import_react27.useRef)(null);
+    const bufferRef = (0, import_react27.useRef)(null);
+    const canvasRef = (0, import_react27.useRef)(null);
+    const maskState = (0, import_react27.useRef)(MASK_STATE.clean);
+    const [background, setBackground] = (0, import_react27.useState)();
+    const [clicks, setClicks] = (0, import_react27.useState)([]);
+    const state = mustExist((0, import_react27.useContext)(StateContext));
     const brush = useStore(state, (s) => s.brush);
     const setBrush = useStore(state, (s) => s.setBrush);
-    (0, import_react23.useEffect)(() => {
+    (0, import_react27.useEffect)(() => {
       if (maskState.current === MASK_STATE.dirty) {
         save();
       }
     }, [maskState.current]);
-    (0, import_react23.useEffect)(() => {
+    (0, import_react27.useEffect)(() => {
       if (doesExist2(bufferRef.current) && doesExist2(mask)) {
         drawSource(mask);
       }
     }, [mask]);
-    (0, import_react23.useEffect)(() => {
+    (0, import_react27.useEffect)(() => {
       if (doesExist2(source)) {
         if (doesExist2(background)) {
           URL.revokeObjectURL(background);
@@ -61718,16 +61833,16 @@ Please use another name.` : formatMuiErrorMessage(18));
     if (doesExist2(background)) {
       styles5.backgroundImage = `url(${background})`;
     }
-    return import_react23.default.createElement(
+    return import_react27.default.createElement(
       Stack_default,
       { spacing: 2 },
-      import_react23.default.createElement("canvas", { ref: brushRef, height: params.height.default, width: params.width.default, style: {
+      import_react27.default.createElement("canvas", { ref: brushRef, height: params.height.default, width: params.width.default, style: {
         display: "none"
       } }),
-      import_react23.default.createElement("canvas", { ref: bufferRef, height: params.height.default, width: params.width.default, style: {
+      import_react27.default.createElement("canvas", { ref: bufferRef, height: params.height.default, width: params.width.default, style: {
         display: "none"
       } }),
-      import_react23.default.createElement("canvas", { ref: canvasRef, height: params.height.default, width: params.width.default, style: styles5, onClick: (event) => {
+      import_react27.default.createElement("canvas", { ref: canvasRef, height: params.height.default, width: params.width.default, style: styles5, onClick: (event) => {
         const canvas = mustExist(canvasRef.current);
         const bounds = canvas.getBoundingClientRect();
         setClicks([...clicks, {
@@ -61753,40 +61868,40 @@ Please use another name.` : formatMuiErrorMessage(18));
           });
         }
       } }),
-      import_react23.default.createElement(Typography_default, { variant: "body1" }, "Black pixels in the mask will stay the same, white pixels will be replaced. The masked pixels will be blended with the noise source before the diffusion model runs, giving it more variety to use."),
-      import_react23.default.createElement(
+      import_react27.default.createElement(Typography_default, { variant: "body1" }, "Black pixels in the mask will stay the same, white pixels will be replaced. The masked pixels will be blended with the noise source before the diffusion model runs, giving it more variety to use."),
+      import_react27.default.createElement(
         Stack_default,
         { direction: "row", spacing: 4 },
-        import_react23.default.createElement(NumericField, { label: "Brush Color", min: COLORS.black, max: COLORS.white, step: 1, value: brush.color, onChange: (color2) => {
+        import_react27.default.createElement(NumericField, { label: "Brush Color", min: COLORS.black, max: COLORS.white, step: 1, value: brush.color, onChange: (color2) => {
           setBrush({ color: color2 });
         } }),
-        import_react23.default.createElement(NumericField, { label: "Brush Size", min: 1, max: 64, step: 1, value: brush.size, onChange: (size) => {
+        import_react27.default.createElement(NumericField, { label: "Brush Size", min: 1, max: 64, step: 1, value: brush.size, onChange: (size) => {
           setBrush({ size });
         } }),
-        import_react23.default.createElement(NumericField, { decimal: true, label: "Brush Strength", min: 0, max: 1, step: 0.01, value: brush.strength, onChange: (strength) => {
+        import_react27.default.createElement(NumericField, { decimal: true, label: "Brush Strength", min: 0, max: 1, step: 0.01, value: brush.strength, onChange: (strength) => {
           setBrush({ strength });
         } }),
-        import_react23.default.createElement(Button_default, { variant: "outlined", startIcon: import_react23.default.createElement(FormatColorFill_default, null), onClick: () => {
+        import_react27.default.createElement(Button_default, { variant: "outlined", startIcon: import_react27.default.createElement(FormatColorFill_default, null), onClick: () => {
           floodCanvas(bufferRef, floodBlack);
           drawBuffer();
           maskState.current = MASK_STATE.dirty;
         } }, "Fill with black"),
-        import_react23.default.createElement(Button_default, { variant: "outlined", startIcon: import_react23.default.createElement(FormatColorFill_default, null), onClick: () => {
+        import_react27.default.createElement(Button_default, { variant: "outlined", startIcon: import_react27.default.createElement(FormatColorFill_default, null), onClick: () => {
           floodCanvas(bufferRef, floodWhite);
           drawBuffer();
           maskState.current = MASK_STATE.dirty;
         } }, "Fill with white"),
-        import_react23.default.createElement(Button_default, { variant: "outlined", startIcon: import_react23.default.createElement(InvertColors_default, null), onClick: () => {
+        import_react27.default.createElement(Button_default, { variant: "outlined", startIcon: import_react27.default.createElement(InvertColors_default, null), onClick: () => {
           floodCanvas(bufferRef, floodInvert);
           drawBuffer();
           maskState.current = MASK_STATE.dirty;
         } }, "Invert"),
-        import_react23.default.createElement(Button_default, { variant: "outlined", startIcon: import_react23.default.createElement(Gradient_default, null), onClick: () => {
+        import_react27.default.createElement(Button_default, { variant: "outlined", startIcon: import_react27.default.createElement(Gradient_default, null), onClick: () => {
           floodCanvas(bufferRef, floodBelow);
           drawBuffer();
           maskState.current = MASK_STATE.dirty;
         } }, "Gray to black"),
-        import_react23.default.createElement(Button_default, { variant: "outlined", startIcon: import_react23.default.createElement(Gradient_default, null), onClick: () => {
+        import_react27.default.createElement(Button_default, { variant: "outlined", startIcon: import_react27.default.createElement(Gradient_default, null), onClick: () => {
           floodCanvas(bufferRef, floodAbove);
           drawBuffer();
           maskState.current = MASK_STATE.dirty;
@@ -61864,51 +61979,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(floodCanvas, "floodCanvas");
 
-  // out/src/components/control/OutpaintControl.js
-  var React111 = __toESM(require_react(), 1);
-  var import_react24 = __toESM(require_react(), 1);
-  function OutpaintControl() {
-    const { params } = mustExist((0, import_react24.useContext)(ConfigContext));
-    const state = mustExist((0, import_react24.useContext)(StateContext));
-    const outpaint = useStore(state, (s) => s.outpaint);
-    const setOutpaint = useStore(state, (s) => s.setOutpaint);
-    return React111.createElement(
-      Stack_default,
-      { direction: "row", spacing: 4 },
-      React111.createElement(FormControlLabel_default, { label: "Outpaint", control: React111.createElement(Checkbox_default, { checked: outpaint.enabled, value: "check", onChange: (event) => {
-        setOutpaint({
-          enabled: outpaint.enabled === false
-        });
-      } }) }),
-      React111.createElement(NumericField, { label: "Left", disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.left, onChange: (left) => {
-        setOutpaint({
-          left
-        });
-      } }),
-      React111.createElement(NumericField, { label: "Right", disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.right, onChange: (right) => {
-        setOutpaint({
-          right
-        });
-      } }),
-      React111.createElement(NumericField, { label: "Top", disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.top, onChange: (top) => {
-        setOutpaint({
-          top
-        });
-      } }),
-      React111.createElement(NumericField, { label: "Bottom", disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.bottom, onChange: (bottom) => {
-        setOutpaint({
-          bottom
-        });
-      } })
-    );
-  }
-  __name(OutpaintControl, "OutpaintControl");
-
   // out/src/components/tab/Inpaint.js
-  var { useContext: useContext19 } = React112;
   function Inpaint() {
-    const { params } = mustExist(useContext19(ConfigContext));
-    const client = mustExist(useContext19(ClientContext));
+    const { params } = mustExist((0, import_react28.useContext)(ConfigContext));
+    const client = mustExist((0, import_react28.useContext)(ClientContext));
     const masks = useQuery("masks", async () => client.masks(), {
       staleTime: STALE_TIME
     });
@@ -61926,7 +62000,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }
     __name(uploadSource, "uploadSource");
-    const state = mustExist(useContext19(StateContext));
+    const state = mustExist((0, import_react28.useContext)(StateContext));
     const fillColor = useStore(state, (s) => s.inpaint.fillColor);
     const filter = useStore(state, (s) => s.inpaint.filter);
     const noise = useStore(state, (s) => s.inpaint.noise);
@@ -61939,129 +62013,77 @@ Please use another name.` : formatMuiErrorMessage(18));
     const upload = useMutation(uploadSource, {
       onSuccess: () => query.invalidateQueries({ queryKey: "ready" })
     });
-    return React112.createElement(
+    return React113.createElement(
       Box_default,
       null,
-      React112.createElement(
+      React113.createElement(
         Stack_default,
         { spacing: 2 },
-        React112.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: "Source", hideSelection: true, onChange: (file) => {
+        React113.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: "Source", hideSelection: true, onChange: (file) => {
           setInpaint({
             source: file
           });
         } }),
-        React112.createElement(ImageInput, { filter: IMAGE_FILTER, image: mask, label: "Mask", hideSelection: true, onChange: (file) => {
+        React113.createElement(ImageInput, { filter: IMAGE_FILTER, image: mask, label: "Mask", hideSelection: true, onChange: (file) => {
           setInpaint({
             mask: file
           });
         } }),
-        React112.createElement(MaskCanvas, { source, mask, onSave: (file) => {
+        React113.createElement(MaskCanvas, { source, mask, onSave: (file) => {
           setInpaint({
             mask: file
           });
         } }),
-        React112.createElement(ImageControl, { selector: (s) => s.inpaint, onChange: (newParams) => {
+        React113.createElement(ImageControl, { selector: (s) => s.inpaint, onChange: (newParams) => {
           setInpaint(newParams);
         } }),
-        React112.createElement(NumericField, { label: "Strength", min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
+        React113.createElement(NumericField, { label: "Strength", min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
           setInpaint({
             strength: value
           });
         } }),
-        React112.createElement(
+        React113.createElement(
           Stack_default,
           { direction: "row", spacing: 2 },
-          React112.createElement(QueryList, { id: "masks", labels: MASK_LABELS, name: "Mask Filter", query: {
+          React113.createElement(QueryList, { id: "masks", labels: MASK_LABELS, name: "Mask Filter", query: {
             result: masks
           }, value: filter, onChange: (newFilter) => {
             setInpaint({
               filter: newFilter
             });
           } }),
-          React112.createElement(QueryList, { id: "noises", labels: NOISE_LABELS, name: "Noise Source", query: {
+          React113.createElement(QueryList, { id: "noises", labels: NOISE_LABELS, name: "Noise Source", query: {
             result: noises
           }, value: noise, onChange: (newNoise) => {
             setInpaint({
               noise: newNoise
             });
           } }),
-          React112.createElement(
+          React113.createElement(
             Stack_default,
             { direction: "row", spacing: 2 },
-            React112.createElement(FormControlLabel_default, { label: "Fill Color", sx: { mx: 1 }, control: React112.createElement("input", { defaultValue: fillColor, name: "fill-color", type: "color", onBlur: (event) => {
+            React113.createElement(FormControlLabel_default, { label: "Fill Color", sx: { mx: 1 }, control: React113.createElement("input", { defaultValue: fillColor, name: "fill-color", type: "color", onBlur: (event) => {
               setInpaint({
                 fillColor: event.target.value
               });
             } }) })
           )
         ),
-        React112.createElement(OutpaintControl, null),
-        React112.createElement(UpscaleControl, null),
-        React112.createElement(Button_default, { disabled: doesExist2(source) === false || doesExist2(mask) === false, variant: "contained", onClick: () => upload.mutate() }, "Generate")
+        React113.createElement(OutpaintControl, null),
+        React113.createElement(UpscaleControl, null),
+        React113.createElement(Button_default, { disabled: doesExist2(source) === false || doesExist2(mask) === false, variant: "contained", onClick: () => upload.mutate() }, "Generate")
       )
     );
   }
   __name(Inpaint, "Inpaint");
 
-  // out/src/components/control/ModelControl.js
-  var React113 = __toESM(require_react(), 1);
-  var import_react25 = __toESM(require_react(), 1);
-  function ModelControl() {
-    const client = mustExist((0, import_react25.useContext)(ClientContext));
-    const state = mustExist((0, import_react25.useContext)(StateContext));
-    const params = useStore(state, (s) => s.model);
-    const setModel = useStore(state, (s) => s.setModel);
-    const models = useQuery("models", async () => client.models(), {
-      staleTime: STALE_TIME
-    });
-    const platforms = useQuery("platforms", async () => client.platforms(), {
-      staleTime: STALE_TIME
-    });
-    return React113.createElement(
-      Stack_default,
-      { direction: "row", spacing: 2 },
-      React113.createElement(QueryList, { id: "platforms", labels: PLATFORM_LABELS, name: "Platform", query: {
-        result: platforms
-      }, value: params.platform, onChange: (platform) => {
-        setModel({
-          platform
-        });
-      } }),
-      React113.createElement(QueryList, { id: "diffusion", labels: MODEL_LABELS, name: "Diffusion Model", query: {
-        result: models,
-        selector: (result) => result.diffusion
-      }, value: params.model, onChange: (model) => {
-        setModel({
-          model
-        });
-      } }),
-      React113.createElement(QueryList, { id: "upscaling", labels: MODEL_LABELS, name: "Upscaling Model", query: {
-        result: models,
-        selector: (result) => result.upscaling
-      }, value: params.upscaling, onChange: (upscaling) => {
-        setModel({
-          upscaling
-        });
-      } }),
-      React113.createElement(QueryList, { id: "correction", labels: MODEL_LABELS, name: "Correction Model", query: {
-        result: models,
-        selector: (result) => result.correction
-      }, value: params.correction, onChange: (correction) => {
-        setModel({
-          correction
-        });
-      } })
-    );
-  }
-  __name(ModelControl, "ModelControl");
-
   // out/src/components/tab/Settings.js
   var React114 = __toESM(require_react(), 1);
-  var import_react26 = __toESM(require_react(), 1);
+  var import_react29 = __toESM(require_react(), 1);
   function Settings() {
-    const config = mustExist((0, import_react26.useContext)(ConfigContext));
-    const state = useStore(mustExist((0, import_react26.useContext)(StateContext)));
-    const [root, setRoot] = (0, import_react26.useState)(getApiRoot(config));
+    const config = mustExist((0, import_react29.useContext)(ConfigContext));
+    const state = useStore(mustExist((0, import_react29.useContext)(StateContext)));
+    const [root, setRoot] = (0, import_react29.useState)(getApiRoot(config));
     return React114.createElement(
       Stack_default,
       { spacing: 2 },
@@ -62103,21 +62125,21 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/tab/Txt2Img.js
   var React115 = __toESM(require_react(), 1);
-  var { useContext: useContext22 } = React115;
+  var import_react30 = __toESM(require_react(), 1);
   function Txt2Img() {
-    const { params } = mustExist(useContext22(ConfigContext));
+    const { params } = mustExist((0, import_react30.useContext)(ConfigContext));
     async function generateImage() {
       const { model, txt2img, upscale } = state.getState();
       const output = await client.txt2img(model, txt2img, upscale);
       setLoading(output);
     }
     __name(generateImage, "generateImage");
-    const client = mustExist(useContext22(ClientContext));
+    const client = mustExist((0, import_react30.useContext)(ClientContext));
     const query = useQueryClient();
     const generate = useMutation(generateImage, {
       onSuccess: () => query.invalidateQueries({ queryKey: "ready" })
     });
-    const state = mustExist(useContext22(StateContext));
+    const state = mustExist((0, import_react30.useContext)(StateContext));
     const height2 = useStore(state, (s) => s.txt2img.height);
     const width2 = useStore(state, (s) => s.txt2img.width);
     const setTxt2Img = useStore(state, (s) => s.setTxt2Img);
@@ -62152,7 +62174,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/tab/Upscale.js
   var React116 = __toESM(require_react(), 1);
-  var { useContext: useContext23 } = React116;
+  var import_react31 = __toESM(require_react(), 1);
   function Upscale() {
     async function uploadSource() {
       const { model, upscale } = state.getState();
@@ -62160,12 +62182,12 @@ Please use another name.` : formatMuiErrorMessage(18));
       setLoading(output);
     }
     __name(uploadSource, "uploadSource");
-    const client = mustExist(useContext23(ClientContext));
+    const client = mustExist((0, import_react31.useContext)(ClientContext));
     const query = useQueryClient();
     const upload = useMutation(uploadSource, {
       onSuccess: () => query.invalidateQueries({ queryKey: "ready" })
     });
-    const state = mustExist(useContext23(StateContext));
+    const state = mustExist((0, import_react31.useContext)(StateContext));
     const params = useStore(state, (s) => s.upscaleTab);
     const setSource = useStore(state, (s) => s.setUpscaleTab);
     const setLoading = useStore(state, (s) => s.setLoading);
@@ -62188,9 +62210,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(Upscale, "Upscale");
 
   // out/src/components/OnnxWeb.js
-  var { useState: useState20 } = React117;
   function OnnxWeb() {
-    const [tab, setTab] = useState20("txt2img");
+    const [tab, setTab] = (0, import_react32.useState)("txt2img");
     return React117.createElement(
       Container_default,
       null,
@@ -62269,7 +62290,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const root = getApiRoot(config);
     const client = makeClient(root);
     const appElement = mustExist(document.getElementById("app"));
-    const app = import_client3.default.createRoot(appElement);
+    const app = (0, import_client3.createRoot)(appElement);
     try {
       const params = await timeout(INITIAL_LOAD_TIMEOUT, client.params());
       const version = mustDefault(params.version, "0.0.0");
