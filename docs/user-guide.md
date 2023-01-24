@@ -3,14 +3,16 @@
 This is the user guide for ONNX web, a web GUI for running ONNX models with hardware acceleration on both AMD and Nvidia
 system, with a CPU software fallback.
 
-The API runs on both Linux and Windows and provides access to the major functionality of diffusers, along with metadata
-about the available models and accelerators, and the output of previous runs. Hardware acceleration is supported on both
-AMD and Nvidia for both Linux and Windows, with a CPU fallback capable of running on laptop-class machines.
+The API is written in Python and runs on both Linux and Windows and provides access to the major functionality of
+diffusers, along with metadata about the available models and accelerators, and the output of previous runs. Hardware
+acceleration is supported on both AMD and Nvidia for both Linux and Windows, with a CPU fallback capable of running on
+laptop-class machines.
 
-The GUI is hosted on Github Pages and runs in all major browsers, including on mobile devices. It allows you to select
-the model and accelerator being used for each image pipeline. Image parameters are shown for each of the major modes,
-and you can either upload or paint the mask for inpainting and outpainting. The last few output images are shown below
-the image controls, making it easy to refer back to previous parameters or save an image from earlier.
+The GUI is written in Javascript, hosted on Github Pages, and runs in all major browsers, including on mobile devices.
+It allows you to select the model and accelerator being used for each image pipeline. Image parameters are shown for
+each of the major modes, and you can either upload or paint the mask for inpainting and outpainting. The last few output
+images are shown below the image controls, making it easy to refer back to previous parameters or save an image from
+earlier.
 
 Please see [the server admin guide](server-admin.md) for details on how to configure and run the server.
 
@@ -92,7 +94,7 @@ will need a simple drawing component, but anything more complicated, like layers
 the Gimp, Krita, or Photoshop.
 
 This is _not_ a tool for building new ML models. While I am open to some training features, like Dreambooth and anything
-needed to convert models, that is not the focus and should be limited features that support the other tabs.
+needed to convert models, that is not the focus and should be limited to features that support the other tabs.
 
 ### ONNX models
 
