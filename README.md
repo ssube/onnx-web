@@ -301,8 +301,8 @@ The conversion script has a few other options, which can be printed using `pytho
 are using CUDA on Nvidia hardware, using the `--half` option may make things faster.
 
 This will take a little while to convert each model. Stable diffusion v1.4 is about 6GB, v1.5 is at least 10GB or so.
-You can skip certain models by including a `--skip name` argument if you want to save time or disk space. For example,
-using `--skip stable-diffusion-onnx-v2-inpainting --skip stable-diffusion-onnx-v2-1` will not download the Stable
+You can skip certain models by including a `--skip names` argument if you want to save time or disk space. For example,
+using `--skip stable-diffusion-onnx-v2-inpainting stable-diffusion-onnx-v2-1` will not download the Stable
 Diffusion v2 models.
 
 ### Test the models
