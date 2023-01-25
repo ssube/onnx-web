@@ -49,6 +49,7 @@ Please [see the User Guide](https://github.com/ssube/onnx-web/blob/main/docs/use
     - [Note about setup paths](#note-about-setup-paths)
     - [Create a virtual environment](#create-a-virtual-environment)
     - [Install pip packages](#install-pip-packages)
+      - [For AMD on Linux: Install ONNX ROCm](#for-amd-on-linux-install-onnx-rocm)
       - [For AMD on Windows: Install ONNX DirectML](#for-amd-on-windows-install-onnx-directml)
       - [For CPU on Linux: Install PyTorch CPU](#for-cpu-on-linux-install-pytorch-cpu)
       - [For CPU on Windows: Install PyTorch CPU](#for-cpu-on-windows-install-pytorch-cpu)
@@ -190,9 +191,23 @@ sure you are not using `numpy>=1.24`.
 [This SO question](https://stackoverflow.com/questions/74844262/how-to-solve-error-numpy-has-no-attribute-float-in-python)
 has more details.
 
+#### For AMD on Linux: Install ONNX ROCm
+
+If you are running on Linux with an AMD GPU, download and install the ROCm version of `onnxruntime`:
+
+```shell
+> wget https://download.onnxruntime.ai/onnxruntime_training-1.13.0.dev20221021001%2Brocm523-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+
+> pip install ./onnxruntime_training-1.13.0.dev20221021001%2Brocm523-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+```
+
+Make sure you have installed ROCm 5.x ([see their documentation](https://docs.amd.com/bundle/ROCm-Installation-Guide-v5.2.3/page/How_to_Install_ROCm.html#_How_to_Install) for more details) and that the version of
+`onnxruntime` matches your ROCm drivers. See [the full list of available packages](https://download.onnxruntime.ai/)
+for more. Ubuntu 20.04 supports ROCm 5.2 and Ubuntu 22.04 supports ROCm 5.4, unless you want to build custom packages.
+
 #### For AMD on Windows: Install ONNX DirectML
 
-If you are running on Windows, install the DirectML ONNX runtime as well:
+If you are running on Windows with an AMD GPU, install the DirectML ONNX runtime as well:
 
 ```shell
 > pip install onnxruntime-directml --force-reinstall
@@ -232,7 +247,8 @@ If you are running with a CPU and no hardware acceleration, install `onnxruntime
 
 #### For Nvidia everywhere: Install PyTorch GPU and ONNX GPU
 
-If you are running with an Nvidia GPU, install `onnxruntime-gpu`:
+If you are running with an Nvidia GPU on any operating system, install `onnxruntime-gpu` and the CUDA version of
+PyTorch:
 
 ```shell
 > pip install onnxruntime-gpu
@@ -240,7 +256,7 @@ If you are running with an Nvidia GPU, install `onnxruntime-gpu`:
 > pip install torch --extra-index-url https://download.pytorch.org/whl/cu117
 ```
 
-Make sure you have CUDA 11.x installed and that the version of PyTorch matches the version of CUDA
+Make sure you have installed CUDA 11.x and that the version of PyTorch matches the version of CUDA
 ([see their documentation](https://pytorch.org/get-started/locally/) for more details).
 
 ### Download and convert models
