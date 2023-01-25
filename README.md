@@ -16,7 +16,7 @@ an image from earlier.
 
 Please [see the User Guide](https://github.com/ssube/onnx-web/blob/main/docs/user-guide.md) for more details.
 
-![txt2img with example astronaut prompt and image](./docs/readme-preview.png)
+![txt2img with detailed knollingcase renders of a soldier in an alien jungle](./docs/readme-knolling.png)
 
 ## Features
 
