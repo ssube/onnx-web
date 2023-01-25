@@ -9,6 +9,8 @@ Please see [the user guide](user-guide.md) for descriptions of the client and ea
 - [Server Administration](#server-administration)
   - [Contents](#contents)
   - [Configuration](#configuration)
+    - [Debug Mode](#debug-mode)
+    - [Environment Variables](#environment-variables)
     - [Server Parameters](#server-parameters)
   - [Containers](#containers)
     - [CPU](#cpu)
@@ -17,11 +19,48 @@ Please see [the user guide](user-guide.md) for descriptions of the client and ea
 
 ## Configuration
 
-Configuration is still very simple, loading models from a directory and parameters from a single JSON file.
+Configuration is still very simple, loading models from a directory and parameters from a single JSON file. Some
+additional configuration can be done through environment variables starting with `ONNX_WEB`.
+
+### Debug Mode
+
+Setting the `DEBUG` variable to any value except `false` will enable debug mode, which will print garbage
+collection details and save some extra images to disk.
+
+The images are:
+
+- `output/last-mask.png`
+  - the last `mask` image submitted with an inpaint request
+- `output/last-noise.png`
+  - the last noise source generated for an inpaint request
+- `output/last-source.png`
+  - the last `source` image submitted with an img2img, inpaint, or upscale request
+
+These extra images can be helpful when debugging inpainting, especially poorly blended edges or visible noise.
+
+### Environment Variables
+
+- `ONNX_WEB_BUNDLE_PATH`
+  - path where client bundle files can be found
+- `ONNX_WEB_MODEL_PATH`
+  - path where models can be found
+- `ONNX_WEB_OUTPUT_PATH`
+  - path where output images should be saved
+- `ONNX_WEB_PARAMS_PATH`
+  - path to the directory where the `params.json` file can be found
+- `ONNX_WEB_CORS_ORIGIN`
+  - comma-delimited list of allowed origins for CORS headers
+- `ONNX_WEB_NUM_WORKERS`
+  - number of background workers for image pipelines
+  - this should be equal to or less than the number of available GPUs
+- `ONNX_WEB_BLOCK_PLATFORMS`
+  - comma-delimited list of platforms that should not be presented to users
+  - further filters the list of available platforms returned by ONNX runtime
+  - can be used to prevent CPU generation on shared servers
 
 ### Server Parameters
 
-You can limit the parameters in user requests to values within a reasonable range using the `params.json` file.
+You can limit the image parameters in user requests to a reasonable range using values in the `params.json` file.
 
 The keys share the same name as the query string parameter, and the format for each numeric value is:
 

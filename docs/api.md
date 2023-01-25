@@ -23,7 +23,7 @@
       - [`POST /api/outpaint`](#post-apioutpaint)
       - [`POST /api/txt2img`](#post-apitxt2img)
     - [Outputs](#outputs)
-      - [`GET /api/output/<path>`](#get-apioutputpath)
+      - [`GET /output/<path>`](#get-outputpath)
 
 ## Endpoints
 
@@ -99,7 +99,7 @@ Run a txt2img pipeline.
 
 ### Outputs
 
-#### `GET /api/output/<path>`
+#### `GET /output/<path>`
 
 Serve output images.
 
