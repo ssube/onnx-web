@@ -1,6 +1,6 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Brush, ContentCopy, ContentCopyTwoTone, Delete, Download } from '@mui/icons-material';
-import { Box, Button, Card, CardContent, CardMedia, Grid, Paper } from '@mui/material';
+import { Box, Button, Card, CardContent, CardMedia, Grid, IconButton, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useStore } from 'zustand';
@@ -67,37 +67,43 @@ export function ImageCard(props: ImageCardProps) {
       title={params.prompt}
     />
     <CardContent>
-      <Box>
+      <Box textAlign='center'>
         <Grid container spacing={2}>
           <GridItem xs={4}>CFG: {params.cfg}</GridItem>
           <GridItem xs={4}>Steps: {params.steps}</GridItem>
           <GridItem xs={4}>Size: {size.width}x{size.height}</GridItem>
           <GridItem xs={4}>Seed: {params.seed}</GridItem>
           <GridItem xs={8}>Scheduler: {params.scheduler}</GridItem>
-          <GridItem xs={12}>{params.prompt}</GridItem>
-          <GridItem xs={3}>
-            <Button onClick={downloadImage}>
-              <Download />
-              Save
-            </Button>
+          <GridItem xs={12}>
+            <Box textAlign='left'>{params.prompt}</Box>
           </GridItem>
           <GridItem xs={3}>
-            <Button onClick={copySourceToImg2Img}>
-              <ContentCopy />
-              Img2img
-            </Button>
+            <Tooltip title='Save'>
+              <IconButton onClick={downloadImage}>
+                <Download />
+              </IconButton>
+            </Tooltip>
           </GridItem>
           <GridItem xs={3}>
-            <Button onClick={copySourceToInpaint}>
-              <Brush />
-              Inpaint
-            </Button>
+            <Tooltip title='Img2img'>
+              <IconButton onClick={copySourceToImg2Img}>
+                <ContentCopy />
+              </IconButton>
+            </Tooltip>
           </GridItem>
           <GridItem xs={3}>
-            <Button onClick={deleteImage}>
-              <Delete />
-              Delete
-            </Button>
+            <Tooltip title='Inpaint'>
+              <IconButton onClick={copySourceToInpaint}>
+                <Brush />
+              </IconButton>
+            </Tooltip>
+          </GridItem>
+          <GridItem xs={3}>
+            <Tooltip title='Delete'>
+              <IconButton onClick={deleteImage}>
+                <Delete />
+              </IconButton>
+            </Tooltip>
           </GridItem>
         </Grid>
       </Box>
