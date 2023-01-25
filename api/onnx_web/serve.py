@@ -263,7 +263,7 @@ def load_platforms():
 
     providers = get_available_providers()
     available_platforms = [p for p in platform_providers if (
-        platform_providers[p] in providers)]
+        platform_providers[p] in providers and p not in context.block_platforms)]
 
     print('available acceleration platforms: %s' % (available_platforms))
 
