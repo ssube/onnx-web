@@ -19,7 +19,7 @@ from .image import (
 )
 from .upscale import (
   make_resrgan,
-  run_upscale_pipeline,
+  run_upscale_correction,
   upscale_gfpgan,
   upscale_resrgan,
   UpscaleParams,

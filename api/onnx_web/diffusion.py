@@ -16,7 +16,7 @@ from .image import (
     expand_image,
 )
 from .upscale import (
-    upscale_resrgan,
+    run_upscale_correction,
     UpscaleParams,
 )
 from .utils import (
@@ -117,7 +117,7 @@ def run_txt2img_pipeline(
         num_inference_steps=params.steps,
     )
     image = result.images[0]
-    image = run_upscale_pipeline(ctx, upscale, image)
+    image = run_upscale_correction(ctx, upscale, image)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
@@ -151,7 +151,7 @@ def run_img2img_pipeline(
         strength=strength,
     )
     image = result.images[0]
-    image = run_upscale_pipeline(ctx, upscale, image)
+    image = run_upscale_correction(ctx, upscale, image)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
@@ -215,7 +215,7 @@ def run_inpaint_pipeline(
     else:
         print('output image size does not match source, skipping post-blend')
 
-    image = run_upscale_pipeline(ctx, upscale, image)
+    image = run_upscale_correction(ctx, upscale, image)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
@@ -234,7 +234,7 @@ def run_upscale_pipeline(
     upscale: UpscaleParams,
     source_image: Image
 ):
-    image = upscale_resrgan(ctx, upscale, source_image)
+    image = run_upscale_correction(ctx, upscale, source_image)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)

@@ -1,4 +1,8 @@
 from basicsr.archs.rrdbnet_arch import RRDBNet
+from diffusers import (
+    AutoencoderKL,
+    DDPMScheduler,
+)
 from gfpgan import GFPGANer
 from os import path
 from PIL import Image
@@ -127,12 +131,20 @@ def upscale_gfpgan(ctx: ServerContext, params: UpscaleParams, image, upsampler=N
 
 def upscale_stable_diffusion(ctx: ServerContext, params: UpscaleParams, image: Image) -> Image:
     print('upscaling with Stable Diffusion')
-    pipeline = OnnxStableDiffusionUpscalePipeline.from_pretrained(params.upscale_model)
+    model_path = '../models/%s' % params.upscale_model
+    # ValueError: Pipeline <class 'onnx_web.onnx.pipeline_onnx_stable_diffusion_upscale.OnnxStableDiffusionUpscalePipeline'>
+    # expected {'vae', 'unet', 'text_encoder', 'tokenizer', 'scheduler', 'low_res_scheduler'},
+    # but only {'scheduler', 'tokenizer', 'text_encoder', 'unet'} were passed.
+    pipeline = OnnxStableDiffusionUpscalePipeline.from_pretrained(
+        model_path,
+        vae=AutoencoderKL.from_pretrained(model_path, subfolder='vae_encoder'),
+        low_res_scheduler=DDPMScheduler.from_pretrained(model_path, subfolder='scheduler'),
+    )
     result = pipeline('', image=image)
     return result.images[0]
 
 
-def run_upscale_pipeline(ctx: ServerContext, params: UpscaleParams, image: Image) -> Image:
+def run_upscale_correction(ctx: ServerContext, params: UpscaleParams, image: Image) -> Image:
     print('running upscale pipeline')
 
     if params.scale > 1:

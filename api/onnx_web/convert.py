@@ -249,7 +249,9 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str):
             torch.randn(2).to(device=training_device, dtype=dtype),
             torch.randn(2, num_tokens, text_hidden_size).to(
                 device=training_device, dtype=dtype),
-            False,
+            # TODO: needs to be Int or Long for upscaling, Bool for regular
+            4,
+            # False,
         ),
         output_path=unet_path,
         ordered_input_names=["sample", "timestep",
