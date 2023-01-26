@@ -61,7 +61,7 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         gc.collect()
         torch.cuda.empty_cache()
 
-        print('loading different pipeline')
+        print('loading new pipeline')
         pipe = pipeline.from_pretrained(
             model,
             provider=provider,
@@ -77,7 +77,7 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         last_pipeline_scheduler = scheduler
 
     if last_pipeline_scheduler != scheduler:
-        print('changing pipeline scheduler')
+        print('loading new scheduler')
         scheduler = scheduler.from_pretrained(
             model, subfolder='scheduler')
 
@@ -117,9 +117,7 @@ def run_txt2img_pipeline(
         num_inference_steps=params.steps,
     )
     image = result.images[0]
-
-    if upscale.faces or upscale.scale > 1:
-        image = upscale_resrgan(ctx, upscale, image)
+    image = run_upscale_pipeline(ctx, upscale, image)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
@@ -153,9 +151,7 @@ def run_img2img_pipeline(
         strength=strength,
     )
     image = result.images[0]
-
-    if upscale.faces or upscale.scale > 1:
-        image = upscale_resrgan(ctx, upscale, image)
+    image = run_upscale_pipeline(ctx, upscale, image)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)
@@ -219,8 +215,7 @@ def run_inpaint_pipeline(
     else:
         print('output image size does not match source, skipping post-blend')
 
-    if upscale.faces or upscale.scale > 1:
-        image = upscale_resrgan(ctx, upscale, image)
+    image = run_upscale_pipeline(ctx, upscale, image)
 
     dest = safer_join(ctx.output_path, output)
     image.save(dest)

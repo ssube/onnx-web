@@ -1,3 +1,10 @@
+from .diffusion import (
+  get_latents_from_seed,
+  load_pipeline,
+  run_img2img_pipeline,
+  run_inpaint_pipeline,
+  run_txt2img_pipeline,
+)
 from .image import (
   expand_image,
   mask_filter_gaussian_multiply,
@@ -10,15 +17,9 @@ from .image import (
   noise_source_normal,
   noise_source_uniform,
 )
-from .pipeline import (
-  get_latents_from_seed,
-  load_pipeline,
-  run_img2img_pipeline,
-  run_inpaint_pipeline,
-  run_txt2img_pipeline,
-)
 from .upscale import (
   make_resrgan,
+  run_upscale_pipeline,
   upscale_gfpgan,
   upscale_resrgan,
   UpscaleParams,
@@ -26,7 +27,9 @@ from .upscale import (
 from .utils import (
   get_and_clamp_float,
   get_and_clamp_int,
+  get_from_list,
   get_from_map,
+  get_not_empty,
   safer_join,
   BaseParams,
   Border,

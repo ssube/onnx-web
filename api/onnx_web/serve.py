@@ -1,5 +1,4 @@
 from diffusers import (
-    # schedulers
     DDIMScheduler,
     DDPMScheduler,
     DPMSolverMultistepScheduler,
@@ -23,6 +22,12 @@ from onnxruntime import get_available_providers
 from os import makedirs, path, scandir
 from typing import Tuple
 
+from .diffusion import (
+    run_img2img_pipeline,
+    run_inpaint_pipeline,
+    run_txt2img_pipeline,
+    run_upscale_pipeline,
+)
 from .image import (
     # mask filters
     mask_filter_gaussian_multiply,
@@ -35,12 +40,6 @@ from .image import (
     noise_source_histogram,
     noise_source_normal,
     noise_source_uniform,
-)
-from .pipeline import (
-    run_img2img_pipeline,
-    run_inpaint_pipeline,
-    run_txt2img_pipeline,
-    run_upscale_pipeline,
 )
 from .upscale import (
     UpscaleParams,

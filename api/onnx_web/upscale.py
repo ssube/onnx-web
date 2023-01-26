@@ -188,3 +188,15 @@ def upscale_gfpgan(ctx: ServerContext, params: UpscaleParams, image, upsampler=N
         image, has_aligned=False, only_center_face=False, paste_back=True, weight=params.face_strength)
 
     return output
+
+
+def run_upscale_pipeline(ctx: ServerContext, params: UpscaleParams, image: Image) -> Image:
+    print('running upscale pipeline')
+
+    if params.scale > 1:
+        image = upscale_resrgan(ctx, params, image)
+
+    if params.faces:
+        image = upscale_gfpgan(ctx, params, image)
+
+    return image
