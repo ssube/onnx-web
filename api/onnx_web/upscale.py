@@ -1,14 +1,16 @@
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from gfpgan import GFPGANer
-from onnxruntime import InferenceSession
 from os import path
 from PIL import Image
 from realesrgan import RealESRGANer
-from typing import Any, Literal, Union
+from typing import Literal, Union
 
 import numpy as np
-import torch
 
+from .onnx import (
+    ONNXNet,
+    OnnxStableDiffusionUpscalePipeline,
+)
 from .utils import (
     ServerContext,
     Size,
@@ -17,69 +19,6 @@ from .utils import (
 # TODO: these should all be params or config
 pre_pad = 0
 tile_pad = 10
-
-
-class ONNXImage():
-    def __init__(self, source) -> None:
-        self.source = source
-        self.data = self
-
-    def __getitem__(self, *args):
-        return torch.from_numpy(self.source.__getitem__(*args)).to(torch.float32)
-
-    def squeeze(self):
-        self.source = np.squeeze(self.source, (0))
-        return self
-
-    def float(self):
-        return self
-
-    def cpu(self):
-        return self
-
-    def clamp_(self, min, max):
-        self.source = np.clip(self.source, min, max)
-        return self
-
-    def numpy(self):
-        return self.source
-
-    def size(self):
-        return np.shape(self.source)
-
-
-class ONNXNet():
-    '''
-    Provides the RRDBNet interface using an ONNX session for DirectML acceleration.
-    '''
-
-    def __init__(self, ctx: ServerContext, model: str, provider='DmlExecutionProvider') -> None:
-        '''
-        TODO: get platform provider from request params
-        '''
-        model_path = path.join(ctx.model_path, model)
-        self.session = InferenceSession(
-            model_path, providers=[provider])
-
-    def __call__(self, image: Any) -> Any:
-        input_name = self.session.get_inputs()[0].name
-        output_name = self.session.get_outputs()[0].name
-        output = self.session.run([output_name], {
-            input_name: image.cpu().numpy()
-        })[0]
-        return ONNXImage(output)
-
-    def eval(self) -> None:
-        pass
-
-    def half(self):
-        return self
-
-    def load_state_dict(self, net, strict=True) -> None:
-        pass
-
-    def to(self, device):
-        return self
 
 
 class UpscaleParams():
@@ -153,11 +92,7 @@ def upscale_resrgan(ctx: ServerContext, params: UpscaleParams, source_image: Ima
     output = np.array(source_image)
     upsampler = make_resrgan(ctx, params, tile=512)
 
-    if params.scale > 1:
-        output, _ = upsampler.enhance(output, outscale=params.outscale)
-
-    if params.faces:
-        output = upscale_gfpgan(ctx, params, output, upsampler=upsampler)
+    output, _ = upsampler.enhance(output, outscale=params.outscale)
 
     output = Image.fromarray(output, 'RGB')
     print('final output image size', output.size)
@@ -190,11 +125,21 @@ def upscale_gfpgan(ctx: ServerContext, params: UpscaleParams, image, upsampler=N
     return output
 
 
+def upscale_stable_diffusion(ctx: ServerContext, params: UpscaleParams, image: Image) -> Image:
+    print('upscaling with Stable Diffusion')
+    pipeline = OnnxStableDiffusionUpscalePipeline.from_pretrained(params.upscale_model)
+    result = pipeline('', image=image)
+    return result.images[0]
+
+
 def run_upscale_pipeline(ctx: ServerContext, params: UpscaleParams, image: Image) -> Image:
     print('running upscale pipeline')
 
     if params.scale > 1:
-        image = upscale_resrgan(ctx, params, image)
+        if 'esrgan' in params.upscale_model:
+            image = upscale_resrgan(ctx, params, image)
+        elif 'stable-diffusion' in params.upscale_model:
+            image = upscale_stable_diffusion(ctx, params, image)
 
     if params.faces:
         image = upscale_gfpgan(ctx, params, image)

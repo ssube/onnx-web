@@ -31,6 +31,8 @@ base_models: Models = {
         ('stable-diffusion-onnx-v2-1', 'stabilityai/stable-diffusion-2-1'),
         ('stable-diffusion-onnx-v2-inpainting',
          'stabilityai/stable-diffusion-2-inpainting'),
+        # should be upscaling with a different converter
+        ('upscaling-stable-diffusion-x4', 'stabilityai/stable-diffusion-x4-upscaler'),
     ],
     'correction': [
         ('correction-gfpgan-v1-3',
