@@ -200,8 +200,6 @@ def process_tiles(
     tiles_y = height // tile
     total = tiles_x * tiles_y
 
-    rng = random.RandomState(0)
-
     for y in range(tiles_y):
         for x in range(tiles_x):
             idx = (y * tiles_x) + x

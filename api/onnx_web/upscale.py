@@ -11,6 +11,7 @@ from realesrgan import RealESRGANer
 from typing import Literal, Union
 
 import numpy as np
+import torch
 
 from .image import (
     process_tiles
@@ -146,8 +147,15 @@ def upscale_stable_diffusion(ctx: ServerContext, params: UpscaleParams, image: I
     # )
     # result = pipeline('', image=image)
 
+    generator = torch.manual_seed(0)
+    seed = generator.initial_seed()
+
     pipeline = StableDiffusionUpscalePipeline.from_pretrained('stabilityai/stable-diffusion-x4-upscaling')
-    upscale = lambda i: pipeline('an astronaut eating a hamburger', image=i, rng=np.random.RandomState(0)).images[0]
+    upscale = lambda i: pipeline(
+        'an astronaut eating a hamburger',
+        image=i,
+        generator=torch.manual_seed(initial_seed),
+    ).images[0]
     result = process_tiles(image, 128, 4, [upscale])
     return result
 
