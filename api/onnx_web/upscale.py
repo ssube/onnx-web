@@ -147,8 +147,8 @@ def upscale_stable_diffusion(ctx: ServerContext, params: UpscaleParams, image: I
     # result = pipeline('', image=image)
 
     pipeline = StableDiffusionUpscalePipeline.from_pretrained('stabilityai/stable-diffusion-x4-upscaling')
-    upscale = lambda i: pipeline('an astronaut eating a hamburger', image=i).images[0]
-    result = process_tiles(image, 64, 4, [upscale])
+    upscale = lambda i: pipeline('an astronaut eating a hamburger', image=i, rng=np.random.RandomState(0)).images[0]
+    result = process_tiles(image, 128, 4, [upscale])
     return result
 
 
