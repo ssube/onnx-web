@@ -1,22 +1,36 @@
+/* eslint-disable max-lines */
 import { doesExist } from '@apextoaster/js-utils';
 
 import { ServerParams } from './config.js';
 
+/**
+ * Shared parameters for anything using models, which is pretty much everything.
+ */
 export interface ModelParams {
   /**
-   * Which ONNX model to use.
+   * The diffusion model to use.
    */
   model: string;
 
   /**
-   * Hardware accelerator or CPU mode.
+   * The hardware acceleration platform to use.
    */
   platform: string;
 
+  /**
+   * The upscaling model to use.
+   */
   upscaling: string;
+
+  /**
+   * The correction model to use.
+   */
   correction: string;
 }
 
+/**
+ * Shared parameters for most of the image requests.
+ */
 export interface BaseImgParams {
   scheduler: string;
   prompt: string;
@@ -27,20 +41,25 @@ export interface BaseImgParams {
   seed: number;
 }
 
-export interface Img2ImgParams extends BaseImgParams {
-  source: Blob;
-  strength: number;
-}
-
-export type Img2ImgResponse = Required<Omit<Img2ImgParams, 'file'>>;
-
+/**
+ * Parameters for txt2img requests.
+ */
 export interface Txt2ImgParams extends BaseImgParams {
   width?: number;
   height?: number;
 }
 
-export type Txt2ImgResponse = Required<Txt2ImgParams>;
+/**
+ * Parameters for img2img requests.
+ */
+export interface Img2ImgParams extends BaseImgParams {
+  source: Blob;
+  strength: number;
+}
 
+/**
+ * Parameters for inpaint requests.
+ */
 export interface InpaintParams extends BaseImgParams {
   mask: Blob;
   source: Blob;
@@ -51,6 +70,11 @@ export interface InpaintParams extends BaseImgParams {
   fillColor: string;
 }
 
+/**
+ * Additional parameters for outpaint border.
+ *
+ * @todo should be nested under inpaint/outpaint params
+ */
 export interface OutpaintPixels {
   enabled: boolean;
 
@@ -60,14 +84,27 @@ export interface OutpaintPixels {
   bottom: number;
 }
 
+/**
+ * Parameters for outpaint requests.
+ */
 export type OutpaintParams = InpaintParams & OutpaintPixels;
 
+/**
+ * Additional parameters for the inpaint brush.
+ *
+ * These are not currently sent to the server and only stored in state.
+ *
+ * @todo move to state
+ */
 export interface BrushParams {
   color: number;
   size: number;
   strength: number;
 }
 
+/**
+ * Additional parameters for upscaling.
+ */
 export interface UpscaleParams {
   enabled: boolean;
 
@@ -78,10 +115,16 @@ export interface UpscaleParams {
   faceStrength: number;
 }
 
+/**
+ * Parameters for upscale requests.
+ */
 export interface UpscaleReqParams {
   source: Blob;
 }
 
+/**
+ * General response for most image requests.
+ */
 export interface ImageResponse {
   output: {
     key: string;
@@ -94,10 +137,16 @@ export interface ImageResponse {
   };
 }
 
+/**
+ * Status response from the ready endpoint.
+ */
 export interface ReadyResponse {
   ready: boolean;
 }
 
+/**
+ * List of available models.
+ */
 export interface ModelsResponse {
   diffusion: Array<string>;
   correction: Array<string>;
@@ -105,50 +154,103 @@ export interface ModelsResponse {
 }
 
 export interface ApiClient {
+  /**
+   * List the available filter masks for inpaint.
+   */
   masks(): Promise<Array<string>>;
+
+  /**
+   * List the available models.
+   */
   models(): Promise<ModelsResponse>;
+
+  /**
+   * List the available noise sources for inpaint.
+   */
   noises(): Promise<Array<string>>;
+
+  /**
+   * Get the valid server parameters to validate image parameters.
+   */
   params(): Promise<ServerParams>;
+
+  /**
+   * Get the available hardware acceleration platforms.
+   */
   platforms(): Promise<Array<string>>;
+
+  /**
+   * List the available pipeline schedulers.
+   */
   schedulers(): Promise<Array<string>>;
 
-  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+  /**
+   * Start a txt2img pipeline.
+   */
   txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+
+  /**
+   * Start an im2img pipeline.
+   */
+  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+
+  /**
+   * Start an inpaint pipeline.
+   */
   inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+
+  /**
+   * Start an outpaint pipeline.
+   */
   outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+
+  /**
+   * Start an upscale pipeline.
+   */
   upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams): Promise<ImageResponse>;
 
+  /**
+   * Check whether some pipeline's output is ready yet.
+   */
   ready(params: ImageResponse): Promise<ReadyResponse>;
 }
 
-export const STATUS_SUCCESS = 200;
-
-export function paramsFromConfig(defaults: ServerParams): Required<BaseImgParams> {
-  return {
-    cfg: defaults.cfg.default,
-    negativePrompt: defaults.negativePrompt.default,
-    prompt: defaults.prompt.default,
-    scheduler: defaults.scheduler.default,
-    steps: defaults.steps.default,
-    seed: defaults.seed.default,
-  };
-}
-
+/**
+ * Fixed precision for integer parameters.
+ */
 export const FIXED_INTEGER = 0;
+
+/**
+ * Fixed precision for float parameters.
+ *
+ * The GUI limits the input steps based on the server parameters, but this does limit
+ * the maximum precision that can be sent back to the server, and may have to be
+ * increased in the future.
+ */
 export const FIXED_FLOAT = 2;
+export const STATUS_SUCCESS = 200;
 
 export function equalResponse(a: ImageResponse, b: ImageResponse): boolean {
   return a.output === b.output;
 }
 
+/**
+ * Join URL path segments, which always use a forward slash per https://www.rfc-editor.org/rfc/rfc1738
+ */
 export function joinPath(...parts: Array<string>): string {
   return parts.join('/');
 }
 
+/**
+ * Build the URL to an API endpoint, given the API root and a list of segments.
+ */
 export function makeApiUrl(root: string, ...path: Array<string>) {
   return new URL(joinPath('api', ...path), root);
 }
 
+/**
+ * Build the URL for an image request, including all of the base image parameters.
+ */
 export function makeImageURL(root: string, type: string, params: BaseImgParams): URL {
   const url = makeApiUrl(root, type);
   url.searchParams.append('cfg', params.cfg.toFixed(FIXED_FLOAT));
@@ -172,6 +274,9 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
   return url;
 }
 
+/**
+ * Append the model parameters to an existing URL.
+ */
 export function appendModelToURL(url: URL, params: ModelParams) {
   url.searchParams.append('model', params.model);
   url.searchParams.append('platform', params.platform);
@@ -179,6 +284,9 @@ export function appendModelToURL(url: URL, params: ModelParams) {
   url.searchParams.append('correction', params.correction);
 }
 
+/**
+ * Append the upscale parameters to an existing URL.
+ */
 export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
   if (upscale.enabled) {
     url.searchParams.append('denoise', upscale.denoise.toFixed(FIXED_FLOAT));
@@ -189,6 +297,9 @@ export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
   }
 }
 
+/**
+ * Make an API client using the given API root and fetch client.
+ */
 export function makeClient(root: string, f = fetch): ApiClient {
   let pending: Promise<ImageResponse> | undefined;
 
@@ -388,6 +499,12 @@ export function makeClient(root: string, f = fetch): ApiClient {
   };
 }
 
+/**
+ * Parse a successful API response into the full image response record.
+ *
+ * The server sends over the output key, and the client is in the best position to turn
+ * that into a full URL, since it already knows the root URL of the server.
+ */
 export async function parseApiResponse(root: string, res: Response): Promise<ImageResponse> {
   type LimitedResponse = Omit<ImageResponse, 'output'> & { output: string };
 

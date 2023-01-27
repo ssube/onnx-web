@@ -12,15 +12,47 @@ import {
   InpaintParams,
   ModelParams,
   OutpaintPixels,
-  paramsFromConfig,
   Txt2ImgParams,
   UpscaleParams,
   UpscaleReqParams,
 } from './client.js';
 import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
 
+/**
+ * Combine optional files and required ranges.
+ */
 type TabState<TabParams> = ConfigFiles<Required<TabParams>> & ConfigState<Required<TabParams>>;
 
+interface BrushSlice {
+  brush: BrushParams;
+
+  setBrush(brush: Partial<BrushParams>): void;
+}
+
+interface DefaultSlice {
+  defaults: TabState<BaseImgParams>;
+
+  setDefaults(param: Partial<BaseImgParams>): void;
+}
+
+interface HistorySlice {
+  history: Array<ImageResponse>;
+  limit: number;
+  loading: Maybe<ImageResponse>;
+
+  pushHistory(image: ImageResponse): void;
+  removeHistory(image: ImageResponse): void;
+  setLimit(limit: number): void;
+  setLoading(image: Maybe<ImageResponse>): void;
+}
+
+interface ModelSlice {
+  model: ModelParams;
+
+  setModel(model: Partial<ModelParams>): void;
+}
+
+// #region tab slices
 interface Txt2ImgSlice {
   txt2img: TabState<Txt2ImgParams>;
 
@@ -42,33 +74,10 @@ interface InpaintSlice {
   resetInpaint(): void;
 }
 
-interface HistorySlice {
-  history: Array<ImageResponse>;
-  limit: number;
-  loading: Maybe<ImageResponse>;
-
-  pushHistory(image: ImageResponse): void;
-  removeHistory(image: ImageResponse): void;
-  setLimit(limit: number): void;
-  setLoading(image: Maybe<ImageResponse>): void;
-}
-
-interface DefaultSlice {
-  defaults: TabState<BaseImgParams>;
-
-  setDefaults(param: Partial<BaseImgParams>): void;
-}
-
 interface OutpaintSlice {
   outpaint: OutpaintPixels;
 
   setOutpaint(pixels: Partial<OutpaintPixels>): void;
-}
-
-interface BrushSlice {
-  brush: BrushParams;
-
-  setBrush(brush: Partial<BrushParams>): void;
 }
 
 interface UpscaleSlice {
@@ -79,13 +88,11 @@ interface UpscaleSlice {
   setUpscaleTab(params: Partial<UpscaleReqParams>): void;
   resetUpscaleTab(): void;
 }
+// #endregion
 
-interface ModelSlice {
-  model: ModelParams;
-
-  setModel(model: Partial<ModelParams>): void;
-}
-
+/**
+ * Full merged state including all slices.
+ */
 export type OnnxState
   = BrushSlice
   & DefaultSlice
@@ -97,14 +104,85 @@ export type OnnxState
   & Txt2ImgSlice
   & UpscaleSlice;
 
-export function createStateSlices(base: ServerParams) {
-  const defaults = paramsFromConfig(base);
+/**
+ * Shorthand for state creator to reduce repeated arguments.
+ */
+export type Slice<T> = StateCreator<OnnxState, [], [], T>;
 
-  const createTxt2ImgSlice: StateCreator<OnnxState, [], [], Txt2ImgSlice> = (set) => ({
+/**
+ * React context binding for API client.
+ */
+export const ClientContext = createContext<Maybe<ApiClient>>(undefined);
+
+/**
+ * React context binding for merged config, including server parameters.
+ */
+export const ConfigContext = createContext<Maybe<Config<ServerParams>>>(undefined);
+
+/**
+ * React context binding for zustand state store.
+ */
+export const StateContext = createContext<Maybe<StoreApi<OnnxState>>>(undefined);
+
+/**
+ * Current state version for zustand persistence.
+ */
+export const STATE_VERSION = 4;
+
+/**
+ * Default parameters for the inpaint brush.
+ *
+ * Not provided by the server yet.
+ */
+export const DEFAULT_BRUSH = {
+  color: 255,
+  size: 8,
+  strength: 0.5,
+};
+
+/**
+ * Default parameters for the image history.
+ *
+ * Not provided by the server yet.
+ */
+export const DEFAULT_HISTORY = {
+  /**
+   * The number of images to be shown.
+   */
+  limit: 4,
+
+  /**
+   * The number of additional images to be kept in history, so they can scroll
+   * back into view when you delete one. Does not include deleted images.
+   */
+  scrollback: 2,
+};
+
+export function baseParamsFromServer(defaults: ServerParams): Required<BaseImgParams> {
+  return {
+    cfg: defaults.cfg.default,
+    negativePrompt: defaults.negativePrompt.default,
+    prompt: defaults.prompt.default,
+    scheduler: defaults.scheduler.default,
+    steps: defaults.steps.default,
+    seed: defaults.seed.default,
+  };
+}
+
+/**
+ * Prepare the state slice constructors.
+ *
+ * In the default state, image sources should be null and booleans should be false. Everything
+ * else should be initialized from the default value in the base parameters.
+ */
+export function createStateSlices(server: ServerParams) {
+  const base = baseParamsFromServer(server);
+
+  const createTxt2ImgSlice: Slice<Txt2ImgSlice> = (set) => ({
     txt2img: {
-      ...defaults,
-      width: base.width.default,
-      height: base.height.default,
+      ...base,
+      width: server.width.default,
+      height: server.height.default,
     },
     setTxt2Img(params) {
       set((prev) => ({
@@ -117,19 +195,19 @@ export function createStateSlices(base: ServerParams) {
     resetTxt2Img() {
       set({
         txt2img: {
-          ...defaults,
-          width: base.width.default,
-          height: base.height.default,
+          ...base,
+          width: server.width.default,
+          height: server.height.default,
         },
       });
     },
   });
 
-  const createImg2ImgSlice: StateCreator<OnnxState, [], [], Img2ImgSlice> = (set) => ({
+  const createImg2ImgSlice: Slice<Img2ImgSlice> = (set) => ({
     img2img: {
-      ...defaults,
+      ...base,
       source: null,
-      strength: base.strength.default,
+      strength: server.strength.default,
     },
     setImg2Img(params) {
       set((prev) => ({
@@ -142,23 +220,23 @@ export function createStateSlices(base: ServerParams) {
     resetImg2Img() {
       set({
         img2img: {
-          ...defaults,
+          ...base,
           source: null,
-          strength: base.strength.default,
+          strength: server.strength.default,
         },
       });
     },
   });
 
-  const createInpaintSlice: StateCreator<OnnxState, [], [], InpaintSlice> = (set) => ({
+  const createInpaintSlice: Slice<InpaintSlice> = (set) => ({
     inpaint: {
-      ...defaults,
-      fillColor: '#000000',
-      filter: 'none',
+      ...base,
+      fillColor: server.fillColor.default,
+      filter: server.filter.default,
       mask: null,
-      noise: 'histogram',
+      noise: server.noise.default,
       source: null,
-      strength: 1.0,
+      strength: server.strength.default,
     },
     setInpaint(params) {
       set((prev) => ({
@@ -171,21 +249,21 @@ export function createStateSlices(base: ServerParams) {
     resetInpaint() {
       set({
         inpaint: {
-          ...defaults,
-          fillColor: '#000000',
-          filter: 'none',
+          ...base,
+          fillColor: server.fillColor.default,
+          filter: server.filter.default,
           mask: null,
-          noise: 'histogram',
+          noise: server.noise.default,
           source: null,
-          strength: 1.0,
+          strength: server.strength.default,
         },
       });
     },
   });
 
-  const createHistorySlice: StateCreator<OnnxState, [], [], HistorySlice> = (set) => ({
+  const createHistorySlice: Slice<HistorySlice> = (set) => ({
     history: [],
-    limit: 4,
+    limit: DEFAULT_HISTORY.limit,
     loading: null,
     pushHistory(image) {
       set((prev) => ({
@@ -193,7 +271,7 @@ export function createStateSlices(base: ServerParams) {
         history: [
           image,
           ...prev.history,
-        ].slice(0, prev.limit),
+        ].slice(0, prev.limit + DEFAULT_HISTORY.scrollback),
         loading: null,
       }));
     },
@@ -217,13 +295,13 @@ export function createStateSlices(base: ServerParams) {
     },
   });
 
-  const createOutpaintSlice: StateCreator<OnnxState, [], [], OutpaintSlice> = (set) => ({
+  const createOutpaintSlice: Slice<OutpaintSlice> = (set) => ({
     outpaint: {
       enabled: false,
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
+      left: server.left.default,
+      right: server.right.default,
+      top: server.top.default,
+      bottom: server.bottom.default,
     },
     setOutpaint(pixels) {
       set((prev) => ({
@@ -235,11 +313,9 @@ export function createStateSlices(base: ServerParams) {
     },
   });
 
-  const createBrushSlice: StateCreator<OnnxState, [], [], BrushSlice> = (set) => ({
+  const createBrushSlice: Slice<BrushSlice> = (set) => ({
     brush: {
-      color: 255,
-      size: 8,
-      strength: 0.5,
+      ...DEFAULT_BRUSH,
     },
     setBrush(brush) {
       set((prev) => ({
@@ -251,14 +327,14 @@ export function createStateSlices(base: ServerParams) {
     },
   });
 
-  const createUpscaleSlice: StateCreator<OnnxState, [], [], UpscaleSlice> = (set) => ({
+  const createUpscaleSlice: Slice<UpscaleSlice> = (set) => ({
     upscale: {
-      denoise: 0.5,
+      denoise: server.denoise.default,
       enabled: false,
       faces: false,
-      scale: 1,
-      outscale: 1,
-      faceStrength: 0.5,
+      scale: server.scale.default,
+      outscale: server.outscale.default,
+      faceStrength: server.faceStrength.default,
     },
     upscaleTab: {
       source: null,
@@ -288,9 +364,9 @@ export function createStateSlices(base: ServerParams) {
     },
   });
 
-  const createDefaultSlice: StateCreator<OnnxState, [], [], DefaultSlice> = (set) => ({
+  const createDefaultSlice: Slice<DefaultSlice> = (set) => ({
     defaults: {
-      ...defaults,
+      ...base,
     },
     setDefaults(params) {
       set((prev) => ({
@@ -302,12 +378,12 @@ export function createStateSlices(base: ServerParams) {
     },
   });
 
-  const createModelSlice: StateCreator<OnnxState, [], [], ModelSlice> = (set) => ({
+  const createModelSlice: Slice<ModelSlice> = (set) => ({
     model: {
-      model: '',
-      platform: '',
-      upscaling: '',
-      correction: '',
+      model: server.model.default,
+      platform: server.platform.default,
+      upscaling: server.upscaling.default,
+      correction: server.correction.default,
     },
     setModel(params) {
       set((prev) => ({
@@ -331,8 +407,3 @@ export function createStateSlices(base: ServerParams) {
     createUpscaleSlice,
   };
 }
-
-export const ClientContext = createContext<Maybe<ApiClient>>(undefined);
-export const ConfigContext = createContext<Maybe<Config<ServerParams>>>(undefined);
-export const StateContext = createContext<Maybe<StoreApi<OnnxState>>>(undefined);
-export const STATE_VERSION = 4;

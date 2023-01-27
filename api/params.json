@@ -1,5 +1,11 @@
 {
   "version": "0.5.0",
+  "bottom": {
+    "default": 0,
+    "min": 0,
+    "max": 512,
+    "step": 8
+  },
   "cfg": {
     "default": 6,
     "min": 1,
@@ -18,10 +24,24 @@
     "max": 1,
     "step": 0.1
   },
+  "fillColor": {
+    "default": "#000000",
+    "keys": []
+  },
+  "filter": {
+    "default": "none",
+    "keys": []
+  },
   "height": {
     "default": 512,
     "min": 64,
     "max": 1024,
+    "step": 8
+  },
+  "left": {
+    "default": 0,
+    "min": 0,
+    "max": 512,
     "step": 8
   },
   "model": {
@@ -30,6 +50,10 @@
   },
   "negativePrompt": {
     "default": "",
+    "keys": []
+  },
+  "noise": {
+    "default": "histogram",
     "keys": []
   },
   "outscale": {
@@ -45,6 +69,12 @@
   "prompt": {
     "default": "an astronaut eating a hamburger",
     "keys": []
+  },
+  "right": {
+    "default": 0,
+    "min": 0,
+    "max": 512,
+    "step": 8
   },
   "scale": {
     "default": 1,
@@ -73,6 +103,12 @@
     "min": 0,
     "max": 1,
     "step": 0.01
+  },
+  "top": {
+    "default": 0,
+    "min": 0,
+    "max": 512,
+    "step": 8
   },
   "width": {
     "default": 512,
