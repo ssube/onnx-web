@@ -215,20 +215,21 @@ def run_upscale_correction(
 ) -> Image.Image:
     print('running upscale pipeline')
 
+    chain = ChainPipeline()
+
     if upscale.scale > 1:
         if 'esrgan' in upscale.upscale_model:
             stage = StageParams(tile_size=stage.tile_size,
                                 outscale=upscale.outscale)
-            image = upscale_resrgan(ctx, stage, params, image, upscale=upscale)
+            chain.append((upscale_resrgan, stage, {'upscale': upscale}))
         elif 'stable-diffusion' in upscale.upscale_model:
             mini_tile = min(128, stage.tile_size)
             stage = StageParams(tile_size=mini_tile, outscale=upscale.outscale)
-            image = upscale_stable_diffusion(
-                ctx, stage, params, image, upscale=upscale)
+            chain.append((upscale_stable_diffusion, stage, {'upscale': upscale}))
 
     if upscale.faces:
         stage = StageParams(tile_size=stage.tile_size,
                             outscale=upscale.outscale)
-        image = upscale_gfpgan(ctx, stage, params, image, upscale=upscale)
+        chain.append((upscale_gfpgan, stage, {'upscale': upscale}))
 
-    return image
+    return chain(ctx, params, image)
