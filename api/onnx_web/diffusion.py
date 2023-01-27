@@ -12,6 +12,9 @@ import gc
 import numpy as np
 import torch
 
+from .chain import (
+    StageParams,
+)
 from .image import (
     expand_image,
 )
@@ -25,7 +28,6 @@ from .utils import (
     ImageParams,
     Border,
     ServerContext,
-    StageParams,
     Size,
 )
 
