@@ -1,7 +1,7 @@
 from os import environ, path
 from time import time
 from struct import pack
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 from hashlib import sha256
 
 
@@ -9,14 +9,14 @@ Param = Union[str, int, float]
 Point = Tuple[int, int]
 
 
-class BaseParams:
+class ImageParams:
     def __init__(
         self,
         model: str,
         provider: str,
         scheduler: Any,
         prompt: str,
-        negative_prompt: Union[None, str],
+        negative_prompt: Optional[str],
         cfg: float,
         steps: int,
         seed: int
@@ -114,7 +114,7 @@ def get_and_clamp_int(args: Any, key: str, default_value: int, max_value: int, m
     return min(max(int(args.get(key, default_value)), min_value), max_value)
 
 
-def get_from_list(args: Any, key: str, values: List[Any]) -> Union[Any, None]:
+def get_from_list(args: Any, key: str, values: List[Any]) -> Optional[Any]:
     selected = args.get(key, None)
     if selected in values:
         return selected
@@ -158,9 +158,9 @@ def hash_value(sha, param: Param):
 
 def make_output_name(
     mode: str,
-    params: BaseParams,
+    params: ImageParams,
     size: Size,
-    extras: Union[None, Tuple[Param]] = None
+    extras: Optional[Tuple[Param]] = None
 ) -> str:
     now = int(time())
     sha = sha256()
@@ -184,6 +184,6 @@ def make_output_name(
     return '%s_%s_%s_%s.png' % (mode, params.seed, sha.hexdigest(), now)
 
 
-def safer_join(base: str, tail: str) -> str:
-    safer_path = path.relpath(path.normpath(path.join('/', tail)), '/')
-    return path.join(base, safer_path)
+def base_join(base: str, tail: str) -> str:
+    tail_path = path.relpath(path.normpath(path.join('/', tail)), '/')
+    return path.join(base, tail_path)

@@ -18,7 +18,7 @@ from .image import (
   noise_source_uniform,
 )
 from .upscale import (
-  make_resrgan,
+  load_resrgan,
   run_upscale_correction,
   upscale_gfpgan,
   upscale_resrgan,
@@ -30,8 +30,8 @@ from .utils import (
   get_from_list,
   get_from_map,
   get_not_empty,
-  safer_join,
-  BaseParams,
+  base_join,
+  ImageParams,
   Border,
   Point,
   ServerContext,

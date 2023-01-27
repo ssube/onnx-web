@@ -52,8 +52,8 @@ from .utils import (
     get_from_map,
     get_not_empty,
     make_output_name,
-    safer_join,
-    BaseParams,
+    base_join,
+    ImageParams,
     Border,
     ServerContext,
     Size,
@@ -124,7 +124,7 @@ def url_from_rule(rule) -> str:
     return url_for(rule.endpoint, **options)
 
 
-def pipeline_from_request() -> Tuple[BaseParams, Size]:
+def pipeline_from_request() -> Tuple[ImageParams, Size]:
     user = request.remote_addr
 
     # pipeline stuff
@@ -171,7 +171,7 @@ def pipeline_from_request() -> Tuple[BaseParams, Size]:
     print("request from %s: %s rounds of %s using %s on %s, %sx%s, %s, %s - %s" %
           (user, steps, scheduler.__name__, model_path, provider, width, height, cfg, seed, prompt))
 
-    params = BaseParams(model_path, provider, scheduler, prompt,
+    params = ImageParams(model_path, provider, scheduler, prompt,
                         negative_prompt, cfg, steps, seed)
     size = Size(width, height)
     return (params, size)
@@ -288,7 +288,7 @@ if is_debug():
 # TODO: these two use context
 
 def get_model_path(model: str):
-    return safer_join(context.model_path, model)
+    return base_join(context.model_path, model)
 
 
 def ready_reply(ready: bool):
@@ -523,6 +523,12 @@ def upscale():
     })
 
 
+@app.route('/api/chain', methods=['POST'])
+def chain():
+    print('TODO: run chain pipeline')
+    return jsonify({})
+
+
 @app.route('/api/ready')
 def ready():
     output_file = request.args.get('output', None)
@@ -530,7 +536,7 @@ def ready():
     done = executor.futures.done(output_file)
 
     if done is None:
-        file = safer_join(context.output_path, output_file)
+        file = base_join(context.output_path, output_file)
         if path.exists(file):
             return ready_reply(True)
 

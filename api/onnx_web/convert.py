@@ -8,7 +8,7 @@ from pathlib import Path
 from shutil import copyfile, rmtree
 from sys import exit
 from torch.onnx import export
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
 import torch
 import warnings
@@ -18,7 +18,7 @@ warnings.filterwarnings('ignore', '.*The shape inference of prim::Constant type 
 warnings.filterwarnings('ignore', '.*Only steps=1 can be constant folded.*')
 warnings.filterwarnings('ignore', '.*Converting a tensor to a Python boolean might cause the trace to be incorrect.*')
 
-Models = Dict[str, List[Tuple[str, str, Union[int, None]]]]
+Models = Dict[str, List[Tuple[str, str, Optional[int]]]]
 
 # recommended models
 base_models: Models = {

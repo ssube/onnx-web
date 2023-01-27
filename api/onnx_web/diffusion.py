@@ -6,7 +6,7 @@ from diffusers import (
     OnnxStableDiffusionInpaintPipeline,
 )
 from PIL import Image, ImageChops
-from typing import Any, Union
+from typing import Any, Optional
 
 import gc
 import numpy as np
@@ -21,10 +21,11 @@ from .upscale import (
 )
 from .utils import (
     is_debug,
-    safer_join,
-    BaseParams,
+    base_join,
+    ImageParams,
     Border,
     ServerContext,
+    StageParams,
     Size,
 )
 
@@ -45,7 +46,7 @@ def get_latents_from_seed(seed: int, size: Size) -> np.ndarray:
     return image_latents
 
 
-def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, scheduler: Any, device: Union[str, None] = None):
+def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, scheduler: Any, device: Optional[str] = None):
     global last_pipeline_instance
     global last_pipeline_scheduler
     global last_pipeline_options
@@ -95,7 +96,7 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
 
 def run_txt2img_pipeline(
     ctx: ServerContext,
-    params: BaseParams,
+    params: ImageParams,
     size: Size,
     output: str,
     upscale: UpscaleParams
@@ -117,9 +118,9 @@ def run_txt2img_pipeline(
         num_inference_steps=params.steps,
     )
     image = result.images[0]
-    image = run_upscale_correction(ctx, upscale, image)
+    image = run_upscale_correction(ctx, StageParams(), params, image, upscale=upscale)
 
-    dest = safer_join(ctx.output_path, output)
+    dest = base_join(ctx.output_path, output)
     image.save(dest)
 
     del image
@@ -130,7 +131,7 @@ def run_txt2img_pipeline(
 
 def run_img2img_pipeline(
     ctx: ServerContext,
-    params: BaseParams,
+    params: ImageParams,
     output: str,
     upscale: UpscaleParams,
     source_image: Image,
@@ -151,9 +152,9 @@ def run_img2img_pipeline(
         strength=strength,
     )
     image = result.images[0]
-    image = run_upscale_correction(ctx, upscale, image)
+    image = run_upscale_correction(ctx, StageParams(), params, image, upscale=upscale)
 
-    dest = safer_join(ctx.output_path, output)
+    dest = base_join(ctx.output_path, output)
     image.save(dest)
 
     del image
@@ -164,7 +165,8 @@ def run_img2img_pipeline(
 
 def run_inpaint_pipeline(
     ctx: ServerContext,
-    params: BaseParams,
+    stage: StageParams,
+    params: ImageParams,
     size: Size,
     output: str,
     upscale: UpscaleParams,
@@ -192,9 +194,9 @@ def run_inpaint_pipeline(
         mask_filter=mask_filter)
 
     if is_debug():
-        source_image.save(safer_join(ctx.output_path, 'last-source.png'))
-        mask_image.save(safer_join(ctx.output_path, 'last-mask.png'))
-        noise_image.save(safer_join(ctx.output_path, 'last-noise.png'))
+        source_image.save(base_join(ctx.output_path, 'last-source.png'))
+        mask_image.save(base_join(ctx.output_path, 'last-mask.png'))
+        noise_image.save(base_join(ctx.output_path, 'last-noise.png'))
 
     result = pipe(
         params.prompt,
@@ -215,9 +217,9 @@ def run_inpaint_pipeline(
     else:
         print('output image size does not match source, skipping post-blend')
 
-    image = run_upscale_correction(ctx, upscale, image)
+    image = run_upscale_correction(ctx, StageParams(), params, image, upscale=upscale)
 
-    dest = safer_join(ctx.output_path, output)
+    dest = base_join(ctx.output_path, output)
     image.save(dest)
 
     del image
@@ -228,15 +230,15 @@ def run_inpaint_pipeline(
 
 def run_upscale_pipeline(
     ctx: ServerContext,
-    _params: BaseParams,
+    params: ImageParams,
     _size: Size,
     output: str,
     upscale: UpscaleParams,
     source_image: Image
 ):
-    image = run_upscale_correction(ctx, upscale, source_image)
+    image = run_upscale_correction(ctx, StageParams(), params, source_image, upscale=upscale)
 
-    dest = safer_join(ctx.output_path, output)
+    dest = base_join(ctx.output_path, output)
     image.save(dest)
 
     del image
