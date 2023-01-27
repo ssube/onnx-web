@@ -150,7 +150,7 @@ def upscale_stable_diffusion(ctx: ServerContext, params: UpscaleParams, image: I
     generator = torch.manual_seed(0)
     seed = generator.initial_seed()
 
-    pipeline = StableDiffusionUpscalePipeline.from_pretrained('stabilityai/stable-diffusion-x4-upscaling')
+    pipeline = StableDiffusionUpscalePipeline.from_pretrained('stabilityai/stable-diffusion-x4-upscaler')
     upscale = lambda i: pipeline(
         'an astronaut eating a hamburger',
         image=i,
