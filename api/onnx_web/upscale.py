@@ -2,6 +2,7 @@ from basicsr.archs.rrdbnet_arch import RRDBNet
 from diffusers import (
     AutoencoderKL,
     DDPMScheduler,
+    StableDiffusionUpscalePipeline,
 )
 from gfpgan import GFPGANer
 from os import path
@@ -11,6 +12,9 @@ from typing import Literal, Union
 
 import numpy as np
 
+from .image import (
+    process_tiles
+)
 from .onnx import (
     ONNXNet,
     OnnxStableDiffusionUpscalePipeline,
@@ -135,13 +139,17 @@ def upscale_stable_diffusion(ctx: ServerContext, params: UpscaleParams, image: I
     # ValueError: Pipeline <class 'onnx_web.onnx.pipeline_onnx_stable_diffusion_upscale.OnnxStableDiffusionUpscalePipeline'>
     # expected {'vae', 'unet', 'text_encoder', 'tokenizer', 'scheduler', 'low_res_scheduler'},
     # but only {'scheduler', 'tokenizer', 'text_encoder', 'unet'} were passed.
-    pipeline = OnnxStableDiffusionUpscalePipeline.from_pretrained(
-        model_path,
-        vae=AutoencoderKL.from_pretrained(model_path, subfolder='vae_encoder'),
-        low_res_scheduler=DDPMScheduler.from_pretrained(model_path, subfolder='scheduler'),
-    )
-    result = pipeline('', image=image)
-    return result.images[0]
+    # pipeline = OnnxStableDiffusionUpscalePipeline.from_pretrained(
+    #     model_path,
+    #     vae=AutoencoderKL.from_pretrained(model_path, subfolder='vae_encoder'),
+    #     low_res_scheduler=DDPMScheduler.from_pretrained(model_path, subfolder='scheduler'),
+    # )
+    # result = pipeline('', image=image)
+
+    pipeline = StableDiffusionUpscalePipeline.from_pretrained('stabilityai/stable-diffusion-x4-upscaling')
+    upscale = lambda i: pipeline('an astronaut eating a hamburger', image=i).images[0]
+    result = process_tiles(image, 64, 4, [upscale])
+    return result
 
 
 def run_upscale_correction(ctx: ServerContext, params: UpscaleParams, image: Image) -> Image:

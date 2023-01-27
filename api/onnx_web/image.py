@@ -1,12 +1,13 @@
 from numpy import random
 from PIL import Image, ImageChops, ImageFilter
-from typing import Tuple
+from typing import Callable, List
 
 import numpy as np
 
 from .utils import (
     Border,
     Point,
+    Size,
 )
 
 
@@ -185,3 +186,27 @@ def expand_image(
         full_noise, full_source, full_mask.convert('L'))
 
     return (full_source, full_mask, full_noise, (full_width, full_height))
+
+
+def process_tiles(
+    source: Image,
+    tile: int,
+    scale: int,
+    filters: List[Callable],
+) -> Image:
+    width, height = source.size
+    image = Image.new('RGB', (width * scale, height * scale))
+
+    for x in range(width // tile):
+        for y in range(height // tile):
+            left = x * tile
+            top = y * tile
+            print('processing tile', x, y, left, top)
+            tile = source.crop((left, top, left + tile, top + tile))
+
+            for filter in filters:
+                tile = filter(tile)
+
+            image.paste(tile, (left * scale, top * scale))
+
+    return image
