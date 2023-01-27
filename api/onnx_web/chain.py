@@ -77,8 +77,8 @@ class ChainPipeline:
                       stage_params.tile_size)
 
                 def stage_tile(tile: Image.Image) -> Image.Image:
-                    tile = stage_fn(ctx, stage_params, tile,
-                                    params, **stage_kwargs)
+                    tile = stage_fn(ctx, stage_params, params, tile,
+                                    **stage_kwargs)
                     tile.save(path.join(ctx.output_path, 'last-tile.png'))
                     return tile
 
@@ -86,10 +86,11 @@ class ChainPipeline:
                     image, stage_params.tile_size, stage_params.outscale, [stage_tile])
             else:
                 print('source image within tile size, run stage')
-                image = stage_fn(ctx, stage_params, image,
-                                         params, **stage_kwargs)
+                image = stage_fn(ctx, stage_params, params, image,
+                                 **stage_kwargs)
 
-            print('finished running pipeline stage, result size: %sx%s' % image.size)
+            print('finished running pipeline stage, result size: %sx%s' %
+                  image.size)
 
         print('finished running pipeline, result size: %sx%s' % image.size)
         return image

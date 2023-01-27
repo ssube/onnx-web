@@ -194,7 +194,7 @@ def upscale_stable_diffusion(
     def upscale_stage(_ctx: ServerContext, stage: StageParams, params: ImageParams, image: Image.Image) -> Image:
         return pipeline(
             params.prompt,
-            image=image,
+            image,
             generator=torch.manual_seed(seed),
             num_inference_steps=params.steps,
         ).images[0]
@@ -221,7 +221,7 @@ def run_upscale_correction(
                                 outscale=upscale.outscale)
             image = upscale_resrgan(ctx, stage, params, image, upscale=upscale)
         elif 'stable-diffusion' in upscale.upscale_model:
-            mini_tile = max(128, stage.tile_size)
+            mini_tile = min(128, stage.tile_size)
             stage = StageParams(tile_size=mini_tile, outscale=upscale.outscale)
             image = upscale_stable_diffusion(
                 ctx, stage, params, image, upscale=upscale)
