@@ -12,6 +12,10 @@ class Border:
         self.top = top
         self.bottom = bottom
 
+    @classmethod
+    def even(cls, all: int):
+        return Border(all, all, all, all)
+
 
 class Size:
     def __init__(self, width: int, height: int) -> None:

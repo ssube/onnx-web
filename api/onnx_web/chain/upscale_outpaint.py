@@ -64,9 +64,9 @@ def upscale_outpaint(
 
     def outpaint(image: Image.Image, dims: Tuple[int, int, int]):
         top, left, tile = dims
-
         size = Size(*image.size)
         mask = mask_image.crop((left, top, left + tile, top + tile))
+
         pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                              params.model, params.provider, params.scheduler)
 
@@ -87,7 +87,7 @@ def upscale_outpaint(
         )
         return result.images[0]
 
-    output = process_tiles(output, 256, 4, [outpaint])
+    output = process_tiles(source_image, 256, 1, [outpaint])
 
     print('final output image size', output.size)
     return output

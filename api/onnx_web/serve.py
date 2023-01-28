@@ -549,8 +549,8 @@ def chain():
         (generate_txt2img, StageParams(), {
             'size': size,
         }),
-        (upscale_outpaint, StageParams(outscale=4), {
-            'expand': Border(256, 256, 256, 256),
+        (upscale_outpaint, StageParams(), {
+            'expand': Border.even(256),
         }),
         (persist_disk, StageParams(tile_size=8192), {
             'output': output,
