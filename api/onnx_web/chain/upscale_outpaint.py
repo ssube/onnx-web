@@ -17,6 +17,7 @@ from ..params import (
     Border,
     ImageParams,
     Size,
+    SizeChart,
     StageParams,
 )
 from ..utils import (
@@ -93,7 +94,7 @@ def upscale_outpaint(
         )
         return result.images[0]
 
-    output = process_tiles(source_image, 512, 1, [outpaint])
+    output = process_tiles(source_image, SizeChart.auto.value, 1, [outpaint])
 
     print('final output image size', output.size)
     return output

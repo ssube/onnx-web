@@ -1,4 +1,17 @@
+from enum import IntEnum
 from typing import Any, Dict, Literal, Optional, Tuple, Union
+
+
+class SizeChart(IntEnum):
+    mini = 128      # small tile for very expensive models
+    half = 256      # half tile for outpainting
+    auto = 512      # auto tile size
+    hd1k = 2**10
+    hd2k = 2**11
+    hd4k = 2**12
+    hd8k = 2**13
+    hd16k = 2**14
+    hd64k = 2**16
 
 
 Param = Union[str, int, float]
@@ -74,7 +87,7 @@ class StageParams:
     def __init__(
         self,
         name: Optional[str] = None,
-        tile_size: int = 512,
+        tile_size: int = SizeChart.auto,
         outscale: int = 1,
         # batch_size: int = 1,
     ) -> None:

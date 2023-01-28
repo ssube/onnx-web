@@ -8,6 +8,7 @@ from .chain import (
 )
 from .params import (
     ImageParams,
+    SizeChart,
     StageParams,
     UpscaleParams,
 )
@@ -39,7 +40,7 @@ def run_upscale_correction(
                                 outscale=upscale.outscale)
             chain.append((upscale_resrgan, stage, kwargs))
         elif 'stable-diffusion' in upscale.upscale_model:
-            mini_tile = min(128, stage.tile_size)
+            mini_tile = min(SizeChart.mini, stage.tile_size)
             stage = StageParams(tile_size=mini_tile, outscale=upscale.outscale)
             chain.append((upscale_stable_diffusion, stage, kwargs))
 

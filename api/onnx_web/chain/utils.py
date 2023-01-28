@@ -25,7 +25,7 @@ def process_tiles(
             idx = (y * tiles_x) + x
             left = x * tile
             top = y * tile
-            print('processing tile %s of %s, %s.%s' % (idx, total, y, x))
+            print('processing tile %s of %s, %s.%s' % (idx + 1, total, y, x))
             tile_image = source.crop((left, top, left + tile, top + tile))
 
             for filter in filters:

@@ -1,5 +1,6 @@
 from PIL import Image
 from os import path
+from time import monotonic
 from typing import Any, List, Optional, Protocol, Tuple
 
 from ..params import (
@@ -51,10 +52,11 @@ class ChainPipeline:
         '''
         self.stages.append(stage)
 
-    def __call__(self, ctx: ServerContext, params: ImageParams, source: Image.Image) -> Image.Image:
+    def __call__(self, ctx: ServerContext, params: ImageParams, source: Image.Image, **pipeline_kwargs) -> Image.Image:
         '''
         TODO: handle List[Image] outputs
         '''
+        start = monotonic()
         print('running pipeline on source image with dimensions %sx%s' %
               source.size)
         image = source
@@ -62,8 +64,10 @@ class ChainPipeline:
         for stage_pipe, stage_params, stage_kwargs in self.stages:
             name = stage_params.name or stage_pipe.__name__
             kwargs = stage_kwargs or {}
-            print('running pipeline stage %s on result image with dimensions %sx%s' %
-                  (name, image.width, image.height))
+            kwargs = {**pipeline_kwargs, **kwargs}
+
+            print('running stage %s on result image with dimensions %sx%s, %s' %
+                  (name, image.width, image.height, kwargs))
 
             if image.width > stage_params.tile_size or image.height > stage_params.tile_size:
                 print('source image larger than tile size of %s, tiling stage' % (
@@ -85,8 +89,10 @@ class ChainPipeline:
                 image = stage_pipe(ctx, stage_params, params, image,
                                    **kwargs)
 
-            print('finished running pipeline stage %s, result size: %sx%s' %
+            print('finished stage %s, result size: %sx%s' %
                   (name, image.width, image.height))
 
-        print('finished running pipeline, result size: %sx%s' % image.size)
+        end = monotonic()
+        duration = end - start
+        print('finished pipeline in %s seconds, result size: %sx%s' % (duration, image.width, image.height))
         return image
