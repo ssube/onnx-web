@@ -1,13 +1,18 @@
 from PIL import Image
-from typing import Callable, List
+from typing import List, Protocol, Tuple
+
+
+class TileCallback(Protocol):
+    def __call__(self, image: Image.Image, dims: Tuple[int, int, int]) -> Image.Image:
+        pass
 
 
 def process_tiles(
     source: Image.Image,
     tile: int,
     scale: int,
-    filters: List[Callable],
-) -> Image:
+    filters: List[TileCallback],
+) -> Image.Image:
     width, height = source.size
     image = Image.new('RGB', (width * scale, height * scale))
 

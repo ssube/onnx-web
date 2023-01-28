@@ -104,7 +104,7 @@ def run_txt2img_pipeline(
     size: Size,
     output: str,
     upscale: UpscaleParams
-):
+) -> None:
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
                          params.model, params.provider, params.scheduler)
 
@@ -139,9 +139,9 @@ def run_img2img_pipeline(
     params: ImageParams,
     output: str,
     upscale: UpscaleParams,
-    source_image: Image,
+    source_image: Image.Image,
     strength: float,
-):
+) -> None:
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
                          params.model, params.provider, params.scheduler)
 
@@ -176,14 +176,14 @@ def run_inpaint_pipeline(
     size: Size,
     output: str,
     upscale: UpscaleParams,
-    source_image: Image,
-    mask_image: Image,
+    source_image: Image.Image,
+    mask_image: Image.Image,
     expand: Border,
     noise_source: Any,
     mask_filter: Any,
     strength: float,
     fill_color: str,
-):
+) -> None:
     pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                          params.model, params.provider, params.scheduler)
 
@@ -241,8 +241,8 @@ def run_upscale_pipeline(
     _size: Size,
     output: str,
     upscale: UpscaleParams,
-    source_image: Image
-):
+    source_image: Image.Image,
+) -> None:
     image = run_upscale_correction(
         ctx, StageParams(), params, source_image, upscale=upscale)
 

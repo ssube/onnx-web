@@ -7,6 +7,7 @@ from ..params import (
     StageParams,
 )
 from ..utils import (
+    is_debug,
     ServerContext,
 )
 from .utils import (
@@ -68,10 +69,13 @@ class ChainPipeline:
                 print('source image larger than tile size of %s, tiling stage' % (
                     stage_params.tile_size))
 
-                def stage_tile(tile: Image.Image) -> Image.Image:
+                def stage_tile(tile: Image.Image, _dims) -> Image.Image:
                     tile = stage_pipe(ctx, stage_params, params, tile,
                                       **kwargs)
-                    tile.save(path.join(ctx.output_path, 'last-tile.png'))
+
+                    if is_debug():
+                        tile.save(path.join(ctx.output_path, 'last-tile.png'))
+
                     return tile
 
                 image = process_tiles(

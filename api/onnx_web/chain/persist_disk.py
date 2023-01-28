@@ -13,8 +13,8 @@ from ..utils import (
 
 def persist_disk(
     ctx: ServerContext,
-    stage: StageParams,
-    params: ImageParams,
+    _stage: StageParams,
+    _params: ImageParams,
     source_image: Image.Image,
     *,
     output: str,

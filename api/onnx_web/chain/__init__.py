@@ -4,14 +4,23 @@ from .base import (
   StageCallback,
   StageParams,
 )
+from .blend_img2img import (
+  blend_img2img,
+)
+from .blend_inpaint import (
+  blend_inpaint,
+)
 from .correct_gfpgan import (
   correct_gfpgan,
 )
-from .generate_txt2img import (
-  generate_txt2img,
-)
 from .persist_disk import (
   persist_disk,
+)
+from .persist_s3 import (
+  persist_s3,
+)
+from .source_txt2img import (
+  source_txt2img,
 )
 from .upscale_outpaint import (
   upscale_outpaint,

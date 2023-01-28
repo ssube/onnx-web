@@ -24,8 +24,9 @@ from typing import Tuple
 
 from .chain import (
     correct_gfpgan,
-    generate_txt2img,
+    source_txt2img,
     persist_disk,
+    persist_s3,
     upscale_outpaint,
     upscale_resrgan,
     upscale_stable_diffusion,
@@ -546,7 +547,7 @@ def chain():
 
     # parse body as json, list of stages
     example = ChainPipeline(stages=[
-        (generate_txt2img, StageParams(), {
+        (source_txt2img, StageParams(), {
             'size': size,
         }),
         (upscale_outpaint, StageParams(), {
@@ -559,6 +560,10 @@ def chain():
             'upscale': UpscaleParams('stable-diffusion-x4-upscaler', params.provider, scale=4, outscale=4)
         }),
         (persist_disk, StageParams(tile_size=8192), {
+            'output': output,
+        }),
+        (persist_s3, StageParams(tile_size=8192), {
+            'bucket': 'storage-stable-diffusion',
             'output': output,
         }),
     ])

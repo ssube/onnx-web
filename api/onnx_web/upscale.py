@@ -24,6 +24,10 @@ def run_upscale_correction(
     *,
     upscale: UpscaleParams,
 ) -> Image.Image:
+    '''
+    This is a convenience method for a chain pipeline that will run upscaling and
+    correction, based on the `upscale` params.
+    '''
     print('running upscale pipeline')
 
     chain = ChainPipeline()

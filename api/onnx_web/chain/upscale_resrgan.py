@@ -75,7 +75,7 @@ def upscale_resrgan(
     source_image: Image.Image,
     *,
     upscale: UpscaleParams,
-) -> Image:
+) -> Image.Image:
     print('upscaling image with Real ESRGAN', upscale.scale)
 
     output = np.array(source_image)

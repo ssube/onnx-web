@@ -2,43 +2,31 @@ from diffusers import (
     OnnxStableDiffusionPipeline,
 )
 from PIL import Image
-from typing import Callable
 
 from ..diffusion import (
     get_latents_from_seed,
     load_pipeline,
 )
-from ..image import (
-    expand_image,
-    mask_filter_none,
-    noise_source_histogram,
-)
 from ..params import (
-    Border,
     ImageParams,
     Size,
     StageParams,
 )
 from ..utils import (
-    base_join,
-    is_debug,
     ServerContext,
-)
-from .utils import (
-    process_tiles,
 )
 
 import numpy as np
 
 
-def generate_txt2img(
+def source_txt2img(
     ctx: ServerContext,
     stage: StageParams,
     params: ImageParams,
     source_image: Image.Image,
     *,
     size: Size,
-) -> Image:
+) -> Image.Image:
     print('generating image using txt2img', params.prompt)
 
     if source_image is not None:
