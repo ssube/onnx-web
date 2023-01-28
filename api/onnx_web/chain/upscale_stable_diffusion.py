@@ -26,6 +26,9 @@ last_pipeline_params = (None, None)
 
 
 def load_stable_diffusion(ctx: ServerContext, upscale: UpscaleParams):
+    global last_pipeline_instance
+    global last_pipeline_params
+
     model_path = path.join(ctx.model_path, upscale.upscale_model)
     cache_params = (model_path, upscale.format)
 

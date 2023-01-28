@@ -22,6 +22,9 @@ last_pipeline_params = None
 
 
 def load_gfpgan(ctx: ServerContext, upscale: UpscaleParams):
+    global last_pipeline_instance
+    global last_pipeline_params
+
     if upsampler is None:
         upsampler = load_resrgan(ctx, upscale)
 

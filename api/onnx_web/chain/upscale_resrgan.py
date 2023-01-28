@@ -23,6 +23,9 @@ last_pipeline_params = (None, None)
 
 
 def load_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
+    global last_pipeline_instance
+    global last_pipeline_params
+
     model_file = '%s.%s' % (params.upscale_model, params.format)
     model_path = path.join(ctx.model_path, model_file)
     if not path.isfile(model_path):
