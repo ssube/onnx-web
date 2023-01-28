@@ -24,7 +24,7 @@ def process_tiles(
             tile_image = source.crop((left, top, left + tile, top + tile))
 
             for filter in filters:
-                tile_image = filter(tile_image)
+                tile_image = filter(tile_image, (left, top, tile))
 
             image.paste(tile_image, (left * scale, top * scale))
 

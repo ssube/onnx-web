@@ -2,7 +2,7 @@ from diffusers import (
     OnnxStableDiffusionInpaintPipeline,
 )
 from PIL import Image, ImageDraw
-from typing import Callable
+from typing import Callable, Tuple
 
 from ..diffusion import (
     get_latents_from_seed,
@@ -64,8 +64,11 @@ def upscale_outpaint(
         mask_image.save(base_join(ctx.output_path, 'last-mask.png'))
         noise_image.save(base_join(ctx.output_path, 'last-noise.png'))
 
-    def outpaint(image: Image.Image):
+    def outpaint(image: Image.Image, dims: Tuple[int, int, int]):
+        top, left, tile = dims
+
         size = Size(*image.size)
+        mask = mask_image.crop((left, top, left + tile, top + tile))
         pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                              params.model, params.provider, params.scheduler)
 
@@ -79,7 +82,7 @@ def upscale_outpaint(
             height=size.height,
             image=image,
             latents=latents,
-            mask_image=mask_image,
+            mask_image=mask,
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
             width=size.width,
