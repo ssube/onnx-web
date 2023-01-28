@@ -10,6 +10,9 @@ from .correct_gfpgan import (
 from .generate_txt2img import (
   generate_txt2img,
 )
+from .persist_disk import (
+  persist_disk,
+)
 from .upscale_outpaint import (
   upscale_outpaint,
 )

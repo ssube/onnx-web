@@ -42,7 +42,7 @@ def upscale_outpaint(
     fill_color: str = 'white',
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
-) -> Image:
+) -> Image.Image:
     print('upscaling image by expanding borders', expand)
 
     if mask_image is None:
@@ -51,14 +51,13 @@ def upscale_outpaint(
         draw.rectangle((expand.left, expand.top, expand.left +
                        source_image.width, expand.top + source_image.height), fill='black')
 
-    source_image, mask_image, noise_image, full_dims = expand_image(
+    source_image, mask_image, noise_image, _full_dims = expand_image(
         source_image,
         mask_image,
         expand,
         fill=fill_color,
         noise_source=noise_source,
         mask_filter=mask_filter)
-    size = Size(*full_dims)
 
     if is_debug():
         source_image.save(base_join(ctx.output_path, 'last-source.png'))
@@ -66,6 +65,7 @@ def upscale_outpaint(
         noise_image.save(base_join(ctx.output_path, 'last-noise.png'))
 
     def outpaint(image: Image.Image):
+        size = Size(*image.size)
         pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                              params.model, params.provider, params.scheduler)
 

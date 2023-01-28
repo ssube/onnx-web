@@ -25,6 +25,7 @@ from typing import Tuple
 from .chain import (
     correct_gfpgan,
     generate_txt2img,
+    persist_disk,
     upscale_outpaint,
     upscale_resrgan,
     upscale_stable_diffusion,
@@ -540,10 +541,10 @@ def upscale():
 
 @app.route('/api/chain', methods=['POST'])
 def chain():
-    print('TODO: run chain pipeline')
-
     params, size = pipeline_from_request()
+    output = make_output_name('chain', params, size)
 
+    # parse body as json, list of stages
     example = ChainPipeline(stages=[
         (generate_txt2img, StageParams(), {
             'size': size,
@@ -551,14 +552,19 @@ def chain():
         (upscale_outpaint, StageParams(outscale=4), {
             'expand': Border(256, 256, 256, 256),
         }),
+        (persist_disk, StageParams(), {
+            'output': output,
+        })
     ])
 
-    output = make_output_name('chain', params, size)
+    # build and run chain pipeline
     executor.submit_stored(output, example, context, params, Image.new('RGB', (1, 1)))
 
-    # parse body as json, list of stages
-    # build and run chain pipeline
-    return jsonify({})
+    return jsonify({
+        'output': output,
+        'params': params.tojson(),
+        'size': upscale.resize(size).tojson(),
+    })
 
 
 @app.route('/api/ready')
