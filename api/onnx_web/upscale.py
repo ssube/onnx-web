@@ -1,3 +1,4 @@
+from logging import getLogger
 from PIL import Image
 
 from .chain import (
@@ -16,6 +17,8 @@ from .utils import (
     ServerContext,
 )
 
+logger = getLogger(__name__)
+
 
 def run_upscale_correction(
     ctx: ServerContext,
@@ -29,7 +32,7 @@ def run_upscale_correction(
     This is a convenience method for a chain pipeline that will run upscaling and
     correction, based on the `upscale` params.
     '''
-    print('running upscale pipeline')
+    logger.info('running upscaling and correction pipeline')
 
     chain = ChainPipeline()
     kwargs = {'upscale': upscale}

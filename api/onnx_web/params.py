@@ -25,6 +25,9 @@ class Border:
         self.top = top
         self.bottom = bottom
 
+    def __str__(self) -> str:
+        return '%s %s %s %s' % (self.left, self.top, self.right, self.bottom)
+
     @classmethod
     def even(cls, all: int):
         return Border(all, all, all, all)
@@ -34,6 +37,9 @@ class Size:
     def __init__(self, width: int, height: int) -> None:
         self.width = width
         self.height = height
+
+    def __str__(self) -> str:
+        return '%sx%s' % (self.width, self.height)
 
     def add_border(self, border: Border):
         return Size(border.left + self.width + border.right, border.top + self.height + border.right)

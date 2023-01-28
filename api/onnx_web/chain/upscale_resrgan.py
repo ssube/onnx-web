@@ -1,4 +1,5 @@
 from basicsr.archs.rrdbnet_arch import RRDBNet
+from logging import getLogger
 from os import path
 from PIL import Image
 from realesrgan import RealESRGANer
@@ -17,6 +18,7 @@ from ..utils import (
 
 import numpy as np
 
+logger = getLogger(__name__)
 
 last_pipeline_instance = None
 last_pipeline_params = (None, None)
@@ -33,7 +35,7 @@ def load_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
 
     cache_params = (model_path, params.format)
     if last_pipeline_instance != None and cache_params == last_pipeline_params:
-        print('reusing existing Real ESRGAN pipeline')
+        logger.info('reusing existing Real ESRGAN pipeline')
         return last_pipeline_instance
 
     # use ONNX acceleration, if available
@@ -76,7 +78,7 @@ def upscale_resrgan(
     *,
     upscale: UpscaleParams,
 ) -> Image.Image:
-    print('upscaling image with Real ESRGAN', upscale.scale)
+    logger.info('upscaling image with Real ESRGAN', upscale.scale)
 
     output = np.array(source_image)
     upsampler = load_resrgan(ctx, upscale, tile=stage.tile_size)
@@ -84,5 +86,5 @@ def upscale_resrgan(
     output, _ = upsampler.enhance(output, outscale=upscale.outscale)
 
     output = Image.fromarray(output, 'RGB')
-    print('final output image size', output.size)
+    logger.info('final output image size', output.size)
     return output

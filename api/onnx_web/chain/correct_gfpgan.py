@@ -1,4 +1,5 @@
 from gfpgan import GFPGANer
+from logging import getLogger
 from os import path
 from PIL import Image
 from realesrgan import RealESRGANer
@@ -16,6 +17,8 @@ from .upscale_resrgan import (
     load_resrgan,
 )
 
+logger = getLogger(__name__)
+
 
 last_pipeline_instance = None
 last_pipeline_params = None
@@ -32,7 +35,7 @@ def load_gfpgan(ctx: ServerContext, upscale: UpscaleParams):
                           (upscale.correction_model))
 
     if last_pipeline_instance != None and face_path == last_pipeline_params:
-        print('reusing existing GFPGAN pipeline')
+        logger.info('reusing existing GFPGAN pipeline')
         return last_pipeline_instance
 
     # TODO: doesn't have a model param, not sure how to pass ONNX model
@@ -59,10 +62,10 @@ def correct_gfpgan(
     upsampler: Optional[RealESRGANer] = None,
 ) -> Image.Image:
     if upscale.correction_model is None:
-        print('no face model given, skipping')
+        logger.warn('no face model given, skipping')
         return image
 
-    print('correcting faces with GFPGAN model: %s' % upscale.correction_model)
+    logger.info('correcting faces with GFPGAN model: %s', upscale.correction_model)
     gfpgan = load_gfpgan(ctx, upscale)
 
     _, _, output = gfpgan.enhance(

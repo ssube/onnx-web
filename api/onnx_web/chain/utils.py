@@ -1,5 +1,8 @@
+from logging import getLogger
 from PIL import Image
 from typing import List, Protocol, Tuple
+
+logger = getLogger(__name__)
 
 
 class TileCallback(Protocol):
@@ -25,7 +28,7 @@ def process_tiles(
             idx = (y * tiles_x) + x
             left = x * tile
             top = y * tile
-            print('processing tile %s of %s, %s.%s' % (idx + 1, total, y, x))
+            logger.info('processing tile %s of %s, %s.%s', idx + 1, total, y, x)
             tile_image = source.crop((left, top, left + tile, top + tile))
 
             for filter in filters:

@@ -1,6 +1,7 @@
 from diffusers import (
     OnnxStableDiffusionInpaintPipeline,
 )
+from logging import getLogger
 from PIL import Image
 from typing import Callable, Tuple
 
@@ -31,6 +32,8 @@ from .utils import (
 
 import numpy as np
 
+logger = getLogger(__name__)
+
 
 def blend_inpaint(
     ctx: ServerContext,
@@ -44,7 +47,7 @@ def blend_inpaint(
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
 ) -> Image.Image:
-    print('upscaling image by expanding borders', expand)
+    logger.info('upscaling image by expanding borders', expand)
 
     if mask_image is None:
         # if no mask was provided, keep the full source image
@@ -96,5 +99,5 @@ def blend_inpaint(
 
     output = process_tiles(source_image, SizeChart.auto, 1, [outpaint])
 
-    print('final output image size', output.size)
+    logger.info('final output image size', output.size)
     return output

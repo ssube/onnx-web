@@ -1,14 +1,17 @@
-from os import environ, path
-from time import time
-from struct import pack
-from typing import Any, Dict, List, Optional, Tuple
 from hashlib import sha256
+from logging import getLogger
+from os import environ, path
+from struct import pack
+from time import time
+from typing import Any, Dict, List, Optional, Tuple
 
 from .params import (
     ImageParams,
     Param,
     Size,
 )
+
+logger = getLogger(__name__)
 
 
 class ServerContext:
@@ -65,7 +68,7 @@ def get_from_list(args: Any, key: str, values: List[Any]) -> Optional[Any]:
     if selected in values:
         return selected
 
-    print('invalid selection: %s' % (selected))
+    logger.warn('invalid selection: %s', selected)
     if len(values) > 0:
         return values[0]
 
@@ -99,7 +102,7 @@ def hash_value(sha, param: Param):
     elif isinstance(param, str):
         sha.update(param.encode('utf-8'))
     else:
-        print('cannot hash param: %s, %s' % (param, type(param)))
+        logger.warn('cannot hash param: %s, %s', param, type(param))
 
 
 def make_output_name(

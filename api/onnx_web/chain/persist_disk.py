@@ -1,3 +1,4 @@
+from logging import getLogger
 from PIL import Image
 
 
@@ -10,6 +11,8 @@ from ..utils import (
     ServerContext,
 )
 
+logger = getLogger(__name__)
+
 
 def persist_disk(
     ctx: ServerContext,
@@ -21,5 +24,5 @@ def persist_disk(
 ) -> Image.Image:
     dest = base_join(ctx.output_path, output)
     source_image.save(dest)
-    print('saved image to %s' % (dest,))
+    logger.info('saved image to %s', dest)
     return source_image

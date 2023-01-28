@@ -5,6 +5,7 @@ from diffusers import (
     OnnxStableDiffusionImg2ImgPipeline,
     OnnxStableDiffusionInpaintPipeline,
 )
+from logging import getLogger
 from PIL import Image, ImageChops
 from typing import Any, Optional
 
@@ -33,6 +34,8 @@ import gc
 import numpy as np
 import torch
 
+logger = getLogger(__name__)
+
 last_pipeline_instance = None
 last_pipeline_options = (None, None, None)
 last_pipeline_scheduler = None
@@ -57,16 +60,16 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
 
     options = (pipeline, model, provider)
     if last_pipeline_instance != None and last_pipeline_options == options:
-        print('reusing existing pipeline')
+        logger.info('reusing existing diffusion pipeline')
         pipe = last_pipeline_instance
     else:
-        print('unloading previous pipeline')
+        logger.info('unloading previous diffusion pipeline')
         last_pipeline_instance = None
         last_pipeline_scheduler = None
         gc.collect()
         torch.cuda.empty_cache()
 
-        print('loading new pipeline')
+        logger.info('loading new diffusion pipeline')
         pipe = pipeline.from_pretrained(
             model,
             provider=provider,
@@ -82,7 +85,7 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         last_pipeline_scheduler = scheduler
 
     if last_pipeline_scheduler != scheduler:
-        print('loading new scheduler')
+        logger.info('loading new diffusion scheduler')
         scheduler = scheduler.from_pretrained(
             model, subfolder='scheduler')
 
@@ -92,7 +95,7 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         pipe.scheduler = scheduler
         last_pipeline_scheduler = scheduler
 
-    print('running garbage collection during pipeline change')
+    logger.info('running garbage collection during pipeline change')
     gc.collect()
 
     return pipe
@@ -131,7 +134,7 @@ def run_txt2img_pipeline(
     del image
     del result
 
-    print('saved txt2img output: %s' % (dest))
+    logger.info('saved txt2img output: %s', dest)
 
 
 def run_img2img_pipeline(
@@ -166,7 +169,7 @@ def run_img2img_pipeline(
     del image
     del result
 
-    print('saved img2img output: %s' % (dest))
+    logger.info('saved img2img output: %s', dest)
 
 
 def run_inpaint_pipeline(
@@ -190,7 +193,7 @@ def run_inpaint_pipeline(
     latents = get_latents_from_seed(params.seed, size)
     rng = np.random.RandomState(params.seed)
 
-    print('applying mask filter and generating noise source')
+    logger.info('applying mask filter and generating noise source')
     source_image, mask_image, noise_image, _full_dims = expand_image(
         source_image,
         mask_image,
@@ -221,7 +224,7 @@ def run_inpaint_pipeline(
     if image.size == source_image.size:
         image = ImageChops.blend(source_image, image, strength)
     else:
-        print('output image size does not match source, skipping post-blend')
+        logger.info('output image size does not match source, skipping post-blend')
 
     image = run_upscale_correction(
         ctx, StageParams(), params, image, upscale=upscale)
@@ -232,7 +235,7 @@ def run_inpaint_pipeline(
     del image
     del result
 
-    print('saved inpaint output: %s' % (dest))
+    logger.info('saved inpaint output: %s', dest)
 
 
 def run_upscale_pipeline(
@@ -251,4 +254,4 @@ def run_upscale_pipeline(
 
     del image
 
-    print('saved img2img output: %s' % (dest))
+    logger.info('saved img2img output: %s', dest)

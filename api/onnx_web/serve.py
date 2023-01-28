@@ -1,3 +1,4 @@
+from . import logging
 from diffusers import (
     DDIMScheduler,
     DDPMScheduler,
@@ -17,10 +18,12 @@ from flask_cors import CORS
 from flask_executor import Executor
 from glob import glob
 from io import BytesIO
+from logging import getLogger
 from PIL import Image
 from onnxruntime import get_available_providers
-from os import makedirs, path
+from os import path
 from typing import Tuple
+
 
 from .chain import (
     correct_gfpgan,
@@ -55,6 +58,7 @@ from .params import (
     Border,
     ImageParams,
     Size,
+    SizeChart,
     StageParams,
     UpscaleParams,
 )
@@ -71,10 +75,12 @@ from .utils import (
 )
 
 import gc
-import json
 import numpy as np
+import yaml
 
-# pipeline caching
+logger = getLogger(__name__)
+
+# config caching
 config_params = {}
 
 # pipeline params
@@ -185,8 +191,8 @@ def pipeline_from_request() -> Tuple[ImageParams, Size]:
     if seed == -1:
         seed = np.random.randint(np.iinfo(np.int32).max)
 
-    print("request from %s: %s rounds of %s using %s on %s, %sx%s, %s, %s - %s" %
-          (user, steps, scheduler.__name__, model_path, provider, width, height, cfg, seed, prompt))
+    logger.info("request from %s: %s rounds of %s using %s on %s, %sx%s, %s, %s - %s",
+                user, steps, scheduler.__name__, model_path, provider, width, height, cfg, seed, prompt)
 
     params = ImageParams(model_path, provider, scheduler, prompt,
                          negative_prompt, cfg, steps, seed)
@@ -270,8 +276,8 @@ def load_models(context: ServerContext):
 def load_params(context: ServerContext):
     global config_params
     params_file = path.join(context.params_path, 'params.json')
-    with open(params_file) as f:
-        config_params = json.load(f)
+    with open(params_file, 'r') as f:
+        config_params = yaml.safe_load(f)
 
 
 def load_platforms():
@@ -281,11 +287,10 @@ def load_platforms():
     available_platforms = [p for p in platform_providers if (
         platform_providers[p] in providers and p not in context.block_platforms)]
 
-    print('available acceleration platforms: %s' % (available_platforms))
+    logger.info('available acceleration platforms: %s', available_platforms)
 
 
 context = ServerContext.from_environ()
-
 check_paths(context)
 load_models(context)
 load_params(context)
@@ -407,7 +412,7 @@ def img2img():
         params,
         size,
         extras=(strength,))
-    print("img2img output: %s" % (output))
+    logger.info("img2img output saved: %s", output)
 
     source_image.thumbnail((size.width, size.height))
     executor.submit_stored(output, run_img2img_pipeline,
@@ -429,7 +434,7 @@ def txt2img():
         'txt2img',
         params,
         size)
-    print("txt2img output: %s" % (output))
+    logger.info("txt2img output saved: %s", output)
 
     executor.submit_stored(
         output, run_txt2img_pipeline, context, params, size, output, upscale)
@@ -485,7 +490,7 @@ def inpaint():
             fill_color,
         )
     )
-    print("inpaint output: %s" % output)
+    logger.info("inpaint output saved: %s", output)
 
     source_image.thumbnail((size.width, size.height))
     mask_image.thumbnail((size.width, size.height))
@@ -527,7 +532,7 @@ def upscale():
         'upscale',
         params,
         size)
-    print("upscale output: %s" % (output))
+    logger.info("upscale output: %s", output)
 
     source_image.thumbnail((size.width, size.height))
     executor.submit_stored(output, run_upscale_pipeline,
@@ -551,25 +556,28 @@ def chain():
             'size': size,
         }),
         (upscale_outpaint, StageParams(), {
-            'expand': Border.even(256),
+            'expand': Border.even(SizeChart.half),
         }),
-        (persist_disk, StageParams(tile_size=8192), {
+        (persist_disk, StageParams(tile_size=SizeChart.hd8k), {
             'output': output,
         }),
-        (upscale_stable_diffusion, StageParams(tile_size=128,outscale=4), {
+        (upscale_stable_diffusion, StageParams(tile_size=SizeChart.mini,outscale=4), {
             'upscale': UpscaleParams('stable-diffusion-x4-upscaler', params.provider, scale=4, outscale=4)
         }),
-        (persist_disk, StageParams(tile_size=8192), {
+        (persist_disk, StageParams(tile_size=SizeChart.hd8k), {
             'output': output,
         }),
-        (persist_s3, StageParams(tile_size=8192), {
+        (persist_s3, StageParams(tile_size=SizeChart.hd8k), {
             'bucket': 'storage-stable-diffusion',
+            'endpoint_url': 'http://scylla.home.holdmyran.ch:8000',
             'output': output,
+            'profile_name': 'ceph',
         }),
     ])
 
     # build and run chain pipeline
-    executor.submit_stored(output, example, context, params, Image.new('RGB', (1, 1)))
+    executor.submit_stored(output, example, context,
+                           params, Image.new('RGB', (1, 1)))
 
     return jsonify({
         'output': output,

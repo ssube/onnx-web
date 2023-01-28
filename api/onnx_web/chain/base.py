@@ -1,3 +1,5 @@
+from datetime import timedelta
+from logging import getLogger
 from PIL import Image
 from os import path
 from time import monotonic
@@ -14,6 +16,8 @@ from ..utils import (
 from .utils import (
     process_tiles,
 )
+
+logger = getLogger(__name__)
 
 
 class StageCallback(Protocol):
@@ -57,8 +61,8 @@ class ChainPipeline:
         TODO: handle List[Image] outputs
         '''
         start = monotonic()
-        print('running pipeline on source image with dimensions %sx%s' %
-              source.size)
+        logger.info('running pipeline on source image with dimensions %sx%s',
+                    source.width, source.height)
         image = source
 
         for stage_pipe, stage_params, stage_kwargs in self.stages:
@@ -66,12 +70,12 @@ class ChainPipeline:
             kwargs = stage_kwargs or {}
             kwargs = {**pipeline_kwargs, **kwargs}
 
-            print('running stage %s on result image with dimensions %sx%s, %s' %
-                  (name, image.width, image.height, kwargs))
+            logger.info('running stage %s on result image with dimensions %sx%s, %s',
+                        name, image.width, image.height, kwargs)
 
             if image.width > stage_params.tile_size or image.height > stage_params.tile_size:
-                print('source image larger than tile size of %s, tiling stage' % (
-                    stage_params.tile_size))
+                logger.info('source image larger than tile size of %s, tiling stage',
+                            stage_params.tile_size)
 
                 def stage_tile(tile: Image.Image, _dims) -> Image.Image:
                     tile = stage_pipe(ctx, stage_params, params, tile,
@@ -85,14 +89,15 @@ class ChainPipeline:
                 image = process_tiles(
                     image, stage_params.tile_size, stage_params.outscale, [stage_tile])
             else:
-                print('source image within tile size, running stage')
+                logger.info('source image within tile size, running stage')
                 image = stage_pipe(ctx, stage_params, params, image,
                                    **kwargs)
 
-            print('finished stage %s, result size: %sx%s' %
-                  (name, image.width, image.height))
+            logger.info('finished stage %s, result size: %sx%s',
+                        name, image.width, image.height)
 
         end = monotonic()
-        duration = end - start
-        print('finished pipeline in %s seconds, result size: %sx%s' % (duration, image.width, image.height))
+        duration = timedelta(seconds=(end - start))
+        logger.info('finished pipeline in %s, result size: %sx%s',
+                    duration, image.width, image.height)
         return image

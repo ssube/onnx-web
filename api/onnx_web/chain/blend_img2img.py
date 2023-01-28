@@ -1,6 +1,7 @@
 from diffusers import (
     OnnxStableDiffusionImg2ImgPipeline,
 )
+from logging import getLogger
 from PIL import Image
 
 from ..diffusion import (
@@ -16,16 +17,18 @@ from ..utils import (
 
 import numpy as np
 
+logger = getLogger(__name__)
+
 
 def blend_img2img(
-    ctx: ServerContext,
-    stage: StageParams,
+    _ctx: ServerContext,
+    _stage: StageParams,
     params: ImageParams,
     source_image: Image.Image,
     *,
     strength: float,
 ) -> Image.Image:
-    print('generating image using img2img', params.prompt)
+    logger.info('generating image using img2img', params.prompt)
 
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
                             params.model, params.provider, params.scheduler)
@@ -43,6 +46,6 @@ def blend_img2img(
     )
     output = result.images[0]
 
-    print('final output image size', output.size)
+    logger.info('final output image size', output.size)
     return output
 

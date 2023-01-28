@@ -1,6 +1,7 @@
 from diffusers import (
     OnnxStableDiffusionPipeline,
 )
+from logging import getLogger
 from PIL import Image
 
 from ..diffusion import (
@@ -18,6 +19,8 @@ from ..utils import (
 
 import numpy as np
 
+logger = getLogger(__name__)
+
 
 def source_txt2img(
     ctx: ServerContext,
@@ -27,10 +30,10 @@ def source_txt2img(
     *,
     size: Size,
 ) -> Image.Image:
-    print('generating image using txt2img', params.prompt)
+    logger.info('generating image using txt2img, %s steps', params.steps)
 
     if source_image is not None:
-        print('a source image was passed to a txt2img stage, but will be discarded')
+        logger.warn('a source image was passed to a txt2img stage, but will be discarded')
 
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
                             params.model, params.provider, params.scheduler)
@@ -50,5 +53,5 @@ def source_txt2img(
     )
     output = result.images[0]
 
-    print('final output image size', output.size)
+    logger.info('final output image size: %sx%s', output.width, output.height)
     return output

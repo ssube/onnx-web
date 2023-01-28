@@ -3,6 +3,7 @@ from diffusers import (
     DDPMScheduler,
     StableDiffusionUpscalePipeline,
 )
+from logging import getLogger
 from os import path
 from PIL import Image
 
@@ -20,6 +21,8 @@ from ..utils import (
 
 import torch
 
+logger = getLogger(__name__)
+
 
 last_pipeline_instance = None
 last_pipeline_params = (None, None)
@@ -33,7 +36,7 @@ def load_stable_diffusion(ctx: ServerContext, upscale: UpscaleParams):
     cache_params = (model_path, upscale.format)
 
     if last_pipeline_instance != None and cache_params == last_pipeline_params:
-        print('reusing existing Stable Diffusion upscale pipeline')
+        logger.info('reusing existing Stable Diffusion upscale pipeline')
         return last_pipeline_instance
 
     if upscale.format == 'onnx':
@@ -65,7 +68,7 @@ def upscale_stable_diffusion(
     *,
     upscale: UpscaleParams,
 ) -> Image.Image:
-    print('upscaling with Stable Diffusion')
+    logger.info('upscaling with Stable Diffusion')
 
     pipeline = load_stable_diffusion(ctx, upscale)
     generator = torch.manual_seed(params.seed)

@@ -2,6 +2,7 @@ from boto3 import (
     Session,
 )
 from io import BytesIO
+from logging import getLogger
 from PIL import Image
 
 from ..params import (
@@ -11,6 +12,8 @@ from ..params import (
 from ..utils import (
     ServerContext,
 )
+
+logger = getLogger(__name__)
 
 
 def persist_s3(
@@ -32,9 +35,9 @@ def persist_s3(
     data.seek(0)
 
     try:
-        response = s3.upload_fileobj(data, bucket, output)
-        print('saved image to %s' % (response))
+        s3.upload_fileobj(data, bucket, output)
+        logger.info('saved image to %s/%s', bucket, output)
     except Exception as err:
-        print('error saving image to S3: %s' % (err))
+        logger.error('error saving image to S3: %s', err)
 
     return source_image

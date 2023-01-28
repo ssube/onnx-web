@@ -1,7 +1,13 @@
+from . import logging
 from argparse import ArgumentParser
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from basicsr.utils.download_util import load_file_from_url
-from diffusers import OnnxRuntimeModel, OnnxStableDiffusionPipeline, StableDiffusionPipeline
+from diffusers import (
+    OnnxRuntimeModel,
+    OnnxStableDiffusionPipeline,
+    StableDiffusionPipeline,
+)
+from logging import getLogger
 from onnx import load, save_model
 from os import mkdir, path, environ
 from pathlib import Path
@@ -14,11 +20,16 @@ import torch
 import warnings
 
 # suppress common but harmless warnings, https://github.com/ssube/onnx-web/issues/75
-warnings.filterwarnings('ignore', '.*The shape inference of prim::Constant type is missing.*')
+warnings.filterwarnings(
+    'ignore', '.*The shape inference of prim::Constant type is missing.*')
 warnings.filterwarnings('ignore', '.*Only steps=1 can be constant folded.*')
-warnings.filterwarnings('ignore', '.*Converting a tensor to a Python boolean might cause the trace to be incorrect.*')
+warnings.filterwarnings(
+    'ignore', '.*Converting a tensor to a Python boolean might cause the trace to be incorrect.*')
 
 Models = Dict[str, List[Tuple[str, str, Optional[int]]]]
+
+logger = getLogger(__name__)
+
 
 # recommended models
 base_models: Models = {
@@ -63,23 +74,24 @@ model_path = environ.get('ONNX_WEB_MODEL_PATH',
 training_device = 'cuda' if torch.cuda.is_available() else 'cpu'
 map_location = torch.device(training_device)
 
+
 @torch.no_grad()
 def convert_real_esrgan(name: str, url: str, scale: int, opset: int):
     dest_path = path.join(model_path, name + '.pth')
     dest_onnx = path.join(model_path, name + '.onnx')
-    print('converting Real ESRGAN model: %s -> %s' % (name, dest_onnx))
+    logger.info('converting Real ESRGAN model: %s -> %s', name, dest_onnx)
 
     if path.isfile(dest_onnx):
-        print('ONNX model already exists, skipping.')
+        logger.info('ONNX model already exists, skipping.')
         return
 
     if not path.isfile(dest_path):
-        print('PTH model not found, downloading...')
+        logger.info('PTH model not found, downloading...')
         download_path = load_file_from_url(
             url=url, model_dir=dest_path + '-cache', progress=True, file_name=None)
         copyfile(download_path, dest_path)
 
-    print('loading and training model')
+    logger.info('loading and training model')
     model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64,
                     num_block=23, num_grow_ch=32, scale=scale)
 
@@ -98,7 +110,7 @@ def convert_real_esrgan(name: str, url: str, scale: int, opset: int):
     dynamic_axes = {'data': {2: 'width', 3: 'height'},
                     'output': {2: 'width', 3: 'height'}}
 
-    print('exporting ONNX model to %s' % dest_onnx)
+    logger.info('exporting ONNX model to %s', dest_onnx)
     export(
         model,
         rng,
@@ -109,26 +121,26 @@ def convert_real_esrgan(name: str, url: str, scale: int, opset: int):
         opset_version=opset,
         export_params=True
     )
-    print('Real ESRGAN exported to ONNX successfully.')
+    logger.info('Real ESRGAN exported to ONNX successfully.')
 
 
 @torch.no_grad()
 def convert_gfpgan(name: str, url: str, scale: int, opset: int):
     dest_path = path.join(model_path, name + '.pth')
     dest_onnx = path.join(model_path, name + '.onnx')
-    print('converting GFPGAN model: %s -> %s' % (name, dest_onnx))
+    logger.info('converting GFPGAN model: %s -> %s', name, dest_onnx)
 
     if path.isfile(dest_onnx):
-        print('ONNX model already exists, skipping.')
+        logger.info('ONNX model already exists, skipping.')
         return
 
     if not path.isfile(dest_path):
-        print('PTH model not found, downloading...')
+        logger.info('PTH model not found, downloading...')
         download_path = load_file_from_url(
             url=url, model_dir=dest_path + '-cache', progress=True, file_name=None)
         copyfile(download_path, dest_path)
 
-    print('loading and training model')
+    logger.info('loading and training model')
     model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64,
                     num_block=23, num_grow_ch=32, scale=scale)
 
@@ -148,7 +160,7 @@ def convert_gfpgan(name: str, url: str, scale: int, opset: int):
     dynamic_axes = {'data': {2: 'width', 3: 'height'},
                     'output': {2: 'width', 3: 'height'}}
 
-    print('exporting ONNX model to %s' % dest_onnx)
+    logger.info('exporting ONNX model to %s', dest_onnx)
     export(
         model,
         rng,
@@ -159,7 +171,7 @@ def convert_gfpgan(name: str, url: str, scale: int, opset: int):
         opset_version=opset,
         export_params=True
     )
-    print('GFPGAN exported to ONNX successfully.')
+    logger.info('GFPGAN exported to ONNX successfully.')
 
 
 def onnx_export(
@@ -198,10 +210,10 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str):
     dest_path = path.join(model_path, name)
 
     # diffusers go into a directory rather than .onnx file
-    print('converting Diffusers model: %s -> %s/' % (name, dest_path))
+    logger.info('converting Diffusers model: %s -> %s/', name, dest_path)
 
     if path.isdir(dest_path):
-        print('ONNX model already exists, skipping.')
+        logger.info('ONNX model already exists, skipping.')
         return
 
     if half and training_device != 'cuda':
@@ -379,37 +391,37 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str):
         requires_safety_checker=safety_checker is not None,
     )
 
-    print('exporting ONNX model')
+    logger.info('exporting ONNX model')
 
     onnx_pipeline.save_pretrained(output_path)
-    print("ONNX pipeline saved to", output_path)
+    logger.info("ONNX pipeline saved to", output_path)
 
     del pipeline
     del onnx_pipeline
     _ = OnnxStableDiffusionPipeline.from_pretrained(
         output_path, provider="CPUExecutionProvider")
-    print("ONNX pipeline is loadable")
+    logger.info("ONNX pipeline is loadable")
 
 
 def load_models(args, models: Models):
     if args.diffusion:
         for source in models.get('diffusion'):
             if source[0] in args.skip:
-                print('Skipping model: %s' % source[0])
+                logger.info('Skipping model: %s', source[0])
             else:
                 convert_diffuser(*source, args.opset, args.half, args.token)
 
     if args.upscaling:
         for source in models.get('upscaling'):
             if source[0] in args.skip:
-                print('Skipping model: %s' % source[0])
+                logger.info('Skipping model: %s', source[0])
             else:
                 convert_real_esrgan(*source, args.opset)
 
     if args.correction:
         for source in models.get('correction'):
             if source[0] in args.skip:
-                print('Skipping model: %s' % source[0])
+                logger.info('Skipping model: %s', source[0])
             else:
                 convert_gfpgan(*source, args.opset)
 
@@ -446,13 +458,13 @@ def main() -> int:
     )
 
     args = parser.parse_args()
-    print(args)
+    logger.info('CLI arguments: %s', args)
 
-    print('Converting base models.')
+    logger.info('Converting base models.')
     load_models(args, base_models)
 
     if args.extras:
-        print('Converting extra models.')
+        logger.info('Converting extra models.')
         load_models(args, extra_models)
 
     return 0
