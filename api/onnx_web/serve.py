@@ -24,6 +24,7 @@ from typing import Tuple
 
 from .chain import (
     correct_gfpgan,
+    generate_txt2img,
     upscale_outpaint,
     upscale_resrgan,
     upscale_stable_diffusion,
@@ -544,7 +545,7 @@ def chain():
     params, size = pipeline_from_request()
 
     example = ChainPipeline(stages=[
-        (source_txt2img, StageParams(), None),
+        (generate_txt2img, StageParams(), None),
         (upscale_outpaint, StageParams(outscale=4), {
             'expand': Border(256, 256, 256, 256),
         }),
