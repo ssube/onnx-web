@@ -552,7 +552,7 @@ def chain():
         (upscale_outpaint, StageParams(outscale=4), {
             'expand': Border(256, 256, 256, 256),
         }),
-        (persist_disk, StageParams(), {
+        (persist_disk, StageParams(tile_size=8192), {
             'output': output,
         })
     ])
@@ -563,7 +563,7 @@ def chain():
     return jsonify({
         'output': output,
         'params': params.tojson(),
-        'size': upscale.resize(size).tojson(),
+        'size': size.tojson(),
     })
 
 
