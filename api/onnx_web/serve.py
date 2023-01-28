@@ -22,6 +22,12 @@ from onnxruntime import get_available_providers
 from os import makedirs, path
 from typing import Tuple
 
+from .chain import (
+    correct_gfpgan,
+    upscale_outpaint,
+    upscale_resrgan,
+    upscale_stable_diffusion,
+)
 from .diffusion import (
     run_img2img_pipeline,
     run_inpaint_pipeline,
@@ -46,11 +52,6 @@ from .params import (
     ImageParams,
     Size,
     UpscaleParams,
-)
-from .upscale import (
-    correct_gfpgan,
-    upscale_resrgan,
-    upscale_stable_diffusion,
 )
 from .utils import (
     is_debug,
@@ -109,6 +110,7 @@ mask_filters = {
 }
 chain_stages = {
     'correction-gfpgan': correct_gfpgan,
+    'upscaling-outpaint': upscale_outpaint,
     'upscaling-resrgan': upscale_resrgan,
     'upscaling-stable-diffusion': upscale_stable_diffusion,
 }

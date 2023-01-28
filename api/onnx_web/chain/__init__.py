@@ -7,6 +7,9 @@ from .base import (
 from .correct_gfpgan import (
   correct_gfpgan,
 )
+from .upscale_outpaint import (
+  upscale_outpaint,
+)
 from .upscale_resrgan import (
   upscale_resrgan,
 )
