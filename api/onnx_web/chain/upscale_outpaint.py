@@ -1,7 +1,7 @@
 from diffusers import (
     OnnxStableDiffusionInpaintPipeline,
 )
-from PIL import Image, ImageDraw
+from PIL import Image
 from typing import Callable, Tuple
 
 from ..diffusion import (
@@ -46,10 +46,8 @@ def upscale_outpaint(
     print('upscaling image by expanding borders', expand)
 
     if mask_image is None:
-        mask_image = Image.new('RGB', source_image.size, fill_color)
-        draw = ImageDraw.Draw(mask_image)
-        draw.rectangle((expand.left, expand.top, expand.left +
-                       source_image.width, expand.top + source_image.height), fill='black')
+        # if no mask was provided, keep the full source image
+        mask_image = Image.new('RGB', source_image.size, 'black')
 
     source_image, mask_image, noise_image, _full_dims = expand_image(
         source_image,
