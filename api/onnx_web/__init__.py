@@ -1,3 +1,5 @@
+from . import logging
+
 from .chain import (
   correct_gfpgan,
   upscale_resrgan,

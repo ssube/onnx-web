@@ -71,7 +71,7 @@ class ChainPipeline:
             kwargs = {**pipeline_kwargs, **kwargs}
 
             logger.info('running stage %s on result image with dimensions %sx%s, %s',
-                        name, image.width, image.height, kwargs)
+                        name, image.width, image.height, kwargs.keys())
 
             if image.width > stage_params.tile_size or image.height > stage_params.tile_size:
                 logger.info('source image larger than tile size of %s, tiling stage',
