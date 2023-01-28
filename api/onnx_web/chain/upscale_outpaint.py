@@ -63,12 +63,18 @@ def upscale_outpaint(
         noise_image.save(base_join(ctx.output_path, 'last-noise.png'))
 
     def outpaint(image: Image.Image, dims: Tuple[int, int, int]):
-        top, left, tile = dims
+        left, top, tile = dims
         size = Size(*image.size)
         mask = mask_image.crop((left, top, left + tile, top + tile))
 
+        if is_debug():
+            image.save(base_join(ctx.output_path, 'tile-source.png'))
+            mask.save(base_join(ctx.output_path, 'tile-mask.png'))
+
+        # TODO: must use inpainting model here
+        model = '../models/stable-diffusion-onnx-v1-inpainting'
         pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
-                             params.model, params.provider, params.scheduler)
+                             model, params.provider, params.scheduler)
 
         latents = get_latents_from_seed(params.seed, size)
         rng = np.random.RandomState(params.seed)
@@ -87,7 +93,7 @@ def upscale_outpaint(
         )
         return result.images[0]
 
-    output = process_tiles(source_image, 256, 1, [outpaint])
+    output = process_tiles(source_image, 512, 1, [outpaint])
 
     print('final output image size', output.size)
     return output

@@ -554,7 +554,13 @@ def chain():
         }),
         (persist_disk, StageParams(tile_size=8192), {
             'output': output,
-        })
+        }),
+        (upscale_stable_diffusion, StageParams(tile_size=128,outscale=4), {
+            'upscale': UpscaleParams('stable-diffusion-x4-upscaler', params.provider, scale=4, outscale=4)
+        }),
+        (persist_disk, StageParams(tile_size=8192), {
+            'output': output,
+        }),
     ])
 
     # build and run chain pipeline
