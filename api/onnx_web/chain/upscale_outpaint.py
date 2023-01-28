@@ -65,7 +65,7 @@ def upscale_outpaint(
         mask_image.save(base_join(ctx.output_path, 'last-mask.png'))
         noise_image.save(base_join(ctx.output_path, 'last-noise.png'))
 
-    def outpaint():
+    def outpaint(image: Image.Image):
         pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                              params.model, params.provider, params.scheduler)
 
@@ -77,7 +77,7 @@ def upscale_outpaint(
             generator=rng,
             guidance_scale=params.cfg,
             height=size.height,
-            image=source_image,
+            image=image,
             latents=latents,
             mask_image=mask_image,
             negative_prompt=params.negative_prompt,

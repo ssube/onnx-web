@@ -44,26 +44,23 @@ def generate_txt2img(
     if source_image is not None:
         print('a source image was passed to a txt2img stage, but will be discarded')
 
-    def txt2img():
-        pipe = load_pipeline(OnnxStableDiffusionPipeline,
-                             params.model, params.provider, params.scheduler)
+    pipe = load_pipeline(OnnxStableDiffusionPipeline,
+                            params.model, params.provider, params.scheduler)
 
-        latents = get_latents_from_seed(params.seed, size)
-        rng = np.random.RandomState(params.seed)
+    latents = get_latents_from_seed(params.seed, size)
+    rng = np.random.RandomState(params.seed)
 
-        result = pipe(
-            params.prompt,
-            height=size.height,
-            width=size.width,
-            generator=rng,
-            guidance_scale=params.cfg,
-            latents=latents,
-            negative_prompt=params.negative_prompt,
-            num_inference_steps=params.steps,
-        )
-        return result.images[0]
-
-    output = process_tiles(output, 512, 1, [txt2img])
+    result = pipe(
+        params.prompt,
+        height=size.height,
+        width=size.width,
+        generator=rng,
+        guidance_scale=params.cfg,
+        latents=latents,
+        negative_prompt=params.negative_prompt,
+        num_inference_steps=params.steps,
+    )
+    output = result.images[0]
 
     print('final output image size', output.size)
     return output
