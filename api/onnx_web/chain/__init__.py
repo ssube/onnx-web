@@ -7,6 +7,9 @@ from .base import (
 from .correct_gfpgan import (
   correct_gfpgan,
 )
+from .generate_txt2img import (
+  generate_txt2img,
+)
 from .upscale_outpaint import (
   upscale_outpaint,
 )

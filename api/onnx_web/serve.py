@@ -27,6 +27,7 @@ from .chain import (
     upscale_outpaint,
     upscale_resrgan,
     upscale_stable_diffusion,
+    ChainPipeline,
 )
 from .diffusion import (
     run_img2img_pipeline,
@@ -51,6 +52,7 @@ from .params import (
     Border,
     ImageParams,
     Size,
+    StageParams,
     UpscaleParams,
 )
 from .utils import (
@@ -538,6 +540,19 @@ def upscale():
 @app.route('/api/chain', methods=['POST'])
 def chain():
     print('TODO: run chain pipeline')
+
+    params, size = pipeline_from_request()
+
+    example = ChainPipeline(stages=[
+        (source_txt2img, StageParams(), None),
+        (upscale_outpaint, StageParams(outscale=4), {
+            'expand': Border(256, 256, 256, 256),
+        }),
+    ])
+
+    output = make_output_name('chain', params, size)
+    executor.submit_stored(output, example, context, params, None)
+
     # parse body as json, list of stages
     # build and run chain pipeline
     return jsonify({})

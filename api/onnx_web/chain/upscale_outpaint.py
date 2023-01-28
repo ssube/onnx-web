@@ -1,7 +1,7 @@
 from diffusers import (
     OnnxStableDiffusionInpaintPipeline,
 )
-from PIL import Image
+from PIL import Image, ImageDraw
 from typing import Callable
 
 from ..diffusion import (
@@ -38,36 +38,39 @@ def upscale_outpaint(
     source_image: Image.Image,
     *,
     expand: Border,
-    mask_image: Image.Image,
+    mask_image: Image.Image = None,
     fill_color: str = 'white',
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
 ) -> Image:
     print('upscaling image by expanding borders', expand)
 
-    output = expand_image(source_image, mask_image, expand)
-    size = Size(*output.size)
+    if mask_image is None:
+        mask_image = Image.new('RGB', source_image.size, fill_color)
+        draw = ImageDraw.Draw(mask_image)
+        draw.rectangle((expand.left, expand.top, expand.left +
+                       source_image.width, expand.top + source_image.height), fill='black')
+
+    source_image, mask_image, noise_image, full_dims = expand_image(
+        source_image,
+        mask_image,
+        expand,
+        fill=fill_color,
+        noise_source=noise_source,
+        mask_filter=mask_filter)
+    size = Size(*full_dims)
+
+    if is_debug():
+        source_image.save(base_join(ctx.output_path, 'last-source.png'))
+        mask_image.save(base_join(ctx.output_path, 'last-mask.png'))
+        noise_image.save(base_join(ctx.output_path, 'last-noise.png'))
 
     def outpaint():
         pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
-                         params.model, params.provider, params.scheduler)
+                             params.model, params.provider, params.scheduler)
 
         latents = get_latents_from_seed(params.seed, size)
         rng = np.random.RandomState(params.seed)
-
-        print('applying mask filter and generating noise source')
-        source_image, mask_image, noise_image, _full_dims = expand_image(
-            source_image,
-            mask_image,
-            expand,
-            fill=fill_color,
-            noise_source=noise_source,
-            mask_filter=mask_filter)
-
-        if is_debug():
-            source_image.save(base_join(ctx.output_path, 'last-source.png'))
-            mask_image.save(base_join(ctx.output_path, 'last-mask.png'))
-            noise_image.save(base_join(ctx.output_path, 'last-noise.png'))
 
         result = pipe(
             params.prompt,
