@@ -45,12 +45,12 @@ from .params import (
     Border,
     ImageParams,
     Size,
+    UpscaleParams,
 )
 from .upscale import (
     correct_gfpgan,
     upscale_resrgan,
     upscale_stable_diffusion,
-    UpscaleParams,
 )
 from .utils import (
     is_debug,

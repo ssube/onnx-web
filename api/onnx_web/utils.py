@@ -1,7 +1,7 @@
 from os import environ, path
 from time import time
 from struct import pack
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 from hashlib import sha256
 
 from .params import (

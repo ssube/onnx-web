@@ -1,15 +1,12 @@
 from PIL import Image
 from os import path
-from typing import Any, List, Optional, Protocol, Tuple
+from typing import Any, Callable, List, Optional, Protocol, Tuple
 
-from ..image import (
-    process_tiles,
-)
 from ..params import (
+    ImageParams,
     StageParams,
 )
 from ..utils import (
-    ImageParams,
     ServerContext,
 )
 
@@ -27,6 +24,35 @@ class StageCallback(Protocol):
 
 
 PipelineStage = Tuple[StageCallback, StageParams, Optional[dict]]
+
+
+def process_tiles(
+    source: Image,
+    tile: int,
+    scale: int,
+    filters: List[Callable],
+) -> Image:
+    width, height = source.size
+    image = Image.new('RGB', (width * scale, height * scale))
+
+    tiles_x = width // tile
+    tiles_y = height // tile
+    total = tiles_x * tiles_y
+
+    for y in range(tiles_y):
+        for x in range(tiles_x):
+            idx = (y * tiles_x) + x
+            left = x * tile
+            top = y * tile
+            print('processing tile %s of %s, %s.%s' % (idx, total, y, x))
+            tile_image = source.crop((left, top, left + tile, top + tile))
+
+            for filter in filters:
+                tile_image = filter(tile_image)
+
+            image.paste(tile_image, (left * scale, top * scale))
+
+    return image
 
 
 class ChainPipeline:
@@ -59,7 +85,7 @@ class ChainPipeline:
         image = source
 
         for stage_pipe, stage_params, stage_kwargs in self.stages:
-            name = stage_params.label or stage_pipe.__name__
+            name = stage_params.name or stage_pipe.__name__
             kwargs = stage_kwargs or {}
             print('running pipeline stage %s on result image with dimensions %sx%s' %
                   (name, image.width, image.height))

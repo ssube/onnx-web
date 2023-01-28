@@ -1,3 +1,8 @@
+from .chain import (
+  correct_gfpgan,
+  upscale_resrgan,
+  upscale_stable_diffusion,
+)
 from .diffusion import (
   get_latents_from_seed,
   load_pipeline,
@@ -18,17 +23,16 @@ from .image import (
   noise_source_uniform,
 )
 from .params import (
-  UpscaleParams,
-  ImageParams,
-  Border,
+  Param,
   Point,
+  Border,
   Size,
+  ImageParams,
+  StageParams,
+  UpscaleParams,
 )
 from .upscale import (
-  load_resrgan,
   run_upscale_correction,
-  correct_gfpgan,
-  upscale_resrgan,
 )
 from .utils import (
   get_and_clamp_float,

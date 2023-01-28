@@ -9,7 +9,7 @@ from ..utils import (
   ServerContext,
 )
 
-class ONNXImage():
+class OnnxImage():
     def __init__(self, source) -> None:
         self.source = source
         self.data = self
@@ -38,7 +38,7 @@ class ONNXImage():
         return np.shape(self.source)
 
 
-class ONNXNet():
+class OnnxNet():
     '''
     Provides the RRDBNet interface using an ONNX session for DirectML acceleration.
     '''
@@ -57,7 +57,7 @@ class ONNXNet():
         output = self.session.run([output_name], {
             input_name: image.cpu().numpy()
         })[0]
-        return ONNXImage(output)
+        return OnnxImage(output)
 
     def eval(self) -> None:
         pass

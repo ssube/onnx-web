@@ -8,10 +8,6 @@ from diffusers import (
 from PIL import Image, ImageChops
 from typing import Any, Optional
 
-import gc
-import numpy as np
-import torch
-
 from .chain import (
     StageParams,
 )
@@ -32,6 +28,10 @@ from .utils import (
     base_join,
     ServerContext,
 )
+
+import gc
+import numpy as np
+import torch
 
 last_pipeline_instance = None
 last_pipeline_options = (None, None, None)
