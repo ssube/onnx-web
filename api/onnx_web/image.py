@@ -4,7 +4,7 @@ from typing import Callable, List
 
 import numpy as np
 
-from .utils import (
+from .params import (
     Border,
     Point,
 )

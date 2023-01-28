@@ -4,51 +4,11 @@ from struct import pack
 from typing import Any, Dict, List, Optional, Tuple, Union
 from hashlib import sha256
 
-
-Param = Union[str, int, float]
-Point = Tuple[int, int]
-
-
-class ImageParams:
-    def __init__(
-        self,
-        model: str,
-        provider: str,
-        scheduler: Any,
-        prompt: str,
-        negative_prompt: Optional[str],
-        cfg: float,
-        steps: int,
-        seed: int
-    ) -> None:
-        self.model = model
-        self.provider = provider
-        self.scheduler = scheduler
-        self.prompt = prompt
-        self.negative_prompt = negative_prompt
-        self.cfg = cfg
-        self.steps = steps
-        self.seed = seed
-
-    def tojson(self) -> Dict[str, Param]:
-        return {
-            'model': self.model,
-            'provider': self.provider,
-            'scheduler': self.scheduler.__name__,
-            'seed': self.seed,
-            'prompt': self.prompt,
-            'cfg': self.cfg,
-            'negativePrompt': self.negative_prompt,
-            'steps': self.steps,
-        }
-
-
-class Border:
-    def __init__(self, left: int, right: int, top: int, bottom: int) -> None:
-        self.left = left
-        self.right = right
-        self.top = top
-        self.bottom = bottom
+from .params import (
+    ImageParams,
+    Param,
+    Size,
+)
 
 
 class ServerContext:
@@ -83,23 +43,9 @@ class ServerContext:
             # others
             cors_origin=environ.get('ONNX_WEB_CORS_ORIGIN', '*').split(','),
             num_workers=int(environ.get('ONNX_WEB_NUM_WORKERS', 1)),
-            block_platforms=environ.get('ONNX_WEB_BLOCK_PLATFORMS', '').split(',')
+            block_platforms=environ.get(
+                'ONNX_WEB_BLOCK_PLATFORMS', '').split(',')
         )
-
-
-class Size:
-    def __init__(self, width: int, height: int) -> None:
-        self.width = width
-        self.height = height
-
-    def add_border(self, border: Border):
-        return Size(border.left + self.width + border.right, border.top + self.height + border.right)
-
-    def tojson(self) -> Dict[str, int]:
-        return {
-            'height': self.height,
-            'width': self.width,
-        }
 
 
 def is_debug() -> bool:

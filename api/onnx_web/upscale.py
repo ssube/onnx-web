@@ -8,7 +8,7 @@ from gfpgan import GFPGANer
 from os import path
 from PIL import Image
 from realesrgan import RealESRGANer
-from typing import Literal, Optional
+from typing import Optional
 
 import numpy as np
 import torch
@@ -21,44 +21,14 @@ from .onnx import (
     ONNXNet,
     OnnxStableDiffusionUpscalePipeline,
 )
-from .utils import (
+from .params import (
     ImageParams,
-    ServerContext,
     Size,
+    UpscaleParams,
 )
-
-
-class UpscaleParams():
-    def __init__(
-        self,
-        upscale_model: str,
-        provider: str,
-        correction_model: Optional[str] = None,
-        denoise: float = 0.5,
-        faces=True,
-        face_strength: float = 0.5,
-        format: Literal['onnx', 'pth'] = 'onnx',
-        half=False,
-        outscale: int = 1,
-        scale: int = 4,
-        pre_pad: int = 0,
-        tile_pad: int = 10,
-    ) -> None:
-        self.upscale_model = upscale_model
-        self.provider = provider
-        self.correction_model = correction_model
-        self.denoise = denoise
-        self.faces = faces
-        self.face_strength = face_strength
-        self.format = format
-        self.half = half
-        self.outscale = outscale
-        self.pre_pad = pre_pad
-        self.scale = scale
-        self.tile_pad = tile_pad
-
-    def resize(self, size: Size) -> Size:
-        return Size(size.width * self.outscale, size.height * self.outscale)
+from .utils import (
+    ServerContext,
+)
 
 
 def load_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
@@ -125,7 +95,7 @@ def load_stable_diffusion(ctx: ServerContext, upscale: UpscaleParams):
 def upscale_resrgan(
     ctx: ServerContext,
     stage: StageParams,
-    params: ImageParams,
+    _params: ImageParams,
     source_image: Image.Image,
     *,
     upscale: UpscaleParams,
@@ -142,10 +112,10 @@ def upscale_resrgan(
     return output
 
 
-def upscale_gfpgan(
+def correct_gfpgan(
     ctx: ServerContext,
-    stage: StageParams,
-    params: ImageParams,
+    _stage: StageParams,
+    _params: ImageParams,
     image: Image.Image,
     *,
     upscale: UpscaleParams,
@@ -179,7 +149,7 @@ def upscale_gfpgan(
 
 def upscale_stable_diffusion(
     ctx: ServerContext,
-    stage: StageParams,
+    _stage: StageParams,
     params: ImageParams,
     source: Image.Image,
     *,
@@ -191,18 +161,12 @@ def upscale_stable_diffusion(
     generator = torch.manual_seed(params.seed)
     seed = generator.initial_seed()
 
-    def upscale_stage(_ctx: ServerContext, stage: StageParams, params: ImageParams, image: Image.Image) -> Image:
-        return pipeline(
-            params.prompt,
-            image,
-            generator=torch.manual_seed(seed),
-            num_inference_steps=params.steps,
-        ).images[0]
-
-    chain = ChainPipeline(stages=[
-        (upscale_stage, stage)
-    ])
-    return chain(ctx, params, source)
+    return pipeline(
+        params.prompt,
+        source,
+        generator=torch.manual_seed(seed),
+        num_inference_steps=params.steps,
+    ).images[0]
 
 
 def run_upscale_correction(
@@ -216,20 +180,21 @@ def run_upscale_correction(
     print('running upscale pipeline')
 
     chain = ChainPipeline()
+    kwargs = {'upscale': upscale}
 
     if upscale.scale > 1:
         if 'esrgan' in upscale.upscale_model:
             stage = StageParams(tile_size=stage.tile_size,
                                 outscale=upscale.outscale)
-            chain.append((upscale_resrgan, stage, {'upscale': upscale}))
+            chain.append((upscale_resrgan, stage, kwargs))
         elif 'stable-diffusion' in upscale.upscale_model:
             mini_tile = min(128, stage.tile_size)
             stage = StageParams(tile_size=mini_tile, outscale=upscale.outscale)
-            chain.append((upscale_stable_diffusion, stage, {'upscale': upscale}))
+            chain.append((upscale_stable_diffusion, stage, kwargs))
 
     if upscale.faces:
         stage = StageParams(tile_size=stage.tile_size,
                             outscale=upscale.outscale)
-        chain.append((upscale_gfpgan, stage, {'upscale': upscale}))
+        chain.append((correct_gfpgan, stage, kwargs))
 
     return chain(ctx, params, image)

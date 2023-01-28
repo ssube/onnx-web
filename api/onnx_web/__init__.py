@@ -17,12 +17,18 @@ from .image import (
   noise_source_normal,
   noise_source_uniform,
 )
+from .params import (
+  UpscaleParams,
+  ImageParams,
+  Border,
+  Point,
+  Size,
+)
 from .upscale import (
   load_resrgan,
   run_upscale_correction,
-  upscale_gfpgan,
+  correct_gfpgan,
   upscale_resrgan,
-  UpscaleParams,
 )
 from .utils import (
   get_and_clamp_float,
@@ -31,9 +37,5 @@ from .utils import (
   get_from_map,
   get_not_empty,
   base_join,
-  ImageParams,
-  Border,
-  Point,
   ServerContext,
-  Size,
 )

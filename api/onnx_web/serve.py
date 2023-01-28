@@ -19,7 +19,7 @@ from glob import glob
 from io import BytesIO
 from PIL import Image
 from onnxruntime import get_available_providers
-from os import makedirs, path, scandir
+from os import makedirs, path
 from typing import Tuple
 
 from .diffusion import (
@@ -41,7 +41,15 @@ from .image import (
     noise_source_normal,
     noise_source_uniform,
 )
+from .params import (
+    Border,
+    ImageParams,
+    Size,
+)
 from .upscale import (
+    correct_gfpgan,
+    upscale_resrgan,
+    upscale_stable_diffusion,
     UpscaleParams,
 )
 from .utils import (
@@ -53,10 +61,7 @@ from .utils import (
     get_not_empty,
     make_output_name,
     base_join,
-    ImageParams,
-    Border,
     ServerContext,
-    Size,
 )
 
 import gc
@@ -101,6 +106,11 @@ mask_filters = {
     'none': mask_filter_none,
     'gaussian-multiply': mask_filter_gaussian_multiply,
     'gaussian-screen': mask_filter_gaussian_screen,
+}
+chain_stages = {
+    'correction-gfpgan': correct_gfpgan,
+    'upscaling-resrgan': upscale_resrgan,
+    'upscaling-stable-diffusion': upscale_stable_diffusion,
 }
 
 # Available ORT providers
@@ -172,7 +182,7 @@ def pipeline_from_request() -> Tuple[ImageParams, Size]:
           (user, steps, scheduler.__name__, model_path, provider, width, height, cfg, seed, prompt))
 
     params = ImageParams(model_path, provider, scheduler, prompt,
-                        negative_prompt, cfg, steps, seed)
+                         negative_prompt, cfg, steps, seed)
     size = Size(width, height)
     return (params, size)
 
@@ -526,6 +536,8 @@ def upscale():
 @app.route('/api/chain', methods=['POST'])
 def chain():
     print('TODO: run chain pipeline')
+    # parse body as json, list of stages
+    # build and run chain pipeline
     return jsonify({})
 
 
