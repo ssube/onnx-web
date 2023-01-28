@@ -28,7 +28,8 @@ def load_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
     if not path.isfile(model_path):
         raise Exception('Real ESRGAN model not found at %s' % model_path)
 
-    if last_pipeline_instance != None and (model_path, params.format) == last_pipeline_params:
+    cache_params = (model_path, params.format)
+    if last_pipeline_instance != None and cache_params == last_pipeline_params:
         print('reusing existing Real ESRGAN pipeline')
         return last_pipeline_instance
 
@@ -59,7 +60,7 @@ def load_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
         half=params.half)
 
     last_pipeline_instance = upsampler
-    last_pipeline_params = (model_path, params.format)
+    last_pipeline_params = cache_params
 
     return upsampler
 

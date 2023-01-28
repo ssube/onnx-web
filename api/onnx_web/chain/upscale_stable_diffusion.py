@@ -27,8 +27,9 @@ last_pipeline_params = (None, None)
 
 def load_stable_diffusion(ctx: ServerContext, upscale: UpscaleParams):
     model_path = path.join(ctx.model_path, upscale.upscale_model)
+    cache_params = (model_path, upscale.format)
 
-    if last_pipeline_instance != None and (model_path, upscale.format) == last_pipeline_params:
+    if last_pipeline_instance != None and cache_params == last_pipeline_params:
         print('reusing existing Stable Diffusion upscale pipeline')
         return last_pipeline_instance
 
@@ -46,6 +47,9 @@ def load_stable_diffusion(ctx: ServerContext, upscale: UpscaleParams):
     else:
         pipeline = StableDiffusionUpscalePipeline.from_pretrained(
             'stabilityai/stable-diffusion-x4-upscaler')
+
+    last_pipeline_instance = pipeline
+    last_pipeline_params = cache_params
 
     return pipeline
 
