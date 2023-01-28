@@ -545,14 +545,16 @@ def chain():
     params, size = pipeline_from_request()
 
     example = ChainPipeline(stages=[
-        (generate_txt2img, StageParams(), None),
+        (generate_txt2img, StageParams(), {
+            'size': size,
+        }),
         (upscale_outpaint, StageParams(outscale=4), {
             'expand': Border(256, 256, 256, 256),
         }),
     ])
 
     output = make_output_name('chain', params, size)
-    executor.submit_stored(output, example, context, params, None)
+    executor.submit_stored(output, example, context, params, Image.new('RGB', (1, 1)))
 
     # parse body as json, list of stages
     # build and run chain pipeline
