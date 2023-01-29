@@ -594,6 +594,8 @@ def chain():
 
         pipeline.append((callback, stage, kwargs))
 
+    logger.info('running chain pipeline with %s stages', len(pipeline.stages))
+
     # build and run chain pipeline
     fake_source = Image.new('RGB', (1, 1))
     executor.submit_stored(output, pipeline, context,

@@ -1,0 +1,26 @@
+{
+  "stages": [
+    {
+      "name": "start",
+      "type": "source-txt2img",
+      "params": {
+        "prompt": "a magical wizard"
+      }
+    },
+    {
+      "name": "expand",
+      "type": "upscale-outpaint",
+      "params": {
+        "border": 256,
+        "prompt": "a magical wizard in a robe fighting a dragon"
+      }
+    },
+    {
+      "name": "save-local",
+      "type": "persist-disk",
+      "params": {
+        "tile_size": "hd8k"
+      }
+    }
+  ]
+}
