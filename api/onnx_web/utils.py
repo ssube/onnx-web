@@ -3,12 +3,13 @@ from logging import getLogger
 from os import environ, path
 from struct import pack
 from time import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Union, Tuple
 
 from .params import (
     ImageParams,
     Param,
     Size,
+    SizeChart,
 )
 
 logger = getLogger(__name__)
@@ -90,6 +91,22 @@ def get_not_empty(args: Any, key: str, default: Any) -> Any:
         val = default
 
     return val
+
+
+def get_size(val: Union[int, str, None]) -> SizeChart:
+    if val is None:
+        return SizeChart.auto
+
+    if type(val) is str:
+        if val in SizeChart:
+            return SizeChart[val]
+        else:
+            return int(val)
+
+    if type(val) is int:
+        return val
+
+    raise Exception('invalid size')
 
 
 def hash_value(sha, param: Param):

@@ -67,9 +67,11 @@ def upscale_stable_diffusion(
     source: Image.Image,
     *,
     upscale: UpscaleParams,
+    prompt: str = None,
     **kwargs,
 ) -> Image.Image:
-    logger.info('upscaling with Stable Diffusion')
+    prompt = prompt or params.prompt
+    logger.info('upscaling with Stable Diffusion, %s steps: %s', params.steps, prompt)
 
     pipeline = load_stable_diffusion(ctx, upscale)
     generator = torch.manual_seed(params.seed)

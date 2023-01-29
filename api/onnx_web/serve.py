@@ -72,6 +72,7 @@ from .utils import (
     get_from_list,
     get_from_map,
     get_not_empty,
+    get_size,
     make_output_name,
     base_join,
     ServerContext,
@@ -577,8 +578,8 @@ def chain():
 
         stage = StageParams(
             stage_data.get('name', callback.__name__),
-            tile_size=int(kwargs.get('tile_size', SizeChart.auto)),
-            outscale=int(kwargs.get('outscale', 1)),
+            tile_size=get_size(kwargs.get('tile_size')),
+            outscale=get_and_clamp_int(kwargs,'outscale', 1, 4),
         )
 
         # TODO: create Border from border
