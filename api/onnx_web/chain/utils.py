@@ -51,7 +51,10 @@ def process_tile_spiral(
 
     width, height = source.size
     image = Image.new('RGB', (width * scale, height * scale))
-    image.paste(source, (0, 0))
+    image.paste(source, (0, 0, width, height))
+
+    center_x = (width / 2) - (tile / 2)
+    center_y = (height / 2) - (tile / 2)
 
     # TODO: only valid for overlap = 0.5
     if overlap == 0.5:
@@ -69,6 +72,9 @@ def process_tile_spiral(
     # tile tuples is source, multiply by scale for dest
     counter = 0
     for left, top in tiles:
+        left = center_x + int(left)
+        top = center_y + int(top)
+
         logger.info('processing tile %s of %s', counter, len(tiles))
         counter += 1
 
