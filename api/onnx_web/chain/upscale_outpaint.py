@@ -7,6 +7,7 @@ from typing import Callable, Tuple
 
 from ..diffusion.load import (
     get_latents_from_seed,
+    get_tile_latents,
     load_pipeline,
 )
 from ..image import (
@@ -56,7 +57,7 @@ def upscale_outpaint(
         # if no mask was provided, keep the full source image
         mask_image = Image.new('RGB', source_image.size, 'black')
 
-    source_image, mask_image, noise_image, _full_dims = expand_image(
+    source_image, mask_image, noise_image, full_dims = expand_image(
         source_image,
         mask_image,
         border,
@@ -65,6 +66,8 @@ def upscale_outpaint(
         mask_filter=mask_filter)
 
     draw_mask = ImageDraw.Draw(mask_image)
+    full_size = Size(*full_dims)
+    full_latents = get_latents_from_seed(params.seed, full_size)
 
     if is_debug():
         source_image.save(base_join(ctx.output_path, 'last-source.png'))
@@ -85,7 +88,8 @@ def upscale_outpaint(
         pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                              model, params.provider, params.scheduler)
 
-        latents = get_latents_from_seed(params.seed, size)
+        # TODO: take a subset of the full latents
+        latents = get_tile_latents(full_latents, dims, tile)
         rng = np.random.RandomState(params.seed)
 
         result = pipe(

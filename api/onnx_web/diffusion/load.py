@@ -2,7 +2,7 @@ from diffusers import (
     DiffusionPipeline,
 )
 from logging import getLogger
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
 from ..params import (
     Size,
@@ -29,6 +29,18 @@ def get_latents_from_seed(seed: int, size: Size) -> np.ndarray:
     rng = np.random.default_rng(seed)
     image_latents = rng.standard_normal(latents_shape).astype(np.float32)
     return image_latents
+
+
+def get_tile_latents(full_latents: np.ndarray, dims: Tuple[int, int, int]) -> np.ndarray:
+    x, y, tile = dims
+    x = x // 8
+    y = y // 8
+
+    t = tile // 8
+    xt = x + t
+    yt = y + t
+
+    return full_latents[:,:,x:xt,y:yt]
 
 
 def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, scheduler: Any, device: Optional[str] = None):
