@@ -76,7 +76,7 @@ def process_tile_spiral(
         top = center_y + int(top)
 
         counter += 1
-        logger.info('processing tile %s of %s', counter, len(tiles))
+        logger.info('processing tile %s of %s, %sx%s', counter, len(tiles), left, top)
 
         # TODO: only valid for scale == 1, resize source for others
         tile_image = image.crop((left, top, left + tile, top + tile))
