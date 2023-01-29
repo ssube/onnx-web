@@ -88,8 +88,7 @@ def upscale_outpaint(
         pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
                              model, params.provider, params.scheduler)
 
-        # TODO: take a subset of the full latents
-        latents = get_tile_latents(full_latents, dims, tile)
+        latents = get_tile_latents(full_latents, dims)
         rng = np.random.RandomState(params.seed)
 
         result = pipe(

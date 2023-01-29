@@ -7,7 +7,7 @@ from logging import getLogger
 from os import path
 from PIL import Image
 
-from ..onnx import (
+from ..diffusion.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
 from ..params import (
