@@ -42,12 +42,14 @@ def upscale_outpaint(
     source_image: Image.Image,
     *,
     expand: Border,
+    prompt: str = None,
     mask_image: Image.Image = None,
     fill_color: str = 'white',
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
     **kwargs,
 ) -> Image.Image:
+    prompt = prompt or params.prompt
     logger.info('upscaling image by expanding borders: %s', expand)
 
     if mask_image is None:
@@ -85,7 +87,7 @@ def upscale_outpaint(
         rng = np.random.RandomState(params.seed)
 
         result = pipe(
-            params.prompt,
+            prompt,
             generator=rng,
             guidance_scale=params.cfg,
             height=size.height,
