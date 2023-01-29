@@ -6,6 +6,7 @@ from diffusers import (
     OnnxRuntimeModel,
     OnnxStableDiffusionPipeline,
     StableDiffusionPipeline,
+    StableDiffusionUpscalePipeline,
 )
 from logging import getLogger
 from onnx import load, save_model
@@ -202,7 +203,7 @@ def onnx_export(
 
 
 @torch.no_grad()
-def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str):
+def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str, single_vae: bool = False):
     '''
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
     '''
@@ -211,6 +212,9 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str):
 
     # diffusers go into a directory rather than .onnx file
     logger.info('converting Diffusers model: %s -> %s/', name, dest_path)
+
+    if single_vae:
+        logger.info('converting model with single VAE')
 
     if path.isdir(dest_path):
         logger.info('ONNX model already exists, skipping.')
@@ -295,50 +299,75 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str):
     )
     del pipeline.unet
 
-    # VAE ENCODER
-    vae_encoder = pipeline.vae
-    vae_in_channels = vae_encoder.config.in_channels
-    vae_sample_size = vae_encoder.config.sample_size
-    # need to get the raw tensor output (sample) from the encoder
-    vae_encoder.forward = lambda sample, return_dict: vae_encoder.encode(
-        sample, return_dict)[0].sample()
-    onnx_export(
-        vae_encoder,
-        model_args=(
-            torch.randn(1, vae_in_channels, vae_sample_size, vae_sample_size).to(
-                device=training_device, dtype=dtype),
-            False,
-        ),
-        output_path=output_path / "vae_encoder" / "model.onnx",
-        ordered_input_names=["sample", "return_dict"],
-        output_names=["latent_sample"],
-        dynamic_axes={
-            "sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
-        },
-        opset=opset,
-    )
+    if single_vae:
+        # SINGLE VAE
+        vae_only = pipeline.vae
+        vae_in_channels = vae_only.config.in_channels
+        vae_sample_size = vae_only.config.sample_size
+        # need to get the raw tensor output (sample) from the encoder
+        vae_only.forward = lambda sample, return_dict: vae_only.encode(
+            sample, return_dict)[0].sample()
+        onnx_export(
+            vae_only,
+            model_args=(
+                torch.randn(1, vae_in_channels, vae_sample_size, vae_sample_size).to(
+                    device=training_device, dtype=dtype),
+                False,
+            ),
+            output_path=output_path / "vae" / "model.onnx",
+            ordered_input_names=["sample", "return_dict"],
+            output_names=["latent_sample"],
+            dynamic_axes={
+                "sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
+            },
+            opset=opset,
+        )
+    else:
+        # VAE ENCODER
+        vae_encoder = pipeline.vae
+        vae_in_channels = vae_encoder.config.in_channels
+        vae_sample_size = vae_encoder.config.sample_size
+        # need to get the raw tensor output (sample) from the encoder
+        vae_encoder.forward = lambda sample, return_dict: vae_encoder.encode(
+            sample, return_dict)[0].sample()
+        onnx_export(
+            vae_encoder,
+            model_args=(
+                torch.randn(1, vae_in_channels, vae_sample_size, vae_sample_size).to(
+                    device=training_device, dtype=dtype),
+                False,
+            ),
+            output_path=output_path / "vae_encoder" / "model.onnx",
+            ordered_input_names=["sample", "return_dict"],
+            output_names=["latent_sample"],
+            dynamic_axes={
+                "sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
+            },
+            opset=opset,
+        )
 
-    # VAE DECODER
-    vae_decoder = pipeline.vae
-    vae_latent_channels = vae_decoder.config.latent_channels
-    vae_out_channels = vae_decoder.config.out_channels
-    # forward only through the decoder part
-    vae_decoder.forward = vae_encoder.decode
-    onnx_export(
-        vae_decoder,
-        model_args=(
-            torch.randn(1, vae_latent_channels, unet_sample_size, unet_sample_size).to(
-                device=training_device, dtype=dtype),
-            False,
-        ),
-        output_path=output_path / "vae_decoder" / "model.onnx",
-        ordered_input_names=["latent_sample", "return_dict"],
-        output_names=["sample"],
-        dynamic_axes={
-            "latent_sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
-        },
-        opset=opset,
-    )
+        # VAE DECODER
+        vae_decoder = pipeline.vae
+        vae_latent_channels = vae_decoder.config.latent_channels
+        vae_out_channels = vae_decoder.config.out_channels
+        # forward only through the decoder part
+        vae_decoder.forward = vae_encoder.decode
+        onnx_export(
+            vae_decoder,
+            model_args=(
+                torch.randn(1, vae_latent_channels, unet_sample_size, unet_sample_size).to(
+                    device=training_device, dtype=dtype),
+                False,
+            ),
+            output_path=output_path / "vae_decoder" / "model.onnx",
+            ordered_input_names=["latent_sample", "return_dict"],
+            output_names=["sample"],
+            dynamic_axes={
+                "latent_sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
+            },
+            opset=opset,
+        )
+
     del pipeline.vae
 
     # SAFETY CHECKER
@@ -376,20 +405,32 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str):
         safety_checker = None
         feature_extractor = None
 
-    onnx_pipeline = OnnxStableDiffusionPipeline(
-        vae_encoder=OnnxRuntimeModel.from_pretrained(
-            output_path / "vae_encoder"),
-        vae_decoder=OnnxRuntimeModel.from_pretrained(
-            output_path / "vae_decoder"),
-        text_encoder=OnnxRuntimeModel.from_pretrained(
-            output_path / "text_encoder"),
-        tokenizer=pipeline.tokenizer,
-        unet=OnnxRuntimeModel.from_pretrained(output_path / "unet"),
-        scheduler=pipeline.scheduler,
-        safety_checker=safety_checker,
-        feature_extractor=feature_extractor,
-        requires_safety_checker=safety_checker is not None,
-    )
+    if single_vae:
+        onnx_pipeline = StableDiffusionUpscalePipeline(
+            vae=OnnxRuntimeModel.from_pretrained(
+                output_path / "vae"),
+            text_encoder=OnnxRuntimeModel.from_pretrained(
+                output_path / "text_encoder"),
+            tokenizer=pipeline.tokenizer,
+            low_res_scheduler=pipeline.scheduler,
+            unet=OnnxRuntimeModel.from_pretrained(output_path / "unet"),
+            scheduler=pipeline.scheduler,
+        )
+    else:
+        onnx_pipeline = OnnxStableDiffusionPipeline(
+            vae_encoder=OnnxRuntimeModel.from_pretrained(
+                output_path / "vae_encoder"),
+            vae_decoder=OnnxRuntimeModel.from_pretrained(
+                output_path / "vae_decoder"),
+            text_encoder=OnnxRuntimeModel.from_pretrained(
+                output_path / "text_encoder"),
+            tokenizer=pipeline.tokenizer,
+            unet=OnnxRuntimeModel.from_pretrained(output_path / "unet"),
+            scheduler=pipeline.scheduler,
+            safety_checker=safety_checker,
+            feature_extractor=feature_extractor,
+            requires_safety_checker=safety_checker is not None,
+        )
 
     logger.info('exporting ONNX model')
 
@@ -398,8 +439,15 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str):
 
     del pipeline
     del onnx_pipeline
-    _ = OnnxStableDiffusionPipeline.from_pretrained(
-        output_path, provider="CPUExecutionProvider")
+
+    if single_vae:
+        _ = StableDiffusionUpscalePipeline.from_pretrained(
+            output_path, provider="CPUExecutionProvider"
+        )
+    else:
+        _ = OnnxStableDiffusionPipeline.from_pretrained(
+            output_path, provider="CPUExecutionProvider")
+
     logger.info("ONNX pipeline is loadable")
 
 
@@ -409,7 +457,8 @@ def load_models(args, models: Models):
             if source[0] in args.skip:
                 logger.info('Skipping model: %s', source[0])
             else:
-                convert_diffuser(*source, args.opset, args.half, args.token)
+                single_vae = 'upscaling' in source[0]
+                convert_diffuser(*source, args.opset, args.half, args.token, single_vae=single_vae)
 
     if args.upscaling:
         for source in models.get('upscaling'):

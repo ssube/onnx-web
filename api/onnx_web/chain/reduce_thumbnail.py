@@ -3,26 +3,26 @@ from PIL import Image
 
 from ..params import (
     ImageParams,
+    Size,
     StageParams,
 )
 from ..utils import (
-    base_join,
     ServerContext,
 )
 
 logger = getLogger(__name__)
 
 
-def persist_disk(
+def reduce_thumbnail(
     ctx: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
     source_image: Image.Image,
     *,
-    output: str,
+    size: Size,
     **kwargs,
 ) -> Image.Image:
-    dest = base_join(ctx.output_path, output)
-    source_image.save(dest)
-    logger.info('saved image to %s', dest)
-    return source_image
+    image = source_image.thumbnail((size.width, size.height))
+    logger.info('created thumbnail with dimensions: %sx%s',
+                image.width, image.height)
+    return image

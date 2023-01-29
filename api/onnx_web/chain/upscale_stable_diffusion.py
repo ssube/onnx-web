@@ -1,6 +1,4 @@
 from diffusers import (
-    AutoencoderKL,
-    DDPMScheduler,
     StableDiffusionUpscalePipeline,
 )
 from logging import getLogger
@@ -40,19 +38,9 @@ def load_stable_diffusion(ctx: ServerContext, upscale: UpscaleParams):
         return last_pipeline_instance
 
     if upscale.format == 'onnx':
-        # ValueError: Pipeline <class 'onnx_web.onnx.pipeline_onnx_stable_diffusion_upscale.OnnxStableDiffusionUpscalePipeline'>
-        # expected {'vae', 'unet', 'text_encoder', 'tokenizer', 'scheduler', 'low_res_scheduler'},
-        # but only {'scheduler', 'tokenizer', 'text_encoder', 'unet'} were passed.
-        pipeline = OnnxStableDiffusionUpscalePipeline.from_pretrained(
-            model_path,
-            vae=AutoencoderKL.from_pretrained(
-                model_path, subfolder='vae_encoder'),
-            low_res_scheduler=DDPMScheduler.from_pretrained(
-                model_path, subfolder='scheduler'),
-        )
+        pipeline = OnnxStableDiffusionUpscalePipeline.from_pretrained(model_path)
     else:
-        pipeline = StableDiffusionUpscalePipeline.from_pretrained(
-            'stabilityai/stable-diffusion-x4-upscaler')
+        pipeline = StableDiffusionUpscalePipeline.from_pretrained(model_path)
 
     last_pipeline_instance = pipeline
     last_pipeline_params = cache_params

@@ -19,6 +19,15 @@ from .persist_disk import (
 from .persist_s3 import (
   persist_s3,
 )
+from .reduce_crop import (
+  reduce_crop,
+)
+from .reduce_thumbnail import (
+  reduce_thumbnail,
+)
+from .source_noise import (
+  source_noise,
+)
 from .source_txt2img import (
   source_txt2img,
 )

@@ -70,11 +70,11 @@ class ChainPipeline:
             kwargs = stage_kwargs or {}
             kwargs = {**pipeline_kwargs, **kwargs}
 
-            logger.info('running stage %s on result image with dimensions %sx%s, %s',
+            logger.info('running stage %s on image with dimensions %sx%s, %s',
                         name, image.width, image.height, kwargs.keys())
 
             if image.width > stage_params.tile_size or image.height > stage_params.tile_size:
-                logger.info('source image larger than tile size of %s, tiling stage',
+                logger.info('image larger than tile size of %s, tiling stage',
                             stage_params.tile_size)
 
                 def stage_tile(tile: Image.Image, _dims) -> Image.Image:
@@ -89,7 +89,7 @@ class ChainPipeline:
                 image = process_tile_grid(
                     image, stage_params.tile_size, stage_params.outscale, [stage_tile])
             else:
-                logger.info('source image within tile size, running stage')
+                logger.info('image within tile size, running stage')
                 image = stage_pipe(ctx, stage_params, params, image,
                                    **kwargs)
 
