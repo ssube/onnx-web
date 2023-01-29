@@ -26,6 +26,7 @@ def persist_s3(
     bucket: str,
     endpoint_url: str = None,
     profile_name: str = None,
+    **kwargs,
 ) -> Image.Image:
     session = Session(profile_name=profile_name)
     s3 = session.client('s3', endpoint_url=endpoint_url)

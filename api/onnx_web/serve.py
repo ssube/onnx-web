@@ -18,6 +18,7 @@ from flask_cors import CORS
 from flask_executor import Executor
 from glob import glob
 from io import BytesIO
+from jsonschema import validate
 from logging import getLogger
 from PIL import Image
 from onnxruntime import get_available_providers
@@ -26,10 +27,12 @@ from typing import Tuple
 
 
 from .chain import (
+    blend_img2img,
+    blend_inpaint,
     correct_gfpgan,
-    source_txt2img,
     persist_disk,
     persist_s3,
+    source_txt2img,
     upscale_outpaint,
     upscale_resrgan,
     upscale_stable_diffusion,
@@ -120,10 +123,15 @@ mask_filters = {
     'gaussian-screen': mask_filter_gaussian_screen,
 }
 chain_stages = {
-    'correction-gfpgan': correct_gfpgan,
-    'upscaling-outpaint': upscale_outpaint,
-    'upscaling-resrgan': upscale_resrgan,
-    'upscaling-stable-diffusion': upscale_stable_diffusion,
+    'blend-img2img': blend_img2img,
+    'blend-inpaint': blend_inpaint,
+    'correct-gfpgan': correct_gfpgan,
+    'persist-disk': persist_disk,
+    'persist-s3': persist_s3,
+    'source-txt2img': source_txt2img,
+    'upscale-outpaint': upscale_outpaint,
+    'upscale-resrgan': upscale_resrgan,
+    'upscale-stable-diffusion': upscale_stable_diffusion,
 }
 
 # Available ORT providers
@@ -547,37 +555,38 @@ def upscale():
 
 @app.route('/api/chain', methods=['POST'])
 def chain():
+    data = request.json
+
+    with open('./schema.yaml', 'r') as f:
+        schema = yaml.safe_load(f.read())
+
+    logger.info('validating chain request: %s against %s', data, schema)
+    validate(data, schema)
+
+    # get defaults from the regular parameters
     params, size = pipeline_from_request()
     output = make_output_name('chain', params, size)
 
-    # parse body as json, list of stages
-    example = ChainPipeline(stages=[
-        (source_txt2img, StageParams(), {
-            'size': size,
-        }),
-        (upscale_outpaint, StageParams(), {
-            'expand': Border.even(SizeChart.half),
-        }),
-        (persist_disk, StageParams(tile_size=SizeChart.hd8k), {
-            'output': output,
-        }),
-        (upscale_stable_diffusion, StageParams(tile_size=SizeChart.mini,outscale=4), {
-            'upscale': UpscaleParams('stable-diffusion-x4-upscaler', params.provider, scale=4, outscale=4)
-        }),
-        (persist_disk, StageParams(tile_size=SizeChart.hd8k), {
-            'output': output,
-        }),
-        (persist_s3, StageParams(tile_size=SizeChart.hd8k), {
-            'bucket': 'storage-stable-diffusion',
-            'endpoint_url': 'http://scylla.home.holdmyran.ch:8000',
-            'output': output,
-            'profile_name': 'ceph',
-        }),
-    ])
+    pipeline = ChainPipeline()
+    for stage_data in data.get('stages', []):
+        logger.info('request stage: %s', stage_data)
+
+        callback = chain_stages[stage_data.get('type')]
+        kwargs = stage_data.get('params', {})
+
+        stage = StageParams(
+            stage_data.get('name', callback.__name__),
+            tile_size=int(kwargs.get('tile_size', SizeChart.auto)),
+            outscale=int(kwargs.get('outscale', 1)),
+        )
+        # TODO: create Border from border
+        # TODO: create Upscale from upscale
+        pipeline.append((callback, stage, kwargs))
 
     # build and run chain pipeline
-    executor.submit_stored(output, example, context,
-                           params, Image.new('RGB', (1, 1)))
+    fake_source = Image.new('RGB', (1, 1))
+    executor.submit_stored(output, pipeline, context,
+                           params, fake_source, output=output, size=size)
 
     return jsonify({
         'output': output,

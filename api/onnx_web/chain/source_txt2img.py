@@ -29,8 +29,11 @@ def source_txt2img(
     source_image: Image.Image,
     *,
     size: Size,
+    prompt: str = None,
+    **kwargs,
 ) -> Image.Image:
-    logger.info('generating image using txt2img, %s steps', params.steps)
+    prompt = prompt or params.prompt
+    logger.info('generating image using txt2img, %s steps: %s', params.steps, prompt)
 
     if source_image is not None:
         logger.warn('a source image was passed to a txt2img stage, but will be discarded')
@@ -42,7 +45,7 @@ def source_txt2img(
     rng = np.random.RandomState(params.seed)
 
     result = pipe(
-        params.prompt,
+        prompt,
         height=size.height,
         width=size.width,
         generator=rng,

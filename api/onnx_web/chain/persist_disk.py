@@ -21,6 +21,7 @@ def persist_disk(
     source_image: Image.Image,
     *,
     output: str,
+    **kwargs,
 ) -> Image.Image:
     dest = base_join(ctx.output_path, output)
     source_image.save(dest)

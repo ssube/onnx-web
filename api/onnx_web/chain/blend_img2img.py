@@ -27,16 +27,19 @@ def blend_img2img(
     source_image: Image.Image,
     *,
     strength: float,
+    prompt: str = None,
+    **kwargs,
 ) -> Image.Image:
     logger.info('generating image using img2img', params.prompt)
 
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
                             params.model, params.provider, params.scheduler)
 
+    prompt = prompt or params.prompt
     rng = np.random.RandomState(params.seed)
 
     result = pipe(
-        params.prompt,
+        prompt,
         generator=rng,
         guidance_scale=params.cfg,
         image=source_image,

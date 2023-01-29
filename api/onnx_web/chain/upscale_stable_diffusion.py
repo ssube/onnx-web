@@ -67,6 +67,7 @@ def upscale_stable_diffusion(
     source: Image.Image,
     *,
     upscale: UpscaleParams,
+    **kwargs,
 ) -> Image.Image:
     logger.info('upscaling with Stable Diffusion')
 

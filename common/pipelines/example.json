@@ -1,0 +1,43 @@
+{
+  "stages": [
+    {
+      "name": "start",
+      "type": "source-txt2img",
+      "params": {
+        "prompt": "a magical wizard"
+      }
+    },
+    {
+      "name": "refine",
+      "type": "blend-img2img",
+      "params": {
+        "prompt": "a magical wizard in a robe fighting a dragon"
+      }
+    },
+    {
+      "name": "upscale",
+      "type": "upscale-stable-diffusion",
+      "params": {
+        "model": "stable-diffusion-x4-upscaler",
+        "prompt": "a magical wizard in a robe fighting a dragon",
+        "scale": 4,
+        "outscale": 4,
+        "tile_size": 128
+      }
+    },
+    {
+      "name": "save-local",
+      "type": "persist-disk",
+      "params": {}
+    },
+    {
+      "name": "save-ceph",
+      "type": "persist-s3",
+      "params": {
+        "bucket": "storage-stable-diffusion",
+        "endpoint_url": "http://scylla.home.holdmyran.ch:8000",
+        "profile_name": "ceph"
+      }
+    }
+  ]
+}

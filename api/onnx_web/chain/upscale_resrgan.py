@@ -77,6 +77,7 @@ def upscale_resrgan(
     source_image: Image.Image,
     *,
     upscale: UpscaleParams,
+    **kwargs,
 ) -> Image.Image:
     logger.info('upscaling image with Real ESRGAN', upscale.scale)
 

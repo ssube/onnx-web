@@ -60,6 +60,7 @@ def correct_gfpgan(
     *,
     upscale: UpscaleParams,
     upsampler: Optional[RealESRGANer] = None,
+    **kwargs,
 ) -> Image.Image:
     if upscale.correction_model is None:
         logger.warn('no face model given, skipping')
