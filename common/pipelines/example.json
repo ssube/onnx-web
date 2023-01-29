@@ -11,7 +11,8 @@
       "name": "refine",
       "type": "blend-img2img",
       "params": {
-        "prompt": "a magical wizard in a robe fighting a dragon"
+        "prompt": "a magical wizard in a robe fighting a dragon",
+        "strength": 0.5
       }
     },
     {

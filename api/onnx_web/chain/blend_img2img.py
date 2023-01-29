@@ -49,6 +49,6 @@ def blend_img2img(
     )
     output = result.images[0]
 
-    logger.info('final output image size', output.size)
+    logger.info('final output image size: %sx%s', output.width, output.height)
     return output
 

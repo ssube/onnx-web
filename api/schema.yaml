@@ -39,22 +39,17 @@ $defs:
       type:
         type: string
       params:
-        type: object
-        properties:
-          args:
-            type: object
-            additionalProperties: False
-            patternProperties:
-              "^[-_A-Za-z]+$":
-                oneOf:
-                  - type: number
-                  - type: string
-          border:
-            $ref: "#/$defs/border_params"
-          image:
-            $ref: "#/$defs/image_params"
-          upscale:
-            $ref: "#/$defs/upscale_params"
+        allOf:
+        - $ref: "#/$defs/border_params"
+        - $ref: "#/$defs/image_params"
+        - $ref: "#/$defs/upscale_params"
+        - type: object
+          additionalProperties: False
+          patternProperties:
+            "^[-_A-Za-z]+$":
+              oneOf:
+                - type: number
+                - type: string
 
   request_chain:
     type: array

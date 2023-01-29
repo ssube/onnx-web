@@ -573,14 +573,24 @@ def chain():
 
         callback = chain_stages[stage_data.get('type')]
         kwargs = stage_data.get('params', {})
+        print('stage', callback.__name__, kwargs)
 
         stage = StageParams(
             stage_data.get('name', callback.__name__),
             tile_size=int(kwargs.get('tile_size', SizeChart.auto)),
             outscale=int(kwargs.get('outscale', 1)),
         )
+
         # TODO: create Border from border
+        if 'border' in kwargs:
+            border = Border.even(int(kwargs.get('border')))
+            kwargs['border'] = border
+
         # TODO: create Upscale from upscale
+        if 'upscale' in kwargs:
+            upscale = UpscaleParams(params.model, params.provider)
+            kwargs['upscale'] = upscale
+
         pipeline.append((callback, stage, kwargs))
 
     # build and run chain pipeline
