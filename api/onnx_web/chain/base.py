@@ -48,7 +48,7 @@ class ChainPipeline:
         '''
         Create a new pipeline that will run the given stages.
         '''
-        self.stages = stages
+        self.stages = list(stages)
 
     def append(self, stage: PipelineStage):
         '''
