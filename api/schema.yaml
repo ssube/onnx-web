@@ -16,14 +16,12 @@ $defs:
 
   image_params:
     type: object
-    required: [prompt]
     properties:
       prompt:
         type: string
 
   upscale_params:
     type: object
-    required: [outscale, scale]
     properties:
       outscale:
         type: number

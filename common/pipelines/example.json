@@ -19,7 +19,7 @@
       "name": "upscale",
       "type": "upscale-stable-diffusion",
       "params": {
-        "model": "stable-diffusion-x4-upscaler",
+        "upscale": "stable-diffusion-x4-upscaler",
         "prompt": "a magical wizard in a robe fighting a dragon",
         "scale": 4,
         "outscale": 4,

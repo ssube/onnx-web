@@ -30,7 +30,7 @@ def blend_img2img(
     prompt: str = None,
     **kwargs,
 ) -> Image.Image:
-    logger.info('generating image using img2img', params.prompt)
+    logger.info('generating image using img2img, %s steps: %s', params.steps, params.prompt)
 
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
                             params.model, params.provider, params.scheduler)

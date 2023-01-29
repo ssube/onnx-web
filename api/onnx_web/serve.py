@@ -588,7 +588,7 @@ def chain():
 
         # TODO: create Upscale from upscale
         if 'upscale' in kwargs:
-            upscale = UpscaleParams(params.model, params.provider)
+            upscale = UpscaleParams(kwargs.get('upscale'), params.provider)
             kwargs['upscale'] = upscale
 
         pipeline.append((callback, stage, kwargs))
