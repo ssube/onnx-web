@@ -7,6 +7,9 @@ from logging import getLogger
 from PIL import Image, ImageChops
 from typing import Any
 
+from ..chain import (
+    upscale_outpaint,
+)
 from ..image import (
     expand_image,
 )
@@ -109,7 +112,7 @@ def run_inpaint_pipeline(
     ctx: ServerContext,
     stage: StageParams,
     params: ImageParams,
-    size: Size,
+    _size: Size,
     output: str,
     upscale: UpscaleParams,
     source_image: Image.Image,
@@ -120,39 +123,18 @@ def run_inpaint_pipeline(
     strength: float,
     fill_color: str,
 ) -> None:
-    pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
-                         params.model, params.provider, params.scheduler)
-
-    latents = get_latents_from_seed(params.seed, size)
-    rng = np.random.RandomState(params.seed)
-
-    logger.info('applying mask filter and generating noise source')
-    source_image, mask_image, noise_image, _full_dims = expand_image(
+    image = upscale_outpaint(
+        ctx,
+        stage,
+        params,
         source_image,
-        mask_image,
-        expand,
-        fill=fill_color,
-        noise_source=noise_source,
-        mask_filter=mask_filter)
-
-    if is_debug():
-        source_image.save(base_join(ctx.output_path, 'last-source.png'))
-        mask_image.save(base_join(ctx.output_path, 'last-mask.png'))
-        noise_image.save(base_join(ctx.output_path, 'last-noise.png'))
-
-    result = pipe(
-        params.prompt,
-        generator=rng,
-        guidance_scale=params.cfg,
-        height=size.height,
-        image=source_image,
-        latents=latents,
+        border=expand,
         mask_image=mask_image,
-        negative_prompt=params.negative_prompt,
-        num_inference_steps=params.steps,
-        width=size.width,
+        fill_color=fill_color,
+        mask_filter=mask_filter,
+        noise_source=noise_source,
     )
-    image = result.images[0]
+    logger.info('applying mask filter and generating noise source')
 
     if image.size == source_image.size:
         image = ImageChops.blend(source_image, image, strength)
