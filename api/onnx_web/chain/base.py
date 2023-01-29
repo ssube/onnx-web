@@ -96,6 +96,9 @@ class ChainPipeline:
             logger.info('finished stage %s, result size: %sx%s',
                         name, image.width, image.height)
 
+            if is_debug():
+                image.save(path.join(ctx.output_path, 'last-stage.png'))
+
         end = monotonic()
         duration = timedelta(seconds=(end - start))
         logger.info('finished pipeline in %s, result size: %sx%s',
