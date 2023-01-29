@@ -5,9 +5,11 @@ from .chain import (
   upscale_resrgan,
   upscale_stable_diffusion,
 )
-from .diffusion import (
+from .diffusion.load import (
   get_latents_from_seed,
   load_pipeline,
+)
+from .diffusion.run import (
   run_img2img_pipeline,
   run_inpaint_pipeline,
   run_txt2img_pipeline,

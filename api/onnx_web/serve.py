@@ -35,7 +35,7 @@ from .chain import (
     upscale_stable_diffusion,
     ChainPipeline,
 )
-from .diffusion import (
+from .diffusion.run import (
     run_img2img_pipeline,
     run_inpaint_pipeline,
     run_txt2img_pipeline,

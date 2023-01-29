@@ -4,7 +4,7 @@ from diffusers import (
 from logging import getLogger
 from PIL import Image
 
-from ..diffusion import (
+from ..diffusion.load import (
     get_latents_from_seed,
     load_pipeline,
 )

@@ -1,10 +1,13 @@
 from basicsr.utils import img2tensor, tensor2img
 from basicsr.utils.download_util import load_file_from_url
 from facexlib.utils.face_restoration_helper import FaceRestoreHelper
+from logging import getLogger
 from PIL import Image
 from torchvision.transforms.functional import normalize
 
 import torch
+
+logger = getLogger(__name__)
 
 pretrain_model_url = {
     'restoration': 'https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth',
@@ -41,7 +44,7 @@ def correct_codeformer(image: Image.Image) -> Image.Image:
     # get face landmarks for each face
     num_det_faces = face_helper.get_face_landmarks_5(
         only_center_face=args.only_center_face, resize=640, eye_dist_threshold=5)
-    print(f'\tdetect {num_det_faces} faces')
+    logger.info('detect %s faces', num_det_faces)
     # align and warp each face
     face_helper.align_warp_face()
 
@@ -59,7 +62,7 @@ def correct_codeformer(image: Image.Image) -> Image.Image:
             del output
             torch.cuda.empty_cache()
         except Exception as error:
-            print(f'\tFailed inference for CodeFormer: {error}')
+            logger.error('Failed inference for CodeFormer: %s', error)
             restored_face = tensor2img(cropped_face_t, rgb2bgr=True, min_max=(-1, 1))
 
         restored_face = restored_face.astype('uint8')

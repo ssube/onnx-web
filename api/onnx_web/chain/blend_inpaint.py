@@ -5,7 +5,7 @@ from logging import getLogger
 from PIL import Image
 from typing import Callable, Tuple
 
-from ..diffusion import (
+from ..diffusion.load import (
     get_latents_from_seed,
     load_pipeline,
 )
