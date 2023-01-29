@@ -97,14 +97,15 @@ def get_size(val: Union[int, str, None]) -> SizeChart:
     if val is None:
         return SizeChart.auto
 
-    if type(val) is str:
-        if val in SizeChart:
-            return SizeChart[val]
-        else:
-            return int(val)
-
     if type(val) is int:
         return val
+
+    if type(val) is str:
+        for size in SizeChart:
+            if val == size.name:
+                return size
+
+        return int(val)
 
     raise Exception('invalid size')
 

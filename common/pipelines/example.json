@@ -30,7 +30,7 @@
       "name": "save-local",
       "type": "persist-disk",
       "params": {
-        "tile_size": "8k"
+        "tile_size": "hd8k"
       }
     },
     {
@@ -40,7 +40,7 @@
         "bucket": "storage-stable-diffusion",
         "endpoint_url": "http://scylla.home.holdmyran.ch:8000",
         "profile_name": "ceph",
-        "tile_size": "8k"
+        "tile_size": "hd8k"
       }
     }
   ]

@@ -27,7 +27,7 @@ from ..utils import (
     ServerContext,
 )
 from .utils import (
-    process_tiles,
+    process_tile_grid,
 )
 
 import numpy as np
@@ -98,7 +98,7 @@ def blend_inpaint(
         )
         return result.images[0]
 
-    output = process_tiles(source_image, SizeChart.auto, 1, [outpaint])
+    output = process_tile_grid(source_image, SizeChart.auto, 1, [outpaint])
 
     logger.info('final output image size', output.size)
     return output

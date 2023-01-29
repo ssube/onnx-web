@@ -10,7 +10,7 @@ class TileCallback(Protocol):
         pass
 
 
-def process_tiles(
+def process_tile_grid(
     source: Image.Image,
     tile: int,
     scale: int,
@@ -35,5 +35,49 @@ def process_tiles(
                 tile_image = filter(tile_image, (left, top, tile))
 
             image.paste(tile_image, (left * scale, top * scale))
+
+    return image
+
+
+def process_tile_spiral(
+    source: Image.Image,
+    tile: int,
+    scale: int,
+    filters: List[TileCallback],
+    overlap: float = 0.5,
+) -> Image.Image:
+    if scale != 1:
+        raise Exception('unsupported scale')
+
+    width, height = source.size
+    image = Image.new('RGB', (width * scale, height * scale))
+    image.paste(source, (0, 0))
+
+    # TODO: only valid for overlap = 0.5
+    if overlap == 0.5:
+        tiles = [
+            (0, tile * -overlap),
+            (tile * overlap, tile * -overlap),
+            (tile * overlap, 0),
+            (tile * overlap, tile * overlap),
+            (0, tile * overlap),
+            (tile * -overlap, tile * -overlap),
+            (tile * -overlap, 0),
+            (tile * -overlap, tile * overlap),
+        ]
+
+    # tile tuples is source, multiply by scale for dest
+    counter = 0
+    for left, top in tiles:
+        logger.info('processing tile %s of %s', counter, len(tiles))
+        counter += 1
+
+        # TODO: only valid for scale == 1, resize source for others
+        tile_image = image.crop((left, top, left + tile, top + tile))
+
+        for filter in filters:
+            tile_image = filter(tile_image, (left, top, tile))
+
+        image.paste(tile_image, (left * scale, top * scale))
 
     return image

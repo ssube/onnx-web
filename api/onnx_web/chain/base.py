@@ -14,7 +14,7 @@ from ..utils import (
     ServerContext,
 )
 from .utils import (
-    process_tiles,
+    process_tile_grid,
 )
 
 logger = getLogger(__name__)
@@ -86,7 +86,7 @@ class ChainPipeline:
 
                     return tile
 
-                image = process_tiles(
+                image = process_tile_grid(
                     image, stage_params.tile_size, stage_params.outscale, [stage_tile])
             else:
                 logger.info('source image within tile size, running stage')
