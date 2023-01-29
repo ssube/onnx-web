@@ -17,6 +17,7 @@ from ..utils import (
     ServerContext,
 )
 
+import numpy as np
 import torch
 
 logger = getLogger(__name__)
@@ -62,12 +63,15 @@ def upscale_stable_diffusion(
     logger.info('upscaling with Stable Diffusion, %s steps: %s', params.steps, prompt)
 
     pipeline = load_stable_diffusion(ctx, upscale)
-    generator = torch.manual_seed(params.seed)
-    seed = generator.initial_seed()
+
+    if upscale.format == 'onnx':
+        generator = np.random.default_rng(params.seed)
+    else:
+        generator = torch.manual_seed(params.seed)
 
     return pipeline(
         params.prompt,
         source,
-        generator=torch.manual_seed(seed),
+        generator=generator,
         num_inference_steps=params.steps,
     ).images[0]
