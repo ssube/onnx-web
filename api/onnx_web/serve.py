@@ -575,11 +575,9 @@ def chain():
 
     pipeline = ChainPipeline()
     for stage_data in data.get('stages', []):
-        logger.info('request stage: %s', stage_data)
-
         callback = chain_stages[stage_data.get('type')]
         kwargs = stage_data.get('params', {})
-        print('stage', callback.__name__, kwargs)
+        logger.info('request stage: %s, %s', callback.__name__, kwargs)
 
         stage = StageParams(
             stage_data.get('name', callback.__name__),
@@ -587,12 +585,10 @@ def chain():
             outscale=get_and_clamp_int(kwargs,'outscale', 1, 4),
         )
 
-        # TODO: create Border from border
         if 'border' in kwargs:
             border = Border.even(int(kwargs.get('border')))
             kwargs['border'] = border
 
-        # TODO: create Upscale from upscale
         if 'upscale' in kwargs:
             upscale = UpscaleParams(kwargs.get('upscale'), params.provider)
             kwargs['upscale'] = upscale

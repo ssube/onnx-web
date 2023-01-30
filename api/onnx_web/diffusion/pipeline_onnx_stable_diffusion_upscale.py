@@ -21,6 +21,8 @@ import torch
 
 logger = getLogger(__name__)
 
+num_channels_latents = 4 # self.vae.config.latent_channels
+unet_in_channels = 7 # self.unet.config.in_channels
 
 def preprocess(image):
     if isinstance(image, torch.Tensor):
@@ -68,7 +70,8 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         negative_prompt: Optional[Union[str, List[str]]] = None,
         num_images_per_prompt: Optional[int] = 1,
         eta: float = 0.0,
-        generator: Optional[Union[np.random.Generator, List[np.random.Generator]]] = None,
+        generator: Optional[Union[torch.Generator, List[torch.Generator]]] = None,
+        # generator: Optional[Union[np.random.Generator, List[np.random.Generator]]] = None,
         latents: Optional[torch.FloatTensor] = None,
         output_type: Optional[str] = "pil",
         return_dict: bool = True,
@@ -100,11 +103,11 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         timesteps = self.scheduler.timesteps
 
         # 5. Add noise to image
-        print('text embedding dtype', text_embeddings.dtype)
+        # print('text embedding dtype', text_embeddings.dtype)
+        text_embeddings_dtype = torch.float32
 
         noise_level = torch.tensor([noise_level], dtype=torch.long, device=device)
-        noise = generator.random(size=image.shape, dtype=text_embeddings.dtype)
-        noise = torch.from_numpy(noise).to(device)
+        noise = torch.randn(image.shape, generator=generator, device=device, dtype=text_embeddings_dtype)
         image = self.low_res_scheduler.add_noise(image, noise, noise_level)
 
         batch_multiplier = 2 if do_classifier_free_guidance else 1
@@ -113,13 +116,12 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
 
         # 6. Prepare latent variables
         height, width = image.shape[2:]
-        num_channels_latents = self.vae.config.latent_channels  # TODO: config
         latents = self.prepare_latents(
             batch_size * num_images_per_prompt,
             num_channels_latents,
             height,
             width,
-            text_embeddings.dtype,
+            text_embeddings_dtype,
             device,
             generator,
             latents,
@@ -127,10 +129,10 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
 
         # 7. Check that sizes of image and latents match
         num_channels_image = image.shape[1]
-        if num_channels_latents + num_channels_image != self.unet.config.in_channels: # TODO: config
+        if num_channels_latents + num_channels_image != unet_in_channels:
             raise ValueError(
-                f"Incorrect configuration settings! The config of `pipeline.unet`: {self.unet.config} expects"
-                f" {self.unet.config.in_channels} but received `num_channels_latents`: {num_channels_latents} +"
+                f"Incorrect configuration settings! The config of `pipeline.unet` expects"
+                f" {unet_in_channels} but received `num_channels_latents`: {num_channels_latents} +"
                 f" `num_channels_image`: {num_channels_image} "
                 f" = {num_channels_latents+num_channels_image}. Please verify the config of"
                 " `pipeline.unet` or your `image` input."
@@ -148,16 +150,23 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
 
                 # concat latents, mask, masked_image_latents in the channel dimension
                 latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
-                latent_model_input = np.concatenate([latent_model_input, image], dim=1)
+                latent_model_input = np.concatenate([latent_model_input, image], axis=1)
+
+                # timestep to tensor
+                timestep = np.array([t], dtype=np.float32)
 
                 # predict the noise residual
+                # print('noise pred unet', latent_model_input.dtype, text_embeddings.dtype, t, noise_level)
                 noise_pred = self.unet(
-                    latent_model_input, t, encoder_hidden_states=text_embeddings, class_labels=noise_level
-                ).sample
+                    sample=latent_model_input,
+                    timestep=timestep,
+                    encoder_hidden_states=text_embeddings,
+                    class_labels=noise_level
+                )[0]
 
                 # perform guidance
                 if do_classifier_free_guidance:
-                    noise_pred_uncond, noise_pred_text = noise_pred.chunk(2)
+                    noise_pred_uncond, noise_pred_text = np.split(noise_pred, 2) # noise_pred.chunk(2)
                 noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
 
                 # compute the previous noisy sample x_t -> x_t-1
@@ -171,7 +180,7 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
 
         # 10. Post-processing
         # make sure the VAE is in float32 mode, as it overflows in float16
-        self.vae.to(dtype=np.float32)
+        # self.vae.to(dtype=np.float32)
         image = self.decode_latents(latents.float())
 
         # 11. Convert to PIL
@@ -183,6 +192,12 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
 
         return ImagePipelineOutput(images=image)
 
+    def decode_latents(self, latents):
+        latents = 1 / 0.08333 * latents
+        image = self.vae(latent_sample=latents)[0]
+        image = np.clip(image / 2 + 0.5, 0, 1)
+        image = image.transpose((0, 2, 3, 1))
+        return image
 
     def _encode_prompt(self, prompt, device, num_images_per_prompt, do_classifier_free_guidance, negative_prompt):
         batch_size = len(prompt) if isinstance(prompt, list) else 1

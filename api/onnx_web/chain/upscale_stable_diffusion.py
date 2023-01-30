@@ -63,11 +63,7 @@ def upscale_stable_diffusion(
     logger.info('upscaling with Stable Diffusion, %s steps: %s', params.steps, prompt)
 
     pipeline = load_stable_diffusion(ctx, upscale)
-
-    if upscale.format == 'onnx':
-        generator = np.random.default_rng(params.seed)
-    else:
-        generator = torch.manual_seed(params.seed)
+    generator = torch.manual_seed(params.seed)
 
     return pipeline(
         params.prompt,

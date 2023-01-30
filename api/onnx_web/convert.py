@@ -253,7 +253,17 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str, si
     )
     del pipeline.text_encoder
 
+    logger.info('UNET config: %s', pipeline.unet.config)
+
     # UNET
+    if single_vae:
+        unet_inputs = ["sample", "timestep", "encoder_hidden_states", "class_labels"]
+        # unet_inputs = ["latent_model_input", "timestep", "encoder_hidden_states", "class_labels"]
+        unet_scale = 4
+    else:
+        unet_inputs = ["sample", "timestep", "encoder_hidden_states", "return_dict"]
+        unet_scale = False
+
     unet_in_channels = pipeline.unet.config.in_channels
     unet_sample_size = pipeline.unet.config.sample_size
     unet_path = output_path / "unet" / "model.onnx"
@@ -265,13 +275,10 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str, si
             torch.randn(2).to(device=training_device, dtype=dtype),
             torch.randn(2, num_tokens, text_hidden_size).to(
                 device=training_device, dtype=dtype),
-            # TODO: needs to be Int or Long for upscaling, Bool for regular
-            4,
-            # False,
+            unet_scale,
         ),
         output_path=unet_path,
-        ordered_input_names=["sample", "timestep",
-                             "encoder_hidden_states", "return_dict"],
+        ordered_input_names=unet_inputs,
         # has to be different from "sample" for correct tracing
         output_names=["out_sample"],
         dynamic_axes={
@@ -300,25 +307,26 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str, si
     del pipeline.unet
 
     if single_vae:
+        logger.info('VAE config: %s', pipeline.vae.config)
+
         # SINGLE VAE
         vae_only = pipeline.vae
-        vae_in_channels = vae_only.config.in_channels
-        vae_sample_size = vae_only.config.sample_size
-        # need to get the raw tensor output (sample) from the encoder
-        vae_only.forward = lambda sample, return_dict: vae_only.encode(
-            sample, return_dict)[0].sample()
+        vae_latent_channels = vae_only.config.latent_channels
+        vae_out_channels = vae_only.config.out_channels
+        # forward only through the decoder part
+        vae_only.forward = vae_only.decode
         onnx_export(
             vae_only,
             model_args=(
-                torch.randn(1, vae_in_channels, vae_sample_size, vae_sample_size).to(
+                torch.randn(1, vae_latent_channels, unet_sample_size, unet_sample_size).to(
                     device=training_device, dtype=dtype),
                 False,
             ),
             output_path=output_path / "vae" / "model.onnx",
-            ordered_input_names=["sample", "return_dict"],
-            output_names=["latent_sample"],
+            ordered_input_names=["latent_sample", "return_dict"],
+            output_names=["sample"],
             dynamic_axes={
-                "sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
+                "latent_sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
             },
             opset=opset,
         )
@@ -435,7 +443,7 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str, si
     logger.info('exporting ONNX model')
 
     onnx_pipeline.save_pretrained(output_path)
-    logger.info("ONNX pipeline saved to", output_path)
+    logger.info("ONNX pipeline saved to %s", output_path)
 
     del pipeline
     del onnx_pipeline
