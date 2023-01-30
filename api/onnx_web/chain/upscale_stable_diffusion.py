@@ -17,7 +17,6 @@ from ..utils import (
     ServerContext,
 )
 
-import numpy as np
 import torch
 
 logger = getLogger(__name__)
