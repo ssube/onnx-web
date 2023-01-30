@@ -24,6 +24,12 @@ logger = getLogger(__name__)
 num_channels_latents = 4 # self.vae.config.latent_channels
 unet_in_channels = 7 # self.unet.config.in_channels
 
+###
+# This is based on a combination of the ONNX img2img pipeline and the PyTorch upscale pipeline:
+# https://github.com/huggingface/diffusers/blob/v0.11.1/src/diffusers/pipelines/stable_diffusion/pipeline_onnx_stable_diffusion_img2img.py
+# https://github.com/huggingface/diffusers/blob/v0.11.1/src/diffusers/pipelines/stable_diffusion/pipeline_stable_diffusion_upscale.py
+###
+
 def preprocess(image):
     if isinstance(image, torch.Tensor):
         return image
@@ -71,7 +77,6 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         num_images_per_prompt: Optional[int] = 1,
         eta: float = 0.0,
         generator: Optional[Union[torch.Generator, List[torch.Generator]]] = None,
-        # generator: Optional[Union[np.random.Generator, List[np.random.Generator]]] = None,
         latents: Optional[torch.FloatTensor] = None,
         output_type: Optional[str] = "pil",
         return_dict: bool = True,
@@ -96,14 +101,13 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
 
         # 4. Preprocess image
         image = preprocess(image)
-        image = image.cpu() #.numpy()
+        image = image.cpu()
 
         # 5. set timesteps
         self.scheduler.set_timesteps(num_inference_steps, device=device)
         timesteps = self.scheduler.timesteps
 
         # 5. Add noise to image
-        # print('text embedding dtype', text_embeddings.dtype)
         text_embeddings_dtype = torch.float32
 
         noise_level = torch.tensor([noise_level], dtype=torch.long, device=device)
@@ -156,7 +160,6 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
                 timestep = np.array([t], dtype=np.float32)
 
                 # predict the noise residual
-                # print('noise pred unet', latent_model_input.dtype, text_embeddings.dtype, t, noise_level)
                 noise_pred = self.unet(
                     sample=latent_model_input,
                     timestep=timestep,
@@ -166,7 +169,7 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
 
                 # perform guidance
                 if do_classifier_free_guidance:
-                    noise_pred_uncond, noise_pred_text = np.split(noise_pred, 2) # noise_pred.chunk(2)
+                    noise_pred_uncond, noise_pred_text = np.split(noise_pred, 2)
                 noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
 
                 # compute the previous noisy sample x_t -> x_t-1
@@ -179,8 +182,6 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
                         callback(i, t, latents)
 
         # 10. Post-processing
-        # make sure the VAE is in float32 mode, as it overflows in float16
-        # self.vae.to(dtype=np.float32)
         image = self.decode_latents(latents.float())
 
         # 11. Convert to PIL
@@ -222,12 +223,14 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         # no positional arguments to text_encoder
         text_embeddings = self.text_encoder(
             input_ids=text_input_ids.int().to(device),
+            # TODO: is this needed?
             # attention_mask=attention_mask,
         )
         text_embeddings = text_embeddings[0]
 
         # duplicate text embeddings for each generation per prompt, using mps friendly method
-        text_embeddings = text_embeddings.repeat(1, num_images_per_prompt) #, 1)
+        text_embeddings = text_embeddings.repeat(1, num_images_per_prompt)
+        # TODO: is this needed?
         # text_embeddings = text_embeddings.view(bs_embed * num_images_per_prompt, seq_len, -1)
 
         # get unconditional embeddings for classifier free guidance
@@ -262,12 +265,14 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
 
             uncond_embeddings = self.text_encoder(
                 input_ids=uncond_input.input_ids.int().to(device),
+                # TODO: is this needed?
                 # attention_mask=attention_mask,
             )
             uncond_embeddings = uncond_embeddings[0]
 
             # duplicate unconditional embeddings for each generation per prompt, using mps friendly method
-            uncond_embeddings = uncond_embeddings.repeat(1, num_images_per_prompt) #, 1)
+            uncond_embeddings = uncond_embeddings.repeat(1, num_images_per_prompt)
+            # TODO: is this needed?
             # uncond_embeddings = uncond_embeddings.view(batch_size * num_images_per_prompt, seq_len, -1)
 
             # For classifier free guidance, we need to do two forward passes.
