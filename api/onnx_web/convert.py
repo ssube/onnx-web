@@ -10,7 +10,7 @@ from diffusers import (
 )
 from logging import getLogger
 from onnx import load, save_model
-from os import mkdir, path, environ
+from os import environ, makedirs, mkdir, path
 from pathlib import Path
 from shutil import copyfile, rmtree
 from sys import exit
@@ -253,7 +253,7 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str, si
     )
     del pipeline.text_encoder
 
-    logger.info('UNET config: %s', pipeline.unet.config)
+    logger.debug('UNET config: %s', pipeline.unet.config)
 
     # UNET
     if single_vae:
@@ -307,7 +307,7 @@ def convert_diffuser(name: str, url: str, opset: int, half: bool, token: str, si
     del pipeline.unet
 
     if single_vae:
-        logger.info('VAE config: %s', pipeline.vae.config)
+        logger.debug('VAE config: %s', pipeline.vae.config)
 
         # SINGLE VAE
         vae_only = pipeline.vae
@@ -516,6 +516,10 @@ def main() -> int:
 
     args = parser.parse_args()
     logger.info('CLI arguments: %s', args)
+
+    if path.exists(model_path):
+        logger.info('Model path does not existing, creating: %s', model_path)
+        makedirs(model_path)
 
     logger.info('Converting base models.')
     load_models(args, base_models)
