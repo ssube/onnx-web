@@ -66,14 +66,14 @@ def correct_gfpgan(
 ) -> Image.Image:
     if upscale.correction_model is None:
         logger.warn('no face model given, skipping')
-        return image
+        return source_image
 
     logger.info('correcting faces with GFPGAN model: %s', upscale.correction_model)
     gfpgan = load_gfpgan(ctx, upscale, upsampler=upsampler)
 
     output = np.array(source_image)
     _, _, output = gfpgan.enhance(
-        image, has_aligned=False, only_center_face=False, paste_back=True, weight=upscale.face_strength)
+        source_image, has_aligned=False, only_center_face=False, paste_back=True, weight=upscale.face_strength)
     output = Image.fromarray(output, 'RGB')
 
     return output
