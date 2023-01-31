@@ -24,7 +24,7 @@ last_pipeline_instance = None
 last_pipeline_params = None
 
 
-def load_gfpgan(ctx: ServerContext, upscale: UpscaleParams):
+def load_gfpgan(ctx: ServerContext, upscale: UpscaleParams, upsampler: Optional[RealESRGANer] = None):
     global last_pipeline_instance
     global last_pipeline_params
 
@@ -67,7 +67,7 @@ def correct_gfpgan(
         return image
 
     logger.info('correcting faces with GFPGAN model: %s', upscale.correction_model)
-    gfpgan = load_gfpgan(ctx, upscale)
+    gfpgan = load_gfpgan(ctx, upscale, upsampler=upsampler)
 
     _, _, output = gfpgan.enhance(
         image, has_aligned=False, only_center_face=False, paste_back=True, weight=upscale.face_strength)
