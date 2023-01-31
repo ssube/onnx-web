@@ -17,6 +17,8 @@ from .upscale_resrgan import (
     load_resrgan,
 )
 
+import numpy as np
+
 logger = getLogger(__name__)
 
 
@@ -56,7 +58,7 @@ def correct_gfpgan(
     ctx: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
-    image: Image.Image,
+    source_image: Image.Image,
     *,
     upscale: UpscaleParams,
     upsampler: Optional[RealESRGANer] = None,
@@ -69,7 +71,9 @@ def correct_gfpgan(
     logger.info('correcting faces with GFPGAN model: %s', upscale.correction_model)
     gfpgan = load_gfpgan(ctx, upscale, upsampler=upsampler)
 
+    output = np.array(source_image)
     _, _, output = gfpgan.enhance(
         image, has_aligned=False, only_center_face=False, paste_back=True, weight=upscale.face_strength)
+    output = Image.fromarray(output, 'RGB')
 
     return output
