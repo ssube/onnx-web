@@ -49,7 +49,7 @@ def run_upscale_correction(
 
     if upscale.faces:
         stage = StageParams(tile_size=stage.tile_size,
-                            outscale=upscale.outscale)
+                            outscale=1)
         chain.append((correct_gfpgan, stage, kwargs))
 
     return chain(ctx, params, image)

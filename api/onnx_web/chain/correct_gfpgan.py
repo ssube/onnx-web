@@ -31,7 +31,8 @@ def load_gfpgan(ctx: ServerContext, upscale: UpscaleParams, upsampler: Optional[
     global last_pipeline_params
 
     if upsampler is None:
-        upsampler = load_resrgan(ctx, upscale)
+        bg_upscale = upscale.rescale(upscale.outscale)
+        upsampler = load_resrgan(ctx, bg_upscale)
 
     face_path = path.join(ctx.model_path, '%s.pth' %
                           (upscale.correction_model))
@@ -40,7 +41,7 @@ def load_gfpgan(ctx: ServerContext, upscale: UpscaleParams, upsampler: Optional[
         logger.info('reusing existing GFPGAN pipeline')
         return last_pipeline_instance
 
-    # TODO: doesn't have a model param, not sure how to pass ONNX model
+    # TODO: find a way to pass the ONNX model to underlying architectures
     gfpgan = GFPGANer(
         model_path=face_path,
         upscale=upscale.outscale,
@@ -73,7 +74,7 @@ def correct_gfpgan(
 
     output = np.array(source_image)
     _, _, output = gfpgan.enhance(
-        source_image, has_aligned=False, only_center_face=False, paste_back=True, weight=upscale.face_strength)
+        output, has_aligned=False, only_center_face=False, paste_back=True, weight=upscale.face_strength)
     output = Image.fromarray(output, 'RGB')
 
     return output

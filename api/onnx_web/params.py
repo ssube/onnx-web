@@ -131,5 +131,21 @@ class UpscaleParams():
         self.scale = scale
         self.tile_pad = tile_pad
 
+    def rescale(self, scale: int):
+        return UpscaleParams(
+            self.upscale_model,
+            self.provider,
+            correction_model=self.correction_model,
+            denoise=self.denoise,
+            faces=self.faces,
+            face_strength=self.face_strength,
+            format=self.format,
+            half=self.half,
+            outscale=scale,
+            scale=scale,
+            pre_pad=self.pre_pad,
+            tile_pad=self.tile_pad,
+        )
+
     def resize(self, size: Size) -> Size:
         return Size(size.width * self.outscale, size.height * self.outscale)
