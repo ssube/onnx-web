@@ -293,6 +293,11 @@ def load_params(context: ServerContext):
     with open(params_file, 'r') as f:
         config_params = yaml.safe_load(f)
 
+        if 'platform' in config_params and context.default_platform is not None:
+            logger.info('overriding default platform to %s', context.default_platform)
+            config_platform = config_params.get('platform')
+            config_platform['default'] = context.default_platform
+
 
 def load_platforms():
     global available_platforms

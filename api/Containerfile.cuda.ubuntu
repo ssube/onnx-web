@@ -34,4 +34,6 @@ ENV ONNX_WEB_BUNDLE_PATH="/onnx-web/gui"
 
 COPY gui/ /onnx-web/gui/
 
+ENV ONNX_WEB_DEFAULT_PLATFORM="cuda"
+
 CMD [ "sh", "-c", "/onnx-web/launch.sh" ]

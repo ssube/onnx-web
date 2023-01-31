@@ -25,6 +25,7 @@ class ServerContext:
         cors_origin: str = '*',
         num_workers: int = 1,
         block_platforms: List[str] = [],
+        default_platform: str = None,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -33,6 +34,7 @@ class ServerContext:
         self.cors_origin = cors_origin
         self.num_workers = num_workers
         self.block_platforms = block_platforms
+        self.default_platform = default_platform
 
     @classmethod
     def from_environ(cls):
@@ -48,7 +50,9 @@ class ServerContext:
             cors_origin=environ.get('ONNX_WEB_CORS_ORIGIN', '*').split(','),
             num_workers=int(environ.get('ONNX_WEB_NUM_WORKERS', 1)),
             block_platforms=environ.get(
-                'ONNX_WEB_BLOCK_PLATFORMS', '').split(',')
+                'ONNX_WEB_BLOCK_PLATFORMS', '').split(','),
+            default_platform=environ.get(
+                'ONNX_WEB_DEFAULT_PLATFORM', None),
         )
 
 
