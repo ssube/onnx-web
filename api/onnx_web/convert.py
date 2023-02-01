@@ -517,7 +517,7 @@ def main() -> int:
     args = parser.parse_args()
     logger.info('CLI arguments: %s', args)
 
-    if path.exists(model_path):
+    if not path.exists(model_path):
         logger.info('Model path does not existing, creating: %s', model_path)
         makedirs(model_path)
 
