@@ -110,7 +110,6 @@ def run_img2img_pipeline(
 
 def run_inpaint_pipeline(
     ctx: ServerContext,
-    stage: StageParams,
     params: ImageParams,
     _size: Size,
     output: str,
@@ -123,6 +122,7 @@ def run_inpaint_pipeline(
     strength: float,
     fill_color: str,
 ) -> None:
+    stage = StageParams()
     image = upscale_outpaint(
         ctx,
         stage,
@@ -142,7 +142,7 @@ def run_inpaint_pipeline(
         logger.info('output image size does not match source, skipping post-blend')
 
     image = run_upscale_correction(
-        ctx, StageParams(), params, image, upscale=upscale)
+        ctx, stage, params, image, upscale=upscale)
 
     dest = base_join(ctx.output_path, output)
     image.save(dest)
