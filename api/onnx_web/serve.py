@@ -22,7 +22,7 @@ from jsonschema import validate
 from logging import getLogger
 from PIL import Image
 from onnxruntime import get_available_providers
-from os import path
+from os import makedirs, path
 from typing import Tuple
 
 
