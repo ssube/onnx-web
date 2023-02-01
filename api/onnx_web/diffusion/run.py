@@ -148,7 +148,6 @@ def run_inpaint_pipeline(
     image.save(dest)
 
     del image
-    del result
 
     logger.info('saved inpaint output: %s', dest)
 
