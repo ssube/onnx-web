@@ -35,21 +35,20 @@ def run_upscale_correction(
     logger.info('running upscaling and correction pipeline')
 
     chain = ChainPipeline()
-    kwargs = {'upscale': upscale}
 
     if upscale.scale > 1:
         if 'esrgan' in upscale.upscale_model:
             stage = StageParams(tile_size=stage.tile_size,
                                 outscale=upscale.outscale)
-            chain.append((upscale_resrgan, stage, kwargs))
+            chain.append((upscale_resrgan, stage, None))
         elif 'stable-diffusion' in upscale.upscale_model:
             mini_tile = min(SizeChart.mini, stage.tile_size)
             stage = StageParams(tile_size=mini_tile, outscale=upscale.outscale)
-            chain.append((upscale_stable_diffusion, stage, kwargs))
+            chain.append((upscale_stable_diffusion, stage, None))
 
     if upscale.faces:
         stage = StageParams(tile_size=stage.tile_size,
                             outscale=1)
-        chain.append((correct_gfpgan, stage, kwargs))
+        chain.append((correct_gfpgan, stage, None))
 
-    return chain(ctx, params, image)
+    return chain(ctx, params, image, prompt=params.prompt, upscale=upscale)
