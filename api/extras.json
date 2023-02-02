@@ -1,0 +1,8 @@
+{
+  "diffusion": [
+    ["diffusion-knollingcase", "Aybeeceedee/knollingcase"],
+    ["diffusion-openjourney", "prompthero/openjourney"]
+  ],
+  "correction": [],
+  "upscaling": []
+}

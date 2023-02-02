@@ -8,6 +8,7 @@ from diffusers import (
     StableDiffusionPipeline,
     StableDiffusionUpscalePipeline,
 )
+from json import loads
 from logging import getLogger
 from onnx import load, save_model
 from os import environ, makedirs, mkdir, path
@@ -58,16 +59,6 @@ base_models: Models = {
         ('upscaling-real-esrgan-x4-v3',
          'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth', 4),
     ],
-}
-
-# other neat models
-extra_models: Models = {
-    'diffusion': [
-        ('diffusion-knollingcase', 'Aybeeceedee/knollingcase'),
-        ('diffusion-openjourney', 'prompthero/openjourney'),
-    ],
-    'correction': [],
-    'upscaling': [],
 }
 
 model_path = environ.get('ONNX_WEB_MODEL_PATH',
@@ -491,8 +482,10 @@ def main() -> int:
     # model groups
     parser.add_argument('--correction', action='store_true', default=False)
     parser.add_argument('--diffusion', action='store_true', default=False)
-    parser.add_argument('--extras', action='store_true', default=False)
     parser.add_argument('--upscaling', action='store_true', default=False)
+
+    # extra models
+    parser.add_argument('--extras', nargs='*', type=str, default=[])
     parser.add_argument('--skip', nargs='*', type=str, default=[])
 
     # export options
@@ -500,7 +493,7 @@ def main() -> int:
         '--half',
         action='store_true',
         default=False,
-        help='Export models for half precision, faster on some Nvidia cards'
+        help='Export models for half precision, faster on some Nvidia cards.'
     )
     parser.add_argument(
         '--opset',
@@ -524,9 +517,15 @@ def main() -> int:
     logger.info('Converting base models.')
     load_models(args, base_models)
 
-    if args.extras:
-        logger.info('Converting extra models.')
-        load_models(args, extra_models)
+    for file in args.extras:
+        logger.info('Loading extra models from %s', file)
+        try:
+            with open(file, 'r') as f:
+                data = loads(f.read())
+                logger.info('Converting extra models.')
+                load_models(args, data)
+        except Exception as err:
+            logger.error('Error converting extra models: %s', err)
 
     return 0
 
