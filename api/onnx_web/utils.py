@@ -1,17 +1,11 @@
-from hashlib import sha256
 from logging import getLogger
 from os import environ, path
-from struct import pack
-from time import time
-from typing import Any, Dict, List, Optional, Union, Tuple
+from typing import Any, Dict, List, Optional, Union
 
 import gc
 import torch
 
 from .params import (
-    ImageParams,
-    Param,
-    Size,
     SizeChart,
 )
 
@@ -62,6 +56,11 @@ class ServerContext:
                 'ONNX_WEB_IMAGE_FORMAT', 'png'
             ),
         )
+
+
+def base_join(base: str, tail: str) -> str:
+    tail_path = path.relpath(path.normpath(path.join('/', tail)), '/')
+    return path.join(base, tail_path)
 
 
 def is_debug() -> bool:
@@ -120,52 +119,6 @@ def get_size(val: Union[int, str, None]) -> SizeChart:
         return int(val)
 
     raise Exception('invalid size')
-
-
-def hash_value(sha, param: Param):
-    if param is None:
-        return
-    elif isinstance(param, float):
-        sha.update(bytearray(pack('!f', param)))
-    elif isinstance(param, int):
-        sha.update(bytearray(pack('!I', param)))
-    elif isinstance(param, str):
-        sha.update(param.encode('utf-8'))
-    else:
-        logger.warn('cannot hash param: %s, %s', param, type(param))
-
-
-def make_output_name(
-    mode: str,
-    params: ImageParams,
-    size: Size,
-    extras: Optional[Tuple[Param]] = None
-) -> str:
-    now = int(time())
-    sha = sha256()
-
-    hash_value(sha, mode)
-    hash_value(sha, params.model)
-    hash_value(sha, params.provider)
-    hash_value(sha, params.scheduler.__name__)
-    hash_value(sha, params.prompt)
-    hash_value(sha, params.negative_prompt)
-    hash_value(sha, params.cfg)
-    hash_value(sha, params.steps)
-    hash_value(sha, params.seed)
-    hash_value(sha, size.width)
-    hash_value(sha, size.height)
-
-    if extras is not None:
-        for param in extras:
-            hash_value(sha, param)
-
-    return '%s_%s_%s_%s' % (mode, params.seed, sha.hexdigest(), now)
-
-
-def base_join(base: str, tail: str) -> str:
-    tail_path = path.relpath(path.normpath(path.join('/', tail)), '/')
-    return path.join(base, tail_path)
 
 
 def run_gc():

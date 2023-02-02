@@ -1,10 +1,15 @@
+from hashlib import sha256
 from json import dumps
+from logging import getLogger
 from PIL import Image
-from typing import Any, Optional
+from struct import pack
+from time import time
+from typing import Any, Optional, Tuple
 
 from .params import (
     Border,
     ImageParams,
+    Param,
     Size,
     UpscaleParams,
 )
@@ -12,6 +17,20 @@ from .utils import (
     base_join,
     ServerContext,
 )
+
+logger = getLogger(__name__)
+
+def hash_value(sha, param: Param):
+    if param is None:
+        return
+    elif isinstance(param, float):
+        sha.update(bytearray(pack('!f', param)))
+    elif isinstance(param, int):
+        sha.update(bytearray(pack('!I', param)))
+    elif isinstance(param, str):
+        sha.update(param.encode('utf-8'))
+    else:
+        logger.warn('cannot hash param: %s, %s', param, type(param))
 
 
 def json_params(
@@ -42,9 +61,38 @@ def json_params(
     return json
 
 
+def make_output_name(
+    mode: str,
+    params: ImageParams,
+    size: Size,
+    extras: Optional[Tuple[Param]] = None
+) -> str:
+    now = int(time())
+    sha = sha256()
+
+    hash_value(sha, mode)
+    hash_value(sha, params.model)
+    hash_value(sha, params.provider)
+    hash_value(sha, params.scheduler.__name__)
+    hash_value(sha, params.prompt)
+    hash_value(sha, params.negative_prompt)
+    hash_value(sha, params.cfg)
+    hash_value(sha, params.steps)
+    hash_value(sha, params.seed)
+    hash_value(sha, size.width)
+    hash_value(sha, size.height)
+
+    if extras is not None:
+        for param in extras:
+            hash_value(sha, param)
+
+    return '%s_%s_%s_%s' % (mode, params.seed, sha.hexdigest(), now)
+
+
 def save_image(ctx: ServerContext, output: str, image: Image.Image) -> str:
     path = base_join(ctx.output_path, '%s.%s' % (output, ctx.image_format))
     image.save(path, format=ctx.image_format)
+    logger.debug('saved output image to: %s', path)
     return path
 
 
@@ -60,3 +108,5 @@ def save_params(
     json = json_params(output, params, size, upscale=upscale, border=border)
     with open(path, 'w') as f:
         f.write(dumps(json))
+        logger.debug('saved image params to: %s', path)
+        return path

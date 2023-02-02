@@ -436,7 +436,7 @@ def img2img():
         params,
         size,
         extras=(strength,))
-    logger.info("img2img output saved: %s", output)
+    logger.info("img2img job queued for: %s", output)
 
     source_image.thumbnail((size.width, size.height))
     executor.submit_stored(output, run_img2img_pipeline,
@@ -454,7 +454,7 @@ def txt2img():
         'txt2img',
         params,
         size)
-    logger.info("txt2img output saved: %s", output)
+    logger.info("txt2img job queued for: %s", output)
 
     executor.submit_stored(
         output, run_txt2img_pipeline, context, params, size, output, upscale)
@@ -506,7 +506,7 @@ def inpaint():
             fill_color,
         )
     )
-    logger.info("inpaint output saved: %s", output)
+    logger.info("inpaint job queued for: %s", output)
 
     source_image.thumbnail((size.width, size.height))
     mask_image.thumbnail((size.width, size.height))

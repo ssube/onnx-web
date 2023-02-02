@@ -71,7 +71,7 @@ def run_txt2img_pipeline(
     del result
     run_gc()
 
-    logger.info('saved txt2img output: %s', dest)
+    logger.info('finished txt2img job: %s', dest)
 
 
 def run_img2img_pipeline(
@@ -108,7 +108,7 @@ def run_img2img_pipeline(
     del result
     run_gc()
 
-    logger.info('saved img2img output: %s', dest)
+    logger.info('finished img2img job: %s', dest)
 
 
 def run_inpaint_pipeline(
@@ -154,7 +154,7 @@ def run_inpaint_pipeline(
     del image
     run_gc()
 
-    logger.info('saved inpaint output: %s', dest)
+    logger.info('finished inpaint job: %s', dest)
 
 
 def run_upscale_pipeline(
@@ -174,4 +174,4 @@ def run_upscale_pipeline(
     del image
     run_gc()
 
-    logger.info('saved img2img output: %s', dest)
+    logger.info('finished upscale job: %s', dest)

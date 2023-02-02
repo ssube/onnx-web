@@ -60,6 +60,7 @@
 			"stringcase",
 			"timestep",
 			"timesteps",
+			"tojson",
 			"uncond",
 			"unet",
 			"untruncated",
