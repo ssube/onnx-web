@@ -29,6 +29,7 @@ class ServerContext:
         num_workers: int = 1,
         block_platforms: List[str] = [],
         default_platform: str = None,
+        image_format: str = 'png',
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -38,6 +39,7 @@ class ServerContext:
         self.num_workers = num_workers
         self.block_platforms = block_platforms
         self.default_platform = default_platform
+        self.image_format = image_format
 
     @classmethod
     def from_environ(cls):
@@ -56,6 +58,9 @@ class ServerContext:
                 'ONNX_WEB_BLOCK_PLATFORMS', '').split(','),
             default_platform=environ.get(
                 'ONNX_WEB_DEFAULT_PLATFORM', None),
+            image_format=environ.get(
+                'ONNX_WEB_IMAGE_FORMAT', 'png'
+            ),
         )
 
 
@@ -155,7 +160,7 @@ def make_output_name(
         for param in extras:
             hash_value(sha, param)
 
-    return '%s_%s_%s_%s.png' % (mode, params.seed, sha.hexdigest(), now)
+    return '%s_%s_%s_%s' % (mode, params.seed, sha.hexdigest(), now)
 
 
 def base_join(base: str, tail: str) -> str:

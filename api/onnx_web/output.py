@@ -43,8 +43,8 @@ def json_params(
 
 
 def save_image(ctx: ServerContext, output: str, image: Image.Image) -> str:
-    path = base_join(ctx.output_path, output)
-    image.save(path)
+    path = base_join(ctx.output_path, '%s.%s' % (output, ctx.image_format))
+    image.save(path, format=ctx.image_format)
     return path
 
 

@@ -17,7 +17,7 @@ logger = getLogger(__name__)
 
 
 def persist_s3(
-    _ctx: ServerContext,
+    ctx: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
     source_image: Image.Image,
@@ -32,7 +32,7 @@ def persist_s3(
     s3 = session.client('s3', endpoint_url=endpoint_url)
 
     data = BytesIO()
-    source_image.save(data, format='png')
+    source_image.save(data, format=ctx.image_format)
     data.seek(0)
 
     try:
