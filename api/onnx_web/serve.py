@@ -62,8 +62,7 @@ from .image import (
 )
 from .output import (
     json_params,
-    save_image,
-    save_params,
+    make_output_name,
 )
 from .params import (
     Border,
@@ -73,6 +72,7 @@ from .params import (
     UpscaleParams,
 )
 from .utils import (
+    base_join,
     is_debug,
     get_and_clamp_float,
     get_and_clamp_int,
@@ -80,8 +80,6 @@ from .utils import (
     get_from_map,
     get_not_empty,
     get_size,
-    make_output_name,
-    base_join,
     ServerContext,
 )
 
