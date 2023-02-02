@@ -14,6 +14,7 @@ from ..params import (
     UpscaleParams,
 )
 from ..utils import (
+    run_gc,
     ServerContext,
 )
 
@@ -44,6 +45,7 @@ def load_stable_diffusion(ctx: ServerContext, upscale: UpscaleParams):
 
     last_pipeline_instance = pipeline
     last_pipeline_params = cache_params
+    run_gc()
 
     return pipeline
 

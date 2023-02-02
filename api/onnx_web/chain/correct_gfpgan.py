@@ -11,6 +11,7 @@ from ..params import (
     UpscaleParams,
 )
 from ..utils import (
+    run_gc,
     ServerContext,
 )
 from .upscale_resrgan import (
@@ -51,6 +52,7 @@ def load_gfpgan(ctx: ServerContext, upscale: UpscaleParams, upsampler: Optional[
 
     last_pipeline_instance = gfpgan
     last_pipeline_params = face_path
+    run_gc()
 
     return gfpgan
 

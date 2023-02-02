@@ -13,6 +13,7 @@ from ..params import (
     UpscaleParams,
 )
 from ..utils import (
+    run_gc,
     ServerContext,
 )
 
@@ -66,6 +67,7 @@ def load_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
 
     last_pipeline_instance = upsampler
     last_pipeline_params = cache_params
+    run_gc()
 
     return upsampler
 

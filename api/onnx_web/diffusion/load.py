@@ -7,10 +7,12 @@ from typing import Any, Optional, Tuple
 from ..params import (
     Size,
 )
+from ..utils import (
+    run_gc,
+)
 
 import gc
 import numpy as np
-import torch
 
 logger = getLogger(__name__)
 
@@ -39,7 +41,7 @@ def get_tile_latents(full_latents: np.ndarray, dims: Tuple[int, int, int]) -> np
     xt = x + t
     yt = y + t
 
-    return full_latents[:,:,y:yt,x:xt]
+    return full_latents[:, :, y:yt, x:xt]
 
 
 def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, scheduler: Any, device: Optional[str] = None):
@@ -55,8 +57,7 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         logger.info('unloading previous diffusion pipeline')
         last_pipeline_instance = None
         last_pipeline_scheduler = None
-        gc.collect()
-        torch.cuda.empty_cache()
+        run_gc()
 
         logger.info('loading new diffusion pipeline')
         pipe = pipeline.from_pretrained(
@@ -83,10 +84,6 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
 
         pipe.scheduler = scheduler
         last_pipeline_scheduler = scheduler
-
-    logger.info('running garbage collection during pipeline change')
-    gc.collect()
+        run_gc()
 
     return pipe
-
-

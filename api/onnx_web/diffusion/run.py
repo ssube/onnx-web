@@ -1,7 +1,6 @@
 from diffusers import (
     OnnxStableDiffusionPipeline,
     OnnxStableDiffusionImg2ImgPipeline,
-    OnnxStableDiffusionInpaintPipeline,
 )
 from logging import getLogger
 from PIL import Image, ImageChops
@@ -9,9 +8,6 @@ from typing import Any
 
 from ..chain import (
     upscale_outpaint,
-)
-from ..image import (
-    expand_image,
 )
 from ..params import (
     ImageParams,
@@ -24,18 +20,19 @@ from ..upscale import (
     UpscaleParams,
 )
 from ..utils import (
-    is_debug,
     base_join,
+    run_gc,
     ServerContext,
 )
 from .load import (
-  get_latents_from_seed,
-  load_pipeline,
+    get_latents_from_seed,
+    load_pipeline,
 )
 
 import numpy as np
 
 logger = getLogger(__name__)
+
 
 def run_txt2img_pipeline(
     ctx: ServerContext,
@@ -69,6 +66,7 @@ def run_txt2img_pipeline(
 
     del image
     del result
+    run_gc()
 
     logger.info('saved txt2img output: %s', dest)
 
@@ -104,6 +102,7 @@ def run_img2img_pipeline(
 
     del image
     del result
+    run_gc()
 
     logger.info('saved img2img output: %s', dest)
 
@@ -139,7 +138,8 @@ def run_inpaint_pipeline(
     if image.size == source_image.size:
         image = ImageChops.blend(source_image, image, strength)
     else:
-        logger.info('output image size does not match source, skipping post-blend')
+        logger.info(
+            'output image size does not match source, skipping post-blend')
 
     image = run_upscale_correction(
         ctx, stage, params, image, upscale=upscale)
@@ -148,6 +148,7 @@ def run_inpaint_pipeline(
     image.save(dest)
 
     del image
+    run_gc()
 
     logger.info('saved inpaint output: %s', dest)
 
@@ -167,5 +168,6 @@ def run_upscale_pipeline(
     image.save(dest)
 
     del image
+    run_gc()
 
     logger.info('saved img2img output: %s', dest)

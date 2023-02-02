@@ -5,6 +5,9 @@ from struct import pack
 from time import time
 from typing import Any, Dict, List, Optional, Union, Tuple
 
+import gc
+import torch
+
 from .params import (
     ImageParams,
     Param,
@@ -158,3 +161,9 @@ def make_output_name(
 def base_join(base: str, tail: str) -> str:
     tail_path = path.relpath(path.normpath(path.join('/', tail)), '/')
     return path.join(base, tail_path)
+
+
+def run_gc():
+    logger.debug('running garbage collection')
+    gc.collect()
+    torch.cuda.empty_cache()
