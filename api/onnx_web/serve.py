@@ -599,9 +599,9 @@ def chain():
     logger.info('running chain pipeline with %s stages', len(pipeline.stages))
 
     # build and run chain pipeline
-    fake_source = Image.new('RGB', (1, 1))
+    empty_source = Image.new('RGB', (size.width, size.height))
     executor.submit_stored(output, pipeline, context,
-                           params, fake_source, output=output, size=size)
+                           params, empty_source, output=output, size=size)
 
     return jsonify(json_params(output, params, size))
 
