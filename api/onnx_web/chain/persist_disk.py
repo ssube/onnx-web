@@ -5,8 +5,10 @@ from ..params import (
     ImageParams,
     StageParams,
 )
+from ..output import (
+    save_image,
+)
 from ..utils import (
-    base_join,
     ServerContext,
 )
 
@@ -22,7 +24,6 @@ def persist_disk(
     output: str,
     **kwargs,
 ) -> Image.Image:
-    dest = base_join(ctx.output_path, output)
-    source_image.save(dest)
+    dest = save_image(ctx, output, source_image)
     logger.info('saved image to %s', dest)
     return source_image

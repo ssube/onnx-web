@@ -60,6 +60,11 @@ from .image import (
     noise_source_normal,
     noise_source_uniform,
 )
+from .output import (
+    json_params,
+    save_image,
+    save_params,
+)
 from .params import (
     Border,
     ImageParams,
@@ -437,11 +442,7 @@ def img2img():
     executor.submit_stored(output, run_img2img_pipeline,
                            context, params, output, upscale, source_image, strength)
 
-    return jsonify({
-        'output': output,
-        'params': params.tojson(),
-        'size': upscale.resize(size).tojson(),
-    })
+    return jsonify(json_params(output, params, size, upscale=upscale))
 
 
 @app.route('/api/txt2img', methods=['POST'])
@@ -458,11 +459,7 @@ def txt2img():
     executor.submit_stored(
         output, run_txt2img_pipeline, context, params, size, output, upscale)
 
-    return jsonify({
-        'output': output,
-        'params': params.tojson(),
-        'size': upscale.resize(size).tojson(),
-    })
+    return jsonify(json_params(output, params, size, upscale=upscale))
 
 
 @app.route('/api/inpaint', methods=['POST'])
@@ -529,11 +526,7 @@ def inpaint():
         strength,
         fill_color)
 
-    return jsonify({
-        'output': output,
-        'params': params.tojson(),
-        'size': upscale.resize(size.add_border(expand)).tojson(),
-    })
+    return jsonify(json_params(output, params, size, upscale=upscale, border=expand))
 
 
 @app.route('/api/upscale', methods=['POST'])
@@ -557,11 +550,7 @@ def upscale():
     executor.submit_stored(output, run_upscale_pipeline,
                            context, params, size, output, upscale, source_image)
 
-    return jsonify({
-        'output': output,
-        'params': params.tojson(),
-        'size': upscale.resize(size).tojson(),
-    })
+    return jsonify(json_params(output, params, size, upscale=upscale))
 
 
 @app.route('/api/chain', methods=['POST'])
@@ -607,11 +596,7 @@ def chain():
     executor.submit_stored(output, pipeline, context,
                            params, fake_source, output=output, size=size)
 
-    return jsonify({
-        'output': output,
-        'params': params.tojson(),
-        'size': size.tojson(),
-    })
+    return jsonify(json_params(output, params, size))
 
 
 @app.route('/api/ready')

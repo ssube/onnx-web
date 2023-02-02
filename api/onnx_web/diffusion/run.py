@@ -15,12 +15,15 @@ from ..params import (
     Size,
     StageParams,
 )
+from ..output import (
+    save_image,
+    save_params,
+)
 from ..upscale import (
     run_upscale_correction,
     UpscaleParams,
 )
 from ..utils import (
-    base_join,
     run_gc,
     ServerContext,
 )
@@ -61,8 +64,8 @@ def run_txt2img_pipeline(
     image = run_upscale_correction(
         ctx, StageParams(), params, image, upscale=upscale)
 
-    dest = base_join(ctx.output_path, output)
-    image.save(dest)
+    dest = save_image(ctx, output, image)
+    save_params(ctx, output, params, size, upscale=upscale)
 
     del image
     del result
@@ -97,8 +100,9 @@ def run_img2img_pipeline(
     image = run_upscale_correction(
         ctx, StageParams(), params, image, upscale=upscale)
 
-    dest = base_join(ctx.output_path, output)
-    image.save(dest)
+    dest = save_image(ctx, output, image)
+    size = Size(*source_image.size)
+    save_params(ctx, output, params, size, upscale=upscale)
 
     del image
     del result
@@ -110,12 +114,12 @@ def run_img2img_pipeline(
 def run_inpaint_pipeline(
     ctx: ServerContext,
     params: ImageParams,
-    _size: Size,
+    size: Size,
     output: str,
     upscale: UpscaleParams,
     source_image: Image.Image,
     mask_image: Image.Image,
-    expand: Border,
+    border: Border,
     noise_source: Any,
     mask_filter: Any,
     strength: float,
@@ -127,7 +131,7 @@ def run_inpaint_pipeline(
         stage,
         params,
         source_image,
-        border=expand,
+        border=border,
         mask_image=mask_image,
         fill_color=fill_color,
         mask_filter=mask_filter,
@@ -144,8 +148,8 @@ def run_inpaint_pipeline(
     image = run_upscale_correction(
         ctx, stage, params, image, upscale=upscale)
 
-    dest = base_join(ctx.output_path, output)
-    image.save(dest)
+    dest = save_image(ctx, output, image)
+    save_params(ctx, output, params, size, upscale=upscale, border=border)
 
     del image
     run_gc()
@@ -156,7 +160,7 @@ def run_inpaint_pipeline(
 def run_upscale_pipeline(
     ctx: ServerContext,
     params: ImageParams,
-    _size: Size,
+    size: Size,
     output: str,
     upscale: UpscaleParams,
     source_image: Image.Image,
@@ -164,8 +168,8 @@ def run_upscale_pipeline(
     image = run_upscale_correction(
         ctx, StageParams(), params, source_image, upscale=upscale)
 
-    dest = base_join(ctx.output_path, output)
-    image.save(dest)
+    dest = save_image(ctx, output, image)
+    save_params(ctx, output, params, size, upscale=upscale)
 
     del image
     run_gc()

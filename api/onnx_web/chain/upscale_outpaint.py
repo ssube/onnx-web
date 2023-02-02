@@ -22,6 +22,9 @@ from ..params import (
     SizeChart,
     StageParams,
 )
+from ..output import (
+    save_image,
+)
 from ..utils import (
     base_join,
     is_debug,
@@ -70,9 +73,9 @@ def upscale_outpaint(
     full_latents = get_latents_from_seed(params.seed, full_size)
 
     if is_debug():
-        source_image.save(base_join(ctx.output_path, 'last-source.png'))
-        mask_image.save(base_join(ctx.output_path, 'last-mask.png'))
-        noise_image.save(base_join(ctx.output_path, 'last-noise.png'))
+        save_image(ctx, 'last-source.png', source_image)
+        save_image(ctx, 'last-mask.png', mask_image)
+        save_image(ctx, 'last-noise.png', noise_image)
 
     def outpaint(image: Image.Image, dims: Tuple[int, int, int]):
         left, top, tile = dims
@@ -80,8 +83,8 @@ def upscale_outpaint(
         mask = mask_image.crop((left, top, left + tile, top + tile))
 
         if is_debug():
-            image.save(base_join(ctx.output_path, 'tile-source.png'))
-            mask.save(base_join(ctx.output_path, 'tile-mask.png'))
+            save_image(ctx, 'tile-source.png', image)
+            save_image(ctx, 'tile-mask.png', mask)
 
         # TODO: must use inpainting model here
         model = '../models/stable-diffusion-onnx-v1-inpainting'

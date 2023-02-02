@@ -11,7 +11,6 @@ from ..utils import (
     run_gc,
 )
 
-import gc
 import numpy as np
 
 logger = getLogger(__name__)

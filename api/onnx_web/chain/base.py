@@ -9,6 +9,9 @@ from ..params import (
     ImageParams,
     StageParams,
 )
+from ..output import (
+    save_image,
+)
 from ..utils import (
     is_debug,
     ServerContext,
@@ -82,7 +85,7 @@ class ChainPipeline:
                                       **kwargs)
 
                     if is_debug():
-                        tile.save(path.join(ctx.output_path, 'last-tile.png'))
+                        save_image(ctx, 'last-tile.png', tile)
 
                     return tile
 
@@ -97,7 +100,7 @@ class ChainPipeline:
                         name, image.width, image.height)
 
             if is_debug():
-                image.save(path.join(ctx.output_path, 'last-stage.png'))
+                save_image(ctx, 'last-stage.png', image)
 
         end = monotonic()
         duration = timedelta(seconds=(end - start))
