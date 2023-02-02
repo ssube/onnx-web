@@ -39,7 +39,7 @@ def json_params(
 
     json['size'] = size
 
-    return
+    return json
 
 
 def save_image(ctx: ServerContext, output: str, image: Image.Image) -> str:
