@@ -297,7 +297,8 @@ def load_params(context: ServerContext):
         config_params = yaml.safe_load(f)
 
         if 'platform' in config_params and context.default_platform is not None:
-            logger.info('overriding default platform to %s', context.default_platform)
+            logger.info('overriding default platform to %s',
+                        context.default_platform)
             config_platform = config_params.get('platform')
             config_platform['default'] = context.default_platform
 
@@ -430,6 +431,7 @@ def img2img():
         get_config_value('strength', 'min'))
 
     output = make_output_name(
+        context,
         'img2img',
         params,
         size,
@@ -449,6 +451,7 @@ def txt2img():
     upscale = upscale_from_request(params.provider)
 
     output = make_output_name(
+        context,
         'txt2img',
         params,
         size)
@@ -490,6 +493,7 @@ def inpaint():
         get_config_value('strength', 'min'))
 
     output = make_output_name(
+        context,
         'inpaint',
         params,
         size,
@@ -539,10 +543,11 @@ def upscale():
     upscale = upscale_from_request(params.provider)
 
     output = make_output_name(
+        context,
         'upscale',
         params,
         size)
-    logger.info("upscale output: %s", output)
+    logger.info("upscale job queued for: %s", output)
 
     source_image.thumbnail((size.width, size.height))
     executor.submit_stored(output, run_upscale_pipeline,
@@ -563,7 +568,11 @@ def chain():
 
     # get defaults from the regular parameters
     params, size = pipeline_from_request()
-    output = make_output_name('chain', params, size)
+    output = make_output_name(
+        context,
+        'chain',
+        params,
+        size)
 
     pipeline = ChainPipeline()
     for stage_data in data.get('stages', []):
@@ -574,7 +583,7 @@ def chain():
         stage = StageParams(
             stage_data.get('name', callback.__name__),
             tile_size=get_size(kwargs.get('tile_size')),
-            outscale=get_and_clamp_int(kwargs,'outscale', 1, 4),
+            outscale=get_and_clamp_int(kwargs, 'outscale', 1, 4),
         )
 
         if 'border' in kwargs:

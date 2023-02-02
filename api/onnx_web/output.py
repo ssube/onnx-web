@@ -20,6 +20,7 @@ from .utils import (
 
 logger = getLogger(__name__)
 
+
 def hash_value(sha, param: Param):
     if param is None:
         return
@@ -62,6 +63,7 @@ def json_params(
 
 
 def make_output_name(
+    ctx: ServerContext,
     mode: str,
     params: ImageParams,
     size: Size,
@@ -86,11 +88,11 @@ def make_output_name(
         for param in extras:
             hash_value(sha, param)
 
-    return '%s_%s_%s_%s' % (mode, params.seed, sha.hexdigest(), now)
+    return '%s_%s_%s_%s.%s' % (mode, params.seed, sha.hexdigest(), now, ctx.image_format)
 
 
 def save_image(ctx: ServerContext, output: str, image: Image.Image) -> str:
-    path = base_join(ctx.output_path, '%s.%s' % (output, ctx.image_format))
+    path = base_join(ctx.output_path, output)
     image.save(path, format=ctx.image_format)
     logger.debug('saved output image to: %s', path)
     return path
