@@ -37,7 +37,7 @@ def json_params(
         json['border'] = border.tojson()
         size = size.add_border(border)
 
-    json['size'] = size
+    json['size'] = size.tojson()
 
     return json
 
