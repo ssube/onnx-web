@@ -21,22 +21,25 @@ def json_params(
     upscale: Optional[UpscaleParams] = None,
     border: Optional[Border] = None,
 ) -> Any:
+    json = {
+        'output': output,
+        'params': params.tojson(),
+    }
+
     if upscale is not None and border is not None:
         size = upscale.resize(size.add_border(border))
 
     if upscale is not None:
+        json['upscale'] = upscale.tojson()
         size = upscale.resize(size)
 
     if border is not None:
+        json['border'] = border.tojson()
         size = size.add_border(border)
 
-    return {
-        'border': border.tojson(),
-        'output': output,
-        'params': params.tojson(),
-        'size': size.tojson(),
-        'upscale': upscale.tojson(),
-    }
+    json['size'] = size
+
+    return
 
 
 def save_image(ctx: ServerContext, output: str, image: Image.Image) -> str:

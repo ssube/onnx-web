@@ -28,6 +28,14 @@ class Border:
     def __str__(self) -> str:
         return '%s %s %s %s' % (self.left, self.top, self.right, self.bottom)
 
+    def tojson(self):
+        return {
+            'left': self.left,
+            'right': self.right,
+            'top': self.top,
+            'bottom': self.bottom,
+        }
+
     @classmethod
     def even(cls, all: int):
         return Border(all, all, all, all)
@@ -149,3 +157,11 @@ class UpscaleParams():
 
     def resize(self, size: Size) -> Size:
         return Size(size.width * self.outscale, size.height * self.outscale)
+
+    def tojson(self):
+        return {
+            'model': self.upscale_model,
+            'scale': self.scale,
+            'outscale': self.outscale,
+            # TODO: add more
+        }
