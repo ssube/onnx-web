@@ -21,11 +21,20 @@ def json_params(
     upscale: Optional[UpscaleParams] = None,
     border: Optional[Border] = None,
 ) -> Any:
+    if upscale is not None and border is not None:
+        size = upscale.resize(size.add_border(border))
+
+    if upscale is not None:
+        size = upscale.resize(size)
+
+    if border is not None:
+        size = size.add_border(border)
+
     return {
         'border': border.tojson(),
         'output': output,
         'params': params.tojson(),
-        'size': upscale.resize(size.add_border(border)).tojson(),
+        'size': size.tojson(),
         'upscale': upscale.tojson(),
     }
 
