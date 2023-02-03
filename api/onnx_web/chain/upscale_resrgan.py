@@ -81,7 +81,7 @@ def upscale_resrgan(
     upscale: UpscaleParams,
     **kwargs,
 ) -> Image.Image:
-    logger.info('upscaling image with Real ESRGAN', upscale.scale)
+    logger.info('upscaling image with Real ESRGAN: x%s', upscale.scale)
 
     output = np.array(source_image)
     upsampler = load_resrgan(ctx, upscale, tile=stage.tile_size)
@@ -89,5 +89,5 @@ def upscale_resrgan(
     output, _ = upsampler.enhance(output, outscale=upscale.outscale)
 
     output = Image.fromarray(output, 'RGB')
-    logger.info('final output image size', output.size)
+    logger.info('final output image size: %sx%s', output.width, output.height)
     return output
