@@ -42,6 +42,8 @@ def load_gfpgan(ctx: ServerContext, upscale: UpscaleParams, upsampler: Optional[
         logger.info('reusing existing GFPGAN pipeline')
         return last_pipeline_instance
 
+    logger.debug('loading GFPGAN model from %s', face_path)
+
     # TODO: find a way to pass the ONNX model to underlying architectures
     gfpgan = GFPGANer(
         model_path=face_path,

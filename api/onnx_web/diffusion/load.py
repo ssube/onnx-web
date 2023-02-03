@@ -52,15 +52,15 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
 
     options = (pipeline, model, provider)
     if last_pipeline_instance != None and last_pipeline_options == options:
-        logger.info('reusing existing diffusion pipeline')
+        logger.debug('reusing existing diffusion pipeline')
         pipe = last_pipeline_instance
     else:
-        logger.info('unloading previous diffusion pipeline')
+        logger.debug('unloading previous diffusion pipeline')
         last_pipeline_instance = None
         last_pipeline_scheduler = None
         run_gc()
 
-        logger.info('loading new diffusion pipeline')
+        logger.debug('loading new diffusion pipeline from %s', model)
         pipe = pipeline.from_pretrained(
             model,
             provider=provider,
@@ -76,7 +76,7 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         last_pipeline_scheduler = scheduler
 
     if last_pipeline_scheduler != scheduler:
-        logger.info('loading new diffusion scheduler')
+        logger.debug('loading new diffusion scheduler')
         scheduler = scheduler.from_pretrained(
             model, subfolder='scheduler')
 

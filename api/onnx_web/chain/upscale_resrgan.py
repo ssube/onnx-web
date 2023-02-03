@@ -54,10 +54,13 @@ def load_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
         model_path = [model_path, wdn_model_path]
         dni_weight = [params.denoise, 1 - params.denoise]
 
+    logger.debug('loading Real ESRGAN upscale model from %s', model_path)
+
     # TODO: shouldn't need the PTH file
+    model_path_pth = path.join(ctx.model_path, '%s.pth' % params.upscale_model)
     upsampler = RealESRGANer(
         scale=params.scale,
-        model_path=path.join(ctx.model_path, '%s.pth' % params.upscale_model),
+        model_path=model_path_pth,
         dni_weight=dni_weight,
         model=model,
         tile=tile,

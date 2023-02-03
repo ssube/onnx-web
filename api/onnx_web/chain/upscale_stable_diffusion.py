@@ -39,8 +39,10 @@ def load_stable_diffusion(ctx: ServerContext, upscale: UpscaleParams):
         return last_pipeline_instance
 
     if upscale.format == 'onnx':
+        logger.debug('loading Stable Diffusion upscale ONNX model from %s, using provider %s', model_path, upscale.provider)
         pipeline = OnnxStableDiffusionUpscalePipeline.from_pretrained(model_path, provider=upscale.provider)
     else:
+        logger.debug('loading Stable Diffusion upscale model from %s, using provider %s', model_path, upscale.provider)
         pipeline = StableDiffusionUpscalePipeline.from_pretrained(model_path, provider=upscale.provider)
 
     last_pipeline_instance = pipeline
