@@ -1,9 +1,8 @@
-from logging import getLogger
 from logging.config import dictConfig
-from os import path
+from os import environ, path
 from yaml import safe_load
 
-logging_path = './logging.yaml'
+logging_path = environ.get('ONNX_WEB_LOGGING_PATH', './logging.yaml')
 
 # setup logging config before anything else loads
 try:
