@@ -86,10 +86,8 @@ def upscale_outpaint(
             save_image(ctx, 'tile-source.png', image)
             save_image(ctx, 'tile-mask.png', mask)
 
-        # TODO: must use inpainting model here
-        model = '../models/stable-diffusion-onnx-v1-inpainting'
         pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
-                             model, params.provider, params.scheduler)
+                             params.model, params.provider, params.scheduler)
 
         latents = get_tile_latents(full_latents, dims)
         rng = np.random.RandomState(params.seed)
