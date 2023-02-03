@@ -38,7 +38,7 @@
   },
   "height": {
     "default": 512,
-    "min": 64,
+    "min": 256,
     "max": 1024,
     "step": 8
   },
@@ -120,7 +120,7 @@
   },
   "width": {
     "default": 512,
-    "min": 64,
+    "min": 256,
     "max": 1024,
     "step": 8
   }
