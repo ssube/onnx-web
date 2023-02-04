@@ -125,5 +125,14 @@ class DevicePoolExecutor:
         job = Job(key, future, context)
         self.jobs.append(job)
 
+        def job_done(f: Future):
+            try:
+                f.result()
+                logger.info('job %s finished successfully', key)
+            except Exception as err:
+                logger.warn('job %s failed with an error: %s', key, err)
+
+        future.add_done_callback(job_done)
+
     def status(self) -> Dict[str, Tuple[bool, int]]:
         return [(job.key, job.future.done(), job.get_progress()) for job in self.jobs]
