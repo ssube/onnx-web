@@ -1,10 +1,12 @@
 from datetime import timedelta
 from logging import getLogger
 from PIL import Image
-from os import path
 from time import monotonic
 from typing import Any, List, Optional, Protocol, Tuple
 
+from ..device_pool import (
+    JobContext,
+)
 from ..params import (
     ImageParams,
     StageParams,
@@ -59,7 +61,7 @@ class ChainPipeline:
         '''
         self.stages.append(stage)
 
-    def __call__(self, ctx: ServerContext, params: ImageParams, source: Image.Image, **pipeline_kwargs) -> Image.Image:
+    def __call__(self, job: JobContext, server: ServerContext, params: ImageParams, source: Image.Image, **pipeline_kwargs) -> Image.Image:
         '''
         TODO: handle List[Image] outputs
         '''
@@ -81,11 +83,11 @@ class ChainPipeline:
                             stage_params.tile_size)
 
                 def stage_tile(tile: Image.Image, _dims) -> Image.Image:
-                    tile = stage_pipe(ctx, stage_params, params, tile,
+                    tile = stage_pipe(server, stage_params, params, tile,
                                       **kwargs)
 
                     if is_debug():
-                        save_image(ctx, 'last-tile.png', tile)
+                        save_image(server, 'last-tile.png', tile)
 
                     return tile
 
@@ -93,14 +95,14 @@ class ChainPipeline:
                     image, stage_params.tile_size, stage_params.outscale, [stage_tile])
             else:
                 logger.info('image within tile size, running stage')
-                image = stage_pipe(ctx, stage_params, params, image,
+                image = stage_pipe(server, stage_params, params, image,
                                    **kwargs)
 
             logger.info('finished stage %s, result size: %sx%s',
                         name, image.width, image.height)
 
             if is_debug():
-                save_image(ctx, 'last-stage.png', image)
+                save_image(server, 'last-stage.png', image)
 
         end = monotonic()
         duration = timedelta(seconds=(end - start))
