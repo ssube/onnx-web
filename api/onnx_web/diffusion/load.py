@@ -68,7 +68,7 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
             scheduler=scheduler.from_pretrained(model, subfolder='scheduler')
         )
 
-        if device is not None:
+        if device is not None and hasattr(pipe, 'to'):
             pipe = pipe.to(device)
 
         last_pipeline_instance = pipe
@@ -80,7 +80,7 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         scheduler = scheduler.from_pretrained(
             model, subfolder='scheduler')
 
-        if device is not None:
+        if device is not None and hasattr(scheduler, 'to'):
             scheduler = scheduler.to(device)
 
         pipe.scheduler = scheduler
