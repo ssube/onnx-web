@@ -322,7 +322,7 @@ def load_platforms():
             else:
                 available_platforms.append(DeviceParams(potential, platform_providers[potential]))
 
-    logger.info('available acceleration platforms: %s', available_platforms)
+    logger.info('available acceleration platforms: %s', ', '.join([str(p) for p in available_platforms]))
 
 
 context = ServerContext.from_environ()

@@ -101,11 +101,11 @@ class DevicePoolExecutor:
         device_count = len(devices)
         if pool is None:
             logger.info(
-                'creating thread pool executor for %s devices: %s', device_count, devices)
+                'creating thread pool executor for %s devices: %s', device_count, [d.device for d in devices])
             self.pool = ThreadPoolExecutor(device_count)
         else:
             logger.info('using existing pool for %s devices: %s',
-                        device_count, devices)
+                        device_count, [d.device for d in devices])
             self.pool = pool
 
     def cancel(self, key: str) -> bool:
