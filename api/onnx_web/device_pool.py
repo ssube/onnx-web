@@ -76,7 +76,7 @@ class DevicePoolExecutor:
     jobs: List[Job] = None
     pool: Union[ProcessPoolExecutor, ThreadPoolExecutor] = None
 
-    def __init__(self, devices: List[str], pool: Optional[Union[ProcessPoolExecutor, ThreadPoolExecutor]]):
+    def __init__(self, devices: List[str], pool: Optional[Union[ProcessPoolExecutor, ThreadPoolExecutor]] = None):
         self.devices = devices
         self.jobs = []
         self.pool = pool or ThreadPoolExecutor(len(devices))
