@@ -156,7 +156,11 @@ class DevicePoolExecutor:
         queued = job_counts.most_common()
         logger.debug('jobs queued by device: %s', queued)
 
-        return queued[-1][0]
+        lowest_count = queued[-1][1]
+        lowest_devices = [d[0] for d in queued if d[1] == lowest_count]
+        lowest_devices.sort()
+
+        return lowest_devices[0]
 
     def prune(self):
         self.jobs[:] = [job for job in self.jobs if job.future.done()]
