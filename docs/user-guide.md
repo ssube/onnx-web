@@ -69,6 +69,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Numpy invalid combination of arguments](#numpy-invalid-combination-of-arguments)
       - [ONNXRuntimeError: The parameter is incorrect](#onnxruntimeerror-the-parameter-is-incorrect)
       - [The expanded size of the tensor must match the existing size](#the-expanded-size-of-the-tensor-must-match-the-existing-size)
+      - [Shape mismatch attempting to re-use buffer](#shape-mismatch-attempting-to-re-use-buffer)
 
 ## Outline
 
@@ -560,4 +561,32 @@ Example error:
   File "C:\Users\ssube\stabdiff\onnx-web\api\onnx_env\lib\site-packages\realesrgan\utils.py", line 182, in tile_process
     self.output[:, :, output_start_y:output_end_y,
 RuntimeError: The expanded size of the tensor (2048) must match the existing size (1024) at non-singleton dimension 3.  Target sizes: [1, 3, 2048, 2048].  Tensor sizes: [3, 1024, 1024]
+```
+
+#### Shape mismatch attempting to re-use buffer
+
+This can happen when you accidentally try to run more than one pipeline on the same device at the same time.
+
+This often means that you need to set `ONNX_WEB_BLOCK_PLATFORMS` to remove the duplicates. You can try one of the
+following values, which will disable the _legacy_ platform names but _will not_ block hardware acceleration through
+the CUDA and DirectML platforms:
+
+```shell
+# for Windows:
+> set ONNX_WEB_BLOCK_PLATFORMS=amd,cpu,nvidia
+
+# for Linux:
+> export ONNX_WEB_BLOCK_PLATFORMS=amd,cpu,nvidia
+```
+
+Example error:
+
+```none
+[2023-02-04 12:32:54,388] DEBUG: onnx_web.device_pool: job txt2img_1495861691_ccc20fe082567fb4a3471a851db509dc25b4b933dde53db913351be0b617cf85_1675535574.png assigned to device amd
+[2023-02-04 12:32:54,388] DEBUG: onnx_web.diffusion.load: reusing existing diffusion pipeline
+
+023-02-04 12:32:54.4187694 [W:onnxruntime:, execution_frame.cc:604 onnxruntime::ExecutionFrame::AllocateMLValueTensorPreAllocateBuffer] Shape mismatch attempting to re-use buffer. {2,8,77
+,40} != {2,77,8}. Validate usage of dim_value (values should be > 0) and dim_param (all values with the same string should equate to the same size) in shapes in the model.
+[2023-02-04 12:32:54,432] INFO: werkzeug: 10.2.2.16 - - [04/Feb/2023 12:32:54] "GET /api/ready?output=txt2img_1495861691_ccc20fe082567fb4a3471a851db509dc25b4b933dde53db913351be0b617cf85_1
+675535574.png HTTP/1.1" 200 -
 ```
