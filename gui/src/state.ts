@@ -49,9 +49,10 @@ interface HistorySlice {
   // TODO: hack until setLoading removes things
   clearLoading(): void;
   pushHistory(image: ImageResponse): void;
+  pushLoading(image: ImageResponse): void;
   removeHistory(image: ImageResponse): void;
   setLimit(limit: number): void;
-  setLoading(image: ImageResponse, ready?: Maybe<ReadyResponse>): void;
+  setReady(image: ImageResponse, ready: ReadyResponse): void;
 }
 
 interface ModelSlice {
@@ -135,7 +136,7 @@ export const StateContext = createContext<Maybe<StoreApi<OnnxState>>>(undefined)
 /**
  * Current state version for zustand persistence.
  */
-export const STATE_VERSION = 4;
+export const STATE_VERSION = 5;
 
 /**
  * Default parameters for the inpaint brush.
@@ -289,21 +290,20 @@ export function createStateSlices(server: ServerParams) {
         loading: [],
       }));
     },
-    setLoading(image, ready) {
-      set((prev) => {
-        const loading = [...prev.loading];
-        const idx = loading.findIndex((it) => it.image.output.key === image.output.key);
-        if (idx >= 0) {
-          loading[idx].ready = ready;
-        } else {
-          loading.push({ image, ready });
-        }
-
-        return {
-          ...prev,
-          loading,
-        };
-      });
+    pushLoading(image) {
+      set((prev) => ({
+        ...prev,
+        loading: [
+          {
+            image,
+            ready: {
+              progress: 0,
+              ready: false,
+            },
+          },
+          ...prev.loading,
+        ],
+      }));
     },
     removeHistory(image) {
       set((prev) => ({
@@ -316,6 +316,22 @@ export function createStateSlices(server: ServerParams) {
         ...prev,
         limit,
       }));
+    },
+    setReady(image, ready) {
+      set((prev) => {
+        const loading = [...prev.loading];
+        const idx = loading.findIndex((it) => it.image.output.key === image.output.key);
+        if (idx >= 0) {
+          loading[idx].ready = ready;
+        } else {
+          // TODO: error
+        }
+
+        return {
+          ...prev,
+          loading,
+        };
+      });
     },
   });
 

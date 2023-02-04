@@ -33,7 +33,7 @@ export function Upscale() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setSource = useStore(state, (s) => s.setUpscaleTab);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setLoading = useStore(state, (s) => s.setLoading);
+  const setLoading = useStore(state, (s) => s.pushLoading);
 
   return <Box>
     <Stack spacing={2}>

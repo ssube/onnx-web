@@ -38,7 +38,7 @@ export function Img2Img() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setLoading = useStore(state, (s) => s.setLoading);
+  const setLoading = useStore(state, (s) => s.pushLoading);
 
   return <Box>
     <Stack spacing={2}>

@@ -503,7 +503,9 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const path = makeApiUrl(root, 'cancel');
       path.searchParams.append('output', params.output.key);
 
-      const res = await f(path);
+      const res = await f(path, {
+        method: 'PUT',
+      });
       return res.status === STATUS_SUCCESS;
     },
   };

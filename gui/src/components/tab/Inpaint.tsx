@@ -62,7 +62,7 @@ export function Inpaint() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setInpaint = useStore(state, (s) => s.setInpaint);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setLoading = useStore(state, (s) => s.setLoading);
+  const setLoading = useStore(state, (s) => s.pushLoading);
 
   const query = useQueryClient();
   const upload = useMutation(uploadSource, {
