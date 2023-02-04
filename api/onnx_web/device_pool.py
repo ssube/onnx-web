@@ -92,8 +92,7 @@ class DevicePoolExecutor:
                 if job.future.cancel():
                     return True
                 else:
-                    with job.cancel.get_lock():
-                        job.cancel.value = True
+                    job.set_cancel()
 
     def done(self, key: str) -> bool:
         for job in self.jobs:
