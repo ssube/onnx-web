@@ -1,10 +1,12 @@
+### Specific versions ###
+numpy>=1.20,<1.24
+protobuf<4,>=3.20.2
+
 ### AI packages ###
 accelerate
 diffusers
-numpy>=1.20,<1.24
 onnx
 onnxruntime
-protobuf<4,>=3.20.2
 transformers
 
 #### Upscaling and face correction
@@ -17,6 +19,5 @@ realesrgan
 boto3
 flask
 flask-cors
-flask_executor
 jsonschema
 pyyaml
