@@ -29,7 +29,7 @@ export function LoadingCard(props: LoadingCardProps) {
   const setReady = useStore(state, (s) => s.setReady);
 
   const cancel = useMutation(() => client.cancel(props.loading));
-  const ready = useQuery('ready', () => client.ready(props.loading), {
+  const ready = useQuery(`ready-${props.loading.output.key}`, () => client.ready(props.loading), {
     // data will always be ready without this, even if the API says its not
     cacheTime: 0,
     refetchInterval: POLL_TIME,
@@ -90,7 +90,7 @@ export function LoadingCard(props: LoadingCardProps) {
           sx={{ alignItems: 'center' }}
         >
           {renderProgress()}
-          <Typography>{getProgress()} of {props.loading.params.steps}</Typography>
+          <Typography>{getProgress()}/{props.loading.params.steps} steps</Typography>
           <Button onClick={() => cancel.mutate()}>Cancel</Button>
         </Stack>
       </Box>
