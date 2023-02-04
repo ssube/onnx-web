@@ -331,8 +331,9 @@ if is_debug():
     gc.set_debug(gc.DEBUG_STATS)
 
 
-def ready_reply(ready: bool):
+def ready_reply(ready: bool, progress: int = 0):
     return jsonify({
+        'progress': progress,
         'ready': ready,
     })
 
@@ -609,14 +610,14 @@ def chain():
 def ready():
     output_file = request.args.get('output', None)
 
-    done = executor.done(output_file)
+    done, progress = executor.done(output_file)
 
     if done is None:
         file = base_join(context.output_path, output_file)
         if path.exists(file):
             return ready_reply(True)
 
-    return ready_reply(done)
+    return ready_reply(done, progress=progress)
 
 
 @app.route('/api/cancel', methods=['PUT'])
