@@ -606,6 +606,15 @@ def chain():
     return jsonify(json_params(output, params, size))
 
 
+@app.route('/api/cancel', methods=['PUT'])
+def cancel():
+    output_file = request.args.get('output', None)
+
+    cancel = executor.cancel(output_file)
+
+    return ready_reply(cancel)
+
+
 @app.route('/api/ready')
 def ready():
     output_file = request.args.get('output', None)
@@ -620,13 +629,9 @@ def ready():
     return ready_reply(done, progress=progress)
 
 
-@app.route('/api/cancel', methods=['PUT'])
-def cancel():
-    output_file = request.args.get('output', None)
-
-    cancel = executor.cancel(output_file)
-
-    return ready_reply(cancel)
+@app.route('/api/status')
+def status():
+    return jsonify(executor.status())
 
 
 @app.route('/output/<path:filename>')

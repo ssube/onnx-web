@@ -1,7 +1,7 @@
 from concurrent.futures import Future, ThreadPoolExecutor, ProcessPoolExecutor
 from logging import getLogger
 from multiprocessing import Value
-from typing import Any, Callable, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 logger = getLogger(__name__)
 
@@ -121,3 +121,6 @@ class DevicePoolExecutor:
         future = self.pool.submit(fn, context, *args, **kwargs)
         job = Job(key, future, context)
         self.jobs.append(job)
+
+    def status(self) -> Dict[str, Tuple[bool, int]]:
+        return [(job.future.done(), job.get_progress()) for job in self.jobs]
