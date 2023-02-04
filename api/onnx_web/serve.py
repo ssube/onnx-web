@@ -569,7 +569,8 @@ def upscale():
 
 @app.route('/api/chain', methods=['POST'])
 def chain():
-    data = request.json
+    body = request.form.get('chain')
+    data = yaml.safe_load(body)
 
     with open('./schema.yaml', 'r') as f:
         schema = yaml.safe_load(f.read())
