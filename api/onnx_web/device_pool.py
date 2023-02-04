@@ -139,7 +139,7 @@ class DevicePoolExecutor:
         if len(self.jobs) == 0:
             return 0
 
-        job_devices = [job.context.device_index.value for job in self.jobs]
+        job_devices = [job.context.device_index.value for job in self.jobs if not job.future.done()]
         job_counts = Counter(range(len(self.devices)))
         job_counts.update(job_devices)
 
