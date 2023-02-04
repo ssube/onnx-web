@@ -62,7 +62,7 @@ export function LoadingCard(props: LoadingCardProps) {
 
   useEffect(() => {
     if (cancel.status === 'success') {
-      clearLoading();
+      clearLoading(props.loading);
     }
   }, [cancel.status]);
 

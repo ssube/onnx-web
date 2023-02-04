@@ -46,12 +46,14 @@ interface HistorySlice {
   limit: number;
   loading: Array<LoadingItem>;
 
-  // TODO: hack until setLoading removes things
-  clearLoading(): void;
+  clearLoading(image: ImageResponse): void;
   pushHistory(image: ImageResponse): void;
   pushLoading(image: ImageResponse): void;
   removeHistory(image: ImageResponse): void;
   setLimit(limit: number): void;
+  /**
+   * @todo should check ready and move the image from loading to history
+   */
   setReady(image: ImageResponse, ready: ReadyResponse): void;
 }
 
@@ -274,10 +276,10 @@ export function createStateSlices(server: ServerParams) {
     history: [],
     limit: DEFAULT_HISTORY.limit,
     loading: [],
-    clearLoading() {
+    clearLoading(image) {
       set((prev) => ({
         ...prev,
-        loading: [],
+        loading: prev.loading.filter((it) => it.image.output.key !== image.output.key),
       }));
     },
     pushHistory(image) {
@@ -287,7 +289,7 @@ export function createStateSlices(server: ServerParams) {
           image,
           ...prev.history,
         ].slice(0, prev.limit + DEFAULT_HISTORY.scrollback),
-        loading: [],
+        loading: prev.loading.filter((it) => it.image.output.key !== image.output.key),
       }));
     },
     pushLoading(image) {
