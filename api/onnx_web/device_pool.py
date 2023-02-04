@@ -135,8 +135,15 @@ class DevicePoolExecutor:
         return (None, 0)
 
     def get_next_device(self):
+        # use the first/default device if there are no jobs
+        if len(self.jobs) == 0:
+            return 0
+
         job_devices = [job.context.device_index.value for job in self.jobs]
-        queued = Counter(job_devices).most_common()
+        job_counts = Counter(range(len(self.devices)))
+        job_counts.update(job_devices)
+
+        queued = job_counts.most_common()
         logger.debug('jobs queued by device: %s', queued)
 
         return queued[-1]

@@ -15,6 +15,7 @@ from diffusers import (
 )
 from flask import Flask, jsonify, make_response, request, send_from_directory, url_for
 from flask_cors import CORS
+from functools import cmp_to_key
 from glob import glob
 from io import BytesIO
 from jsonschema import validate
@@ -332,6 +333,19 @@ def load_platforms():
             else:
                 available_platforms.append(DeviceParams(
                     potential, platform_providers[potential]))
+
+    # make sure CPU is last on the list
+    def cpu_last(a: DeviceParams, b: DeviceParams):
+        if a.device == 'cpu' and b.device == 'cpu':
+            return 0
+
+        if a.device == 'cpu':
+            return 1
+
+        return -1
+
+
+    available_platforms = sorted(available_platforms, key=cmp_to_key(cpu_last))
 
     logger.info('available acceleration platforms: %s',
                 ', '.join([str(p) for p in available_platforms]))
