@@ -60,6 +60,9 @@ class JobContext:
 
 
 class Job:
+    '''
+    Link a future to its context.
+    '''
     def __init__(
         self,
         key: str,
@@ -71,13 +74,13 @@ class Job:
         self.key = key
 
     def get_progress(self) -> int:
-        self.context.get_progress()
+        return self.context.get_progress()
 
     def set_cancel(self, cancel: bool = True):
-        self.context.set_cancel(cancel)
+        return self.context.set_cancel(cancel)
 
     def set_progress(self, progress: int):
-        self.context.set_progress(progress)
+        return self.context.set_progress(progress)
 
 
 class DevicePoolExecutor:
@@ -123,4 +126,4 @@ class DevicePoolExecutor:
         self.jobs.append(job)
 
     def status(self) -> Dict[str, Tuple[bool, int]]:
-        return [(job.future.done(), job.get_progress()) for job in self.jobs]
+        return [(job.key, job.future.done(), job.get_progress()) for job in self.jobs]
