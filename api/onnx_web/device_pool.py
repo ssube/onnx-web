@@ -45,6 +45,7 @@ class JobContext:
             if self.is_cancelled():
                 raise Exception('job has been cancelled')
             else:
+                logger.debug('setting progress for job %s to %s', self.key, step)
                 self.set_progress(step)
 
         return on_progress
@@ -56,7 +57,6 @@ class JobContext:
     def set_progress(self, progress: int) -> None:
         with self.progress.get_lock():
             self.progress.value = progress
-            logger.debug('setting progress for job %s to %s', self.key, progress)
 
 
 class Job:
@@ -91,7 +91,14 @@ class DevicePoolExecutor:
     def __init__(self, devices: List[str], pool: Optional[Union[ProcessPoolExecutor, ThreadPoolExecutor]] = None):
         self.devices = devices
         self.jobs = []
-        self.pool = pool or ThreadPoolExecutor(len(devices))
+
+        device_count = len(devices)
+        if pool is None:
+            logger.info('creating thread pool executor for %s devices: %s', device_count, devices)
+            self.pool = ThreadPoolExecutor(device_count)
+        else:
+            logger.info('using existing pool for %s devices: %s', device_count, devices)
+            self.pool = pool
 
     def cancel(self, key: str) -> bool:
         '''
