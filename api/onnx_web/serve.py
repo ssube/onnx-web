@@ -569,9 +569,13 @@ def upscale():
 
 @app.route('/api/chain', methods=['POST'])
 def chain():
-    body = request.form.get('chain')
-    data = yaml.safe_load(body)
+    logger.debug('chain pipeline request: %s, %s',
+                 request.form.keys(), request.files.keys())
+    body = request.form.get('chain') or request.files.get('chain')
+    if body is None:
+        return error_reply('chain pipeline must have a body')
 
+    data = yaml.safe_load(body)
     with open('./schema.yaml', 'r') as f:
         schema = yaml.safe_load(f.read())
 
@@ -612,7 +616,7 @@ def chain():
         if stage_source_name in request.files:
             logger.debug('loading source image %s for pipeline stage %s',
                          stage_source_name, stage.name)
-            source_file = request.files.get('source')
+            source_file = request.files.get(stage_source_name)
             source_image = Image.open(
                 BytesIO(source_file.read())).convert('RGB')
             source_image = source_image.thumbnail((512, 512))
@@ -621,7 +625,7 @@ def chain():
         if stage_mask_name in request.files:
             logger.debug('loading mask image %s for pipeline stage %s',
                          stage_mask_name, stage.name)
-            mask_file = request.files.get('source')
+            mask_file = request.files.get(stage_mask_name)
             mask_image = Image.open(BytesIO(mask_file.read())).convert('RGB')
             mask_image = mask_image.thumbnail((512, 512))
             kwargs['mask_image'] = mask_image
