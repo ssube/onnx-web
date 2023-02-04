@@ -50,7 +50,7 @@ def run_txt2img_pipeline(
 ) -> None:
     device = job.get_device()
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
-                         params.model, params.provider, params.scheduler, device=device)
+                         params.model, device.provider, params.scheduler, device=device.torch_device())
 
     latents = get_latents_from_seed(params.seed, size)
     rng = np.random.RandomState(params.seed)
@@ -92,7 +92,7 @@ def run_img2img_pipeline(
 ) -> None:
     device = job.get_device()
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
-                         params.model, params.provider, params.scheduler, device=device)
+                         params.model, device.provider, params.scheduler, device=device.torch_device())
 
     rng = np.random.RandomState(params.seed)
 
@@ -137,8 +137,8 @@ def run_inpaint_pipeline(
     strength: float,
     fill_color: str,
 ) -> None:
-    device = job.get_device()
-    progress = job.get_progress_callback()
+    # device = job.get_device()
+    # progress = job.get_progress_callback()
     stage = StageParams()
 
     # TODO: pass device, progress
@@ -182,8 +182,8 @@ def run_upscale_pipeline(
     upscale: UpscaleParams,
     source_image: Image.Image,
 ) -> None:
-    device = job.get_device()
-    progress = job.get_progress_callback()
+    # device = job.get_device()
+    # progress = job.get_progress_callback()
     stage = StageParams()
 
     # TODO: pass device, progress

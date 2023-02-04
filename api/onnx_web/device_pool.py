@@ -3,6 +3,10 @@ from logging import getLogger
 from multiprocessing import Value
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
+from .params import (
+    DeviceParams,
+)
+
 logger = getLogger(__name__)
 
 
@@ -10,7 +14,7 @@ class JobContext:
     def __init__(
         self,
         key: str,
-        devices: List[str],
+        devices: List[DeviceParams],
         cancel: bool = False,
         device_index: int = -1,
         progress: int = 0,
@@ -24,7 +28,7 @@ class JobContext:
     def is_cancelled(self) -> bool:
         return self.cancel.value
 
-    def get_device(self) -> str:
+    def get_device(self) -> DeviceParams:
         '''
         Get the device assigned to this job.
         '''
@@ -45,7 +49,8 @@ class JobContext:
             if self.is_cancelled():
                 raise Exception('job has been cancelled')
             else:
-                logger.debug('setting progress for job %s to %s', self.key, step)
+                logger.debug('setting progress for job %s to %s',
+                             self.key, step)
                 self.set_progress(step)
 
         return on_progress
@@ -63,6 +68,7 @@ class Job:
     '''
     Link a future to its context.
     '''
+
     def __init__(
         self,
         key: str,
@@ -88,16 +94,18 @@ class DevicePoolExecutor:
     jobs: List[Job] = None
     pool: Union[ProcessPoolExecutor, ThreadPoolExecutor] = None
 
-    def __init__(self, devices: List[str], pool: Optional[Union[ProcessPoolExecutor, ThreadPoolExecutor]] = None):
+    def __init__(self, devices: List[DeviceParams], pool: Optional[Union[ProcessPoolExecutor, ThreadPoolExecutor]] = None):
         self.devices = devices
         self.jobs = []
 
         device_count = len(devices)
         if pool is None:
-            logger.info('creating thread pool executor for %s devices: %s', device_count, devices)
+            logger.info(
+                'creating thread pool executor for %s devices: %s', device_count, devices)
             self.pool = ThreadPoolExecutor(device_count)
         else:
-            logger.info('using existing pool for %s devices: %s', device_count, devices)
+            logger.info('using existing pool for %s devices: %s',
+                        device_count, devices)
             self.pool = pool
 
     def cancel(self, key: str) -> bool:

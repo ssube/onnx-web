@@ -59,6 +59,19 @@ class Size:
         }
 
 
+class DeviceParams:
+    def __init__(self, device: str, provider: str, options: Optional[dict] = None) -> None:
+        self.device = device
+        self.provider = provider
+        self.options = options
+
+    def torch_device(self) -> str:
+        if self.device.startswith('cuda'):
+            return self.device
+        else:
+            return 'cpu'
+
+
 class ImageParams:
     def __init__(
         self,

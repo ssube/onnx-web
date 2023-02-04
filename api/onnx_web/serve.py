@@ -15,7 +15,6 @@ from diffusers import (
 )
 from flask import Flask, jsonify, make_response, request, send_from_directory, url_for
 from flask_cors import CORS
-from flask_executor import Executor
 from glob import glob
 from io import BytesIO
 from jsonschema import validate
@@ -23,7 +22,7 @@ from logging import getLogger
 from PIL import Image
 from onnxruntime import get_available_providers
 from os import makedirs, path
-from typing import Tuple
+from typing import List, Tuple
 
 
 from .chain import (
@@ -69,6 +68,7 @@ from .output import (
 )
 from .params import (
     Border,
+    DeviceParams,
     ImageParams,
     Size,
     StageParams,
@@ -88,6 +88,7 @@ from .utils import (
 
 import gc
 import numpy as np
+import torch
 import yaml
 
 logger = getLogger(__name__)
@@ -147,7 +148,7 @@ chain_stages = {
 }
 
 # Available ORT providers
-available_platforms = []
+available_platforms: List[DeviceParams] = []
 
 # loaded from model_path
 diffusion_models = []
@@ -310,8 +311,16 @@ def load_platforms():
     global available_platforms
 
     providers = get_available_providers()
-    available_platforms = [p for p in platform_providers if (
-        platform_providers[p] in providers and p not in context.block_platforms)]
+
+    for potential in platform_providers:
+        if platform_providers[potential] in providers and potential not in context.block_platforms:
+            if potential == 'cuda':
+                for i in range(torch.cuda.device_count()):
+                    available_platforms.append(DeviceParams('%s:%s' % (potential, i), providers[potential], {
+                        'device_id': i,
+                    }))
+            else:
+                available_platforms.append(DeviceParams(potential, providers[potential]))
 
     logger.info('available acceleration platforms: %s', available_platforms)
 
@@ -404,7 +413,7 @@ def list_params():
 
 @app.route('/api/settings/platforms')
 def list_platforms():
-    return jsonify(list(available_platforms))
+    return jsonify([p.device for p in available_platforms])
 
 
 @app.route('/api/settings/schedulers')
