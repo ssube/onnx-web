@@ -225,7 +225,7 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
     logger.info("request from %s: %s rounds of %s using %s on %s, %sx%s, %s, %s - %s",
                 user, steps, scheduler.__name__, model_path, device.provider, width, height, cfg, seed, prompt)
 
-    params = ImageParams(model_path, scheduler, prompt,
+    params = ImageParams(model_path, device.provider, scheduler, prompt,
                          negative_prompt, cfg, steps, seed)
     size = Size(width, height)
     return (device, params, size)
