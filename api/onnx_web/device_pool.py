@@ -2,7 +2,7 @@ from collections import Counter
 from concurrent.futures import Future, ThreadPoolExecutor, ProcessPoolExecutor
 from logging import getLogger
 from multiprocessing import Value
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, List, Optional, Tuple, Union
 
 from .params import (
     DeviceParams,
@@ -12,11 +12,11 @@ logger = getLogger(__name__)
 
 
 class JobContext:
-    cancel: Value[bool] = None
-    device_index: Value[int] = None
+    cancel: Value = None
+    device_index: Value = None
     devices: List[DeviceParams] = None
     key: str = None
-    progress: Value[int] = None
+    progress: Value = None
 
     def __init__(
         self,
