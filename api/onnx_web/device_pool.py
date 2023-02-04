@@ -169,5 +169,5 @@ class DevicePoolExecutor:
 
         future.add_done_callback(job_done)
 
-    def status(self) -> Dict[str, Tuple[bool, int]]:
-        return [(job.key, job.future.done(), job.get_progress()) for job in self.jobs]
+    def status(self) -> List[Tuple[str, int, bool, int]]:
+        return [(job.key, job.context.device_index.value, job.future.done(), job.get_progress()) for job in self.jobs]
