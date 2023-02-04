@@ -41,6 +41,9 @@ from .chain import (
     upscale_stable_diffusion,
     ChainPipeline,
 )
+from .device_pool import (
+    DevicePoolExecutor,
+)
 from .diffusion.run import (
     run_img2img_pipeline,
     run_inpaint_pipeline,
@@ -320,20 +323,12 @@ load_params(context)
 load_platforms()
 
 app = Flask(__name__)
-app.config['EXECUTOR_MAX_WORKERS'] = context.num_workers
-app.config['EXECUTOR_PROPAGATE_EXCEPTIONS'] = True
-
 CORS(app, origins=context.cors_origin)
-executor = Executor(app)
+
+executor = DevicePoolExecutor(available_platforms)
 
 if is_debug():
     gc.set_debug(gc.DEBUG_STATS)
-
-
-# TODO: these two use context
-
-def get_model_path(model: str):
-    return base_join(context.model_path, model)
 
 
 def ready_reply(ready: bool):
@@ -348,6 +343,10 @@ def error_reply(err: str):
     }))
     response.status_code = 400
     return response
+
+
+def get_model_path(model: str):
+    return base_join(context.model_path, model)
 
 
 def serve_bundle_file(filename='index.html'):
@@ -439,8 +438,8 @@ def img2img():
     logger.info("img2img job queued for: %s", output)
 
     source_image.thumbnail((size.width, size.height))
-    executor.submit_stored(output, run_img2img_pipeline,
-                           context, params, output, upscale, source_image, strength)
+    executor.submit(output, run_img2img_pipeline,
+                    context, params, output, upscale, source_image, strength)
 
     return jsonify(json_params(output, params, size, upscale=upscale))
 
@@ -457,7 +456,7 @@ def txt2img():
         size)
     logger.info("txt2img job queued for: %s", output)
 
-    executor.submit_stored(
+    executor.submit(
         output, run_txt2img_pipeline, context, params, size, output, upscale)
 
     return jsonify(json_params(output, params, size, upscale=upscale))
@@ -512,7 +511,7 @@ def inpaint():
 
     source_image.thumbnail((size.width, size.height))
     mask_image.thumbnail((size.width, size.height))
-    executor.submit_stored(
+    executor.submit(
         output,
         run_inpaint_pipeline,
         context,
@@ -550,8 +549,8 @@ def upscale():
     logger.info("upscale job queued for: %s", output)
 
     source_image.thumbnail((size.width, size.height))
-    executor.submit_stored(output, run_upscale_pipeline,
-                           context, params, size, output, upscale, source_image)
+    executor.submit(output, run_upscale_pipeline,
+                    context, params, size, output, upscale, source_image)
 
     return jsonify(json_params(output, params, size, upscale=upscale))
 
@@ -600,8 +599,8 @@ def chain():
 
     # build and run chain pipeline
     empty_source = Image.new('RGB', (size.width, size.height))
-    executor.submit_stored(output, pipeline, context,
-                           params, empty_source, output=output, size=size)
+    executor.submit(output, pipeline, context,
+                    params, empty_source, output=output, size=size)
 
     return jsonify(json_params(output, params, size))
 
@@ -610,17 +609,23 @@ def chain():
 def ready():
     output_file = request.args.get('output', None)
 
-    done = executor.futures.done(output_file)
+    done = executor.done(output_file)
 
     if done is None:
         file = base_join(context.output_path, output_file)
         if path.exists(file):
             return ready_reply(True)
 
-    elif done == True:
-        executor.futures.pop(output_file)
-
     return ready_reply(done)
+
+
+@app.route('/api/cancel', methods=['PUT'])
+def cancel():
+    output_file = request.args.get('output', None)
+
+    cancel = executor.cancel(output_file)
+
+    return ready_reply(cancel)
 
 
 @app.route('/output/<path:filename>')

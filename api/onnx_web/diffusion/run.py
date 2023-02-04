@@ -9,6 +9,9 @@ from typing import Any
 from ..chain import (
     upscale_outpaint,
 )
+from ..device_pool import (
+    JobContext,
+)
 from ..params import (
     ImageParams,
     Border,
@@ -38,18 +41,21 @@ logger = getLogger(__name__)
 
 
 def run_txt2img_pipeline(
-    ctx: ServerContext,
+    job: JobContext,
+    server: ServerContext,
     params: ImageParams,
     size: Size,
     output: str,
     upscale: UpscaleParams
 ) -> None:
+    device = job.get_device()
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
-                         params.model, params.provider, params.scheduler)
+                         params.model, params.provider, params.scheduler, device=device)
 
     latents = get_latents_from_seed(params.seed, size)
     rng = np.random.RandomState(params.seed)
 
+    progress = job.get_progress_callback()
     result = pipe(
         params.prompt,
         height=size.height,
@@ -59,13 +65,14 @@ def run_txt2img_pipeline(
         latents=latents,
         negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
+        callback=progress,
     )
     image = result.images[0]
     image = run_upscale_correction(
-        ctx, StageParams(), params, image, upscale=upscale)
+        server, StageParams(), params, image, upscale=upscale)
 
-    dest = save_image(ctx, output, image)
-    save_params(ctx, output, params, size, upscale=upscale)
+    dest = save_image(server, output, image)
+    save_params(server, output, params, size, upscale=upscale)
 
     del image
     del result
@@ -75,18 +82,21 @@ def run_txt2img_pipeline(
 
 
 def run_img2img_pipeline(
-    ctx: ServerContext,
+    job: JobContext,
+    server: ServerContext,
     params: ImageParams,
     output: str,
     upscale: UpscaleParams,
     source_image: Image.Image,
     strength: float,
 ) -> None:
+    device = job.get_device()
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
-                         params.model, params.provider, params.scheduler)
+                         params.model, params.provider, params.scheduler, device=device)
 
     rng = np.random.RandomState(params.seed)
 
+    progress = job.get_progress_callback()
     result = pipe(
         params.prompt,
         generator=rng,
@@ -95,14 +105,15 @@ def run_img2img_pipeline(
         negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
         strength=strength,
+        callback=progress,
     )
     image = result.images[0]
     image = run_upscale_correction(
-        ctx, StageParams(), params, image, upscale=upscale)
+        server, StageParams(), params, image, upscale=upscale)
 
-    dest = save_image(ctx, output, image)
+    dest = save_image(server, output, image)
     size = Size(*source_image.size)
-    save_params(ctx, output, params, size, upscale=upscale)
+    save_params(server, output, params, size, upscale=upscale)
 
     del image
     del result
@@ -112,7 +123,8 @@ def run_img2img_pipeline(
 
 
 def run_inpaint_pipeline(
-    ctx: ServerContext,
+    job: JobContext,
+    server: ServerContext,
     params: ImageParams,
     size: Size,
     output: str,
@@ -125,9 +137,13 @@ def run_inpaint_pipeline(
     strength: float,
     fill_color: str,
 ) -> None:
+    device = job.get_device()
+    progress = job.get_progress_callback()
     stage = StageParams()
+
+    # TODO: pass device, progress
     image = upscale_outpaint(
-        ctx,
+        server,
         stage,
         params,
         source_image,
@@ -146,10 +162,10 @@ def run_inpaint_pipeline(
             'output image size does not match source, skipping post-blend')
 
     image = run_upscale_correction(
-        ctx, stage, params, image, upscale=upscale)
+        server, stage, params, image, upscale=upscale)
 
-    dest = save_image(ctx, output, image)
-    save_params(ctx, output, params, size, upscale=upscale, border=border)
+    dest = save_image(server, output, image)
+    save_params(server, output, params, size, upscale=upscale, border=border)
 
     del image
     run_gc()
@@ -158,18 +174,24 @@ def run_inpaint_pipeline(
 
 
 def run_upscale_pipeline(
-    ctx: ServerContext,
+    job: JobContext,
+    server: ServerContext,
     params: ImageParams,
     size: Size,
     output: str,
     upscale: UpscaleParams,
     source_image: Image.Image,
 ) -> None:
-    image = run_upscale_correction(
-        ctx, StageParams(), params, source_image, upscale=upscale)
+    device = job.get_device()
+    progress = job.get_progress_callback()
+    stage = StageParams()
 
-    dest = save_image(ctx, output, image)
-    save_params(ctx, output, params, size, upscale=upscale)
+    # TODO: pass device, progress
+    image = run_upscale_correction(
+        server, stage, params, source_image, upscale=upscale)
+
+    dest = save_image(server, output, image)
+    save_params(server, output, params, size, upscale=upscale)
 
     del image
     run_gc()
