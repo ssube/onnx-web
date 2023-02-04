@@ -304,12 +304,8 @@ export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
  * Make an API client using the given API root and fetch client.
  */
 export function makeClient(root: string, f = fetch): ApiClient {
-  let pending: Promise<ImageResponse> | undefined;
-
   function throttleRequest(url: URL, options: RequestInit): Promise<ImageResponse> {
-    return f(url, options).then((res) => parseApiResponse(root, res)).finally(() => {
-      pending = undefined;
-    });
+    return f(url, options).then((res) => parseApiResponse(root, res));
   }
 
   return {
@@ -344,10 +340,6 @@ export function makeClient(root: string, f = fetch): ApiClient {
       return await res.json() as Array<string>;
     },
     async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse> {
-      if (doesExist(pending)) {
-        return pending;
-      }
-
       const url = makeImageURL(root, 'img2img', params);
       appendModelToURL(url, model);
 
@@ -360,19 +352,13 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const body = new FormData();
       body.append('source', params.source, 'source');
 
-      pending = throttleRequest(url, {
+      // eslint-disable-next-line no-return-await
+      return await throttleRequest(url, {
         body,
         method: 'POST',
       });
-
-      // eslint-disable-next-line no-return-await
-      return await pending;
     },
     async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse> {
-      if (doesExist(pending)) {
-        return pending;
-      }
-
       const url = makeImageURL(root, 'txt2img', params);
       appendModelToURL(url, model);
 
@@ -388,18 +374,12 @@ export function makeClient(root: string, f = fetch): ApiClient {
         appendUpscaleToURL(url, upscale);
       }
 
-      pending = throttleRequest(url, {
+      // eslint-disable-next-line no-return-await
+      return await throttleRequest(url, {
         method: 'POST',
       });
-
-      // eslint-disable-next-line no-return-await
-      return await pending;
     },
     async inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams) {
-      if (doesExist(pending)) {
-        return pending;
-      }
-
       const url = makeImageURL(root, 'inpaint', params);
       appendModelToURL(url, model);
 
@@ -416,19 +396,13 @@ export function makeClient(root: string, f = fetch): ApiClient {
       body.append('mask', params.mask, 'mask');
       body.append('source', params.source, 'source');
 
-      pending = throttleRequest(url, {
+      // eslint-disable-next-line no-return-await
+      return await throttleRequest(url, {
         body,
         method: 'POST',
       });
-
-      // eslint-disable-next-line no-return-await
-      return await pending;
     },
     async outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams) {
-      if (doesExist(pending)) {
-        return pending;
-      }
-
       const url = makeImageURL(root, 'inpaint', params);
       appendModelToURL(url, model);
 
@@ -461,19 +435,13 @@ export function makeClient(root: string, f = fetch): ApiClient {
       body.append('mask', params.mask, 'mask');
       body.append('source', params.source, 'source');
 
-      pending = throttleRequest(url, {
+      // eslint-disable-next-line no-return-await
+      return await throttleRequest(url, {
         body,
         method: 'POST',
       });
-
-      // eslint-disable-next-line no-return-await
-      return await pending;
     },
     async upscale(model: ModelParams, params: UpscaleReqParams, upscale: UpscaleParams): Promise<ImageResponse> {
-      if (doesExist(pending)) {
-        return pending;
-      }
-
       const url = makeApiUrl(root, 'upscale');
       appendModelToURL(url, model);
 
@@ -484,13 +452,11 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const body = new FormData();
       body.append('source', params.source, 'source');
 
-      pending = throttleRequest(url, {
+      // eslint-disable-next-line no-return-await
+      return await throttleRequest(url, {
         body,
         method: 'POST',
       });
-
-      // eslint-disable-next-line no-return-await
-      return await pending;
     },
     async ready(params: ImageResponse): Promise<ReadyResponse> {
       const path = makeApiUrl(root, 'ready');
