@@ -33,7 +33,9 @@ class JobContext:
             if device_index < 0:
                 raise Exception('job has not been assigned to a device')
             else:
-                return self.devices[device_index]
+                device = self.devices[device_index]
+                logger.debug('job %s assigned to device %s', self.key, device)
+                return device
 
     def get_progress(self) -> int:
         return self.progress.value
@@ -54,6 +56,7 @@ class JobContext:
     def set_progress(self, progress: int) -> None:
         with self.progress.get_lock():
             self.progress.value = progress
+            logger.debug('setting progress for job %s to %s', self.key, progress)
 
 
 class Job:
