@@ -142,7 +142,10 @@ class DevicePoolExecutor:
         self.jobs[:] = [job for job in self.jobs if job.future.done()]
 
     def submit(self, key: str, fn: Callable[..., None], /, *args, **kwargs) -> None:
-        context = JobContext(key, self.devices, device_index=self.get_next_device())
+        device = self.get_next_device()
+        logger.info('assigning job %s to device %s', key, device)
+
+        context = JobContext(key, self.devices, device_index=device)
         future = self.pool.submit(fn, context, *args, **kwargs)
         job = Job(key, future, context)
         self.jobs.append(job)
