@@ -12,6 +12,7 @@
       "type": "upscale-outpaint",
       "params": {
         "border": 256,
+        "model": "stable-diffusion-onnx-v1-inpainting",
         "prompt": "a magical wizard in a robe fighting a dragon"
       }
     },

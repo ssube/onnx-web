@@ -7,6 +7,9 @@ from .chain import (
     upscale_resrgan,
     ChainPipeline,
 )
+from .device_pool import (
+    JobContext,
+)
 from .params import (
     ImageParams,
     SizeChart,
@@ -21,7 +24,8 @@ logger = getLogger(__name__)
 
 
 def run_upscale_correction(
-    ctx: ServerContext,
+    job: JobContext,
+    server: ServerContext,
     stage: StageParams,
     params: ImageParams,
     image: Image.Image,
@@ -51,4 +55,4 @@ def run_upscale_correction(
                             outscale=1)
         chain.append((correct_gfpgan, stage, None))
 
-    return chain(ctx, params, image, prompt=params.prompt, upscale=upscale)
+    return chain(job, server, params, image, prompt=params.prompt, upscale=upscale)

@@ -69,7 +69,7 @@ def run_txt2img_pipeline(
     )
     image = result.images[0]
     image = run_upscale_correction(
-        server, StageParams(), params, image, upscale=upscale)
+        job, server, StageParams(), params, image, upscale=upscale)
 
     dest = save_image(server, output, image)
     save_params(server, output, params, size, upscale=upscale)
@@ -109,7 +109,7 @@ def run_img2img_pipeline(
     )
     image = result.images[0]
     image = run_upscale_correction(
-        server, StageParams(), params, image, upscale=upscale)
+        job, server, StageParams(), params, image, upscale=upscale)
 
     dest = save_image(server, output, image)
     size = Size(*source_image.size)
@@ -141,7 +141,6 @@ def run_inpaint_pipeline(
     # progress = job.get_progress_callback()
     stage = StageParams()
 
-    # TODO: pass device, progress
     image = upscale_outpaint(
         server,
         stage,
@@ -162,7 +161,7 @@ def run_inpaint_pipeline(
             'output image size does not match source, skipping post-blend')
 
     image = run_upscale_correction(
-        server, stage, params, image, upscale=upscale)
+        job, server, stage, params, image, upscale=upscale)
 
     dest = save_image(server, output, image)
     save_params(server, output, params, size, upscale=upscale, border=border)
@@ -186,9 +185,8 @@ def run_upscale_pipeline(
     # progress = job.get_progress_callback()
     stage = StageParams()
 
-    # TODO: pass device, progress
     image = run_upscale_correction(
-        server, stage, params, source_image, upscale=upscale)
+        job, server, stage, params, source_image, upscale=upscale)
 
     dest = save_image(server, output, image)
     save_params(server, output, params, size, upscale=upscale)

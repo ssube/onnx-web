@@ -41,6 +41,7 @@ from .chain import (
     ChainPipeline,
 )
 from .device_pool import (
+    DeviceParams,
     DevicePoolExecutor,
 )
 from .diffusion.run import (
@@ -168,14 +169,23 @@ def url_from_rule(rule) -> str:
     return url_for(rule.endpoint, **options)
 
 
-def pipeline_from_request() -> Tuple[ImageParams, Size]:
+def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
     user = request.remote_addr
+
+    # platform stuff
+    device_name = request.args.get('platform', available_platforms[0].device)
+    device = None
+
+    for platform in available_platforms:
+        if platform.device == device_name:
+            device = available_platforms[0]
+
+    if device is None:
+        raise Exception('unknown device')
 
     # pipeline stuff
     model = get_not_empty(request.args, 'model', get_config_value('model'))
     model_path = get_model_path(model)
-    provider = get_from_map(request.args, 'platform',
-                            platform_providers, get_config_value('platform'))
     scheduler = get_from_map(request.args, 'scheduler',
                              pipeline_schedulers, get_config_value('scheduler'))
 
@@ -213,12 +223,12 @@ def pipeline_from_request() -> Tuple[ImageParams, Size]:
         seed = np.random.randint(np.iinfo(np.int32).max)
 
     logger.info("request from %s: %s rounds of %s using %s on %s, %sx%s, %s, %s - %s",
-                user, steps, scheduler.__name__, model_path, provider, width, height, cfg, seed, prompt)
+                user, steps, scheduler.__name__, model_path, device.provider, width, height, cfg, seed, prompt)
 
-    params = ImageParams(model_path, provider, scheduler, prompt,
+    params = ImageParams(model_path, scheduler, prompt,
                          negative_prompt, cfg, steps, seed)
     size = Size(width, height)
-    return (params, size)
+    return (device, params, size)
 
 
 def border_from_request() -> Border:
