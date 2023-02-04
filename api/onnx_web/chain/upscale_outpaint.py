@@ -75,14 +75,14 @@ def upscale_outpaint(
         latents = get_tile_latents(full_latents, dims)
         rng = np.random.RandomState(params.seed)
 
-        result = pipe(
+        result = pipe.inpaint(
+            image,
+            mask,
             prompt,
             generator=rng,
             guidance_scale=params.cfg,
             height=size.height,
-            image=image,
             latents=latents,
-            mask_image=mask,
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
             width=size.width,

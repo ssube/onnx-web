@@ -73,6 +73,8 @@ def load_pipeline(
             model,
             provider=device.provider,
             provider_options=device.options,
+            custom_pipeline='lpw_stable_diffusion_onnx',
+            revision='onnx',
             safety_checker=None,
             scheduler=scheduler,
         )

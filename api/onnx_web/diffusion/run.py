@@ -32,7 +32,7 @@ def run_txt2img_pipeline(
     rng = np.random.RandomState(params.seed)
 
     progress = job.get_progress_callback()
-    result = pipe(
+    result = pipe.txt2img(
         params.prompt,
         height=size.height,
         width=size.width,
@@ -77,11 +77,11 @@ def run_img2img_pipeline(
     rng = np.random.RandomState(params.seed)
 
     progress = job.get_progress_callback()
-    result = pipe(
+    result = pipe.img2img(
+        source_image,
         params.prompt,
         generator=rng,
         guidance_scale=params.cfg,
-        image=source_image,
         negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
         strength=strength,
