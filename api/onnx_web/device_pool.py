@@ -1,3 +1,4 @@
+from collections import Counter
 from concurrent.futures import Future, ThreadPoolExecutor, ProcessPoolExecutor
 from logging import getLogger
 from multiprocessing import Value
@@ -134,9 +135,11 @@ class DevicePoolExecutor:
         return (None, 0)
 
     def get_next_device(self):
-        device = self.next_device
-        self.next_device = (self.next_device + 1) % len(self.devices)
-        return device
+        job_devices = [job.context.device_index.value for job in self.jobs]
+        queued = Counter(job_devices).most_common()
+        logger.debug('jobs queued by device: %s', queued)
+
+        return queued[-1]
 
     def prune(self):
         self.jobs[:] = [job for job in self.jobs if job.future.done()]
