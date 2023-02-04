@@ -12,6 +12,12 @@ logger = getLogger(__name__)
 
 
 class JobContext:
+    cancel: Value[bool] = None
+    device_index: Value[int] = None
+    devices: List[DeviceParams] = None
+    key: str = None
+    progress: Value[int] = None
+
     def __init__(
         self,
         key: str,
@@ -69,6 +75,10 @@ class Job:
     '''
     Link a future to its context.
     '''
+
+    context: JobContext = None
+    future: Future = None
+    key: str = None
 
     def __init__(
         self,
