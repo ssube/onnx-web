@@ -141,6 +141,7 @@ export interface ImageResponse {
  * Status response from the ready endpoint.
  */
 export interface ReadyResponse {
+  progress: number;
   ready: boolean;
 }
 
@@ -213,6 +214,8 @@ export interface ApiClient {
    * Check whether some pipeline's output is ready yet.
    */
   ready(params: ImageResponse): Promise<ReadyResponse>;
+
+  cancel(params: ImageResponse): Promise<boolean>;
 }
 
 /**
@@ -495,7 +498,14 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       const res = await f(path);
       return await res.json() as ReadyResponse;
-    }
+    },
+    async cancel(params: ImageResponse): Promise<boolean> {
+      const path = makeApiUrl(root, 'cancel');
+      path.searchParams.append('output', params.output.key);
+
+      const res = await f(path);
+      return res.status === STATUS_SUCCESS;
+    },
   };
 }
 

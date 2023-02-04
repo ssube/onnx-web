@@ -1,5 +1,5 @@
 /* eslint-disable no-null/no-null */
-import { Maybe } from '@apextoaster/js-utils';
+import { doesExist, Maybe } from '@apextoaster/js-utils';
 import { createContext } from 'react';
 import { StateCreator, StoreApi } from 'zustand';
 
@@ -12,6 +12,7 @@ import {
   InpaintParams,
   ModelParams,
   OutpaintPixels,
+  ReadyResponse,
   Txt2ImgParams,
   UpscaleParams,
   UpscaleReqParams,
@@ -22,6 +23,11 @@ import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
  * Combine optional files and required ranges.
  */
 type TabState<TabParams> = ConfigFiles<Required<TabParams>> & ConfigState<Required<TabParams>>;
+
+interface LoadingItem {
+  image: ImageResponse;
+  ready: Maybe<ReadyResponse>;
+}
 
 interface BrushSlice {
   brush: BrushParams;
@@ -38,12 +44,14 @@ interface DefaultSlice {
 interface HistorySlice {
   history: Array<ImageResponse>;
   limit: number;
-  loading: Maybe<ImageResponse>;
+  loading: Array<LoadingItem>;
 
+  // TODO: hack until setLoading removes things
+  clearLoading(): void;
   pushHistory(image: ImageResponse): void;
   removeHistory(image: ImageResponse): void;
   setLimit(limit: number): void;
-  setLoading(image: Maybe<ImageResponse>): void;
+  setLoading(image: ImageResponse, ready?: Maybe<ReadyResponse>): void;
 }
 
 interface ModelSlice {
@@ -264,7 +272,13 @@ export function createStateSlices(server: ServerParams) {
   const createHistorySlice: Slice<HistorySlice> = (set) => ({
     history: [],
     limit: DEFAULT_HISTORY.limit,
-    loading: null,
+    loading: [],
+    clearLoading() {
+      set((prev) => ({
+        ...prev,
+        loading: [],
+      }));
+    },
     pushHistory(image) {
       set((prev) => ({
         ...prev,
@@ -272,8 +286,24 @@ export function createStateSlices(server: ServerParams) {
           image,
           ...prev.history,
         ].slice(0, prev.limit + DEFAULT_HISTORY.scrollback),
-        loading: null,
+        loading: [],
       }));
+    },
+    setLoading(image, ready) {
+      set((prev) => {
+        const loading = [...prev.loading];
+        const idx = loading.findIndex((it) => it.image.output.key === image.output.key);
+        if (idx >= 0) {
+          loading[idx].ready = ready;
+        } else {
+          loading.push({ image, ready });
+        }
+
+        return {
+          ...prev,
+          loading,
+        };
+      });
     },
     removeHistory(image) {
       set((prev) => ({
@@ -285,12 +315,6 @@ export function createStateSlices(server: ServerParams) {
       set((prev) => ({
         ...prev,
         limit,
-      }));
-    },
-    setLoading(loading) {
-      set((prev) => ({
-        ...prev,
-        loading,
       }));
     },
   });
