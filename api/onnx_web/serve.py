@@ -441,7 +441,7 @@ def img2img():
     source_file = request.files.get('source')
     source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
 
-    params, size = pipeline_from_request()
+    device, params, size = pipeline_from_request()
     upscale = upscale_from_request(params.provider)
 
     strength = get_and_clamp_float(
@@ -468,7 +468,7 @@ def img2img():
 
 @app.route('/api/txt2img', methods=['POST'])
 def txt2img():
-    params, size = pipeline_from_request()
+    device, params, size = pipeline_from_request()
     upscale = upscale_from_request(params.provider)
 
     output = make_output_name(
@@ -498,7 +498,7 @@ def inpaint():
     mask_file = request.files.get('mask')
     mask_image = Image.open(BytesIO(mask_file.read())).convert('RGB')
 
-    params, size = pipeline_from_request()
+    device, params, size = pipeline_from_request()
     expand = border_from_request()
     upscale = upscale_from_request(params.provider)
 
@@ -560,7 +560,7 @@ def upscale():
     source_file = request.files.get('source')
     source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
 
-    params, size = pipeline_from_request()
+    device, params, size = pipeline_from_request()
     upscale = upscale_from_request(params.provider)
 
     output = make_output_name(
@@ -593,7 +593,7 @@ def chain():
     validate(data, schema)
 
     # get defaults from the regular parameters
-    params, size = pipeline_from_request()
+    device, params, size = pipeline_from_request()
     output = make_output_name(
         context,
         'chain',
