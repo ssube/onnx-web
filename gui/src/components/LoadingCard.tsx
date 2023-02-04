@@ -1,5 +1,6 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Card, CardContent, CircularProgress, Typography } from '@mui/material';
+import { Stack } from '@mui/system';
 import * as React from 'react';
 import { useContext, useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
@@ -51,6 +52,14 @@ export function LoadingCard(props: LoadingCardProps) {
     return doesExist(ready.data) && ready.data.ready;
   }
 
+  function renderProgress() {
+    if (ready.status === 'success') {
+      return <CircularProgress variant='determinate' value={getPercent()} />;
+    } else {
+      return <CircularProgress />;
+    }
+  }
+
   useEffect(() => {
     if (cancel.status === 'success') {
       clearLoading();
@@ -75,9 +84,15 @@ export function LoadingCard(props: LoadingCardProps) {
         justifyContent: 'center',
         minHeight: params.height.default,
       }}>
-        <CircularProgress variant='determinate' value={getPercent()} />
-        <Typography>{getProgress()} of {props.loading.params.steps}</Typography>
-        <Button onClick={() => cancel.mutate()}>Cancel</Button>
+        <Stack
+          direction='column'
+          spacing={2}
+          sx={{ alignItems: 'center' }}
+        >
+          {renderProgress()}
+          <Typography>{getProgress()} of {props.loading.params.steps}</Typography>
+          <Button onClick={() => cancel.mutate()}>Cancel</Button>
+        </Stack>
       </Box>
     </CardContent>
   </Card>;
