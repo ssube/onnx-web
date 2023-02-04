@@ -316,11 +316,11 @@ def load_platforms():
         if platform_providers[potential] in providers and potential not in context.block_platforms:
             if potential == 'cuda':
                 for i in range(torch.cuda.device_count()):
-                    available_platforms.append(DeviceParams('%s:%s' % (potential, i), providers[potential], {
+                    available_platforms.append(DeviceParams('%s:%s' % (potential, i), platform_providers[potential], {
                         'device_id': i,
                     }))
             else:
-                available_platforms.append(DeviceParams(potential, providers[potential]))
+                available_platforms.append(DeviceParams(potential, platform_providers[potential]))
 
     logger.info('available acceleration platforms: %s', available_platforms)
 

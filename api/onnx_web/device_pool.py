@@ -90,7 +90,7 @@ class Job:
 
 
 class DevicePoolExecutor:
-    devices: List[str] = None
+    devices: List[DeviceParams] = None
     jobs: List[Job] = None
     pool: Union[ProcessPoolExecutor, ThreadPoolExecutor] = None
 
