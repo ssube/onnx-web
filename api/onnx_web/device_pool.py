@@ -192,7 +192,11 @@ class DevicePoolExecutor:
                 f.result()
                 logger.info("job %s finished successfully", key)
             except Exception as err:
-                logger.warn("job %s failed with an error: %s", key, format_exception(type(err), err, err.__traceback__))
+                logger.warn(
+                    "job %s failed with an error: %s",
+                    key,
+                    format_exception(type(err), err, err.__traceback__),
+                )
 
         future.add_done_callback(job_done)
 

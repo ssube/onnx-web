@@ -96,17 +96,17 @@ class ImageParams:
         self.prompt = prompt
         self.negative_prompt = negative_prompt
         self.cfg = cfg
-        self.steps = steps
         self.seed = seed
+        self.steps = steps
 
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
             "model": self.model,
             "scheduler": self.scheduler.__name__,
-            "seed": self.seed,
             "prompt": self.prompt,
-            "cfg": self.cfg,
             "negativePrompt": self.negative_prompt,
+            "cfg": self.cfg,
+            "seed": self.seed,
             "steps": self.steps,
         }
 
@@ -175,8 +175,15 @@ class UpscaleParams:
 
     def tojson(self):
         return {
-            "model": self.upscale_model,
-            "scale": self.scale,
+            "upscale_model": self.upscale_model,
+            "correction_model": self.correction_model,
+            "denoise": self.denoise,
+            "faces": self.faces,
+            "face_strength": self.face_strength,
+            "format": self.format,
+            "half": self.half,
             "outscale": self.outscale,
-            # TODO: add more
+            "pre_pad": self.pre_pad,
+            "scale": self.scale,
+            "tile_pad": self.tile_pad,
         }
