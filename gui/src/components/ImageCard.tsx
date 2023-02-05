@@ -1,8 +1,9 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
-import { Brush, ContentCopy, ContentCopyTwoTone, Delete, Download } from '@mui/icons-material';
-import { Box, Button, Card, CardContent, CardMedia, Grid, IconButton, Paper, Tooltip } from '@mui/material';
+import { Brush, ContentCopy, Delete, Download } from '@mui/icons-material';
+import { Box, Card, CardContent, CardMedia, Grid, IconButton, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
+import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
 import { ImageResponse } from '../client.js';
@@ -24,6 +25,7 @@ export function ImageCard(props: ImageCardProps) {
   const { value } = props;
   const { params, output, size } = value;
 
+  const [_hash, setHash] = useHash();
   const config = mustExist(useContext(ConfigContext));
   const state = mustExist(useContext(StateContext));
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -41,6 +43,7 @@ export function ImageCard(props: ImageCardProps) {
     setImg2Img({
       source: blob,
     });
+    setHash('img2img');
   }
 
   async function copySourceToInpaint() {
@@ -48,6 +51,7 @@ export function ImageCard(props: ImageCardProps) {
     setInpaint({
       source: blob,
     });
+    setHash('inpaint');
   }
 
   function deleteImage() {
