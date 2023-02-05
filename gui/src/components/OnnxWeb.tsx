@@ -1,7 +1,8 @@
+import { doesExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Container, Divider, Link, Tab, Typography } from '@mui/material';
 import * as React from 'react';
-import { useState } from 'react';
+import { useHash } from 'react-use/lib/useHash';
 
 import { ModelControl } from './control/ModelControl.js';
 import { ImageHistory } from './ImageHistory.js';
@@ -11,8 +12,22 @@ import { Settings } from './tab/Settings.js';
 import { Txt2Img } from './tab/Txt2Img.js';
 import { Upscale } from './tab/Upscale.js';
 
+const REMOVE_HASH = /^#?(.*)$/;
+
 export function OnnxWeb() {
-  const [tab, setTab] = useState('txt2img');
+  const [hash, setHash] = useHash();
+
+  function tab(): string {
+    const match = hash.match(REMOVE_HASH);
+    if (doesExist(match)) {
+      const [_full, route] = Array.from(match);
+      if (route.length > 0) {
+        return route;
+      }
+    }
+
+    return 'txt2img';
+  }
 
   return (
     <Container>
@@ -24,10 +39,10 @@ export function OnnxWeb() {
       <Box sx={{ mx: 4, my: 4 }}>
         <ModelControl />
       </Box>
-      <TabContext value={tab}>
+      <TabContext value={tab()}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={(_e, idx) => {
-            setTab(idx);
+            setHash(idx);
           }}>
             <Tab label='txt2img' value='txt2img' />
             <Tab label='img2img' value='img2img' />
