@@ -15,7 +15,7 @@ device = "cpu"
 def correct_codeformer(
     job: JobContext,
     _server: ServerContext,
-    _stage: StageParams,
+    stage: StageParams,
     _params: ImageParams,
     source: Image.Image,
     *,
@@ -26,5 +26,5 @@ def correct_codeformer(
     # TODO: terrible names, fix
     image = source or source_image
 
-    pipe = CodeFormer().to(device.torch_device())
+    pipe = CodeFormer(upscale=stage.outscale).to(device.torch_device())
     return pipe(image)
