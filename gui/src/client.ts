@@ -26,6 +26,11 @@ export interface ModelParams {
    * The correction model to use.
    */
   correction: string;
+
+  /**
+   * Use the long prompt weighting pipeline.
+   */
+  lpw: boolean;
 }
 
 /**
@@ -285,6 +290,7 @@ export function appendModelToURL(url: URL, params: ModelParams) {
   url.searchParams.append('platform', params.platform);
   url.searchParams.append('upscaling', params.upscaling);
   url.searchParams.append('correction', params.correction);
+  url.searchParams.append('lpw', String(params.lpw));
 }
 
 /**

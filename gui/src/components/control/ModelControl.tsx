@@ -1,5 +1,5 @@
 import { mustExist } from '@apextoaster/js-utils';
-import { Stack } from '@mui/material';
+import { Checkbox, FormControlLabel, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useQuery } from 'react-query';
@@ -84,6 +84,17 @@ export function ModelControl() {
         });
       }}
     />
-
+    <FormControlLabel
+      label='Long Prompt Weighting'
+      control={<Checkbox
+        checked={params.lpw}
+        value='check'
+        onChange={(event) => {
+          setModel({
+            lpw: params.lpw === false,
+          });
+        }}
+      />}
+    />
   </Stack>;
 }
