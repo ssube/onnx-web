@@ -32,27 +32,36 @@ def source_txt2img(
             "a source image was passed to a txt2img stage, but will be discarded"
         )
 
+    latents = get_latents_from_seed(params.seed, size)
     pipe = load_pipeline(
         OnnxStableDiffusionPipeline, params.model, params.scheduler, job.get_device(), params.lpw
     )
+
     if params.lpw:
-        pipe = pipe.text2img
         rng = torch.manual_seed(params.seed)
+        result = pipe.text2img(
+            prompt,
+            height=size.height,
+            width=size.width,
+            generator=rng,
+            guidance_scale=params.cfg,
+            latents=latents,
+            negative_prompt=params.negative_prompt,
+            num_inference_steps=params.steps,
+        )
     else:
         rng = np.random.RandomState(params.seed)
+        result = pipe(
+            prompt,
+            height=size.height,
+            width=size.width,
+            generator=rng,
+            guidance_scale=params.cfg,
+            latents=latents,
+            negative_prompt=params.negative_prompt,
+            num_inference_steps=params.steps,
+        )
 
-    latents = get_latents_from_seed(params.seed, size)
-
-    result = pipe(
-        prompt,
-        height=size.height,
-        width=size.width,
-        generator=rng,
-        guidance_scale=params.cfg,
-        latents=latents,
-        negative_prompt=params.negative_prompt,
-        num_inference_steps=params.steps,
-    )
     output = result.images[0]
 
     logger.info("final output image size: %sx%s", output.width, output.height)

@@ -25,29 +25,40 @@ def run_txt2img_pipeline(
     output: str,
     upscale: UpscaleParams,
 ) -> None:
+    latents = get_latents_from_seed(params.seed, size)
     pipe = load_pipeline(
         OnnxStableDiffusionPipeline, params.model, params.scheduler, job.get_device(), params.lpw
     )
+    progress = job.get_progress_callback()
+
     if params.lpw:
-        pipe = pipe.text2img
         rng = torch.manual_seed(params.seed)
+        result = pipe.text2img(
+            params.prompt,
+            height=size.height,
+            width=size.width,
+            generator=rng,
+            guidance_scale=params.cfg,
+            latents=latents,
+            negative_prompt=params.negative_prompt,
+            num_inference_steps=params.steps,
+            callback=progress,
+        )
     else:
         rng = np.random.RandomState(params.seed)
+        result = pipe(
+            params.prompt,
+            height=size.height,
+            width=size.width,
+            generator=rng,
+            guidance_scale=params.cfg,
+            latents=latents,
+            negative_prompt=params.negative_prompt,
+            num_inference_steps=params.steps,
+            callback=progress,
+        )
 
-    latents = get_latents_from_seed(params.seed, size)
 
-    progress = job.get_progress_callback()
-    result = pipe(
-        params.prompt,
-        height=size.height,
-        width=size.width,
-        generator=rng,
-        guidance_scale=params.cfg,
-        latents=latents,
-        negative_prompt=params.negative_prompt,
-        num_inference_steps=params.steps,
-        callback=progress,
-    )
     image = result.images[0]
     image = run_upscale_correction(
         job, server, StageParams(), params, image, upscale=upscale
@@ -79,24 +90,33 @@ def run_img2img_pipeline(
         job.get_device(),
         params.lpw
     )
+    progress = job.get_progress_callback()
     if params.lpw:
-        pipe = pipe.img2img
         rng = torch.manual_seed(params.seed)
+        result = pipe.img2img(
+            source_image,
+            params.prompt,
+            generator=rng,
+            guidance_scale=params.cfg,
+            negative_prompt=params.negative_prompt,
+            num_inference_steps=params.steps,
+            strength=strength,
+            callback=progress,
+        )
     else:
         rng = np.random.RandomState(params.seed)
+        result = pipe(
+            source_image,
+            params.prompt,
+            generator=rng,
+            guidance_scale=params.cfg,
+            negative_prompt=params.negative_prompt,
+            num_inference_steps=params.steps,
+            strength=strength,
+            callback=progress,
+        )
 
 
-    progress = job.get_progress_callback()
-    result = pipe(
-        source_image,
-        params.prompt,
-        generator=rng,
-        guidance_scale=params.cfg,
-        negative_prompt=params.negative_prompt,
-        num_inference_steps=params.steps,
-        strength=strength,
-        callback=progress,
-    )
     image = result.images[0]
     image = run_upscale_correction(
         job, server, StageParams(), params, image, upscale=upscale

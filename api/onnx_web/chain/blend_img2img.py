@@ -35,20 +35,28 @@ def blend_img2img(
         params.lpw,
     )
     if params.lpw:
-        pipe = pipe.img2img
         rng = torch.manual_seed(params.seed)
+        result = pipe.img2img(
+            prompt,
+            generator=rng,
+            guidance_scale=params.cfg,
+            image=source_image,
+            negative_prompt=params.negative_prompt,
+            num_inference_steps=params.steps,
+            strength=strength,
+        )
     else:
         rng = np.random.RandomState(params.seed)
+        result = pipe(
+            prompt,
+            generator=rng,
+            guidance_scale=params.cfg,
+            image=source_image,
+            negative_prompt=params.negative_prompt,
+            num_inference_steps=params.steps,
+            strength=strength,
+        )
 
-    result = pipe(
-        prompt,
-        generator=rng,
-        guidance_scale=params.cfg,
-        image=source_image,
-        negative_prompt=params.negative_prompt,
-        num_inference_steps=params.steps,
-        strength=strength,
-    )
     output = result.images[0]
 
     logger.info("final output image size: %sx%s", output.width, output.height)

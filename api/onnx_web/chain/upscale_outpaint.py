@@ -66,6 +66,7 @@ def upscale_outpaint(
             save_image(server, "tile-source.png", image)
             save_image(server, "tile-mask.png", mask)
 
+        latents = get_tile_latents(full_latents, dims)
         pipe = load_pipeline(
             OnnxStableDiffusionInpaintPipeline,
             params.model,
@@ -73,25 +74,35 @@ def upscale_outpaint(
             job.get_device(),
         )
         if params.lpw:
-            pipe = pipe.inpaint
             rng = torch.manual_seed(params.seed)
+            result = pipe.inpaint(
+                image,
+                mask,
+                prompt,
+                generator=rng,
+                guidance_scale=params.cfg,
+                height=size.height,
+                latents=latents,
+                negative_prompt=params.negative_prompt,
+                num_inference_steps=params.steps,
+                width=size.width,
+            )
         else:
             rng = np.random.RandomState(params.seed)
+            result = pipe(
+                prompt,
+                image,
+                generator=rng,
+                guidance_scale=params.cfg,
+                height=size.height,
+                latents=latents,
+                mask_image=mask,
+                negative_prompt=params.negative_prompt,
+                num_inference_steps=params.steps,
+                width=size.width,
 
-        latents = get_tile_latents(full_latents, dims)
+            )
 
-        result = pipe(
-            image,
-            mask,
-            prompt,
-            generator=rng,
-            guidance_scale=params.cfg,
-            height=size.height,
-            latents=latents,
-            negative_prompt=params.negative_prompt,
-            num_inference_steps=params.steps,
-            width=size.width,
-        )
 
         # once part of the image has been drawn, keep it
         draw_mask.rectangle((left, top, left + tile, top + tile), fill="black")

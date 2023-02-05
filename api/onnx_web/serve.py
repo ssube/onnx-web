@@ -143,8 +143,8 @@ correction_models = []
 upscaling_models = []
 
 
-def get_config_value(key: str, subkey: str = "default"):
-    return config_params.get(key).get(subkey)
+def get_config_value(key: str, subkey: str = "default", default = None):
+    return config_params.get(key, {}).get(subkey, default)
 
 
 def url_from_rule(rule) -> str:
@@ -234,7 +234,7 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
     )
 
     params = ImageParams(
-        model_path, scheduler, prompt, negative_prompt, cfg, steps, seed, lpw=lpw
+        model_path, scheduler, prompt, cfg, steps, seed, lpw=lpw, negative_prompt=negative_prompt
     )
     size = Size(width, height)
     return (device, params, size)
@@ -330,7 +330,7 @@ def load_params(context: ServerContext):
 
         if "platform" in config_params and context.default_platform is not None:
             logger.info("overriding default platform to %s", context.default_platform)
-            config_platform = config_params.get("platform")
+            config_platform = config_params.get("platform", {})
             config_platform["default"] = context.default_platform
 
 

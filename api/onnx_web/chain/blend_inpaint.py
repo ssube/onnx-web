@@ -60,6 +60,7 @@ def blend_inpaint(
             save_image(server, "tile-source.png", image)
             save_image(server, "tile-mask.png", mask)
 
+        latents = get_latents_from_seed(params.seed, size)
         pipe = load_pipeline(
             OnnxStableDiffusionInpaintPipeline,
             params.model,
@@ -67,26 +68,36 @@ def blend_inpaint(
             job.get_device(),
             params.lpw,
         )
+
         if params.lpw:
-            pipe = pipe.inpaint
             rng = torch.manual_seed(params.seed)
+            result = pipe.inpaint(
+                params.prompt,
+                generator=rng,
+                guidance_scale=params.cfg,
+                height=size.height,
+                image=image,
+                latents=latents,
+                mask_image=mask,
+                negative_prompt=params.negative_prompt,
+                num_inference_steps=params.steps,
+                width=size.width,
+            )
         else:
             rng = np.random.RandomState(params.seed)
+            result = pipe(
+                params.prompt,
+                generator=rng,
+                guidance_scale=params.cfg,
+                height=size.height,
+                image=image,
+                latents=latents,
+                mask_image=mask,
+                negative_prompt=params.negative_prompt,
+                num_inference_steps=params.steps,
+                width=size.width,
+            )
 
-        latents = get_latents_from_seed(params.seed, size)
-
-        result = pipe(
-            params.prompt,
-            generator=rng,
-            guidance_scale=params.cfg,
-            height=size.height,
-            image=image,
-            latents=latents,
-            mask_image=mask,
-            negative_prompt=params.negative_prompt,
-            num_inference_steps=params.steps,
-            width=size.width,
-        )
         return result.images[0]
 
     output = process_tile_grid(source_image, SizeChart.auto, 1, [outpaint])
