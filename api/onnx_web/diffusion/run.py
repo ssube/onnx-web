@@ -2,6 +2,7 @@ from logging import getLogger
 from typing import Any
 
 import numpy as np
+import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline, OnnxStableDiffusionPipeline
 from PIL import Image, ImageChops
 
@@ -29,7 +30,7 @@ def run_txt2img_pipeline(
     )
 
     latents = get_latents_from_seed(params.seed, size)
-    rng = np.random.RandomState(params.seed)
+    rng = torch.manual_seed(params.seed)
 
     progress = job.get_progress_callback()
     result = pipe.text2img(
@@ -74,7 +75,7 @@ def run_img2img_pipeline(
         job.get_device(),
     )
 
-    rng = np.random.RandomState(params.seed)
+    rng = torch.manual_seed(params.seed)
 
     progress = job.get_progress_callback()
     result = pipe.img2img(

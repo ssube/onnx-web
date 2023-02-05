@@ -215,6 +215,7 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
 
     seed = int(request.args.get("seed", -1))
     if seed == -1:
+        # this one can safely use np.random because it produces a single value
         seed = np.random.randint(np.iinfo(np.int32).max)
 
     logger.info(

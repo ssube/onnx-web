@@ -19,7 +19,8 @@ latent_factor = 8
 
 def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
     """
-    From https://www.travelneil.com/stable-diffusion-updates.html
+    From https://www.travelneil.com/stable-diffusion-updates.html.
+    This one needs to use np.random because of the return type.
     """
     latents_shape = (
         batch,

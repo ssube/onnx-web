@@ -1,6 +1,6 @@
 from logging import getLogger
 
-import numpy as np
+import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline
 from PIL import Image
 
@@ -33,7 +33,7 @@ def blend_img2img(
         job.get_device(),
     )
 
-    rng = np.random.RandomState(params.seed)
+    rng = torch.manual_seed(params.seed)
 
     result = pipe(
         prompt,

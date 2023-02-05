@@ -1,7 +1,7 @@
 from logging import getLogger
 from typing import Callable, Tuple
 
-import numpy as np
+import torch
 from diffusers import OnnxStableDiffusionInpaintPipeline
 from PIL import Image, ImageDraw
 
@@ -73,7 +73,7 @@ def upscale_outpaint(
         )
 
         latents = get_tile_latents(full_latents, dims)
-        rng = np.random.RandomState(params.seed)
+        rng = torch.manual_seed(params.seed)
 
         result = pipe.inpaint(
             image,

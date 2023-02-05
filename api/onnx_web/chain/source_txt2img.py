@@ -1,6 +1,7 @@
 from logging import getLogger
 
 import numpy as np
+import torch
 from diffusers import OnnxStableDiffusionPipeline
 from PIL import Image
 
@@ -36,7 +37,7 @@ def source_txt2img(
     )
 
     latents = get_latents_from_seed(params.seed, size)
-    rng = np.random.RandomState(params.seed)
+    rng = torch.manual_seed(params.seed)
 
     result = pipe(
         prompt,
