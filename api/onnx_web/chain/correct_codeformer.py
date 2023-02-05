@@ -9,21 +9,22 @@ from ..utils import ServerContext
 
 logger = getLogger(__name__)
 
-pretrain_model_url = (
-    "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth"
-)
-
 device = "cpu"
 
 
 def correct_codeformer(
-    _job: JobContext,
+    job: JobContext,
     _server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
-    source_image: Image.Image,
+    source: Image.Image,
+    *,
+    source_image: Image.Image = None,
     **kwargs,
 ) -> Image.Image:
-    pipe = CodeFormer().to(device)
+    device = job.get_device()
+    # TODO: terrible names, fix
+    image = source or source_image
 
-    return pipe(source_image)
+    pipe = CodeFormer().to(device.torch_device())
+    return pipe(image)

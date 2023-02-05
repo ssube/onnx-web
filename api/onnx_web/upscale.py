@@ -4,6 +4,7 @@ from PIL import Image
 
 from .chain import (
     ChainPipeline,
+    correct_codeformer,
     correct_gfpgan,
     upscale_resrgan,
     upscale_stable_diffusion,
@@ -40,9 +41,16 @@ def run_upscale_correction(
             mini_tile = min(SizeChart.mini, stage.tile_size)
             stage = StageParams(tile_size=mini_tile, outscale=upscale.outscale)
             chain.append((upscale_stable_diffusion, stage, None))
+        else:
+            logger.warn("unknown upscaling model: %s", upscale.upscale_model)
 
     if upscale.faces:
         stage = StageParams(tile_size=stage.tile_size, outscale=1)
-        chain.append((correct_gfpgan, stage, None))
+        if "codeformer" in upscale.correction_model:
+            chain.append((correct_codeformer, stage, None))
+        elif "gfpgan" in upscale.correction_model:
+            chain.append((correct_gfpgan, stage, None))
+        else:
+            logger.warn("unknown correction model: %s", upscale.correction_model)
 
     return chain(job, server, params, image, prompt=params.prompt, upscale=upscale)
