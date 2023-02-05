@@ -57,18 +57,17 @@ def process_tile_spiral(
     center_x = (width // 2) - (tile // 2)
     center_y = (height // 2) - (tile // 2)
 
-    # TODO: only valid for overlap = 0.5
-    if overlap == 0.5:
-        tiles = [
-            (0, tile * -overlap),
-            (tile * overlap, tile * -overlap),
-            (tile * overlap, 0),
-            (tile * overlap, tile * overlap),
-            (0, tile * overlap),
-            (tile * -overlap, tile * overlap),
-            (tile * -overlap, 0),
-            (tile * -overlap, tile * -overlap),
-        ]
+    # TODO: should add/remove tiles when overlap != 0.5
+    tiles = [
+        (0, tile * -overlap),
+        (tile * overlap, tile * -overlap),
+        (tile * overlap, 0),
+        (tile * overlap, tile * overlap),
+        (0, tile * overlap),
+        (tile * -overlap, tile * overlap),
+        (tile * -overlap, 0),
+        (tile * -overlap, tile * -overlap),
+    ]
 
     # tile tuples is source, multiply by scale for dest
     counter = 0

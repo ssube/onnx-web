@@ -11,7 +11,7 @@ from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
 from ..params import Border, ImageParams, Size, SizeChart, StageParams
 from ..utils import ServerContext, is_debug
-from .utils import process_tile_spiral
+from .utils import process_tile_grid, process_tile_spiral
 
 logger = getLogger(__name__)
 
@@ -92,7 +92,16 @@ def upscale_outpaint(
         draw_mask.rectangle((left, top, left + tile, top + tile), fill="black")
         return result.images[0]
 
-    output = process_tile_spiral(source_image, SizeChart.auto, 1, [outpaint])
+    margin_x = float(max(border.left, border.right))
+    margin_y = float(max(border.top, border.bottom))
+    overlap = min(margin_x / source_image.width, margin_y / source_image.height)
+
+    if overlap > 0 and border.left == border.right and border.top == border.bottom:
+        logger.debug("outpainting with an even border, using spiral tiling")
+        output = process_tile_spiral(source_image, SizeChart.auto, 1, [outpaint], overlap=overlap)
+    else:
+        logger.debug("outpainting with an uneven border, using grid tiling")
+        output = process_tile_grid(source_image, SizeChart.auto, 1, [outpaint])
 
     logger.info("final output image size: %sx%s", output.width, output.height)
     return output
