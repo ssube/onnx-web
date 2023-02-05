@@ -4,10 +4,14 @@ from os import path
 from PIL import Image
 from realesrgan import RealESRGANer
 
+from ..device_pool import (
+    JobContext,
+)
 from ..onnx import (
     OnnxNet,
 )
 from ..params import (
+    DeviceParams,
     ImageParams,
     StageParams,
     UpscaleParams,
@@ -25,7 +29,7 @@ last_pipeline_instance = None
 last_pipeline_params = (None, None)
 
 
-def load_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
+def load_resrgan(ctx: ServerContext, params: UpscaleParams, device: DeviceParams, tile=0):
     global last_pipeline_instance
     global last_pipeline_params
 
@@ -41,7 +45,7 @@ def load_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
 
     # use ONNX acceleration, if available
     if params.format == 'onnx':
-        model = OnnxNet(ctx, model_file, provider=params.provider)
+        model = OnnxNet(ctx, model_file, provider=device.provider, sess_options=device.options)
     elif params.format == 'pth':
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64,
                         num_block=23, num_grow_ch=32, scale=params.scale)
@@ -76,7 +80,8 @@ def load_resrgan(ctx: ServerContext, params: UpscaleParams, tile=0):
 
 
 def upscale_resrgan(
-    ctx: ServerContext,
+    job: JobContext,
+    server: ServerContext,
     stage: StageParams,
     _params: ImageParams,
     source_image: Image.Image,
@@ -87,7 +92,7 @@ def upscale_resrgan(
     logger.info('upscaling image with Real ESRGAN: x%s', upscale.scale)
 
     output = np.array(source_image)
-    upsampler = load_resrgan(ctx, upscale, tile=stage.tile_size)
+    upsampler = load_resrgan(server, upscale, job.get_device(), tile=stage.tile_size)
 
     output, _ = upsampler.enhance(output, outscale=upscale.outscale)
 

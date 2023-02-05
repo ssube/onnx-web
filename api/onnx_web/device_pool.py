@@ -133,6 +133,9 @@ class DevicePoolExecutor:
                     return True
                 else:
                     job.set_cancel()
+                    return True
+
+        return False
 
     def done(self, key: str) -> Tuple[bool, int]:
         for job in self.jobs:

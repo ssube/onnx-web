@@ -5,6 +5,9 @@ from PIL import Image
 from realesrgan import RealESRGANer
 from typing import Optional
 
+from ..device_pool import (
+    JobContext,
+)
 from ..params import (
     ImageParams,
     StageParams,
@@ -60,7 +63,8 @@ def load_gfpgan(ctx: ServerContext, upscale: UpscaleParams, upsampler: Optional[
 
 
 def correct_gfpgan(
-    ctx: ServerContext,
+    _job: JobContext,
+    server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
     source_image: Image.Image,
@@ -74,7 +78,7 @@ def correct_gfpgan(
         return source_image
 
     logger.info('correcting faces with GFPGAN model: %s', upscale.correction_model)
-    gfpgan = load_gfpgan(ctx, upscale, upsampler=upsampler)
+    gfpgan = load_gfpgan(server, upscale, upsampler=upsampler)
 
     output = np.array(source_image)
     _, _, output = gfpgan.enhance(

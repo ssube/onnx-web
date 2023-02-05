@@ -5,6 +5,7 @@ from logging import getLogger
 from typing import Any, Optional, Tuple
 
 from ..params import (
+    DeviceParams,
     Size,
 )
 from ..utils import (
@@ -45,12 +46,12 @@ def get_tile_latents(full_latents: np.ndarray, dims: Tuple[int, int, int]) -> np
     return full_latents[:, :, y:yt, x:xt]
 
 
-def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, scheduler: Any, device: Optional[str] = None):
+def load_pipeline(pipeline: DiffusionPipeline, model: str, scheduler: Any, device: DeviceParams):
     global last_pipeline_instance
     global last_pipeline_scheduler
     global last_pipeline_options
 
-    options = (pipeline, model, provider)
+    options = (pipeline, model, device.provider)
     if last_pipeline_instance != None and last_pipeline_options == options:
         logger.debug('reusing existing diffusion pipeline')
         pipe = last_pipeline_instance
@@ -61,11 +62,18 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
         run_gc()
 
         logger.debug('loading new diffusion pipeline from %s', model)
+        scheduler = scheduler.from_pretrained(
+            model,
+            provider=device.provider,
+            sess_options=device.options,
+            subfolder='scheduler',
+        )
         pipe = pipeline.from_pretrained(
             model,
-            provider=provider,
+            provider=device.provider,
             safety_checker=None,
-            scheduler=scheduler.from_pretrained(model, subfolder='scheduler')
+            scheduler=scheduler,
+            sess_options=device.options,
         )
 
         if device is not None and hasattr(pipe, 'to'):
@@ -78,7 +86,11 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, provider: str, schedu
     if last_pipeline_scheduler != scheduler:
         logger.debug('loading new diffusion scheduler')
         scheduler = scheduler.from_pretrained(
-            model, subfolder='scheduler')
+            model,
+            provider=device.provider,
+            sess_options=device.options,
+            subfolder='scheduler',
+        )
 
         if device is not None and hasattr(scheduler, 'to'):
             scheduler = scheduler.to(device)

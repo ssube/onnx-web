@@ -4,6 +4,9 @@ from diffusers import (
 from logging import getLogger
 from PIL import Image
 
+from ..device_pool import (
+    JobContext,
+)
 from ..diffusion.load import (
     load_pipeline,
 )
@@ -21,7 +24,8 @@ logger = getLogger(__name__)
 
 
 def blend_img2img(
-    _ctx: ServerContext,
+    job: JobContext,
+    _server: ServerContext,
     _stage: StageParams,
     params: ImageParams,
     source_image: Image.Image,
@@ -34,7 +38,7 @@ def blend_img2img(
     logger.info('generating image using img2img, %s steps: %s', params.steps, prompt)
 
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
-                            params.model, params.provider, params.scheduler)
+                            params.model, params.scheduler, job.get_device())
 
     rng = np.random.RandomState(params.seed)
 

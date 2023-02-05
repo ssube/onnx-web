@@ -1,6 +1,6 @@
 from onnxruntime import InferenceSession
 from os import path
-from typing import Any
+from typing import Any, Optional
 
 import numpy as np
 import torch
@@ -43,13 +43,19 @@ class OnnxNet():
     Provides the RRDBNet interface using an ONNX session for DirectML acceleration.
     '''
 
-    def __init__(self, ctx: ServerContext, model: str, provider='DmlExecutionProvider') -> None:
+    def __init__(
+        self,
+        server: ServerContext,
+        model: str,
+        provider: str = 'DmlExecutionProvider',
+        sess_options: Optional[dict] = None,
+    ) -> None:
         '''
         TODO: get platform provider from request params
         '''
-        model_path = path.join(ctx.model_path, model)
+        model_path = path.join(server.model_path, model)
         self.session = InferenceSession(
-            model_path, providers=[provider])
+            model_path, providers=[provider], sess_options=sess_options)
 
     def __call__(self, image: Any) -> Any:
         input_name = self.session.get_inputs()[0].name

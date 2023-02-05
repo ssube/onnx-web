@@ -5,10 +5,14 @@ from logging import getLogger
 from os import path
 from PIL import Image
 
+from ..device_pool import (
+    JobContext,
+)
 from ..diffusion.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
 from ..params import (
+    DeviceParams,
     ImageParams,
     StageParams,
     UpscaleParams,
@@ -27,7 +31,7 @@ last_pipeline_instance = None
 last_pipeline_params = (None, None)
 
 
-def load_stable_diffusion(ctx: ServerContext, upscale: UpscaleParams):
+def load_stable_diffusion(ctx: ServerContext, upscale: UpscaleParams, device: DeviceParams):
     global last_pipeline_instance
     global last_pipeline_params
 
@@ -39,11 +43,11 @@ def load_stable_diffusion(ctx: ServerContext, upscale: UpscaleParams):
         return last_pipeline_instance
 
     if upscale.format == 'onnx':
-        logger.debug('loading Stable Diffusion upscale ONNX model from %s, using provider %s', model_path, upscale.provider)
-        pipeline = OnnxStableDiffusionUpscalePipeline.from_pretrained(model_path, provider=upscale.provider)
+        logger.debug('loading Stable Diffusion upscale ONNX model from %s, using provider %s', model_path, device.provider)
+        pipeline = OnnxStableDiffusionUpscalePipeline.from_pretrained(model_path, provider=device.provider, sess_options=device.options)
     else:
-        logger.debug('loading Stable Diffusion upscale model from %s, using provider %s', model_path, upscale.provider)
-        pipeline = StableDiffusionUpscalePipeline.from_pretrained(model_path, provider=upscale.provider)
+        logger.debug('loading Stable Diffusion upscale model from %s, using provider %s', model_path, device.provider)
+        pipeline = StableDiffusionUpscalePipeline.from_pretrained(model_path, provider=device.provider, sess_options=device.options)
 
     last_pipeline_instance = pipeline
     last_pipeline_params = cache_params
@@ -53,7 +57,8 @@ def load_stable_diffusion(ctx: ServerContext, upscale: UpscaleParams):
 
 
 def upscale_stable_diffusion(
-    ctx: ServerContext,
+    job: JobContext,
+    server: ServerContext,
     _stage: StageParams,
     params: ImageParams,
     source: Image.Image,
@@ -65,7 +70,7 @@ def upscale_stable_diffusion(
     prompt = prompt or params.prompt
     logger.info('upscaling with Stable Diffusion, %s steps: %s', params.steps, prompt)
 
-    pipeline = load_stable_diffusion(ctx, upscale)
+    pipeline = load_stable_diffusion(server, upscale, job.get_device())
     generator = torch.manual_seed(params.seed)
 
     return pipeline(

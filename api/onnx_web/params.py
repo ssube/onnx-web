@@ -79,7 +79,6 @@ class ImageParams:
     def __init__(
         self,
         model: str,
-        provider: str,
         scheduler: Any,
         prompt: str,
         negative_prompt: Optional[str],
@@ -88,7 +87,6 @@ class ImageParams:
         seed: int
     ) -> None:
         self.model = model
-        self.provider = provider
         self.scheduler = scheduler
         self.prompt = prompt
         self.negative_prompt = negative_prompt
@@ -96,10 +94,9 @@ class ImageParams:
         self.steps = steps
         self.seed = seed
 
-    def tojson(self) -> Dict[str, Param]:
+    def tojson(self) -> Dict[str, Optional[Param]]:
         return {
             'model': self.model,
-            'provider': self.provider,
             'scheduler': self.scheduler.__name__,
             'seed': self.seed,
             'prompt': self.prompt,
@@ -130,7 +127,6 @@ class UpscaleParams():
     def __init__(
         self,
         upscale_model: str,
-        provider: str,
         correction_model: Optional[str] = None,
         denoise: float = 0.5,
         faces=True,
@@ -143,7 +139,6 @@ class UpscaleParams():
         tile_pad: int = 10,
     ) -> None:
         self.upscale_model = upscale_model
-        self.provider = provider
         self.correction_model = correction_model
         self.denoise = denoise
         self.faces = faces
@@ -158,7 +153,6 @@ class UpscaleParams():
     def rescale(self, scale: int):
         return UpscaleParams(
             self.upscale_model,
-            self.provider,
             correction_model=self.correction_model,
             denoise=self.denoise,
             faces=self.faces,

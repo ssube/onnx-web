@@ -5,6 +5,9 @@ from logging import getLogger
 from PIL import Image, ImageDraw
 from typing import Callable, Tuple
 
+from ..device_pool import (
+    JobContext,
+)
 from ..diffusion.load import (
     get_latents_from_seed,
     get_tile_latents,

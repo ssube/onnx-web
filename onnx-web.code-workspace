@@ -54,6 +54,7 @@
 			"scandir",
 			"scipy",
 			"scrollback",
+			"sess",
 			"Singlestep",
 			"spacy",
 			"spinalcase",

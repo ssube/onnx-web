@@ -226,7 +226,7 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
     logger.info("request from %s: %s rounds of %s using %s on %s, %sx%s, %s, %s - %s",
                 user, steps, scheduler.__name__, model_path, device.provider, width, height, cfg, seed, prompt)
 
-    params = ImageParams(model_path, device.provider, scheduler, prompt,
+    params = ImageParams(model_path, scheduler, prompt,
                          negative_prompt, cfg, steps, seed)
     size = Size(width, height)
     return (device, params, size)
@@ -245,7 +245,7 @@ def border_from_request() -> Border:
     return Border(left, right, top, bottom)
 
 
-def upscale_from_request(provider: str) -> UpscaleParams:
+def upscale_from_request() -> UpscaleParams:
     denoise = get_and_clamp_float(request.args, 'denoise', 0.5, 1.0, 0.0)
     scale = get_and_clamp_int(request.args, 'scale', 1, 4, 1)
     outscale = get_and_clamp_int(request.args, 'outscale', 1, 4, 1)
@@ -257,7 +257,6 @@ def upscale_from_request(provider: str) -> UpscaleParams:
 
     return UpscaleParams(
         upscaling,
-        provider,
         correction_model=correction,
         denoise=denoise,
         faces=faces,
@@ -327,7 +326,7 @@ def load_platforms():
         if platform_providers[potential] in providers and potential not in context.block_platforms:
             if potential == 'cuda':
                 for i in range(torch.cuda.device_count()):
-                    available_platforms.append(DeviceParams('%s:%s' % (potential, i), platform_providers[potential], {
+                    available_platforms.append(DeviceParams(potential, platform_providers[potential], {
                         'device_id': i,
                     }))
             else:
@@ -343,7 +342,6 @@ def load_platforms():
             return 1
 
         return -1
-
 
     available_platforms = sorted(available_platforms, key=cmp_to_key(cpu_last))
 
@@ -456,7 +454,7 @@ def img2img():
     source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
 
     device, params, size = pipeline_from_request()
-    upscale = upscale_from_request(params.provider)
+    upscale = upscale_from_request()
 
     strength = get_and_clamp_float(
         request.args,

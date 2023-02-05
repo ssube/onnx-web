@@ -5,6 +5,9 @@ from io import BytesIO
 from logging import getLogger
 from PIL import Image
 
+from ..device_pool import (
+    JobContext,
+)
 from ..params import (
     ImageParams,
     StageParams,

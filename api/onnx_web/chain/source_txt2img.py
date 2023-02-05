@@ -4,6 +4,9 @@ from diffusers import (
 from logging import getLogger
 from PIL import Image
 
+from ..device_pool import (
+    JobContext,
+)
 from ..diffusion.load import (
     get_latents_from_seed,
     load_pipeline,
@@ -23,7 +26,8 @@ logger = getLogger(__name__)
 
 
 def source_txt2img(
-    ctx: ServerContext,
+    job: JobContext,
+    server: ServerContext,
     stage: StageParams,
     params: ImageParams,
     source_image: Image.Image,
@@ -39,7 +43,7 @@ def source_txt2img(
         logger.warn('a source image was passed to a txt2img stage, but will be discarded')
 
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
-                            params.model, params.provider, params.scheduler)
+                            params.model, params.scheduler, job.get_device())
 
     latents = get_latents_from_seed(params.seed, size)
     rng = np.random.RandomState(params.seed)

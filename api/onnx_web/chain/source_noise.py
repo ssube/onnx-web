@@ -2,6 +2,9 @@ from logging import getLogger
 from PIL import Image
 from typing import Callable
 
+from ..device_pool import (
+    JobContext,
+)
 from ..params import (
     ImageParams,
     Size,

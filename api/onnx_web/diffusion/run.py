@@ -48,9 +48,8 @@ def run_txt2img_pipeline(
     output: str,
     upscale: UpscaleParams
 ) -> None:
-    device = job.get_device()
     pipe = load_pipeline(OnnxStableDiffusionPipeline,
-                         params.model, device.provider, params.scheduler, device=device.torch_device())
+                         params.model, params.scheduler, job.get_device())
 
     latents = get_latents_from_seed(params.seed, size)
     rng = np.random.RandomState(params.seed)
@@ -90,9 +89,8 @@ def run_img2img_pipeline(
     source_image: Image.Image,
     strength: float,
 ) -> None:
-    device = job.get_device()
     pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
-                         params.model, device.provider, params.scheduler, device=device.torch_device())
+                         params.model, params.scheduler, job.get_device())
 
     rng = np.random.RandomState(params.seed)
 

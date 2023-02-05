@@ -28,6 +28,7 @@ logger = getLogger(__name__)
 class StageCallback(Protocol):
     def __call__(
         self,
+        job: JobContext,
         ctx: ServerContext,
         stage: StageParams,
         params: ImageParams,
@@ -83,7 +84,7 @@ class ChainPipeline:
                             stage_params.tile_size)
 
                 def stage_tile(tile: Image.Image, _dims) -> Image.Image:
-                    tile = stage_pipe(server, stage_params, params, tile,
+                    tile = stage_pipe(job, server, stage_params, params, tile,
                                       **kwargs)
 
                     if is_debug():
@@ -95,7 +96,7 @@ class ChainPipeline:
                     image, stage_params.tile_size, stage_params.outscale, [stage_tile])
             else:
                 logger.info('image within tile size, running stage')
-                image = stage_pipe(server, stage_params, params, image,
+                image = stage_pipe(job, server, stage_params, params, image,
                                    **kwargs)
 
             logger.info('finished stage %s, result size: %sx%s',

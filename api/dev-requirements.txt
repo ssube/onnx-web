@@ -1,0 +1,6 @@
+mypy
+
+types-Flask-Cors
+types-jsonschema
+types-Pillow
+types-PyYAML

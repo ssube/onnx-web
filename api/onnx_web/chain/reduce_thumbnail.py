@@ -1,6 +1,9 @@
 from logging import getLogger
 from PIL import Image
 
+from ..device_pool import (
+    JobContext,
+)
 from ..params import (
     ImageParams,
     Size,

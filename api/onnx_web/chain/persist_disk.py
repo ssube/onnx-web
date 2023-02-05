@@ -1,6 +1,9 @@
 from logging import getLogger
 from PIL import Image
 
+from ..device_pool import (
+    JobContext,
+)
 from ..params import (
     ImageParams,
     StageParams,
@@ -16,6 +19,7 @@ logger = getLogger(__name__)
 
 
 def persist_disk(
+    _job: JobContext,
     ctx: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
