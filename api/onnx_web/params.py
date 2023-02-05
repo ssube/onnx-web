@@ -66,7 +66,7 @@ class DeviceParams:
         self.options = options
 
     def __str__(self) -> str:
-        return '%s - %s' % (self.device, self.provider)
+        return '%s - %s (%s)' % (self.device, self.provider, self.options)
 
     def torch_device(self) -> str:
         if self.device.startswith('cuda'):
