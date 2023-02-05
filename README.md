@@ -29,7 +29,8 @@ Please [see the User Guide](https://github.com/ssube/onnx-web/blob/main/docs/use
   - img2img mode
   - inpainting mode
 - supports upscaling and face correction
-  - using Real ESRGAN and GFPGAN
+  - upscaling with Real ESRGAN or Stable Diffusion
+  - face correction with CodeFormer or GFPGAN
 - API server can run models on a remote GPU
   - REST API can be served over HTTPS or HTTP
   - background processing for all image pipelines
