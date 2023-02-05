@@ -681,7 +681,7 @@ def chain():
             )
             source_file = request.files.get(stage_source_name)
             source_image = Image.open(BytesIO(source_file.read())).convert("RGB")
-            source_image = source_image.thumbnail((512, 512))
+            source_image.thumbnail((size.width, size.height))
             kwargs["source_image"] = source_image
 
         if stage_mask_name in request.files:
@@ -692,7 +692,7 @@ def chain():
             )
             mask_file = request.files.get(stage_mask_name)
             mask_image = Image.open(BytesIO(mask_file.read())).convert("RGB")
-            mask_image = mask_image.thumbnail((512, 512))
+            mask_image.thumbnail((size.width, size.height))
             kwargs["mask_image"] = mask_image
 
         pipeline.append((callback, stage, kwargs))
