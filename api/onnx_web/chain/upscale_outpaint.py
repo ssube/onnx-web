@@ -43,7 +43,8 @@ logger = getLogger(__name__)
 
 
 def upscale_outpaint(
-    ctx: ServerContext,
+    job: JobContext,
+    server: ServerContext,
     stage: StageParams,
     params: ImageParams,
     source_image: Image.Image,
@@ -76,9 +77,9 @@ def upscale_outpaint(
     full_latents = get_latents_from_seed(params.seed, full_size)
 
     if is_debug():
-        save_image(ctx, 'last-source.png', source_image)
-        save_image(ctx, 'last-mask.png', mask_image)
-        save_image(ctx, 'last-noise.png', noise_image)
+        save_image(server, 'last-source.png', source_image)
+        save_image(server, 'last-mask.png', mask_image)
+        save_image(server, 'last-noise.png', noise_image)
 
     def outpaint(image: Image.Image, dims: Tuple[int, int, int]):
         left, top, tile = dims
@@ -86,11 +87,11 @@ def upscale_outpaint(
         mask = mask_image.crop((left, top, left + tile, top + tile))
 
         if is_debug():
-            save_image(ctx, 'tile-source.png', image)
-            save_image(ctx, 'tile-mask.png', mask)
+            save_image(server, 'tile-source.png', image)
+            save_image(server, 'tile-mask.png', mask)
 
         pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
-                             params.model, params.provider, params.scheduler)
+                             params.model, params.scheduler, job.get_device())
 
         latents = get_tile_latents(full_latents, dims)
         rng = np.random.RandomState(params.seed)

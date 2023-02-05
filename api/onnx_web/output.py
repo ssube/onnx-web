@@ -74,7 +74,6 @@ def make_output_name(
 
     hash_value(sha, mode)
     hash_value(sha, params.model)
-    hash_value(sha, params.provider)
     hash_value(sha, params.scheduler.__name__)
     hash_value(sha, params.prompt)
     hash_value(sha, params.negative_prompt)

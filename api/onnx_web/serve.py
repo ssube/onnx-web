@@ -481,7 +481,7 @@ def img2img():
 @app.route('/api/txt2img', methods=['POST'])
 def txt2img():
     device, params, size = pipeline_from_request()
-    upscale = upscale_from_request(params.provider)
+    upscale = upscale_from_request()
 
     output = make_output_name(
         context,
@@ -512,7 +512,7 @@ def inpaint():
 
     device, params, size = pipeline_from_request()
     expand = border_from_request()
-    upscale = upscale_from_request(params.provider)
+    upscale = upscale_from_request()
 
     fill_color = get_not_empty(request.args, 'fillColor', 'white')
     mask_filter = get_from_map(request.args, 'filter', mask_filters, 'none')
@@ -573,7 +573,7 @@ def upscale():
     source_image = Image.open(BytesIO(source_file.read())).convert('RGB')
 
     device, params, size = pipeline_from_request()
-    upscale = upscale_from_request(params.provider)
+    upscale = upscale_from_request()
 
     output = make_output_name(
         context,
@@ -629,7 +629,7 @@ def chain():
             kwargs['border'] = border
 
         if 'upscale' in kwargs:
-            upscale = UpscaleParams(kwargs.get('upscale'), params.provider)
+            upscale = UpscaleParams(kwargs.get('upscale'))
             kwargs['upscale'] = upscale
 
         stage_source_name = 'source:%s' % (stage.name)

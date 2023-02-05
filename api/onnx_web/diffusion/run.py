@@ -140,6 +140,7 @@ def run_inpaint_pipeline(
     stage = StageParams()
 
     image = upscale_outpaint(
+        job,
         server,
         stage,
         params,
