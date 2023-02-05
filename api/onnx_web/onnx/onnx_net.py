@@ -48,14 +48,11 @@ class OnnxNet():
         server: ServerContext,
         model: str,
         provider: str = 'DmlExecutionProvider',
-        sess_options: Optional[dict] = None,
+        provider_options: Optional[dict] = None,
     ) -> None:
-        '''
-        TODO: get platform provider from request params
-        '''
         model_path = path.join(server.model_path, model)
         self.session = InferenceSession(
-            model_path, providers=[provider], sess_options=sess_options)
+            model_path, providers=[provider], provider_options=provider_options)
 
     def __call__(self, image: Any) -> Any:
         input_name = self.session.get_inputs()[0].name

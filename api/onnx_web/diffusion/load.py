@@ -65,15 +65,15 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, scheduler: Any, devic
         scheduler = scheduler.from_pretrained(
             model,
             provider=device.provider,
-            sess_options=device.options,
+            provider_options=device.options,
             subfolder='scheduler',
         )
         pipe = pipeline.from_pretrained(
             model,
             provider=device.provider,
+            provider_options=device.options,
             safety_checker=None,
             scheduler=scheduler,
-            sess_options=device.options,
         )
 
         if device is not None and hasattr(pipe, 'to'):
@@ -88,7 +88,7 @@ def load_pipeline(pipeline: DiffusionPipeline, model: str, scheduler: Any, devic
         scheduler = scheduler.from_pretrained(
             model,
             provider=device.provider,
-            sess_options=device.options,
+            provider_options=device.options,
             subfolder='scheduler',
         )
 
