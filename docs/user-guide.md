@@ -110,8 +110,10 @@ The models used by ONNX web are split up into three groups:
    2. specialized models like [Knollingcase](https://huggingface.co/Aybeeceedee/knollingcase) or [OpenJourney](https://huggingface.co/prompthero/openjourney)
 2. Upscaling
    1. [Real ESRGAN](https://github.com/xinntao/Real-ESRGAN)
+   2. [Stable Diffusion](https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler)
 3. Correction
-   1. [GFPGAN](https://github.com/TencentARC/GFPGAN)
+   1. [CodeFormer](https://github.com/sczhou/CodeFormer)
+   2. [GFPGAN](https://github.com/TencentARC/GFPGAN)
 
 There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles.
 
