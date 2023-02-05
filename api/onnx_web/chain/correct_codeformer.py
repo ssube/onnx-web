@@ -8,7 +8,7 @@ from PIL import Image
 from torchvision.transforms.functional import normalize
 
 from ..device_pool import JobContext
-from ..params import ImageParams, StageParams
+from ..params import ImageParams, StageParams, UpscaleParams
 from ..utils import ServerContext
 
 logger = getLogger(__name__)
@@ -27,9 +27,15 @@ def correct_codeformer(
     stage: StageParams,
     params: ImageParams,
     source_image: Image.Image,
+    *,
+    upscale: UpscaleParams = None,
     **kwargs,
 ) -> Image.Image:
+    ARCH_REGISTRY = {}
+    bg_upsampler = None
+    face_upsampler = None
     model = "TODO"
+    w = None
 
     # ------------------ set up CodeFormer restorer -------------------
     net = ARCH_REGISTRY.get("CodeFormer")(
@@ -47,7 +53,8 @@ def correct_codeformer(
         progress=True,
         file_name=None,
     )
-    checkpoint = torch.load(ckpt_path)["params_ema"]
+    checkpoint = torch.load(ckpt_path)
+    checkpoint = checkpoint["params_ema"]
     net.load_state_dict(checkpoint)
     net.eval()
 
@@ -96,7 +103,7 @@ def correct_codeformer(
     # upsample the background
     if bg_upsampler is not None:
         # Now only support RealESRGAN for upsampling background
-        bg_img = bg_upsampler.enhance(img, outscale=args.upscale)[0]
+        bg_img = bg_upsampler.enhance(source_image, outscale=upscale.scale)[0]
     else:
         bg_img = None
 
