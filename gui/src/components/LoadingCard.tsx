@@ -53,7 +53,7 @@ export function LoadingCard(props: LoadingCardProps) {
   }
 
   function renderProgress() {
-    if (ready.status === 'success') {
+    if (getProgress() > 0) {
       return <CircularProgress variant='determinate' value={getPercent()} />;
     } else {
       return <CircularProgress />;
