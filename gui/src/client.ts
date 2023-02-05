@@ -291,7 +291,7 @@ export function appendModelToURL(url: URL, params: ModelParams) {
  * Append the upscale parameters to an existing URL.
  */
 export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
-  if (upscale.enabled) {
+  if (upscale.enabled || upscale.faces) {
     url.searchParams.append('denoise', upscale.denoise.toFixed(FIXED_FLOAT));
     url.searchParams.append('faces', String(upscale.faces));
     url.searchParams.append('scale', upscale.scale.toFixed(FIXED_INTEGER));

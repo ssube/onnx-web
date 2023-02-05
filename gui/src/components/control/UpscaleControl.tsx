@@ -70,8 +70,7 @@ export function UpscaleControl() {
     <FormControlLabel
       label='Face Correction'
       control={<Checkbox
-        disabled={upscale.enabled === false}
-        checked={upscale.enabled && upscale.faces}
+        checked={upscale.faces}
         value='check'
         onChange={(event) => {
           setUpscale({
@@ -83,7 +82,7 @@ export function UpscaleControl() {
     <NumericField
       label='Strength'
       decimal
-      disabled={upscale.enabled === false || upscale.faces === false}
+      disabled={upscale.faces === false}
       min={params.faceStrength.min}
       max={params.faceStrength.max}
       step={params.faceStrength.step}
