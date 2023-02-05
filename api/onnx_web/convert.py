@@ -56,6 +56,11 @@ base_models: Models = {
             "https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth",
             4,
         ),
+        (
+            "correction-codeformer",
+            "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth",
+            1,
+        )
     ],
     "upscaling": [
         (
