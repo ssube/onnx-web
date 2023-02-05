@@ -72,10 +72,10 @@ def load_pipeline(
         )
         pipe = pipeline.from_pretrained(
             model,
+            custom_pipeline="./onnx_web/diffusion/lpw_stable_diffusion_onnx.py",
             provider=device.provider,
             provider_options=device.options,
-            custom_pipeline='lpw_stable_diffusion_onnx',
-            revision='onnx',
+            revision="onnx",
             safety_checker=None,
             scheduler=scheduler,
         )

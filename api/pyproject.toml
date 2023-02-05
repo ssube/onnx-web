@@ -1,2 +1,3 @@
 [tool.isort]
 profile = "black"
+force_to_top = ".logging"

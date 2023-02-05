@@ -1,3 +1,10 @@
+###
+# This is based on a combination of the ONNX img2img pipeline and the PyTorch upscale pipeline:
+# https://github.com/huggingface/diffusers/blob/v0.11.1/src/diffusers/pipelines/stable_diffusion/pipeline_onnx_stable_diffusion_img2img.py
+# https://github.com/huggingface/diffusers/blob/v0.11.1/src/diffusers/pipelines/stable_diffusion/pipeline_stable_diffusion_upscale.py
+# See also: https://github.com/huggingface/diffusers/pull/2158
+###
+
 from logging import getLogger
 from typing import Any, Callable, List, Optional, Union
 
@@ -17,12 +24,6 @@ num_channels_latents = 4
 
 # TODO: make this dynamic, from self.unet.config.in_channels
 unet_in_channels = 7
-
-###
-# This is based on a combination of the ONNX img2img pipeline and the PyTorch upscale pipeline:
-# https://github.com/huggingface/diffusers/blob/v0.11.1/src/diffusers/pipelines/stable_diffusion/pipeline_onnx_stable_diffusion_img2img.py
-# https://github.com/huggingface/diffusers/blob/v0.11.1/src/diffusers/pipelines/stable_diffusion/pipeline_stable_diffusion_upscale.py
-###
 
 
 def preprocess(image):
