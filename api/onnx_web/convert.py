@@ -20,8 +20,6 @@ from diffusers import (
 from onnx import load, save_model
 from torch.onnx import export
 
-from . import logging
-
 # suppress common but harmless warnings, https://github.com/ssube/onnx-web/issues/75
 warnings.filterwarnings(
     "ignore", ".*The shape inference of prim::Constant type is missing.*"

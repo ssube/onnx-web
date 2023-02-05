@@ -1,7 +1,6 @@
 from logging import getLogger
 from typing import Any
 
-import numpy as np
 import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline, OnnxStableDiffusionPipeline
 from PIL import Image, ImageChops

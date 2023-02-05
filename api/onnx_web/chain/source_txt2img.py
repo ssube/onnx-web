@@ -1,6 +1,5 @@
 from logging import getLogger
 
-import numpy as np
 import torch
 from diffusers import OnnxStableDiffusionPipeline
 from PIL import Image

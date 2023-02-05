@@ -29,7 +29,6 @@ from jsonschema import validate
 from onnxruntime import get_available_providers
 from PIL import Image
 
-from . import logging
 from .chain import (
     ChainPipeline,
     blend_img2img,
@@ -168,7 +167,7 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
             device = available_platforms[0]
 
     if device is None:
-        logger.warn('unknown platform: %s', device_name)
+        logger.warn("unknown platform: %s", device_name)
         device = available_platforms[0]
 
     # pipeline stuff
