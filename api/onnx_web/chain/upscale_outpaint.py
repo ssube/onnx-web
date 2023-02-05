@@ -72,6 +72,7 @@ def upscale_outpaint(
             params.model,
             params.scheduler,
             job.get_device(),
+            params.lpw,
         )
         if params.lpw:
             rng = torch.manual_seed(params.seed)
