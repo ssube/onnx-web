@@ -1,34 +1,23 @@
-from diffusers import (
-    DDPMScheduler,
-    OnnxRuntimeModel,
-    StableDiffusionUpscalePipeline,
-)
-from diffusers.pipeline_utils import (
-    ImagePipelineOutput,
-)
 from logging import getLogger
-from PIL import Image
-from typing import (
-    Any,
-    Callable,
-    List,
-    Optional,
-    Union,
-)
+from typing import Any, Callable, List, Optional, Union
 
 import numpy as np
 import torch
+from diffusers import DDPMScheduler, OnnxRuntimeModel, StableDiffusionUpscalePipeline
+from diffusers.pipeline_utils import ImagePipelineOutput
+from PIL import Image
 
 logger = getLogger(__name__)
 
-num_channels_latents = 4 # self.vae.config.latent_channels
-unet_in_channels = 7 # self.unet.config.in_channels
+num_channels_latents = 4  # self.vae.config.latent_channels
+unet_in_channels = 7  # self.unet.config.in_channels
 
 ###
 # This is based on a combination of the ONNX img2img pipeline and the PyTorch upscale pipeline:
 # https://github.com/huggingface/diffusers/blob/v0.11.1/src/diffusers/pipelines/stable_diffusion/pipeline_onnx_stable_diffusion_img2img.py
 # https://github.com/huggingface/diffusers/blob/v0.11.1/src/diffusers/pipelines/stable_diffusion/pipeline_stable_diffusion_upscale.py
 ###
+
 
 def preprocess(image):
     if isinstance(image, torch.Tensor):
@@ -63,8 +52,15 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         scheduler: Any,
         max_noise_level: int = 350,
     ):
-        super().__init__(vae, text_encoder, tokenizer, unet,
-                         low_res_scheduler, scheduler, max_noise_level)
+        super().__init__(
+            vae,
+            text_encoder,
+            tokenizer,
+            unet,
+            low_res_scheduler,
+            scheduler,
+            max_noise_level,
+        )
 
     def __call__(
         self,
@@ -96,7 +92,11 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
 
         # 3. Encode input prompt
         text_embeddings = self._encode_prompt(
-            prompt, device, num_images_per_prompt, do_classifier_free_guidance, negative_prompt
+            prompt,
+            device,
+            num_images_per_prompt,
+            do_classifier_free_guidance,
+            negative_prompt,
         )
 
         # 4. Preprocess image
@@ -111,7 +111,9 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         text_embeddings_dtype = torch.float32
 
         noise_level = torch.tensor([noise_level], dtype=torch.long, device=device)
-        noise = torch.randn(image.shape, generator=generator, device=device, dtype=text_embeddings_dtype)
+        noise = torch.randn(
+            image.shape, generator=generator, device=device, dtype=text_embeddings_dtype
+        )
         image = self.low_res_scheduler.add_noise(image, noise, noise_level)
 
         batch_multiplier = 2 if do_classifier_free_guidance else 1
@@ -135,11 +137,11 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         num_channels_image = image.shape[1]
         if num_channels_latents + num_channels_image != unet_in_channels:
             raise ValueError(
-                f"Incorrect configuration settings! The config of `pipeline.unet` expects"
-                f" {unet_in_channels} but received `num_channels_latents`: {num_channels_latents} +"
-                f" `num_channels_image`: {num_channels_image} "
-                f" = {num_channels_latents+num_channels_image}. Please verify the config of"
-                " `pipeline.unet` or your `image` input."
+                "Incorrect configuration settings! The config of `pipeline.unet`"
+                f" expects {unet_in_channels} but received `num_channels_latents`:"
+                f" {num_channels_latents} + `num_channels_image`: {num_channels_image} "
+                f" = {num_channels_latents+num_channels_image}. Please verify the"
+                " config of `pipeline.unet` or your `image` input."
             )
 
         # 8. Prepare extra step kwargs. TODO: Logic should ideally just be moved out of the pipeline
@@ -150,10 +152,16 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             for i, t in enumerate(timesteps):
                 # expand the latents if we are doing classifier free guidance
-                latent_model_input = np.concatenate([latents] * 2) if do_classifier_free_guidance else latents
+                latent_model_input = (
+                    np.concatenate([latents] * 2)
+                    if do_classifier_free_guidance
+                    else latents
+                )
 
                 # concat latents, mask, masked_image_latents in the channel dimension
-                latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
+                latent_model_input = self.scheduler.scale_model_input(
+                    latent_model_input, t
+                )
                 latent_model_input = np.concatenate([latent_model_input, image], axis=1)
 
                 # timestep to tensor
@@ -164,19 +172,25 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
                     sample=latent_model_input,
                     timestep=timestep,
                     encoder_hidden_states=text_embeddings,
-                    class_labels=noise_level
+                    class_labels=noise_level,
                 )[0]
 
                 # perform guidance
                 if do_classifier_free_guidance:
                     noise_pred_uncond, noise_pred_text = np.split(noise_pred, 2)
-                noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
+                noise_pred = noise_pred_uncond + guidance_scale * (
+                    noise_pred_text - noise_pred_uncond
+                )
 
                 # compute the previous noisy sample x_t -> x_t-1
-                latents = self.scheduler.step(noise_pred, t, latents, **extra_step_kwargs).prev_sample
+                latents = self.scheduler.step(
+                    noise_pred, t, latents, **extra_step_kwargs
+                ).prev_sample
 
                 # call the callback, if provided
-                if i == len(timesteps) - 1 or ((i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0):
+                if i == len(timesteps) - 1 or (
+                    (i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0
+                ):
                     progress_bar.update()
                     if callback is not None and i % callback_steps == 0:
                         callback(i, t, latents)
@@ -200,7 +214,14 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         image = image.transpose((0, 2, 3, 1))
         return image
 
-    def _encode_prompt(self, prompt, device, num_images_per_prompt, do_classifier_free_guidance, negative_prompt):
+    def _encode_prompt(
+        self,
+        prompt,
+        device,
+        num_images_per_prompt,
+        do_classifier_free_guidance,
+        negative_prompt,
+    ):
         batch_size = len(prompt) if isinstance(prompt, list) else 1
 
         text_inputs = self.tokenizer(
@@ -211,13 +232,20 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
             return_tensors="pt",
         )
         text_input_ids = text_inputs.input_ids
-        untruncated_ids = self.tokenizer(prompt, padding="longest", return_tensors="pt").input_ids
+        untruncated_ids = self.tokenizer(
+            prompt, padding="longest", return_tensors="pt"
+        ).input_ids
 
-        if untruncated_ids.shape[-1] >= text_input_ids.shape[-1] and not torch.equal(text_input_ids, untruncated_ids):
-            removed_text = self.tokenizer.batch_decode(untruncated_ids[:, self.tokenizer.model_max_length - 1 : -1])
+        if untruncated_ids.shape[-1] >= text_input_ids.shape[-1] and not torch.equal(
+            text_input_ids, untruncated_ids
+        ):
+            removed_text = self.tokenizer.batch_decode(
+                untruncated_ids[:, self.tokenizer.model_max_length - 1 : -1]
+            )
             logger.warning(
-                "The following part of your input was truncated because CLIP can only handle sequences up to"
-                f" {self.tokenizer.model_max_length} tokens: {removed_text}"
+                "The following part of your input was truncated because CLIP can only"
+                f" handle sequences up to {self.tokenizer.model_max_length} tokens:"
+                f" {removed_text}"
             )
 
         # no positional arguments to text_encoder
@@ -240,16 +268,17 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
                 uncond_tokens = [""] * batch_size
             elif type(prompt) is not type(negative_prompt):
                 raise TypeError(
-                    f"`negative_prompt` should be the same type to `prompt`, but got {type(negative_prompt)} !="
-                    f" {type(prompt)}."
+                    "`negative_prompt` should be the same type to `prompt`, but got"
+                    f" {type(negative_prompt)} != {type(prompt)}."
                 )
             elif isinstance(negative_prompt, str):
                 uncond_tokens = [negative_prompt]
             elif batch_size != len(negative_prompt):
                 raise ValueError(
-                    f"`negative_prompt`: {negative_prompt} has batch size {len(negative_prompt)}, but `prompt`:"
-                    f" {prompt} has batch size {batch_size}. Please make sure that passed `negative_prompt` matches"
-                    " the batch size of `prompt`."
+                    f"`negative_prompt`: {negative_prompt} has batch size"
+                    f" {len(negative_prompt)}, but `prompt`: {prompt} has batch size"
+                    f" {batch_size}. Please make sure that passed `negative_prompt`"
+                    " matches the batch size of `prompt`."
                 )
             else:
                 uncond_tokens = negative_prompt

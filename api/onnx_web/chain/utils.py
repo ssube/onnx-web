@@ -1,6 +1,7 @@
 from logging import getLogger
-from PIL import Image
 from typing import List, Protocol, Tuple
+
+from PIL import Image
 
 logger = getLogger(__name__)
 
@@ -17,7 +18,7 @@ def process_tile_grid(
     filters: List[TileCallback],
 ) -> Image.Image:
     width, height = source.size
-    image = Image.new('RGB', (width * scale, height * scale))
+    image = Image.new("RGB", (width * scale, height * scale))
 
     tiles_x = width // tile
     tiles_y = height // tile
@@ -28,7 +29,7 @@ def process_tile_grid(
             idx = (y * tiles_x) + x
             left = x * tile
             top = y * tile
-            logger.info('processing tile %s of %s, %s.%s', idx + 1, total, y, x)
+            logger.info("processing tile %s of %s, %s.%s", idx + 1, total, y, x)
             tile_image = source.crop((left, top, left + tile, top + tile))
 
             for filter in filters:
@@ -47,10 +48,10 @@ def process_tile_spiral(
     overlap: float = 0.5,
 ) -> Image.Image:
     if scale != 1:
-        raise Exception('unsupported scale')
+        raise Exception("unsupported scale")
 
     width, height = source.size
-    image = Image.new('RGB', (width * scale, height * scale))
+    image = Image.new("RGB", (width * scale, height * scale))
     image.paste(source, (0, 0, width, height))
 
     center_x = (width // 2) - (tile // 2)
@@ -76,7 +77,7 @@ def process_tile_spiral(
         top = center_y + int(top)
 
         counter += 1
-        logger.info('processing tile %s of %s, %sx%s', counter, len(tiles), left, top)
+        logger.info("processing tile %s of %s, %sx%s", counter, len(tiles), left, top)
 
         # TODO: only valid for scale == 1, resize source for others
         tile_image = image.crop((left, top, left + tile, top + tile))

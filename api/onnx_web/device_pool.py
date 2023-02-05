@@ -1,12 +1,10 @@
 from collections import Counter
-from concurrent.futures import Future, ThreadPoolExecutor, ProcessPoolExecutor
+from concurrent.futures import Future, ProcessPoolExecutor, ThreadPoolExecutor
 from logging import getLogger
 from multiprocessing import Value
 from typing import Any, Callable, List, Optional, Tuple, Union
 
-from .params import (
-    DeviceParams,
-)
+from .params import DeviceParams
 
 logger = getLogger(__name__)
 
@@ -28,24 +26,24 @@ class JobContext:
     ):
         self.key = key
         self.devices = list(devices)
-        self.cancel = Value('B', cancel)
-        self.device_index = Value('i', device_index)
-        self.progress = Value('I', progress)
+        self.cancel = Value("B", cancel)
+        self.device_index = Value("i", device_index)
+        self.progress = Value("I", progress)
 
     def is_cancelled(self) -> bool:
         return self.cancel.value
 
     def get_device(self) -> DeviceParams:
-        '''
+        """
         Get the device assigned to this job.
-        '''
+        """
         with self.device_index.get_lock():
             device_index = self.device_index.value
             if device_index < 0:
-                raise Exception('job has not been assigned to a device')
+                raise Exception("job has not been assigned to a device")
             else:
                 device = self.devices[device_index]
-                logger.debug('job %s assigned to device %s', self.key, device)
+                logger.debug("job %s assigned to device %s", self.key, device)
                 return device
 
     def get_progress(self) -> int:
@@ -54,10 +52,9 @@ class JobContext:
     def get_progress_callback(self) -> Callable[..., None]:
         def on_progress(step: int, timestep: int, latents: Any):
             if self.is_cancelled():
-                raise Exception('job has been cancelled')
+                raise Exception("job has been cancelled")
             else:
-                logger.debug('setting progress for job %s to %s',
-                             self.key, step)
+                logger.debug("setting progress for job %s to %s", self.key, step)
                 self.set_progress(step)
 
         return on_progress
@@ -72,9 +69,9 @@ class JobContext:
 
 
 class Job:
-    '''
+    """
     Link a future to its context.
-    '''
+    """
 
     context: JobContext = None
     future: Future = None
@@ -106,7 +103,11 @@ class DevicePoolExecutor:
     next_device: int = 0
     pool: Union[ProcessPoolExecutor, ThreadPoolExecutor] = None
 
-    def __init__(self, devices: List[DeviceParams], pool: Optional[Union[ProcessPoolExecutor, ThreadPoolExecutor]] = None):
+    def __init__(
+        self,
+        devices: List[DeviceParams],
+        pool: Optional[Union[ProcessPoolExecutor, ThreadPoolExecutor]] = None,
+    ):
         self.devices = devices
         self.jobs = []
         self.next_device = 0
@@ -114,19 +115,25 @@ class DevicePoolExecutor:
         device_count = len(devices)
         if pool is None:
             logger.info(
-                'creating thread pool executor for %s devices: %s', device_count, [d.device for d in devices])
+                "creating thread pool executor for %s devices: %s",
+                device_count,
+                [d.device for d in devices],
+            )
             self.pool = ThreadPoolExecutor(device_count)
         else:
-            logger.info('using existing pool for %s devices: %s',
-                        device_count, [d.device for d in devices])
+            logger.info(
+                "using existing pool for %s devices: %s",
+                device_count,
+                [d.device for d in devices],
+            )
             self.pool = pool
 
     def cancel(self, key: str) -> bool:
-        '''
+        """
         Cancel a job. If the job has not been started, this will cancel
         the future and never execute it. If the job has been started, it
         should be cancelled on the next progress callback.
-        '''
+        """
         for job in self.jobs:
             if job.key == key:
                 if job.future.cancel():
@@ -144,7 +151,7 @@ class DevicePoolExecutor:
                 progress = job.get_progress()
                 return (done, progress)
 
-        logger.warn('checking status for unknown key: %s', key)
+        logger.warn("checking status for unknown key: %s", key)
         return (None, 0)
 
     def get_next_device(self):
@@ -152,12 +159,14 @@ class DevicePoolExecutor:
         if len(self.jobs) == 0:
             return 0
 
-        job_devices = [job.context.device_index.value for job in self.jobs if not job.future.done()]
+        job_devices = [
+            job.context.device_index.value for job in self.jobs if not job.future.done()
+        ]
         job_counts = Counter(range(len(self.devices)))
         job_counts.update(job_devices)
 
         queued = job_counts.most_common()
-        logger.debug('jobs queued by device: %s', queued)
+        logger.debug("jobs queued by device: %s", queued)
 
         lowest_count = queued[-1][1]
         lowest_devices = [d[0] for d in queued if d[1] == lowest_count]
@@ -170,7 +179,7 @@ class DevicePoolExecutor:
 
     def submit(self, key: str, fn: Callable[..., None], /, *args, **kwargs) -> None:
         device = self.get_next_device()
-        logger.info('assigning job %s to device %s', key, device)
+        logger.info("assigning job %s to device %s", key, device)
 
         context = JobContext(key, self.devices, device_index=device)
         future = self.pool.submit(fn, context, *args, **kwargs)
@@ -180,11 +189,19 @@ class DevicePoolExecutor:
         def job_done(f: Future):
             try:
                 f.result()
-                logger.info('job %s finished successfully', key)
+                logger.info("job %s finished successfully", key)
             except Exception as err:
-                logger.warn('job %s failed with an error: %s', key, err)
+                logger.warn("job %s failed with an error: %s", key, err)
 
         future.add_done_callback(job_done)
 
     def status(self) -> List[Tuple[str, int, bool, int]]:
-        return [(job.key, job.context.device_index.value, job.future.done(), job.get_progress()) for job in self.jobs]
+        return [
+            (
+                job.key,
+                job.context.device_index.value,
+                job.future.done(),
+                job.get_progress(),
+            )
+            for job in self.jobs
+        ]

@@ -1,13 +1,11 @@
+import gc
 from logging import getLogger
 from os import environ, path
 from typing import Any, Dict, List, Optional, Union
 
-import gc
 import torch
 
-from .params import (
-    SizeChart,
-)
+from .params import SizeChart
 
 logger = getLogger(__name__)
 
@@ -15,15 +13,15 @@ logger = getLogger(__name__)
 class ServerContext:
     def __init__(
         self,
-        bundle_path: str = '.',
-        model_path: str = '.',
-        output_path: str = '.',
-        params_path: str = '.',
-        cors_origin: str = '*',
+        bundle_path: str = ".",
+        model_path: str = ".",
+        output_path: str = ".",
+        params_path: str = ".",
+        cors_origin: str = "*",
         num_workers: int = 1,
         block_platforms: List[str] = [],
         default_platform: str = None,
-        image_format: str = 'png',
+        image_format: str = "png",
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -38,40 +36,39 @@ class ServerContext:
     @classmethod
     def from_environ(cls):
         return ServerContext(
-            bundle_path=environ.get('ONNX_WEB_BUNDLE_PATH',
-                                    path.join('..', 'gui', 'out')),
-            model_path=environ.get('ONNX_WEB_MODEL_PATH',
-                                   path.join('..', 'models')),
-            output_path=environ.get(
-                'ONNX_WEB_OUTPUT_PATH', path.join('..', 'outputs')),
-            params_path=environ.get('ONNX_WEB_PARAMS_PATH', '.'),
-            # others
-            cors_origin=environ.get('ONNX_WEB_CORS_ORIGIN', '*').split(','),
-            num_workers=int(environ.get('ONNX_WEB_NUM_WORKERS', 1)),
-            block_platforms=environ.get(
-                'ONNX_WEB_BLOCK_PLATFORMS', '').split(','),
-            default_platform=environ.get(
-                'ONNX_WEB_DEFAULT_PLATFORM', None),
-            image_format=environ.get(
-                'ONNX_WEB_IMAGE_FORMAT', 'png'
+            bundle_path=environ.get(
+                "ONNX_WEB_BUNDLE_PATH", path.join("..", "gui", "out")
             ),
+            model_path=environ.get("ONNX_WEB_MODEL_PATH", path.join("..", "models")),
+            output_path=environ.get("ONNX_WEB_OUTPUT_PATH", path.join("..", "outputs")),
+            params_path=environ.get("ONNX_WEB_PARAMS_PATH", "."),
+            # others
+            cors_origin=environ.get("ONNX_WEB_CORS_ORIGIN", "*").split(","),
+            num_workers=int(environ.get("ONNX_WEB_NUM_WORKERS", 1)),
+            block_platforms=environ.get("ONNX_WEB_BLOCK_PLATFORMS", "").split(","),
+            default_platform=environ.get("ONNX_WEB_DEFAULT_PLATFORM", None),
+            image_format=environ.get("ONNX_WEB_IMAGE_FORMAT", "png"),
         )
 
 
 def base_join(base: str, tail: str) -> str:
-    tail_path = path.relpath(path.normpath(path.join('/', tail)), '/')
+    tail_path = path.relpath(path.normpath(path.join("/", tail)), "/")
     return path.join(base, tail_path)
 
 
 def is_debug() -> bool:
-    return environ.get('DEBUG') is not None
+    return environ.get("DEBUG") is not None
 
 
-def get_and_clamp_float(args: Any, key: str, default_value: float, max_value: float, min_value=0.0) -> float:
+def get_and_clamp_float(
+    args: Any, key: str, default_value: float, max_value: float, min_value=0.0
+) -> float:
     return min(max(float(args.get(key, default_value)), min_value), max_value)
 
 
-def get_and_clamp_int(args: Any, key: str, default_value: int, max_value: int, min_value=1) -> int:
+def get_and_clamp_int(
+    args: Any, key: str, default_value: int, max_value: int, min_value=1
+) -> int:
     return min(max(int(args.get(key, default_value)), min_value), max_value)
 
 
@@ -80,7 +77,7 @@ def get_from_list(args: Any, key: str, values: List[Any]) -> Optional[Any]:
     if selected in values:
         return selected
 
-    logger.warn('invalid selection: %s', selected)
+    logger.warn("invalid selection: %s", selected)
     if len(values) > 0:
         return values[0]
 
@@ -118,10 +115,10 @@ def get_size(val: Union[int, str, None]) -> SizeChart:
 
         return int(val)
 
-    raise Exception('invalid size')
+    raise Exception("invalid size")
 
 
 def run_gc():
-    logger.debug('running garbage collection')
+    logger.debug("running garbage collection")
     gc.collect()
     torch.cuda.empty_cache()

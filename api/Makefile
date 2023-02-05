@@ -23,3 +23,16 @@ package-dist:
 
 package-upload:
 	twine upload dist/*
+
+lint-check:
+	black --check --preview onnx_web
+	isort --check-only --skip __init__.py --filter-files onnx_web
+	flake8 --per-file-ignores="__init__.py:F401" onnx_web
+
+lint-fix:
+	black onnx_web
+	isort --skip __init__.py --filter-files onnx_web
+	flake8 --per-file-ignores="__init__.py:F401" onnx_web
+
+typecheck:
+	mypy -m onnx_web.serve

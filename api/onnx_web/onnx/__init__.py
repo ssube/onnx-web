@@ -1,4 +1,1 @@
-from .onnx_net import (
-  OnnxImage,
-  OnnxNet,
-)
+from .onnx_net import OnnxImage, OnnxNet

@@ -1,24 +1,13 @@
-from diffusers import (
-    OnnxStableDiffusionImg2ImgPipeline,
-)
 from logging import getLogger
-from PIL import Image
-
-from ..device_pool import (
-    JobContext,
-)
-from ..diffusion.load import (
-    load_pipeline,
-)
-from ..params import (
-    ImageParams,
-    StageParams,
-)
-from ..utils import (
-    ServerContext,
-)
 
 import numpy as np
+from diffusers import OnnxStableDiffusionImg2ImgPipeline
+from PIL import Image
+
+from ..device_pool import JobContext
+from ..diffusion.load import load_pipeline
+from ..params import ImageParams, StageParams
+from ..utils import ServerContext
 
 logger = getLogger(__name__)
 
@@ -35,10 +24,14 @@ def blend_img2img(
     **kwargs,
 ) -> Image.Image:
     prompt = prompt or params.prompt
-    logger.info('generating image using img2img, %s steps: %s', params.steps, prompt)
+    logger.info("generating image using img2img, %s steps: %s", params.steps, prompt)
 
-    pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
-                            params.model, params.scheduler, job.get_device())
+    pipe = load_pipeline(
+        OnnxStableDiffusionImg2ImgPipeline,
+        params.model,
+        params.scheduler,
+        job.get_device(),
+    )
 
     rng = np.random.RandomState(params.seed)
 
@@ -53,6 +46,5 @@ def blend_img2img(
     )
     output = result.images[0]
 
-    logger.info('final output image size: %sx%s', output.width, output.height)
+    logger.info("final output image size: %sx%s", output.width, output.height)
     return output
-

@@ -3,9 +3,9 @@ from typing import Any, Dict, Literal, Optional, Tuple, Union
 
 
 class SizeChart(IntEnum):
-    mini = 128      # small tile for very expensive models
-    half = 256      # half tile for outpainting
-    auto = 512      # auto tile size
+    mini = 128  # small tile for very expensive models
+    half = 256  # half tile for outpainting
+    auto = 512  # auto tile size
     hd1k = 2**10
     hd2k = 2**11
     hd4k = 2**12
@@ -26,14 +26,14 @@ class Border:
         self.bottom = bottom
 
     def __str__(self) -> str:
-        return '%s %s %s %s' % (self.left, self.top, self.right, self.bottom)
+        return "%s %s %s %s" % (self.left, self.top, self.right, self.bottom)
 
     def tojson(self):
         return {
-            'left': self.left,
-            'right': self.right,
-            'top': self.top,
-            'bottom': self.bottom,
+            "left": self.left,
+            "right": self.right,
+            "top": self.top,
+            "bottom": self.bottom,
         }
 
     @classmethod
@@ -47,32 +47,37 @@ class Size:
         self.height = height
 
     def __str__(self) -> str:
-        return '%sx%s' % (self.width, self.height)
+        return "%sx%s" % (self.width, self.height)
 
     def add_border(self, border: Border):
-        return Size(border.left + self.width + border.right, border.top + self.height + border.right)
+        return Size(
+            border.left + self.width + border.right,
+            border.top + self.height + border.right,
+        )
 
     def tojson(self) -> Dict[str, int]:
         return {
-            'height': self.height,
-            'width': self.width,
+            "height": self.height,
+            "width": self.width,
         }
 
 
 class DeviceParams:
-    def __init__(self, device: str, provider: str, options: Optional[dict] = None) -> None:
+    def __init__(
+        self, device: str, provider: str, options: Optional[dict] = None
+    ) -> None:
         self.device = device
         self.provider = provider
         self.options = options
 
     def __str__(self) -> str:
-        return '%s - %s (%s)' % (self.device, self.provider, self.options)
+        return "%s - %s (%s)" % (self.device, self.provider, self.options)
 
     def torch_device(self) -> str:
-        if self.device.startswith('cuda'):
+        if self.device.startswith("cuda"):
             return self.device
         else:
-            return 'cpu'
+            return "cpu"
 
 
 class ImageParams:
@@ -84,7 +89,7 @@ class ImageParams:
         negative_prompt: Optional[str],
         cfg: float,
         steps: int,
-        seed: int
+        seed: int,
     ) -> None:
         self.model = model
         self.scheduler = scheduler
@@ -96,20 +101,20 @@ class ImageParams:
 
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
-            'model': self.model,
-            'scheduler': self.scheduler.__name__,
-            'seed': self.seed,
-            'prompt': self.prompt,
-            'cfg': self.cfg,
-            'negativePrompt': self.negative_prompt,
-            'steps': self.steps,
+            "model": self.model,
+            "scheduler": self.scheduler.__name__,
+            "seed": self.seed,
+            "prompt": self.prompt,
+            "cfg": self.cfg,
+            "negativePrompt": self.negative_prompt,
+            "steps": self.steps,
         }
 
 
 class StageParams:
-    '''
+    """
     Parameters for a chained pipeline stage
-    '''
+    """
 
     def __init__(
         self,
@@ -123,7 +128,7 @@ class StageParams:
         self.outscale = outscale
 
 
-class UpscaleParams():
+class UpscaleParams:
     def __init__(
         self,
         upscale_model: str,
@@ -131,7 +136,7 @@ class UpscaleParams():
         denoise: float = 0.5,
         faces=True,
         face_strength: float = 0.5,
-        format: Literal['onnx', 'pth'] = 'onnx',
+        format: Literal["onnx", "pth"] = "onnx",
         half=False,
         outscale: int = 1,
         scale: int = 4,
@@ -170,8 +175,8 @@ class UpscaleParams():
 
     def tojson(self):
         return {
-            'model': self.upscale_model,
-            'scale': self.scale,
-            'outscale': self.outscale,
+            "model": self.upscale_model,
+            "scale": self.scale,
+            "outscale": self.outscale,
             # TODO: add more
         }

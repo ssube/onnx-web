@@ -1,41 +1,17 @@
-from diffusers import (
-    OnnxStableDiffusionPipeline,
-    OnnxStableDiffusionImg2ImgPipeline,
-)
 from logging import getLogger
-from PIL import Image, ImageChops
 from typing import Any
 
-from ..chain import (
-    upscale_outpaint,
-)
-from ..device_pool import (
-    JobContext,
-)
-from ..params import (
-    ImageParams,
-    Border,
-    Size,
-    StageParams,
-)
-from ..output import (
-    save_image,
-    save_params,
-)
-from ..upscale import (
-    run_upscale_correction,
-    UpscaleParams,
-)
-from ..utils import (
-    run_gc,
-    ServerContext,
-)
-from .load import (
-    get_latents_from_seed,
-    load_pipeline,
-)
-
 import numpy as np
+from diffusers import OnnxStableDiffusionImg2ImgPipeline, OnnxStableDiffusionPipeline
+from PIL import Image, ImageChops
+
+from ..chain import upscale_outpaint
+from ..device_pool import JobContext
+from ..output import save_image, save_params
+from ..params import Border, ImageParams, Size, StageParams
+from ..upscale import UpscaleParams, run_upscale_correction
+from ..utils import ServerContext, run_gc
+from .load import get_latents_from_seed, load_pipeline
 
 logger = getLogger(__name__)
 
@@ -46,10 +22,11 @@ def run_txt2img_pipeline(
     params: ImageParams,
     size: Size,
     output: str,
-    upscale: UpscaleParams
+    upscale: UpscaleParams,
 ) -> None:
-    pipe = load_pipeline(OnnxStableDiffusionPipeline,
-                         params.model, params.scheduler, job.get_device())
+    pipe = load_pipeline(
+        OnnxStableDiffusionPipeline, params.model, params.scheduler, job.get_device()
+    )
 
     latents = get_latents_from_seed(params.seed, size)
     rng = np.random.RandomState(params.seed)
@@ -68,7 +45,8 @@ def run_txt2img_pipeline(
     )
     image = result.images[0]
     image = run_upscale_correction(
-        job, server, StageParams(), params, image, upscale=upscale)
+        job, server, StageParams(), params, image, upscale=upscale
+    )
 
     dest = save_image(server, output, image)
     save_params(server, output, params, size, upscale=upscale)
@@ -77,7 +55,7 @@ def run_txt2img_pipeline(
     del result
     run_gc()
 
-    logger.info('finished txt2img job: %s', dest)
+    logger.info("finished txt2img job: %s", dest)
 
 
 def run_img2img_pipeline(
@@ -89,8 +67,12 @@ def run_img2img_pipeline(
     source_image: Image.Image,
     strength: float,
 ) -> None:
-    pipe = load_pipeline(OnnxStableDiffusionImg2ImgPipeline,
-                         params.model, params.scheduler, job.get_device())
+    pipe = load_pipeline(
+        OnnxStableDiffusionImg2ImgPipeline,
+        params.model,
+        params.scheduler,
+        job.get_device(),
+    )
 
     rng = np.random.RandomState(params.seed)
 
@@ -107,7 +89,8 @@ def run_img2img_pipeline(
     )
     image = result.images[0]
     image = run_upscale_correction(
-        job, server, StageParams(), params, image, upscale=upscale)
+        job, server, StageParams(), params, image, upscale=upscale
+    )
 
     dest = save_image(server, output, image)
     size = Size(*source_image.size)
@@ -117,7 +100,7 @@ def run_img2img_pipeline(
     del result
     run_gc()
 
-    logger.info('finished img2img job: %s', dest)
+    logger.info("finished img2img job: %s", dest)
 
 
 def run_inpaint_pipeline(
@@ -151,16 +134,14 @@ def run_inpaint_pipeline(
         mask_filter=mask_filter,
         noise_source=noise_source,
     )
-    logger.info('applying mask filter and generating noise source')
+    logger.info("applying mask filter and generating noise source")
 
     if image.size == source_image.size:
         image = ImageChops.blend(source_image, image, strength)
     else:
-        logger.info(
-            'output image size does not match source, skipping post-blend')
+        logger.info("output image size does not match source, skipping post-blend")
 
-    image = run_upscale_correction(
-        job, server, stage, params, image, upscale=upscale)
+    image = run_upscale_correction(job, server, stage, params, image, upscale=upscale)
 
     dest = save_image(server, output, image)
     save_params(server, output, params, size, upscale=upscale, border=border)
@@ -168,7 +149,7 @@ def run_inpaint_pipeline(
     del image
     run_gc()
 
-    logger.info('finished inpaint job: %s', dest)
+    logger.info("finished inpaint job: %s", dest)
 
 
 def run_upscale_pipeline(
@@ -185,7 +166,8 @@ def run_upscale_pipeline(
     stage = StageParams()
 
     image = run_upscale_correction(
-        job, server, stage, params, source_image, upscale=upscale)
+        job, server, stage, params, source_image, upscale=upscale
+    )
 
     dest = save_image(server, output, image)
     save_params(server, output, params, size, upscale=upscale)
@@ -193,4 +175,4 @@ def run_upscale_pipeline(
     del image
     run_gc()
 
-    logger.info('finished upscale job: %s', dest)
+    logger.info("finished upscale job: %s", dest)

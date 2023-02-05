@@ -1,43 +1,17 @@
-from diffusers import (
-    OnnxStableDiffusionInpaintPipeline,
-)
 from logging import getLogger
-from PIL import Image, ImageDraw
 from typing import Callable, Tuple
 
-from ..device_pool import (
-    JobContext,
-)
-from ..diffusion.load import (
-    get_latents_from_seed,
-    get_tile_latents,
-    load_pipeline,
-)
-from ..image import (
-    expand_image,
-    mask_filter_none,
-    noise_source_histogram,
-)
-from ..params import (
-    Border,
-    ImageParams,
-    Size,
-    SizeChart,
-    StageParams,
-)
-from ..output import (
-    save_image,
-)
-from ..utils import (
-    base_join,
-    is_debug,
-    ServerContext,
-)
-from .utils import (
-    process_tile_spiral,
-)
-
 import numpy as np
+from diffusers import OnnxStableDiffusionInpaintPipeline
+from PIL import Image, ImageDraw
+
+from ..device_pool import JobContext
+from ..diffusion.load import get_latents_from_seed, get_tile_latents, load_pipeline
+from ..image import expand_image, mask_filter_none, noise_source_histogram
+from ..output import save_image
+from ..params import Border, ImageParams, Size, SizeChart, StageParams
+from ..utils import ServerContext, is_debug
+from .utils import process_tile_spiral
 
 logger = getLogger(__name__)
 
@@ -52,17 +26,17 @@ def upscale_outpaint(
     border: Border,
     prompt: str = None,
     mask_image: Image.Image = None,
-    fill_color: str = 'white',
+    fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
     **kwargs,
 ) -> Image.Image:
     prompt = prompt or params.prompt
-    logger.info('upscaling image by expanding borders: %s', border)
+    logger.info("upscaling image by expanding borders: %s", border)
 
     if mask_image is None:
         # if no mask was provided, keep the full source image
-        mask_image = Image.new('RGB', source_image.size, 'black')
+        mask_image = Image.new("RGB", source_image.size, "black")
 
     source_image, mask_image, noise_image, full_dims = expand_image(
         source_image,
@@ -70,16 +44,17 @@ def upscale_outpaint(
         border,
         fill=fill_color,
         noise_source=noise_source,
-        mask_filter=mask_filter)
+        mask_filter=mask_filter,
+    )
 
     draw_mask = ImageDraw.Draw(mask_image)
     full_size = Size(*full_dims)
     full_latents = get_latents_from_seed(params.seed, full_size)
 
     if is_debug():
-        save_image(server, 'last-source.png', source_image)
-        save_image(server, 'last-mask.png', mask_image)
-        save_image(server, 'last-noise.png', noise_image)
+        save_image(server, "last-source.png", source_image)
+        save_image(server, "last-mask.png", mask_image)
+        save_image(server, "last-noise.png", noise_image)
 
     def outpaint(image: Image.Image, dims: Tuple[int, int, int]):
         left, top, tile = dims
@@ -87,11 +62,15 @@ def upscale_outpaint(
         mask = mask_image.crop((left, top, left + tile, top + tile))
 
         if is_debug():
-            save_image(server, 'tile-source.png', image)
-            save_image(server, 'tile-mask.png', mask)
+            save_image(server, "tile-source.png", image)
+            save_image(server, "tile-mask.png", mask)
 
-        pipe = load_pipeline(OnnxStableDiffusionInpaintPipeline,
-                             params.model, params.scheduler, job.get_device())
+        pipe = load_pipeline(
+            OnnxStableDiffusionInpaintPipeline,
+            params.model,
+            params.scheduler,
+            job.get_device(),
+        )
 
         latents = get_tile_latents(full_latents, dims)
         rng = np.random.RandomState(params.seed)
@@ -110,10 +89,10 @@ def upscale_outpaint(
         )
 
         # once part of the image has been drawn, keep it
-        draw_mask.rectangle((left, top, left + tile, top + tile), fill='black')
+        draw_mask.rectangle((left, top, left + tile, top + tile), fill="black")
         return result.images[0]
 
     output = process_tile_spiral(source_image, SizeChart.auto, 1, [outpaint])
 
-    logger.info('final output image size: %sx%s', output.width, output.height)
+    logger.info("final output image size: %sx%s", output.width, output.height)
     return output

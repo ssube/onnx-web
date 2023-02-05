@@ -1,22 +1,14 @@
 from hashlib import sha256
 from json import dumps
 from logging import getLogger
-from PIL import Image
 from struct import pack
 from time import time
 from typing import Any, Optional, Tuple
 
-from .params import (
-    Border,
-    ImageParams,
-    Param,
-    Size,
-    UpscaleParams,
-)
-from .utils import (
-    base_join,
-    ServerContext,
-)
+from PIL import Image
+
+from .params import Border, ImageParams, Param, Size, UpscaleParams
+from .utils import ServerContext, base_join
 
 logger = getLogger(__name__)
 
@@ -25,13 +17,13 @@ def hash_value(sha, param: Param):
     if param is None:
         return
     elif isinstance(param, float):
-        sha.update(bytearray(pack('!f', param)))
+        sha.update(bytearray(pack("!f", param)))
     elif isinstance(param, int):
-        sha.update(bytearray(pack('!I', param)))
+        sha.update(bytearray(pack("!I", param)))
     elif isinstance(param, str):
-        sha.update(param.encode('utf-8'))
+        sha.update(param.encode("utf-8"))
     else:
-        logger.warn('cannot hash param: %s, %s', param, type(param))
+        logger.warn("cannot hash param: %s, %s", param, type(param))
 
 
 def json_params(
@@ -42,22 +34,22 @@ def json_params(
     border: Optional[Border] = None,
 ) -> Any:
     json = {
-        'output': output,
-        'params': params.tojson(),
+        "output": output,
+        "params": params.tojson(),
     }
 
     if upscale is not None and border is not None:
         size = upscale.resize(size.add_border(border))
 
     if upscale is not None:
-        json['upscale'] = upscale.tojson()
+        json["upscale"] = upscale.tojson()
         size = upscale.resize(size)
 
     if border is not None:
-        json['border'] = border.tojson()
+        json["border"] = border.tojson()
         size = size.add_border(border)
 
-    json['size'] = size.tojson()
+    json["size"] = size.tojson()
 
     return json
 
@@ -67,7 +59,7 @@ def make_output_name(
     mode: str,
     params: ImageParams,
     size: Size,
-    extras: Optional[Tuple[Param]] = None
+    extras: Optional[Tuple[Param]] = None,
 ) -> str:
     now = int(time())
     sha = sha256()
@@ -87,13 +79,19 @@ def make_output_name(
         for param in extras:
             hash_value(sha, param)
 
-    return '%s_%s_%s_%s.%s' % (mode, params.seed, sha.hexdigest(), now, ctx.image_format)
+    return "%s_%s_%s_%s.%s" % (
+        mode,
+        params.seed,
+        sha.hexdigest(),
+        now,
+        ctx.image_format,
+    )
 
 
 def save_image(ctx: ServerContext, output: str, image: Image.Image) -> str:
     path = base_join(ctx.output_path, output)
     image.save(path, format=ctx.image_format)
-    logger.debug('saved output image to: %s', path)
+    logger.debug("saved output image to: %s", path)
     return path
 
 
@@ -105,9 +103,9 @@ def save_params(
     upscale: Optional[UpscaleParams] = None,
     border: Optional[Border] = None,
 ) -> str:
-    path = base_join(ctx.output_path, '%s.json' % (output))
+    path = base_join(ctx.output_path, "%s.json" % (output))
     json = json_params(output, params, size, upscale=upscale, border=border)
-    with open(path, 'w') as f:
+    with open(path, "w") as f:
         f.write(dumps(json))
-        logger.debug('saved image params to: %s', path)
+        logger.debug("saved image params to: %s", path)
         return path
