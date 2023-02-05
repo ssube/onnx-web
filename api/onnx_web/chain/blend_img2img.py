@@ -35,6 +35,7 @@ def blend_img2img(
         params.lpw,
     )
     if params.lpw:
+        logger.debug('using LPW pipeline for img2img')
         rng = torch.manual_seed(params.seed)
         result = pipe.img2img(
             prompt,

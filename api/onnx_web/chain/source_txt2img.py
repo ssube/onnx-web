@@ -38,6 +38,7 @@ def source_txt2img(
     )
 
     if params.lpw:
+        logger.debug('using LPW pipeline for txt2img')
         rng = torch.manual_seed(params.seed)
         result = pipe.text2img(
             prompt,

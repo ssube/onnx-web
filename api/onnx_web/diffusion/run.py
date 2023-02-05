@@ -32,6 +32,7 @@ def run_txt2img_pipeline(
     progress = job.get_progress_callback()
 
     if params.lpw:
+        logger.debug('using LPW pipeline for txt2img')
         rng = torch.manual_seed(params.seed)
         result = pipe.text2img(
             params.prompt,
@@ -92,6 +93,7 @@ def run_img2img_pipeline(
     )
     progress = job.get_progress_callback()
     if params.lpw:
+        logger.debug('using LPW pipeline for img2img')
         rng = torch.manual_seed(params.seed)
         result = pipe.img2img(
             source_image,

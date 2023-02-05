@@ -75,6 +75,7 @@ def upscale_outpaint(
             params.lpw,
         )
         if params.lpw:
+            logger.debug('using LPW pipeline for inpaint')
             rng = torch.manual_seed(params.seed)
             result = pipe.inpaint(
                 image,
