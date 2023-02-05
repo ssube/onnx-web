@@ -10,9 +10,10 @@ export const MODEL_LABELS = {
   'upscaling-real-esrgan-x2-plus': 'Real ESRGAN x2 Plus',
   'upscaling-real-esrgan-x4-plus': 'Real ESRGAN x4 Plus',
   'upscaling-real-esrgan-x4-v3': 'Real ESRGAN x4 v3',
+  'upscaling-stable-diffusion-x4': 'Stable Diffusion x4',
   // correction
+  'correction-codeformer': 'CodeFormer',
   'correction-gfpgan-v1-3': 'GFPGAN v1.3',
-
 };
 
 export const PLATFORM_LABELS: Record<string, string> = {
