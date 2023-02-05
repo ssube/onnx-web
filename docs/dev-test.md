@@ -10,6 +10,7 @@
       - [Updating Github Pages](#updating-github-pages)
   - [Testing](#testing)
     - [Pre-Release Test Plan](#pre-release-test-plan)
+    - [Known Issues](#known-issues)
 
 ## Development
 
@@ -63,3 +64,10 @@ This is the test plan for manual pre-release testing and should exercise all of 
   - delete finished image
   - copy to img2img
   - copy to inpaint
+
+Repeat with and without LPW enabled.
+
+### Known Issues
+
+- images of 256x256 or smaller will produce neon blots
+- inpaint does not work with LPW
