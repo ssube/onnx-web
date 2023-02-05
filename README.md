@@ -56,6 +56,7 @@ Please [see the User Guide](https://github.com/ssube/onnx-web/blob/main/docs/use
       - [For CPU on Windows: Install PyTorch CPU](#for-cpu-on-windows-install-pytorch-cpu)
       - [For Nvidia everywhere: Install PyTorch GPU and ONNX GPU](#for-nvidia-everywhere-install-pytorch-gpu-and-onnx-gpu)
     - [Download and convert models](#download-and-convert-models)
+      - [Converting your own models](#converting-your-own-models)
     - [Test the models](#test-the-models)
   - [Usage](#usage)
     - [Running the containers](#running-the-containers)
@@ -309,6 +310,39 @@ You can skip certain models by including a `--skip names` argument if you want t
 using `--skip stable-diffusion-onnx-v2-inpainting stable-diffusion-onnx-v2-1` will not download the Stable
 Diffusion v2 models.
 
+#### Converting your own models
+
+You can include your own models in the conversion script without making any code changes.
+
+Make a copy of the `api/extras.json` file and edit it to include the models you want to download and convert:
+
+```json
+{
+  "diffusion": [
+    ["diffusion-knollingcase", "Aybeeceedee/knollingcase"],
+    ["diffusion-openjourney", "prompthero/openjourney"]
+  ],
+  "correction": [],
+  "upscaling": []
+}
+```
+
+Models based on Stable Diffusion typically need to be in the `diffusion` category, including the Stable Diffusion
+upscaling model. You can provide a local path, starting with `./`, or a repository on https://huggingface.co.
+
+Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your new `extras.json` file before running the
+launch script:
+
+```shell
+# on Linux:
+> export ONNX_WEB_EXTRA_MODELS="/home/ssube/onnx-web-extras.json"
+> ./launch.sh
+
+# on Windows:
+> set ONNX_WEB_EXTRA_MODELS=C:\Users\ssube\onnx-web-extras.json
+> launch.bat
+```
+
 ### Test the models
 
 You should verify that all of the steps up to this point have worked correctly by attempting to run the
@@ -349,21 +383,25 @@ Both of those paths exist in the git repository, with placeholder files to make 
 create them, if you are using the default settings. You can customize the paths by setting `ONNX_WEB_MODEL_PATH` and
 `ONNX_WEB_OUTPUT_PATH`, if your models exist somewhere else or you want output written to another disk, for example.
 
-In the `api/` directory, run the server with Flask:
+From within the `api/` directory, run the Flask server with the launch script:
+
+```shell
+# on Linux:
+> ./launch.sh
+
+# on Windows:
+> launch.bat
+```
+
+This will allow access from other machines on your local network, but does not automatically make the server
+accessible from the internet. You can access the server through the IP address printed in the console.
+
+If you _do not_ want to allow access to the server from other machines on your local network, run the Flask server
+_without_ the `--host` argument:
 
 ```shell
 > flask --app=onnx_web.serve run
 ```
-
-Note the IP address this prints.
-
-If you want to access the server from other machines on your local network, pass the `--host` argument:
-
-```shell
-> flask --app=onnx_web.serve run --host=0.0.0.0
-```
-
-This will listen for requests from your current local network and may be dangerous.
 
 You can stop the server by pressing `Ctrl+C`.
 
@@ -386,7 +424,7 @@ To update the server, make sure you are on the `main` branch and pull the latest
 > git pull
 ```
 
-If you want to run a specific tag of the server, run `git checkout v0.4.0` with the desired tag.
+If you want to run a specific tag of the server, run `git checkout v0.5.0` with the desired tag.
 
 ### Building the client
 
