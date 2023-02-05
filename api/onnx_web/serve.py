@@ -168,7 +168,8 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
             device = available_platforms[0]
 
     if device is None:
-        raise Exception("unknown device")
+        logger.warn('unknown platform: %s', device_name)
+        device = available_platforms[0]
 
     # pipeline stuff
     model = get_not_empty(request.args, "model", get_config_value("model"))
