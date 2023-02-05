@@ -2,6 +2,7 @@ from logging import getLogger
 from typing import Callable, Tuple
 
 import torch
+import numpy as np
 from diffusers import OnnxStableDiffusionInpaintPipeline
 from PIL import Image
 
@@ -68,9 +69,11 @@ def blend_inpaint(
         )
         if params.lpw:
             pipe = pipe.inpaint
+            rng = torch.manual_seed(params.seed)
+        else:
+            rng = np.random.RandomState(params.seed)
 
         latents = get_latents_from_seed(params.seed, size)
-        rng = torch.manual_seed(params.seed)
 
         result = pipe(
             params.prompt,
