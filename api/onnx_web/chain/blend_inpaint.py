@@ -64,7 +64,10 @@ def blend_inpaint(
             params.model,
             params.scheduler,
             job.get_device(),
+            params.lpw,
         )
+        if params.lpw:
+            pipe = pipe.inpaint
 
         latents = get_latents_from_seed(params.seed, size)
         rng = torch.manual_seed(params.seed)

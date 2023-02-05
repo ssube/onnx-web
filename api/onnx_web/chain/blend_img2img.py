@@ -31,7 +31,10 @@ def blend_img2img(
         params.model,
         params.scheduler,
         job.get_device(),
+        params.lpw,
     )
+    if params.lpw:
+        pipe = pipe.img2img
 
     rng = torch.manual_seed(params.seed)
 

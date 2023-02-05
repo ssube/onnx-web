@@ -171,6 +171,7 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
         device = available_platforms[0]
 
     # pipeline stuff
+    lpw = get_not_empty(request.args, "lpw", "false") == "true"
     model = get_not_empty(request.args, "model", get_config_value("model"))
     model_path = get_model_path(model)
     scheduler = get_from_map(
@@ -233,7 +234,7 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
     )
 
     params = ImageParams(
-        model_path, scheduler, prompt, negative_prompt, cfg, steps, seed
+        model_path, scheduler, prompt, negative_prompt, cfg, steps, seed, lpw=lpw
     )
     size = Size(width, height)
     return (device, params, size)

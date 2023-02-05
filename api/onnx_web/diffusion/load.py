@@ -47,13 +47,13 @@ def get_tile_latents(
 
 
 def load_pipeline(
-    pipeline: DiffusionPipeline, model: str, scheduler: Any, device: DeviceParams
+    pipeline: DiffusionPipeline, model: str, scheduler: Any, device: DeviceParams, lpw: bool
 ):
     global last_pipeline_instance
     global last_pipeline_scheduler
     global last_pipeline_options
 
-    options = (pipeline, model, device.provider)
+    options = (pipeline, model, device.device, device.provider, lpw)
     if last_pipeline_instance is not None and last_pipeline_options == options:
         logger.debug("reusing existing diffusion pipeline")
         pipe = last_pipeline_instance
@@ -62,6 +62,11 @@ def load_pipeline(
         last_pipeline_instance = None
         last_pipeline_scheduler = None
         run_gc()
+
+        if lpw:
+            custom_pipeline = "./onnx_web/diffusion/lpw_stable_diffusion_onnx.py"
+        else:
+            custom_pipeline = None
 
         logger.debug("loading new diffusion pipeline from %s", model)
         scheduler = scheduler.from_pretrained(
@@ -72,7 +77,7 @@ def load_pipeline(
         )
         pipe = pipeline.from_pretrained(
             model,
-            custom_pipeline="./onnx_web/diffusion/lpw_stable_diffusion_onnx.py",
+            custom_pipeline=custom_pipeline,
             provider=device.provider,
             provider_options=device.options,
             revision="onnx",

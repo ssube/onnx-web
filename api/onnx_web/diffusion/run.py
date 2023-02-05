@@ -25,14 +25,16 @@ def run_txt2img_pipeline(
     upscale: UpscaleParams,
 ) -> None:
     pipe = load_pipeline(
-        OnnxStableDiffusionPipeline, params.model, params.scheduler, job.get_device()
+        OnnxStableDiffusionPipeline, params.model, params.scheduler, job.get_device(), params.lpw
     )
+    if params.lpw:
+        pipe = pipe.text2img
 
     latents = get_latents_from_seed(params.seed, size)
     rng = torch.manual_seed(params.seed)
 
     progress = job.get_progress_callback()
-    result = pipe.text2img(
+    result = pipe(
         params.prompt,
         height=size.height,
         width=size.width,
@@ -72,12 +74,15 @@ def run_img2img_pipeline(
         params.model,
         params.scheduler,
         job.get_device(),
+        params.lpw
     )
+    if params.lpw:
+        pipe = pipe.img2img
 
     rng = torch.manual_seed(params.seed)
 
     progress = job.get_progress_callback()
-    result = pipe.img2img(
+    result = pipe(
         source_image,
         params.prompt,
         generator=rng,

@@ -86,10 +86,11 @@ class ImageParams:
         model: str,
         scheduler: Any,
         prompt: str,
-        negative_prompt: Optional[str],
         cfg: float,
         steps: int,
         seed: int,
+        negative_prompt: Optional[str] = None,
+        lpw: Optional[bool] = False,
     ) -> None:
         self.model = model
         self.scheduler = scheduler
@@ -98,6 +99,7 @@ class ImageParams:
         self.cfg = cfg
         self.seed = seed
         self.steps = steps
+        self.lpw = lpw or False
 
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
@@ -108,6 +110,7 @@ class ImageParams:
             "cfg": self.cfg,
             "seed": self.seed,
             "steps": self.steps,
+            "lpw": self.lpw,
         }
 
 

@@ -71,11 +71,13 @@ def upscale_outpaint(
             params.scheduler,
             job.get_device(),
         )
+        if params.lpw:
+            pipe = pipe.inpaint
 
         latents = get_tile_latents(full_latents, dims)
         rng = torch.manual_seed(params.seed)
 
-        result = pipe.inpaint(
+        result = pipe(
             image,
             mask,
             prompt,
@@ -96,7 +98,7 @@ def upscale_outpaint(
     margin_y = float(max(border.top, border.bottom))
     overlap = min(margin_x / source_image.width, margin_y / source_image.height)
 
-    if overlap > 0 and border.left == border.right and border.top == border.bottom:
+    if border.left == border.right and border.top == border.bottom:
         logger.debug("outpainting with an even border, using spiral tiling")
         output = process_tile_spiral(source_image, SizeChart.auto, 1, [outpaint], overlap=overlap)
     else:
