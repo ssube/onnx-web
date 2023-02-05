@@ -123,8 +123,9 @@ package-api-oci:
         IMAGE_FILE: Containerfile.cpu.buster
       - IMAGE_ARCH: cuda-ubuntu
         IMAGE_FILE: Containerfile.cuda.ubuntu
-      - IMAGE_ARCH: rocm-ubuntu
-        IMAGE_FILE: Containerfile.rocm.ubuntu
+      # TODO: ROCm image build keeps running out of disk
+      # IMAGE_ARCH: rocm-ubuntu
+      # IMAGE_FILE: Containerfile.rocm.ubuntu
 
 package-gui-oci:
   extends:
