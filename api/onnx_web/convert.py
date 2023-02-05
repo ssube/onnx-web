@@ -60,7 +60,7 @@ base_models: Models = {
             "correction-codeformer",
             "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth",
             1,
-        )
+        ),
     ],
     "upscaling": [
         (

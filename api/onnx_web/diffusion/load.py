@@ -47,7 +47,11 @@ def get_tile_latents(
 
 
 def load_pipeline(
-    pipeline: DiffusionPipeline, model: str, scheduler: Any, device: DeviceParams, lpw: bool
+    pipeline: DiffusionPipeline,
+    model: str,
+    scheduler: Any,
+    device: DeviceParams,
+    lpw: bool,
 ):
     global last_pipeline_instance
     global last_pipeline_scheduler

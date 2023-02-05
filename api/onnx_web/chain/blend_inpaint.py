@@ -1,8 +1,8 @@
 from logging import getLogger
 from typing import Callable, Tuple
 
-import torch
 import numpy as np
+import torch
 from diffusers import OnnxStableDiffusionInpaintPipeline
 from PIL import Image
 
@@ -70,7 +70,7 @@ def blend_inpaint(
         )
 
         if params.lpw:
-            logger.debug('using LPW pipeline for inpaint')
+            logger.debug("using LPW pipeline for inpaint")
             rng = torch.manual_seed(params.seed)
             result = pipe.inpaint(
                 params.prompt,

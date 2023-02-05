@@ -1,7 +1,7 @@
 from logging import getLogger
 
-import torch
 import numpy as np
+import torch
 from diffusers import OnnxStableDiffusionPipeline
 from PIL import Image
 
@@ -34,11 +34,15 @@ def source_txt2img(
 
     latents = get_latents_from_seed(params.seed, size)
     pipe = load_pipeline(
-        OnnxStableDiffusionPipeline, params.model, params.scheduler, job.get_device(), params.lpw
+        OnnxStableDiffusionPipeline,
+        params.model,
+        params.scheduler,
+        job.get_device(),
+        params.lpw,
     )
 
     if params.lpw:
-        logger.debug('using LPW pipeline for txt2img')
+        logger.debug("using LPW pipeline for txt2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.text2img(
             prompt,

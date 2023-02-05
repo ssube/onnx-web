@@ -1,8 +1,8 @@
 from logging import getLogger
 from typing import Any
 
-import torch
 import numpy as np
+import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline, OnnxStableDiffusionPipeline
 from PIL import Image, ImageChops
 
@@ -27,12 +27,16 @@ def run_txt2img_pipeline(
 ) -> None:
     latents = get_latents_from_seed(params.seed, size)
     pipe = load_pipeline(
-        OnnxStableDiffusionPipeline, params.model, params.scheduler, job.get_device(), params.lpw
+        OnnxStableDiffusionPipeline,
+        params.model,
+        params.scheduler,
+        job.get_device(),
+        params.lpw,
     )
     progress = job.get_progress_callback()
 
     if params.lpw:
-        logger.debug('using LPW pipeline for txt2img')
+        logger.debug("using LPW pipeline for txt2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.text2img(
             params.prompt,
@@ -58,7 +62,6 @@ def run_txt2img_pipeline(
             num_inference_steps=params.steps,
             callback=progress,
         )
-
 
     image = result.images[0]
     image = run_upscale_correction(
@@ -89,11 +92,11 @@ def run_img2img_pipeline(
         params.model,
         params.scheduler,
         job.get_device(),
-        params.lpw
+        params.lpw,
     )
     progress = job.get_progress_callback()
     if params.lpw:
-        logger.debug('using LPW pipeline for img2img')
+        logger.debug("using LPW pipeline for img2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.img2img(
             source_image,
@@ -117,7 +120,6 @@ def run_img2img_pipeline(
             strength=strength,
             callback=progress,
         )
-
 
     image = result.images[0]
     image = run_upscale_correction(

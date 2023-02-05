@@ -143,7 +143,7 @@ correction_models = []
 upscaling_models = []
 
 
-def get_config_value(key: str, subkey: str = "default", default = None):
+def get_config_value(key: str, subkey: str = "default", default=None):
     return config_params.get(key, {}).get(subkey, default)
 
 
@@ -234,7 +234,14 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
     )
 
     params = ImageParams(
-        model_path, scheduler, prompt, cfg, steps, seed, lpw=lpw, negative_prompt=negative_prompt
+        model_path,
+        scheduler,
+        prompt,
+        cfg,
+        steps,
+        seed,
+        lpw=lpw,
+        negative_prompt=negative_prompt,
     )
     size = Size(width, height)
     return (device, params, size)

@@ -1,7 +1,7 @@
 from logging import getLogger
 
-import torch
 import numpy as np
+import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline
 from PIL import Image
 
@@ -35,7 +35,7 @@ def blend_img2img(
         params.lpw,
     )
     if params.lpw:
-        logger.debug('using LPW pipeline for img2img')
+        logger.debug("using LPW pipeline for img2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.img2img(
             prompt,

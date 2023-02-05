@@ -1,8 +1,8 @@
 from logging import getLogger
 from typing import Callable, Tuple
 
-import torch
 import numpy as np
+import torch
 from diffusers import OnnxStableDiffusionInpaintPipeline
 from PIL import Image, ImageDraw
 
@@ -75,7 +75,7 @@ def upscale_outpaint(
             params.lpw,
         )
         if params.lpw:
-            logger.debug('using LPW pipeline for inpaint')
+            logger.debug("using LPW pipeline for inpaint")
             rng = torch.manual_seed(params.seed)
             result = pipe.inpaint(
                 image,
@@ -102,9 +102,7 @@ def upscale_outpaint(
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 width=size.width,
-
             )
-
 
         # once part of the image has been drawn, keep it
         draw_mask.rectangle((left, top, left + tile, top + tile), fill="black")
@@ -116,7 +114,9 @@ def upscale_outpaint(
 
     if border.left == border.right and border.top == border.bottom:
         logger.debug("outpainting with an even border, using spiral tiling")
-        output = process_tile_spiral(source_image, SizeChart.auto, 1, [outpaint], overlap=overlap)
+        output = process_tile_spiral(
+            source_image, SizeChart.auto, 1, [outpaint], overlap=overlap
+        )
     else:
         logger.debug("outpainting with an uneven border, using grid tiling")
         output = process_tile_grid(source_image, SizeChart.auto, 1, [outpaint])
