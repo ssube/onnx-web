@@ -34,6 +34,7 @@ from .chain import (
     ChainPipeline,
     blend_img2img,
     blend_inpaint,
+    correct_codeformer,
     correct_gfpgan,
     persist_disk,
     persist_s3,
@@ -121,6 +122,7 @@ mask_filters = {
 chain_stages = {
     "blend-img2img": blend_img2img,
     "blend-inpaint": blend_inpaint,
+    "correct-codeformer": correct_codeformer,
     "correct-gfpgan": correct_gfpgan,
     "persist-disk": persist_disk,
     "persist-s3": persist_s3,
