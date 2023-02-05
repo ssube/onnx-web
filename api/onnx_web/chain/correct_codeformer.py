@@ -24,12 +24,6 @@ def correct_codeformer(
     source_image: Image.Image,
     **kwargs,
 ) -> Image.Image:
-    pipe = CodeFormer(
-        dim_embd=512,
-        codebook_size=1024,
-        n_head=8,
-        n_layers=9,
-        connect_list=["32", "64", "128", "256"],
-    ).to(device)
+    pipe = CodeFormer().to(device)
 
     return pipe(source_image)

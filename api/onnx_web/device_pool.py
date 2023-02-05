@@ -2,6 +2,7 @@ from collections import Counter
 from concurrent.futures import Future, ProcessPoolExecutor, ThreadPoolExecutor
 from logging import getLogger
 from multiprocessing import Value
+from traceback import format_exception
 from typing import Any, Callable, List, Optional, Tuple, Union
 
 from .params import DeviceParams
@@ -191,7 +192,7 @@ class DevicePoolExecutor:
                 f.result()
                 logger.info("job %s finished successfully", key)
             except Exception as err:
-                logger.warn("job %s failed with an error: %s", key, err)
+                logger.warn("job %s failed with an error: %s", key, format_exception(type(err), err, err.__traceback__))
 
         future.add_done_callback(job_done)
 

@@ -1,0 +1,16 @@
+{
+  "stages": [
+    {
+      "name": "faces",
+      "type": "correct-codeformer",
+      "params": {}
+    },
+    {
+      "name": "save-local",
+      "type": "persist-disk",
+      "params": {
+        "tile_size": "hd8k"
+      }
+    }
+  ]
+}
