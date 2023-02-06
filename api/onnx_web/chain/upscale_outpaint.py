@@ -112,6 +112,9 @@ def upscale_outpaint(
     margin_y = float(max(border.top, border.bottom))
     overlap = min(margin_x / source_image.width, margin_y / source_image.height)
 
+    if overlap == 0:
+        logger.debug("outpainting with 0 margin, using grid tiling")
+        output = process_tile_grid(source_image, SizeChart.auto, 1, [outpaint])
     if border.left == border.right and border.top == border.bottom:
         logger.debug("outpainting with an even border, using spiral tiling")
         output = process_tile_spiral(
