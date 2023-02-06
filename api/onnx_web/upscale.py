@@ -35,21 +35,21 @@ def run_upscale_correction(
 
     if upscale.scale > 1:
         if "esrgan" in upscale.upscale_model:
-            stage = StageParams(tile_size=stage.tile_size, outscale=upscale.outscale)
-            chain.append((upscale_resrgan, stage, None))
+            resr_stage = StageParams(tile_size=stage.tile_size, outscale=upscale.outscale)
+            chain.append((upscale_resrgan, resr_stage, None))
         elif "stable-diffusion" in upscale.upscale_model:
             mini_tile = min(SizeChart.mini, stage.tile_size)
-            stage = StageParams(tile_size=mini_tile, outscale=upscale.outscale)
-            chain.append((upscale_stable_diffusion, stage, None))
+            sd_stage = StageParams(tile_size=mini_tile, outscale=upscale.outscale)
+            chain.append((upscale_stable_diffusion, sd_stage, None))
         else:
             logger.warn("unknown upscaling model: %s", upscale.upscale_model)
 
     if upscale.faces:
-        stage = StageParams(tile_size=stage.tile_size, outscale=1)
+        face_stage = StageParams(tile_size=stage.tile_size, outscale=upscale.face_outscale)
         if "codeformer" in upscale.correction_model:
-            chain.append((correct_codeformer, stage, None))
+            chain.append((correct_codeformer, face_stage, None))
         elif "gfpgan" in upscale.correction_model:
-            chain.append((correct_gfpgan, stage, None))
+            chain.append((correct_gfpgan, face_stage, None))
         else:
             logger.warn("unknown correction model: %s", upscale.correction_model)
 
