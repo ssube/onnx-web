@@ -177,7 +177,10 @@ class UpscaleParams:
         )
 
     def resize(self, size: Size) -> Size:
-        return Size(size.width * self.outscale, size.height * self.outscale)
+        return Size(
+            size.width * self.outscale * self.face_outscale,
+            size.height * self.outscale * self.face_outscale,
+        )
 
     def tojson(self):
         return {
