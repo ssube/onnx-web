@@ -42,7 +42,7 @@ export function UpscaleControl() {
     />
     <NumericField
       label='Outscale'
-      disabled={upscale.enabled === false}
+      disabled={upscale.enabled === false && upscale.faces === false}
       min={params.outscale.min}
       max={params.outscale.max}
       step={params.outscale.step}
