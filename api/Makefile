@@ -1,4 +1,4 @@
-.PHONY: ci pip test package-dist package-upload
+.PHONY: ci check-venv pip pip-dev lint-check lint-fix test typecheck package package-dist package-upload
 
 onnx_env: ## create virtual env
 	python -v venv onnx_env
