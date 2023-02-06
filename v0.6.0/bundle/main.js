@@ -39122,13 +39122,14 @@
   }
   __name(appendModelToURL, "appendModelToURL");
   function appendUpscaleToURL(url, upscale) {
-    url.searchParams.append("outscale", upscale.outscale.toFixed(FIXED_INTEGER));
     if (upscale.enabled) {
       url.searchParams.append("denoise", upscale.denoise.toFixed(FIXED_FLOAT));
       url.searchParams.append("scale", upscale.scale.toFixed(FIXED_INTEGER));
+      url.searchParams.append("outscale", upscale.outscale.toFixed(FIXED_INTEGER));
     }
     if (upscale.faces) {
       url.searchParams.append("faces", String(upscale.faces));
+      url.searchParams.append("faceOutscale", upscale.faceOutscale.toFixed(FIXED_INTEGER));
       url.searchParams.append("faceStrength", upscale.faceStrength.toFixed(FIXED_FLOAT));
     }
   }
@@ -64678,9 +64679,10 @@ Please use another name.` : formatMuiErrorMessage(18));
         denoise: server.denoise.default,
         enabled: false,
         faces: false,
-        scale: server.scale.default,
+        faceOutscale: server.faceOutscale.default,
+        faceStrength: server.faceStrength.default,
         outscale: server.outscale.default,
-        faceStrength: server.faceStrength.default
+        scale: server.scale.default
       },
       upscaleTab: {
         source: null
@@ -65396,7 +65398,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           scale
         });
       } }),
-      React112.createElement(NumericField, { label: "Outscale", disabled: upscale.enabled === false && upscale.faces === false, min: params.outscale.min, max: params.outscale.max, step: params.outscale.step, value: upscale.outscale, onChange: (outscale) => {
+      React112.createElement(NumericField, { label: "Outscale", disabled: upscale.enabled === false, min: params.outscale.min, max: params.outscale.max, step: params.outscale.step, value: upscale.outscale, onChange: (outscale) => {
         setUpscale({
           outscale
         });
@@ -65409,6 +65411,11 @@ Please use another name.` : formatMuiErrorMessage(18));
       React112.createElement(NumericField, { label: "Strength", decimal: true, disabled: upscale.faces === false, min: params.faceStrength.min, max: params.faceStrength.max, step: params.faceStrength.step, value: upscale.faceStrength, onChange: (faceStrength) => {
         setUpscale({
           faceStrength
+        });
+      } }),
+      React112.createElement(NumericField, { label: "Outscale", disabled: upscale.faces === false, min: params.faceOutscale.min, max: params.faceOutscale.max, step: params.faceOutscale.step, value: upscale.faceOutscale, onChange: (faceOutscale) => {
+        setUpscale({
+          faceOutscale
         });
       } })
     );
