@@ -20,14 +20,10 @@ last_pipeline_params = None
 
 
 def load_gfpgan(
-    ctx: ServerContext, upscale: UpscaleParams, device: DeviceParams, upsampler: Optional[RealESRGANer] = None
+    ctx: ServerContext, upscale: UpscaleParams, _device: DeviceParams
 ):
     global last_pipeline_instance
     global last_pipeline_params
-
-    if upsampler is None:
-        bg_upscale = upscale.rescale(upscale.outscale)
-        upsampler = load_resrgan(ctx, bg_upscale, device)
 
     face_path = path.join(ctx.model_path, "%s.pth" % (upscale.correction_model))
 
@@ -43,7 +39,6 @@ def load_gfpgan(
         upscale=upscale.outscale,
         arch="clean",
         channel_multiplier=2,
-        bg_upsampler=upsampler,
     )
 
     last_pipeline_instance = gfpgan
