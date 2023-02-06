@@ -42,6 +42,7 @@
 			"numpy",
 			"Onnx",
 			"onnxruntime",
+			"openjourney",
 			"opset",
 			"outpaint",
 			"outpainting",

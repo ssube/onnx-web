@@ -84,11 +84,9 @@ config_params = {}
 
 # pipeline params
 platform_providers = {
-    "amd": "DmlExecutionProvider",
     "cpu": "CPUExecutionProvider",
     "cuda": "CUDAExecutionProvider",
     "directml": "DmlExecutionProvider",
-    "nvidia": "CUDAExecutionProvider",
     "rocm": "ROCMExecutionProvider",
 }
 pipeline_schedulers = {
