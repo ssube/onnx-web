@@ -1,8 +1,14 @@
+# lint
 black
 flake8
 isort
 mypy
 
+# testing
+coverage
+hypothesis
+
+# types
 types-Flask-Cors
 types-jsonschema
 types-Pillow
