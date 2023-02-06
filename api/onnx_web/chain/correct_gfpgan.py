@@ -4,23 +4,25 @@ from os import path
 import numpy as np
 from gfpgan import GFPGANer
 from PIL import Image
+from typing import Optional
 
 from ..device_pool import JobContext
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..utils import ServerContext, run_gc
+from .upscale_resrgan import load_resrgan
 
 logger = getLogger(__name__)
 
 
-last_pipeline_instance = None
-last_pipeline_params = None
+last_pipeline_instance: Optional[GFPGANer] = None
+last_pipeline_params: Optional[str] = None
 
 
-def load_gfpgan(ctx: ServerContext, upscale: UpscaleParams, _device: DeviceParams):
+def load_gfpgan(server: ServerContext, stage: StageParams, upscale: UpscaleParams, device: DeviceParams):
     global last_pipeline_instance
     global last_pipeline_params
 
-    face_path = path.join(ctx.model_path, "%s.pth" % (upscale.correction_model))
+    face_path = path.join(server.model_path, "%s.pth" % (upscale.correction_model))
 
     if last_pipeline_instance is not None and face_path == last_pipeline_params:
         logger.info("reusing existing GFPGAN pipeline")
@@ -28,12 +30,15 @@ def load_gfpgan(ctx: ServerContext, upscale: UpscaleParams, _device: DeviceParam
 
     logger.debug("loading GFPGAN model from %s", face_path)
 
+    upsampler = load_resrgan(server, upscale, device, tile=stage.tile_size)
+
     # TODO: find a way to pass the ONNX model to underlying architectures
     gfpgan = GFPGANer(
-        model_path=face_path,
-        upscale=upscale.outscale,
         arch="clean",
+        bg_upsampler=upsampler,
         channel_multiplier=2,
+        model_path=face_path,
+        upscale=upscale.face_outscale,
     )
 
     last_pipeline_instance = gfpgan
@@ -46,7 +51,7 @@ def load_gfpgan(ctx: ServerContext, upscale: UpscaleParams, _device: DeviceParam
 def correct_gfpgan(
     job: JobContext,
     server: ServerContext,
-    _stage: StageParams,
+    stage: StageParams,
     _params: ImageParams,
     source_image: Image.Image,
     *,
@@ -59,7 +64,7 @@ def correct_gfpgan(
 
     logger.info("correcting faces with GFPGAN model: %s", upscale.correction_model)
     device = job.get_device()
-    gfpgan = load_gfpgan(server, upscale, device)
+    gfpgan = load_gfpgan(server, stage, upscale, device)
 
     output = np.array(source_image)
     _, _, output = gfpgan.enhance(

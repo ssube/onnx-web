@@ -138,6 +138,7 @@ class UpscaleParams:
         correction_model: Optional[str] = None,
         denoise: float = 0.5,
         faces=True,
+        face_outscale: int = 1,
         face_strength: float = 0.5,
         format: Literal["onnx", "pth"] = "onnx",
         half=False,
@@ -150,6 +151,7 @@ class UpscaleParams:
         self.correction_model = correction_model
         self.denoise = denoise
         self.faces = faces
+        self.face_outscale = face_outscale
         self.face_strength = face_strength
         self.format = format
         self.half = half
@@ -164,6 +166,7 @@ class UpscaleParams:
             correction_model=self.correction_model,
             denoise=self.denoise,
             faces=self.faces,
+            face_outscale=self.face_outscale,
             face_strength=self.face_strength,
             format=self.format,
             half=self.half,
@@ -182,6 +185,7 @@ class UpscaleParams:
             "correction_model": self.correction_model,
             "denoise": self.denoise,
             "faces": self.faces,
+            "face_outscale": self.face_outscale,
             "face_strength": self.face_strength,
             "format": self.format,
             "half": self.half,

@@ -4,7 +4,7 @@ from glob import glob
 from io import BytesIO
 from logging import getLogger
 from os import makedirs, path
-from typing import List, Tuple
+from typing import Dict, List, Tuple, Union
 
 import numpy as np
 import torch
@@ -80,7 +80,7 @@ from .utils import (
 logger = getLogger(__name__)
 
 # config caching
-config_params = {}
+config_params: Dict[str, Dict[str, Union[float, int, str]]] = {}
 
 # pipeline params
 platform_providers = {
@@ -136,9 +136,9 @@ chain_stages = {
 available_platforms: List[DeviceParams] = []
 
 # loaded from model_path
-diffusion_models = []
-correction_models = []
-upscaling_models = []
+diffusion_models: List[str] = []
+correction_models: List[str] = []
+upscaling_models: List[str] = []
 
 
 def get_config_value(key: str, subkey: str = "default", default=None):
@@ -269,6 +269,7 @@ def upscale_from_request() -> UpscaleParams:
     upscaling = get_from_list(request.args, "upscaling", upscaling_models)
     correction = get_from_list(request.args, "correction", correction_models)
     faces = get_not_empty(request.args, "faces", "false") == "true"
+    face_outscale = get_and_clamp_int(request.args, "faceOutscale", 1, 4, 1)
     face_strength = get_and_clamp_float(request.args, "faceStrength", 0.5, 1.0, 0.0)
 
     return UpscaleParams(
@@ -276,6 +277,7 @@ def upscale_from_request() -> UpscaleParams:
         correction_model=correction,
         denoise=denoise,
         faces=faces,
+        face_outscale=face_outscale,
         face_strength=face_strength,
         format="onnx",
         outscale=outscale,

@@ -4,26 +4,38 @@
 
 - [Development and Testing](#development-and-testing)
   - [Contents](#contents)
-  - [Development](#development)
-    - [API](#api)
-    - [GUI](#gui)
-      - [Updating Github Pages](#updating-github-pages)
+  - [API Development](#api-development)
+    - [Style](#style)
+    - [Models and Pipelines](#models-and-pipelines)
+  - [GUI Development](#gui-development)
+    - [Updating Github Pages](#updating-github-pages)
   - [Testing](#testing)
     - [Pre-Release Test Plan](#pre-release-test-plan)
     - [Known Issues](#known-issues)
 
-## Development
-
-### API
+## API Development
 
 - TODO: testing
 - TODO: lint/style
 
-### GUI
+### Style
+
+- all logs must use `logger` from top of file
+  - every file should have a `logger = getLogger(__name__)` or equivalent before any real code
+
+### Models and Pipelines
+
+Loading models and pipelines can be expensive. They should be converted and exported once, then cached per-process
+whenever reasonably possible.
+
+Most pipeline stages will have a corresponding load function somewhere, like `upscale_stable_diffusion` and `load_stable_diffusion`. The load function should compare its parameters and reuse the existing pipeline when
+that is possible without causing memory access errors. Most logging from the load function should be `debug` level.
+
+## GUI Development
 
 Run `make ci` to build the bundle.
 
-#### Updating Github Pages
+### Updating Github Pages
 
 Checkout the `gh-pages` branch and run the `copy-bundle.sh` script, assuming you have the project
 checked out to a directory named `onnx-web`.

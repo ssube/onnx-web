@@ -70,6 +70,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [ONNXRuntimeError: The parameter is incorrect](#onnxruntimeerror-the-parameter-is-incorrect)
       - [The expanded size of the tensor must match the existing size](#the-expanded-size-of-the-tensor-must-match-the-existing-size)
       - [Shape mismatch attempting to re-use buffer](#shape-mismatch-attempting-to-re-use-buffer)
+      - [Cannot read properties of undefined (reading 'default')](#cannot-read-properties-of-undefined-reading-default)
 
 ## Outline
 
@@ -591,4 +592,23 @@ Example error:
 ,40} != {2,77,8}. Validate usage of dim_value (values should be > 0) and dim_param (all values with the same string should equate to the same size) in shapes in the model.
 [2023-02-04 12:32:54,432] INFO: werkzeug: 10.2.2.16 - - [04/Feb/2023 12:32:54] "GET /api/ready?output=txt2img_1495861691_ccc20fe082567fb4a3471a851db509dc25b4b933dde53db913351be0b617cf85_1
 675535574.png HTTP/1.1" 200 -
+```
+
+#### Cannot read properties of undefined (reading 'default')
+
+This can happen when you use a newer client with an older version of the server parameters.
+
+This often means that a parameter is missing from your `params.json` file. If you have not updated your server
+recently, try updating and restarting the server.
+
+If you have customized your `params.json` file, check to make sure it has all of the parameters listed and that the
+names are correct (they are case-sensitive).
+
+Example error:
+
+```none
+Error fetching server parameters
+Could not fetch parameters from the ONNX web API server at http://10.2.2.34:5000.
+
+Cannot read properties of undefined (reading 'default')
 ```

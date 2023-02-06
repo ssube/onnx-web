@@ -29,7 +29,7 @@ def load_stable_diffusion(
     cache_params = (model_path, upscale.format)
 
     if last_pipeline_instance is not None and cache_params == last_pipeline_params:
-        logger.info("reusing existing Stable Diffusion upscale pipeline")
+        logger.debug("reusing existing Stable Diffusion upscale pipeline")
         return last_pipeline_instance
 
     if upscale.format == "onnx":

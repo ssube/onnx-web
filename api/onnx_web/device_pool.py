@@ -145,7 +145,7 @@ class DevicePoolExecutor:
 
         return False
 
-    def done(self, key: str) -> Tuple[bool, int]:
+    def done(self, key: str) -> Tuple[Optional[bool], int]:
         for job in self.jobs:
             if job.key == key:
                 done = job.future.done()

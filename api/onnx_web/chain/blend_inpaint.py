@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Callable, Tuple
+from typing import Callable, Optional, Tuple
 
 import numpy as np
 import torch
@@ -25,7 +25,7 @@ def blend_inpaint(
     source_image: Image.Image,
     *,
     expand: Border,
-    mask_image: Image.Image = None,
+    mask_image: Optional[Image.Image] = None,
     fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,

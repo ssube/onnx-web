@@ -4,6 +4,7 @@ import numpy as np
 import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline
 from PIL import Image
+from typing import Optional
 
 from ..device_pool import JobContext
 from ..diffusion.load import load_pipeline
@@ -21,7 +22,7 @@ def blend_img2img(
     source_image: Image.Image,
     *,
     strength: float,
-    prompt: str = None,
+    prompt: Optional[str] = None,
     **kwargs,
 ) -> Image.Image:
     prompt = prompt or params.prompt

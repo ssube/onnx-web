@@ -56,7 +56,7 @@ export function UpscaleControl() {
     />
     <NumericField
       label='Outscale'
-      disabled={upscale.enabled === false && upscale.faces === false}
+      disabled={upscale.enabled === false}
       min={params.outscale.min}
       max={params.outscale.max}
       step={params.outscale.step}
@@ -90,6 +90,19 @@ export function UpscaleControl() {
       onChange={(faceStrength) => {
         setUpscale({
           faceStrength,
+        });
+      }}
+    />
+    <NumericField
+      label='Outscale'
+      disabled={upscale.faces === false}
+      min={params.faceOutscale.min}
+      max={params.faceOutscale.max}
+      step={params.faceOutscale.step}
+      value={upscale.faceOutscale}
+      onChange={(faceOutscale) => {
+        setUpscale({
+          faceOutscale,
         });
       }}
     />

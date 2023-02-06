@@ -19,6 +19,7 @@ def reduce_thumbnail(
     size: Size,
     **kwargs,
 ) -> Image.Image:
-    image = source_image.thumbnail((size.width, size.height))
+    image = source_image.copy()
+    image = image.thumbnail((size.width, size.height))
     logger.info("created thumbnail with dimensions: %sx%s", image.width, image.height)
     return image

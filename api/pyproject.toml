@@ -5,3 +5,19 @@ force-exclude = '''/(lpw_stable_diffusion_onnx|pipeline_onnx_stable_diffusion_up
 profile = "black"
 force_to_top = ".logging"
 skip_glob = ["*/lpw_stable_diffusion_onnx.py", "*/pipeline_onnx_stable_diffusion_upscale.py"]
+
+[tool.mypy]
+# ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "basicsr.archs.rrdbnet_arch",
+    "boto3",
+    "codeformer",
+    "diffusers",
+    "diffusers.pipeline_utils",
+    "gfpgan",
+    "onnxruntime",
+    "realesrgan"
+]
+ignore_missing_imports = true

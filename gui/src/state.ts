@@ -374,9 +374,10 @@ export function createStateSlices(server: ServerParams) {
       denoise: server.denoise.default,
       enabled: false,
       faces: false,
-      scale: server.scale.default,
-      outscale: server.outscale.default,
+      faceOutscale: server.faceOutscale.default,
       faceStrength: server.faceStrength.default,
+      outscale: server.outscale.default,
+      scale: server.scale.default,
     },
     upscaleTab: {
       source: null,

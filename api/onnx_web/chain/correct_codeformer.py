@@ -4,7 +4,7 @@ from codeformer import CodeFormer
 from PIL import Image
 
 from ..device_pool import JobContext
-from ..params import ImageParams, StageParams
+from ..params import ImageParams, StageParams, UpscaleParams
 from ..utils import ServerContext
 
 logger = getLogger(__name__)
@@ -20,11 +20,12 @@ def correct_codeformer(
     source: Image.Image,
     *,
     source_image: Image.Image = None,
+    upscale: UpscaleParams,
     **kwargs,
 ) -> Image.Image:
     device = job.get_device()
     # TODO: terrible names, fix
     image = source or source_image
 
-    pipe = CodeFormer(upscale=stage.outscale).to(device.torch_device())
+    pipe = CodeFormer(upscale=upscale.face_outscale).to(device.torch_device())
     return pipe(image)
