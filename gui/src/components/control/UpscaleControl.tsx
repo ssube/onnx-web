@@ -28,6 +28,20 @@ export function UpscaleControl() {
       />}
     />
     <NumericField
+      label='Denoise'
+      decimal
+      disabled={upscale.enabled === false}
+      min={params.denoise.min}
+      max={params.denoise.max}
+      step={params.denoise.step}
+      value={upscale.denoise}
+      onChange={(denoise) => {
+        setUpscale({
+          denoise,
+        });
+      }}
+    />
+    <NumericField
       label='Scale'
       disabled={upscale.enabled === false}
       min={params.scale.min}
@@ -50,20 +64,6 @@ export function UpscaleControl() {
       onChange={(outscale) => {
         setUpscale({
           outscale,
-        });
-      }}
-    />
-    <NumericField
-      label='Denoise'
-      decimal
-      disabled={upscale.enabled === false}
-      min={params.denoise.min}
-      max={params.denoise.max}
-      step={params.denoise.step}
-      value={upscale.denoise}
-      onChange={(denoise) => {
-        setUpscale({
-          denoise,
         });
       }}
     />
