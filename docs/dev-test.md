@@ -38,77 +38,79 @@ This is the test plan for manual pre-release testing and should exercise all of 
 
 - txt2img
   - 256x256 with SD v1.5
-    - should fail: neon blobs
+    - [ ] should fail: neon blobs
   - 512x512 with SD v1.5
     - DPM Multi
-      - should work
+      - [ ] should work
     - Euler A
-      - should work
+      - [ ] should work
   - 512x512 with SD v1.5
   - 768x768 with SD v2.1
-    - should work, given sufficient memory
+    - [ ] should work, given sufficient memory
   - extra models
     - Knollingcase
-      - should work
+      - [ ] should work
     - OpenJourney
-      - should work
+      - [ ] should work
 - img2img
   - 256x256 input
-    - TODO
+    - [ ] TODO
   - 512x512 input
-    - should work
+    - [ ] should work
   - 1024x768 input
-    - should work
+    - [ ] should work
 - inpaint
   - outpaint
     - 0 all sides
-      - should work
+      - [ ] should work
     - 256 all sides
-      - should work
+      - [ ] should work
     - 512 top and bottom, 0 left and right
-      - should work
+      - [ ] should work
     - 512 left and right, 0 top and bottom
-      - should work
+      - [ ] should work
 - upscale
   - Real ESRGAN
     - with CodeFormer
-      - should work
+      - [ ] should work
     - with GFPGAN
-      - should work
+      - [ ] should work
     - without face correction
-      - should work
+      - [ ] should work
     - using x2 model and x4 scale
-      - should fail: tiles
+      - [ ] should fail: tiles
     - using x4 model and x2 scale
-      - should fail: tiles
+      - [ ] should fail: tiles
     - using v3 model and x2 scale
+      - [ ] TODO
     - using v3 model and x4 scale
+      - [ ] TODO
   - Stable Diffusion
     - using x2 scale
-      - should fail: tiles
+      - [ ] should fail: tiles
     - using x4 scale
-      - should work
+      - [ ] should work
     - with CodeFormer
-      - should work
+      - [ ] should work
     - with GFPGAN
-      - should work but doesn't: https://github.com/ssube/onnx-web/issues/87
+      - [ ] should work but doesn't: https://github.com/ssube/onnx-web/issues/87
     - without face correction
-      - should work
+      - [ ] should work
 - interactions
   - generate a new image
-    - should request and then load an image from the server
+    - [ ] should request and then load an image from the server
   - delete a pending image
-    - should remove a single image and leave the rest
+    - [ ] should remove a single image and leave the rest
   - delete a finished image
-    - should remove a single image and leave the rest
+    - [ ] should remove a single image and leave the rest
   - copy an image to img2img
-    - should switch to the img2img tab
-    - should populate the image source
-    - the generate button should be enabled
+    - [ ] should switch to the img2img tab
+    - [ ] should populate the image source
+    - [ ] the generate button should be enabled
   - copy an image to inpaint
-    - should switch to the inpaint tab
-    - should populate the image source
-    - the generate button should be enabled
+    - [ ] should switch to the inpaint tab
+    - [ ] should populate the image source
+    - [ ] the generate button should be enabled
 
 Repeat with and without LPW enabled. Feature combinations marked `should work` must produce a valid image for the
 prompt, within a reasonable margin of creative freedom. Feature combinations marked `should fail` are known to produce
