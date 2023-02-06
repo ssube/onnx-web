@@ -111,8 +111,8 @@ def run_img2img_pipeline(
     else:
         rng = np.random.RandomState(params.seed)
         result = pipe(
-            source_image,
             params.prompt,
+            source_image,
             generator=rng,
             guidance_scale=params.cfg,
             negative_prompt=params.negative_prompt,

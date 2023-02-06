@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Any, Tuple
+from typing import Any, Optional, Tuple
 
 import numpy as np
 from diffusers import DiffusionPipeline
@@ -9,9 +9,15 @@ from ..utils import run_gc
 
 logger = getLogger(__name__)
 
-last_pipeline_instance = None
-last_pipeline_options = (None, None, None)
-last_pipeline_scheduler = None
+last_pipeline_instance: Any = None
+last_pipeline_options: Tuple[
+    Optional[DiffusionPipeline],
+    Optional[str],
+    Optional[str],
+    Optional[str],
+    Optional[bool],
+] = (None, None, None, None, None)
+last_pipeline_scheduler: Any = None
 
 latent_channels = 4
 latent_factor = 8
