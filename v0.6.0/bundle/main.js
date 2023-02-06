@@ -39122,11 +39122,13 @@
   }
   __name(appendModelToURL, "appendModelToURL");
   function appendUpscaleToURL(url, upscale) {
-    if (upscale.enabled || upscale.faces) {
+    url.searchParams.append("outscale", upscale.outscale.toFixed(FIXED_INTEGER));
+    if (upscale.enabled) {
       url.searchParams.append("denoise", upscale.denoise.toFixed(FIXED_FLOAT));
-      url.searchParams.append("faces", String(upscale.faces));
       url.searchParams.append("scale", upscale.scale.toFixed(FIXED_INTEGER));
-      url.searchParams.append("outscale", upscale.outscale.toFixed(FIXED_INTEGER));
+    }
+    if (upscale.faces) {
+      url.searchParams.append("faces", String(upscale.faces));
       url.searchParams.append("faceStrength", upscale.faceStrength.toFixed(FIXED_FLOAT));
     }
   }
@@ -65384,19 +65386,19 @@ Please use another name.` : formatMuiErrorMessage(18));
           enabled: upscale.enabled === false
         });
       } }) }),
+      React112.createElement(NumericField, { label: "Denoise", decimal: true, disabled: upscale.enabled === false, min: params.denoise.min, max: params.denoise.max, step: params.denoise.step, value: upscale.denoise, onChange: (denoise) => {
+        setUpscale({
+          denoise
+        });
+      } }),
       React112.createElement(NumericField, { label: "Scale", disabled: upscale.enabled === false, min: params.scale.min, max: params.scale.max, step: params.scale.step, value: upscale.scale, onChange: (scale) => {
         setUpscale({
           scale
         });
       } }),
-      React112.createElement(NumericField, { label: "Outscale", disabled: upscale.enabled === false, min: params.outscale.min, max: params.outscale.max, step: params.outscale.step, value: upscale.outscale, onChange: (outscale) => {
+      React112.createElement(NumericField, { label: "Outscale", disabled: upscale.enabled === false && upscale.faces === false, min: params.outscale.min, max: params.outscale.max, step: params.outscale.step, value: upscale.outscale, onChange: (outscale) => {
         setUpscale({
           outscale
-        });
-      } }),
-      React112.createElement(NumericField, { label: "Denoise", decimal: true, disabled: upscale.enabled === false, min: params.denoise.min, max: params.denoise.max, step: params.denoise.step, value: upscale.denoise, onChange: (denoise) => {
-        setUpscale({
-          denoise
         });
       } }),
       React112.createElement(FormControlLabel_default, { label: "Face Correction", control: React112.createElement(Checkbox_default, { checked: upscale.faces, value: "check", onChange: (event) => {
