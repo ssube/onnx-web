@@ -27,7 +27,7 @@ def load_gfpgan(
 
     if upsampler is None:
         bg_upscale = upscale.rescale(upscale.outscale)
-        upsampler = load_resrgan(ctx, bg_upscale)
+        upsampler = load_resrgan(ctx, bg_upscale, device)
 
     face_path = path.join(ctx.model_path, "%s.pth" % (upscale.correction_model))
 
