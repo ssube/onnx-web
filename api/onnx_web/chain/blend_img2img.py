@@ -1,10 +1,10 @@
 from logging import getLogger
+from typing import Optional
 
 import numpy as np
 import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline
 from PIL import Image
-from typing import Optional
 
 from ..device_pool import JobContext
 from ..diffusion.load import load_pipeline

@@ -1,10 +1,10 @@
 from logging import getLogger
 from os import path
+from typing import Optional
 
 import numpy as np
 from gfpgan import GFPGANer
 from PIL import Image
-from typing import Optional
 
 from ..device_pool import JobContext
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
@@ -18,7 +18,12 @@ last_pipeline_instance: Optional[GFPGANer] = None
 last_pipeline_params: Optional[str] = None
 
 
-def load_gfpgan(server: ServerContext, stage: StageParams, upscale: UpscaleParams, device: DeviceParams):
+def load_gfpgan(
+    server: ServerContext,
+    stage: StageParams,
+    upscale: UpscaleParams,
+    device: DeviceParams,
+):
     global last_pipeline_instance
     global last_pipeline_params
 
