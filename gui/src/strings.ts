@@ -14,6 +14,20 @@ export const MODEL_LABELS = {
   // correction
   'correction-codeformer': 'CodeFormer',
   'correction-gfpgan-v1-3': 'GFPGAN v1.3',
+  // extras
+  'diffusion-anything': 'Anything',
+  'diffusion-anything-v3': 'Anything v3',
+  'diffusion-anything-v4': 'Anything v4',
+  'diffusion-darkvictorian': 'Dark Victorian',
+  'diffusion-dreamlike-photoreal': 'Dreamlike Photoreal',
+  'diffusion-dreamlike-photoreal-v1': 'Dreamlike Photoreal 1.0',
+  'diffusion-dreamlike-photoreal-v2': 'Dreamlike Photoreal 2.0',
+  'diffusion-ghibli': 'Ghibli',
+  'diffusion-knollingcase': 'Knollingcase',
+  'diffusion-openjourney': 'OpenJourney',
+  'diffusion-openjourney-v1': 'OpenJourney v1',
+  'diffusion-openjourney-v2': 'OpenJourney v2',
+  'diffusion-pastel-mix': 'Pastel Mix',
 };
 
 export const PLATFORM_LABELS: Record<string, string> = {
