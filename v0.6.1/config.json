@@ -1,0 +1,19 @@
+{
+  "api": {
+    "root": "http://127.0.0.1:5000"
+  },
+  "params": {
+    "model": {
+      "default": "stable-diffusion-onnx-v1-5"
+    },
+    "platform": {
+      "default": "amd"
+    },
+    "scheduler": {
+      "default": "euler-a"
+    },
+    "prompt": {
+      "default": "an astronaut eating a hamburger"
+    }
+  }
+}
