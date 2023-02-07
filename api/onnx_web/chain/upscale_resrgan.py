@@ -50,9 +50,9 @@ def load_resrgan(
         raise Exception("unknown platform %s" % params.format)
 
     dni_weight = None
-    if params.upscale_model == "realesr-general-x4v3" and params.denoise != 1:
+    if params.upscale_model == "real-esrgan-x4-v3" and params.denoise != 1:
         wdn_model_path = model_path.replace(
-            "realesr-general-x4v3", "realesr-general-wdn-x4v3"
+            "real-esrgan-x4-v3", "real-esrgan-x4-v3-wdn"
         )
         model_path = [model_path, wdn_model_path]
         dni_weight = [params.denoise, 1 - params.denoise]
