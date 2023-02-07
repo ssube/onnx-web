@@ -564,14 +564,15 @@ def main() -> int:
     load_models(args, base_models)
 
     for file in args.extras:
-        logger.info("Loading extra models from %s", file)
-        try:
-            with open(file, "r") as f:
-                data = loads(f.read())
-                logger.info("Converting extra models.")
-                load_models(args, data)
-        except Exception as err:
-            logger.error("Error converting extra models: %s", err)
+        if file is not None and file != "":
+            logger.info("Loading extra models from %s", file)
+            try:
+                with open(file, "r") as f:
+                    data = loads(f.read())
+                    logger.info("Converting extra models.")
+                    load_models(args, data)
+            except Exception as err:
+                logger.error("Error converting extra models: %s", err)
 
     return 0
 
