@@ -1,6 +1,6 @@
 {
   "name": "@apextoaster/onnx-web",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "onnx web gui",
   "type": "module",
   "main": "out/src/main.js",
