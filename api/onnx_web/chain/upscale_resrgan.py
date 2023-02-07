@@ -5,6 +5,7 @@ import numpy as np
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from PIL import Image
 from realesrgan import RealESRGANer
+from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 
 from ..device_pool import JobContext
 from ..onnx import OnnxNet
@@ -15,6 +16,8 @@ logger = getLogger(__name__)
 
 last_pipeline_instance = None
 last_pipeline_params = (None, None)
+
+x4_v3_tag = "real-esrgan-x4-v3"
 
 
 def load_resrgan(
@@ -33,8 +36,18 @@ def load_resrgan(
         logger.info("reusing existing Real ESRGAN pipeline")
         return last_pipeline_instance
 
-    # use ONNX acceleration, if available
-    if params.format == "onnx":
+    if x4_v3_tag in model_file:
+        # the x4-v3 model needs a different network
+        model = SRVGGNetCompact(
+            num_in_ch=3,
+            num_out_ch=3,
+            num_feat=64,
+            num_conv=32,
+            upscale=4,
+            act_type="prelu",
+        )
+    elif params.format == "onnx":
+        # use ONNX acceleration, if available
         model = OnnxNet(
             ctx, model_file, provider=device.provider, provider_options=device.options
         )
@@ -47,13 +60,12 @@ def load_resrgan(
             num_grow_ch=32,
             scale=params.scale,
         )
+    else:
         raise Exception("unknown platform %s" % params.format)
 
     dni_weight = None
-    if params.upscale_model == "real-esrgan-x4-v3" and params.denoise != 1:
-        wdn_model_path = model_path.replace(
-            "real-esrgan-x4-v3", "real-esrgan-x4-v3-wdn"
-        )
+    if params.upscale_model == x4_v3_tag and params.denoise != 1:
+        wdn_model_path = model_path.replace(x4_v3_tag, "%s-wdn" % (x4_v3_tag))
         model_path = [model_path, wdn_model_path]
         dni_weight = [params.denoise, 1 - params.denoise]
 
