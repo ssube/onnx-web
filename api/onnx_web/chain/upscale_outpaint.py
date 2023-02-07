@@ -35,6 +35,10 @@ def upscale_outpaint(
     prompt = prompt or params.prompt
     logger.info("upscaling image by expanding borders: %s", border)
 
+    margin_x = float(max(border.left, border.right))
+    margin_y = float(max(border.top, border.bottom))
+    overlap = min(margin_x / source_image.width, margin_y / source_image.height)
+
     if mask_image is None:
         # if no mask was provided, keep the full source image
         mask_image = Image.new("RGB", source_image.size, "black")
@@ -107,10 +111,6 @@ def upscale_outpaint(
         # once part of the image has been drawn, keep it
         draw_mask.rectangle((left, top, left + tile, top + tile), fill="black")
         return result.images[0]
-
-    margin_x = float(max(border.left, border.right))
-    margin_y = float(max(border.top, border.bottom))
-    overlap = min(margin_x / source_image.width, margin_y / source_image.height)
 
     if overlap == 0:
         logger.debug("outpainting with 0 margin, using grid tiling")
