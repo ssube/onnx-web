@@ -43,9 +43,6 @@ base_models: Models = {
         ),
         # TODO: should have its own converter
         ("upscaling-stable-diffusion-x4", "stabilityai/stable-diffusion-x4-upscaler"),
-        # TODO: testing safetensors
-        ("diffusion-stably-diffused-onnx-v2-6", "../models/tensors/stablydiffuseds_26.safetensors"),
-        ("diffusion-unstable-ink-dream-onnx-v6", "../models/tensors/unstableinkdream_v6.safetensors"),
     ],
     "correction": [
         (

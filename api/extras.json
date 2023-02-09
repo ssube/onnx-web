@@ -1,7 +1,9 @@
 {
   "diffusion": [
     ["diffusion-knollingcase", "Aybeeceedee/knollingcase"],
-    ["diffusion-openjourney", "prompthero/openjourney"]
+    ["diffusion-openjourney", "prompthero/openjourney"],
+    ["diffusion-stably-diffused-onnx-v2-6", "../models/tensors/stablydiffuseds_26.safetensors"],
+    ["diffusion-unstable-ink-dream-onnx-v6", "../models/tensors/unstableinkdream_v6.safetensors"]
   ],
   "correction": [],
   "upscaling": []
