@@ -96,7 +96,7 @@ def load_pipeline(
         )
 
         if device is not None and hasattr(pipe, "to"):
-            pipe = pipe.to(device)
+            pipe = pipe.to(device.torch_device())
 
         last_pipeline_instance = pipe
         last_pipeline_options = options
