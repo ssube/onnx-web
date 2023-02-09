@@ -1607,7 +1607,7 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
 
 def convert_diffusion_original(ctx: ConversionContext, model_name: str, tensor_file: str, opset: int, half: bool):
     model_path = os.path.join(ctx.model_path, model_name)
-    torch_name = model_name.replace("-onnx-", "-torch-")
+    torch_name = model_name.replace("onnx", "torch")
     torch_path = os.path.join(ctx.model_path, torch_name)
     working_name = os.path.join(ctx.model_path, torch_name, "working")
     logger.info("Converting original Diffusers checkpoint %s: %s -> %s", model_name, tensor_file, model_path)

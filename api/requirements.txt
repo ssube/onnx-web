@@ -26,3 +26,4 @@ pyyaml
 # TODO: get rid of these
 omegaconf
 pydantic
+safetensors
