@@ -22,3 +22,7 @@ flask
 flask-cors
 jsonschema
 pyyaml
+
+# TODO: get rid of these
+omegaconf
+pydantic
