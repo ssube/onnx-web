@@ -6,6 +6,7 @@ from traceback import format_exception
 from typing import Any, Callable, List, Optional, Tuple, Union
 
 from .params import DeviceParams
+from .utils import run_gc
 
 logger = getLogger(__name__)
 
@@ -197,6 +198,7 @@ class DevicePoolExecutor:
                     key,
                     format_exception(type(err), err, err.__traceback__),
                 )
+                run_gc()
 
         future.add_done_callback(job_done)
 
