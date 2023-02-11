@@ -341,8 +341,7 @@ def load_params(context: ServerContext):
 def load_platforms(context: ServerContext):
     global available_platforms
 
-    providers = []
-    providers.extend(get_available_providers())
+    providers = list(get_available_providers())
 
     for potential in platform_providers:
         if (
@@ -366,7 +365,8 @@ def load_platforms(context: ServerContext):
                 )
 
     if context.any_platform:
-        available_platforms.append("any")
+        # the platform should be ignored when the job is scheduled, but set to CPU just in case
+        available_platforms.append(DeviceParams("any", platform_providers["cpu"]))
 
     # make sure CPU is last on the list
     def any_first_cpu_last(a: DeviceParams, b: DeviceParams):
