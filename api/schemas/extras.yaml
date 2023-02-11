@@ -6,8 +6,9 @@ $defs:
     type: array
     items:
       oneOf:
-        - type: string
+        - type: boolean
         - type: number
+        - type: string
 
   base_model:
     type: object

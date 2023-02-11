@@ -45,19 +45,19 @@ base_models: Models = {
             "stable-diffusion-onnx-v1-5",
             model_source_huggingface + "runwayml/stable-diffusion-v1-5",
         ),
-        # (
-        #     "stable-diffusion-onnx-v1-inpainting",
-        #     model_source_huggingface + "runwayml/stable-diffusion-inpainting",
-        # ),
+        (
+            "stable-diffusion-onnx-v1-inpainting",
+            model_source_huggingface + "runwayml/stable-diffusion-inpainting",
+        ),
         # v2.x
-        # (
-        #     "stable-diffusion-onnx-v2-1",
-        #     model_source_huggingface + "stabilityai/stable-diffusion-2-1",
-        # ),
-        # (
-        #     "stable-diffusion-onnx-v2-inpainting",
-        #     model_source_huggingface + "stabilityai/stable-diffusion-2-inpainting",
-        # ),
+        (
+            "stable-diffusion-onnx-v2-1",
+            model_source_huggingface + "stabilityai/stable-diffusion-2-1",
+        ),
+        (
+            "stable-diffusion-onnx-v2-inpainting",
+            model_source_huggingface + "stabilityai/stable-diffusion-2-inpainting",
+        ),
         # TODO: should have its own converter
         (
             "upscaling-stable-diffusion-x4",

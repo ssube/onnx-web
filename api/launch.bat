@@ -1,4 +1,5 @@
 echo "Downloading and converting models to ONNX format..."
+IF "%ONNX_WEB_EXTRA_MODELS%"=="" (set ONNX_WEB_EXTRA_MODELS=extras.json)
 python -m onnx_web.convert --diffusion --upscaling --correction --extras=extras.json --token=%HF_TOKEN%
 
 echo "Launching API server..."
