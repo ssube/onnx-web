@@ -344,9 +344,6 @@ def load_platforms(context: ServerContext):
     providers = []
     providers.extend(get_available_providers())
 
-    if context.any_platform:
-        providers.append("any")
-
     for potential in platform_providers:
         if (
             platform_providers[potential] in providers
@@ -367,6 +364,9 @@ def load_platforms(context: ServerContext):
                 available_platforms.append(
                     DeviceParams(potential, platform_providers[potential])
                 )
+
+    if context.any_platform:
+        available_platforms.append("any")
 
     # make sure CPU is last on the list
     def any_first_cpu_last(a: DeviceParams, b: DeviceParams):
