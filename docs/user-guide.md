@@ -22,10 +22,13 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
   - [Contents](#contents)
   - [Outline](#outline)
     - [What is ONNX web (and what it is not)](#what-is-onnx-web-and-what-it-is-not)
-    - [ONNX models](#onnx-models)
     - [Modes and tabs](#modes-and-tabs)
     - [Image history](#image-history)
     - [Scheduler comparison](#scheduler-comparison)
+  - [Models](#models)
+    - [Adding your own models](#adding-your-own-models)
+      - [Model Names](#model-names)
+      - [Model sources](#model-sources)
   - [Tabs](#tabs)
     - [Txt2img tab](#txt2img-tab)
       - [Scheduler parameter](#scheduler-parameter)
@@ -98,26 +101,6 @@ the Gimp, Krita, or Photoshop.
 This is _not_ a tool for building new ML models. While I am open to some training features, like Dreambooth and anything
 needed to convert models, that is not the focus and should be limited to features that support the other tabs.
 
-### ONNX models
-
-The [ONNX runtime](https://onnxruntime.ai/) is a library for accelerating neural networks and machine learning models,
-using [the ONNX file format](https://onnx.ai/) to share them across different platforms. ONNX web is a server to run
-hardware-accelerated inference using those models and a web client to provide the parameters and view the results.
-
-The models used by ONNX web are split up into three groups:
-
-1. Diffusion
-   1. general models like [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5)
-   2. specialized models like [Knollingcase](https://huggingface.co/Aybeeceedee/knollingcase) or [OpenJourney](https://huggingface.co/prompthero/openjourney)
-2. Upscaling
-   1. [Real ESRGAN](https://github.com/xinntao/Real-ESRGAN)
-   2. [Stable Diffusion](https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler)
-3. Correction
-   1. [CodeFormer](https://github.com/sczhou/CodeFormer)
-   2. [GFPGAN](https://github.com/TencentARC/GFPGAN)
-
-There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles.
-
 ### Modes and tabs
 
 - [txt2img](#txt2img-tab)
@@ -149,6 +132,106 @@ image from history if you don't like it.
 > An excavator digging up a pipe, construction site, tilt shift, professional photograph, studio lighting
 
 ![tilt shift photographs of excavators over a pile of loose dirt](output/excavator-pipe.png)
+
+## Models
+
+The [ONNX runtime](https://onnxruntime.ai/) is a library for accelerating neural networks and machine learning models,
+using [the ONNX file format](https://onnx.ai/) to share them across different platforms. ONNX web is a server to run
+hardware-accelerated inference using those models and a web client to provide the parameters and view the results.
+
+The models used by ONNX web are split up into three groups:
+
+1. Diffusion
+   1. general models like [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5)
+   2. specialized models like [Knollingcase](https://huggingface.co/Aybeeceedee/knollingcase) or [OpenJourney](https://huggingface.co/prompthero/openjourney)
+2. Upscaling
+   1. [Real ESRGAN](https://github.com/xinntao/Real-ESRGAN)
+   2. [Stable Diffusion](https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler)
+3. Correction
+   1. [CodeFormer](https://github.com/sczhou/CodeFormer)
+   2. [GFPGAN](https://github.com/TencentARC/GFPGAN)
+
+There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles.
+
+### Adding your own models
+
+You can convert and use your own models without making any code changes by adding them to a JSON or YAML file using
+the extras schema:
+
+```json
+{
+  "diffusion": [
+    {
+      "name": "diffusion-knollingcase",
+      "source": "Aybeeceedee/knollingcase"
+    },
+    {
+      "name": "diffusion-openjourney",
+      "source": "prompthero/openjourney"
+    },
+    {
+      "name": "diffusion-stablydiffused-aesthetic-v2-6",
+      "source": "civitai://6266?type=Pruned%20Model&format=SafeTensor",
+      "format": "safetensors"
+    },
+    {
+      "name": "diffusion-unstable-ink-dream-onnx-v6",
+      "source": "civitai://5796",
+      "format": "safetensors"
+    }
+  ],
+  "correction": [],
+  "upscaling": [
+    {
+      "name": "upscaling-real-esrgan-x4-anime",
+      "source": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth",
+      "scale": 4
+    }
+  ]
+}
+```
+
+Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file. For example:
+
+```shell
+# on Linux:
+> export ONNX_WEB_EXTRA_MODELS=~/onnx-web-extras.json
+
+# on Windows:
+> set ONNX_WEB_EXTRA_MODELS=C:\Users\ssube\onnx-web-extras.json
+```
+
+Files using the older extras format with nested arrays (`"diffusion": [[]]`) will be loaded in the newer format. You
+only need to convert them into the newer format if you need to use keys other than `name`, `source`, and `scale`.
+
+#### Model Names
+
+The `name` of each model dictates which category it will appear in on the client.
+
+- `diffusion-*` or `stable-diffusion-*` for diffusion models
+- `upscaling-*` for upscaling models
+- `correction-*` for correction models
+
+Models that do not match one of the prefixes will not be shown, so if you cannot find a model that you have converted,
+make sure it is named correctly.
+
+#### Model sources
+
+You can provide an absolute or relative path to a local model, and there are a few pre-defined sources from which models can be downloaded.
+
+- `huggingface://`
+  - https://huggingface.co/models
+  - mostly SFW
+  - requires an account for some
+- `civitai://`
+  - https://civitai.com/
+  - some NSFW
+  - does not require an account
+- `https://`
+  - any other HTTPS source
+
+If the model's `source` does not include a file extension like `.safetensors` or `.ckpt`, make sure to indicate the
+file format using the `format` key.
 
 ## Tabs
 
