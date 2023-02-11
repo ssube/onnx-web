@@ -155,8 +155,8 @@ There are many other models available and specialized variations for anime, TV s
 
 ### Adding your own models
 
-You can convert and use your own models without making any code changes by adding them to a JSON or YAML file using
-the extras schema:
+You can convert and use your own models without making any code changes by copying
+[the `api/extras.json` file](../api/extras.json) and adding the models you would like to use:
 
 ```json
 {
@@ -201,7 +201,7 @@ Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file. F
 > set ONNX_WEB_EXTRA_MODELS=C:\Users\ssube\onnx-web-extras.json
 ```
 
-Files using the older extras format with nested arrays (`"diffusion": [[]]`) will be loaded in the newer format. You
+Extras using the older file format with nested arrays (`"diffusion": [[]]`) can be mixed with the newer format. You
 only need to convert them into the newer format if you need to use keys other than `name`, `source`, and `scale`.
 
 #### Model Names
