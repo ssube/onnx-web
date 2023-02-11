@@ -1,20 +1,26 @@
 import warnings
 from argparse import ArgumentParser
-from json import loads
 from logging import getLogger
 from os import environ, makedirs, path
 from sys import exit
 from typing import Dict, List, Optional, Tuple
-from yaml import safe_load
-from jsonschema import validate, ValidationError
 
 import torch
+from jsonschema import ValidationError, validate
+from yaml import safe_load
 
 from .correction_gfpgan import convert_correction_gfpgan
 from .diffusion_original import convert_diffusion_original
 from .diffusion_stable import convert_diffusion_stable
 from .upscale_resrgan import convert_upscale_resrgan
-from .utils import ConversionContext, download_progress, source_format, tuple_to_correction, tuple_to_diffusion, tuple_to_upscaling
+from .utils import (
+    ConversionContext,
+    download_progress,
+    source_format,
+    tuple_to_correction,
+    tuple_to_diffusion,
+    tuple_to_upscaling,
+)
 
 # suppress common but harmless warnings, https://github.com/ssube/onnx-web/issues/75
 warnings.filterwarnings(
@@ -100,7 +106,9 @@ model_path = environ.get("ONNX_WEB_MODEL_PATH", path.join("..", "models"))
 training_device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
-def fetch_model(ctx: ConversionContext, name: str, source: str, format: Optional[str] = None) -> str:
+def fetch_model(
+    ctx: ConversionContext, name: str, source: str, format: Optional[str] = None
+) -> str:
     cache_name = path.join(ctx.cache_path, name)
     if format is not None:
         # add an extension if possible, some of the conversion code checks for it
@@ -110,7 +118,9 @@ def fetch_model(ctx: ConversionContext, name: str, source: str, format: Optional
         api_name, api_root = model_sources.get(proto)
         if source.startswith(proto):
             api_source = api_root % (source.removeprefix(proto))
-            logger.info("Downloading model from %s: %s -> %s", api_name, api_source, cache_name)
+            logger.info(
+                "Downloading model from %s: %s -> %s", api_name, api_source, cache_name
+            )
             return download_progress([(api_source, cache_name)])
 
     if source.startswith(model_source_huggingface):
@@ -218,7 +228,9 @@ def main() -> int:
     args = parser.parse_args()
     logger.info("CLI arguments: %s", args)
 
-    ctx = ConversionContext(model_path, training_device, half=args.half, opset=args.opset, token=args.token)
+    ctx = ConversionContext(
+        model_path, training_device, half=args.half, opset=args.opset, token=args.token
+    )
     logger.info("Converting models in %s using %s", ctx.model_path, ctx.training_device)
 
     if not path.exists(model_path):

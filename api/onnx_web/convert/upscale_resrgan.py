@@ -1,10 +1,8 @@
 from logging import getLogger
 from os import path
-from shutil import copyfile
 
 import torch
 from basicsr.archs.rrdbnet_arch import RRDBNet
-from basicsr.utils.download_util import load_file_from_url
 from torch.onnx import export
 
 from .utils import ConversionContext, ModelDict

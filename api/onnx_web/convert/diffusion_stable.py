@@ -65,7 +65,9 @@ def convert_diffusion_stable(
     dest_path = path.join(ctx.model_path, name)
 
     # diffusers go into a directory rather than .onnx file
-    logger.info("converting Stable Diffusion model %s: %s -> %s/", name, source, dest_path)
+    logger.info(
+        "converting Stable Diffusion model %s: %s -> %s/", name, source, dest_path
+    )
 
     if single_vae:
         logger.info("converting model with single VAE")

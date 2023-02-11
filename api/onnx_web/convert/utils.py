@@ -3,7 +3,7 @@ from functools import partial
 from logging import getLogger
 from os import path
 from pathlib import Path
-from typing import Dict, Union, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 import requests
 import torch
@@ -44,7 +44,14 @@ def download_progress(urls: List[Tuple[str, str]]):
             logger.info("Destination already exists: %s", dest_path)
             return str(dest_path.absolute())
 
-        req = requests.get(url, stream=True, allow_redirects=True)
+        req = requests.get(
+            url,
+            stream=True,
+            allow_redirects=True,
+            headers={
+                "User-Agent": "onnx-web-api",
+            },
+        )
         if req.status_code != 200:
             req.raise_for_status()  # Only works for 4xx errors, per SO answer
             raise RuntimeError(
@@ -116,6 +123,7 @@ def tuple_to_upscaling(model: Union[ModelDict, LegacyModel]):
 
 
 known_formats = ["onnx", "pth", "ckpt", "safetensors"]
+
 
 def source_format(model: Dict) -> Optional[str]:
     if "format" in model:
