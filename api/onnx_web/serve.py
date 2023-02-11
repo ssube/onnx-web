@@ -333,15 +333,18 @@ def load_params(context: ServerContext):
         config_params = yaml.safe_load(f)
 
         if "platform" in config_params and context.default_platform is not None:
-            logger.info("overriding default platform to %s", context.default_platform)
+            logger.info("Overriding default platform from environment: %s", context.default_platform)
             config_platform = config_params.get("platform", {})
             config_platform["default"] = context.default_platform
 
 
-def load_platforms():
+def load_platforms(context: ServerContext):
     global available_platforms
 
-    providers = ["any"].extend(get_available_providers())
+    providers = [].extend(get_available_providers())
+
+    if context.any_platform:
+        providers.append("any")
 
     for potential in platform_providers:
         if (
@@ -391,7 +394,7 @@ context = ServerContext.from_environ()
 check_paths(context)
 load_models(context)
 load_params(context)
-load_platforms()
+load_platforms(context)
 
 app = Flask(__name__)
 CORS(app, origins=context.cors_origin)
