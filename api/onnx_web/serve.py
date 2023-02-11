@@ -400,7 +400,8 @@ load_platforms(context)
 app = Flask(__name__)
 CORS(app, origins=context.cors_origin)
 
-executor = DevicePoolExecutor(available_platforms)
+# any is a fake device, should not be in the pool
+executor = DevicePoolExecutor([p for p in available_platforms if p.device != "any"])
 
 if is_debug():
     gc.set_debug(gc.DEBUG_STATS)
