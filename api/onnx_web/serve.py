@@ -163,7 +163,7 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
     if device_name is not None and device_name != "any":
         for platform in available_platforms:
             if platform.device == device_name:
-                device = available_platforms[0]
+                device = platform
 
     # pipeline stuff
     lpw = get_not_empty(request.args, "lpw", "false") == "true"
