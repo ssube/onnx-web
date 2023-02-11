@@ -220,9 +220,9 @@ make sure it is named correctly.
 You can provide an absolute or relative path to a local model, and there are a few pre-defined sources from which models can be downloaded.
 
 - `huggingface://`
-  - https://huggingface.co/models
+  - https://huggingface.co/models?other=stable-diffusion
   - mostly SFW
-  - requires an account for some
+  - requires an account to download some models
 - `civitai://`
   - https://civitai.com/
   - some NSFW
