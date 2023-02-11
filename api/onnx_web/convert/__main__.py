@@ -15,6 +15,7 @@ from .upscale_resrgan import convert_upscale_resrgan
 from .utils import (
     ConversionContext,
     download_progress,
+    model_formats_original,
     source_format,
     tuple_to_correction,
     tuple_to_diffusion,
@@ -103,12 +104,12 @@ base_models: Models = {
 
 
 def fetch_model(
-    ctx: ConversionContext, name: str, source: str, format: Optional[str] = None
+    ctx: ConversionContext, name: str, source: str, model_format: Optional[str] = None
 ) -> str:
     cache_name = path.join(ctx.cache_path, name)
-    if format is not None:
+    if model_format is not None:
         # add an extension if possible, some of the conversion code checks for it
-        cache_name = "%s.%s" % (cache_name, format)
+        cache_name = "%s.%s" % (cache_name, model_format)
 
     for proto in model_sources:
         api_name, api_root = model_sources.get(proto)
@@ -147,10 +148,12 @@ def convert_models(ctx: ConversionContext, args, models: Models):
             if name in args.skip:
                 logger.info("Skipping model: %s", name)
             else:
-                format = source_format(model)
-                source = fetch_model(ctx, name, model["source"], format=format)
+                model_format = source_format(model)
+                source = fetch_model(
+                    ctx, name, model["source"], model_format=model_format
+                )
 
-                if format in ["safetensors", "ckpt"]:
+                if model_format in model_formats_original:
                     convert_diffusion_original(
                         ctx,
                         model,
@@ -171,8 +174,10 @@ def convert_models(ctx: ConversionContext, args, models: Models):
             if name in args.skip:
                 logger.info("Skipping model: %s", name)
             else:
-                format = source_format(model)
-                source = fetch_model(ctx, name, model["source"], format=format)
+                model_format = source_format(model)
+                source = fetch_model(
+                    ctx, name, model["source"], model_format=model_format
+                )
                 convert_upscale_resrgan(ctx, model, source)
 
     if args.correction:
@@ -183,8 +188,10 @@ def convert_models(ctx: ConversionContext, args, models: Models):
             if name in args.skip:
                 logger.info("Skipping model: %s", name)
             else:
-                format = source_format(model)
-                source = fetch_model(ctx, name, model["source"], format=format)
+                model_format = source_format(model)
+                source = fetch_model(
+                    ctx, name, model["source"], model_format=model_format
+                )
                 convert_correction_gfpgan(ctx, model, source)
 
 

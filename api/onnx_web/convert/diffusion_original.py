@@ -7,8 +7,6 @@
 #
 # d8ahazard portions do not include a license header or file
 # HuggingFace portions used under the Apache License, Version 2.0
-#
-# TODO: ask about license before merging
 ###
 
 import json
@@ -59,6 +57,10 @@ logger = getLogger(__name__)
 
 
 class TrainingConfig():
+    """
+    From https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/dreambooth/db_config.py
+    """
+
     adamw_weight_decay: float = 0.01
     attention: str = "default"
     cache_latents: bool = True
@@ -1314,7 +1316,7 @@ def extract_checkpoint(
         elif scheduler_type == "dpm":
             scheduler = DPMSolverMultistepScheduler.from_config(scheduler.config)
         elif scheduler_type == "ddim":
-            scheduler = scheduler
+            pass
         else:
             raise ValueError(f"Scheduler of type {scheduler_type} doesn't exist!")
 

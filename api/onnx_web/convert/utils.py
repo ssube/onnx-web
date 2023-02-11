@@ -130,7 +130,8 @@ def tuple_to_upscaling(model: Union[ModelDict, LegacyModel]):
         return model
 
 
-known_formats = ["onnx", "pth", "ckpt", "safetensors"]
+model_formats = ["onnx", "pth", "ckpt", "safetensors"]
+model_formats_original = ["ckpt", "safetensors"]
 
 
 def source_format(model: Dict) -> Optional[str]:
@@ -139,7 +140,7 @@ def source_format(model: Dict) -> Optional[str]:
 
     if "source" in model:
         ext = path.splitext(model["source"])
-        if ext in known_formats:
+        if ext in model_formats:
             return ext
 
     return None
