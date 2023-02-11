@@ -159,7 +159,7 @@ class DevicePoolExecutor:
     def get_next_device(self, needs_device: Optional[DeviceParams] = None) -> int:
         # respect overrides if possible
         if needs_device is not None:
-            for i in self.devices:
+            for i in range(len(self.devices)):
                 if self.devices[i].device == needs_device.device:
                     return i
 
