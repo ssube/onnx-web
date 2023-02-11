@@ -63,10 +63,8 @@ def is_debug() -> bool:
     return get_boolean(environ, "DEBUG", False)
 
 
-def get_boolean(
-    args: Any, key: str, default_value: bool
-) -> bool:
-    return (args.get(key, str(default_value)).lower() in ('1', 't', 'true', 'y', 'yes'))
+def get_boolean(args: Any, key: str, default_value: bool) -> bool:
+    return args.get(key, str(default_value)).lower() in ("1", "t", "true", "y", "yes")
 
 
 def get_and_clamp_float(

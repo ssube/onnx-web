@@ -333,7 +333,10 @@ def load_params(context: ServerContext):
         config_params = yaml.safe_load(f)
 
         if "platform" in config_params and context.default_platform is not None:
-            logger.info("Overriding default platform from environment: %s", context.default_platform)
+            logger.info(
+                "Overriding default platform from environment: %s",
+                context.default_platform,
+            )
             config_platform = config_params.get("platform", {})
             config_platform["default"] = context.default_platform
 
@@ -383,7 +386,9 @@ def load_platforms(context: ServerContext):
 
         return -1
 
-    available_platforms = sorted(available_platforms, key=cmp_to_key(any_first_cpu_last))
+    available_platforms = sorted(
+        available_platforms, key=cmp_to_key(any_first_cpu_last)
+    )
 
     logger.info(
         "available acceleration platforms: %s",
@@ -728,7 +733,14 @@ def chain():
     # build and run chain pipeline
     empty_source = Image.new("RGB", (size.width, size.height))
     executor.submit(
-        output, pipeline, context, params, empty_source, output=output, size=size, needs_device=device
+        output,
+        pipeline,
+        context,
+        params,
+        empty_source,
+        output=output,
+        size=size,
+        needs_device=device,
     )
 
     return jsonify(json_params(output, params, size))

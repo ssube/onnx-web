@@ -185,9 +185,19 @@ class DevicePoolExecutor:
     def prune(self):
         self.jobs[:] = [job for job in self.jobs if job.future.done()]
 
-    def submit(self, key: str, fn: Callable[..., None], /, *args, needs_device: Optional[DeviceParams] = None, **kwargs) -> None:
+    def submit(
+        self,
+        key: str,
+        fn: Callable[..., None],
+        /,
+        *args,
+        needs_device: Optional[DeviceParams] = None,
+        **kwargs,
+    ) -> None:
         device = self.get_next_device(needs_device=needs_device)
-        logger.info("assigning job %s to device %s: %s", key, device, self.devices[device])
+        logger.info(
+            "assigning job %s to device %s: %s", key, device, self.devices[device]
+        )
 
         context = JobContext(key, self.devices, device_index=device)
         future = self.pool.submit(fn, context, *args, **kwargs)
