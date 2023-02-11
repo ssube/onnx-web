@@ -1,5 +1,5 @@
 [tool.black]
-force-exclude = '''/(lpw_stable_diffusion_onnx|pipeline_onnx_stable_diffusion_upscale).py'''
+force-exclude = '''/(diffusion_original|lpw_stable_diffusion_onnx|pipeline_onnx_stable_diffusion_upscale).py'''
 
 [tool.isort]
 profile = "black"

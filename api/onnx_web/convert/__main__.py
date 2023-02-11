@@ -1,9 +1,3 @@
-from .correction_gfpgan import convert_correction_gfpgan
-from .diffusion_original import convert_diffusion_original
-from .diffusion_stable import convert_diffusion_stable
-from .upscale_resrgan import convert_upscale_resrgan
-from .utils import ConversionContext
-
 import warnings
 from argparse import ArgumentParser
 from json import loads
@@ -11,8 +5,16 @@ from logging import getLogger
 from os import environ, makedirs, path
 from sys import exit
 from typing import Dict, List, Optional, Tuple
+from yaml import safe_load
+from jsonschema import validate, ValidationError
 
 import torch
+
+from .correction_gfpgan import convert_correction_gfpgan
+from .diffusion_original import convert_diffusion_original
+from .diffusion_stable import convert_diffusion_stable
+from .upscale_resrgan import convert_upscale_resrgan
+from .utils import ConversionContext, download_progress, source_format, tuple_to_correction, tuple_to_diffusion, tuple_to_upscaling
 
 # suppress common but harmless warnings, https://github.com/ssube/onnx-web/issues/75
 warnings.filterwarnings(
@@ -29,20 +31,39 @@ Models = Dict[str, List[Tuple[str, str, Optional[int]]]]
 logger = getLogger(__name__)
 
 
+model_sources: Dict[str, Tuple[str, str]] = {
+    "civitai://": ("Civitai", "https://civitai.com/api/download/models/%s"),
+}
+
+model_source_huggingface = "huggingface://"
+
 # recommended models
 base_models: Models = {
     "diffusion": [
         # v1.x
-        ("stable-diffusion-onnx-v1-5", "runwayml/stable-diffusion-v1-5"),
-        ("stable-diffusion-onnx-v1-inpainting", "runwayml/stable-diffusion-inpainting"),
-        # v2.x
-        ("stable-diffusion-onnx-v2-1", "stabilityai/stable-diffusion-2-1"),
         (
-            "stable-diffusion-onnx-v2-inpainting",
-            "stabilityai/stable-diffusion-2-inpainting",
+            "stable-diffusion-onnx-v1-5",
+            model_source_huggingface + "runwayml/stable-diffusion-v1-5",
         ),
+        # (
+        #     "stable-diffusion-onnx-v1-inpainting",
+        #     model_source_huggingface + "runwayml/stable-diffusion-inpainting",
+        # ),
+        # v2.x
+        # (
+        #     "stable-diffusion-onnx-v2-1",
+        #     model_source_huggingface + "stabilityai/stable-diffusion-2-1",
+        # ),
+        # (
+        #     "stable-diffusion-onnx-v2-inpainting",
+        #     model_source_huggingface + "stabilityai/stable-diffusion-2-inpainting",
+        # ),
         # TODO: should have its own converter
-        ("upscaling-stable-diffusion-x4", "stabilityai/stable-diffusion-x4-upscaler"),
+        (
+            "upscaling-stable-diffusion-x4",
+            model_source_huggingface + "stabilityai/stable-diffusion-x4-upscaler",
+            True,
+        ),
     ],
     "correction": [
         (
@@ -79,35 +100,86 @@ model_path = environ.get("ONNX_WEB_MODEL_PATH", path.join("..", "models"))
 training_device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
-def load_models(args, ctx: ConversionContext, models: Models):
+def fetch_model(ctx: ConversionContext, name: str, source: str, format: Optional[str] = None) -> str:
+    cache_name = path.join(ctx.cache_path, name)
+    if format is not None:
+        # add an extension if possible, some of the conversion code checks for it
+        cache_name = "%s.%s" % (cache_name, format)
+
+    for proto in model_sources:
+        api_name, api_root = model_sources.get(proto)
+        if source.startswith(proto):
+            api_source = api_root % (source.removeprefix(proto))
+            logger.info("Downloading model from %s: %s -> %s", api_name, api_source, cache_name)
+            return download_progress([(api_source, cache_name)])
+
+    if source.startswith(model_source_huggingface):
+        hub_source = source.removeprefix(model_source_huggingface)
+        logger.info("Downloading model from Huggingface Hub: %s", hub_source)
+        # from_pretrained has a bunch of useful logic that snapshot_download by itself down not
+        return hub_source
+    elif source.startswith("https://"):
+        logger.info("Downloading model from: %s", source)
+        return download_progress([(source, cache_name)])
+    elif source.startswith("http://"):
+        logger.warning("Downloading model from insecure source: %s", source)
+        return download_progress([(source, cache_name)])
+    elif source.startswith(path.sep) or source.startswith("."):
+        logger.info("Using local model: %s", source)
+        return source
+    else:
+        logger.info("Unknown model location, using path as provided: %s", source)
+        return source
+
+
+def convert_models(ctx: ConversionContext, args, models: Models):
     if args.diffusion:
-        for source in models.get("diffusion"):
-            name, file = source
+        for model in models.get("diffusion"):
+            model = tuple_to_diffusion(model)
+            name = model.get("name")
+
             if name in args.skip:
-                logger.info("Skipping model: %s", source[0])
+                logger.info("Skipping model: %s", name)
             else:
-                if file.endswith(".safetensors") or file.endswith(".ckpt"):
-                    convert_diffusion_original(ctx, *source, args.opset, args.half)
+                format = source_format(model)
+                source = fetch_model(ctx, name, model["source"], format=format)
+
+                if format in ["safetensors", "ckpt"]:
+                    convert_diffusion_original(
+                        ctx,
+                        model,
+                        source,
+                    )
                 else:
-                    # TODO: make this a parameter in the JSON/dict
-                    single_vae = "upscaling" in source[0]
                     convert_diffusion_stable(
-                        ctx, *source, args.opset, args.half, args.token, single_vae=single_vae
+                        ctx,
+                        model,
+                        source,
                     )
 
     if args.upscaling:
-        for source in models.get("upscaling"):
-            if source[0] in args.skip:
-                logger.info("Skipping model: %s", source[0])
+        for model in models.get("upscaling"):
+            model = tuple_to_upscaling(model)
+            name = model.get("name")
+
+            if name in args.skip:
+                logger.info("Skipping model: %s", name)
             else:
-                convert_upscale_resrgan(ctx, *source, args.opset)
+                format = source_format(model)
+                source = fetch_model(ctx, name, model["source"], format=format)
+                convert_upscale_resrgan(ctx, model, source)
 
     if args.correction:
-        for source in models.get("correction"):
-            if source[0] in args.skip:
-                logger.info("Skipping model: %s", source[0])
+        for model in models.get("correction"):
+            model = tuple_to_correction(model)
+            name = model.get("name")
+
+            if name in args.skip:
+                logger.info("Skipping model: %s", name)
             else:
-                convert_correction_gfpgan(ctx, *source, args.opset)
+                format = source_format(model)
+                source = fetch_model(ctx, name, model["source"], format=format)
+                convert_correction_gfpgan(ctx, model, source)
 
 
 def main() -> int:
@@ -146,7 +218,7 @@ def main() -> int:
     args = parser.parse_args()
     logger.info("CLI arguments: %s", args)
 
-    ctx = ConversionContext(model_path, training_device)
+    ctx = ConversionContext(model_path, training_device, half=args.half, opset=args.opset, token=args.token)
     logger.info("Converting models in %s using %s", ctx.model_path, ctx.training_device)
 
     if not path.exists(model_path):
@@ -154,16 +226,26 @@ def main() -> int:
         makedirs(model_path)
 
     logger.info("Converting base models.")
-    load_models(args, ctx, base_models)
+    convert_models(ctx, args, base_models)
 
     for file in args.extras:
         if file is not None and file != "":
             logger.info("Loading extra models from %s", file)
             try:
                 with open(file, "r") as f:
-                    data = loads(f.read())
+                    data = safe_load(f.read())
+
+                with open("./schemas/extras.yaml", "r") as f:
+                    schema = safe_load(f.read())
+
+                logger.debug("validating chain request: %s against %s", data, schema)
+
+                try:
+                    validate(data, schema)
                     logger.info("Converting extra models.")
-                    load_models(args, ctx, data)
+                    convert_models(ctx, args, data)
+                except ValidationError as err:
+                    logger.error("Invalid data in extras file: %s", err)
             except Exception as err:
                 logger.error("Error converting extra models: %s", err)
 

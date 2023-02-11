@@ -1,9 +1,23 @@
 {
   "diffusion": [
-    ["diffusion-knollingcase", "Aybeeceedee/knollingcase"],
-    ["diffusion-openjourney", "prompthero/openjourney"],
-    ["diffusion-stably-diffused-onnx-v2-6", "../models/tensors/stablydiffuseds_26.safetensors"],
-    ["diffusion-unstable-ink-dream-onnx-v6", "../models/tensors/unstableinkdream_v6.safetensors"]
+    {
+      "name": "diffusion-knollingcase",
+      "source": "Aybeeceedee/knollingcase"
+    },
+    {
+      "name": "diffusion-openjourney",
+      "source": "prompthero/openjourney"
+    },
+    {
+      "name": "diffusion-stablydiffused-aesthetic-v2-6",
+      "source": "civitai://6266?type=Pruned%20Model&format=SafeTensor",
+      "format": "safetensors"
+    },
+    {
+      "name": "diffusion-unstable-ink-dream-v6",
+      "source": "civitai://5796",
+      "format": "safetensors"
+    }
   ],
   "correction": [],
   "upscaling": []

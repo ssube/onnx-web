@@ -11,6 +11,17 @@
 # TODO: ask about license before merging
 ###
 
+import json
+import os
+import re
+import shutil
+import traceback
+from logging import getLogger
+from typing import Dict, List
+
+import huggingface_hub.utils.tqdm
+import safetensors.torch
+import torch
 from diffusers import (
     AutoencoderKL,
     DDIMScheduler,
@@ -20,93 +31,32 @@ from diffusers import (
     HeunDiscreteScheduler,
     LDMTextToImagePipeline,
     LMSDiscreteScheduler,
+    PaintByExamplePipeline,
     PNDMScheduler,
     StableDiffusionPipeline,
-    UNet2DConditionModel, PaintByExamplePipeline,
+    UNet2DConditionModel,
 )
-from diffusers.pipelines.latent_diffusion.pipeline_latent_diffusion import LDMBertConfig, LDMBertModel
+from diffusers.pipelines.latent_diffusion.pipeline_latent_diffusion import (
+    LDMBertConfig,
+    LDMBertModel,
+)
 from diffusers.pipelines.paint_by_example import PaintByExampleImageEncoder
 from diffusers.pipelines.stable_diffusion import StableDiffusionSafetyChecker
 from huggingface_hub import HfApi, hf_hub_download
-from logging import getLogger
 from omegaconf import OmegaConf
 from pydantic import BaseModel
-from transformers import AutoFeatureExtractor, BertTokenizerFast, CLIPTextModel, CLIPTokenizer, CLIPVisionConfig
-from typing import Dict, List, Union
-
-import huggingface_hub.utils.tqdm
-import json
-import os
-import re
-import safetensors.torch
-import shutil
-import torch
-import traceback
+from transformers import (
+    AutoFeatureExtractor,
+    BertTokenizerFast,
+    CLIPTextModel,
+    CLIPTokenizer,
+    CLIPVisionConfig,
+)
 
 from .diffusion_stable import convert_diffusion_stable
-from .utils import ConversionContext
+from .utils import ConversionContext, ModelDict
 
 logger = getLogger(__name__)
-
-
-def get_images():
-    return []
-
-class Concept(BaseModel):
-    class_data_dir: str = ""
-    class_guidance_scale: float = 7.5
-    class_infer_steps: int = 60
-    class_negative_prompt: str = ""
-    class_prompt: str = ""
-    class_token: str = ""
-    instance_data_dir: str = ""
-    instance_prompt: str = ""
-    instance_token: str = ""
-    is_valid: bool = False
-    n_save_sample: int = 1
-    num_class_images: int = 0
-    num_class_images_per: int = 0
-    sample_seed: int = -1
-    save_guidance_scale: float = 7.5
-    save_infer_steps: int = 60
-    save_sample_negative_prompt: str = ""
-    save_sample_prompt: str = ""
-    save_sample_template: str = ""
-
-    def __init__(self, input_dict: Union[Dict, None] = None, **kwargs):
-        super().__init__(**kwargs)
-        if input_dict is not None:
-            self.load_params(input_dict)
-        if self.is_valid and self.num_class_images != 0:
-            if self.num_class_images_per == 0:
-                images = get_images(self.instance_data_dir)
-                if len(images) < self.num_class_images * 2:
-                    self.num_class_images_per = 1
-                else:
-                    self.num_class_images_per = self.num_class_images // len(images)
-                self.num_class_images = 0
-
-    def to_dict(self):
-        return self.dict()
-
-    def to_json(self):
-        return json.dumps(self.to_dict())
-
-    def load_params(self, params_dict):
-        for key, value in params_dict.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-            if self.instance_data_dir:
-                self.is_valid = os.path.isdir(self.instance_data_dir)
-            else:
-                self.is_valid = False
-
-
-# Keys to save, replacing our dumb __init__ method
-save_keys = []
-
-# Keys to return to the ui when Load Settings is clicked.
-ui_keys = []
 
 
 def sanitize_name(name):
@@ -200,7 +150,7 @@ class DreamboothConfig(BaseModel):
 
         super().__init__(**kwargs)
         model_name = sanitize_name(model_name)
-        model_dir = os.path.join(ctx.model_path, model_name)
+        model_dir = os.path.join(ctx.cache_path, model_name)
         working_dir = os.path.join(model_dir, "working")
 
         if not os.path.exists(working_dir):
@@ -214,7 +164,6 @@ class DreamboothConfig(BaseModel):
         self.scheduler = scheduler
         self.v2 = v2
 
-    # Actually save as a file
     def save(self, backup=False):
         """
         Save the config file
@@ -236,132 +185,6 @@ class DreamboothConfig(BaseModel):
             if hasattr(self, key):
                 setattr(self, key, value)
 
-    # Pass a dict and return a list of Concept objects
-    def concepts(self, required: int = -1):
-        concepts = []
-        c_idx = 0
-        # If using a file for concepts and not requesting from UI, load from file
-        if self.use_concepts and self.concepts_path and required == -1:
-            concepts_list = concepts_from_file(self.concepts_path)
-
-        # Otherwise, use 'stored' list
-        else:
-            concepts_list = self.concepts_list
-        if required == -1:
-            required = len(concepts_list)
-
-        for concept_dict in concepts_list:
-            concept = Concept(input_dict=concept_dict)
-            if concept.is_valid:
-                if concept.class_data_dir == "" or concept.class_data_dir is None:
-                    concept.class_data_dir = os.path.join(self.model_dir, f"classifiers_{c_idx}")
-                concepts.append(concept)
-                c_idx += 1
-
-        missing = len(concepts) - required
-        if missing > 0:
-            concepts.extend([Concept(None)] * missing)
-        return concepts
-
-    # Set default values
-    def check_defaults(self):
-        if self.model_name is not None and self.model_name != "":
-            if self.revision == "" or self.revision is None:
-                self.revision = 0
-            if self.epoch == "" or self.epoch is None:
-                self.epoch = 0
-            self.model_name = "".join(x for x in self.model_name if (x.isalnum() or x in "._- "))
-            models_path = "." # TODO: use ctx path
-            model_dir = os.path.join(models_path, self.model_name)
-            working_dir = os.path.join(model_dir, "working")
-            if not os.path.exists(working_dir):
-                os.makedirs(working_dir)
-            self.model_dir = model_dir
-            self.pretrained_model_name_or_path = working_dir
-
-
-def concepts_from_file(concepts_path: str):
-    concepts = []
-    if os.path.exists(concepts_path) and os.path.isfile(str):
-        try:
-            with open(concepts_path,"r") as concepts_file:
-                concepts_str = concepts_file.read()
-        except Exception as e:
-            print(f"Exception opening concepts file: {e}")
-    else:
-        concepts_str = concepts_path
-
-    try:
-        concepts_data = json.loads(concepts_str)
-        for concept_data in concepts_data:
-            concept = Concept(input_dict=concept_data)
-            if concept.is_valid:
-                concepts.append(concept.__dict__)
-    except Exception as e:
-        print(f"Exception parsing concepts: {e}")
-    return concepts
-
-
-def save_config(*args):
-    raise Exception("where tho")
-    params = list(args)
-    concept_keys = ["c1_", "c2_", "c3_", "c4_"]
-    model_name = params[0]
-    if model_name is None or model_name == "":
-        print("Invalid model name.")
-        return
-    config = from_file(ctx, model_name)
-    if config is None:
-        config = DreamboothConfig(model_name)
-    params_dict = dict(zip(save_keys, params))
-    concepts_list = []
-    # If using a concepts file/string, keep concepts_list empty.
-    if params_dict["db_use_concepts"] and params_dict["db_concepts_path"]:
-        concepts_list = []
-        params_dict["concepts_list"] = concepts_list
-    else:
-        for concept_key in concept_keys:
-            concept_dict = {}
-            for key, param in params_dict.items():
-                if concept_key in key and param is not None:
-                    concept_dict[key.replace(concept_key, "")] = param
-            concept_test = Concept(concept_dict)
-            if concept_test.is_valid:
-                concepts_list.append(concept_test.__dict__)
-        existing_concepts = params_dict["concepts_list"] if "concepts_list" in params_dict else []
-        if len(concepts_list) and not len(existing_concepts):
-            params_dict["concepts_list"] = concepts_list
-
-    config.load_params(params_dict)
-    config.save()
-
-
-def from_file(ctx: ConversionContext, model_name):
-    """
-    Load config data from UI
-    Args:
-        model_name: The config to load
-
-    Returns: Dict | None
-
-    """
-    if model_name == "" or model_name is None:
-        return None
-
-    model_name = sanitize_name(model_name)
-    config_file = os.path.join(ctx.model_path, model_name, "db_config.json")
-    try:
-        with open(config_file, 'r') as openfile:
-            config_dict = json.load(openfile)
-
-        config = DreamboothConfig(model_name)
-        config.load_params(config_dict)
-        return config
-    except Exception as e:
-        print(f"Exception loading config: {e}")
-        traceback.print_exc()
-        return None
-
 
 # coding=utf-8
 # Copyright 2022 The HuggingFace Inc. team.
@@ -379,8 +202,6 @@ def from_file(ctx: ConversionContext, model_name):
 # limitations under the License.
 """ Conversion script for the LDM checkpoints. """
 
-def get_db_models():
-    return []
 
 def shave_segments(path, n_shave_prefix_segments=1):
     """
@@ -1075,7 +896,7 @@ def convert_open_clip_checkpoint(checkpoint):
     if 'cond_stage_model.model.text_projection' in checkpoint:
         d_model = int(checkpoint['cond_stage_model.model.text_projection'].shape[0])
     else:
-        print("No projection shape found, setting to 1024")
+        logger.debug("No projection shape found, setting to 1024")
         d_model = 1024
     text_model_dict["text_model.embeddings.position_ids"] = text_model.text_model.embeddings.get_buffer("position_ids")
 
@@ -1130,7 +951,7 @@ def replace_symlinks(path, base):
             blob_path = None
 
         if blob_path is None:
-            print("NO BLOB")
+            logger.debug("NO BLOB")
             return
         os.replace(blob_path, path)
     elif os.path.isdir(path):
@@ -1140,7 +961,6 @@ def replace_symlinks(path, base):
 
 def download_model(db_config: DreamboothConfig, token):
     tmp_dir = os.path.join(db_config.model_dir, "src")
-    working_dir = db_config.pretrained_model_name_or_path
 
     hub_url = db_config.src
     if "http" in hub_url or "huggingface.co" in hub_url:
@@ -1155,7 +975,7 @@ def download_model(db_config: DreamboothConfig, token):
     )
 
     if repo_info.sha is None:
-        print("Unable to fetch repo?")
+        logger.warning("Unable to fetch repo?")
         return None, None
 
     siblings = repo_info.siblings
@@ -1208,10 +1028,10 @@ def download_model(db_config: DreamboothConfig, token):
     if files_to_fetch and config_file:
         files_to_fetch.append(config_file)
 
-    print(f"Fetching files: {files_to_fetch}")
+    logger.info(f"Fetching files: {files_to_fetch}")
 
     if not len(files_to_fetch):
-        print("Nothing to fetch!")
+        logger.debug("Nothing to fetch!")
         return None, None
 
 
@@ -1296,9 +1116,6 @@ def get_config_file(train_unfrozen=False, v2=False, prediction_type="epsilon"):
 
     return get_config_path(model_version_name, model_train_type, config_base_name, prediction_type)
 
-    print("Could not find valid config. Returning default v1 config.")
-    return get_config_path(model_versions["v1"], train_types["default"], config_base_name, prediction_type="epsilon")
-
 
 def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_file: str, scheduler_type="ddim", from_hub=False, new_model_url="",
                        new_model_token="", extract_ema=False, train_unfrozen=False, is_512=True):
@@ -1352,7 +1169,7 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
         if db_config is not None:
             original_config_file = config
         if model_info is not None:
-            print("Got model info.")
+            logger.debug("Got model info.")
             if ".ckpt" in model_info or ".safetensors" in model_info:
                 # Set this to false, because we have a checkpoint where we can *maybe* get a revision.
                 from_hub = False
@@ -1360,10 +1177,8 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
                 checkpoint_file = model_info
         else:
             msg = "Unable to fetch model from hub."
-            print(msg)
+            logger.warning(msg)
             return "", "", 0, 0, "", "", "", "", image_size, "", msg
-
-    reset_safe = False
 
     try:
         checkpoint = None
@@ -1371,17 +1186,17 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
 
         # Try to determine if v1 or v2 model if we have a ckpt
         if not from_hub:
-            print("Loading model from checkpoint.")
+            logger.info("Loading model from checkpoint.")
             _, extension = os.path.splitext(checkpoint_file)
             if extension.lower() == ".safetensors":
                 os.environ["SAFETENSORS_FAST_GPU"] = "1"
                 try:
-                    print("Loading safetensors...")
+                    logger.debug("Loading safetensors...")
                     checkpoint = safetensors.torch.load_file(checkpoint_file, device="cpu")
                 except Exception as e:
                     checkpoint = torch.jit.load(checkpoint_file)
             else:
-                print("Loading ckpt...")
+                logger.debug("Loading ckpt...")
                 checkpoint = torch.load(checkpoint_file, map_location=map_location)
                 checkpoint = checkpoint["state_dict"] if "state_dict" in checkpoint else checkpoint
 
@@ -1401,7 +1216,7 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
             if key_name in checkpoint and checkpoint[key_name].shape[-1] == 1024:
                 if not is_512:
                     # v2.1 needs to upcast attention
-                    print("Setting upcast_attention")
+                    logger.debug("Setting upcast_attention")
                     upcast_attention = True
                 v2 = True
             else:
@@ -1410,15 +1225,15 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
             unet_dir = os.path.join(db_config.pretrained_model_name_or_path, "unet")
             try:
                 unet = UNet2DConditionModel.from_pretrained(unet_dir)
-                print("Loaded unet.")
+                logger.debug("Loaded unet.")
                 unet_dict = unet.state_dict()
                 key_name = "down_blocks.2.attentions.1.transformer_blocks.0.attn2.to_k.weight"
                 if key_name in unet_dict and unet_dict[key_name].shape[-1] == 1024:
-                    print("We got v2!")
+                    logger.debug("UNet using v2 parameters.")
                     v2 = True
 
             except:
-                print("Exception loading unet!")
+                logger.error("Exception loading unet!")
                 traceback.print_exc()
 
         if v2 and not is_512:
@@ -1428,7 +1243,7 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
 
         original_config_file = get_config_file(train_unfrozen, v2, prediction_type)
 
-        print(f"Pred and size are {prediction_type} and {image_size}, using config: {original_config_file}")
+        logger.info(f"Pred and size are {prediction_type} and {image_size}, using config: {original_config_file}")
         db_config.resolution = image_size
         db_config.lifetime_revision = revision
         db_config.epoch = epoch
@@ -1438,7 +1253,7 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
             db_config.save()
             return
 
-        print(f"{'v2' if v2 else 'v1'} model loaded.")
+        logger.info(f"{'v2' if v2 else 'v1'} model loaded.")
 
         # Use existing YAML if present
         if checkpoint_file is not None:
@@ -1447,10 +1262,10 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
                 original_config_file = config_check
 
         if original_config_file is None or not os.path.exists(original_config_file):
-            print("Unable to select a config file: %s" % (original_config_file))
+            logger.warning("Unable to select a config file: %s" % (original_config_file))
             return "", "", 0, 0, "", "", "", "", image_size, "", "Unable to find a config file."
 
-        print(f"Trying to load: {original_config_file}")
+        logger.debug(f"Trying to load: {original_config_file}")
         original_config = OmegaConf.load(original_config_file)
 
         num_train_timesteps = original_config.model.params.timesteps
@@ -1489,7 +1304,7 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
             raise ValueError(f"Scheduler of type {scheduler_type} doesn't exist!")
 
 
-        print("Converting unet...")
+        logger.info("Converting UNet...")
         # Convert the UNet2DConditionModel model.
         unet_config = create_unet_diffusers_config(original_config, image_size=image_size)
         unet_config["upcast_attention"] = upcast_attention
@@ -1501,14 +1316,16 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
         db_config.has_ema = has_ema
         db_config.save()
         unet.load_state_dict(converted_unet_checkpoint)
-        print("Converting vae...")
+
+        logger.info("Converting VAE...")
         # Convert the VAE model.
         vae_config = create_vae_diffusers_config(original_config, image_size=image_size)
         converted_vae_checkpoint = convert_ldm_vae_checkpoint(checkpoint, vae_config)
 
         vae = AutoencoderKL(**vae_config)
         vae.load_state_dict(converted_vae_checkpoint)
-        print("Converting text encoder...")
+
+        logger.info("Converting text encoder...")
         # Convert the text model.
         text_model_type = original_config.model.params.cond_stage_config.target.split(".")[-1]
         if text_model_type == "FrozenOpenCLIPEmbedder":
@@ -1557,17 +1374,17 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
             pipe = LDMTextToImagePipeline(vqvae=vae, bert=text_model, tokenizer=tokenizer, unet=unet,
                                           scheduler=scheduler)
     except Exception as e:
-        print(f"Exception setting up output: {e}")
+        logger.error(f"Exception setting up output: {e}")
         pipe = None
         traceback.print_exc()
 
     if pipe is None or db_config is None:
         msg = "Pipeline or config is not set, unable to continue."
-        print(msg)
+        logger.error(msg)
         return "", "", 0, 0, "", "", "", "", image_size, "", msg
     else:
         resolution = db_config.resolution
-        print("Saving diffusion model...")
+        logger.info("Saving diffusion model...")
         pipe.save_pretrained(db_config.pretrained_model_name_or_path)
         result_status = f"Checkpoint successfully extracted to {db_config.pretrained_model_name_or_path}"
         model_dir = db_config.model_dir
@@ -1576,12 +1393,12 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
         src = db_config.src
         required_dirs = ["unet", "vae", "text_encoder", "scheduler", "tokenizer"]
         if original_config_file is not None and os.path.exists(original_config_file):
-            logger.warn("copying original config: %s -> %s", original_config_file, db_config.model_dir)
+            logger.warning("copying original config: %s -> %s", original_config_file, db_config.model_dir)
             shutil.copy(original_config_file, db_config.model_dir)
             basename = os.path.basename(original_config_file)
             new_ex_path = os.path.join(db_config.model_dir, basename)
             new_name = os.path.join(db_config.model_dir, f"{db_config.model_name}.yaml")
-            logger.warn("copying model config to new name: %s -> %s", new_ex_path, new_name)
+            logger.warning("copying model config to new name: %s -> %s", new_ex_path, new_name)
             if os.path.exists(new_name):
                 os.remove(new_name)
             os.rename(new_ex_path, new_name)
@@ -1601,27 +1418,35 @@ def extract_checkpoint(ctx: ConversionContext, new_model_name: str, checkpoint_f
                     os.makedirs(rem_dir)
 
 
-    print(result_status)
+    logger.info(result_status)
 
     return
 
-def convert_diffusion_original(ctx: ConversionContext, model_name: str, tensor_file: str, opset: int, half: bool):
-    model_path = os.path.join(ctx.model_path, model_name)
-    torch_name = model_name.replace("onnx", "torch")
-    torch_path = os.path.join(ctx.model_path, torch_name)
-    working_name = os.path.join(ctx.model_path, torch_name, "working")
-    logger.info("Converting original Diffusers checkpoint %s: %s -> %s", model_name, tensor_file, model_path)
+def convert_diffusion_original(
+    ctx: ConversionContext,
+    model: ModelDict,
+    source: str,
+):
+    name = model["name"]
+    source = source or model["source"]
 
-    if os.path.exists(model_path):
+    dest = os.path.join(ctx.model_path, name)
+    logger.info("Converting original Diffusers checkpoint %s: %s -> %s", name, source, dest)
+
+    if os.path.exists(dest):
         logger.info("ONNX pipeline already exists, skipping.")
         return
+
+    torch_name = name + "-torch"
+    torch_path = os.path.join(ctx.cache_path, torch_name)
+    working_name = os.path.join(ctx.cache_path, torch_name, "working")
 
     if os.path.exists(torch_path):
         logger.info("Torch pipeline already exists, reusing.")
     else:
-        logger.info("Converting original Diffusers check to Torch model: %s -> %s", tensor_file, torch_path)
-        extract_checkpoint(ctx, torch_name, tensor_file, from_hub=False)
+        logger.info("Converting original Diffusers check to Torch model: %s -> %s", source, torch_path)
+        extract_checkpoint(ctx, torch_name, source, from_hub=False)
         logger.info("Converted original Diffusers checkpoint to Torch model.")
 
-    convert_diffusion_stable(ctx, model_path, working_name, opset, half, None)
-    logger.info("ONNX pipeline saved to %s", model_name)
+    convert_diffusion_stable(ctx, model, working_name)
+    logger.info("ONNX pipeline saved to %s", name)

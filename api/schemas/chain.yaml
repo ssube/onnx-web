@@ -1,4 +1,4 @@
-$id: https://github.com/ssube/onnx-web/blob/main/api/schema.yaml
+$id: https://github.com/ssube/onnx-web/blob/main/api/schemas/chain.yaml
 $schema: https://json-schema.org/draft/2020-12/schema
 
 $defs:

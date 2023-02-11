@@ -1,19 +1,22 @@
+from logging import getLogger
+from os import mkdir, path
+from pathlib import Path
+from shutil import rmtree
+from typing import Dict
+
+import torch
 from diffusers import (
     OnnxRuntimeModel,
     OnnxStableDiffusionPipeline,
     StableDiffusionPipeline,
 )
-from torch.onnx import export
-from logging import getLogger
-
-from shutil import rmtree
-import torch
-from os import path, mkdir
-from pathlib import Path
 from onnx import load, save_model
+from torch.onnx import export
 
+from ..diffusion.pipeline_onnx_stable_diffusion_upscale import (
+    OnnxStableDiffusionUpscalePipeline,
+)
 from .utils import ConversionContext
-from ..diffusion.pipeline_onnx_stable_diffusion_upscale import OnnxStableDiffusionUpscalePipeline
 
 logger = getLogger(__name__)
 
@@ -47,22 +50,22 @@ def onnx_export(
 
 @torch.no_grad()
 def convert_diffusion_stable(
-  ctx: ConversionContext,
-    name: str,
-    url: str,
-    opset: int,
-    half: bool,
-    token: str,
-    single_vae: bool = False,
+    ctx: ConversionContext,
+    model: Dict,
+    source: str,
 ):
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
     """
-    dtype = torch.float16 if half else torch.float32
+    name = model.get("name")
+    source = source or model.get("source")
+    single_vae = model.get("single_vae")
+
+    dtype = torch.float16 if ctx.half else torch.float32
     dest_path = path.join(ctx.model_path, name)
 
     # diffusers go into a directory rather than .onnx file
-    logger.info("converting Stable Diffusion model %s: %s -> %s/", name, url, dest_path)
+    logger.info("converting Stable Diffusion model %s: %s -> %s/", name, source, dest_path)
 
     if single_vae:
         logger.info("converting model with single VAE")
@@ -71,13 +74,16 @@ def convert_diffusion_stable(
         logger.info("ONNX model already exists, skipping.")
         return
 
-    if half and ctx.training_device != "cuda":
+    if ctx.half and ctx.training_device != "cuda":
         raise ValueError(
             "Half precision model export is only supported on GPUs with CUDA"
         )
 
     pipeline = StableDiffusionPipeline.from_pretrained(
-        url, torch_dtype=dtype, use_auth_token=token
+        source,
+        torch_dtype=dtype,
+        use_auth_token=ctx.token,
+        # cache_dir=path.join(ctx.cache_path, name)
     ).to(ctx.training_device)
     output_path = Path(dest_path)
 
@@ -94,14 +100,16 @@ def convert_diffusion_stable(
     onnx_export(
         pipeline.text_encoder,
         # casting to torch.int32 until the CLIP fix is released: https://github.com/huggingface/transformers/pull/18515/files
-        model_args=(text_input.input_ids.to(device=ctx.training_device, dtype=torch.int32)),
+        model_args=(
+            text_input.input_ids.to(device=ctx.training_device, dtype=torch.int32)
+        ),
         output_path=output_path / "text_encoder" / "model.onnx",
         ordered_input_names=["input_ids"],
         output_names=["last_hidden_state", "pooler_output"],
         dynamic_axes={
             "input_ids": {0: "batch", 1: "sequence"},
         },
-        opset=opset,
+        opset=ctx.opset,
     )
     del pipeline.text_encoder
 
@@ -113,7 +121,9 @@ def convert_diffusion_stable(
         unet_scale = torch.tensor(4).to(device=ctx.training_device, dtype=torch.int)
     else:
         unet_inputs = ["sample", "timestep", "encoder_hidden_states", "return_dict"]
-        unet_scale = torch.tensor(False).to(device=ctx.training_device, dtype=torch.bool)
+        unet_scale = torch.tensor(False).to(
+            device=ctx.training_device, dtype=torch.bool
+        )
 
     unet_in_channels = pipeline.unet.config.in_channels
     unet_sample_size = pipeline.unet.config.sample_size
@@ -139,7 +149,7 @@ def convert_diffusion_stable(
             "timestep": {0: "batch"},
             "encoder_hidden_states": {0: "batch", 1: "sequence"},
         },
-        opset=opset,
+        opset=ctx.opset,
         use_external_data_format=True,  # UNet is > 2GB, so the weights need to be split
     )
     unet_model_path = str(unet_path.absolute().as_posix())
@@ -182,7 +192,7 @@ def convert_diffusion_stable(
             dynamic_axes={
                 "latent_sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
             },
-            opset=opset,
+            opset=ctx.opset,
         )
     else:
         # VAE ENCODER
@@ -207,7 +217,7 @@ def convert_diffusion_stable(
             dynamic_axes={
                 "sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
             },
-            opset=opset,
+            opset=ctx.opset,
         )
 
         # VAE DECODER
@@ -230,7 +240,7 @@ def convert_diffusion_stable(
             dynamic_axes={
                 "latent_sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
             },
-            opset=opset,
+            opset=ctx.opset,
         )
 
     del pipeline.vae
@@ -261,7 +271,7 @@ def convert_diffusion_stable(
                 "clip_input": {0: "batch", 1: "channels", 2: "height", 3: "width"},
                 "images": {0: "batch", 1: "height", 2: "width", 3: "channels"},
             },
-            opset=opset,
+            opset=ctx.opset,
         )
         del pipeline.safety_checker
         safety_checker = OnnxRuntimeModel.from_pretrained(
@@ -312,4 +322,3 @@ def convert_diffusion_stable(
         )
 
     logger.info("ONNX pipeline is loadable")
-

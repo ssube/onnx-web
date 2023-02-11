@@ -1,0 +1,65 @@
+$id: https://github.com/ssube/onnx-web/blob/main/api/schemas/extras.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+
+$defs:
+  legacy_tuple:
+    type: array
+    items:
+      oneOf:
+        - type: string
+        - type: number
+
+  base_model:
+    type: object
+    required: [name, source]
+    properties:
+      format:
+        type: string
+        enum: [onnx, pth, ckpt, safetensors]
+      half:
+        type: boolean
+      name:
+        type: string
+      opset:
+        type: number
+      source:
+        type: string
+
+  correction_model:
+    allOf:
+      - $ref: "#/$defs/base_model"
+
+  diffusion_model:
+    allOf:
+      - $ref: "#/$defs/base_model"
+
+  upscaling_model:
+    allOf:
+      - $ref: "#/$defs/base_model"
+      - type: object
+        required: [scale]
+        properties:
+          scale:
+            type: number
+
+type: object
+additionalProperties: False
+properties:
+  diffusion:
+    type: array
+    items:
+      oneOf:
+        - $ref: "#/$defs/legacy_tuple"
+        - $ref: "#/$defs/diffusion_model"
+  correction:
+    type: array
+    items:
+      oneOf:
+        - $ref: "#/$defs/legacy_tuple"
+        - $ref: "#/$defs/correction_model"
+  upscaling:
+    type: array
+    items:
+      oneOf:
+        - $ref: "#/$defs/legacy_tuple"
+        - $ref: "#/$defs/upscaling_model"

@@ -58,6 +58,7 @@
 			"rocm",
 			"RRDB",
 			"runwayml",
+			"safetensors",
 			"scandir",
 			"scipy",
 			"scrollback",

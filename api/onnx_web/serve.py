@@ -649,10 +649,10 @@ def chain():
         return error_reply("chain pipeline must have a body")
 
     data = yaml.safe_load(body)
-    with open("./schema.yaml", "r") as f:
+    with open("./schemas/chain.yaml", "r") as f:
         schema = yaml.safe_load(f.read())
 
-    logger.info("validating chain request: %s against %s", data, schema)
+    logger.debug("validating chain request: %s against %s", data, schema)
     validate(data, schema)
 
     # get defaults from the regular parameters
