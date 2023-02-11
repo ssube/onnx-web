@@ -217,7 +217,7 @@ make sure it is named correctly.
 
 #### Model sources
 
-You can provide an absolute or relative path to a local model, and there are a few pre-defined sources from which models can be downloaded.
+You can provide an absolute or relative path to a local model, an HTTPS URL, or use one of the pre-defined sources:
 
 - `huggingface://`
   - https://huggingface.co/models?other=stable-diffusion
@@ -229,9 +229,12 @@ You can provide an absolute or relative path to a local model, and there are a f
   - does not require an account
 - `https://`
   - any other HTTPS source
+- `../models/.cache/your-model.safetensors`
+  - relative or absolute paths
 
-If the model's `source` does not include a file extension like `.safetensors` or `.ckpt`, make sure to indicate the
-file format using the `format` key.
+If the model is a single file and the `source` does not include a file extension like `.safetensors` or `.ckpt`, make
+sure to indicate the file format using the `format` key. You do not need to provide the `format` for directories and
+models from the HuggingFace hub.
 
 ## Tabs
 

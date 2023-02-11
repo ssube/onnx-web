@@ -7,6 +7,7 @@ accelerate
 diffusers
 onnx
 onnxruntime
+safetensors
 transformers
 
 #### Upscaling and face correction
@@ -22,8 +23,3 @@ flask
 flask-cors
 jsonschema
 pyyaml
-
-# TODO: get rid of these
-omegaconf
-pydantic
-safetensors

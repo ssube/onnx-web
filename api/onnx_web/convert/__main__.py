@@ -1,11 +1,10 @@
 import warnings
 from argparse import ArgumentParser
 from logging import getLogger
-from os import environ, makedirs, path
+from os import makedirs, path
 from sys import exit
 from typing import Dict, List, Optional, Tuple
 
-import torch
 from jsonschema import ValidationError, validate
 from yaml import safe_load
 
@@ -101,9 +100,6 @@ base_models: Models = {
         ),
     ],
 }
-
-model_path = environ.get("ONNX_WEB_MODEL_PATH", path.join("..", "models"))
-training_device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 def fetch_model(
@@ -228,14 +224,12 @@ def main() -> int:
     args = parser.parse_args()
     logger.info("CLI arguments: %s", args)
 
-    ctx = ConversionContext(
-        model_path, training_device, half=args.half, opset=args.opset, token=args.token
-    )
+    ctx = ConversionContext(half=args.half, opset=args.opset, token=args.token)
     logger.info("Converting models in %s using %s", ctx.model_path, ctx.training_device)
 
-    if not path.exists(model_path):
-        logger.info("Model path does not existing, creating: %s", model_path)
-        makedirs(model_path)
+    if not path.exists(ctx.model_path):
+        logger.info("Model path does not existing, creating: %s", ctx.model_path)
+        makedirs(ctx.model_path)
 
     logger.info("Converting base models.")
     convert_models(ctx, args, base_models)
