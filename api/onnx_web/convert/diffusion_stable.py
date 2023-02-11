@@ -1,3 +1,14 @@
+###
+# Parts of this file are copied or derived from:
+#   https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
+#
+# Originally by https://github.com/huggingface
+# Those portions *are not* covered by the MIT licensed used for the rest of the onnx-web project.
+#
+# HuggingFace code used under the Apache License, Version 2.0
+#   https://github.com/huggingface/diffusers/blob/main/LICENSE
+###
+
 from logging import getLogger
 from os import mkdir, path
 from pathlib import Path

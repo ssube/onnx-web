@@ -505,6 +505,15 @@ Please see [the Known Errors section of the user guide](https://github.com/ssube
 
 ## Credits
 
+Some of the conversion code was copied or derived from code in:
+
+- https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
+  - https://github.com/huggingface/diffusers/blob/main/LICENSE
+- https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/dreambooth/sd_to_diff.py
+  - https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/license.md
+
+Those parts have their own license with additional restrictions and may need permission for commercial usage.
+
 Getting this set up and running on AMD would not have been possible without guides by:
 
 - https://gist.github.com/harishanand95/75f4515e6187a6aa3261af6ac6f61269

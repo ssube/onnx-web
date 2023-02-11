@@ -1,12 +1,16 @@
 ###
-# From:
+# Parts of this file are copied or derived from:
 #   https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/dreambooth/diff_to_sd.py
 #   https://github.com/huggingface/diffusers/blob/main/scripts/convert_original_stable_diffusion_to_diffusers.py
 #
 # Originally by https://github.com/d8ahazard and https://github.com/huggingface
+# Those portions *are not* covered by the MIT licensed used for the rest of the onnx-web project.
+# In particular, you cannot use this converter for commercial purposes without permission.
 #
-# d8ahazard portions do not include a license header or file
-# HuggingFace portions used under the Apache License, Version 2.0
+# d8ahazard code used under No-Commercial License with Limited Commercial Use
+#   https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/license.md
+# HuggingFace code used under the Apache License, Version 2.0
+#   https://github.com/huggingface/diffusers/blob/main/LICENSE
 ###
 
 import json
