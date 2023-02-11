@@ -76,11 +76,6 @@ def convert_diffusion_stable(
         logger.info("ONNX model already exists, skipping.")
         return
 
-    if ctx.half and ctx.training_device != "cuda":
-        raise ValueError(
-            "Half precision model export is only supported on GPUs with CUDA"
-        )
-
     pipeline = StableDiffusionPipeline.from_pretrained(
         source,
         torch_dtype=dtype,

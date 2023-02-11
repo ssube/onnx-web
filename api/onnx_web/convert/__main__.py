@@ -227,6 +227,11 @@ def main() -> int:
     ctx = ConversionContext(half=args.half, opset=args.opset, token=args.token)
     logger.info("Converting models in %s using %s", ctx.model_path, ctx.training_device)
 
+    if ctx.half and ctx.training_device != "cuda":
+        raise ValueError(
+            "Half precision model export is only supported on GPUs with CUDA"
+        )
+
     if not path.exists(ctx.model_path):
         logger.info("Model path does not existing, creating: %s", ctx.model_path)
         makedirs(ctx.model_path)

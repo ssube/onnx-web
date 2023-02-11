@@ -145,7 +145,6 @@ def source_format(model: Dict) -> Optional[str]:
     return None
 
 
-
 class Config(object):
     def __init__(self, kwargs):
         self.__dict__.update(kwargs)
@@ -165,7 +164,6 @@ class Config(object):
             setattr(target, k, v)
 
 
-
 def load_yaml(file: str) -> str:
     with open(file, "r") as f:
         data = safe_load(f.read())
@@ -173,5 +171,7 @@ def load_yaml(file: str) -> str:
 
 
 safe_chars = "._-"
+
+
 def sanitize_name(name):
     return "".join(x for x in name if (x.isalnum() or x in safe_chars))
