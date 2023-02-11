@@ -1,6 +1,7 @@
 import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Alert, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import * as React from 'react';
+import { useEffect } from 'react';
 import { UseQueryResult } from 'react-query';
 
 export interface QueryListComplete {
@@ -47,6 +48,15 @@ export function QueryList<T>(props: QueryListProps<T>) {
       return data[0];
     }
   }
+
+  useEffect(() => {
+    if (result.status === 'success' && doesExist(result.data) && doesExist(props.onChange)) {
+      const data = filterQuery(query);
+      if (data.includes(value) === false) {
+        props.onChange(data[0]);
+      }
+    }
+  }, [result.status]);
 
   if (result.status === 'error') {
     if (result.error instanceof Error) {
