@@ -156,7 +156,13 @@ class DevicePoolExecutor:
         logger.warn("checking status for unknown key: %s", key)
         return (None, 0)
 
-    def get_next_device(self):
+    def get_next_device(self, needs_device: Optional[DeviceParams] = None) -> int:
+        # respect overrides if possible
+        if needs_device is not None:
+            for i in self.devices:
+                if self.devices[i].device == needs_device.device:
+                    return i
+
         # use the first/default device if there are no jobs
         if len(self.jobs) == 0:
             return 0
@@ -179,8 +185,8 @@ class DevicePoolExecutor:
     def prune(self):
         self.jobs[:] = [job for job in self.jobs if job.future.done()]
 
-    def submit(self, key: str, fn: Callable[..., None], /, *args, **kwargs) -> None:
-        device = self.get_next_device()
+    def submit(self, key: str, fn: Callable[..., None], /, *args, needs_device: Optional[DeviceParams] = None, **kwargs) -> None:
+        device = self.get_next_device(needs_device=needs_device)
         logger.info("assigning job %s to device %s", key, device)
 
         context = JobContext(key, self.devices, device_index=device)

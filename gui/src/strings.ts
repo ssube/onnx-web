@@ -32,6 +32,8 @@ export const MODEL_LABELS = {
 
 export const PLATFORM_LABELS: Record<string, string> = {
   amd: 'AMD GPU',
+  // eslint-disable-next-line id-blacklist
+  any: 'Any Platform',
   cpu: 'CPU',
   cuda: 'CUDA',
   directml: 'DirectML',
