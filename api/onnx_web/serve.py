@@ -341,7 +341,8 @@ def load_params(context: ServerContext):
 def load_platforms(context: ServerContext):
     global available_platforms
 
-    providers = [].extend(get_available_providers())
+    providers = []
+    providers.extend(get_available_providers())
 
     if context.any_platform:
         providers.append("any")
