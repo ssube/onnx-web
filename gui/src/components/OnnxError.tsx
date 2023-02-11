@@ -1,6 +1,7 @@
-import { Box, Container, Link, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Link, Stack, Typography } from '@mui/material';
 import * as React from 'react';
 import { ReactNode } from 'react';
+import { STATE_KEY } from '../state';
 
 export interface OnnxErrorProps {
   children?: ReactNode;
@@ -9,6 +10,11 @@ export interface OnnxErrorProps {
 
 export function OnnxError(props: OnnxErrorProps) {
   const linkback = location.href.replace(location.search, '');
+
+  function clearState() {
+    window.localStorage.removeItem(STATE_KEY);
+    window.location.reload();
+  }
 
   return (
     <Container>
@@ -45,6 +51,12 @@ export function OnnxError(props: OnnxErrorProps) {
             If you are trying to use a remote API server or an alternative port, you can put the address into the
             query string, like <code>{linkback}?api=http://localhost:5001</code>.
           </Typography>
+          <Typography variant='body1'>
+            If you recently upgraded and keep seeing errors, especially if you have been using a pre-release version
+            or you are getting <code>Cannot read properties of undefined</code> errors, you can try resetting the
+            client state:
+          </Typography>
+          <Button onClick={clearState} color='error'>Reset State</Button>
           <Typography variant='body1' gutterBottom>
             If your server is running and available at <a href={props.root}>{props.root}</a>, make sure you are on
             the <code>main</code> branch and try updating to the latest version:

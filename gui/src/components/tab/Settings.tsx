@@ -48,10 +48,10 @@ export function Settings() {
       </Alert>
     </Stack>
     <Stack direction='row' spacing={2}>
-      <Button onClick={() => state.resetTxt2Img()}>Reset Txt2Img</Button>
-      <Button onClick={() => state.resetImg2Img()}>Reset Img2Img</Button>
-      <Button onClick={() => state.resetInpaint()}>Reset Inpaint</Button>
-      <Button disabled>Reset All</Button>
+      <Button onClick={() => state.resetTxt2Img()} color='warning'>Reset Txt2Img</Button>
+      <Button onClick={() => state.resetImg2Img()} color='warning'>Reset Img2Img</Button>
+      <Button onClick={() => state.resetInpaint()} color='warning'>Reset Inpaint</Button>
+      <Button onClick={() => state.resetAll()} color='error'>Reset All</Button>
     </Stack>
   </Stack>;
 }

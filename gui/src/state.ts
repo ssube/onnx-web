@@ -99,6 +99,10 @@ interface UpscaleSlice {
   setUpscaleTab(params: Partial<UpscaleReqParams>): void;
   resetUpscaleTab(): void;
 }
+
+interface ResetSlice {
+  resetAll(): void;
+}
 // #endregion
 
 /**
@@ -113,7 +117,8 @@ export type OnnxState
   & ModelSlice
   & OutpaintSlice
   & Txt2ImgSlice
-  & UpscaleSlice;
+  & UpscaleSlice
+  & ResetSlice;
 
 /**
  * Shorthand for state creator to reduce repeated arguments.
@@ -134,6 +139,11 @@ export const ConfigContext = createContext<Maybe<Config<ServerParams>>>(undefine
  * React context binding for zustand state store.
  */
 export const StateContext = createContext<Maybe<StoreApi<OnnxState>>>(undefined);
+
+/**
+ * Key for zustand persistence, typically local storage.
+ */
+export const STATE_KEY = 'onnx-web';
 
 /**
  * Current state version for zustand persistence.
@@ -439,6 +449,20 @@ export function createStateSlices(server: ServerParams) {
     },
   });
 
+  const createResetSlice: Slice<ResetSlice> = (set) => ({
+    resetAll() {
+      set((prev) => {
+        const next = {...prev};
+        next.resetImg2Img();
+        next.resetInpaint();
+        next.resetTxt2Img();
+        next.resetUpscaleTab();
+        // TODO: reset more stuff
+        return next;
+      });
+    },
+  });
+
   return {
     createBrushSlice,
     createDefaultSlice,
@@ -449,5 +473,6 @@ export function createStateSlices(server: ServerParams) {
     createOutpaintSlice,
     createTxt2ImgSlice,
     createUpscaleSlice,
+    createResetSlice,
   };
 }

@@ -47,6 +47,7 @@ export async function main() {
         createOutpaintSlice,
         createTxt2ImgSlice,
         createUpscaleSlice,
+        createResetSlice,
       } = createStateSlices(params);
       const state = createStore<OnnxState, [['zustand/persist', OnnxState]]>(persist((...slice) => ({
         ...createBrushSlice(...slice),
@@ -58,6 +59,7 @@ export async function main() {
         ...createTxt2ImgSlice(...slice),
         ...createOutpaintSlice(...slice),
         ...createUpscaleSlice(...slice),
+        ...createResetSlice(...slice),
       }), {
         name: 'onnx-web',
         partialize(s) {
