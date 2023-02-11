@@ -258,6 +258,7 @@ export function createStateSlices(server: ServerParams) {
       noise: server.noise.default,
       source: null,
       strength: server.strength.default,
+      tileOrder: server.tileOrder.default,
     },
     setInpaint(params) {
       set((prev) => ({
@@ -277,6 +278,7 @@ export function createStateSlices(server: ServerParams) {
           noise: server.noise.default,
           source: null,
           strength: server.strength.default,
+          tileOrder: server.tileOrder.default,
         },
       });
     },

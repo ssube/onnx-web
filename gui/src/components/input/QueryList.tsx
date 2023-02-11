@@ -49,6 +49,7 @@ export function QueryList<T>(props: QueryListProps<T>) {
     }
   }
 
+  // update state when previous selection was invalid: https://github.com/ssube/onnx-web/issues/120
   useEffect(() => {
     if (result.status === 'success' && doesExist(result.data) && doesExist(props.onChange)) {
       const data = filterQuery(query);

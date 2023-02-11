@@ -1,5 +1,5 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
-import { Box, Button, FormControlLabel, Stack } from '@mui/material';
+import { Box, Button, FormControl, FormControlLabel, InputLabel, Select, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -58,6 +58,7 @@ export function Inpaint() {
   const mask = useStore(state, (s) => s.inpaint.mask);
   const source = useStore(state, (s) => s.inpaint.source);
   const strength = useStore(state, (s) => s.inpaint.strength);
+  const tileOrder = useStore(state, (s) => s.inpaint.tileOrder);
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setInpaint = useStore(state, (s) => s.setInpaint);
@@ -149,6 +150,19 @@ export function Inpaint() {
             });
           }}
         />
+        <FormControl>
+          <InputLabel id={'outpaint-tiling'}>Tile Order</InputLabel>
+          <Select
+            labelId={'outpaint-tiling'}
+            label={'Tile Order'}
+            value={tileOrder}
+            onChange={(e) => {
+              setInpaint({
+                tileOrder: e.target.value,
+              });
+            }}
+          ></Select>
+        </FormControl>
         <Stack direction='row' spacing={2}>
           <FormControlLabel
             label='Fill Color'

@@ -66,6 +66,10 @@
     "default": "histogram",
     "keys": []
   },
+  "order": {
+    "default": "spiral",
+    "keys": []
+  },
   "outscale": {
     "default": 1,
     "min": 1,
