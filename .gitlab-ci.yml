@@ -194,7 +194,7 @@ package-gui-npm:
   artifacts:
     expire_in: 7 days
     paths:
-      - *.tgz
+      - "*.tgz"
 
 package-gui-npm-dry:
   extends:
