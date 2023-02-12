@@ -153,6 +153,7 @@ package-api-twine:
   only:
     - tags
   script:
+    - cp -v README.md api/README.md
     - cd api
     - pip install build twine
     - python -m build
@@ -170,6 +171,7 @@ package-api-twine-dry:
   except:
     - tags
   script:
+    - cp -v README.md api/README.md
     - cd api
     - pip install build twine
     - python -m build
@@ -184,6 +186,7 @@ package-gui-npm:
   only:
     - tags
   script:
+    - cp -v README.md gui/README.md
     - cd gui
     - npm publish
   artifacts:
@@ -198,6 +201,7 @@ package-gui-npm-dry:
   except:
     - tags
   script:
+    - cp -v README.md gui/README.md
     - cd gui
     - npm pack
 
