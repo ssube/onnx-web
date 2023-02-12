@@ -76,6 +76,18 @@ def download_progress(urls: List[Tuple[str, str]]):
         return str(dest_path.absolute())
 
 
+def tuple_to_source(model: Union[ModelDict, LegacyModel]):
+    if isinstance(model, list) or isinstance(model, tuple):
+        name, source, *rest = model
+
+        return {
+            "name": name,
+            "source": source,
+        }
+    else:
+        return model
+
+
 def tuple_to_correction(model: Union[ModelDict, LegacyModel]):
     if isinstance(model, list) or isinstance(model, tuple):
         name, source, *rest = model

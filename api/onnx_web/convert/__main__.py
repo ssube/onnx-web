@@ -20,6 +20,7 @@ from .utils import (
     source_format,
     tuple_to_correction,
     tuple_to_diffusion,
+    tuple_to_source,
     tuple_to_upscaling,
 )
 
@@ -101,6 +102,33 @@ base_models: Models = {
             4,
         ),
     ],
+    # download only
+    "sources": [
+        (
+            "detection-resnet50-final",
+            "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/detection_Resnet50_Final.pth",
+        ),
+        (
+            "detection-mobilenet025-final",
+            "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/detection_mobilenet0.25_Final.pth",
+        ),
+        (
+            "detection-yolo-v5-l",
+            "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/yolov5l-face.pth",
+        ),
+        (
+            "detection-yolo-v5-n",
+            "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/yolov5n-face.pth",
+        ),
+        (
+            "parsing-bisenet",
+            "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_bisenet.pth",
+        ),
+        (
+            "parsing-parsenet",
+            "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth",
+        ),
+    ],
 }
 
 
@@ -113,8 +141,9 @@ def fetch_model(
     if model_format is None:
         url = urlparse(source)
         ext = path.basename(url.path)
+        file, ext = path.splitext(ext)
         if ext is not None:
-            cache_name = "%s.%s" % (cache_name, ext)
+            cache_name += ext
     else:
         cache_name = "%s.%s" % (cache_name, model_format)
 
@@ -147,6 +176,19 @@ def fetch_model(
 
 
 def convert_models(ctx: ConversionContext, args, models: Models):
+    if args.sources:
+        for model in models.get("sources"):
+            model = tuple_to_source(model)
+            name = model.get("name")
+
+            if name in args.skip:
+                logger.info("Skipping source: %s", name)
+            else:
+                model_format = source_format(model)
+                source = model["source"]
+                dest = fetch_model(ctx, name, source, model_format=model_format)
+                logger.info("Finished downloading source: %s -> %s", source, dest)
+
     if args.diffusion:
         for model in models.get("diffusion"):
             model = tuple_to_diffusion(model)
@@ -208,6 +250,7 @@ def main() -> int:
     )
 
     # model groups
+    parser.add_argument("--sources", action="store_true", default=False)
     parser.add_argument("--correction", action="store_true", default=False)
     parser.add_argument("--diffusion", action="store_true", default=False)
     parser.add_argument("--upscaling", action="store_true", default=False)
