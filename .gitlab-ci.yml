@@ -153,6 +153,7 @@ package-api-twine:
   only:
     - tags
   script:
+    - echo "${PIP_SECRET}" | base64 -d > $HOME/.pypirc
     - cp -v README.md api/README.md
     - cd api
     - pip install build twine
@@ -186,6 +187,7 @@ package-gui-npm:
   only:
     - tags
   script:
+    - echo "${NPM_SECRET}" | base64 -d > $HOME/.npmrc
     - cp -v README.md gui/README.md
     - cd gui
     - npm publish
