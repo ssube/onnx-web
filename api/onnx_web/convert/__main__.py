@@ -176,7 +176,7 @@ def fetch_model(
 
 
 def convert_models(ctx: ConversionContext, args, models: Models):
-    if args.sources:
+    if args.sources and "sources" in models:
         for model in models.get("sources"):
             model = tuple_to_source(model)
             name = model.get("name")
@@ -189,7 +189,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 dest = fetch_model(ctx, name, source, model_format=model_format)
                 logger.info("Finished downloading source: %s -> %s", source, dest)
 
-    if args.diffusion:
+    if args.diffusion and "diffusion" in models:
         for model in models.get("diffusion"):
             model = tuple_to_diffusion(model)
             name = model.get("name")
@@ -215,7 +215,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                         source,
                     )
 
-    if args.upscaling:
+    if args.upscaling and "upscaling" in models:
         for model in models.get("upscaling"):
             model = tuple_to_upscaling(model)
             name = model.get("name")
@@ -229,7 +229,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 )
                 convert_upscale_resrgan(ctx, model, source)
 
-    if args.correction:
+    if args.correction and "correction" in models:
         for model in models.get("correction"):
             model = tuple_to_correction(model)
             name = model.get("name")
