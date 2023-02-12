@@ -40,6 +40,7 @@ def load_stable_diffusion(
             model_path,
             provider=device.ort_provider(),
             sess_options=device.sess_options(),
+            torch_dtype=torch.float16,
         )
     else:
         logger.debug(
@@ -50,6 +51,7 @@ def load_stable_diffusion(
         pipe = StableDiffusionUpscalePipeline.from_pretrained(
             model_path,
             provider=device.provider,
+            torch_dtype=torch.float16,
         )
 
     if not server.show_progress:
