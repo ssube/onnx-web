@@ -3,6 +3,8 @@ from typing import List, Protocol, Tuple
 
 from PIL import Image
 
+from ..params import TileOrder
+
 logger = getLogger(__name__)
 
 
@@ -16,6 +18,7 @@ def process_tile_grid(
     tile: int,
     scale: int,
     filters: List[TileCallback],
+    **kwargs,
 ) -> Image.Image:
     width, height = source.size
     image = Image.new("RGB", (width * scale, height * scale))
@@ -46,6 +49,7 @@ def process_tile_spiral(
     scale: int,
     filters: List[TileCallback],
     overlap: float = 0.5,
+    **kwargs,
 ) -> Image.Image:
     if scale != 1:
         raise Exception("unsupported scale")
@@ -87,3 +91,22 @@ def process_tile_spiral(
         image.paste(tile_image, (left * scale, top * scale))
 
     return image
+
+
+def process_tile_order(
+    order: TileOrder,
+    source: Image.Image,
+    tile: int,
+    scale: int,
+    filters: List[TileCallback],
+    **kwargs,
+) -> Image.Image:
+    if order == TileOrder.grid:
+        logger.debug("using grid tile order with tile size: %s", tile)
+        return process_tile_grid(source, tile, scale, filters, **kwargs)
+    elif order == TileOrder.kernel:
+        logger.debug("using kernel tile order with tile size: %s", tile)
+        raise NotImplementedError()
+    elif order == TileOrder.spiral:
+        logger.debug("using spiral tile order with tile size: %s", tile)
+        return process_tile_spiral(source, tile, scale, filters, **kwargs)

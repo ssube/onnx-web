@@ -10,9 +10,9 @@ from ..device_pool import JobContext
 from ..diffusion.load import get_latents_from_seed, get_tile_latents, load_pipeline
 from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
-from ..params import Border, ImageParams, Size, SizeChart, StageParams
+from ..params import Border, ImageParams, Size, SizeChart, StageParams, TileOrder
 from ..utils import ServerContext, is_debug
-from .utils import process_tile_grid, process_tile_spiral
+from .utils import process_tile_grid, process_tile_order
 
 logger = getLogger(__name__)
 
@@ -120,8 +120,13 @@ def upscale_outpaint(
             "outpainting with an even border, using spiral tiling with %s overlap",
             overlap,
         )
-        output = process_tile_spiral(
-            source_image, SizeChart.auto, 1, [outpaint], overlap=overlap
+        output = process_tile_order(
+            stage.tile_order,
+            source_image,
+            SizeChart.auto,
+            1,
+            [outpaint],
+            overlap=overlap,
         )
     else:
         logger.debug("outpainting with an uneven border, using grid tiling")

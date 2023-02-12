@@ -14,6 +14,12 @@ class SizeChart(IntEnum):
     hd64k = 2**16
 
 
+class TileOrder:
+    grid = "grid"
+    kernel = "kernel"
+    spiral = "spiral"
+
+
 Param = Union[str, int, float]
 Point = Tuple[int, int]
 
@@ -122,13 +128,15 @@ class StageParams:
     def __init__(
         self,
         name: Optional[str] = None,
-        tile_size: int = SizeChart.auto,
         outscale: int = 1,
+        tile_order: str = TileOrder.grid,
+        tile_size: int = SizeChart.auto,
         # batch_size: int = 1,
     ) -> None:
         self.name = name
-        self.tile_size = tile_size
         self.outscale = outscale
+        self.tile_order = tile_order
+        self.tile_size = tile_size
 
 
 class UpscaleParams:

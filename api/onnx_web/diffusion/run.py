@@ -151,10 +151,11 @@ def run_inpaint_pipeline(
     mask_filter: Any,
     strength: float,
     fill_color: str,
+    tile_order: str,
 ) -> None:
     # device = job.get_device()
     # progress = job.get_progress_callback()
-    stage = StageParams()
+    stage = StageParams(tile_order=tile_order)
 
     image = upscale_outpaint(
         job,

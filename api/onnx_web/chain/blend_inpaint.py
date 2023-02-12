@@ -12,7 +12,7 @@ from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
 from ..params import Border, ImageParams, Size, SizeChart, StageParams
 from ..utils import ServerContext, is_debug
-from .utils import process_tile_grid
+from .utils import process_tile_order
 
 logger = getLogger(__name__)
 
@@ -101,7 +101,9 @@ def blend_inpaint(
 
         return result.images[0]
 
-    output = process_tile_grid(source_image, SizeChart.auto, 1, [outpaint])
+    output = process_tile_order(
+        stage.tile_order, source_image, SizeChart.auto, 1, [outpaint]
+    )
 
     logger.info("final output image size", output.size)
     return output

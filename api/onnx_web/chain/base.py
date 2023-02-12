@@ -9,7 +9,7 @@ from ..device_pool import JobContext
 from ..output import save_image
 from ..params import ImageParams, StageParams
 from ..utils import ServerContext, is_debug
-from .utils import process_tile_grid
+from .utils import process_tile_order
 
 logger = getLogger(__name__)
 
@@ -100,8 +100,12 @@ class ChainPipeline:
 
                     return tile
 
-                image = process_tile_grid(
-                    image, stage_params.tile_size, stage_params.outscale, [stage_tile]
+                image = process_tile_order(
+                    stage_params.tile_order,
+                    image,
+                    stage_params.tile_size,
+                    stage_params.outscale,
+                    [stage_tile],
                 )
             else:
                 logger.info("image within tile size, running stage")

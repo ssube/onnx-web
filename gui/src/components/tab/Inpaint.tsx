@@ -1,5 +1,5 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
-import { Box, Button, FormControl, FormControlLabel, InputLabel, Select, Stack } from '@mui/material';
+import { Box, Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -161,7 +161,7 @@ export function Inpaint() {
                 tileOrder: e.target.value,
               });
             }}
-          ></Select>
+          >{['grid', 'kernel', 'spiral'].map((name) => <MenuItem key={name} value={name}>{name}</MenuItem>)}</Select>
         </FormControl>
         <Stack direction='row' spacing={2}>
           <FormControlLabel

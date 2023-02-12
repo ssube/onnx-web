@@ -66,10 +66,6 @@
     "default": "histogram",
     "keys": []
   },
-  "order": {
-    "default": "spiral",
-    "keys": []
-  },
   "outscale": {
     "default": 1,
     "min": 1,
@@ -117,6 +113,10 @@
     "min": 0,
     "max": 1,
     "step": 0.01
+  },
+  "tileOrder": {
+    "default": "spiral",
+    "keys": []
   },
   "top": {
     "default": 0,

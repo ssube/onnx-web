@@ -64,7 +64,7 @@ from .image import (  # mask filters; noise sources
     noise_source_uniform,
 )
 from .output import json_params, make_output_name
-from .params import Border, DeviceParams, ImageParams, Size, StageParams, UpscaleParams
+from .params import Border, DeviceParams, ImageParams, Size, StageParams, UpscaleParams, TileOrder
 from .utils import (
     ServerContext,
     base_join,
@@ -589,6 +589,7 @@ def inpaint():
         get_config_value("strength", "max"),
         get_config_value("strength", "min"),
     )
+    tile_order = get_from_list(request.args, "tileOrder", [TileOrder.grid, TileOrder.kernel, TileOrder.spiral])
 
     output = make_output_name(
         context,
@@ -604,6 +605,7 @@ def inpaint():
             noise_source.__name__,
             strength,
             fill_color,
+            tile_order,
         ),
     )
     logger.info("inpaint job queued for: %s", output)
@@ -625,6 +627,7 @@ def inpaint():
         mask_filter,
         strength,
         fill_color,
+        tile_order,
         needs_device=device,
     )
 
