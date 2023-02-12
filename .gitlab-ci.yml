@@ -152,6 +152,7 @@ package-api-twine:
     - tags
   script:
     - cd api
+    - pip install build twine
     - python -m build
     - twine check dist/*
     - twine upload dist/*
@@ -168,6 +169,7 @@ package-api-twine-dry:
     - tags
   script:
     - cd api
+    - pip install build twine
     - python -m build
     - twine check dist/*
 
