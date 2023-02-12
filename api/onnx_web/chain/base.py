@@ -47,6 +47,11 @@ class ChainProgress:
     def get_total(self) -> int:
         return self.step + self.total
 
+    @classmethod
+    def from_progress(cls, parent: ProgressCallback):
+        start = parent.step if hasattr(parent, "step") else 0
+        return ChainProgress(parent, start=start)
+
 
 class ChainPipeline:
     """
@@ -82,8 +87,7 @@ class ChainPipeline:
         TODO: handle List[Image] inputs and outputs
         """
         if callback is not None:
-            start = callback.step if hasattr(callback, "step") else 0
-            callback = ChainProgress(callback, start=start)
+            callback = ChainProgress.from_progress(callback)
 
         start = monotonic()
         logger.info(

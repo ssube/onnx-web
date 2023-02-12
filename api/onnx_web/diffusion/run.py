@@ -6,6 +6,8 @@ import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline, OnnxStableDiffusionPipeline
 from PIL import Image, ImageChops
 
+from onnx_web.chain.base import ChainProgress
+
 from ..chain import upscale_outpaint
 from ..device_pool import JobContext
 from ..output import save_image, save_params
@@ -65,7 +67,13 @@ def run_txt2img_pipeline(
 
     image = result.images[0]
     image = run_upscale_correction(
-        job, server, StageParams(), params, image, upscale=upscale, callback=progress,
+        job,
+        server,
+        StageParams(),
+        params,
+        image,
+        upscale=upscale,
+        callback=progress,
     )
 
     dest = save_image(server, output, image)
@@ -123,7 +131,13 @@ def run_img2img_pipeline(
 
     image = result.images[0]
     image = run_upscale_correction(
-        job, server, StageParams(), params, image, upscale=upscale, callback=progress,
+        job,
+        server,
+        StageParams(),
+        params,
+        image,
+        upscale=upscale,
+        callback=progress,
     )
 
     dest = save_image(server, output, image)
@@ -156,6 +170,9 @@ def run_inpaint_pipeline(
     # device = job.get_device()
     progress = job.get_progress_callback()
     stage = StageParams(tile_order=tile_order)
+
+    # calling the upscale_outpaint stage directly needs accumulating progress
+    progress = ChainProgress.from_progress(progress)
 
     image = upscale_outpaint(
         job,
