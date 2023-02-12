@@ -1,4 +1,4 @@
-import { doesExist, mustExist } from '@apextoaster/js-utils';
+import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Brush, ContentCopy, Delete, Download } from '@mui/icons-material';
 import { Box, Card, CardContent, CardMedia, Grid, IconButton, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
@@ -8,6 +8,7 @@ import { useStore } from 'zustand';
 
 import { ImageResponse } from '../client.js';
 import { ConfigContext, StateContext } from '../state.js';
+import { MODEL_LABELS, SCHEDULER_LABELS } from '../strings.js';
 
 export interface ImageCardProps {
   value: ImageResponse;
@@ -64,6 +65,9 @@ export function ImageCard(props: ImageCardProps) {
     window.open(output.url, '_blank');
   }
 
+  const model = mustDefault(MODEL_LABELS[params.model], params.model);
+  const scheduler = mustDefault(SCHEDULER_LABELS[params.scheduler], params.scheduler);
+
   return <Card sx={{ maxWidth: config.params.width.default }} elevation={2}>
     <CardMedia sx={{ height: config.params.height.default }}
       component='img'
@@ -73,11 +77,12 @@ export function ImageCard(props: ImageCardProps) {
     <CardContent>
       <Box textAlign='center'>
         <Grid container spacing={2}>
+          <GridItem xs={4}>Model: {model}</GridItem>
+          <GridItem xs={4}>Scheduler: {scheduler}</GridItem>
+          <GridItem xs={4}>Seed: {params.seed}</GridItem>
           <GridItem xs={4}>CFG: {params.cfg}</GridItem>
           <GridItem xs={4}>Steps: {params.steps}</GridItem>
           <GridItem xs={4}>Size: {size.width}x{size.height}</GridItem>
-          <GridItem xs={4}>Seed: {params.seed}</GridItem>
-          <GridItem xs={8}>Scheduler: {params.scheduler}</GridItem>
           <GridItem xs={12}>
             <Box textAlign='left'>{params.prompt}</Box>
           </GridItem>

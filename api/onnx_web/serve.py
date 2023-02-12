@@ -9,27 +9,11 @@ from typing import Dict, List, Tuple, Union
 import numpy as np
 import torch
 import yaml
-from diffusers import (
-    DDIMScheduler,
-    DDPMScheduler,
-    DPMSolverMultistepScheduler,
-    DPMSolverSinglestepScheduler,
-    EulerAncestralDiscreteScheduler,
-    EulerDiscreteScheduler,
-    HeunDiscreteScheduler,
-    KarrasVeScheduler,
-    KDPM2AncestralDiscreteScheduler,
-    KDPM2DiscreteScheduler,
-    LMSDiscreteScheduler,
-    PNDMScheduler,
-)
 from flask import Flask, jsonify, make_response, request, send_from_directory, url_for
 from flask_cors import CORS
 from jsonschema import validate
 from onnxruntime import get_available_providers
 from PIL import Image
-
-from onnx_web.hacks import apply_patches
 
 from .chain import (
     ChainPipeline,
@@ -48,12 +32,14 @@ from .chain import (
     upscale_stable_diffusion,
 )
 from .device_pool import DevicePoolExecutor
+from .diffusion.load import pipeline_schedulers
 from .diffusion.run import (
     run_img2img_pipeline,
     run_inpaint_pipeline,
     run_txt2img_pipeline,
     run_upscale_pipeline,
 )
+from .hacks import apply_patches
 from .image import (  # mask filters; noise sources
     mask_filter_gaussian_multiply,
     mask_filter_gaussian_screen,
@@ -99,20 +85,7 @@ platform_providers = {
     "directml": "DmlExecutionProvider",
     "rocm": "ROCMExecutionProvider",
 }
-pipeline_schedulers = {
-    "ddim": DDIMScheduler,
-    "ddpm": DDPMScheduler,
-    "dpm-multi": DPMSolverMultistepScheduler,
-    "dpm-single": DPMSolverSinglestepScheduler,
-    "euler": EulerDiscreteScheduler,
-    "euler-a": EulerAncestralDiscreteScheduler,
-    "heun": HeunDiscreteScheduler,
-    "k-dpm-2-a": KDPM2AncestralDiscreteScheduler,
-    "k-dpm-2": KDPM2DiscreteScheduler,
-    "karras-ve": KarrasVeScheduler,
-    "lms-discrete": LMSDiscreteScheduler,
-    "pndm": PNDMScheduler,
-}
+
 noise_sources = {
     "fill-edge": noise_source_fill_edge,
     "fill-mask": noise_source_fill_mask,

@@ -137,7 +137,7 @@ export interface ImageResponse {
     key: string;
     url: string;
   };
-  params: Required<BaseImgParams>;
+  params: Required<BaseImgParams> & Required<ModelParams>;
   size: {
     width: number;
     height: number;

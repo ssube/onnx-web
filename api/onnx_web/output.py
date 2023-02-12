@@ -1,12 +1,14 @@
 from hashlib import sha256
 from json import dumps
 from logging import getLogger
+from os import path
 from struct import pack
 from time import time
 from typing import Any, Optional, Tuple
 
 from PIL import Image
 
+from .diffusion.load import get_scheduler_name
 from .params import Border, ImageParams, Param, Size, UpscaleParams
 from .utils import ServerContext, base_join
 
@@ -37,6 +39,9 @@ def json_params(
         "output": output,
         "params": params.tojson(),
     }
+
+    json["params"]["model"] = path.basename(params.model)
+    json["params"]["scheduler"] = get_scheduler_name(params.scheduler)
 
     if upscale is not None and border is not None:
         size = upscale.resize(size.add_border(border))

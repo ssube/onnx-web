@@ -2,7 +2,21 @@ from logging import getLogger
 from typing import Any, Optional, Tuple
 
 import numpy as np
-from diffusers import DiffusionPipeline
+from diffusers import (
+    DDIMScheduler,
+    DDPMScheduler,
+    DiffusionPipeline,
+    DPMSolverMultistepScheduler,
+    DPMSolverSinglestepScheduler,
+    EulerAncestralDiscreteScheduler,
+    EulerDiscreteScheduler,
+    HeunDiscreteScheduler,
+    KarrasVeScheduler,
+    KDPM2AncestralDiscreteScheduler,
+    KDPM2DiscreteScheduler,
+    LMSDiscreteScheduler,
+    PNDMScheduler,
+)
 
 from ..params import DeviceParams, Size
 from ..utils import run_gc
@@ -21,6 +35,28 @@ last_pipeline_scheduler: Any = None
 
 latent_channels = 4
 latent_factor = 8
+
+pipeline_schedulers = {
+    "ddim": DDIMScheduler,
+    "ddpm": DDPMScheduler,
+    "dpm-multi": DPMSolverMultistepScheduler,
+    "dpm-single": DPMSolverSinglestepScheduler,
+    "euler": EulerDiscreteScheduler,
+    "euler-a": EulerAncestralDiscreteScheduler,
+    "heun": HeunDiscreteScheduler,
+    "k-dpm-2-a": KDPM2AncestralDiscreteScheduler,
+    "k-dpm-2": KDPM2DiscreteScheduler,
+    "karras-ve": KarrasVeScheduler,
+    "lms-discrete": LMSDiscreteScheduler,
+    "pndm": PNDMScheduler,
+}
+
+def get_scheduler_name(scheduler: Any) -> Optional[str]:
+    for k, v in pipeline_schedulers.items():
+        if scheduler == v or scheduler == v.__name__:
+            return k
+
+    return None
 
 
 def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:

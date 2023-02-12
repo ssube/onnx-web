@@ -1,5 +1,5 @@
 // TODO: set up i18next
-export const MODEL_LABELS = {
+export const MODEL_LABELS: Record<string, string> = {
   'stable-diffusion-onnx-v1-4': 'Stable Diffusion v1.4',
   'stable-diffusion-onnx-v1-5': 'Stable Diffusion v1.5',
   'stable-diffusion-onnx-v1-inpainting': 'SD Inpainting v1',
