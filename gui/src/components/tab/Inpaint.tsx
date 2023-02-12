@@ -1,5 +1,6 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Stack } from '@mui/material';
+import { capitalize } from 'lodash';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -163,7 +164,7 @@ export function Inpaint() {
             }}
           >
             {params.tileOrder.keys.map((name) =>
-              <MenuItem key={name} value={name}>{name.toLocaleUpperCase()}</MenuItem>)
+              <MenuItem key={name} value={name}>{capitalize(name)}</MenuItem>)
             }
           </Select>
         </FormControl>
