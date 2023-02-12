@@ -58,8 +58,10 @@ stages:
       files:
         - api/requirements.txt
     paths:
-      - api/onnx_env/
+      - .cache/pip
     policy: pull-push
+  variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 .build-curl:
   extends:
