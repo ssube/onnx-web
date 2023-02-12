@@ -33,6 +33,10 @@ $defs:
   diffusion_model:
     allOf:
       - $ref: "#/$defs/base_model"
+      - type: object
+        properties:
+          config:
+            type: string
 
   upscaling_model:
     allOf:
