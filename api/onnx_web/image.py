@@ -181,7 +181,8 @@ def expand_image(
     full_source = Image.new("RGB", dims, fill)
     full_source.paste(source_image, origin)
 
-    full_mask = mask_filter(mask_image, dims, origin, fill=fill)
+    # new mask pixels need to be filled with white so they will be replaced
+    full_mask = mask_filter(mask_image, dims, origin, fill="white")
     full_noise = noise_source(source_image, dims, origin, fill=fill)
     full_noise = ImageChops.multiply(full_noise, full_mask)
 
