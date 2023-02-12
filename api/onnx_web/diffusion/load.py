@@ -139,7 +139,7 @@ def load_pipeline(
         last_pipeline_options = options
         last_pipeline_scheduler = scheduler_type
 
-    if last_pipeline_scheduler != scheduler:
+    if last_pipeline_scheduler != scheduler_type:
         logger.debug("loading new diffusion scheduler")
         scheduler = scheduler_type.from_pretrained(
             model,
