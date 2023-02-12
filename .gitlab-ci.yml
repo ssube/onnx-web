@@ -163,6 +163,7 @@ package-api-twine:
 package-api-twine-dry:
   extends:
     - package-api-twine
+  only: ~
   except:
     - tags
   script:
@@ -189,6 +190,7 @@ package-gui-npm:
 package-gui-npm-dry:
   extends:
     - package-gui-npm
+  only: ~
   except:
     - tags
   script:
