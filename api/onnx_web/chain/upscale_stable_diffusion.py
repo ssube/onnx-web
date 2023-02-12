@@ -5,7 +5,7 @@ import torch
 from diffusers import StableDiffusionUpscalePipeline
 from PIL import Image
 
-from ..device_pool import JobContext
+from ..device_pool import JobContext, ProgressCallback
 from ..diffusion.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
@@ -67,6 +67,7 @@ def upscale_stable_diffusion(
     *,
     upscale: UpscaleParams,
     prompt: str = None,
+    callback: ProgressCallback,
     **kwargs,
 ) -> Image.Image:
     prompt = prompt or params.prompt
@@ -80,4 +81,5 @@ def upscale_stable_diffusion(
         source,
         generator=generator,
         num_inference_steps=params.steps,
+        callback=callback,
     ).images[0]

@@ -5,7 +5,7 @@ from typing import Any, List, Optional, Protocol, Tuple
 
 from PIL import Image
 
-from ..device_pool import JobContext
+from ..device_pool import JobContext, ProgressCallback
 from ..output import save_image
 from ..params import ImageParams, StageParams
 from ..utils import ServerContext, is_debug
@@ -28,6 +28,24 @@ class StageCallback(Protocol):
 
 
 PipelineStage = Tuple[StageCallback, StageParams, Optional[dict]]
+
+
+class ChainProgress:
+    def __init__(self, parent: ProgressCallback, start=0) -> None:
+        self.parent = parent
+        self.step = start
+        self.total = 0
+
+    def __call__(self, step: int, timestep: int, latents: Any) -> None:
+        if step < self.step:
+            # accumulate on resets
+            self.total += self.step
+
+        self.step = step
+        self.parent(self.get_total(), timestep, latents)
+
+    def get_total(self) -> int:
+        return self.step + self.total
 
 
 class ChainPipeline:
@@ -57,11 +75,15 @@ class ChainPipeline:
         server: ServerContext,
         params: ImageParams,
         source: Image.Image,
+        callback: ProgressCallback = None,
         **pipeline_kwargs
     ) -> Image.Image:
         """
-        TODO: handle List[Image] outputs
+        TODO: handle List[Image] inputs and outputs
         """
+        if callback is not None:
+            callback = ChainProgress(callback, start=callback.step)
+
         start = monotonic()
         logger.info(
             "running pipeline on source image with dimensions %sx%s",

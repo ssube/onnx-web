@@ -6,7 +6,7 @@ import torch
 from diffusers import OnnxStableDiffusionInpaintPipeline
 from PIL import Image, ImageDraw
 
-from ..device_pool import JobContext
+from ..device_pool import JobContext, ProgressCallback
 from ..diffusion.load import get_latents_from_seed, get_tile_latents, load_pipeline
 from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
@@ -30,6 +30,7 @@ def upscale_outpaint(
     fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
+    callback: ProgressCallback,
     **kwargs,
 ) -> Image.Image:
     prompt = prompt or params.prompt
@@ -92,6 +93,7 @@ def upscale_outpaint(
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 width=size.width,
+                callback=callback,
             )
         else:
             rng = np.random.RandomState(params.seed)
@@ -106,6 +108,7 @@ def upscale_outpaint(
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 width=size.width,
+                callback=callback,
             )
 
         # once part of the image has been drawn, keep it

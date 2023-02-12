@@ -10,6 +10,8 @@ from .utils import run_gc
 
 logger = getLogger(__name__)
 
+ProgressCallback = Callable[[int, int, Any], None]
+
 
 class JobContext:
     cancel: Value = None
@@ -51,8 +53,9 @@ class JobContext:
     def get_progress(self) -> int:
         return self.progress.value
 
-    def get_progress_callback(self) -> Callable[..., None]:
+    def get_progress_callback(self) -> ProgressCallback:
         def on_progress(step: int, timestep: int, latents: Any):
+            on_progress.step = step
             if self.is_cancelled():
                 raise Exception("job has been cancelled")
             else:

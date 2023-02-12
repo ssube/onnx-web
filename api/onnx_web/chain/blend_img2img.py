@@ -6,7 +6,7 @@ import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline
 from PIL import Image
 
-from ..device_pool import JobContext
+from ..device_pool import JobContext, ProgressCallback
 from ..diffusion.load import load_pipeline
 from ..params import ImageParams, StageParams
 from ..utils import ServerContext
@@ -23,6 +23,7 @@ def blend_img2img(
     *,
     strength: float,
     prompt: Optional[str] = None,
+    callback: ProgressCallback,
     **kwargs,
 ) -> Image.Image:
     prompt = prompt or params.prompt
@@ -46,6 +47,7 @@ def blend_img2img(
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
             strength=strength,
+            callback=callback,
         )
     else:
         rng = np.random.RandomState(params.seed)
@@ -57,6 +59,7 @@ def blend_img2img(
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
             strength=strength,
+            callback=callback,
         )
 
     output = result.images[0]

@@ -5,7 +5,7 @@ import torch
 from diffusers import OnnxStableDiffusionPipeline
 from PIL import Image
 
-from ..device_pool import JobContext
+from ..device_pool import JobContext, ProgressCallback
 from ..diffusion.load import get_latents_from_seed, load_pipeline
 from ..params import ImageParams, Size, StageParams
 from ..utils import ServerContext
@@ -22,6 +22,7 @@ def source_txt2img(
     *,
     size: Size,
     prompt: str = None,
+    callback: ProgressCallback = None,
     **kwargs,
 ) -> Image.Image:
     prompt = prompt or params.prompt
@@ -53,6 +54,7 @@ def source_txt2img(
             latents=latents,
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
+            callback=callback,
         )
     else:
         rng = np.random.RandomState(params.seed)
@@ -65,6 +67,7 @@ def source_txt2img(
             latents=latents,
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
+            callback=callback,
         )
 
     output = result.images[0]

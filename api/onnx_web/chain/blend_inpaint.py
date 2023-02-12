@@ -6,7 +6,7 @@ import torch
 from diffusers import OnnxStableDiffusionInpaintPipeline
 from PIL import Image
 
-from ..device_pool import JobContext
+from ..device_pool import JobContext, ProgressCallback
 from ..diffusion.load import get_latents_from_seed, load_pipeline
 from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
@@ -29,6 +29,7 @@ def blend_inpaint(
     fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
+    callback: ProgressCallback,
     **kwargs,
 ) -> Image.Image:
     logger.info("upscaling image by expanding borders", expand)
@@ -83,6 +84,7 @@ def blend_inpaint(
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 width=size.width,
+                callback=callback,
             )
         else:
             rng = np.random.RandomState(params.seed)
@@ -97,6 +99,7 @@ def blend_inpaint(
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 width=size.width,
+                callback=callback,
             )
 
         return result.images[0]
