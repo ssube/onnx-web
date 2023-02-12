@@ -1,5 +1,5 @@
 import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
-import { Brush, ContentCopy, Delete, Download } from '@mui/icons-material';
+import { Blender, Brush, ContentCopy, CropFree, Delete, Download, ZoomOutMap } from '@mui/icons-material';
 import { Box, Card, CardContent, CardMedia, Grid, IconButton, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
@@ -33,6 +33,10 @@ export function ImageCard(props: ImageCardProps) {
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setInpaint = useStore(state, (s) => s.setInpaint);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setUpscale = useStore(state, (s) => s.setUpscaleTab);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setBlend = useStore(state, (s) => s.setBlend);
 
   async function loadSource() {
     const req = await fetch(output.url);
@@ -53,6 +57,23 @@ export function ImageCard(props: ImageCardProps) {
       source: blob,
     });
     setHash('inpaint');
+  }
+
+  async function copySourceToUpscale() {
+    const blob = await loadSource();
+    setUpscale({
+      source: blob,
+    });
+    setHash('upscale');
+  }
+
+  async function copySourceToBlend() {
+    const blob = await loadSource();
+    // TODO: push instead
+    setBlend({
+      sources: [blob],
+    });
+    setHash('blend');
   }
 
   function deleteImage() {
@@ -86,28 +107,42 @@ export function ImageCard(props: ImageCardProps) {
           <GridItem xs={12}>
             <Box textAlign='left'>{params.prompt}</Box>
           </GridItem>
-          <GridItem xs={3}>
+          <GridItem xs={2}>
             <Tooltip title='Save'>
               <IconButton onClick={downloadImage}>
                 <Download />
               </IconButton>
             </Tooltip>
           </GridItem>
-          <GridItem xs={3}>
+          <GridItem xs={2}>
             <Tooltip title='Img2img'>
               <IconButton onClick={copySourceToImg2Img}>
                 <ContentCopy />
               </IconButton>
             </Tooltip>
           </GridItem>
-          <GridItem xs={3}>
+          <GridItem xs={2}>
             <Tooltip title='Inpaint'>
               <IconButton onClick={copySourceToInpaint}>
                 <Brush />
               </IconButton>
             </Tooltip>
           </GridItem>
-          <GridItem xs={3}>
+          <GridItem xs={2}>
+            <Tooltip title='Upscale'>
+              <IconButton onClick={copySourceToUpscale}>
+                <ZoomOutMap />
+              </IconButton>
+            </Tooltip>
+          </GridItem>
+          <GridItem xs={2}>
+            <Tooltip title='Blend'>
+              <IconButton onClick={copySourceToBlend}>
+                <Blender />
+              </IconButton>
+            </Tooltip>
+          </GridItem>
+          <GridItem xs={2}>
             <Tooltip title='Delete'>
               <IconButton onClick={deleteImage}>
                 <Delete />

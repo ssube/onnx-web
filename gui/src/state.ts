@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable no-null/no-null */
 import { doesExist, Maybe } from '@apextoaster/js-utils';
 import { createContext } from 'react';
@@ -6,6 +7,7 @@ import { StateCreator, StoreApi } from 'zustand';
 import {
   ApiClient,
   BaseImgParams,
+  BlendParams,
   BrushParams,
   ImageResponse,
   Img2ImgParams,
@@ -100,6 +102,13 @@ interface UpscaleSlice {
   resetUpscaleTab(): void;
 }
 
+interface BlendSlice {
+  blend: TabState<BlendParams>;
+
+  setBlend(blend: Partial<BlendParams>): void;
+  resetBlend(): void;
+}
+
 interface ResetSlice {
   resetAll(): void;
 }
@@ -118,6 +127,7 @@ export type OnnxState
   & OutpaintSlice
   & Txt2ImgSlice
   & UpscaleSlice
+  & BlendSlice
   & ResetSlice;
 
 /**
@@ -419,6 +429,29 @@ export function createStateSlices(server: ServerParams) {
     },
   });
 
+  const createBlendSlice: Slice<BlendSlice> = (set) => ({
+    blend: {
+      mask: null,
+      sources: [],
+    },
+    setBlend(blend) {
+      set((prev) => ({
+        blend: {
+          ...prev.blend,
+          ...blend,
+        },
+      }));
+    },
+    resetBlend() {
+      set((prev) => ({
+        blend: {
+          mask: null,
+          sources: [],
+        },
+      }));
+    },
+  });
+
   const createDefaultSlice: Slice<DefaultSlice> = (set) => ({
     defaults: {
       ...base,
@@ -459,6 +492,7 @@ export function createStateSlices(server: ServerParams) {
         next.resetInpaint();
         next.resetTxt2Img();
         next.resetUpscaleTab();
+        next.resetBlend();
         // TODO: reset more stuff
         return next;
       });
@@ -475,6 +509,7 @@ export function createStateSlices(server: ServerParams) {
     createOutpaintSlice,
     createTxt2ImgSlice,
     createUpscaleSlice,
+    createBlendSlice,
     createResetSlice,
   };
 }

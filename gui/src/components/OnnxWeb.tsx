@@ -6,6 +6,7 @@ import { useHash } from 'react-use/lib/useHash';
 
 import { ModelControl } from './control/ModelControl.js';
 import { ImageHistory } from './ImageHistory.js';
+import { Blend } from './tab/Blend.js';
 import { Img2Img } from './tab/Img2Img.js';
 import { Inpaint } from './tab/Inpaint.js';
 import { Settings } from './tab/Settings.js';
@@ -13,6 +14,14 @@ import { Txt2Img } from './tab/Txt2Img.js';
 import { Upscale } from './tab/Upscale.js';
 
 const REMOVE_HASH = /^#?(.*)$/;
+const TAB_LABELS = [
+  'txt2img',
+  'img2img',
+  'inpaint',
+  'upscale',
+  'blend',
+  'settings',
+];
 
 export function OnnxWeb() {
   const [hash, setHash] = useHash();
@@ -26,7 +35,7 @@ export function OnnxWeb() {
       }
     }
 
-    return 'txt2img';
+    return TAB_LABELS[0];
   }
 
   return (
@@ -44,11 +53,7 @@ export function OnnxWeb() {
           <TabList onChange={(_e, idx) => {
             setHash(idx);
           }}>
-            <Tab label='txt2img' value='txt2img' />
-            <Tab label='img2img' value='img2img' />
-            <Tab label='inpaint' value='inpaint' />
-            <Tab label='upscale' value='upscale' />
-            <Tab label='settings' value='settings' />
+            {TAB_LABELS.map((name) => <Tab key={name} label={name} value={name} />)}
           </TabList>
         </Box>
         <TabPanel value='txt2img'>
@@ -62,6 +67,9 @@ export function OnnxWeb() {
         </TabPanel>
         <TabPanel value='upscale'>
           <Upscale />
+        </TabPanel>
+        <TabPanel value='blend'>
+          <Blend />
         </TabPanel>
         <TabPanel value='settings'>
           <Settings />

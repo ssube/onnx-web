@@ -25,7 +25,7 @@ export type KeyFilter<T extends object, TValid = number | string> = {
  * Keep fields with a file-like value, but make them optional.
  */
 export type ConfigFiles<T extends object> = {
-  [K in KeyFilter<T, Blob | File>]: Maybe<T[K]>;
+  [K in KeyFilter<T, Blob | File | Array<Blob | File>>]: Maybe<T[K]>;
 };
 
 /**

@@ -129,6 +129,11 @@ export interface UpscaleReqParams {
   source: Blob;
 }
 
+export interface BlendParams {
+  sources: Array<Blob>;
+  mask: Blob;
+}
+
 /**
  * General response for most image requests.
  */
@@ -216,6 +221,11 @@ export interface ApiClient {
    * Start an upscale pipeline.
    */
   upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+
+  /**
+   * Start a blending pipeline.
+   */
+  blend(model: ModelParams, params: BlendParams, upscale?: UpscaleParams): Promise<ImageResponse>;
 
   /**
    * Check whether some pipeline's output is ready yet.
@@ -470,6 +480,9 @@ export function makeClient(root: string, f = fetch): ApiClient {
         body,
         method: 'POST',
       });
+    },
+    async blend(model: ModelParams, params: BlendParams, upscale: UpscaleParams): Promise<ImageResponse> {
+      throw new Error('TODO');
     },
     async ready(params: ImageResponse): Promise<ReadyResponse> {
       const path = makeApiUrl(root, 'ready');
