@@ -158,7 +158,7 @@ package-api-twine:
     - pip install build twine
     - python -m build
     - twine check dist/*
-    - twine upload dist/*
+    - twine --repository onnx-web upload dist/*
   artifacts:
     expire_in: 7 days
     paths:
