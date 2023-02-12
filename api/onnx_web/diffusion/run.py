@@ -154,7 +154,7 @@ def run_inpaint_pipeline(
     tile_order: str,
 ) -> None:
     # device = job.get_device()
-    # progress = job.get_progress_callback()
+    progress = job.get_progress_callback()
     stage = StageParams(tile_order=tile_order)
 
     image = upscale_outpaint(
@@ -168,6 +168,7 @@ def run_inpaint_pipeline(
         fill_color=fill_color,
         mask_filter=mask_filter,
         noise_source=noise_source,
+        callback=progress,
     )
     logger.info("applying mask filter and generating noise source")
 
@@ -176,7 +177,9 @@ def run_inpaint_pipeline(
     else:
         logger.info("output image size does not match source, skipping post-blend")
 
-    image = run_upscale_correction(job, server, stage, params, image, upscale=upscale)
+    image = run_upscale_correction(
+        job, server, stage, params, image, upscale=upscale, callback=progress
+    )
 
     dest = save_image(server, output, image)
     save_params(server, output, params, size, upscale=upscale, border=border)
@@ -197,11 +200,11 @@ def run_upscale_pipeline(
     source_image: Image.Image,
 ) -> None:
     # device = job.get_device()
-    # progress = job.get_progress_callback()
+    progress = job.get_progress_callback()
     stage = StageParams()
 
     image = run_upscale_correction(
-        job, server, stage, params, source_image, upscale=upscale
+        job, server, stage, params, source_image, upscale=upscale, callback=progress
     )
 
     dest = save_image(server, output, image)

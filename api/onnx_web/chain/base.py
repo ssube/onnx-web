@@ -82,7 +82,8 @@ class ChainPipeline:
         TODO: handle List[Image] inputs and outputs
         """
         if callback is not None:
-            callback = ChainProgress(callback, start=callback.step)
+            start = callback.step if hasattr(callback, "step") else 0
+            callback = ChainProgress(callback, start=start)
 
         start = monotonic()
         logger.info(
@@ -115,7 +116,15 @@ class ChainPipeline:
                 )
 
                 def stage_tile(tile: Image.Image, _dims) -> Image.Image:
-                    tile = stage_pipe(job, server, stage_params, params, tile, **kwargs)
+                    tile = stage_pipe(
+                        job,
+                        server,
+                        stage_params,
+                        params,
+                        tile,
+                        callback=callback,
+                        **kwargs
+                    )
 
                     if is_debug():
                         save_image(server, "last-tile.png", tile)
@@ -131,7 +140,15 @@ class ChainPipeline:
                 )
             else:
                 logger.info("image within tile size, running stage")
-                image = stage_pipe(job, server, stage_params, params, image, **kwargs)
+                image = stage_pipe(
+                    job,
+                    server,
+                    stage_params,
+                    params,
+                    image,
+                    callback=callback,
+                    **kwargs
+                )
 
             logger.info(
                 "finished stage %s, result size: %sx%s", name, image.width, image.height

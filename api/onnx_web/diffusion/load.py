@@ -51,6 +51,7 @@ pipeline_schedulers = {
     "pndm": PNDMScheduler,
 }
 
+
 def get_scheduler_name(scheduler: Any) -> Optional[str]:
     for k, v in pipeline_schedulers.items():
         if scheduler == v or scheduler == v.__name__:

@@ -9,7 +9,7 @@ from .chain import (
     upscale_resrgan,
     upscale_stable_diffusion,
 )
-from .device_pool import JobContext
+from .device_pool import JobContext, ProgressCallback
 from .params import ImageParams, SizeChart, StageParams, UpscaleParams
 from .utils import ServerContext
 
@@ -24,6 +24,7 @@ def run_upscale_correction(
     image: Image.Image,
     *,
     upscale: UpscaleParams,
+    callback: ProgressCallback = None,
 ) -> Image.Image:
     """
     This is a convenience method for a chain pipeline that will run upscaling and
@@ -35,10 +36,10 @@ def run_upscale_correction(
 
     if upscale.scale > 1:
         if "esrgan" in upscale.upscale_model:
-            resr_stage = StageParams(
+            esrgan_stage = StageParams(
                 tile_size=stage.tile_size, outscale=upscale.outscale
             )
-            chain.append((upscale_resrgan, resr_stage, None))
+            chain.append((upscale_resrgan, esrgan_stage, None))
         elif "stable-diffusion" in upscale.upscale_model:
             mini_tile = min(SizeChart.mini, stage.tile_size)
             sd_stage = StageParams(tile_size=mini_tile, outscale=upscale.outscale)
@@ -57,4 +58,12 @@ def run_upscale_correction(
         else:
             logger.warn("unknown correction model: %s", upscale.correction_model)
 
-    return chain(job, server, params, image, prompt=params.prompt, upscale=upscale)
+    return chain(
+        job,
+        server,
+        params,
+        image,
+        prompt=params.prompt,
+        upscale=upscale,
+        callback=callback,
+    )
