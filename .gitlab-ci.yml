@@ -194,7 +194,7 @@ package-gui-npm:
   artifacts:
     expire_in: 7 days
     paths:
-      - "*.tgz"
+      - "$CI_PROJECT_DIR/*.tgz"
 
 package-gui-npm-dry:
   extends:
