@@ -144,7 +144,7 @@ package-gui-oci:
 # language-specific packages
 package-api-twine:
   extends:
-    - .build-node
+    - .build-python
   stage: package
   needs:
     - build-api-coverage
@@ -155,6 +155,20 @@ package-api-twine:
     - python -m build
     - twine check dist/*
     - twine upload dist/*
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - dist/
+
+package-api-twine-dry:
+  extends:
+    - .build-api-twine
+  except:
+    - tags
+  script:
+    - cd api
+    - python -m build
+    - twine check dist/*
 
 package-gui-npm:
   extends:
@@ -167,6 +181,19 @@ package-gui-npm:
   script:
     - cd gui
     - npm publish
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - apextoaster-onnx-web-*.tgz
+
+package-gui-npm-dry:
+  extends:
+    - .build-gui-npm
+  except:
+    - tags
+  script:
+    - cd gui
+    - npm pack
 
 # commit status
 github-pending:
