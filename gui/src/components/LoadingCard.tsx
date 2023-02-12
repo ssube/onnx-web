@@ -11,12 +11,15 @@ import { POLL_TIME } from '../config.js';
 import { ClientContext, ConfigContext, StateContext } from '../state.js';
 
 const LOADING_PERCENT = 100;
+const LOADING_OVERAGE = 99;
 
 export interface LoadingCardProps {
   loading: ImageResponse;
 }
 
 export function LoadingCard(props: LoadingCardProps) {
+  const { steps } = props.loading.params;
+
   const client = mustExist(React.useContext(ClientContext));
   const { params } = mustExist(useContext(ConfigContext));
 
@@ -44,8 +47,24 @@ export function LoadingCard(props: LoadingCardProps) {
   }
 
   function getPercent() {
-    const pct = getProgress() / props.loading.params.steps;
+    const progress = getProgress();
+    if (progress > steps) {
+      // steps was not complete, show 99% until done
+      return LOADING_OVERAGE;
+    }
+
+    const pct = progress / steps;
     return Math.ceil(pct * LOADING_PERCENT);
+  }
+
+  function getTotal() {
+    const progress = getProgress();
+    if (progress > steps) {
+      // steps was not complete, show 99% until done
+      return 'many';
+    }
+
+    return steps.toFixed(0);
   }
 
   function getReady() {
@@ -53,7 +72,8 @@ export function LoadingCard(props: LoadingCardProps) {
   }
 
   function renderProgress() {
-    if (getProgress() > 0) {
+    const progress = getProgress();
+    if (progress > 0 && progress <= steps) {
       return <CircularProgress variant='determinate' value={getPercent()} />;
     } else {
       return <CircularProgress />;
@@ -90,7 +110,7 @@ export function LoadingCard(props: LoadingCardProps) {
           sx={{ alignItems: 'center' }}
         >
           {renderProgress()}
-          <Typography>{getProgress()}/{props.loading.params.steps} steps</Typography>
+          <Typography>{getProgress()}/{getTotal()} steps</Typography>
           <Button onClick={() => cancel.mutate()}>Cancel</Button>
         </Stack>
       </Box>
