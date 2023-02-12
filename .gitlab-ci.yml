@@ -162,7 +162,7 @@ package-api-twine:
 
 package-api-twine-dry:
   extends:
-    - build-api-twine
+    - package-api-twine
   except:
     - tags
   script:
@@ -175,7 +175,7 @@ package-gui-npm:
     - .build-node
   stage: package
   needs:
-    - build-gui-bundle
+    - package-gui-bundle
   only:
     - tags
   script:
