@@ -29,6 +29,8 @@ from jsonschema import validate
 from onnxruntime import get_available_providers
 from PIL import Image
 
+from onnx_web.hacks import apply_patches
+
 from .chain import (
     ChainPipeline,
     blend_img2img,
@@ -405,6 +407,7 @@ def load_platforms(context: ServerContext):
 
 
 context = ServerContext.from_environ()
+apply_patches(context)
 check_paths(context)
 load_models(context)
 load_params(context)

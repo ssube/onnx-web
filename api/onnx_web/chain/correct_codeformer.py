@@ -1,6 +1,5 @@
 from logging import getLogger
 
-from codeformer import CodeFormer
 from PIL import Image
 
 from ..device_pool import JobContext
@@ -23,6 +22,8 @@ def correct_codeformer(
     upscale: UpscaleParams,
     **kwargs,
 ) -> Image.Image:
+    from codeformer import CodeFormer
+
     device = job.get_device()
     # TODO: terrible names, fix
     image = source or source_image

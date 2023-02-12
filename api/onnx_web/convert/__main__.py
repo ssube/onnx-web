@@ -4,6 +4,7 @@ from logging import getLogger
 from os import makedirs, path
 from sys import exit
 from typing import Dict, List, Optional, Tuple
+from urllib.parse import urlparse
 
 from jsonschema import ValidationError, validate
 from yaml import safe_load
@@ -107,8 +108,14 @@ def fetch_model(
     ctx: ConversionContext, name: str, source: str, model_format: Optional[str] = None
 ) -> str:
     cache_name = path.join(ctx.cache_path, name)
-    if model_format is not None:
-        # add an extension if possible, some of the conversion code checks for it
+
+    # add an extension if possible, some of the conversion code checks for it
+    if model_format is None:
+        url = urlparse(source)
+        ext = path.basename(url.path)
+        if ext is not None:
+            cache_name = "%s.%s" % (cache_name, ext)
+    else:
         cache_name = "%s.%s" % (cache_name, model_format)
 
     for proto in model_sources:
