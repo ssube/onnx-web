@@ -9,7 +9,6 @@ from PIL import Image
 from ..device_pool import JobContext
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..utils import ServerContext, run_gc
-from .upscale_resrgan import load_resrgan
 
 logger = getLogger(__name__)
 
@@ -35,12 +34,10 @@ def load_gfpgan(
 
     logger.debug("loading GFPGAN model from %s", face_path)
 
-    upsampler = load_resrgan(server, upscale, device, tile=stage.tile_size)
-
     # TODO: find a way to pass the ONNX model to underlying architectures
     gfpgan = GFPGANer(
         arch="clean",
-        bg_upsampler=upsampler,
+        bg_upsampler=None,
         channel_multiplier=2,
         model_path=face_path,
         upscale=upscale.face_outscale,
