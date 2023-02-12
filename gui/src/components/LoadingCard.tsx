@@ -110,7 +110,7 @@ export function LoadingCard(props: LoadingCardProps) {
           sx={{ alignItems: 'center' }}
         >
           {renderProgress()}
-          <Typography>{getProgress()}/{getTotal()} steps</Typography>
+          <Typography>{getProgress()} of {getTotal()} steps</Typography>
           <Button onClick={() => cancel.mutate()}>Cancel</Button>
         </Stack>
       </Box>
