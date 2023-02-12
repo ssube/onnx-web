@@ -65,7 +65,7 @@ def run_txt2img_pipeline(
 
     image = result.images[0]
     image = run_upscale_correction(
-        job, server, StageParams(), params, image, upscale=upscale
+        job, server, StageParams(), params, image, upscale=upscale, callback=progress,
     )
 
     dest = save_image(server, output, image)
@@ -123,7 +123,7 @@ def run_img2img_pipeline(
 
     image = result.images[0]
     image = run_upscale_correction(
-        job, server, StageParams(), params, image, upscale=upscale
+        job, server, StageParams(), params, image, upscale=upscale, callback=progress,
     )
 
     dest = save_image(server, output, image)
