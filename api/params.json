@@ -116,7 +116,10 @@
   },
   "tileOrder": {
     "default": "spiral",
-    "keys": []
+    "keys": [
+      "grid",
+      "spiral"
+    ]
   },
   "top": {
     "default": 0,

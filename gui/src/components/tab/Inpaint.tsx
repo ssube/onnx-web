@@ -161,7 +161,11 @@ export function Inpaint() {
                 tileOrder: e.target.value,
               });
             }}
-          >{['grid', 'kernel', 'spiral'].map((name) => <MenuItem key={name} value={name}>{name}</MenuItem>)}</Select>
+          >
+            {params.tileOrder.keys.map((name) =>
+              <MenuItem key={name} value={name}>{name.toLocaleUpperCase()}</MenuItem>)
+            }
+          </Select>
         </FormControl>
         <Stack direction='row' spacing={2}>
           <FormControlLabel
