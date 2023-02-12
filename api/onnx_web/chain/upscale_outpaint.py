@@ -30,7 +30,7 @@ def upscale_outpaint(
     fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
-    callback: ProgressCallback,
+    callback: ProgressCallback = None,
     **kwargs,
 ) -> Image.Image:
     prompt = prompt or params.prompt

@@ -67,7 +67,7 @@ def upscale_stable_diffusion(
     *,
     upscale: UpscaleParams,
     prompt: str = None,
-    callback: ProgressCallback,
+    callback: ProgressCallback = None,
     **kwargs,
 ) -> Image.Image:
     prompt = prompt or params.prompt

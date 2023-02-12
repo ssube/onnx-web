@@ -23,7 +23,7 @@ def blend_img2img(
     *,
     strength: float,
     prompt: Optional[str] = None,
-    callback: ProgressCallback,
+    callback: ProgressCallback = None,
     **kwargs,
 ) -> Image.Image:
     prompt = prompt or params.prompt

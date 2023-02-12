@@ -29,7 +29,7 @@ def blend_inpaint(
     fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
-    callback: ProgressCallback,
+    callback: ProgressCallback = None,
     **kwargs,
 ) -> Image.Image:
     logger.info("upscaling image by expanding borders", expand)
