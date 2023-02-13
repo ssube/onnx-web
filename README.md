@@ -328,7 +328,7 @@ Make a copy of the `api/extras.json` file and edit it to include the models you 
 ```
 
 Models based on Stable Diffusion typically need to be in the `diffusion` category, including the Stable Diffusion
-upscaling model. You can provide a local path, starting with `./`, or a repository on https://huggingface.co.
+upscaling model. For more details, please [see the user guide](./docs/user-guide.md#adding-your-own-models).
 
 Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your new `extras.json` file before running the
 launch script:
@@ -346,7 +346,7 @@ launch script:
 ### Test the models
 
 You should verify that all of the steps up to this point have worked correctly by attempting to run the
-`api/test-setup.py` script, which is a slight variation on the original txt2img script.
+`api/test-diffusers.py` script, which is a slight variation on the original txt2img script.
 
 If the script works, there will be an image of an astronaut in `outputs/test.png`.
 

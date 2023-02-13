@@ -26,9 +26,10 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Image history](#image-history)
     - [Scheduler comparison](#scheduler-comparison)
   - [Models](#models)
+    - [Model names](#model-names)
     - [Adding your own models](#adding-your-own-models)
-      - [Model Names](#model-names)
-      - [Model sources](#model-sources)
+    - [Model sources](#model-sources)
+      - [Downloading models from Civitai](#downloading-models-from-civitai)
   - [Tabs](#tabs)
     - [Txt2img tab](#txt2img-tab)
       - [Scheduler parameter](#scheduler-parameter)
@@ -153,6 +154,17 @@ The models used by ONNX web are split up into three groups:
 
 There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles.
 
+### Model names
+
+The `name` of each model dictates which category it will appear in on the client.
+
+- `diffusion-*` or `stable-diffusion-*` for diffusion models
+- `upscaling-*` for upscaling models
+- `correction-*` for correction models
+
+Models that do not match one of the prefixes will not be shown, so if you cannot find a model that you have converted,
+make sure it is named correctly.
+
 ### Adding your own models
 
 You can convert and use your own models without making any code changes by copying
@@ -191,6 +203,10 @@ You can convert and use your own models without making any code changes by copyi
 }
 ```
 
+Models can be added from the directories used by `diffusers` as well as SafeTensor and Pickle checkpoints. Be careful
+loading PickleTensors, as they may contain unsafe code which can be executed on your machine, and use SafeTensor instead
+whenever possible.
+
 Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file. For example:
 
 ```shell
@@ -204,20 +220,10 @@ Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file. F
 Extras using the older file format with nested arrays (`"diffusion": [[]]`) can be mixed with the newer format. You
 only need to convert them into the newer format if you need to use keys other than `name`, `source`, and `scale`.
 
-#### Model Names
+### Model sources
 
-The `name` of each model dictates which category it will appear in on the client.
-
-- `diffusion-*` or `stable-diffusion-*` for diffusion models
-- `upscaling-*` for upscaling models
-- `correction-*` for correction models
-
-Models that do not match one of the prefixes will not be shown, so if you cannot find a model that you have converted,
-make sure it is named correctly.
-
-#### Model sources
-
-You can provide an absolute or relative path to a local model, an HTTPS URL, or use one of the pre-defined sources:
+You can either provide the path to a local model that you have already downloaded or provide a URL to be
+automatically downloaded, using HTTPS or one of the pre-defined sources:
 
 - `huggingface://`
   - https://huggingface.co/models?other=stable-diffusion
@@ -230,11 +236,24 @@ You can provide an absolute or relative path to a local model, an HTTPS URL, or 
 - `https://`
   - any other HTTPS source
 - `../models/.cache/your-model.safetensors`
-  - relative or absolute paths
+  - relative paths
+- `/home/ssube/onnx-web/models/.cache` or `C:\Users\ssube\onnx-web\models\.cache`
+  - absolute paths
 
 If the model is a single file and the `source` does not include a file extension like `.safetensors` or `.ckpt`, make
 sure to indicate the file format using the `format` key. You do not need to provide the `format` for directories and
 models from the HuggingFace hub.
+
+#### Downloading models from Civitai
+
+When downloading models from Civitai, the ID shown in the browser URL bar _may not be_ the ID of the model itself.
+Since models can have multiple versions, make sure you use the correct ID. Use the model ID from the download link,
+which you can see and copy from the right-click menu:
+
+![Chrome context menu with Copy link address highlighted](guide-civitai.png)
+
+You want the Pruned SafeTensor, if one is available. Be careful downloading PickleTensors, they may contain unsafe
+code. The original, non-pruned models are much larger but are better for training.
 
 ## Tabs
 

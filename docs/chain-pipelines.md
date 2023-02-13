@@ -15,6 +15,7 @@ are run on each tile, then the results are recombined and passed on to the next 
       - [Blend: Img2img](#blend-img2img)
       - [Blend: Inpaint](#blend-inpaint)
     - [Correction Stages](#correction-stages)
+      - [Correct: CodeFormer](#correct-codeformer)
       - [Correct: GFPGAN](#correct-gfpgan)
     - [Persistence Stages](#persistence-stages)
       - [Persist: Disk](#persist-disk)
@@ -84,6 +85,8 @@ in [`common/pipelines`](../common/pipelines).
 #### Blend: Inpaint
 
 ### Correction Stages
+
+#### Correct: CodeFormer
 
 #### Correct: GFPGAN
 
