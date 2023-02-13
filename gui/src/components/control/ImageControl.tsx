@@ -22,7 +22,7 @@ export interface ImageControlProps {
 }
 
 /**
- * doesn't need to use state, the parent component knows which params to pass
+ * Doesn't need to use state directly, the parent component knows which params to pass
  */
 export function ImageControl(props: ImageControlProps) {
   const { params } = mustExist(useContext(ConfigContext));

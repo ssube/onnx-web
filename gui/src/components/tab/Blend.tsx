@@ -1,4 +1,4 @@
-import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
+import { mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
@@ -6,7 +6,8 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
 import { IMAGE_FILTER } from '../../config.js';
-import { ClientContext, StateContext } from '../../state.js';
+import { BLEND_SOURCES, ClientContext, StateContext } from '../../state.js';
+import { range } from '../../utils.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { MaskCanvas } from '../input/MaskCanvas.js';
@@ -41,22 +42,30 @@ export function Blend() {
 
   return <Box>
     <Stack spacing={2}>
-      <ImageInput
-        filter={IMAGE_FILTER}
-        image={sources[0]}
-        hideSelection={true}
-        label='Source'
-        onChange={(file) => {
-          setBlend({
-            sources: [file],
-          });
-        }}
-      />
+      {range(BLEND_SOURCES).map((idx) =>
+        <ImageInput
+          key={`source-${idx.toFixed(0)}`}
+          filter={IMAGE_FILTER}
+          image={sources[idx]}
+          hideSelection={true}
+          label='Source'
+          onChange={(file) => {
+            const newSources = [...sources];
+            newSources[idx] = file;
+
+            setBlend({
+              sources: newSources,
+            });
+          }}
+        />
+      )}
       <MaskCanvas
         source={sources[0]}
         mask={blend.mask}
-        onSave={() => {
-          // TODO
+        onSave={(mask) => {
+          setBlend({
+            mask,
+          });
         }}
       />
       <UpscaleControl />

@@ -10,3 +10,11 @@ export function imageFromBlob(blob: Blob): Promise<HTMLImageElement> {
     image.src = src;
   });
 }
+
+export function range(max: number): Array<number> {
+  return [...Array(max).keys()];
+}
+
+export function visibleIndex(idx: number): string {
+  return (idx + 1).toFixed(0);
+}

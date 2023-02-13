@@ -32,7 +32,9 @@ def blend_inpaint(
     callback: ProgressCallback = None,
     **kwargs,
 ) -> Image.Image:
-    logger.info("upscaling image by expanding borders", expand)
+    logger.info(
+        "blending image using inpaint, %s steps: %s", params.steps, params.prompt
+    )
 
     if mask_image is None:
         # if no mask was provided, keep the full source image

@@ -2,6 +2,7 @@
 import { doesExist } from '@apextoaster/js-utils';
 
 import { ServerParams } from './config.js';
+import { range } from './utils.js';
 
 /**
  * Shared parameters for anything using models, which is pretty much everything.
@@ -482,7 +483,26 @@ export function makeClient(root: string, f = fetch): ApiClient {
       });
     },
     async blend(model: ModelParams, params: BlendParams, upscale: UpscaleParams): Promise<ImageResponse> {
-      throw new Error('TODO');
+      const url = makeApiUrl(root, 'blend');
+      appendModelToURL(url, model);
+
+      if (doesExist(upscale)) {
+        appendUpscaleToURL(url, upscale);
+      }
+
+      const body = new FormData();
+      body.append('mask', params.mask, 'mask');
+
+      for (const i of range(params.sources.length)) {
+        const name = `source:${i.toFixed(0)}`;
+        body.append(name, params.sources[i], name);
+      }
+
+      // eslint-disable-next-line no-return-await
+      return await throttleRequest(url, {
+        body,
+        method: 'POST',
+      });
     },
     async ready(params: ImageResponse): Promise<ReadyResponse> {
       const path = makeApiUrl(root, 'ready');

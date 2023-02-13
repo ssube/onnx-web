@@ -1,13 +1,12 @@
 import { doesExist, Maybe, mustExist } from '@apextoaster/js-utils';
 import { FormatColorFill, Gradient, InvertColors, Undo } from '@mui/icons-material';
 import { Button, Stack, Typography } from '@mui/material';
-import { createLogger } from 'browser-bunyan';
 import { throttle } from 'lodash';
 import React, { RefObject, useContext, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'zustand';
 
 import { SAVE_TIME } from '../../config.js';
-import { ConfigContext, StateContext } from '../../state.js';
+import { ConfigContext, LoggerContext, StateContext } from '../../state.js';
 import { imageFromBlob } from '../../utils.js';
 import { NumericField } from './NumericField';
 
@@ -42,11 +41,10 @@ export interface MaskCanvasProps {
   onSave: (blob: Blob) => void;
 }
 
-const logger = createLogger({ name: 'react', level: 'debug' }); // TODO: hackeroni and cheese
-
 export function MaskCanvas(props: MaskCanvasProps) {
   const { source, mask } = props;
   const { params } = mustExist(useContext(ConfigContext));
+  const logger = mustExist(useContext(LoggerContext));
 
   function composite() {
     if (doesExist(viewRef.current)) {

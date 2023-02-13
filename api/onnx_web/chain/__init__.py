@@ -1,6 +1,7 @@
 from .base import ChainPipeline, PipelineStage, StageCallback, StageParams
 from .blend_img2img import blend_img2img
 from .blend_inpaint import blend_inpaint
+from .blend_mask import blend_mask
 from .correct_codeformer import correct_codeformer
 from .correct_gfpgan import correct_gfpgan
 from .persist_disk import persist_disk

@@ -1,14 +1,15 @@
-import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
-import { Blender, Brush, ContentCopy, CropFree, Delete, Download, ZoomOutMap } from '@mui/icons-material';
-import { Box, Card, CardContent, CardMedia, Grid, IconButton, Paper, Tooltip } from '@mui/material';
+import { doesExist, Maybe, mustDefault, mustExist } from '@apextoaster/js-utils';
+import { Blender, Brush, ContentCopy, Delete, Download, ZoomOutMap } from '@mui/icons-material';
+import { Box, Card, CardContent, CardMedia, Grid, IconButton, Menu, MenuItem, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
 import { ImageResponse } from '../client.js';
-import { ConfigContext, StateContext } from '../state.js';
+import { BLEND_SOURCES, ConfigContext, StateContext } from '../state.js';
 import { MODEL_LABELS, SCHEDULER_LABELS } from '../strings.js';
+import { range, visibleIndex } from '../utils.js';
 
 export interface ImageCardProps {
   value: ImageResponse;
@@ -27,6 +28,8 @@ export function ImageCard(props: ImageCardProps) {
   const { params, output, size } = value;
 
   const [_hash, setHash] = useHash();
+  const [anchor, setAnchor] = useState<Maybe<HTMLElement>>();
+
   const config = mustExist(useContext(ConfigContext));
   const state = mustExist(useContext(StateContext));
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -67,11 +70,13 @@ export function ImageCard(props: ImageCardProps) {
     setHash('upscale');
   }
 
-  async function copySourceToBlend() {
+  async function copySourceToBlend(idx: number) {
     const blob = await loadSource();
-    // TODO: push instead
+    const sources = mustDefault(state.getState().blend.sources, []);
+    const newSources = [...sources];
+    newSources[idx] = blob;
     setBlend({
-      sources: [blob],
+      sources: newSources,
     });
     setHash('blend');
   }
@@ -84,6 +89,10 @@ export function ImageCard(props: ImageCardProps) {
 
   function downloadImage() {
     window.open(output.url, '_blank');
+  }
+
+  function close() {
+    setAnchor(undefined);
   }
 
   const model = mustDefault(MODEL_LABELS[params.model], params.model);
@@ -137,10 +146,24 @@ export function ImageCard(props: ImageCardProps) {
           </GridItem>
           <GridItem xs={2}>
             <Tooltip title='Blend'>
-              <IconButton onClick={copySourceToBlend}>
+              <IconButton onClick={(event) => {
+                setAnchor(event.currentTarget);
+              }}>
                 <Blender />
               </IconButton>
             </Tooltip>
+            <Menu
+              anchorEl={anchor}
+              open={doesExist(anchor)}
+              onClose={close}
+            >
+              {range(BLEND_SOURCES).map((idx) => <MenuItem key={idx} onClick={() => {
+                copySourceToBlend(idx).catch((err) => {
+                  // TODO
+                });
+                close();
+              }}>{visibleIndex(idx)}</MenuItem>)}
+            </Menu>
           </GridItem>
           <GridItem xs={2}>
             <Tooltip title='Delete'>

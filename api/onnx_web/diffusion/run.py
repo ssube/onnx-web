@@ -1,11 +1,12 @@
 from logging import getLogger
-from typing import Any
+from typing import Any, List
 
 import numpy as np
 import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline, OnnxStableDiffusionPipeline
 from PIL import Image, ImageChops
 
+from onnx_web.chain import blend_mask
 from onnx_web.chain.base import ChainProgress
 
 from ..chain import upscale_outpaint
@@ -231,3 +232,39 @@ def run_upscale_pipeline(
     run_gc()
 
     logger.info("finished upscale job: %s", dest)
+
+
+def run_blend_pipeline(
+    job: JobContext,
+    server: ServerContext,
+    params: ImageParams,
+    size: Size,
+    output: str,
+    upscale: UpscaleParams,
+    sources: List[Image.Image],
+    mask: Image.Image,
+) -> None:
+    progress = job.get_progress_callback()
+    stage = StageParams()
+
+    image = blend_mask(
+        job,
+        server,
+        stage,
+        params,
+        sources=sources,
+        mask=mask,
+        callback=progress,
+    )
+
+    image = run_upscale_correction(
+        job, server, stage, params, image, upscale=upscale, callback=progress
+    )
+
+    dest = save_image(server, output, image)
+    save_params(server, output, params, size, upscale=upscale)
+
+    del image
+    run_gc()
+
+    logger.info("finished blend job: %s", dest)

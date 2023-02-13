@@ -34,6 +34,7 @@ from .chain import (
 from .device_pool import DevicePoolExecutor
 from .diffusion.load import pipeline_schedulers
 from .diffusion.run import (
+    run_blend_pipeline,
     run_img2img_pipeline,
     run_inpaint_pipeline,
     run_txt2img_pipeline,
@@ -729,6 +730,42 @@ def chain():
         empty_source,
         output=output,
         size=size,
+        needs_device=device,
+    )
+
+    return jsonify(json_params(output, params, size))
+
+
+@app.route("/api/blend", methods=["POST"])
+def blend():
+    if "mask" not in request.files:
+        return error_reply("mask image is required")
+
+    mask_file = request.files.get("mask")
+    mask = Image.open(BytesIO(mask_file.read())).convert("RGBA")
+
+    source_file = request.files.get("source:0")
+    source_0 = Image.open(BytesIO(source_file.read())).convert("RGBA")
+
+    source_file = request.files.get("source:1")
+    source_1 = Image.open(BytesIO(source_file.read())).convert("RGBA")
+
+    device, params, size = pipeline_from_request()
+    upscale = upscale_from_request()
+
+    output = make_output_name(context, "upscale", params, size)
+    logger.info("upscale job queued for: %s", output)
+
+    executor.submit(
+        output,
+        run_blend_pipeline,
+        context,
+        params,
+        size,
+        output,
+        upscale,
+        [source_0, source_1],
+        mask,
         needs_device=device,
     )
 

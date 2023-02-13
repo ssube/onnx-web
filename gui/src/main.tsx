@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { satisfies } from 'semver';
 import { createStore } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { createLogger } from 'browser-bunyan';
 
 import { makeClient } from './client.js';
 import { ParamsVersionError } from './components/error/ParamsVersion.js';
@@ -13,7 +14,7 @@ import { ServerParamsError } from './components/error/ServerParams.js';
 import { OnnxError } from './components/OnnxError.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
 import { getApiRoot, loadConfig, mergeConfig, PARAM_VERSION } from './config.js';
-import { ClientContext, ConfigContext, createStateSlices, OnnxState, STATE_VERSION, StateContext } from './state.js';
+import { ClientContext, ConfigContext, createStateSlices, OnnxState, STATE_VERSION, StateContext, LoggerContext } from './state.js';
 
 export const INITIAL_LOAD_TIMEOUT = 5_000;
 
@@ -91,6 +92,12 @@ export async function main() {
         version: STATE_VERSION,
       }));
 
+      const logger = createLogger({
+        name: 'onnx-web',
+        system: 'react',
+        level: 'debug',
+      });
+
       // prep react-query client
       const query = new QueryClient();
 
@@ -98,9 +105,11 @@ export async function main() {
       app.render(<QueryClientProvider client={query}>
         <ClientContext.Provider value={client}>
           <ConfigContext.Provider value={completeConfig}>
-            <StateContext.Provider value={state}>
-              <OnnxWeb />
-            </StateContext.Provider>
+            <LoggerContext.Provider value={logger}>
+              <StateContext.Provider value={state}>
+                <OnnxWeb />
+              </StateContext.Provider>
+            </LoggerContext.Provider>
           </ConfigContext.Provider>
         </ClientContext.Provider>
       </QueryClientProvider>);

@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable no-null/no-null */
 import { doesExist, Maybe } from '@apextoaster/js-utils';
+import { Logger } from 'noicejs';
 import { createContext } from 'react';
 import { StateCreator, StoreApi } from 'zustand';
 
@@ -146,6 +147,11 @@ export const ClientContext = createContext<Maybe<ApiClient>>(undefined);
 export const ConfigContext = createContext<Maybe<Config<ServerParams>>>(undefined);
 
 /**
+ * React context binding for bunyan logger.
+ */
+export const LoggerContext = createContext<Maybe<Logger>>(undefined);
+
+/**
  * React context binding for zustand state store.
  */
 export const StateContext = createContext<Maybe<StoreApi<OnnxState>>>(undefined);
@@ -159,6 +165,8 @@ export const STATE_KEY = 'onnx-web';
  * Current state version for zustand persistence.
  */
 export const STATE_VERSION = 5;
+
+export const BLEND_SOURCES = 2;
 
 /**
  * Default parameters for the inpaint brush.
