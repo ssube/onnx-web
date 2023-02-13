@@ -3,7 +3,7 @@ import { FormatColorFill, Gradient, InvertColors, Undo } from '@mui/icons-materi
 import { Button, Stack, Typography } from '@mui/material';
 import { createLogger } from 'browser-bunyan';
 import { throttle } from 'lodash';
-import React, { RefObject, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { RefObject, useContext, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'zustand';
 
 import { SAVE_TIME } from '../../config.js';
@@ -28,12 +28,6 @@ export const THRESHOLDS = {
   upper: 224,
 };
 
-export const MASK_STATE = {
-  clean: 'clean',
-  painting: 'painting',
-  dirty: 'dirty',
-};
-
 export type FloodFn = (n: number) => number;
 
 export interface Point {
@@ -48,19 +42,19 @@ export interface MaskCanvasProps {
   onSave: (blob: Blob) => void;
 }
 
-const logger = createLogger({ name: 'react', level: 'debug' }); // TODO: hackeroni and cheese
+const logger = createLogger({ name: 'react', level: 'info' }); // TODO: hackeroni and cheese
 
 export function MaskCanvas(props: MaskCanvasProps) {
   const { source, mask } = props;
   const { params } = mustExist(useContext(ConfigContext));
 
   function composite() {
-    if (doesExist(maskRef.current)) {
-      const { ctx } = getClearContext(maskRef);
+    if (doesExist(viewRef.current)) {
+      const { ctx } = getClearContext(viewRef);
+      ctx.globalAlpha = MASK_OPACITY;
 
-      if (doesExist(bufferRef.current)) {
-        ctx.globalAlpha = MASK_OPACITY;
-        ctx.drawImage(bufferRef.current, 0, 0);
+      if (doesExist(maskRef.current)) {
+        ctx.drawImage(maskRef.current, 0, 0);
       }
 
       if (doesExist(brushRef.current) && painting.current === false) {
@@ -85,39 +79,42 @@ export function MaskCanvas(props: MaskCanvasProps) {
     if (clicks.length > 0) {
       logger.debug('drawing clicks', { count: clicks.length });
 
-      const { ctx } = getContext(bufferRef);
+      const { ctx } = getContext(maskRef);
       ctx.fillStyle = grayToRGB(brush.color, brush.strength);
 
       for (const click of clicks) {
         drawCircle(ctx, click, brush.size);
       }
 
-      dirty.current = true;
       composite();
+      dirty.current = true;
     }
   }
 
   async function drawMask(file: Blob): Promise<void> {
     const image = await imageFromBlob(file);
-    if (doesExist(bufferRef.current)) {
+    if (doesExist(maskRef.current)) {
       logger.debug('draw mask');
 
-      const { canvas, ctx } = getClearContext(maskRef);
+      const { canvas, ctx } = getClearContext(viewRef);
       ctx.globalAlpha = FULL_OPACITY;
       ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
+      // if mask was recently changed, it doesn't need to be saved - avoid loops
+      dirty.current = false;
       composite();
     }
   }
 
   function drawUndo(): void {
-    if (doesExist(bufferRef.current) && doesExist(undoRef.current)) {
+    if (doesExist(maskRef.current) && doesExist(undoRef.current)) {
       logger.debug('draw undo');
 
-      const { ctx } = getClearContext(bufferRef);
+      const { ctx } = getClearContext(maskRef);
       ctx.drawImage(undoRef.current, 0, 0);
 
       composite();
+      save();
     }
   }
 
@@ -135,21 +132,21 @@ export function MaskCanvas(props: MaskCanvasProps) {
   }
 
   function saveUndo(): void {
-    if (doesExist(bufferRef.current) && doesExist(undoRef.current)) {
+    if (doesExist(maskRef.current) && doesExist(undoRef.current)) {
       logger.debug('save undo');
       const { ctx } = getClearContext(undoRef);
-      ctx.drawImage(bufferRef.current, 0, 0);
+      ctx.drawImage(maskRef.current, 0, 0);
     }
   }
 
   function saveMask(): void {
-    if (doesExist(bufferRef.current)) {
-      logger.debug('save mask');
+    if (doesExist(maskRef.current)) {
+      logger.debug('save mask', { dirty: dirty.current });
       if (dirty.current === false) {
         return;
       }
 
-      bufferRef.current.toBlob((blob) => {
+      maskRef.current.toBlob((blob) => {
         dirty.current = false;
         props.onSave(mustExist(blob));
       });
@@ -161,9 +158,9 @@ export function MaskCanvas(props: MaskCanvasProps) {
   // eslint-disable-next-line no-null/no-null
   const brushRef = useRef<HTMLCanvasElement>(null);
   // eslint-disable-next-line no-null/no-null
-  const bufferRef = useRef<HTMLCanvasElement>(null);
-  // eslint-disable-next-line no-null/no-null
   const maskRef = useRef<HTMLCanvasElement>(null);
+  // eslint-disable-next-line no-null/no-null
+  const viewRef = useRef<HTMLCanvasElement>(null);
   // eslint-disable-next-line no-null/no-null
   const undoRef = useRef<HTMLCanvasElement>(null);
 
@@ -184,7 +181,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
   }, [dirty.current]);
 
   useEffect(() => {
-    if (doesExist(bufferRef.current) && doesExist(mask)) {
+    if (doesExist(maskRef.current) && doesExist(mask)) {
       drawMask(mask).catch((err) => {
         // TODO: handle
       });
@@ -201,18 +198,13 @@ export function MaskCanvas(props: MaskCanvasProps) {
 
       // initialize the mask if it does not exist
       if (doesExist(mask) === false) {
-        getClearContext(bufferRef);
+        getClearContext(maskRef);
         dirty.current = true;
       }
     }
   }, [source]);
 
-  // last resort to draw lost clicks
-  // const lostClicks = drawClicks();
-  logger.debug('rendered');
-  // draw(clicks, setClicks);
-
-  const styles: React.CSSProperties = {
+  const backgroundStyle: React.CSSProperties = {
     backgroundPosition: 'top left',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'contain',
@@ -222,45 +214,41 @@ export function MaskCanvas(props: MaskCanvasProps) {
   };
 
   if (doesExist(background.current)) {
-    styles.backgroundImage = `url(${background.current})`;
+    backgroundStyle.backgroundImage = `url(${background.current})`;
   }
+
+  const hiddenStyle: React.CSSProperties = {
+    ...backgroundStyle,
+    display: 'none',
+  };
 
   return <Stack spacing={2}>
     <canvas
       ref={brushRef}
       height={params.height.default}
       width={params.width.default}
-      style={{
-        ...styles,
-        display: 'none',
-      }}
-    />
-    <canvas
-      ref={bufferRef}
-      height={params.height.default}
-      width={params.width.default}
-      style={{
-        ...styles,
-        display: 'none',
-      }}
-    />
-    <canvas
-      ref={undoRef}
-      height={params.height.default}
-      width={params.width.default}
-      style={{
-        ...styles,
-        display: 'none',
-      }}
+      style={hiddenStyle}
     />
     <canvas
       ref={maskRef}
       height={params.height.default}
       width={params.width.default}
-      style={styles}
+      style={hiddenStyle}
+    />
+    <canvas
+      ref={undoRef}
+      height={params.height.default}
+      width={params.width.default}
+      style={hiddenStyle}
+    />
+    <canvas
+      ref={viewRef}
+      height={params.height.default}
+      width={params.width.default}
+      style={backgroundStyle}
       onClick={(event) => {
         logger.debug('mouse click', { state: painting.current });
-        const canvas = mustExist(maskRef.current);
+        const canvas = mustExist(viewRef.current);
         const bounds = canvas.getBoundingClientRect();
 
         drawClicks([{
@@ -278,7 +266,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
       onMouseOut={finishPainting}
       onMouseUp={finishPainting}
       onMouseMove={(event) => {
-        const canvas = mustExist(maskRef.current);
+        const canvas = mustExist(viewRef.current);
         const bounds = canvas.getBoundingClientRect();
 
         if (painting.current) {
@@ -342,6 +330,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           variant='outlined'
           startIcon={<FormatColorFill />}
           onClick={() => {
+            saveUndo();
             floodCanvas(maskRef, floodBlack);
             composite();
             dirty.current = true;
@@ -352,6 +341,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           variant='outlined'
           startIcon={<FormatColorFill />}
           onClick={() => {
+            saveUndo();
             floodCanvas(maskRef, floodWhite);
             composite();
             dirty.current = true;
@@ -362,6 +352,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           variant='outlined'
           startIcon={<InvertColors />}
           onClick={() => {
+            saveUndo();
             floodCanvas(maskRef, floodInvert);
             composite();
             dirty.current = true;
@@ -372,6 +363,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           variant='outlined'
           startIcon={<Gradient />}
           onClick={() => {
+            saveUndo();
             floodCanvas(maskRef, floodBelow);
             composite();
             dirty.current = true;
@@ -382,6 +374,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           variant='outlined'
           startIcon={<Gradient />}
           onClick={() => {
+            saveUndo();
             floodCanvas(maskRef, floodAbove);
             composite();
             dirty.current = true;
