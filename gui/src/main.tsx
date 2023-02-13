@@ -80,6 +80,11 @@ export async function main() {
               ...s.upscaleTab,
               source: undefined,
             },
+            blend: {
+              ...s.blend,
+              mask: undefined,
+              sources: [],
+            }
           };
         },
         storage: createJSONStorage(() => localStorage),

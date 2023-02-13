@@ -15,6 +15,7 @@
     "@mui/material": "^5.11.3",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.18",
+    "browser-bunyan": "^1.8.0",
     "lodash": "^4.17.21",
     "noicejs": "^5.0.0-3",
     "react": "^18.2.0",
