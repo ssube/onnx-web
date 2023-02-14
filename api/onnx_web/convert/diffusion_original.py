@@ -1409,7 +1409,6 @@ def convert_diffusion_original(
     model: ModelDict,
     source: str,
 ):
-    config = model["config"]
     name = model["name"]
     source = source or model["source"]
 
@@ -1428,7 +1427,7 @@ def convert_diffusion_original(
         logger.info("Torch pipeline already exists, reusing: %s", torch_path)
     else:
         logger.info("Converting original Diffusers check to Torch model: %s -> %s", source, torch_path)
-        extract_checkpoint(ctx, torch_name, source, config_file=config)
+        extract_checkpoint(ctx, torch_name, source, config_file=model.get("config"))
         logger.info("Converted original Diffusers checkpoint to Torch model.")
 
     convert_diffusion_stable(ctx, model, working_name)
