@@ -65179,6 +65179,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   var SCHEDULER_LABELS = {
     "ddim": "DDIM",
     "ddpm": "DDPM",
+    "deis-multi": "DEIS Multistep",
     "dpm-multi": "DPM Multistep",
     "dpm-single": "DPM Singlestep",
     "euler": "Euler",
@@ -66080,6 +66081,20 @@ Please use another name.` : formatMuiErrorMessage(18));
     return import_react25.default.createElement(
       Stack_default2,
       { spacing: 2 },
+      import_react25.default.createElement(
+        Stack_default2,
+        { direction: "row", spacing: 2 },
+        import_react25.default.createElement(Button_default, { variant: "outlined", startIcon: import_react25.default.createElement(Download_default, null), onClick: () => {
+          if (doesExist2(maskRef.current)) {
+            const data = maskRef.current.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.setAttribute("download", "mask.png");
+            link.setAttribute("href", data.replace("image/png", "image/octet-stream"));
+            link.click();
+          }
+        } }),
+        import_react25.default.createElement(Button_default, { variant: "outlined", startIcon: import_react25.default.createElement(Undo_default, null), onClick: () => drawUndo() })
+      ),
       import_react25.default.createElement("canvas", { ref: brushRef, height: params.height.default, width: params.width.default, style: hiddenStyle }),
       import_react25.default.createElement("canvas", { ref: maskRef, height: params.height.default, width: params.width.default, style: hiddenStyle }),
       import_react25.default.createElement("canvas", { ref: undoRef, height: params.height.default, width: params.width.default, style: hiddenStyle }),
@@ -66109,7 +66124,6 @@ Please use another name.` : formatMuiErrorMessage(18));
         import_react25.default.createElement(
           Stack_default2,
           { direction: "row", spacing: 2 },
-          import_react25.default.createElement(Button_default, { variant: "outlined", startIcon: import_react25.default.createElement(Undo_default, null), onClick: () => drawUndo() }),
           import_react25.default.createElement(Button_default, { variant: "outlined", startIcon: import_react25.default.createElement(FormatColorFill_default, null), onClick: () => {
             drawFill(floodBlack);
           } }, "Fill with black"),
