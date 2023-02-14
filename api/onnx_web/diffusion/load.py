@@ -110,7 +110,7 @@ def load_pipeline(
             scheduler = scheduler_type.from_pretrained(
                 model,
                 provider=device.provider,
-                provider_options=device.options,
+                sess_options=device.options,
                 subfolder="scheduler",
             )
 
@@ -135,14 +135,14 @@ def load_pipeline(
         scheduler = scheduler_type.from_pretrained(
             model,
             provider=device.provider,
-            provider_options=device.options,
+            sess_options=device.options,
             subfolder="scheduler",
         )
         pipe = pipeline.from_pretrained(
             model,
             custom_pipeline=custom_pipeline,
             provider=device.provider,
-            provider_options=device.options,
+            sess_options=device.options,
             revision="onnx",
             safety_checker=None,
             scheduler=scheduler,

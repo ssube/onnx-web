@@ -53,7 +53,7 @@ def load_resrgan(
             server,
             model_file,
             provider=device.provider,
-            provider_options=device.options,
+            sess_options=device.options,
         )
     elif params.format == "pth":
         model = RRDBNet(

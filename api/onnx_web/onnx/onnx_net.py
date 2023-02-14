@@ -47,11 +47,11 @@ class OnnxNet:
         server: ServerContext,
         model: str,
         provider: str = "DmlExecutionProvider",
-        provider_options: Optional[dict] = None,
+        sess_options: Optional[dict] = None,
     ) -> None:
         model_path = path.join(server.model_path, model)
         self.session = InferenceSession(
-            model_path, providers=[provider], provider_options=provider_options
+            model_path, providers=[provider], provider_options=sess_options
         )
 
     def __call__(self, image: Any) -> Any:

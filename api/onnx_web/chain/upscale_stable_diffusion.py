@@ -34,7 +34,7 @@ def load_stable_diffusion(
             device.provider,
         )
         pipe = OnnxStableDiffusionUpscalePipeline.from_pretrained(
-            model_path, provider=device.provider, provider_options=device.options
+            model_path, provider=device.provider, sess_options=device.options
         )
     else:
         logger.debug(
