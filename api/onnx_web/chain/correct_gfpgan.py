@@ -2,8 +2,8 @@ from logging import getLogger
 from os import path
 
 import numpy as np
-from gfpgan import GFPGANer
 from PIL import Image
+
 
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server.device_pool import JobContext
@@ -18,7 +18,10 @@ def load_gfpgan(
     upscale: UpscaleParams,
     _device: DeviceParams,
 ):
-    face_path = path.join(server.model_path, "%s.pth" % (upscale.correction_model))
+    # must be within the load function for patch to take effect
+    from gfpgan import GFPGANer
+
+    face_path = path.join(server.cache_path, "%s.pth" % (upscale.correction_model))
     cache_key = (face_path,)
     cache_pipe = server.cache.get("gfpgan", cache_key)
 

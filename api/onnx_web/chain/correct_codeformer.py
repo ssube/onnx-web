@@ -14,19 +14,17 @@ device = "cpu"
 def correct_codeformer(
     job: JobContext,
     _server: ServerContext,
-    stage: StageParams,
+    _stage: StageParams,
     _params: ImageParams,
     source: Image.Image,
     *,
-    source_image: Image.Image = None,
+    stage_source: Image.Image = None,
     upscale: UpscaleParams,
     **kwargs,
 ) -> Image.Image:
+    # must be within the load function for patch to take effect
     from codeformer import CodeFormer
 
     device = job.get_device()
-    # TODO: terrible names, fix
-    image = source or source_image
-
     pipe = CodeFormer(upscale=upscale.face_outscale).to(device.torch_device())
-    return pipe(image)
+    return pipe(stage_source or source)

@@ -25,6 +25,7 @@ class ServerContext:
         default_platform: str = None,
         image_format: str = "png",
         cache: ModelCache = None,
+        cache_path: str = None,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -37,6 +38,7 @@ class ServerContext:
         self.default_platform = default_platform
         self.image_format = image_format
         self.cache = cache or ModelCache(num_workers)
+        self.cache_path = cache_path or path.join(model_path, ".cache")
 
     @classmethod
     def from_environ(cls):

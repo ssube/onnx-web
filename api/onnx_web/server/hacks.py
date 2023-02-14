@@ -48,6 +48,36 @@ def unload(exclude):
 
 # these should be the same sources and names as `convert.base_models.sources`, but inverted so the source is the key
 cache_path_map = {
+    "https://github.com/mseitzer/pytorch-fid/releases/download/fid_weights/pt_inception-2015-12-05-6726825d.pth": (
+        "pt-inception-2015-12-05-6726825d.pth"
+    ),
+    "https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth": (
+        "detection-resnet50-final.pth"
+    ),
+    "https://github.com/xinntao/facexlib/releases/download/v0.1.0/alignment_WFLW_4HG.pth": (
+        "alignment-wflw-4hg.pth"
+    ),
+    "https://github.com/xinntao/facexlib/releases/download/v0.2.0/assessment_hyperIQA.pth": (
+        "assessment-hyperiqa.pth"
+    ),
+    "https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_mobilenet0.25_Final.pth": (
+        "detection-mobilenet-025-final.pth"
+    ),
+    "https://github.com/xinntao/facexlib/releases/download/v0.2.0/headpose_hopenet.pth": (
+        "headpose-hopenet.pth"
+    ),
+    "https://github.com/xinntao/facexlib/releases/download/v0.2.0/matting_modnet_portrait.pth": (
+        "matting-modnet-portrait.pth"
+    ),
+    "https://github.com/xinntao/facexlib/releases/download/v0.2.0/parsing_bisenet.pth": (
+        "parsing-bisenet.pth"
+    ),
+    "https://github.com/xinntao/facexlib/releases/download/v0.2.2/parsing_parsenet.pth": (
+        "parsing-parsenet.pth"
+    ),
+    "https://github.com/xinntao/facexlib/releases/download/v0.1.0/recognition_arcface_ir_se50.pth": (
+        "recognition-arcface-ir-se50.pth"
+    ),
     "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth": (
         "correction-codeformer.pth"
     ),
@@ -95,9 +125,13 @@ def patch_cache_path(ctx: ServerContext, url: str, **kwargs) -> str:
         parsed = urlparse(url)
         cache_path = path.basename(parsed.path)
 
-    cache_path = path.join(ctx.model_path, ".cache", cache_path)
+    cache_path = path.join(ctx.cache_path, cache_path)
     logger.debug("Patching download path: %s -> %s", url, cache_path)
-    return cache_path
+
+    if path.exists(cache_path):
+        return cache_path
+    else:
+        raise FileNotFoundError("Missing cache file: %s" % (cache_path))
 
 
 def apply_patch_basicsr(ctx: ServerContext):

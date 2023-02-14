@@ -2,10 +2,7 @@ from logging import getLogger
 from os import path
 
 import numpy as np
-from basicsr.archs.rrdbnet_arch import RRDBNet
 from PIL import Image
-from realesrgan import RealESRGANer
-from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 
 from ..onnx import OnnxNet
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
@@ -23,6 +20,11 @@ x4_v3_tag = "real-esrgan-x4-v3"
 def load_resrgan(
     server: ServerContext, params: UpscaleParams, device: DeviceParams, tile=0
 ):
+    # must be within load function for patches to take effect
+    from basicsr.archs.rrdbnet_arch import RRDBNet
+    from realesrgan import RealESRGANer
+    from realesrgan.archs.srvgg_arch import SRVGGNetCompact
+
     model_file = "%s.%s" % (params.upscale_model, params.format)
     model_path = path.join(server.model_path, model_file)
 
@@ -75,7 +77,7 @@ def load_resrgan(
 
     # TODO: shouldn't need the PTH file
     model_path_pth = path.join(
-        server.model_path, ".cache", ("%s.pth" % params.upscale_model)
+        server.cache_path, ("%s.pth" % params.upscale_model)
     )
     upsampler = RealESRGANer(
         scale=params.scale,
