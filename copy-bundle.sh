@@ -1,6 +1,6 @@
 #! /bin/sh
 
-VERSION="${1:-v0.6.1}"
+VERSION="${1:-v0.7.0}"
 
 echo "Copying bundle for ${VERSION}..."
 
