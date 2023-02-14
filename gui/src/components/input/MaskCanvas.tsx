@@ -1,5 +1,5 @@
 import { doesExist, Maybe, mustExist } from '@apextoaster/js-utils';
-import { FormatColorFill, Gradient, InvertColors, Undo } from '@mui/icons-material';
+import { Download, FormatColorFill, Gradient, InvertColors, Save, Undo } from '@mui/icons-material';
 import { Button, Stack, Typography } from '@mui/material';
 import { throttle } from 'lodash';
 import React, { RefObject, useContext, useEffect, useMemo, useRef } from 'react';
@@ -251,6 +251,27 @@ export function MaskCanvas(props: MaskCanvasProps) {
   };
 
   return <Stack spacing={2}>
+    <Stack direction='row' spacing={2}>
+      <Button
+        variant='outlined'
+        startIcon={<Download />}
+        onClick={() => {
+          if (doesExist(maskRef.current)) {
+            const data = maskRef.current.toDataURL('image/png');
+            const link = document.createElement('a');
+
+            link.setAttribute('download', 'mask.png');
+            link.setAttribute('href', data.replace('image/png', 'image/octet-stream'));
+            link.click();
+          }
+        }}
+      />
+      <Button
+        variant='outlined'
+        startIcon={<Undo />}
+        onClick={() => drawUndo()}
+      />
+    </Stack>
     <canvas
       ref={brushRef}
       height={params.height.default}
@@ -326,11 +347,6 @@ export function MaskCanvas(props: MaskCanvasProps) {
         />
       </Stack>
       <Stack direction='row' spacing={2}>
-        <Button
-          variant='outlined'
-          startIcon={<Undo />}
-          onClick={() => drawUndo()}
-        />
         <Button
           variant='outlined'
           startIcon={<FormatColorFill />}
