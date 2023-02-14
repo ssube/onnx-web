@@ -20,7 +20,7 @@ from diffusers import (
 
 try:
     from diffusers import DEISMultistepScheduler
-except:
+except ImportError:
     from .stub_scheduler import StubScheduler as DEISMultistepScheduler
 
 from ..params import DeviceParams, Size

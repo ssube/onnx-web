@@ -4,7 +4,6 @@ from os import path
 import numpy as np
 from PIL import Image
 
-
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server.device_pool import JobContext
 from ..utils import ServerContext, run_gc

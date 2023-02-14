@@ -76,9 +76,7 @@ def load_resrgan(
     logger.debug("loading Real ESRGAN upscale model from %s", model_path)
 
     # TODO: shouldn't need the PTH file
-    model_path_pth = path.join(
-        server.cache_path, ("%s.pth" % params.upscale_model)
-    )
+    model_path_pth = path.join(server.cache_path, ("%s.pth" % params.upscale_model))
     upsampler = RealESRGANer(
         scale=params.scale,
         model_path=model_path_pth,
