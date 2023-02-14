@@ -2,8 +2,8 @@ from logging import getLogger
 
 from PIL import Image
 
-from ..device_pool import JobContext
 from ..params import ImageParams, StageParams, UpscaleParams
+from ..server.device_pool import JobContext
 from ..utils import ServerContext
 
 logger = getLogger(__name__)

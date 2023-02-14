@@ -5,8 +5,8 @@ from multiprocessing import Value
 from traceback import format_exception
 from typing import Any, Callable, List, Optional, Tuple, Union
 
-from .params import DeviceParams
-from .utils import run_gc
+from ..params import DeviceParams
+from ..utils import run_gc
 
 logger = getLogger(__name__)
 

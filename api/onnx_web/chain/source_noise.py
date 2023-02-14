@@ -3,8 +3,8 @@ from typing import Callable
 
 from PIL import Image
 
-from ..device_pool import JobContext
 from ..params import ImageParams, Size, StageParams
+from ..server.device_pool import JobContext
 from ..utils import ServerContext
 
 logger = getLogger(__name__)

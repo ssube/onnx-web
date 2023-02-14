@@ -19,19 +19,9 @@ from diffusers import (
 )
 
 from ..params import DeviceParams, Size
-from ..utils import run_gc
+from ..utils import ServerContext, run_gc
 
 logger = getLogger(__name__)
-
-last_pipeline_instance: Any = None
-last_pipeline_options: Tuple[
-    Optional[DiffusionPipeline],
-    Optional[str],
-    Optional[str],
-    Optional[str],
-    Optional[bool],
-] = (None, None, None, None, None)
-last_pipeline_scheduler: Any = None
 
 latent_channels = 4
 latent_factor = 8
@@ -90,24 +80,42 @@ def get_tile_latents(
 
 
 def load_pipeline(
+    server: ServerContext,
     pipeline: DiffusionPipeline,
     model: str,
     scheduler_type: Any,
     device: DeviceParams,
     lpw: bool,
 ):
-    global last_pipeline_instance
-    global last_pipeline_scheduler
-    global last_pipeline_options
+    pipe_key = (pipeline, model, device.device, device.provider, lpw)
+    scheduler_key = (scheduler_type,)
 
-    options = (pipeline, model, device.device, device.provider, lpw)
-    if last_pipeline_instance is not None and last_pipeline_options == options:
+    cache_pipe = server.cache.get("diffusion", pipe_key)
+
+    if cache_pipe is not None:
         logger.debug("reusing existing diffusion pipeline")
-        pipe = last_pipeline_instance
+        pipe = cache_pipe
+
+        cache_scheduler = server.cache.get("scheduler", scheduler_key)
+        if cache_scheduler is None:
+            logger.debug("loading new diffusion scheduler")
+            scheduler = scheduler_type.from_pretrained(
+                model,
+                provider=device.provider,
+                provider_options=device.options,
+                subfolder="scheduler",
+            )
+
+            if device is not None and hasattr(scheduler, "to"):
+                scheduler = scheduler.to(device.torch_device())
+
+            pipe.scheduler = scheduler
+            server.cache.set("scheduler", scheduler_key, scheduler)
+            run_gc()
+
     else:
         logger.debug("unloading previous diffusion pipeline")
-        last_pipeline_instance = None
-        last_pipeline_scheduler = None
+        server.cache.drop("diffusion", pipe_key)
         run_gc()
 
         if lpw:
@@ -135,24 +143,7 @@ def load_pipeline(
         if device is not None and hasattr(pipe, "to"):
             pipe = pipe.to(device.torch_device())
 
-        last_pipeline_instance = pipe
-        last_pipeline_options = options
-        last_pipeline_scheduler = scheduler_type
-
-    if last_pipeline_scheduler != scheduler_type:
-        logger.debug("loading new diffusion scheduler")
-        scheduler = scheduler_type.from_pretrained(
-            model,
-            provider=device.provider,
-            provider_options=device.options,
-            subfolder="scheduler",
-        )
-
-        if device is not None and hasattr(scheduler, "to"):
-            scheduler = scheduler.to(device.torch_device())
-
-        pipe.scheduler = scheduler
-        last_pipeline_scheduler = scheduler_type
-        run_gc()
+        server.cache.set("diffusion", pipe_key, pipe)
+        server.cache.set("scheduler", scheduler_key, scheduler)
 
     return pipe

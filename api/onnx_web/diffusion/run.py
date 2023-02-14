@@ -10,10 +10,10 @@ from onnx_web.chain import blend_mask
 from onnx_web.chain.base import ChainProgress
 
 from ..chain import upscale_outpaint
-from ..device_pool import JobContext
 from ..output import save_image, save_params
 from ..params import Border, ImageParams, Size, StageParams
-from ..upscale import UpscaleParams, run_upscale_correction
+from ..server.device_pool import JobContext
+from ..server.upscale import UpscaleParams, run_upscale_correction
 from ..utils import ServerContext, run_gc
 from .load import get_latents_from_seed, load_pipeline
 
@@ -30,6 +30,7 @@ def run_txt2img_pipeline(
 ) -> None:
     latents = get_latents_from_seed(params.seed, size)
     pipe = load_pipeline(
+        server,
         OnnxStableDiffusionPipeline,
         params.model,
         params.scheduler,
@@ -97,6 +98,7 @@ def run_img2img_pipeline(
     strength: float,
 ) -> None:
     pipe = load_pipeline(
+        server,
         OnnxStableDiffusionImg2ImgPipeline,
         params.model,
         params.scheduler,

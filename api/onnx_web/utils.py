@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional, Union
 import torch
 
 from .params import SizeChart
+from .server.model_cache import ModelCache
 
 logger = getLogger(__name__)
 
@@ -23,6 +24,7 @@ class ServerContext:
         block_platforms: List[str] = [],
         default_platform: str = None,
         image_format: str = "png",
+        cache: ModelCache = None,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -34,6 +36,7 @@ class ServerContext:
         self.block_platforms = block_platforms
         self.default_platform = default_platform
         self.image_format = image_format
+        self.cache = cache or ModelCache()
 
     @classmethod
     def from_environ(cls):
@@ -51,6 +54,7 @@ class ServerContext:
             block_platforms=environ.get("ONNX_WEB_BLOCK_PLATFORMS", "").split(","),
             default_platform=environ.get("ONNX_WEB_DEFAULT_PLATFORM", None),
             image_format=environ.get("ONNX_WEB_IMAGE_FORMAT", "png"),
+            cache=ModelCache(limit=int(environ.get("ONNX_WEB_CACHE_MODELS", 3))),
         )
 
 

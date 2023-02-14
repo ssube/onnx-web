@@ -19,7 +19,7 @@ from .image import (
     noise_source_uniform,
 )
 from .params import Border, ImageParams, Param, Point, Size, StageParams, UpscaleParams
-from .upscale import run_upscale_correction
+from .server.upscale import run_upscale_correction
 from .utils import (
     ServerContext,
     base_join,

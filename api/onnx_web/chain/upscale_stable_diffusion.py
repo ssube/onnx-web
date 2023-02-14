@@ -5,11 +5,11 @@ import torch
 from diffusers import StableDiffusionUpscalePipeline
 from PIL import Image
 
-from ..device_pool import JobContext, ProgressCallback
 from ..diffusion.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
+from ..server.device_pool import JobContext, ProgressCallback
 from ..utils import ServerContext, run_gc
 
 logger = getLogger(__name__)

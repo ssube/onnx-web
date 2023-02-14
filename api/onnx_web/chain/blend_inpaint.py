@@ -6,11 +6,11 @@ import torch
 from diffusers import OnnxStableDiffusionInpaintPipeline
 from PIL import Image
 
-from ..device_pool import JobContext, ProgressCallback
 from ..diffusion.load import get_latents_from_seed, load_pipeline
 from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
 from ..params import Border, ImageParams, Size, SizeChart, StageParams
+from ..server.device_pool import JobContext, ProgressCallback
 from ..utils import ServerContext, is_debug
 from .utils import process_tile_order
 
@@ -65,6 +65,7 @@ def blend_inpaint(
 
         latents = get_latents_from_seed(params.seed, size)
         pipe = load_pipeline(
+            server,
             OnnxStableDiffusionInpaintPipeline,
             params.model,
             params.scheduler,

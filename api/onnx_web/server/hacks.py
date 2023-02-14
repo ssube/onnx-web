@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 import basicsr.utils.download_util
 import codeformer.facelib.utils.misc
 
-from .utils import ServerContext
+from ..utils import ServerContext
 
 logger = getLogger(__name__)
 

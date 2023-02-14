@@ -31,7 +31,6 @@ from .chain import (
     upscale_resrgan,
     upscale_stable_diffusion,
 )
-from .device_pool import DevicePoolExecutor
 from .diffusion.load import pipeline_schedulers
 from .diffusion.run import (
     run_blend_pipeline,
@@ -40,7 +39,6 @@ from .diffusion.run import (
     run_txt2img_pipeline,
     run_upscale_pipeline,
 )
-from .hacks import apply_patches
 from .image import (  # mask filters; noise sources
     mask_filter_gaussian_multiply,
     mask_filter_gaussian_screen,
@@ -62,6 +60,8 @@ from .params import (
     TileOrder,
     UpscaleParams,
 )
+from .server.device_pool import DevicePoolExecutor
+from .server.hacks import apply_patches
 from .utils import (
     ServerContext,
     base_join,

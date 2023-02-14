@@ -7,9 +7,9 @@ from PIL import Image
 from realesrgan import RealESRGANer
 from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 
-from ..device_pool import JobContext
 from ..onnx import OnnxNet
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
+from ..server.device_pool import JobContext
 from ..utils import ServerContext, run_gc
 
 logger = getLogger(__name__)

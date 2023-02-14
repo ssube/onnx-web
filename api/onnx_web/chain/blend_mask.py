@@ -5,8 +5,8 @@ from PIL import Image
 
 from onnx_web.output import save_image
 
-from ..device_pool import JobContext, ProgressCallback
 from ..params import ImageParams, StageParams
+from ..server.device_pool import JobContext, ProgressCallback
 from ..utils import ServerContext, is_debug
 
 logger = getLogger(__name__)

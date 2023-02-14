@@ -6,11 +6,11 @@ import torch
 from diffusers import OnnxStableDiffusionInpaintPipeline
 from PIL import Image, ImageDraw
 
-from ..device_pool import JobContext, ProgressCallback
 from ..diffusion.load import get_latents_from_seed, get_tile_latents, load_pipeline
 from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
 from ..params import Border, ImageParams, Size, SizeChart, StageParams
+from ..server.device_pool import JobContext, ProgressCallback
 from ..utils import ServerContext, is_debug
 from .utils import process_tile_grid, process_tile_order
 
@@ -73,6 +73,7 @@ def upscale_outpaint(
 
         latents = get_tile_latents(full_latents, dims)
         pipe = load_pipeline(
+            server,
             OnnxStableDiffusionInpaintPipeline,
             params.model,
             params.scheduler,

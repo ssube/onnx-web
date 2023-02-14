@@ -2,9 +2,9 @@ from logging import getLogger
 
 from PIL import Image
 
-from ..device_pool import JobContext
 from ..output import save_image
 from ..params import ImageParams, StageParams
+from ..server.device_pool import JobContext
 from ..utils import ServerContext
 
 logger = getLogger(__name__)

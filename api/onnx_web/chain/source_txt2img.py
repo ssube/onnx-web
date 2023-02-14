@@ -5,9 +5,9 @@ import torch
 from diffusers import OnnxStableDiffusionPipeline
 from PIL import Image
 
-from ..device_pool import JobContext, ProgressCallback
 from ..diffusion.load import get_latents_from_seed, load_pipeline
 from ..params import ImageParams, Size, StageParams
+from ..server.device_pool import JobContext, ProgressCallback
 from ..utils import ServerContext
 
 logger = getLogger(__name__)
@@ -16,7 +16,7 @@ logger = getLogger(__name__)
 def source_txt2img(
     job: JobContext,
     server: ServerContext,
-    stage: StageParams,
+    _stage: StageParams,
     params: ImageParams,
     source_image: Image.Image,
     *,
@@ -35,6 +35,7 @@ def source_txt2img(
 
     latents = get_latents_from_seed(params.seed, size)
     pipe = load_pipeline(
+        server,
         OnnxStableDiffusionPipeline,
         params.model,
         params.scheduler,

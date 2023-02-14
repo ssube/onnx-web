@@ -6,8 +6,8 @@ import numpy as np
 from gfpgan import GFPGANer
 from PIL import Image
 
-from ..device_pool import JobContext
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
+from ..server.device_pool import JobContext
 from ..utils import ServerContext, run_gc
 
 logger = getLogger(__name__)

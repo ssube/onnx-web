@@ -6,9 +6,9 @@ import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline
 from PIL import Image
 
-from ..device_pool import JobContext, ProgressCallback
 from ..diffusion.load import load_pipeline
 from ..params import ImageParams, StageParams
+from ..server.device_pool import JobContext, ProgressCallback
 from ..utils import ServerContext
 
 logger = getLogger(__name__)
@@ -16,7 +16,7 @@ logger = getLogger(__name__)
 
 def blend_img2img(
     job: JobContext,
-    _server: ServerContext,
+    server: ServerContext,
     _stage: StageParams,
     params: ImageParams,
     source_image: Image.Image,
@@ -30,6 +30,7 @@ def blend_img2img(
     logger.info("blending image using img2img, %s steps: %s", params.steps, prompt)
 
     pipe = load_pipeline(
+        server,
         OnnxStableDiffusionImg2ImgPipeline,
         params.model,
         params.scheduler,
