@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 
 import basicsr.utils.download_util
 import codeformer.facelib.utils.misc
+import facexlib.utils
 
 from ..utils import ServerContext
 
@@ -99,19 +100,25 @@ def patch_cache_path(ctx: ServerContext, url: str, **kwargs) -> str:
     return cache_path
 
 
-def apply_patch_codeformer(ctx: ServerContext):
-    logger.debug("Patching CodeFormer module...")
-    codeformer.facelib.utils.misc.download_pretrained_models = patch_not_impl
-    codeformer.facelib.utils.misc.load_file_from_url = partial(patch_cache_path, ctx)
-
-
 def apply_patch_basicsr(ctx: ServerContext):
     logger.debug("Patching BasicSR module...")
     basicsr.utils.download_util.download_file_from_google_drive = patch_not_impl
     basicsr.utils.download_util.load_file_from_url = partial(patch_cache_path, ctx)
 
 
+def apply_patch_codeformer(ctx: ServerContext):
+    logger.debug("Patching CodeFormer module...")
+    codeformer.facelib.utils.misc.download_pretrained_models = patch_not_impl
+    codeformer.facelib.utils.misc.load_file_from_url = partial(patch_cache_path, ctx)
+
+
+def apply_patch_facexlib(ctx: ServerContext):
+    logger.debug("Patching Facexlib module...")
+    facexlib.utils.load_file_from_url = partial(patch_cache_path, ctx)
+
+
 def apply_patches(ctx: ServerContext):
     apply_patch_basicsr(ctx)
     apply_patch_codeformer(ctx)
-    unload(["basicsr.utils.download_util", "codeformer.facelib.utils.misc"])
+    apply_patch_facexlib(ctx)
+    unload(["basicsr.utils.download_util", "codeformer.facelib.utils.misc", "facexlib.utils"])
