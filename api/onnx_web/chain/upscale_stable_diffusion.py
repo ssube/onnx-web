@@ -15,22 +15,18 @@ from ..utils import ServerContext, run_gc
 logger = getLogger(__name__)
 
 
-last_pipeline_instance = None
-last_pipeline_params = (None, None)
-
 
 def load_stable_diffusion(
-    ctx: ServerContext, upscale: UpscaleParams, device: DeviceParams
+    server: ServerContext, upscale: UpscaleParams, device: DeviceParams
 ):
-    global last_pipeline_instance
-    global last_pipeline_params
+    model_path = path.join(server.model_path, upscale.upscale_model)
 
-    model_path = path.join(ctx.model_path, upscale.upscale_model)
-    cache_params = (model_path, upscale.format)
+    cache_key = (model_path, upscale.format)
+    cache_pipe = server.cache.get("diffusion", cache_key)
 
-    if last_pipeline_instance is not None and cache_params == last_pipeline_params:
+    if cache_pipe is not None:
         logger.debug("reusing existing Stable Diffusion upscale pipeline")
-        return last_pipeline_instance
+        return cache_pipe
 
     if upscale.format == "onnx":
         logger.debug(
@@ -38,7 +34,7 @@ def load_stable_diffusion(
             model_path,
             device.provider,
         )
-        pipeline = OnnxStableDiffusionUpscalePipeline.from_pretrained(
+        pipe = OnnxStableDiffusionUpscalePipeline.from_pretrained(
             model_path, provider=device.provider, provider_options=device.options
         )
     else:
@@ -47,15 +43,14 @@ def load_stable_diffusion(
             model_path,
             device.provider,
         )
-        pipeline = StableDiffusionUpscalePipeline.from_pretrained(
+        pipe = StableDiffusionUpscalePipeline.from_pretrained(
             model_path, provider=device.provider
         )
 
-    last_pipeline_instance = pipeline
-    last_pipeline_params = cache_params
+    server.cache.set("diffusion", cache_key, pipe)
     run_gc()
 
-    return pipeline
+    return pipe
 
 
 def upscale_stable_diffusion(

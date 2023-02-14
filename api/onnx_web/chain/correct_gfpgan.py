@@ -13,24 +13,19 @@ from ..utils import ServerContext, run_gc
 logger = getLogger(__name__)
 
 
-last_pipeline_instance: Optional[GFPGANer] = None
-last_pipeline_params: Optional[str] = None
-
-
 def load_gfpgan(
     server: ServerContext,
-    stage: StageParams,
+    _stage: StageParams,
     upscale: UpscaleParams,
-    device: DeviceParams,
+    _device: DeviceParams,
 ):
-    global last_pipeline_instance
-    global last_pipeline_params
-
     face_path = path.join(server.model_path, "%s.pth" % (upscale.correction_model))
+    cache_key = (face_path,)
+    cache_pipe = server.cache.get("gfpgan", cache_key)
 
-    if last_pipeline_instance is not None and face_path == last_pipeline_params:
+    if cache_pipe is not None:
         logger.info("reusing existing GFPGAN pipeline")
-        return last_pipeline_instance
+        return cache_pipe
 
     logger.debug("loading GFPGAN model from %s", face_path)
 
@@ -43,8 +38,7 @@ def load_gfpgan(
         upscale=upscale.face_outscale,
     )
 
-    last_pipeline_instance = gfpgan
-    last_pipeline_params = face_path
+    server.cache.set("gfpgan", cache_key, gfpgan)
     run_gc()
 
     return gfpgan

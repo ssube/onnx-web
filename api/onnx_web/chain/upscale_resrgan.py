@@ -21,20 +21,19 @@ x4_v3_tag = "real-esrgan-x4-v3"
 
 
 def load_resrgan(
-    ctx: ServerContext, params: UpscaleParams, device: DeviceParams, tile=0
+    server: ServerContext, params: UpscaleParams, device: DeviceParams, tile=0
 ):
-    global last_pipeline_instance
-    global last_pipeline_params
-
     model_file = "%s.%s" % (params.upscale_model, params.format)
-    model_path = path.join(ctx.model_path, model_file)
+    model_path = path.join(server.model_path, model_file)
+
+    cache_key = (model_path, params.format)
+    cache_pipe = server.cache.get("resrgan", cache_key)
+    if cache_pipe is not None:
+        logger.info("reusing existing Real ESRGAN pipeline")
+        return cache_pipe
+
     if not path.isfile(model_path):
         raise Exception("Real ESRGAN model not found at %s" % model_path)
-
-    cache_params = (model_path, params.format)
-    if last_pipeline_instance is not None and cache_params == last_pipeline_params:
-        logger.info("reusing existing Real ESRGAN pipeline")
-        return last_pipeline_instance
 
     if x4_v3_tag in model_file:
         # the x4-v3 model needs a different network
@@ -49,7 +48,7 @@ def load_resrgan(
     elif params.format == "onnx":
         # use ONNX acceleration, if available
         model = OnnxNet(
-            ctx, model_file, provider=device.provider, provider_options=device.options
+            server, model_file, provider=device.provider, provider_options=device.options
         )
     elif params.format == "pth":
         model = RRDBNet(
@@ -72,7 +71,7 @@ def load_resrgan(
     logger.debug("loading Real ESRGAN upscale model from %s", model_path)
 
     # TODO: shouldn't need the PTH file
-    model_path_pth = path.join(ctx.model_path, "%s.pth" % params.upscale_model)
+    model_path_pth = path.join(server.model_path, "%s.pth" % params.upscale_model)
     upsampler = RealESRGANer(
         scale=params.scale,
         model_path=model_path_pth,
@@ -84,8 +83,7 @@ def load_resrgan(
         half=params.half,
     )
 
-    last_pipeline_instance = upsampler
-    last_pipeline_params = cache_params
+    server.cache.set("resrgan", cache_key, upsampler)
     run_gc()
 
     return upsampler
