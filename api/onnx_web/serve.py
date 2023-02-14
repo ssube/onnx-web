@@ -744,11 +744,12 @@ def blend():
     mask_file = request.files.get("mask")
     mask = Image.open(BytesIO(mask_file.read())).convert("RGBA")
 
-    source_file = request.files.get("source:0")
-    source_0 = Image.open(BytesIO(source_file.read())).convert("RGBA")
+    max_sources = 2
+    sources = []
 
-    source_file = request.files.get("source:1")
-    source_1 = Image.open(BytesIO(source_file.read())).convert("RGBA")
+    for i in range(max_sources):
+        source_file = request.files.get("source:%s" % (i))
+        sources.append(Image.open(BytesIO(source_file.read())).convert("RGBA"))
 
     device, params, size = pipeline_from_request()
     upscale = upscale_from_request()
@@ -764,7 +765,7 @@ def blend():
         size,
         output,
         upscale,
-        [source_0, source_1],
+        sources,
         mask,
         needs_device=device,
     )
