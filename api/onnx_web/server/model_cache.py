@@ -43,6 +43,6 @@ class ModelCache:
             logger.info(
                 "Removing models from cache, %s of %s", (total - self.limit), total
             )
-            self.cache[:] = self.cache[: self.limit]
+            self.cache[:] = self.cache[-self.limit :]
         else:
             logger.debug("Model cache below limit, %s of %s", total, self.limit)

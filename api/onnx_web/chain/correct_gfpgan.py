@@ -1,6 +1,5 @@
 from logging import getLogger
 from os import path
-from typing import Optional
 
 import numpy as np
 from gfpgan import GFPGANer

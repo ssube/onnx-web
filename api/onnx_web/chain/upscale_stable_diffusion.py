@@ -15,7 +15,6 @@ from ..utils import ServerContext, run_gc
 logger = getLogger(__name__)
 
 
-
 def load_stable_diffusion(
     server: ServerContext, upscale: UpscaleParams, device: DeviceParams
 ):

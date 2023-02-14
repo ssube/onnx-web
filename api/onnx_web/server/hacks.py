@@ -121,4 +121,10 @@ def apply_patches(ctx: ServerContext):
     apply_patch_basicsr(ctx)
     apply_patch_codeformer(ctx)
     apply_patch_facexlib(ctx)
-    unload(["basicsr.utils.download_util", "codeformer.facelib.utils.misc", "facexlib.utils"])
+    unload(
+        [
+            "basicsr.utils.download_util",
+            "codeformer.facelib.utils.misc",
+            "facexlib.utils",
+        ]
+    )
