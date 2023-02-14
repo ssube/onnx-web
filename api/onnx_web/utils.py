@@ -36,10 +36,13 @@ class ServerContext:
         self.block_platforms = block_platforms
         self.default_platform = default_platform
         self.image_format = image_format
-        self.cache = cache or ModelCache()
+        self.cache = cache or ModelCache(num_workers)
 
     @classmethod
     def from_environ(cls):
+        num_workers = int(environ.get("ONNX_WEB_NUM_WORKERS", 1))
+        cache_limit = int(environ.get("ONNX_WEB_CACHE_MODELS", num_workers + 2))
+
         return ServerContext(
             bundle_path=environ.get(
                 "ONNX_WEB_BUNDLE_PATH", path.join("..", "gui", "out")
@@ -49,12 +52,12 @@ class ServerContext:
             params_path=environ.get("ONNX_WEB_PARAMS_PATH", "."),
             # others
             cors_origin=environ.get("ONNX_WEB_CORS_ORIGIN", "*").split(","),
-            num_workers=int(environ.get("ONNX_WEB_NUM_WORKERS", 1)),
+            num_workers=num_workers,
             any_platform=get_boolean(environ, "ONNX_WEB_ANY_PLATFORM", True),
             block_platforms=environ.get("ONNX_WEB_BLOCK_PLATFORMS", "").split(","),
             default_platform=environ.get("ONNX_WEB_DEFAULT_PLATFORM", None),
             image_format=environ.get("ONNX_WEB_IMAGE_FORMAT", "png"),
-            cache=ModelCache(limit=int(environ.get("ONNX_WEB_CACHE_MODELS", 3))),
+            cache=ModelCache(limit=cache_limit),
         )
 
 
