@@ -9,10 +9,11 @@ class ModelCache:
     limit: int
 
     def __init__(self, limit: int) -> None:
+        self.cache = []
         self.limit = limit
 
     def drop(self, tag: str, key: Any) -> None:
-        self.cache = [
+        self.cache[:] = [
             model for model in self.cache if model[0] != tag and model[1] != key
         ]
 
