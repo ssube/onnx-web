@@ -1,11 +1,11 @@
 from logging import getLogger
-from typing import Any, List
+from typing import Any, List, Tuple
 
 logger = getLogger(__name__)
 
 
 class ModelCache:
-    cache: List[(str, Any, Any)]
+    cache: List[Tuple[str, Any, Any]]
     limit: int
 
     def __init__(self, limit: int) -> None:
