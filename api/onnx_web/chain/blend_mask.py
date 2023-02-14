@@ -25,12 +25,15 @@ def blend_mask(
 ) -> Image.Image:
     logger.info("blending image using mask")
 
-    l_mask = Image.new("RGBA", mask.size, color="black")
-    l_mask.alpha_composite(mask)
-    l_mask = l_mask.convert("L")
+    mult_mask = Image.new("RGBA", mask.size, color="black")
+    mult_mask.alpha_composite(mask)
+    mult_mask = mult_mask.convert("L")
 
     if is_debug():
         save_image(server, "last-mask.png", mask)
-        save_image(server, "last-mask-l.png", l_mask)
+        save_image(server, "last-mult-mask.png", mult_mask)
 
-    return Image.composite(sources[0], sources[1], l_mask)
+    for source in sources:
+        source.thumbnail(mult_mask.size)
+
+    return Image.composite(sources[0], sources[1], mult_mask)
