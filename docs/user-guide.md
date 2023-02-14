@@ -207,14 +207,17 @@ Models can be added from the directories used by `diffusers` as well as SafeTens
 loading PickleTensors, as they may contain unsafe code which can be executed on your machine, and use SafeTensor instead
 whenever possible.
 
-Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file. For example:
+Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file and make sure to use the `launch-extras`
+script. For example:
 
 ```shell
 # on Linux:
 > export ONNX_WEB_EXTRA_MODELS=~/onnx-web-extras.json
+> ./launch-extras.sh
 
 # on Windows:
 > set ONNX_WEB_EXTRA_MODELS=C:\Users\ssube\onnx-web-extras.json
+> launch-extras.bat
 ```
 
 Extras using the older file format with nested arrays (`"diffusion": [[]]`) can be mixed with the newer format. You

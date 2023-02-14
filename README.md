@@ -286,17 +286,21 @@ Log into the HuggingFace CLI:
 # on linux:
 > huggingface-cli login
 
-# on windows:
+# on Windows:
 > huggingface-cli.exe login
 ```
 
 Issue an API token from https://huggingface.co/settings/tokens, naming it something memorable like `onnx-web`, and then
 paste it into the prompt.
 
-Run the provided conversion script from the `api/` directory:
+Running the launch script from the `api/` directory will convert the base models before starting the API server:
 
 ```shell
-> python -m onnx_web.convert --diffusion --correction --upscaling
+# on Linux:
+> ./launch.sh
+
+# on Windows:
+> launch.bat
 ```
 
 Models that have already been downloaded and converted will be skipped, so it should be safe to run this script after
@@ -336,12 +340,15 @@ launch script:
 ```shell
 # on Linux:
 > export ONNX_WEB_EXTRA_MODELS="/home/ssube/onnx-web-extras.json"
-> ./launch.sh
+> ./launch-extras.sh
 
 # on Windows:
 > set ONNX_WEB_EXTRA_MODELS=C:\Users\ssube\onnx-web-extras.json
-> launch.bat
+> launch-extras.bat
 ```
+
+Make sure to use the `launch-extras.sh` or `.bat` script if you want to convert the extra models, especially if you
+have added your own.
 
 ### Test the models
 
