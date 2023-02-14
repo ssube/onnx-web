@@ -21,6 +21,7 @@ python3 -m onnx_web.convert \
   --diffusion \
   --upscaling \
   --correction \
+  --extras=${ONNX_WEB_EXTRA_MODELS:-extras.json} \
   --token=${HF_TOKEN:-}
 
 echo "Launching API server..."
