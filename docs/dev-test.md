@@ -48,25 +48,40 @@ You can also clone the GH pages branch into its own directory to avoid switching
 
 This is the test plan for manual pre-release testing and should exercise all of the major features.
 
+Issues:
+
+- TODO
+
+Merges:
+
+- TODO
+
+Testing:
+
 - txt2img
   - 256x256 with SD v1.5
     - [ ] should fail: neon blobs
   - 512x512 with SD v1.5
+    - DEIS Multi
+      - [ ] should work
     - DPM Multi
       - [ ] should work
     - Euler A
       - [ ] should work
-  - 512x512 with SD v1.5
+  - 512x512 with SD v2.1
+    - [ ] should work
   - 768x768 with SD v2.1
     - [ ] should work, given sufficient memory
   - extra models
-    - Knollingcase
+    - 512x512 with Knollingcase
       - [ ] should work
-    - OpenJourney
+    - 512x512 with OpenJourney
+      - [ ] should work
+    - 256x256 with OpenJourney
       - [ ] should work
 - img2img
   - 256x256 input
-    - [ ] TODO
+    - [ ] should fail: neon blobs
   - 512x512 input
     - [ ] should work
   - 1024x768 input
@@ -74,13 +89,13 @@ This is the test plan for manual pre-release testing and should exercise all of 
 - inpaint
   - outpaint
     - 0 all sides
-      - [ ] should work
+      - [ ] should work, run 1 tile
     - 256 all sides
-      - [ ] should work
+      - [ ] should work, run 8 tiles
     - 512 top and bottom, 0 left and right
-      - [ ] should work
+      - [ ] should work, run 3 tiles
     - 512 left and right, 0 top and bottom
-      - [ ] should work
+      - [ ] should work, run 3 tiles
 - upscale
   - Real ESRGAN
     - with CodeFormer
@@ -94,9 +109,9 @@ This is the test plan for manual pre-release testing and should exercise all of 
     - using x4 model and x2 scale
       - [ ] should fail: tiles
     - using v3 model and x2 scale
-      - [ ] TODO
+      - [ ] should work
     - using v3 model and x4 scale
-      - [ ] TODO
+      - [ ] should work
   - Stable Diffusion
     - using x2 scale
       - [ ] should fail: tiles
@@ -105,7 +120,7 @@ This is the test plan for manual pre-release testing and should exercise all of 
     - with CodeFormer
       - [ ] should work
     - with GFPGAN
-      - [ ] should work but doesn't: https://github.com/ssube/onnx-web/issues/87
+      - [ ] should work
     - without face correction
       - [ ] should work
 - interactions
@@ -123,6 +138,20 @@ This is the test plan for manual pre-release testing and should exercise all of 
     - [ ] should switch to the inpaint tab
     - [ ] should populate the image source
     - [ ] the generate button should be enabled
+  - persist on refresh
+    - [ ] loading images
+    - [ ] switching tabs
+
+Release:
+
+- [ ] check and fix lint
+- [ ] update package versions and stage files
+- [ ] run `commit-and-tag-version --sign --git-tag-fallback --commit-all --release-as=minor` to make VERSION
+- [ ] make sure packages and images have been built
+- [ ] update GH pages bundle and default version
+- [ ] post release on GH
+- [ ] make follow up tickets
+- [ ] close milestone and checklist
 
 Repeat with and without LPW enabled. Feature combinations marked `should work` must produce a valid image for the
 prompt, within a reasonable margin of creative freedom. Feature combinations marked `should fail` are known to produce
