@@ -30,7 +30,7 @@ class ModelCache:
             if tag == t:
                 if key != k:
                     logger.debug("Updating model cache: %s", tag)
-                    self.cache[i] = v
+                    self.cache[i] = (tag, key, value)
                     return
 
         logger.debug("Adding new model to cache: %s", tag)
