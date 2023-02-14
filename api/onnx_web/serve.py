@@ -64,6 +64,7 @@ from .params import (
     UpscaleParams,
 )
 from .server import DevicePoolExecutor, ServerContext, apply_patches
+from .transformers import run_txt2txt_pipeline
 from .utils import (
     base_join,
     get_and_clamp_float,
@@ -807,6 +808,26 @@ def blend():
     )
 
     return jsonify(json_params(output, params, size, upscale=upscale))
+
+
+@app.route("/api/txt2txt", methods=["POST"])
+def txt2txt():
+    device, params, size = pipeline_from_request()
+
+    output = make_output_name(context, "upscale", params, size)
+    logger.info("upscale job queued for: %s", output)
+
+    executor.submit(
+        output,
+        run_txt2txt_pipeline,
+        context,
+        params,
+        size,
+        output,
+        needs_device=device,
+    )
+
+    return jsonify(json_params(output, params, size))
 
 
 @app.route("/api/cancel", methods=["PUT"])
