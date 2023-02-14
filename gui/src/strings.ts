@@ -15,6 +15,7 @@ export const MODEL_LABELS: Record<string, string> = {
   'correction-codeformer': 'CodeFormer',
   'correction-gfpgan-v1-3': 'GFPGAN v1.3',
   // extras
+  'diffusion-stablydiffused-aesthetic-v2-6': 'Aesthetic Mix v2.6',
   'diffusion-anything': 'Anything',
   'diffusion-anything-v3': 'Anything v3',
   'diffusion-anything-v4': 'Anything v4',
@@ -28,6 +29,7 @@ export const MODEL_LABELS: Record<string, string> = {
   'diffusion-openjourney-v1': 'OpenJourney v1',
   'diffusion-openjourney-v2': 'OpenJourney v2',
   'diffusion-pastel-mix': 'Pastel Mix',
+  'diffusion-unstable-ink-dream-v6': 'Unstable Ink Dream v6',
 };
 
 export const PLATFORM_LABELS: Record<string, string> = {
@@ -53,6 +55,7 @@ export const SCHEDULER_LABELS: Record<string, string> = {
   'k-dpm-2-a': 'KDPM2 Ancestral',
   'k-dpm-2': 'KDPM2',
   'karras-ve': 'Karras Ve',
+  'ipndm': 'iPNDM',
   'lms-discrete': 'LMS',
   'pndm': 'PNDM',
 };
