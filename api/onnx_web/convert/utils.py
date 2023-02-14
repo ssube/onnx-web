@@ -49,7 +49,7 @@ def download_progress(urls: List[Tuple[str, str]]):
         dest_path.parent.mkdir(parents=True, exist_ok=True)
 
         if dest_path.exists():
-            logger.info("Destination already exists: %s", dest_path)
+            logger.debug("Destination already exists: %s", dest_path)
             return str(dest_path.absolute())
 
         req = requests.get(
