@@ -18,6 +18,11 @@ from diffusers import (
     PNDMScheduler,
 )
 
+try:
+    from diffusers import DEISMultistepScheduler
+except:
+    from .stub_scheduler import StubScheduler as DEISMultistepScheduler
+
 from ..params import DeviceParams, Size
 from ..utils import ServerContext, run_gc
 
@@ -29,6 +34,7 @@ latent_factor = 8
 pipeline_schedulers = {
     "ddim": DDIMScheduler,
     "ddpm": DDPMScheduler,
+    "deis-multi": DEISMultistepScheduler,
     "dpm-multi": DPMSolverMultistepScheduler,
     "dpm-single": DPMSolverSinglestepScheduler,
     "euler": EulerDiscreteScheduler,

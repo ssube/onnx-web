@@ -44,6 +44,7 @@ export const PLATFORM_LABELS: Record<string, string> = {
 export const SCHEDULER_LABELS: Record<string, string> = {
   'ddim': 'DDIM',
   'ddpm': 'DDPM',
+  'deis-multi': 'DEIS Multistep',
   'dpm-multi': 'DPM Multistep',
   'dpm-single': 'DPM Singlestep',
   'euler': 'Euler',
