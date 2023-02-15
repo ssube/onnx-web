@@ -17,6 +17,7 @@ from .utils import (
     ConversionContext,
     download_progress,
     model_formats_original,
+    remove_prefix,
     source_format,
     tuple_to_correction,
     tuple_to_diffusion,
@@ -157,14 +158,14 @@ def fetch_model(
     for proto in model_sources:
         api_name, api_root = model_sources.get(proto)
         if source.startswith(proto):
-            api_source = api_root % (source.removeprefix(proto))
+            api_source = api_root % (remove_prefix(source, proto))
             logger.info(
                 "Downloading model from %s: %s -> %s", api_name, api_source, cache_name
             )
             return download_progress([(api_source, cache_name)])
 
     if source.startswith(model_source_huggingface):
-        hub_source = source.removeprefix(model_source_huggingface)
+        hub_source = remove_prefix(source, model_source_huggingface)
         logger.info("Downloading model from Huggingface Hub: %s", hub_source)
         # from_pretrained has a bunch of useful logic that snapshot_download by itself down not
         return hub_source
