@@ -52,8 +52,8 @@ def load_resrgan(
         model = OnnxNet(
             server,
             model_file,
-            provider=device.provider,
-            sess_options=device.options,
+            provider=device.ort_provider(),
+            sess_options=device.sess_options(),
         )
     elif params.format == "pth":
         model = RRDBNet(

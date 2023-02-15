@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 import numpy as np
 import torch
-from onnxruntime import InferenceSession
+from onnxruntime import InferenceSession, SessionOptions
 
 from ..utils import ServerContext
 
@@ -47,7 +47,7 @@ class OnnxNet:
         server: ServerContext,
         model: str,
         provider: str = "DmlExecutionProvider",
-        sess_options: Optional[dict] = None,
+        sess_options: Optional[SessionOptions] = None,
     ) -> None:
         model_path = path.join(server.model_path, model)
         self.session = InferenceSession(

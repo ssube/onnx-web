@@ -1,4 +1,5 @@
 from enum import IntEnum
+from onnxruntime import SessionOptions
 from typing import Any, Dict, Literal, Optional, Tuple, Union
 
 
@@ -78,6 +79,15 @@ class DeviceParams:
 
     def __str__(self) -> str:
         return "%s - %s (%s)" % (self.device, self.provider, self.options)
+
+    def ort_provider(self) -> Tuple[str, Any]:
+        if self.options is None:
+            return self.provider
+        else:
+            return (self.provider, self.options)
+
+    def sess_options(self) -> SessionOptions:
+        return SessionOptions()
 
     def torch_device(self) -> str:
         if self.device.startswith("cuda"):

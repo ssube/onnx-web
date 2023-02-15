@@ -109,8 +109,8 @@ def load_pipeline(
             logger.debug("loading new diffusion scheduler")
             scheduler = scheduler_type.from_pretrained(
                 model,
-                provider=device.provider,
-                sess_options=device.options,
+                provider=device.ort_provider(),
+                sess_options=device.sess_options(),
                 subfolder="scheduler",
             )
 
@@ -134,15 +134,15 @@ def load_pipeline(
         logger.debug("loading new diffusion pipeline from %s", model)
         scheduler = scheduler_type.from_pretrained(
             model,
-            provider=device.provider,
-            sess_options=device.options,
+            provider=device.ort_provider(),
+            sess_options=device.sess_options(),
             subfolder="scheduler",
         )
         pipe = pipeline.from_pretrained(
             model,
             custom_pipeline=custom_pipeline,
-            provider=device.provider,
-            sess_options=device.options,
+            provider=device.ort_provider(),
+            sess_options=device.sess_options(),
             revision="onnx",
             safety_checker=None,
             scheduler=scheduler,
