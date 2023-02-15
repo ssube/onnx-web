@@ -96,7 +96,7 @@ def load_pipeline(
     lpw: bool,
 ):
     pipe_key = (pipeline, model, device.device, device.provider, lpw)
-    scheduler_key = (scheduler_type,)
+    scheduler_key = (scheduler_type, model)
 
     cache_pipe = server.cache.get("diffusion", pipe_key)
 

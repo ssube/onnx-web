@@ -25,6 +25,10 @@ class ModelCache:
         return None
 
     def set(self, tag: str, key: Any, value: Any) -> None:
+        if self.limit == 0:
+            logger.debug("Cache limit set to 0, not caching model: %s", tag)
+            return
+
         for i in range(len(self.cache)):
             t, k, v = self.cache[i]
             if tag == t:
