@@ -211,7 +211,11 @@ class DevicePoolExecutor:
         # self.jobs[:] = [job for job in self.jobs if not job.future.done()]
         recent_count = len(self.recent)
         if recent_count > self.recent_limit:
-            logger.debug("pruning %s of %s recent jobs", recent_count - self.recent_limit, recent_count)
+            logger.debug(
+                "pruning %s of %s recent jobs",
+                recent_count - self.recent_limit,
+                recent_count,
+            )
             self.recent[:] = self.recent[-self.recent_limit :]
 
     def submit(

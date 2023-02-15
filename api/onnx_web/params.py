@@ -1,6 +1,7 @@
 from enum import IntEnum
-from onnxruntime import SessionOptions
 from typing import Any, Dict, Literal, Optional, Tuple, Union
+
+from onnxruntime import SessionOptions
 
 
 class SizeChart(IntEnum):
