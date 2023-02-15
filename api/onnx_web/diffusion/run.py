@@ -177,6 +177,7 @@ def run_inpaint_pipeline(
     # calling the upscale_outpaint stage directly needs accumulating progress
     progress = ChainProgress.from_progress(progress)
 
+    logger.debug("applying mask filter and generating noise source")
     image = upscale_outpaint(
         job,
         server,
@@ -190,12 +191,6 @@ def run_inpaint_pipeline(
         noise_source=noise_source,
         callback=progress,
     )
-    logger.info("applying mask filter and generating noise source")
-
-    if image.size == source_image.size:
-        image = ImageChops.blend(source_image, image, strength)
-    else:
-        logger.info("output image size does not match source, skipping post-blend")
 
     image = run_upscale_correction(
         job, server, stage, params, image, upscale=upscale, callback=progress
