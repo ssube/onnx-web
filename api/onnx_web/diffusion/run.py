@@ -253,6 +253,7 @@ def run_blend_pipeline(
         mask=mask,
         callback=progress,
     )
+    image = image.convert("RGB")
 
     image = run_upscale_correction(
         job, server, stage, params, image, upscale=upscale, callback=progress
