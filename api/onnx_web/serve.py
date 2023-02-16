@@ -770,7 +770,7 @@ def blend():
         needs_device=device,
     )
 
-    return jsonify(json_params(output, params, size))
+    return jsonify(json_params(output, params, size, upscale=upscale))
 
 
 @app.route("/api/cancel", methods=["PUT"])
