@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file. See [commit
 
 ### [0.7.1](https://github.com/ssube/onnx-web/compare/v0.7.0...v0.7.1) (2023-02-16)
 
+* **api:** remove unused import
+
 ## [0.7.0](https://github.com/ssube/onnx-web/compare/v0.6.1...v0.7.0) (2023-02-16)
 
 
