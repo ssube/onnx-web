@@ -4,7 +4,7 @@ from typing import Any, List
 import numpy as np
 import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline, OnnxStableDiffusionPipeline
-from PIL import Image, ImageChops
+from PIL import Image
 
 from onnx_web.chain import blend_mask
 from onnx_web.chain.base import ChainProgress
