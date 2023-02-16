@@ -98,19 +98,20 @@ Testing:
       - [ ] should work, run 3 tiles
 - upscale
   - Real ESRGAN
-    - with CodeFormer
+  - Real ESRGAN
+    - x4 with CodeFormer
       - [ ] should work
-    - with GFPGAN
+    - x4 with GFPGAN
       - [ ] should work
-    - without face correction
+    - x4 without face correction
       - [ ] should work
-    - using x2 model and x4 scale
+    - x2 model and x4 scale
+      - [ ] should sort of work: ignores scale and uses x2
+    - x4 model and x2 scale
       - [ ] should fail: tiles
-    - using x4 model and x2 scale
-      - [ ] should fail: tiles
-    - using v3 model and x2 scale
+    - v3 model and x2 scale
       - [ ] should work
-    - using v3 model and x4 scale
+    - v3 model and x4 scale
       - [ ] should work
   - Stable Diffusion
     - using x2 scale
@@ -138,6 +139,14 @@ Testing:
     - [ ] should switch to the inpaint tab
     - [ ] should populate the image source
     - [ ] the generate button should be enabled
+  - copy an image to upscale
+    - [ ] should switch to the upscale tab
+    - [ ] should populate the image source
+    - [ ] the generate button should be enabled
+  - copy two images to blend
+    - [ ] should switch to the blend tab
+    - [ ] should populate the image sources
+    - [ ] the generate button should be enabled once both sources have been populated
   - persist on refresh
     - [ ] loading images
     - [ ] switching tabs
