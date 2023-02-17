@@ -248,7 +248,7 @@ class DevicePoolExecutor:
                     key,
                     format_exception(type(err), err, err.__traceback__),
                 )
-                run_gc()
+                run_gc([self.devices[device]])
 
         future.add_done_callback(job_done)
 

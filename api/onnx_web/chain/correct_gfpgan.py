@@ -15,7 +15,7 @@ def load_gfpgan(
     server: ServerContext,
     _stage: StageParams,
     upscale: UpscaleParams,
-    _device: DeviceParams,
+    device: DeviceParams,
 ):
     # must be within the load function for patch to take effect
     from gfpgan import GFPGANer
@@ -40,7 +40,7 @@ def load_gfpgan(
     )
 
     server.cache.set("gfpgan", cache_key, gfpgan)
-    run_gc()
+    run_gc([device])
 
     return gfpgan
 

@@ -89,7 +89,7 @@ def load_resrgan(
     )
 
     server.cache.set("resrgan", cache_key, upsampler)
-    run_gc()
+    run_gc([device])
 
     return upsampler
 

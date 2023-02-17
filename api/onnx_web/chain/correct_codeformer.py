@@ -26,5 +26,5 @@ def correct_codeformer(
     from codeformer import CodeFormer
 
     device = job.get_device()
-    pipe = CodeFormer(upscale=upscale.face_outscale).to(device.torch_device())
+    pipe = CodeFormer(upscale=upscale.face_outscale).to(device.torch_str())
     return pipe(stage_source or source)

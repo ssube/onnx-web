@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import torch
 
-from .params import SizeChart
+from .params import DeviceParams, SizeChart
 from .server.model_cache import ModelCache
 
 logger = getLogger(__name__)
@@ -134,7 +134,13 @@ def get_size(val: Union[int, str, None]) -> SizeChart:
     raise Exception("invalid size")
 
 
-def run_gc():
+def run_gc(devices: List[DeviceParams] = []):
     logger.debug("running garbage collection")
     gc.collect()
-    torch.cuda.empty_cache()
+
+    if torch.cuda.is_available():
+        for device in devices:
+            logger.debug("running Torch garbage collection for device: %s", device)
+            with torch.cuda.device(device.torch_str()):
+                torch.cuda.empty_cache()
+                torch.cuda.ipc_collect()

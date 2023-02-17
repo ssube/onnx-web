@@ -81,9 +81,11 @@ def run_txt2img_pipeline(
     dest = save_image(server, output, image)
     save_params(server, output, params, size, upscale=upscale)
 
+    del pipe
     del image
     del result
-    run_gc()
+
+    run_gc([job.get_device()])
 
     logger.info("finished txt2img job: %s", dest)
 
@@ -147,9 +149,11 @@ def run_img2img_pipeline(
     size = Size(*source_image.size)
     save_params(server, output, params, size, upscale=upscale)
 
+    del pipe
     del image
     del result
-    run_gc()
+
+    run_gc([job.get_device()])
 
     logger.info("finished img2img job: %s", dest)
 
@@ -200,7 +204,8 @@ def run_inpaint_pipeline(
     save_params(server, output, params, size, upscale=upscale, border=border)
 
     del image
-    run_gc()
+
+    run_gc([job.get_device()])
 
     logger.info("finished inpaint job: %s", dest)
 
@@ -226,7 +231,8 @@ def run_upscale_pipeline(
     save_params(server, output, params, size, upscale=upscale)
 
     del image
-    run_gc()
+
+    run_gc([job.get_device()])
 
     logger.info("finished upscale job: %s", dest)
 
@@ -263,6 +269,7 @@ def run_blend_pipeline(
     save_params(server, output, params, size, upscale=upscale)
 
     del image
-    run_gc()
+
+    run_gc([job.get_device()])
 
     logger.info("finished blend job: %s", dest)

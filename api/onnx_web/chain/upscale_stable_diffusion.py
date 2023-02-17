@@ -50,7 +50,7 @@ def load_stable_diffusion(
         )
 
     server.cache.set("diffusion", cache_key, pipe)
-    run_gc()
+    run_gc([device])
 
     return pipe
 

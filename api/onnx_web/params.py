@@ -90,7 +90,7 @@ class DeviceParams:
     def sess_options(self) -> SessionOptions:
         return SessionOptions()
 
-    def torch_device(self) -> str:
+    def torch_str(self) -> str:
         if self.device.startswith("cuda"):
             return self.device
         else:

@@ -115,16 +115,16 @@ def load_pipeline(
             )
 
             if device is not None and hasattr(scheduler, "to"):
-                scheduler = scheduler.to(device.torch_device())
+                scheduler = scheduler.to(device.torch_str())
 
             pipe.scheduler = scheduler
             server.cache.set("scheduler", scheduler_key, scheduler)
-            run_gc()
+            run_gc([device])
 
     else:
         logger.debug("unloading previous diffusion pipeline")
         server.cache.drop("diffusion", pipe_key)
-        run_gc()
+        run_gc([device])
 
         if lpw:
             custom_pipeline = "./onnx_web/diffusion/lpw_stable_diffusion_onnx.py"
@@ -149,7 +149,7 @@ def load_pipeline(
         )
 
         if device is not None and hasattr(pipe, "to"):
-            pipe = pipe.to(device.torch_device())
+            pipe = pipe.to(device.torch_str())
 
         server.cache.set("diffusion", pipe_key, pipe)
         server.cache.set("scheduler", scheduler_key, scheduler)
