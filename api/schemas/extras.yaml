@@ -47,6 +47,17 @@ $defs:
           scale:
             type: number
 
+  source_model:
+    type: object
+    required: [name, source]
+    properties:
+      format:
+        type: string
+      name:
+        type: string
+      source:
+        type: string
+
 type: object
 additionalProperties: False
 properties:
@@ -68,3 +79,9 @@ properties:
       oneOf:
         - $ref: "#/$defs/legacy_tuple"
         - $ref: "#/$defs/upscaling_model"
+  sources:
+    type: array
+    items:
+      oneOf:
+        - $ref: "#/$defs/legacy_tuple"
+        - $ref: "#/$defs/source_model"
