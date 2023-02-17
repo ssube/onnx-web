@@ -37,6 +37,8 @@ $defs:
         properties:
           config:
             type: string
+          vae:
+            type: string
 
   upscaling_model:
     allOf:
