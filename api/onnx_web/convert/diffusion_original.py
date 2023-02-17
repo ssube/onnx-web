@@ -644,7 +644,7 @@ def convert_ldm_vae_checkpoint(checkpoint, config, use_key=True):
             if key.startswith(vae_key):
                 vae_state_dict[key.replace(vae_key, "")] = checkpoint.get(key)
         else:
-            vae_state_dict[vae_key] = checkpoint.get(key)
+            vae_state_dict[key] = checkpoint.get(key)
 
     new_checkpoint = {"encoder.conv_in.weight": vae_state_dict["encoder.conv_in.weight"],
                       "encoder.conv_in.bias": vae_state_dict["encoder.conv_in.bias"],
