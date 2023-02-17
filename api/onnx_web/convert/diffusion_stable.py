@@ -17,6 +17,7 @@ from typing import Dict
 
 import torch
 from diffusers import (
+    AutoencoderKL,
     OnnxRuntimeModel,
     OnnxStableDiffusionPipeline,
     StableDiffusionPipeline,
@@ -71,6 +72,7 @@ def convert_diffusion_stable(
     name = model.get("name")
     source = source or model.get("source")
     single_vae = model.get("single_vae")
+    replace_vae = model.get("vae")
 
     dtype = torch.float16 if ctx.half else torch.float32
     dest_path = path.join(ctx.model_path, name)
@@ -176,6 +178,11 @@ def convert_diffusion_stable(
         convert_attribute=False,
     )
     del pipeline.unet
+
+    if replace_vae is not None:
+        logger.debug("loading custom VAE: %s", replace_vae)
+        vae = AutoencoderKL.from_pretrained(replace_vae)
+        pipeline.vae = vae
 
     if single_vae:
         logger.debug("VAE config: %s", pipeline.vae.config)

@@ -1301,7 +1301,7 @@ def extract_checkpoint(
             converted_vae_checkpoint = convert_ldm_vae_checkpoint(checkpoint, vae_config)
         else:
             vae_file = os.path.join(ctx.model_path, vae_file)
-            logger.debug("loading custom VAE file: %s", vae_file)
+            logger.debug("loading custom VAE: %s", vae_file)
             vae_checkpoint = load_tensor(vae_file, map_location=map_location)
             converted_vae_checkpoint = convert_ldm_vae_checkpoint(vae_checkpoint, vae_config, first_stage=False)
 
