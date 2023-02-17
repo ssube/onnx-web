@@ -221,3 +221,5 @@ def load_tensor(name: str, map_location=None):
         checkpoint = (
             checkpoint["state_dict"] if "state_dict" in checkpoint else checkpoint
         )
+
+    return checkpoint
