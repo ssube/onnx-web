@@ -24,7 +24,7 @@ def convert_upscale_resrgan(
     logger.info("converting Real ESRGAN model: %s -> %s", name, dest)
 
     if path.isfile(dest):
-        logger.info("ONNX model already exists, skipping.")
+        logger.info("ONNX model already exists, skipping")
         return
 
     logger.info("loading and training model")
@@ -65,4 +65,4 @@ def convert_upscale_resrgan(
         opset_version=ctx.opset,
         export_params=True,
     )
-    logger.info("Real ESRGAN exported to ONNX successfully.")
+    logger.info("real ESRGAN exported to ONNX successfully")

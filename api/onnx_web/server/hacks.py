@@ -41,7 +41,7 @@ def unload(exclude):
                 to_unload.append(mod)
                 break
 
-    logger.debug("Unloading modules for patching: %s", to_unload)
+    logger.debug("unloading modules for patching: %s", to_unload)
     for mod in to_unload:
         del sys.modules[mod]
 
@@ -126,28 +126,28 @@ def patch_cache_path(ctx: ServerContext, url: str, **kwargs) -> str:
         cache_path = path.basename(parsed.path)
 
     cache_path = path.join(ctx.cache_path, cache_path)
-    logger.debug("Patching download path: %s -> %s", url, cache_path)
+    logger.debug("patching download path: %s -> %s", url, cache_path)
 
     if path.exists(cache_path):
         return cache_path
     else:
-        raise FileNotFoundError("Missing cache file: %s" % (cache_path))
+        raise FileNotFoundError("missing cache file: %s" % (cache_path))
 
 
 def apply_patch_basicsr(ctx: ServerContext):
-    logger.debug("Patching BasicSR module...")
+    logger.debug("patching BasicSR module")
     basicsr.utils.download_util.download_file_from_google_drive = patch_not_impl
     basicsr.utils.download_util.load_file_from_url = partial(patch_cache_path, ctx)
 
 
 def apply_patch_codeformer(ctx: ServerContext):
-    logger.debug("Patching CodeFormer module...")
+    logger.debug("patching CodeFormer module")
     codeformer.facelib.utils.misc.download_pretrained_models = patch_not_impl
     codeformer.facelib.utils.misc.load_file_from_url = partial(patch_cache_path, ctx)
 
 
 def apply_patch_facexlib(ctx: ServerContext):
-    logger.debug("Patching Facexlib module...")
+    logger.debug("patching Facexlib module")
     facexlib.utils.load_file_from_url = partial(patch_cache_path, ctx)
 
 

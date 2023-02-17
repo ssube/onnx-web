@@ -26,18 +26,18 @@ class ModelCache:
 
     def set(self, tag: str, key: Any, value: Any) -> None:
         if self.limit == 0:
-            logger.debug("Cache limit set to 0, not caching model: %s", tag)
+            logger.debug("cache limit set to 0, not caching model: %s", tag)
             return
 
         for i in range(len(self.cache)):
             t, k, v = self.cache[i]
             if tag == t:
                 if key != k:
-                    logger.debug("Updating model cache: %s", tag)
+                    logger.debug("updating model cache: %s", tag)
                     self.cache[i] = (tag, key, value)
                     return
 
-        logger.debug("Adding new model to cache: %s", tag)
+        logger.debug("adding new model to cache: %s", tag)
         self.cache.append((tag, key, value))
         self.prune()
 
@@ -49,4 +49,4 @@ class ModelCache:
             )
             self.cache[:] = self.cache[-self.limit :]
         else:
-            logger.debug("Model cache below limit, %s of %s", total, self.limit)
+            logger.debug("model cache below limit, %s of %s", total, self.limit)

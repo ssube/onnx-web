@@ -24,7 +24,7 @@ def convert_correction_gfpgan(
     logger.info("converting GFPGAN model: %s -> %s", name, dest)
 
     if path.isfile(dest):
-        logger.info("ONNX model already exists, skipping.")
+        logger.info("ONNX model already exists, skipping")
         return
 
     logger.info("loading and training model")
@@ -66,4 +66,4 @@ def convert_correction_gfpgan(
         opset_version=ctx.opset,
         export_params=True,
     )
-    logger.info("GFPGAN exported to ONNX successfully.")
+    logger.info("GFPGAN exported to ONNX successfully")

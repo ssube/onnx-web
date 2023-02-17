@@ -84,7 +84,7 @@ def convert_diffusion_stable(
         logger.info("converting model with single VAE")
 
     if path.exists(dest_path):
-        logger.info("ONNX model already exists, skipping.")
+        logger.info("ONNX model already exists, skipping")
         return
 
     pipeline = StableDiffusionPipeline.from_pretrained(

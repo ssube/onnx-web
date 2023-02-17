@@ -907,7 +907,7 @@ def convert_open_clip_checkpoint(checkpoint):
     if 'cond_stage_model.model.text_projection' in checkpoint:
         d_model = int(checkpoint['cond_stage_model.model.text_projection'].shape[0])
     else:
-        logger.debug("No projection shape found, setting to 1024")
+        logger.debug("no projection shape found, setting to 1024")
         d_model = 1024
     text_model_dict["text_model.embeddings.position_ids"] = text_model.text_model.embeddings.get_buffer("position_ids")
 
@@ -962,7 +962,7 @@ def replace_symlinks(path, base):
             blob_path = None
 
         if blob_path is None:
-            logger.debug("NO BLOB")
+            logger.debug("no blob")
             return
         os.replace(blob_path, path)
     elif os.path.isdir(path):
@@ -985,7 +985,7 @@ def download_model(db_config: TrainingConfig, token):
     )
 
     if repo_info.sha is None:
-        logger.warning("Unable to fetch repo info: %s", hub_url)
+        logger.warning("unable to fetch repo info: %s", hub_url)
         return None, None
 
     siblings = repo_info.siblings
@@ -1049,7 +1049,7 @@ def download_model(db_config: TrainingConfig, token):
     logger.info(f"Fetching files: {files_to_fetch}")
 
     if not len(files_to_fetch):
-        logger.debug("Nothing to fetch!")
+        logger.debug("nothing to fetch")
         return None, None
 
     mytqdm = huggingface_hub.utils.tqdm.tqdm
@@ -1190,18 +1190,18 @@ def extract_checkpoint(
         map_location = torch.device("cpu")
 
         # Try to determine if v1 or v2 model if we have a ckpt
-        logger.info("Loading model from checkpoint.")
+        logger.info("loading model from checkpoint")
         _, extension = os.path.splitext(checkpoint_file)
         if extension.lower() == ".safetensors":
             os.environ["SAFETENSORS_FAST_GPU"] = "1"
             try:
-                logger.debug("Loading safetensors...")
+                logger.debug("loading safetensors")
                 checkpoint = safetensors.torch.load_file(checkpoint_file, device="cpu")
             except Exception as e:
                 logger.warn("Failed to load as safetensors file, falling back to torch...", e)
                 checkpoint = torch.jit.load(checkpoint_file)
         else:
-            logger.debug("Loading ckpt...")
+            logger.debug("loading ckpt")
             checkpoint = torch.load(checkpoint_file, map_location=map_location)
             checkpoint = checkpoint["state_dict"] if "state_dict" in checkpoint else checkpoint
 
@@ -1221,7 +1221,7 @@ def extract_checkpoint(
         if key_name in checkpoint and checkpoint[key_name].shape[-1] == 1024:
             if not is_512:
                 # v2.1 needs to upcast attention
-                logger.debug("Setting upcast_attention")
+                logger.debug("setting upcast_attention")
                 upcast_attention = True
             v2 = True
         else:
@@ -1249,10 +1249,10 @@ def extract_checkpoint(
                 original_config_file = config_check
 
         if original_config_file is None or not os.path.exists(original_config_file):
-            logger.warning("Unable to select a config file: %s" % (original_config_file))
+            logger.warning("unable to select a config file: %s" % (original_config_file))
             return
 
-        logger.debug(f"Trying to load: {original_config_file}")
+        logger.debug("trying to load: %s", original_config_file)
         original_config = load_yaml(original_config_file)
 
         num_train_timesteps = original_config.model.params.timesteps
@@ -1291,7 +1291,7 @@ def extract_checkpoint(
             raise ValueError(f"Scheduler of type {scheduler_type} doesn't exist!")
 
         # Convert the UNet2DConditionModel model.
-        logger.info("Converting UNet...")
+        logger.info("converting UNet")
         unet_config = create_unet_diffusers_config(original_config, image_size=image_size)
         unet_config["upcast_attention"] = upcast_attention
         unet = UNet2DConditionModel(**unet_config)
@@ -1304,7 +1304,7 @@ def extract_checkpoint(
         unet.load_state_dict(converted_unet_checkpoint)
 
         # Convert the VAE model.
-        logger.info("Converting VAE...")
+        logger.info("converting VAE")
         vae_config = create_vae_diffusers_config(original_config, image_size=image_size)
         converted_vae_checkpoint = convert_ldm_vae_checkpoint(checkpoint, vae_config)
 
@@ -1312,7 +1312,7 @@ def extract_checkpoint(
         vae.load_state_dict(converted_vae_checkpoint)
 
         # Convert the text model.
-        logger.info("Converting text encoder...")
+        logger.info("converting text encoder")
         text_model_type = original_config.model.params.cond_stage_config.target.split(".")[-1]
         if text_model_type == "FrozenOpenCLIPEmbedder":
             text_model = convert_open_clip_checkpoint(checkpoint)
@@ -1360,15 +1360,15 @@ def extract_checkpoint(
             pipe = LDMTextToImagePipeline(vqvae=vae, bert=text_model, tokenizer=tokenizer, unet=unet,
                                           scheduler=scheduler)
     except Exception:
-        logger.error("Exception setting up output: %s", traceback.format_exception(*sys.exc_info()))
+        logger.error("exception setting up output: %s", traceback.format_exception(*sys.exc_info()))
         pipe = None
 
     if pipe is None or db_config is None:
-        msg = "Pipeline or config is not set, unable to continue."
+        msg = "pipeline or config is not set, unable to continue."
         logger.error(msg)
         return
     else:
-        logger.info("Saving diffusion model...")
+        logger.info("saving diffusion model")
         pipe.save_pretrained(db_config.pretrained_model_name_or_path)
         result_status = f"Checkpoint successfully extracted to {db_config.pretrained_model_name_or_path}"
         revision = db_config.revision
@@ -1413,10 +1413,10 @@ def convert_diffusion_original(
     source = source or model["source"]
 
     dest = os.path.join(ctx.model_path, name)
-    logger.info("Converting original Diffusers checkpoint %s: %s -> %s", name, source, dest)
+    logger.info("converting original Diffusers checkpoint %s: %s -> %s", name, source, dest)
 
     if os.path.exists(dest):
-        logger.info("ONNX pipeline already exists, skipping.")
+        logger.info("ONNX pipeline already exists, skipping")
         return
 
     torch_name = name + "-torch"
@@ -1424,11 +1424,11 @@ def convert_diffusion_original(
     working_name = os.path.join(ctx.cache_path, torch_name, "working")
 
     if os.path.exists(torch_path):
-        logger.info("Torch pipeline already exists, reusing: %s", torch_path)
+        logger.info("torch pipeline already exists, reusing: %s", torch_path)
     else:
-        logger.info("Converting original Diffusers check to Torch model: %s -> %s", source, torch_path)
+        logger.info("converting original Diffusers check to Torch model: %s -> %s", source, torch_path)
         extract_checkpoint(ctx, torch_name, source, config_file=model.get("config"))
-        logger.info("Converted original Diffusers checkpoint to Torch model.")
+        logger.info("converted original Diffusers checkpoint to Torch model")
 
     convert_diffusion_stable(ctx, model, working_name)
     logger.info("ONNX pipeline saved to %s", name)

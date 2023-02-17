@@ -142,7 +142,7 @@ def fetch_model(
 
     for p in [model_path, model_onnx]:
         if path.exists(p):
-            logger.debug("Model already exists, skipping fetch.")
+            logger.debug("model already exists, skipping fetch")
             return p
 
     # add an extension if possible, some of the conversion code checks for it
@@ -160,26 +160,26 @@ def fetch_model(
         if source.startswith(proto):
             api_source = api_root % (remove_prefix(source, proto))
             logger.info(
-                "Downloading model from %s: %s -> %s", api_name, api_source, cache_name
+                "downloading model from %s: %s -> %s", api_name, api_source, cache_name
             )
             return download_progress([(api_source, cache_name)])
 
     if source.startswith(model_source_huggingface):
         hub_source = remove_prefix(source, model_source_huggingface)
-        logger.info("Downloading model from Huggingface Hub: %s", hub_source)
+        logger.info("downloading model from Huggingface Hub: %s", hub_source)
         # from_pretrained has a bunch of useful logic that snapshot_download by itself down not
         return hub_source
     elif source.startswith("https://"):
-        logger.info("Downloading model from: %s", source)
+        logger.info("downloading model from: %s", source)
         return download_progress([(source, cache_name)])
     elif source.startswith("http://"):
-        logger.warning("Downloading model from insecure source: %s", source)
+        logger.warning("downloading model from insecure source: %s", source)
         return download_progress([(source, cache_name)])
     elif source.startswith(path.sep) or source.startswith("."):
-        logger.info("Using local model: %s", source)
+        logger.info("using local model: %s", source)
         return source
     else:
-        logger.info("Unknown model location, using path as provided: %s", source)
+        logger.info("unknown model location, using path as provided: %s", source)
         return source
 
 
@@ -190,12 +190,12 @@ def convert_models(ctx: ConversionContext, args, models: Models):
             name = model.get("name")
 
             if name in args.skip:
-                logger.info("Skipping source: %s", name)
+                logger.info("skipping source: %s", name)
             else:
                 model_format = source_format(model)
                 source = model["source"]
                 dest = fetch_model(ctx, name, source, model_format=model_format)
-                logger.info("Finished downloading source: %s -> %s", source, dest)
+                logger.info("finished downloading source: %s -> %s", source, dest)
 
     if args.diffusion and "diffusion" in models:
         for model in models.get("diffusion"):
@@ -203,7 +203,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
             name = model.get("name")
 
             if name in args.skip:
-                logger.info("Skipping model: %s", name)
+                logger.info("skipping model: %s", name)
             else:
                 model_format = source_format(model)
                 source = fetch_model(
@@ -229,7 +229,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
             name = model.get("name")
 
             if name in args.skip:
-                logger.info("Skipping model: %s", name)
+                logger.info("skipping model: %s", name)
             else:
                 model_format = source_format(model)
                 source = fetch_model(
@@ -243,7 +243,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
             name = model.get("name")
 
             if name in args.skip:
-                logger.info("Skipping model: %s", name)
+                logger.info("skipping model: %s", name)
             else:
                 model_format = source_format(model)
                 source = fetch_model(
@@ -290,23 +290,23 @@ def main() -> int:
     logger.info("CLI arguments: %s", args)
 
     ctx = ConversionContext(half=args.half, opset=args.opset, token=args.token)
-    logger.info("Converting models in %s using %s", ctx.model_path, ctx.training_device)
+    logger.info("converting models in %s using %s", ctx.model_path, ctx.training_device)
 
     if ctx.half and ctx.training_device != "cuda":
         raise ValueError(
-            "Half precision model export is only supported on GPUs with CUDA"
+            "half precision model export is only supported on GPUs with CUDA"
         )
 
     if not path.exists(ctx.model_path):
-        logger.info("Model path does not existing, creating: %s", ctx.model_path)
+        logger.info("model path does not existing, creating: %s", ctx.model_path)
         makedirs(ctx.model_path)
 
-    logger.info("Converting base models.")
+    logger.info("converting base models")
     convert_models(ctx, args, base_models)
 
     for file in args.extras:
         if file is not None and file != "":
-            logger.info("Loading extra models from %s", file)
+            logger.info("loading extra models from %s", file)
             try:
                 with open(file, "r") as f:
                     data = safe_load(f.read())
@@ -318,12 +318,12 @@ def main() -> int:
 
                 try:
                     validate(data, schema)
-                    logger.info("Converting extra models.")
+                    logger.info("converting extra models")
                     convert_models(ctx, args, data)
                 except ValidationError as err:
-                    logger.error("Invalid data in extras file: %s", err)
+                    logger.error("invalid data in extras file: %s", err)
             except Exception as err:
-                logger.error("Error converting extra models: %s", err)
+                logger.error("error converting extra models: %s", err)
 
     return 0
 
