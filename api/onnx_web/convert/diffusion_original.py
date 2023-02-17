@@ -1311,6 +1311,7 @@ def extract_checkpoint(
         if vae_file is None:
             converted_vae_checkpoint = convert_ldm_vae_checkpoint(checkpoint, vae_config)
         else:
+            vae_file = os.path.join(ctx.model_path, vae_file)
             vae_checkpoint = safetensors.torch.load_file(vae_file, device="cpu")
             converted_vae_checkpoint = convert_ldm_vae_checkpoint(vae_checkpoint, vae_config)
 
