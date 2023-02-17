@@ -144,3 +144,9 @@ def run_gc(devices: List[DeviceParams] = []):
             with torch.cuda.device(device.torch_str()):
                 torch.cuda.empty_cache()
                 torch.cuda.ipc_collect()
+                mem_free, mem_total = torch.cuda.mem_get_info(device=device.torch_str())
+                logger.debug(
+                    "remaining CUDA VRAM usage: %s of %s",
+                    (mem_total - mem_free),
+                    mem_total,
+                )
