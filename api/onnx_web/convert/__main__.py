@@ -194,8 +194,12 @@ def convert_models(ctx: ConversionContext, args, models: Models):
             else:
                 model_format = source_format(model)
                 source = model["source"]
-                dest = fetch_model(ctx, name, source, model_format=model_format)
-                logger.info("finished downloading source: %s -> %s", source, dest)
+
+                try:
+                    dest = fetch_model(ctx, name, source, model_format=model_format)
+                    logger.info("finished downloading source: %s -> %s", source, dest)
+                except Exception as e:
+                    logger.error("error fetching source %s: %s", name, e)
 
     if args.diffusion and "diffusion" in models:
         for model in models.get("diffusion"):
@@ -206,22 +210,26 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 logger.info("skipping model: %s", name)
             else:
                 model_format = source_format(model)
-                source = fetch_model(
-                    ctx, name, model["source"], model_format=model_format
-                )
 
-                if model_format in model_formats_original:
-                    convert_diffusion_original(
-                        ctx,
-                        model,
-                        source,
+                try:
+                    source = fetch_model(
+                        ctx, name, model["source"], model_format=model_format
                     )
-                else:
-                    convert_diffusion_stable(
-                        ctx,
-                        model,
-                        source,
-                    )
+
+                    if model_format in model_formats_original:
+                        convert_diffusion_original(
+                            ctx,
+                            model,
+                            source,
+                        )
+                    else:
+                        convert_diffusion_stable(
+                            ctx,
+                            model,
+                            source,
+                        )
+                except Exception as e:
+                    logger.error("error converting diffusion model %s: %s", name, e)
 
     if args.upscaling and "upscaling" in models:
         for model in models.get("upscaling"):
@@ -232,10 +240,14 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 logger.info("skipping model: %s", name)
             else:
                 model_format = source_format(model)
-                source = fetch_model(
-                    ctx, name, model["source"], model_format=model_format
-                )
-                convert_upscale_resrgan(ctx, model, source)
+
+                try:
+                    source = fetch_model(
+                        ctx, name, model["source"], model_format=model_format
+                    )
+                    convert_upscale_resrgan(ctx, model, source)
+                except Exception as e:
+                    logger.error("error converting upscaling model %s: %s", name, e)
 
     if args.correction and "correction" in models:
         for model in models.get("correction"):
@@ -246,11 +258,13 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 logger.info("skipping model: %s", name)
             else:
                 model_format = source_format(model)
-                source = fetch_model(
-                    ctx, name, model["source"], model_format=model_format
-                )
-                convert_correction_gfpgan(ctx, model, source)
-
+                try:
+                    source = fetch_model(
+                        ctx, name, model["source"], model_format=model_format
+                    )
+                    convert_correction_gfpgan(ctx, model, source)
+                except Exception as e:
+                    logger.error("error converting correction model %s: %s", name, e)
 
 def main() -> int:
     parser = ArgumentParser(
