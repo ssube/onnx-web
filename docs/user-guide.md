@@ -30,6 +30,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Adding your own models](#adding-your-own-models)
     - [Model sources](#model-sources)
       - [Downloading models from Civitai](#downloading-models-from-civitai)
+    - [Using a custom VAE](#using-a-custom-vae)
   - [Tabs](#tabs)
     - [Txt2img tab](#txt2img-tab)
       - [Scheduler parameter](#scheduler-parameter)
@@ -257,6 +258,46 @@ which you can see and copy from the right-click menu:
 
 You want the Pruned SafeTensor, if one is available. Be careful downloading PickleTensors, they may contain unsafe
 code. The original, non-pruned models are much larger but are better for training.
+
+### Using a custom VAE
+
+You can use a custom VAE when converting models. Some models require a specific VAE, so if you get weird results,
+check the model card for a specific VAE. This works for both diffusers directories and original SD checkpoints. You
+can use the `sources` field in the extras file to download the VAE file or provide a HuggingFace model name.
+
+```json
+{
+  "diffusion": [
+    {
+      "name": "diffusion-stablydiffused-aesthetic-v2-6-ema",
+      "source": "civitai://6266?type=Pruned%20Model&format=SafeTensor",
+      "format": "safetensors",
+      "vae": ".cache/vae-ft-mse-840000-ema-pruned.safetensors"
+    },
+    {
+      "name": "stable-diffusion-onnx-v1-4",
+      "source": "CompVis/stable-diffusion-v1-4",
+      "vae": "stabilityai/sd-vae-ft-ema"
+    }
+  ],
+  "correction": [],
+  "upscaling": [],
+  "sources": [
+    {
+      "name": "vae-ft-mse-840000-ema-pruned",
+      "source": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors",
+      "format": "safetensors"
+    }
+  ]
+}
+```
+
+Some common VAE models include:
+
+- https://huggingface.co/stabilityai/sd-vae-ft-ema
+- https://huggingface.co/stabilityai/sd-vae-ft-ema-original
+- https://huggingface.co/stabilityai/sd-vae-ft-mse
+- https://huggingface.co/stabilityai/sd-vae-ft-mse-original
 
 ## Tabs
 

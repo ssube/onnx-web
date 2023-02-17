@@ -24,10 +24,12 @@ Please [see the User Guide](https://github.com/ssube/onnx-web/blob/main/docs/use
 - web app to generate and view images
   - [hosted on Github Pages](https://ssube.github.io/onnx-web), from your CDN, or locally
   - keeps your recent image history as you change tabs
-- supports many common pipelines
-  - txt2img mode
-  - img2img mode
-  - inpainting mode
+- supports many `diffusers` pipelines
+  - txt2img
+  - img2img
+  - inpainting
+  - upscale (with ONNX acceleration)
+- blending mode for combining images
 - supports upscaling and face correction
   - upscaling with Real ESRGAN or Stable Diffusion
   - face correction with CodeFormer or GFPGAN

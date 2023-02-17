@@ -40,6 +40,8 @@ These extra images can be helpful when debugging inpainting, especially poorly b
 
 ### Environment Variables
 
+Paths:
+
 - `ONNX_WEB_BUNDLE_PATH`
   - path where client bundle files can be found
 - `ONNX_WEB_MODEL_PATH`
@@ -48,15 +50,26 @@ These extra images can be helpful when debugging inpainting, especially poorly b
   - path where output images should be saved
 - `ONNX_WEB_PARAMS_PATH`
   - path to the directory where the `params.json` file can be found
-- `ONNX_WEB_CORS_ORIGIN`
-  - comma-delimited list of allowed origins for CORS headers
-- `ONNX_WEB_NUM_WORKERS`
-  - number of background workers for image pipelines
-  - this should be equal to or less than the number of available GPUs
+
+Others:
+
+- `ONNX_WEB_ANY_PLATFORM`
+  - whether or not to include the `any` option in the platform list
 - `ONNX_WEB_BLOCK_PLATFORMS`
   - comma-delimited list of platforms that should not be presented to users
   - further filters the list of available platforms returned by ONNX runtime
   - can be used to prevent CPU generation on shared servers
+- `ONNX_WEB_CACHE_MODELS`
+  - the number of recent models to keep in memory
+  - setting this to 0 will disable caching and free VRAM between images
+- `ONNX_WEB_CORS_ORIGIN`
+  - comma-delimited list of allowed origins for CORS headers
+- `ONNX_WEB_DEFAULT_PLATFORM`
+  - the default platform to show in the client
+  - overrides the `params.json` file
+- `ONNX_WEB_NUM_WORKERS`
+  - number of background workers for image pipelines
+  - this should be equal to or less than the number of available GPUs
 
 ### Server Parameters
 
