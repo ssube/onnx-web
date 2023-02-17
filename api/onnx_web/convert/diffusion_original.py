@@ -23,7 +23,6 @@ from logging import getLogger
 from typing import Dict, List
 
 import huggingface_hub.utils.tqdm
-import safetensors.torch
 import torch
 from diffusers import (
     AutoencoderKL,
@@ -1147,8 +1146,8 @@ def extract_checkpoint(
     extract_ema=False,
     train_unfrozen=False,
     is_512=True,
-    config_file: str =None,
-    vae_file: str =None,
+    config_file: str = None,
+    vae_file: str = None,
 ):
     """
 

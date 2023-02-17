@@ -38,7 +38,7 @@ ORT_TO_NP_TYPE = {
     "tensor(double)": np.float64,
 }
 
-TORCH_DTYPES = {
+ORT_TO_PT_TYPE = {
     "float16": torch.float16,
     "float32": torch.float32,
 }
@@ -112,7 +112,7 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
             prompt, device, num_images_per_prompt, do_classifier_free_guidance, negative_prompt
         )
 
-        latents_dtype = TORCH_DTYPES[str(text_embeddings.dtype)]
+        latents_dtype = ORT_TO_PT_TYPE[str(text_embeddings.dtype)]
 
         # 4. Preprocess image
         image = preprocess(image)
