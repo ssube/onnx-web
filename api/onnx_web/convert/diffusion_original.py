@@ -1428,7 +1428,8 @@ def convert_diffusion_original(
         logger.info("converted original Diffusers checkpoint to Torch model")
 
     # VAE has already been converted and will confuse HF repo lookup
-    del model["vae"]
+    if "vae" in model:
+        del model["vae"]
 
     convert_diffusion_stable(ctx, model, working_name)
     logger.info("ONNX pipeline saved to %s", name)
