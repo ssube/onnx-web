@@ -221,7 +221,9 @@ def load_tensor(name: str, map_location=None):
                     "failed to load with Torch JIT, falling back to PyTorch", e
                 )
                 checkpoint = torch.load(name, map_location=map_location)
-
+                checkpoint = (
+                    checkpoint["state_dict"] if "state_dict" in checkpoint else checkpoint
+                )
     else:
         logger.debug("loading ckpt")
         checkpoint = torch.load(name, map_location=map_location)
