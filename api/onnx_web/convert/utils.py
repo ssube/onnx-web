@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
 import requests
+import safetensors
 import torch
 from tqdm.auto import tqdm
 from yaml import safe_load
@@ -199,3 +200,24 @@ def remove_prefix(name, prefix):
         return name[len(prefix) :]
 
     return name
+
+
+def load_tensor(name: str, map_location=None):
+    logger.info("loading model from checkpoint")
+    _, extension = path.splitext(name)
+    if extension.lower() == ".safetensors":
+        environ["SAFETENSORS_FAST_GPU"] = "1"
+        try:
+            logger.debug("loading safetensors")
+            checkpoint = safetensors.torch.load_file(name, device="cpu")
+        except Exception as e:
+            logger.warning(
+                "failed to load as safetensors file, falling back to torch", e
+            )
+            checkpoint = torch.jit.load(name)
+    else:
+        logger.debug("loading ckpt")
+        checkpoint = torch.load(name, map_location=map_location)
+        checkpoint = (
+            checkpoint["state_dict"] if "state_dict" in checkpoint else checkpoint
+        )
