@@ -14,7 +14,7 @@ import { ServerParamsError } from './components/error/ServerParams.js';
 import { OnnxError } from './components/OnnxError.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
 import { getApiRoot, loadConfig, mergeConfig, PARAM_VERSION } from './config.js';
-import { ClientContext, ConfigContext, createStateSlices, OnnxState, STATE_VERSION, StateContext, LoggerContext } from './state.js';
+import { ClientContext, ConfigContext, createStateSlices, OnnxState, STATE_VERSION, StateContext, LoggerContext, STATE_KEY } from './state.js';
 
 export const INITIAL_LOAD_TIMEOUT = 5_000;
 
@@ -64,7 +64,7 @@ export async function main() {
         ...createBlendSlice(...slice),
         ...createResetSlice(...slice),
       }), {
-        name: 'onnx-web',
+        name: STATE_KEY,
         partialize(s) {
           return {
             ...s,
