@@ -304,7 +304,10 @@ def main() -> int:
     args = parser.parse_args()
     logger.info("CLI arguments: %s", args)
 
-    ctx = ConversionContext(half=args.half, opset=args.opset, token=args.token)
+    ctx = ConversionContext.from_environ()
+    ctx.half = args.half
+    ctx.opset = args.opset
+    ctx.token = args.token
     logger.info("converting models in %s using %s", ctx.model_path, ctx.training_device)
 
     if ctx.half and ctx.training_device != "cuda":

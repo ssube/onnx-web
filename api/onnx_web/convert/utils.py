@@ -24,11 +24,12 @@ class ConversionContext(ServerContext):
     def __init__(
         self,
         model_path: Optional[str] = None,
-        device: Optional[str] = None,
         cache_path: Optional[str] = None,
+        device: Optional[str] = None,
         half: Optional[bool] = False,
         opset: Optional[int] = None,
         token: Optional[str] = None,
+        **kwargs,
     ) -> None:
         super().__init__(self, model_path=model_path, cache_path=cache_path)
 

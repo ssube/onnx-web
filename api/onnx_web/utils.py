@@ -48,7 +48,7 @@ class ServerContext:
         num_workers = int(environ.get("ONNX_WEB_NUM_WORKERS", 1))
         cache_limit = int(environ.get("ONNX_WEB_CACHE_MODELS", num_workers + 2))
 
-        return ServerContext(
+        return cls(
             bundle_path=environ.get(
                 "ONNX_WEB_BUNDLE_PATH", path.join("..", "gui", "out")
             ),
