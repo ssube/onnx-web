@@ -28,6 +28,7 @@ class ServerContext:
         cache: ModelCache = None,
         cache_path: str = None,
         show_progress: bool = True,
+        optimizations: List[str] = [],
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -42,6 +43,7 @@ class ServerContext:
         self.cache = cache or ModelCache(num_workers)
         self.cache_path = cache_path or path.join(model_path, ".cache")
         self.show_progress = show_progress
+        self.optimizations = optimizations
 
     @classmethod
     def from_environ(cls):
@@ -64,6 +66,7 @@ class ServerContext:
             image_format=environ.get("ONNX_WEB_IMAGE_FORMAT", "png"),
             cache=ModelCache(limit=cache_limit),
             show_progress=get_boolean(environ, "ONNX_WEB_SHOW_PROGRESS", True),
+            optimizations=environ.get("ONNX_WEB_OPTIMIZATIONS", "").split(","),
         )
 
 

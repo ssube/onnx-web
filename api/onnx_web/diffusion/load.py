@@ -17,6 +17,7 @@ from diffusers import (
     KDPM2DiscreteScheduler,
     LMSDiscreteScheduler,
     PNDMScheduler,
+    StableDiffusionPipeline,
 )
 
 try:
@@ -87,6 +88,32 @@ def get_tile_latents(
     return full_latents[:, :, y:yt, x:xt]
 
 
+def optimize_pipeline(
+    server: ServerContext,
+    pipe: StableDiffusionPipeline,
+) -> None:
+    if "attention-slicing" in server.optimizations:
+        logger.debug("enabling attention slicing on SD pipeline")
+        pipe.enable_attention_slicing()
+
+    if "vae-slicing" in server.optimizations:
+        logger.debug("enabling VAE slicing on SD pipeline")
+        pipe.enable_vae_slicing()
+
+    if "sequential-cpu-offload" in server.optimizations:
+        logger.debug("enabling sequential CPU offload on SD pipeline")
+        pipe.enable_sequential_cpu_offload()
+    elif "model-cpu-offload" in server.optimizations:
+        # TODO: check for accelerate
+        logger.debug("enabling model CPU offload on SD pipeline")
+        pipe.enable_model_cpu_offload()
+
+    if "memory-efficient-attention" in server.optimizations:
+        # TODO: check for xformers
+        logger.debug("enabling memory efficient attention for SD pipeline")
+        pipe.enable_xformers_memory_efficient_attention()
+
+
 def load_pipeline(
     server: ServerContext,
     pipeline: DiffusionPipeline,
@@ -150,6 +177,8 @@ def load_pipeline(
 
         if not server.show_progress:
             pipe.set_progress_bar_config(disable=True)
+
+        optimize_pipeline(server, pipe)
 
         if device is not None and hasattr(pipe, "to"):
             pipe = pipe.to(device.torch_str())

@@ -5,6 +5,7 @@ import torch
 from diffusers import StableDiffusionUpscalePipeline
 from PIL import Image
 
+from ..diffusion.load import optimize_pipeline
 from ..diffusion.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
@@ -51,6 +52,8 @@ def load_stable_diffusion(
 
     if not server.show_progress:
         pipe.set_progress_bar_config(disable=True)
+
+    optimize_pipeline(server, pipe)
 
     server.cache.set("diffusion", cache_key, pipe)
     run_gc([device])
