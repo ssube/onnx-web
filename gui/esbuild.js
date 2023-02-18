@@ -3,8 +3,14 @@ import { join } from 'path';
 import alias from 'esbuild-plugin-alias';
 import { copy } from 'esbuild-plugin-copy';
 
-const debug = process.env['DEBUG'] === 'TRUE';
-const watch = process.env['WATCH'] === 'TRUE';
+function envTrue(key) {
+    const val = (process.env[key] || '').toLowerCase();
+    return val == '1' || val == 't' || val == 'true' || val == 'y' || val == 'yes';
+
+}
+
+const debug = envTrue('DEBUG');
+const watch = envTrue('WATCH');
 const root = process.cwd();
 
 const plugins = [];

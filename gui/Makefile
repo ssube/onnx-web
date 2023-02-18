@@ -55,3 +55,6 @@ lint: deps
 
 test: build
 	MOCHA_FILE=out/test-results.xml yarn c8 $(COVER_OPTS) mocha $(MOCHA_OPTS) "out/**/Test*.js"
+
+watch: deps
+	WATCH=TRUE make ci
