@@ -11,6 +11,7 @@ Please see [the user guide](user-guide.md) for descriptions of the client and ea
   - [Configuration](#configuration)
     - [Debug Mode](#debug-mode)
     - [Environment Variables](#environment-variables)
+    - [Pipeline Optimizations](#pipeline-optimizations)
     - [Server Parameters](#server-parameters)
   - [Containers](#containers)
     - [CPU](#cpu)
@@ -73,6 +74,39 @@ Others:
 - `ONNX_WEB_SHOW_PROGRESS`
   - show progress bars in the logs
   - disabling this can reduce noise in server logs, especially when logging to a file
+- `ONNX_WEB_OPTIMIZATIONS`
+  - comma-delimited list of optimizations to enable
+
+### Pipeline Optimizations
+
+- `diffusers-*`
+  - `diffusers-attention-slicing`
+    - https://huggingface.co/docs/diffusers/optimization/fp16#sliced-attention-for-additional-memory-savings
+  - `diffusers-cpu-offload-*`
+    - `diffusers-cpu-offload-sequential`
+      - not available for ONNX pipelines (most of them)
+      - https://huggingface.co/docs/diffusers/optimization/fp16#offloading-to-cpu-with-accelerate-for-memory-savings
+    - `diffusers-cpu-offload-model`
+      - not available for ONNX pipelines (most of them)
+      - https://huggingface.co/docs/diffusers/optimization/fp16#model-offloading-for-fast-inference-and-memory-savings
+  - `diffusers-memory-efficient-attention`
+    - requires [the `xformers` library](https://huggingface.co/docs/diffusers/optimization/xformers)
+    - https://huggingface.co/docs/diffusers/optimization/fp16#memory-efficient-attention
+  - `diffusers-vae-slicing`
+    - not available for ONNX pipelines (most of them)
+    - https://huggingface.co/docs/diffusers/optimization/fp16#sliced-vae-decode-for-larger-batches
+- `onnx-*`
+  - `onnx-low-memory`
+    - disable ONNX features that allocate more memory than is strictly required or keep memory after use
+  - `onnx-graph-*`
+    - `onnx-graph-disable`
+      - disable all ONNX graph optimizations
+    - `onnx-graph-basic`
+      - enable basic ONNX graph optimizations
+    - `onnx-graph-all`
+      - enable all ONNX graph optimizations
+  - `onnx-deterministic-compute`
+    - enable ONNX deterministic compute
 
 ### Server Parameters
 

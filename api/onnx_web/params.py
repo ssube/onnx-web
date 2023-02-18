@@ -107,13 +107,13 @@ class DeviceParams:
             sess.enable_mem_pattern = False
             sess.enable_mem_reuse = False
 
-        if "onnx-optimization-disable" in self.optimizations:
+        if "onnx-graph-disable" in self.optimizations:
             logger.debug("disabling all ONNX graph optimizations")
             sess.graph_optimization_level = GraphOptimizationLevel.ORT_DISABLE_ALL
-        elif "onnx-optimization-basic" in self.optimizations:
+        elif "onnx-graph-basic" in self.optimizations:
             logger.debug("enabling basic ONNX graph optimizations")
             sess.graph_optimization_level = GraphOptimizationLevel.ORT_ENABLE_BASIC
-        elif "onnx-optimization-all" in self.optimizations:
+        elif "onnx-graph-all" in self.optimizations:
             logger.debug("enabling all ONNX graph optimizations")
             sess.graph_optimization_level = GraphOptimizationLevel.ORT_ENABLE_ALL
 
