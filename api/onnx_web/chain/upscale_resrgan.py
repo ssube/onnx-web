@@ -37,16 +37,6 @@ def load_resrgan(
     if not path.isfile(model_path):
         raise Exception("Real ESRGAN model not found at %s" % model_path)
 
-    if x4_v3_tag in model_file:
-        # the x4-v3 model needs a different network
-        model = SRVGGNetCompact(
-            num_in_ch=3,
-            num_out_ch=3,
-            num_feat=64,
-            num_conv=32,
-            upscale=4,
-            act_type="prelu",
-        )
     elif params.format == "onnx":
         # use ONNX acceleration, if available
         model = OnnxNet(
@@ -56,14 +46,25 @@ def load_resrgan(
             sess_options=device.sess_options(),
         )
     elif params.format == "pth":
-        model = RRDBNet(
-            num_in_ch=3,
-            num_out_ch=3,
-            num_feat=64,
-            num_block=23,
-            num_grow_ch=32,
-            scale=params.scale,
-        )
+        if x4_v3_tag in model_file:
+            # the x4-v3 model needs a different network
+            model = SRVGGNetCompact(
+                num_in_ch=3,
+                num_out_ch=3,
+                num_feat=64,
+                num_conv=32,
+                upscale=4,
+                act_type="prelu",
+            )
+        else:
+            model = RRDBNet(
+                num_in_ch=3,
+                num_out_ch=3,
+                num_feat=64,
+                num_block=23,
+                num_grow_ch=32,
+                scale=params.scale,
+            )
     else:
         raise Exception("unknown platform %s" % params.format)
 
