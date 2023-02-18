@@ -22,12 +22,6 @@ class TileOrder:
     spiral = "spiral"
 
 
-class UpscaleOrder:
-    correct_first = "correct-first"
-    correct_last = "correct-last"
-    correct_both = "correct-both"
-
-
 Param = Union[str, int, float]
 Point = Tuple[int, int]
 
