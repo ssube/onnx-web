@@ -128,7 +128,7 @@
     "step": 8
   },
   "upscaleOrder": {
-    "default": "correction-last",
+    "default": "correction-first",
     "keys": [
       "correction-both",
       "correction-first",

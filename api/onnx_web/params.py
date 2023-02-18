@@ -210,6 +210,10 @@ class UpscaleParams:
         )
 
     def resize(self, size: Size) -> Size:
+        face_outscale = self.face_outscale
+        if self.upscale_order == "correction-both":
+            face_outscale *= self.face_outscale
+
         return Size(
             size.width * self.outscale * self.face_outscale,
             size.height * self.outscale * self.face_outscale,
