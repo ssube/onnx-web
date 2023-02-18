@@ -127,6 +127,14 @@
     "max": 512,
     "step": 8
   },
+  "upscaleOrder": {
+    "default": "correction-last",
+    "keys": [
+      "correction-both",
+      "correction-first",
+      "correction-last"
+    ]
+  },
   "upscaling": {
     "default": "",
     "keys": []

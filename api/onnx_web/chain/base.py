@@ -72,7 +72,8 @@ class ChainPipeline:
         """
         Append an additional stage to this pipeline.
         """
-        self.stages.append(stage)
+        if stage is not None:
+            self.stages.append(stage)
 
     def __call__(
         self,

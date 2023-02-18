@@ -22,6 +22,12 @@ class TileOrder:
     spiral = "spiral"
 
 
+class UpscaleOrder:
+    correct_first = "correct-first"
+    correct_last = "correct-last"
+    correct_both = "correct-both"
+
+
 Param = Union[str, int, float]
 Point = Tuple[int, int]
 
@@ -168,6 +174,7 @@ class UpscaleParams:
         scale: int = 4,
         pre_pad: int = 0,
         tile_pad: int = 10,
+        upscale_order: Literal["correction-first", "correction-last", "correction-both"] = "upscaling-first",
     ) -> None:
         self.upscale_model = upscale_model
         self.correction_model = correction_model
@@ -181,6 +188,7 @@ class UpscaleParams:
         self.pre_pad = pre_pad
         self.scale = scale
         self.tile_pad = tile_pad
+        self.upscale_order = upscale_order
 
     def rescale(self, scale: int):
         return UpscaleParams(
@@ -196,6 +204,7 @@ class UpscaleParams:
             scale=scale,
             pre_pad=self.pre_pad,
             tile_pad=self.tile_pad,
+            upscale_order=self.upscale_order,
         )
 
     def resize(self, size: Size) -> Size:
@@ -218,4 +227,5 @@ class UpscaleParams:
             "pre_pad": self.pre_pad,
             "scale": self.scale,
             "tile_pad": self.tile_pad,
+            "upscale_order": self.upscale_order,
         }

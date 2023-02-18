@@ -1,5 +1,6 @@
 import { mustExist } from '@apextoaster/js-utils';
-import { Checkbox, FormControlLabel, Stack } from '@mui/material';
+import { Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Stack } from '@mui/material';
+import { startCase } from 'lodash';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useStore } from 'zustand';
@@ -106,5 +107,22 @@ export function UpscaleControl() {
         });
       }}
     />
+    <FormControl>
+      <InputLabel id={'upscale-order'}>Upscale Order</InputLabel>
+      <Select
+        labelId={'upscale-order'}
+        label={'Upscale Order'}
+        value={upscale.upscaleOrder}
+        onChange={(e) => {
+          setUpscale({
+            upscaleOrder: e.target.value,
+          });
+        }}
+      >
+        {params.upscaleOrder.keys.map((name) =>
+          <MenuItem key={name} value={name}>{startCase(name)}</MenuItem>)
+        }
+      </Select>
+    </FormControl>
   </Stack>;
 }

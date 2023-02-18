@@ -255,6 +255,7 @@ def upscale_from_request() -> UpscaleParams:
     faces = get_not_empty(request.args, "faces", "false") == "true"
     face_outscale = get_and_clamp_int(request.args, "faceOutscale", 1, 4, 1)
     face_strength = get_and_clamp_float(request.args, "faceStrength", 0.5, 1.0, 0.0)
+    upscale_order = request.args.get("upscaleOrder", "correction-first")
 
     return UpscaleParams(
         upscaling,
@@ -266,10 +267,11 @@ def upscale_from_request() -> UpscaleParams:
         format="onnx",
         outscale=outscale,
         scale=scale,
+        upscale_order=upscale_order,
     )
 
 
-def check_paths(context: ServerContext):
+def check_paths(context: ServerContext) -> None:
     if not path.exists(context.model_path):
         raise RuntimeError("model path must exist")
 
@@ -283,7 +285,7 @@ def get_model_name(model: str) -> str:
     return file
 
 
-def load_models(context: ServerContext):
+def load_models(context: ServerContext) -> None:
     global diffusion_models
     global correction_models
     global upscaling_models
@@ -313,7 +315,7 @@ def load_models(context: ServerContext):
     upscaling_models.sort()
 
 
-def load_params(context: ServerContext):
+def load_params(context: ServerContext) -> None:
     global config_params
     params_file = path.join(context.params_path, "params.json")
     with open(params_file, "r") as f:
@@ -328,7 +330,7 @@ def load_params(context: ServerContext):
             config_platform["default"] = context.default_platform
 
 
-def load_platforms(context: ServerContext):
+def load_platforms(context: ServerContext) -> None:
     global available_platforms
 
     providers = list(get_available_providers())

@@ -114,6 +114,8 @@ export interface BrushParams {
  */
 export interface UpscaleParams {
   enabled: boolean;
+  upscaleOrder: string;
+
   denoise: number;
   scale: number;
   outscale: number;
