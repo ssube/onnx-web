@@ -12,6 +12,7 @@ import yaml
 from diffusers.utils.logging import disable_progress_bar
 from flask import Flask, jsonify, make_response, request, send_from_directory, url_for
 from flask_cors import CORS
+from huggingface_hub.utils.tqdm import disable_progress_bars
 from jsonschema import validate
 from onnxruntime import get_available_providers
 from PIL import Image
@@ -391,6 +392,7 @@ load_platforms(context)
 
 if not context.show_progress:
     disable_progress_bar()
+    disable_progress_bars()
 
 app = Flask(__name__)
 CORS(app, origins=context.cors_origin)
