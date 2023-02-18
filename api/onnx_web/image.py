@@ -1,7 +1,8 @@
+from typing import Tuple, Union
+
 import numpy as np
 from numpy import random
 from PIL import Image, ImageChops, ImageFilter, ImageOps
-from typing import Tuple, Union
 
 from .params import Border, Point, Size
 

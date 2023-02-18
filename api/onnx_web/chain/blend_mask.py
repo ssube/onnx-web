@@ -2,8 +2,8 @@ from logging import getLogger
 from typing import List, Optional
 
 from PIL import Image
-from onnx_web.image import valid_image
 
+from onnx_web.image import valid_image
 from onnx_web.output import save_image
 
 from ..params import ImageParams, StageParams
@@ -34,6 +34,9 @@ def blend_mask(
         save_image(server, "last-mask.png", mask)
         save_image(server, "last-mult-mask.png", mult_mask)
 
-    resized = [valid_image(s, min_dims=mult_mask.size, max_dims=mult_mask.size) for s in resized]
+    resized = [
+        valid_image(s, min_dims=mult_mask.size, max_dims=mult_mask.size)
+        for s in resized
+    ]
 
     return Image.composite(resized[0], resized[1], mult_mask)

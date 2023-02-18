@@ -22,7 +22,6 @@ import traceback
 from logging import getLogger
 from typing import Dict, List
 
-import huggingface_hub.utils.tqdm
 import torch
 from diffusers import (
     AutoencoderKL,
@@ -45,6 +44,7 @@ from diffusers.pipelines.latent_diffusion.pipeline_latent_diffusion import (
 from diffusers.pipelines.paint_by_example import PaintByExampleImageEncoder
 from diffusers.pipelines.stable_diffusion import StableDiffusionSafetyChecker
 from huggingface_hub import HfApi, hf_hub_download
+from huggingface_hub.utils.tqdm import tqdm
 from transformers import (
     AutoFeatureExtractor,
     BertTokenizerFast,
@@ -1054,9 +1054,8 @@ def download_model(db_config: TrainingConfig, token):
         logger.debug("nothing to fetch")
         return None, None
 
-    mytqdm = huggingface_hub.utils.tqdm.tqdm
     out_model = None
-    for repo_file in mytqdm(files_to_fetch, desc=f"Fetching {len(files_to_fetch)} files"):
+    for repo_file in tqdm(files_to_fetch, desc=f"Fetching {len(files_to_fetch)} files"):
         out = hf_hub_download(
             hub_url,
             filename=repo_file,

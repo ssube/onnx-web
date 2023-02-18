@@ -27,6 +27,7 @@ class ServerContext:
         image_format: str = "png",
         cache: ModelCache = None,
         cache_path: str = None,
+        show_progress: bool = True,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -40,6 +41,7 @@ class ServerContext:
         self.image_format = image_format
         self.cache = cache or ModelCache(num_workers)
         self.cache_path = cache_path or path.join(model_path, ".cache")
+        self.show_progress = show_progress
 
     @classmethod
     def from_environ(cls):
@@ -61,6 +63,7 @@ class ServerContext:
             default_platform=environ.get("ONNX_WEB_DEFAULT_PLATFORM", None),
             image_format=environ.get("ONNX_WEB_IMAGE_FORMAT", "png"),
             cache=ModelCache(limit=cache_limit),
+            show_progress=get_boolean(environ, "ONNX_WEB_SHOW_PROGRESS", True),
         )
 
 

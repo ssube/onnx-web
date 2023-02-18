@@ -70,6 +70,9 @@ Others:
 - `ONNX_WEB_NUM_WORKERS`
   - number of background workers for image pipelines
   - this should be equal to or less than the number of available GPUs
+- `ONNX_WEB_SHOW_PROGRESS`
+  - show progress bars in the logs
+  - disabling this can reduce noise in server logs, especially when logging to a file
 
 ### Server Parameters
 

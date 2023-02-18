@@ -9,6 +9,7 @@ from typing import Dict, List, Tuple, Union
 import numpy as np
 import torch
 import yaml
+from diffusers.utils.logging import disable_progress_bar
 from flask import Flask, jsonify, make_response, request, send_from_directory, url_for
 from flask_cors import CORS
 from jsonschema import validate
@@ -387,6 +388,9 @@ check_paths(context)
 load_models(context)
 load_params(context)
 load_platforms(context)
+
+if not context.show_progress:
+    disable_progress_bar()
 
 app = Flask(__name__)
 CORS(app, origins=context.cors_origin)

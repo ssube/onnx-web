@@ -8,8 +8,10 @@ from typing import Dict, List, Optional, Tuple, Union
 import requests
 import safetensors
 import torch
-from tqdm.auto import tqdm
+from huggingface_hub.utils.tqdm import tqdm
 from yaml import safe_load
+
+from ..utils import ServerContext
 
 logger = getLogger(__name__)
 
@@ -18,7 +20,7 @@ ModelDict = Dict[str, Union[str, int]]
 LegacyModel = Tuple[str, str, Optional[bool], Optional[bool], Optional[int]]
 
 
-class ConversionContext:
+class ConversionContext(ServerContext):
     def __init__(
         self,
         model_path: Optional[str] = None,
@@ -28,10 +30,8 @@ class ConversionContext:
         opset: Optional[int] = None,
         token: Optional[str] = None,
     ) -> None:
-        self.model_path = model_path or environ.get(
-            "ONNX_WEB_MODEL_PATH", path.join("..", "models")
-        )
-        self.cache_path = cache_path or path.join(self.model_path, ".cache")
+        super().__init__(self, model_path=model_path, cache_path=cache_path)
+
         self.half = half
         self.opset = opset
         self.token = token
