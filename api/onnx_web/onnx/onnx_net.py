@@ -57,9 +57,7 @@ class OnnxNet:
     def __call__(self, image: Any) -> Any:
         input_name = self.session.get_inputs()[0].name
         output_name = self.session.get_outputs()[0].name
-        output = self.session.run([output_name], {
-            input_name: image.cpu().numpy()
-        })[0]
+        output = self.session.run([output_name], {input_name: image.cpu().numpy()})[0]
         return OnnxTensor(output)
 
     def eval(self) -> None:

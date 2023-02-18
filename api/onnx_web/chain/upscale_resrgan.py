@@ -46,7 +46,7 @@ def load_resrgan(
             sess_options=device.sess_options(),
         )
     elif params.format == "pth":
-        if TAG_X4_V3  in model_file:
+        if TAG_X4_V3 in model_file:
             # the x4-v3 model needs a different network
             model = SRVGGNetCompact(
                 num_in_ch=3,
