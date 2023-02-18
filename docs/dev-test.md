@@ -9,14 +9,14 @@
     - [Models and Pipelines](#models-and-pipelines)
   - [GUI Development](#gui-development)
     - [Updating Github Pages](#updating-github-pages)
+    - [Watch mode](#watch-mode)
   - [Testing](#testing)
     - [Pre-Release Test Plan](#pre-release-test-plan)
     - [Known Issues](#known-issues)
 
 ## API Development
 
-- TODO: testing
-- TODO: lint/style
+Run `make ci` to run lint and the tests.
 
 ### Style
 
@@ -33,7 +33,7 @@ that is possible without causing memory access errors. Most logging from the loa
 
 ## GUI Development
 
-Run `make ci` to build the bundle.
+Run `make ci` to run lint, the tests, and build the bundle.
 
 ### Updating Github Pages
 
@@ -41,6 +41,10 @@ Checkout the `gh-pages` branch and run the `copy-bundle.sh` script, assuming you
 checked out to a directory named `onnx-web`.
 
 You can also clone the GH pages branch into its own directory to avoid switching between them.
+
+### Watch mode
+
+Run `make watch` or `WATCH=TRUE node esbuild.js` to run esbuild in watch mode with a development server.
 
 ## Testing
 
