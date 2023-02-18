@@ -148,6 +148,9 @@ def load_pipeline(
             scheduler=scheduler,
         )
 
+        if not server.show_progress:
+            pipe.set_progress_bar_config(disable=True)
+
         if device is not None and hasattr(pipe, "to"):
             pipe = pipe.to(device.torch_str())
 

@@ -49,6 +49,9 @@ def load_stable_diffusion(
             provider=device.provider,
         )
 
+    if not server.show_progress:
+        pipe.set_progress_bar_config(disable=True)
+
     server.cache.set("diffusion", cache_key, pipe)
     run_gc([device])
 
