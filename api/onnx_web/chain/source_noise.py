@@ -15,7 +15,7 @@ def source_noise(
     _server: ServerContext,
     _stage: StageParams,
     params: ImageParams,
-    source_image: Image.Image,
+    source: Image.Image,
     *,
     size: Size,
     noise_source: Callable,
@@ -23,10 +23,10 @@ def source_noise(
 ) -> Image.Image:
     logger.info("generating image from noise source")
 
-    if source_image is not None:
+    if source is not None:
         logger.warn("a source image was passed to a noise stage, but will be discarded")
 
-    output = noise_source(source_image, (size.width, size.height), (0, 0))
+    output = noise_source(source, (size.width, size.height), (0, 0))
 
     logger.info("final output image size: %sx%s", output.width, output.height)
     return output

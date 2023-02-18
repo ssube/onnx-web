@@ -100,14 +100,14 @@ def upscale_resrgan(
     server: ServerContext,
     stage: StageParams,
     _params: ImageParams,
-    source_image: Image.Image,
+    source: Image.Image,
     *,
     upscale: UpscaleParams,
     **kwargs,
 ) -> Image.Image:
     logger.info("upscaling image with Real ESRGAN: x%s", upscale.scale)
 
-    output = np.array(source_image)
+    output = np.array(source)
     upsampler = load_resrgan(server, upscale, job.get_device(), tile=stage.tile_size)
 
     output, _ = upsampler.enhance(output, outscale=upscale.outscale)

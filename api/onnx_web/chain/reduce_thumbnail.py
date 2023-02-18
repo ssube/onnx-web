@@ -14,12 +14,12 @@ def reduce_thumbnail(
     _server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
-    source_image: Image.Image,
+    source: Image.Image,
     *,
     size: Size,
     **kwargs,
 ) -> Image.Image:
-    image = source_image.copy()
+    image = source.copy()
 
     # TODO: should use a call to valid_image
     image = image.thumbnail((size.width, size.height))

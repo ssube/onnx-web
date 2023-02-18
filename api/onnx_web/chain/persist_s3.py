@@ -16,7 +16,7 @@ def persist_s3(
     server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
-    source_image: Image.Image,
+    source: Image.Image,
     *,
     output: str,
     bucket: str,
@@ -28,7 +28,7 @@ def persist_s3(
     s3 = session.client("s3", endpoint_url=endpoint_url)
 
     data = BytesIO()
-    source_image.save(data, format=server.image_format)
+    source.save(data, format=server.image_format)
     data.seek(0)
 
     try:
@@ -37,4 +37,4 @@ def persist_s3(
     except Exception as err:
         logger.error("error saving image to S3: %s", err)
 
-    return source_image
+    return source

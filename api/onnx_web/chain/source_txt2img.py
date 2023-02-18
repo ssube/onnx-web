@@ -18,7 +18,7 @@ def source_txt2img(
     server: ServerContext,
     _stage: StageParams,
     params: ImageParams,
-    source_image: Image.Image,
+    source: Image.Image,
     *,
     size: Size,
     callback: ProgressCallback = None,
@@ -28,7 +28,7 @@ def source_txt2img(
     size = size.with_args(**kwargs)
     logger.info("generating image using txt2img, %s steps: %s", params.steps, params.prompt)
 
-    if source_image is not None:
+    if source is not None:
         logger.warn(
             "a source image was passed to a txt2img stage, but will be discarded"
         )

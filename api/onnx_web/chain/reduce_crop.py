@@ -14,12 +14,12 @@ def reduce_crop(
     _server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
-    source_image: Image.Image,
+    source: Image.Image,
     *,
     origin: Size,
     size: Size,
     **kwargs,
 ) -> Image.Image:
-    image = source_image.crop((origin.width, origin.height, size.width, size.height))
+    image = source.crop((origin.width, origin.height, size.width, size.height))
     logger.info("created thumbnail with dimensions: %sx%s", image.width, image.height)
     return image

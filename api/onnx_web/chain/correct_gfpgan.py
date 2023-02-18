@@ -50,7 +50,7 @@ def correct_gfpgan(
     server: ServerContext,
     stage: StageParams,
     _params: ImageParams,
-    source_image: Image.Image,
+    source: Image.Image,
     *,
     upscale: UpscaleParams,
     **kwargs,
@@ -59,13 +59,13 @@ def correct_gfpgan(
 
     if upscale.correction_model is None:
         logger.warn("no face model given, skipping")
-        return source_image
+        return source
 
     logger.info("correcting faces with GFPGAN model: %s", upscale.correction_model)
     device = job.get_device()
     gfpgan = load_gfpgan(server, stage, upscale, device)
 
-    output = np.array(source_image)
+    output = np.array(source)
     _, _, output = gfpgan.enhance(
         output,
         has_aligned=False,

@@ -96,7 +96,7 @@ def run_img2img_pipeline(
     params: ImageParams,
     output: str,
     upscale: UpscaleParams,
-    source_image: Image.Image,
+    source: Image.Image,
     strength: float,
 ) -> None:
     pipe = load_pipeline(
@@ -112,7 +112,7 @@ def run_img2img_pipeline(
         logger.debug("using LPW pipeline for img2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.img2img(
-            source_image,
+            source,
             params.prompt,
             generator=rng,
             guidance_scale=params.cfg,
@@ -125,7 +125,7 @@ def run_img2img_pipeline(
         rng = np.random.RandomState(params.seed)
         result = pipe(
             params.prompt,
-            source_image,
+            source,
             generator=rng,
             guidance_scale=params.cfg,
             negative_prompt=params.negative_prompt,
@@ -146,7 +146,7 @@ def run_img2img_pipeline(
     )
 
     dest = save_image(server, output, image)
-    size = Size(*source_image.size)
+    size = Size(*source.size)
     save_params(server, output, params, size, upscale=upscale)
 
     del pipe
@@ -165,8 +165,8 @@ def run_inpaint_pipeline(
     size: Size,
     output: str,
     upscale: UpscaleParams,
-    source_image: Image.Image,
-    mask_image: Image.Image,
+    source: Image.Image,
+    mask: Image.Image,
     border: Border,
     noise_source: Any,
     mask_filter: Any,
@@ -187,9 +187,9 @@ def run_inpaint_pipeline(
         server,
         stage,
         params,
-        source_image,
+        source,
         border=border,
-        mask_image=mask_image,
+        mask=mask,
         fill_color=fill_color,
         mask_filter=mask_filter,
         noise_source=noise_source,
@@ -217,14 +217,14 @@ def run_upscale_pipeline(
     size: Size,
     output: str,
     upscale: UpscaleParams,
-    source_image: Image.Image,
+    source: Image.Image,
 ) -> None:
     # device = job.get_device()
     progress = job.get_progress_callback()
     stage = StageParams()
 
     image = run_upscale_correction(
-        job, server, stage, params, source_image, upscale=upscale, callback=progress
+        job, server, stage, params, source, upscale=upscale, callback=progress
     )
 
     dest = save_image(server, output, image)

@@ -657,7 +657,7 @@ class OnnxStableDiffusionLongPromptWeightingPipeline(OnnxStableDiffusionPipeline
         prompt: Union[str, List[str]],
         negative_prompt: Optional[Union[str, List[str]]] = None,
         image: Union[np.ndarray, PIL.Image.Image] = None,
-        mask_image: Union[np.ndarray, PIL.Image.Image] = None,
+        mask: Union[np.ndarray, PIL.Image.Image] = None,
         height: int = 512,
         width: int = 512,
         num_inference_steps: int = 50,
@@ -687,9 +687,9 @@ class OnnxStableDiffusionLongPromptWeightingPipeline(OnnxStableDiffusionPipeline
             image (`np.ndarray` or `PIL.Image.Image`):
                 `Image`, or tensor representing an image batch, that will be used as the starting point for the
                 process.
-            mask_image (`np.ndarray` or `PIL.Image.Image`):
+            mask (`np.ndarray` or `PIL.Image.Image`):
                 `Image`, or tensor representing an image batch, to mask `image`. White pixels in the mask will be
-                replaced by noise and therefore repainted, while black pixels will be preserved. If `mask_image` is a
+                replaced by noise and therefore repainted, while black pixels will be preserved. If `mask` is a
                 PIL image, it will be converted to a single channel (luminance) before use. If it's a tensor, it should
                 contain one color channel (L) instead of 3, so the expected shape would be `(B, H, W, 1)`.
             height (`int`, *optional*, defaults to 512):
@@ -782,10 +782,10 @@ class OnnxStableDiffusionLongPromptWeightingPipeline(OnnxStableDiffusionPipeline
             image = preprocess_image(image)
         if image is not None:
             image = image.astype(dtype)
-        if isinstance(mask_image, PIL.Image.Image):
-            mask_image = preprocess_mask(mask_image, self.vae_scale_factor)
-        if mask_image is not None:
-            mask = mask_image.astype(dtype)
+        if isinstance(mask, PIL.Image.Image):
+            mask = preprocess_mask(mask, self.vae_scale_factor)
+        if mask is not None:
+            mask = mask.astype(dtype)
             mask = np.concatenate([mask] * batch_size * num_images_per_prompt)
         else:
             mask = None
@@ -1057,7 +1057,7 @@ class OnnxStableDiffusionLongPromptWeightingPipeline(OnnxStableDiffusionPipeline
     def inpaint(
         self,
         image: Union[np.ndarray, PIL.Image.Image],
-        mask_image: Union[np.ndarray, PIL.Image.Image],
+        mask: Union[np.ndarray, PIL.Image.Image],
         prompt: Union[str, List[str]],
         negative_prompt: Optional[Union[str, List[str]]] = None,
         strength: float = 0.8,
@@ -1079,9 +1079,9 @@ class OnnxStableDiffusionLongPromptWeightingPipeline(OnnxStableDiffusionPipeline
             image (`np.ndarray` or `PIL.Image.Image`):
                 `Image`, or tensor representing an image batch, that will be used as the starting point for the
                 process. This is the image whose masked region will be inpainted.
-            mask_image (`np.ndarray` or `PIL.Image.Image`):
+            mask (`np.ndarray` or `PIL.Image.Image`):
                 `Image`, or tensor representing an image batch, to mask `image`. White pixels in the mask will be
-                replaced by noise and therefore repainted, while black pixels will be preserved. If `mask_image` is a
+                replaced by noise and therefore repainted, while black pixels will be preserved. If `mask` is a
                 PIL image, it will be converted to a single channel (luminance) before use. If it's a tensor, it should
                 contain one color channel (L) instead of 3, so the expected shape would be `(B, H, W, 1)`.
             prompt (`str` or `List[str]`):
@@ -1136,7 +1136,7 @@ class OnnxStableDiffusionLongPromptWeightingPipeline(OnnxStableDiffusionPipeline
             prompt=prompt,
             negative_prompt=negative_prompt,
             image=image,
-            mask_image=mask_image,
+            mask=mask,
             num_inference_steps=num_inference_steps,
             guidance_scale=guidance_scale,
             strength=strength,

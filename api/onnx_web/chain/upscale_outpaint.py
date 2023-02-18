@@ -22,11 +22,11 @@ def upscale_outpaint(
     server: ServerContext,
     stage: StageParams,
     params: ImageParams,
-    source_image: Image.Image,
+    source: Image.Image,
     *,
     border: Border,
     prompt: str = None,
-    mask_image: Image.Image = None,
+    mask: Image.Image = None,
     fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
@@ -38,34 +38,34 @@ def upscale_outpaint(
 
     margin_x = float(max(border.left, border.right))
     margin_y = float(max(border.top, border.bottom))
-    overlap = min(margin_x / source_image.width, margin_y / source_image.height)
+    overlap = min(margin_x / source.width, margin_y / source.height)
 
-    if mask_image is None:
+    if mask is None:
         # if no mask was provided, keep the full source image
-        mask_image = Image.new("RGB", source_image.size, "black")
+        mask = Image.new("RGB", source.size, "black")
 
-    source_image, mask_image, noise_image, full_dims = expand_image(
-        source_image,
-        mask_image,
+    source, mask, noise, full_dims = expand_image(
+        source,
+        mask,
         border,
         fill=fill_color,
         noise_source=noise_source,
         mask_filter=mask_filter,
     )
 
-    draw_mask = ImageDraw.Draw(mask_image)
+    draw_mask = ImageDraw.Draw(mask)
     full_size = Size(*full_dims)
     full_latents = get_latents_from_seed(params.seed, full_size)
 
     if is_debug():
-        save_image(server, "last-source.png", source_image)
-        save_image(server, "last-mask.png", mask_image)
-        save_image(server, "last-noise.png", noise_image)
+        save_image(server, "last-source.png", source)
+        save_image(server, "last-mask.png", mask)
+        save_image(server, "last-noise.png", noise)
 
     def outpaint(image: Image.Image, dims: Tuple[int, int, int]):
         left, top, tile = dims
         size = Size(*image.size)
-        mask = mask_image.crop((left, top, left + tile, top + tile))
+        mask = mask.crop((left, top, left + tile, top + tile))
 
         if is_debug():
             save_image(server, "tile-source.png", image)
@@ -105,7 +105,7 @@ def upscale_outpaint(
                 guidance_scale=params.cfg,
                 height=size.height,
                 latents=latents,
-                mask_image=mask,
+                mask=mask,
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 width=size.width,
@@ -118,7 +118,7 @@ def upscale_outpaint(
 
     if overlap == 0:
         logger.debug("outpainting with 0 margin, using grid tiling")
-        output = process_tile_grid(source_image, SizeChart.auto, 1, [outpaint])
+        output = process_tile_grid(source, SizeChart.auto, 1, [outpaint])
     elif border.left == border.right and border.top == border.bottom:
         logger.debug(
             "outpainting with an even border, using spiral tiling with %s overlap",
@@ -126,7 +126,7 @@ def upscale_outpaint(
         )
         output = process_tile_order(
             stage.tile_order,
-            source_image,
+            source,
             SizeChart.auto,
             1,
             [outpaint],
@@ -134,7 +134,7 @@ def upscale_outpaint(
         )
     else:
         logger.debug("outpainting with an uneven border, using grid tiling")
-        output = process_tile_grid(source_image, SizeChart.auto, 1, [outpaint])
+        output = process_tile_grid(source, SizeChart.auto, 1, [outpaint])
 
     logger.info("final output image size: %sx%s", output.width, output.height)
     return output

@@ -12,23 +12,23 @@ def get_pixel_index(x: int, y: int, width: int) -> int:
 
 
 def mask_filter_none(
-    mask_image: Image.Image, dims: Point, origin: Point, fill="white", **kw
+    mask: Image.Image, dims: Point, origin: Point, fill="white", **kw
 ) -> Image.Image:
     width, height = dims
 
     noise = Image.new("RGB", (width, height), fill)
-    noise.paste(mask_image, origin)
+    noise.paste(mask, origin)
 
     return noise
 
 
 def mask_filter_gaussian_multiply(
-    mask_image: Image.Image, dims: Point, origin: Point, rounds=3, **kw
+    mask: Image.Image, dims: Point, origin: Point, rounds=3, **kw
 ) -> Image.Image:
     """
     Gaussian blur with multiply, source image centered on white canvas.
     """
-    noise = mask_filter_none(mask_image, dims, origin)
+    noise = mask_filter_none(mask, dims, origin)
 
     for i in range(rounds):
         blur = noise.filter(ImageFilter.GaussianBlur(5))
@@ -38,12 +38,12 @@ def mask_filter_gaussian_multiply(
 
 
 def mask_filter_gaussian_screen(
-    mask_image: Image.Image, dims: Point, origin: Point, rounds=3, **kw
+    mask: Image.Image, dims: Point, origin: Point, rounds=3, **kw
 ) -> Image.Image:
     """
     Gaussian blur, source image centered on white canvas.
     """
-    noise = mask_filter_none(mask_image, dims, origin)
+    noise = mask_filter_none(mask, dims, origin)
 
     for i in range(rounds):
         blur = noise.filter(ImageFilter.GaussianBlur(5))
@@ -53,7 +53,7 @@ def mask_filter_gaussian_screen(
 
 
 def noise_source_fill_edge(
-    source_image: Image.Image, dims: Point, origin: Point, fill="white", **kw
+    source: Image.Image, dims: Point, origin: Point, fill="white", **kw
 ) -> Image.Image:
     """
     Identity transform, source image centered on white canvas.
@@ -61,13 +61,13 @@ def noise_source_fill_edge(
     width, height = dims
 
     noise = Image.new("RGB", (width, height), fill)
-    noise.paste(source_image, origin)
+    noise.paste(source, origin)
 
     return noise
 
 
 def noise_source_fill_mask(
-    source_image: Image.Image, dims: Point, origin: Point, fill="white", **kw
+    source: Image.Image, dims: Point, origin: Point, fill="white", **kw
 ) -> Image.Image:
     """
     Fill the whole canvas, no source or noise.
@@ -80,13 +80,13 @@ def noise_source_fill_mask(
 
 
 def noise_source_gaussian(
-    source_image: Image.Image, dims: Point, origin: Point, rounds=3, **kw
+    source: Image.Image, dims: Point, origin: Point, rounds=3, **kw
 ) -> Image.Image:
     """
     Gaussian blur, source image centered on white canvas.
     """
-    noise = noise_source_uniform(source_image, dims, origin)
-    noise.paste(source_image, origin)
+    noise = noise_source_uniform(source, dims, origin)
+    noise.paste(source, origin)
 
     for i in range(rounds):
         noise = noise.filter(ImageFilter.GaussianBlur(5))
@@ -95,7 +95,7 @@ def noise_source_gaussian(
 
 
 def noise_source_uniform(
-    source_image: Image.Image, dims: Point, origin: Point, **kw
+    source: Image.Image, dims: Point, origin: Point, **kw
 ) -> Image.Image:
     width, height = dims
     size = width * height
@@ -115,7 +115,7 @@ def noise_source_uniform(
 
 
 def noise_source_normal(
-    source_image: Image.Image, dims: Point, origin: Point, **kw
+    source: Image.Image, dims: Point, origin: Point, **kw
 ) -> Image.Image:
     width, height = dims
     size = width * height
@@ -135,9 +135,9 @@ def noise_source_normal(
 
 
 def noise_source_histogram(
-    source_image: Image.Image, dims: Point, origin: Point, **kw
+    source: Image.Image, dims: Point, origin: Point, **kw
 ) -> Image.Image:
-    r, g, b = source_image.split()
+    r, g, b = source.split()
     width, height = dims
     size = width * height
 
@@ -167,25 +167,25 @@ def noise_source_histogram(
 
 # very loosely based on https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/scripts/outpainting_mk_2.py#L175-L232
 def expand_image(
-    source_image: Image.Image,
-    mask_image: Image.Image,
+    source: Image.Image,
+    mask: Image.Image,
     expand: Border,
     fill="white",
     noise_source=noise_source_histogram,
     mask_filter=mask_filter_none,
 ):
-    full_width = expand.left + source_image.width + expand.right
-    full_height = expand.top + source_image.height + expand.bottom
+    full_width = expand.left + source.width + expand.right
+    full_height = expand.top + source.height + expand.bottom
 
     dims = (full_width, full_height)
     origin = (expand.left, expand.top)
 
     full_source = Image.new("RGB", dims, fill)
-    full_source.paste(source_image, origin)
+    full_source.paste(source, origin)
 
     # new mask pixels need to be filled with white so they will be replaced
-    full_mask = mask_filter(mask_image, dims, origin, fill="white")
-    full_noise = noise_source(source_image, dims, origin, fill=fill)
+    full_mask = mask_filter(mask, dims, origin, fill="white")
+    full_noise = noise_source(source, dims, origin, fill=fill)
     full_noise = ImageChops.multiply(full_noise, full_mask)
 
     full_source = Image.composite(full_noise, full_source, full_mask.convert("L"))

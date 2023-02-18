@@ -514,7 +514,7 @@ def img2img():
         return error_reply("source image is required")
 
     source_file = request.files.get("source")
-    source_image = Image.open(BytesIO(source_file.read())).convert("RGB")
+    source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
     device, params, size = pipeline_from_request()
     upscale = upscale_from_request()
@@ -530,7 +530,7 @@ def img2img():
     output = make_output_name(context, "img2img", params, size, extras=(strength,))
     logger.info("img2img job queued for: %s", output)
 
-    source_image = valid_image(source_image, min_dims=size, max_dims=size)
+    source = valid_image(source, min_dims=size, max_dims=size)
     executor.submit(
         output,
         run_img2img_pipeline,
@@ -538,7 +538,7 @@ def img2img():
         params,
         output,
         upscale,
-        source_image,
+        source,
         strength,
         needs_device=device,
     )
@@ -577,10 +577,10 @@ def inpaint():
         return error_reply("mask image is required")
 
     source_file = request.files.get("source")
-    source_image = Image.open(BytesIO(source_file.read())).convert("RGB")
+    source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
     mask_file = request.files.get("mask")
-    mask_image = Image.open(BytesIO(mask_file.read())).convert("RGB")
+    mask = Image.open(BytesIO(mask_file.read())).convert("RGB")
 
     device, params, size = pipeline_from_request()
     expand = border_from_request()
@@ -619,8 +619,8 @@ def inpaint():
     )
     logger.info("inpaint job queued for: %s", output)
 
-    source_image = valid_image(source_image, min_dims=size, max_dims=size)
-    mask_image = valid_image(mask_image, min_dims=size, max_dims=size)
+    source = valid_image(source, min_dims=size, max_dims=size)
+    mask = valid_image(mask, min_dims=size, max_dims=size)
     executor.submit(
         output,
         run_inpaint_pipeline,
@@ -629,8 +629,8 @@ def inpaint():
         size,
         output,
         upscale,
-        source_image,
-        mask_image,
+        source,
+        mask,
         expand,
         noise_source,
         mask_filter,
@@ -649,7 +649,7 @@ def upscale():
         return error_reply("source image is required")
 
     source_file = request.files.get("source")
-    source_image = Image.open(BytesIO(source_file.read())).convert("RGB")
+    source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
     device, params, size = pipeline_from_request()
     upscale = upscale_from_request()
@@ -657,7 +657,7 @@ def upscale():
     output = make_output_name(context, "upscale", params, size)
     logger.info("upscale job queued for: %s", output)
 
-    source_image = valid_image(source_image, min_dims=size, max_dims=size)
+    source = valid_image(source, min_dims=size, max_dims=size)
     executor.submit(
         output,
         run_upscale_pipeline,
@@ -666,7 +666,7 @@ def upscale():
         size,
         output,
         upscale,
-        source_image,
+        source,
         needs_device=device,
     )
 
@@ -723,9 +723,9 @@ def chain():
                 stage.name,
             )
             source_file = request.files.get(stage_source_name)
-            source_image = Image.open(BytesIO(source_file.read())).convert("RGB")
-            source_image = valid_image(source_image, max_dims=(size.width, size.height))
-            kwargs["source_image"] = source_image
+            source = Image.open(BytesIO(source_file.read())).convert("RGB")
+            source = valid_image(source, max_dims=(size.width, size.height))
+            kwargs["stage_source"] = source
 
         if stage_mask_name in request.files:
             logger.debug(
@@ -734,9 +734,9 @@ def chain():
                 stage.name,
             )
             mask_file = request.files.get(stage_mask_name)
-            mask_image = Image.open(BytesIO(mask_file.read())).convert("RGB")
-            mask_image = valid_image(mask_image, max_dims=(size.width, size.height))
-            kwargs["mask_image"] = mask_image
+            mask = Image.open(BytesIO(mask_file.read())).convert("RGB")
+            mask = valid_image(mask, max_dims=(size.width, size.height))
+            kwargs["stage_mask"] = mask
 
         pipeline.append((callback, stage, kwargs))
 
