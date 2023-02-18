@@ -14,7 +14,7 @@ logger = getLogger(__name__)
 last_pipeline_instance = None
 last_pipeline_params = (None, None)
 
-x4_v3_tag = "real-esrgan-x4-v3"
+TAG_X4_V3 = "real-esrgan-x4-v3"
 
 
 def load_resrgan(
@@ -37,17 +37,7 @@ def load_resrgan(
     if not path.isfile(model_path):
         raise Exception("Real ESRGAN model not found at %s" % model_path)
 
-    if x4_v3_tag in model_file:
-        # the x4-v3 model needs a different network
-        model = SRVGGNetCompact(
-            num_in_ch=3,
-            num_out_ch=3,
-            num_feat=64,
-            num_conv=32,
-            upscale=4,
-            act_type="prelu",
-        )
-    elif params.format == "onnx":
+    if params.format == "onnx":
         # use ONNX acceleration, if available
         model = OnnxNet(
             server,
@@ -56,20 +46,31 @@ def load_resrgan(
             sess_options=device.sess_options(),
         )
     elif params.format == "pth":
-        model = RRDBNet(
-            num_in_ch=3,
-            num_out_ch=3,
-            num_feat=64,
-            num_block=23,
-            num_grow_ch=32,
-            scale=params.scale,
-        )
+        if TAG_X4_V3 in model_file:
+            # the x4-v3 model needs a different network
+            model = SRVGGNetCompact(
+                num_in_ch=3,
+                num_out_ch=3,
+                num_feat=64,
+                num_conv=32,
+                upscale=4,
+                act_type="prelu",
+            )
+        else:
+            model = RRDBNet(
+                num_in_ch=3,
+                num_out_ch=3,
+                num_feat=64,
+                num_block=23,
+                num_grow_ch=32,
+                scale=params.scale,
+            )
     else:
         raise Exception("unknown platform %s" % params.format)
 
     dni_weight = None
-    if params.upscale_model == x4_v3_tag and params.denoise != 1:
-        wdn_model_path = model_path.replace(x4_v3_tag, "%s-wdn" % (x4_v3_tag))
+    if params.upscale_model == TAG_X4_V3 and params.denoise != 1:
+        wdn_model_path = model_path.replace(TAG_X4_V3, "%s-wdn" % TAG_X4_V3)
         model_path = [model_path, wdn_model_path]
         dni_weight = [params.denoise, 1 - params.denoise]
 
