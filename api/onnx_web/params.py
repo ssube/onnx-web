@@ -117,6 +117,8 @@ class DeviceParams:
         if "onnx-deterministic-compute" in self.optimizations:
             sess.use_deterministic_compute = True
 
+        return sess
+
     def torch_str(self) -> str:
         if self.device.startswith("cuda"):
             return self.device
