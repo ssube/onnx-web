@@ -121,7 +121,6 @@ def optimize_pipeline(
         except Exception as e:
             logger.warning("error while enabling model CPU offload: %s", e)
 
-
     if "memory-efficient-attention" in server.optimizations:
         # TODO: check for xformers
         logger.debug("enabling memory efficient attention for SD pipeline")
