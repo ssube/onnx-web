@@ -1,8 +1,9 @@
 import numpy as np
 from numpy import random
-from PIL import Image, ImageChops, ImageFilter
+from PIL import Image, ImageChops, ImageFilter, ImageOps
+from typing import Tuple, Union
 
-from .params import Border, Point
+from .params import Border, Point, Size
 
 
 def get_pixel_index(x: int, y: int, width: int) -> int:
@@ -189,3 +190,24 @@ def expand_image(
     full_source = Image.composite(full_noise, full_source, full_mask.convert("L"))
 
     return (full_source, full_mask, full_noise, (full_width, full_height))
+
+
+def valid_image(
+    image: Image.Image,
+    min_dims: Union[Size, Tuple[int, int]] = [512, 512],
+    max_dims: Union[Size, Tuple[int, int]] = [512, 512],
+) -> Image.Image:
+    min_x, min_y = min_dims
+    max_x, max_y = max_dims
+
+    if image.width > max_x or image.height > max_y:
+        image = ImageOps.contain(image, (max_x, max_y))
+
+    if image.width < min_x or image.height < min_y:
+        blank = Image.new(image.mode, (min_x, min_y), "black")
+        blank.paste(image)
+        image = blank
+
+    # check for square
+
+    return image

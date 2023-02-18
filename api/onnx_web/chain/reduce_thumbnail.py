@@ -20,6 +20,9 @@ def reduce_thumbnail(
     **kwargs,
 ) -> Image.Image:
     image = source_image.copy()
+
+    # TODO: should use a call to valid_image
     image = image.thumbnail((size.width, size.height))
+
     logger.info("created thumbnail with dimensions: %sx%s", image.width, image.height)
     return image

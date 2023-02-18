@@ -49,6 +49,7 @@ from .image import (  # mask filters; noise sources
     noise_source_histogram,
     noise_source_normal,
     noise_source_uniform,
+    valid_image,
 )
 from .output import json_params, make_output_name
 from .params import (
@@ -508,7 +509,7 @@ def img2img():
     output = make_output_name(context, "img2img", params, size, extras=(strength,))
     logger.info("img2img job queued for: %s", output)
 
-    source_image.thumbnail((size.width, size.height))
+    source_image = valid_image(source_image, min_dims=size, max_dims=size)
     executor.submit(
         output,
         run_img2img_pipeline,
@@ -597,8 +598,8 @@ def inpaint():
     )
     logger.info("inpaint job queued for: %s", output)
 
-    source_image.thumbnail((size.width, size.height))
-    mask_image.thumbnail((size.width, size.height))
+    source_image = valid_image(source_image, min_dims=size, max_dims=size)
+    mask_image = valid_image(mask_image, min_dims=size, max_dims=size)
     executor.submit(
         output,
         run_inpaint_pipeline,
@@ -635,7 +636,7 @@ def upscale():
     output = make_output_name(context, "upscale", params, size)
     logger.info("upscale job queued for: %s", output)
 
-    source_image.thumbnail((size.width, size.height))
+    source_image = valid_image(source_image, min_dims=size, max_dims=size)
     executor.submit(
         output,
         run_upscale_pipeline,
@@ -702,7 +703,7 @@ def chain():
             )
             source_file = request.files.get(stage_source_name)
             source_image = Image.open(BytesIO(source_file.read())).convert("RGB")
-            source_image.thumbnail((size.width, size.height))
+            source_image = valid_image(source_image, max_dims=(size.width, size.height))
             kwargs["source_image"] = source_image
 
         if stage_mask_name in request.files:
@@ -713,7 +714,7 @@ def chain():
             )
             mask_file = request.files.get(stage_mask_name)
             mask_image = Image.open(BytesIO(mask_file.read())).convert("RGB")
-            mask_image.thumbnail((size.width, size.height))
+            mask_image = valid_image(mask_image, max_dims=(size.width, size.height))
             kwargs["mask_image"] = mask_image
 
         pipeline.append((callback, stage, kwargs))
@@ -743,13 +744,16 @@ def blend():
 
     mask_file = request.files.get("mask")
     mask = Image.open(BytesIO(mask_file.read())).convert("RGBA")
+    mask = valid_image(mask)
 
     max_sources = 2
     sources = []
 
     for i in range(max_sources):
         source_file = request.files.get("source:%s" % (i))
-        sources.append(Image.open(BytesIO(source_file.read())).convert("RGBA"))
+        source = Image.open(BytesIO(source_file.read())).convert("RGBA")
+        source = valid_image(source, mask.size, mask.size)
+        sources.append(source)
 
     device, params, size = pipeline_from_request()
     upscale = upscale_from_request()

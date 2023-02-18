@@ -255,7 +255,7 @@ def run_blend_pipeline(
         server,
         stage,
         params,
-        sources=sources,
+        resized=sources,
         mask=mask,
         callback=progress,
     )
