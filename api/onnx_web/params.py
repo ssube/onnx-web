@@ -54,6 +54,9 @@ class Size:
         self.width = width
         self.height = height
 
+    def __iter__(self):
+        return iter([self.width, self.height])
+
     def __str__(self) -> str:
         return "%sx%s" % (self.width, self.height)
 
