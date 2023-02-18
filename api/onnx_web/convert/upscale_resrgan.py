@@ -3,11 +3,14 @@ from os import path
 
 import torch
 from basicsr.archs.rrdbnet_arch import RRDBNet
+from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 from torch.onnx import export
 
 from .utils import ConversionContext, ModelDict
 
 logger = getLogger(__name__)
+
+TAG_X4_V3 = "real-esrgan-x4-v3"
 
 
 @torch.no_grad()
@@ -28,14 +31,26 @@ def convert_upscale_resrgan(
         return
 
     logger.info("loading and training model")
-    model = RRDBNet(
-        num_in_ch=3,
-        num_out_ch=3,
-        num_feat=64,
-        num_block=23,
-        num_grow_ch=32,
-        scale=scale,
-    )
+
+    if TAG_X4_V3 in name:
+        # the x4-v3 model needs a different network
+        model = SRVGGNetCompact(
+            num_in_ch=3,
+            num_out_ch=3,
+            num_feat=64,
+            num_conv=32,
+            upscale=scale,
+            act_type="prelu",
+        )
+    else:
+        model = RRDBNet(
+            num_in_ch=3,
+            num_out_ch=3,
+            num_feat=64,
+            num_block=23,
+            num_grow_ch=32,
+            scale=scale,
+        )
 
     torch_model = torch.load(source, map_location=ctx.map_location)
     if "params_ema" in torch_model:
