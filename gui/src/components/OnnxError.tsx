@@ -57,15 +57,17 @@ export function OnnxError(props: OnnxErrorProps) {
             client state:
           </Typography>
           <Button onClick={clearState} color='error'>Reset State</Button>
+          <Typography variant='body1'>
+            If your server is running and available at <a href={props.root}>{props.root}</a>, make sure you are using
+            a compatible client and try updating to the latest release or unstable version:
+          </Typography>
+          <pre>
+            &gt; git branch{'\n'}
+            * main{'\n'}
+            {'\n'}
+            &gt; git pull{'\n'}
+          </pre>
           <Typography variant='body1' gutterBottom>
-            If your server is running and available at <a href={props.root}>{props.root}</a>, make sure you are on
-            the <code>main</code> branch and try updating to the latest version:
-            <pre>
-              &gt; git branch{'\n'}
-              * main{'\n'}
-              {'\n'}
-              &gt; git pull{'\n'}
-            </pre>
             You can also use <a href='https://github.com/ssube/onnx-web/releases'>a recent release</a>.
           </Typography>
         </Stack>
