@@ -55,6 +55,8 @@ def correct_gfpgan(
     upscale: UpscaleParams,
     **kwargs,
 ) -> Image.Image:
+    upscale = upscale.with_args(**kwargs)
+
     if upscale.correction_model is None:
         logger.warn("no face model given, skipping")
         return source_image

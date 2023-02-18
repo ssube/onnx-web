@@ -19,15 +19,13 @@ def blend_img2img(
     server: ServerContext,
     _stage: StageParams,
     params: ImageParams,
-    source_image: Image.Image,
+    source: Image.Image,
     *,
-    strength: float,
-    prompt: Optional[str] = None,
     callback: ProgressCallback = None,
     **kwargs,
 ) -> Image.Image:
-    prompt = prompt or params.prompt
-    logger.info("blending image using img2img, %s steps: %s", params.steps, prompt)
+    params = params.with_args(**kwargs)
+    logger.info("blending image using img2img, %s steps: %s", params.steps, params.prompt)
 
     pipe = load_pipeline(
         server,
@@ -41,25 +39,25 @@ def blend_img2img(
         logger.debug("using LPW pipeline for img2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.img2img(
-            prompt,
+            params.prompt,
             generator=rng,
             guidance_scale=params.cfg,
-            image=source_image,
+            image=source,
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
-            strength=strength,
+            strength=params.strength,
             callback=callback,
         )
     else:
         rng = np.random.RandomState(params.seed)
         result = pipe(
-            prompt,
+            params.prompt,
             generator=rng,
             guidance_scale=params.cfg,
-            image=source_image,
+            image=source,
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
-            strength=strength,
+            strength=params.strength,
             callback=callback,
         )
 

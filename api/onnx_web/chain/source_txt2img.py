@@ -21,12 +21,12 @@ def source_txt2img(
     source_image: Image.Image,
     *,
     size: Size,
-    prompt: str = None,
     callback: ProgressCallback = None,
     **kwargs,
 ) -> Image.Image:
-    prompt = prompt or params.prompt
-    logger.info("generating image using txt2img, %s steps: %s", params.steps, prompt)
+    params = params.with_args(**kwargs)
+    size = size.with_args(**kwargs)
+    logger.info("generating image using txt2img, %s steps: %s", params.steps, params.prompt)
 
     if source_image is not None:
         logger.warn(
@@ -47,7 +47,7 @@ def source_txt2img(
         logger.debug("using LPW pipeline for txt2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.text2img(
-            prompt,
+            params.prompt,
             height=size.height,
             width=size.width,
             generator=rng,
@@ -60,7 +60,7 @@ def source_txt2img(
     else:
         rng = np.random.RandomState(params.seed)
         result = pipe(
-            prompt,
+            params.prompt,
             height=size.height,
             width=size.width,
             generator=rng,

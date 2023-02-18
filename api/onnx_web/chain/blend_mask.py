@@ -19,7 +19,7 @@ def blend_mask(
     _stage: StageParams,
     _params: ImageParams,
     *,
-    resized: Optional[List[Image.Image]] = None,
+    sources: Optional[List[Image.Image]] = None,
     mask: Optional[Image.Image] = None,
     _callback: ProgressCallback = None,
     **kwargs,
@@ -36,7 +36,7 @@ def blend_mask(
 
     resized = [
         valid_image(s, min_dims=mult_mask.size, max_dims=mult_mask.size)
-        for s in resized
+        for s in sources
     ]
 
     return Image.composite(resized[0], resized[1], mult_mask)

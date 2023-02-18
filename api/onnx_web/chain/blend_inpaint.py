@@ -22,27 +22,29 @@ def blend_inpaint(
     server: ServerContext,
     stage: StageParams,
     params: ImageParams,
-    source_image: Image.Image,
+    source: Image.Image,
     *,
     expand: Border,
-    mask_image: Optional[Image.Image] = None,
+    mask: Optional[Image.Image] = None,
     fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
     callback: ProgressCallback = None,
     **kwargs,
 ) -> Image.Image:
+    params = params.with_args(**kwargs)
+    expand = expand.with_args(**kwargs)
     logger.info(
         "blending image using inpaint, %s steps: %s", params.steps, params.prompt
     )
 
-    if mask_image is None:
+    if mask is None:
         # if no mask was provided, keep the full source image
-        mask_image = Image.new("RGB", source_image.size, "black")
+        mask = Image.new("RGB", source.size, "black")
 
-    source_image, mask_image, noise_image, _full_dims = expand_image(
-        source_image,
-        mask_image,
+    source, mask, noise, _full_dims = expand_image(
+        source,
+        mask,
         expand,
         fill=fill_color,
         noise_source=noise_source,
@@ -50,14 +52,14 @@ def blend_inpaint(
     )
 
     if is_debug():
-        save_image(server, "last-source.png", source_image)
-        save_image(server, "last-mask.png", mask_image)
-        save_image(server, "last-noise.png", noise_image)
+        save_image(server, "last-source.png", source)
+        save_image(server, "last-mask.png", mask)
+        save_image(server, "last-noise.png", noise)
 
     def outpaint(image: Image.Image, dims: Tuple[int, int, int]):
         left, top, tile = dims
         size = Size(*image.size)
-        mask = mask_image.crop((left, top, left + tile, top + tile))
+        mask = mask.crop((left, top, left + tile, top + tile))
 
         if is_debug():
             save_image(server, "tile-source.png", image)
@@ -108,7 +110,7 @@ def blend_inpaint(
         return result.images[0]
 
     output = process_tile_order(
-        stage.tile_order, source_image, SizeChart.auto, 1, [outpaint]
+        stage.tile_order, source, SizeChart.auto, 1, [outpaint]
     )
 
     logger.info("final output image size", output.size)

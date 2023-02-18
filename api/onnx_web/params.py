@@ -47,6 +47,14 @@ class Border:
             "bottom": self.bottom,
         }
 
+    def with_args(self, **kwargs):
+        return Border(
+            kwargs.get("left", self.left),
+            kwargs.get("right", self.right),
+            kwargs.get("top", self.top),
+            kwargs.get("bottom", self.bottom),
+        )
+
     @classmethod
     def even(cls, all: int):
         return Border(all, all, all, all)
@@ -74,6 +82,12 @@ class Size:
             "height": self.height,
             "width": self.width,
         }
+
+    def with_args(self, **kwargs):
+        return Size(
+            kwargs.get("height", self.height),
+            kwargs.get("width", self.width),
+        )
 
 
 class DeviceParams:
@@ -156,12 +170,24 @@ class ImageParams:
             "model": self.model,
             "scheduler": self.scheduler.__name__,
             "prompt": self.prompt,
-            "negativePrompt": self.negative_prompt,
+            "negative_prompt": self.negative_prompt,
             "cfg": self.cfg,
             "seed": self.seed,
             "steps": self.steps,
             "lpw": self.lpw,
         }
+
+    def with_args(self, **kwargs):
+        return ImageParams(
+            kwargs.get("model", self.model),
+            kwargs.get("scheduler", self.scheduler),
+            kwargs.get("prompt", self.prompt),
+            kwargs.get("cfg", self.cfg),
+            kwargs.get("steps", self.steps),
+            kwargs.get("seed", self.seed),
+            kwargs.get("negative_prompt", self.negative_prompt),
+            kwargs.get("lpw", self.lpw),
+        )
 
 
 class StageParams:
@@ -259,3 +285,20 @@ class UpscaleParams:
             "tile_pad": self.tile_pad,
             "upscale_order": self.upscale_order,
         }
+
+    def with_args(self, **kwargs):
+        return ImageParams(
+            kwargs.get("upscale_model", self.upscale_model),
+            kwargs.get("correction_model", self.correction_model),
+            kwargs.get("denoise", self.denoise),
+            kwargs.get("faces", self.faces),
+            kwargs.get("face_outscale", self.face_outscale),
+            kwargs.get("face_strength", self.face_strength),
+            kwargs.get("format", self.format),
+            kwargs.get("half", self.half),
+            kwargs.get("outscale", self.outscale),
+            kwargs.get("pre_pad", self.pre_pad),
+            kwargs.get("scale", self.scale),
+            kwargs.get("tile_pad", self.tile_pad),
+            kwargs.get("upscale_order", self.upscale_order),
+        )
