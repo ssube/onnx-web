@@ -65,6 +65,8 @@ if (watch) {
     await ctx.watch();
 
     const { host, port } = await ctx.serve({
+        host: '127.0.0.1',
+        port: 8000,
         servedir: 'out/',
     });
 
