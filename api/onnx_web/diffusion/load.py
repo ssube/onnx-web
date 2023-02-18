@@ -94,24 +94,41 @@ def optimize_pipeline(
 ) -> None:
     if "attention-slicing" in server.optimizations:
         logger.debug("enabling attention slicing on SD pipeline")
-        pipe.enable_attention_slicing()
+        try:
+            pipe.enable_attention_slicing()
+        except Exception as e:
+            logger.warning("error enabling attention slicing: %s", e)
 
     if "vae-slicing" in server.optimizations:
         logger.debug("enabling VAE slicing on SD pipeline")
-        pipe.enable_vae_slicing()
+        try:
+            pipe.enable_vae_slicing()
+        except Exception as e:
+            logger.warning("error enabling VAE slicing: %s", e)
 
     if "sequential-cpu-offload" in server.optimizations:
         logger.debug("enabling sequential CPU offload on SD pipeline")
-        pipe.enable_sequential_cpu_offload()
+        try:
+            pipe.enable_sequential_cpu_offload()
+        except Exception as e:
+            logger.warning("error enabling sequential CPU offload: %s", e)
+
     elif "model-cpu-offload" in server.optimizations:
         # TODO: check for accelerate
         logger.debug("enabling model CPU offload on SD pipeline")
-        pipe.enable_model_cpu_offload()
+        try:
+            pipe.enable_model_cpu_offload()
+        except Exception as e:
+            logger.warning("error enabling model CPU offload: %s", e)
+
 
     if "memory-efficient-attention" in server.optimizations:
         # TODO: check for xformers
         logger.debug("enabling memory efficient attention for SD pipeline")
-        pipe.enable_xformers_memory_efficient_attention()
+        try:
+            pipe.enable_xformers_memory_efficient_attention()
+        except Exception as e:
+            logger.warning("error enabling memory efficient attention: %s", e)
 
 
 def load_pipeline(
