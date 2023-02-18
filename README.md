@@ -467,7 +467,7 @@ Still in the `gui/` directory, build the UI bundle and run the dev server with N
 
 ### Hosting the client
 
-You should be able to access the web interface at http://127.0.0.1:3000/index.html or your local machine's hostname.
+You should be able to access the web interface at http://127.0.0.1:8000/index.html or your local machine's hostname.
 
 - If you get a `Connection Refused` error, make sure you are using the correct address and the dev server is still running.
 - If you get a `File not found` error, make sure you have built the UI bundle (`make bundle`) and are using the `/index.html` path

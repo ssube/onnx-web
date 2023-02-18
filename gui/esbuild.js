@@ -31,8 +31,8 @@ const config = {
     sourcemap: true,
 };
 
-if(watch) {
-    const copyArray = (files) => files.map(file => 
+if (watch) {
+    const copyArray = (files) => files.map(file =>
         copy({
             resolveFrom: 'cwd',
             assets: {

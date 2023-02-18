@@ -615,7 +615,7 @@ If you are running the GUI separately, such as when using nginx or for developme
 
 - TCP/80 for the GUI using nginx without a container
 - TCP/8000 for the GUI using the nginx container
-- TCP/3000 for the GUI dev server
+- TCP/8000 for the GUI dev server
 
 #### Error: name 'cmd' is not defined
 
