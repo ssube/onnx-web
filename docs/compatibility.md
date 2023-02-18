@@ -34,15 +34,23 @@
 
 ## Model/Platform Acceleration
 
-| Model            | CUDA | DirectML | ROCm  | CPU |
-| ---------------- | ---- | -------- | ----- | --- |
-| Stable Diffusion | yes  | yes      | yes   | yes |
-| Real ESRGAN      | yes  | yes      | no, 1 | yes |
-| GFPGAN           | 2    | 2        | 2     | yes |
+| Model            | ONNX | CUDA  | DirectML | ROCm  | CPU |
+| ---------------- | ---- | ----- | -------- | ----- | --- |
+| Stable Diffusion | yes  | yes   | yes      | yes   | yes |
+| - txt2img        | yes  | ^     | ^        | ^     | ^   |
+| - img2img        | yes  | ^     | ^        | ^     | ^   |
+| - inpaint        | yes  | ^     | ^        | ^     | ^   |
+| - upscale        | yes  | ^     | ^        | ^     | ^   |
+| Real ESRGAN      | yes  | no, 1 | yes      | no, 2 | yes |
+| - x2/x4 plus     | yes  | ^     | ^        | ^     | ^   |
+| - v3             | yes  | ^     | ^        | ^     | ^   |
+| GFPGAN           | no   | -     | -        | -     | -   |
+| CodeFormer       | no   | -     | -        | -     | -   |
 
 ### Model Notes
 
-1. Real ESRGAN running on ROCm crashes with an error:
+1. Real ESRGAN running on CUDA falls back to the CPU provider with an unspecified error
+2. Real ESRGAN running on ROCm crashes with an error:
 
    ```none
       File "/home/ssube/onnx-web/api/onnx_web/upscale.py", line 67, in __call__
@@ -51,5 +59,3 @@
         return self._sess.run(output_names, input_feed, run_options)
     onnxruntime.capi.onnxruntime_pybind11_state.Fail: [ONNXRuntimeError] : 1 : FAIL : Non-zero status code returned while running FusedConv node. Name:'/body/body.0/rdb1/conv1/Conv' Status Message: MIOPEN failure 1: miopenStatusNotInitialized ; GPU=0 ; hostname=ssube-notwin ; expr=status_;
     ```
-
-2. GFPGAN seems to always be running in CPU mode

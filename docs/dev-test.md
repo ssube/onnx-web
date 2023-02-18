@@ -91,6 +91,11 @@ Testing:
   - 1024x768 input
     - [ ] should work
 - inpaint
+  - regular inpaint
+    - black mask
+      - [ ] should keep all pixels, same image
+    - white mask
+      - [ ] should replace all pixels, different image
   - outpaint
     - 0 all sides
       - [ ] should work, run 1 tile
@@ -102,7 +107,6 @@ Testing:
       - [ ] should work, run 3 tiles
 - upscale
   - Real ESRGAN
-  - Real ESRGAN
     - x4 with CodeFormer
       - [ ] should work
     - x4 with GFPGAN
@@ -113,8 +117,6 @@ Testing:
       - [ ] should sort of work: ignores scale and uses x2
     - x4 model and x2 scale
       - [ ] should fail: tiles
-    - v3 model and x2 scale
-      - [ ] should work
     - v3 model and x4 scale
       - [ ] should work
   - Stable Diffusion
@@ -127,6 +129,16 @@ Testing:
     - with GFPGAN
       - [ ] should work
     - without face correction
+      - [ ] should work
+- blend
+  - two 512x512 inputs
+    - [ ] should work
+  - two 1024x1024 inputs
+    - [ ] should work
+  - two different size inputs
+    - 256x256 and 512x512
+      - [ ] should work
+    - 512x512 and 1024x1024
       - [ ] should work
 - interactions
   - generate a new image
@@ -151,9 +163,25 @@ Testing:
     - [ ] should switch to the blend tab
     - [ ] should populate the image sources
     - [ ] the generate button should be enabled once both sources have been populated
-  - persist on refresh
+  - state should persist on refresh
     - [ ] loading images
     - [ ] switching tabs
+    - [ ] images sources do not
+- schedulers
+  - [ ] DDIM
+  - [ ] DDPM
+  - [ ] DEIS Multi
+  - [ ] DPM Multi
+  - [ ] DPM Single
+  - [ ] Euler A
+  - [ ] Euler
+  - [ ] Heun
+  - [ ] iPNDM
+  - [ ] KDPM2 A
+  - [ ] KDPM2
+  - [ ] Karras Ve
+  - [ ] LMS
+  - [ ] PNDM
 
 Release:
 
