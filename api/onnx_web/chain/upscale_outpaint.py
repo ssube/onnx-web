@@ -62,14 +62,14 @@ def upscale_outpaint(
         save_image(server, "last-mask.png", mask)
         save_image(server, "last-noise.png", noise)
 
-    def outpaint(image: Image.Image, dims: Tuple[int, int, int]):
+    def outpaint(tile_source: Image.Image, dims: Tuple[int, int, int]):
         left, top, tile = dims
-        size = Size(*image.size)
-        mask = mask.crop((left, top, left + tile, top + tile))
+        size = Size(*tile_source.size)
+        tile_mask = mask.crop((left, top, left + tile, top + tile))
 
         if is_debug():
-            save_image(server, "tile-source.png", image)
-            save_image(server, "tile-mask.png", mask)
+            save_image(server, "tile-source.png", tile_source)
+            save_image(server, "tile-mask.png", tile_mask)
 
         latents = get_tile_latents(full_latents, dims)
         pipe = load_pipeline(
@@ -84,8 +84,8 @@ def upscale_outpaint(
             logger.debug("using LPW pipeline for inpaint")
             rng = torch.manual_seed(params.seed)
             result = pipe.inpaint(
-                image,
-                mask,
+                tile_source,
+                tile_mask,
                 prompt,
                 generator=rng,
                 guidance_scale=params.cfg,
@@ -100,12 +100,12 @@ def upscale_outpaint(
             rng = np.random.RandomState(params.seed)
             result = pipe(
                 prompt,
-                image,
+                tile_source,
                 generator=rng,
                 guidance_scale=params.cfg,
                 height=size.height,
                 latents=latents,
-                mask=mask,
+                mask=tile_mask,
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 width=size.width,

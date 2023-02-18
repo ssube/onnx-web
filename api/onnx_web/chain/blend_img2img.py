@@ -1,5 +1,4 @@
 from logging import getLogger
-from typing import Optional
 
 import numpy as np
 import torch
@@ -25,7 +24,9 @@ def blend_img2img(
     **kwargs,
 ) -> Image.Image:
     params = params.with_args(**kwargs)
-    logger.info("blending image using img2img, %s steps: %s", params.steps, params.prompt)
+    logger.info(
+        "blending image using img2img, %s steps: %s", params.steps, params.prompt
+    )
 
     pipe = load_pipeline(
         server,

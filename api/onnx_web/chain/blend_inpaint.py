@@ -56,14 +56,14 @@ def blend_inpaint(
         save_image(server, "last-mask.png", mask)
         save_image(server, "last-noise.png", noise)
 
-    def outpaint(image: Image.Image, dims: Tuple[int, int, int]):
+    def outpaint(tile_source: Image.Image, dims: Tuple[int, int, int]):
         left, top, tile = dims
-        size = Size(*image.size)
-        mask = mask.crop((left, top, left + tile, top + tile))
+        size = Size(*tile_source.size)
+        tile_mask = mask.crop((left, top, left + tile, top + tile))
 
         if is_debug():
-            save_image(server, "tile-source.png", image)
-            save_image(server, "tile-mask.png", mask)
+            save_image(server, "tile-source.png", tile_source)
+            save_image(server, "tile-mask.png", tile_mask)
 
         latents = get_latents_from_seed(params.seed, size)
         pipe = load_pipeline(
@@ -83,9 +83,9 @@ def blend_inpaint(
                 generator=rng,
                 guidance_scale=params.cfg,
                 height=size.height,
-                image=image,
+                image=tile_source,
                 latents=latents,
-                mask=mask,
+                mask=tile_mask,
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 width=size.width,
@@ -98,7 +98,7 @@ def blend_inpaint(
                 generator=rng,
                 guidance_scale=params.cfg,
                 height=size.height,
-                image=image,
+                image=tile_source,
                 latents=latents,
                 mask=mask,
                 negative_prompt=params.negative_prompt,
@@ -109,9 +109,7 @@ def blend_inpaint(
 
         return result.images[0]
 
-    output = process_tile_order(
-        stage.tile_order, source, SizeChart.auto, 1, [outpaint]
-    )
+    output = process_tile_order(stage.tile_order, source, SizeChart.auto, 1, [outpaint])
 
     logger.info("final output image size", output.size)
     return output

@@ -26,7 +26,9 @@ def source_txt2img(
 ) -> Image.Image:
     params = params.with_args(**kwargs)
     size = size.with_args(**kwargs)
-    logger.info("generating image using txt2img, %s steps: %s", params.steps, params.prompt)
+    logger.info(
+        "generating image using txt2img, %s steps: %s", params.steps, params.prompt
+    )
 
     if source is not None:
         logger.warn(

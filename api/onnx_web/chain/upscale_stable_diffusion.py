@@ -74,7 +74,9 @@ def upscale_stable_diffusion(
 ) -> Image.Image:
     params = params.with_args(**kwargs)
     upscale = upscale.with_args(**kwargs)
-    logger.info("upscaling with Stable Diffusion, %s steps: %s", params.steps, params.prompt)
+    logger.info(
+        "upscaling with Stable Diffusion, %s steps: %s", params.steps, params.prompt
+    )
 
     pipeline = load_stable_diffusion(server, upscale, job.get_device())
     generator = torch.manual_seed(params.seed)
