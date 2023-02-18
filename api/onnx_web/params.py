@@ -174,7 +174,9 @@ class UpscaleParams:
         scale: int = 4,
         pre_pad: int = 0,
         tile_pad: int = 10,
-        upscale_order: Literal["correction-first", "correction-last", "correction-both"] = "correction-first",
+        upscale_order: Literal[
+            "correction-first", "correction-last", "correction-both"
+        ] = "correction-first",
     ) -> None:
         self.upscale_model = upscale_model
         self.correction_model = correction_model
