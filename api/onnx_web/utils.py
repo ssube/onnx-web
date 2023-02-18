@@ -1,7 +1,7 @@
 import gc
+import threading
 from logging import getLogger
 from os import environ, path
-import threading
 from typing import Any, Dict, List, Optional, Union
 
 import torch
@@ -136,7 +136,9 @@ def get_size(val: Union[int, str, None]) -> SizeChart:
 
 
 def run_gc(devices: List[DeviceParams] = []):
-    logger.debug("running garbage collection with %s active threads", threading.active_count())
+    logger.debug(
+        "running garbage collection with %s active threads", threading.active_count()
+    )
     gc.collect()
 
     if torch.cuda.is_available():

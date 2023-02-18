@@ -266,6 +266,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 except Exception as e:
                     logger.error("error converting correction model %s: %s", name, e)
 
+
 def main() -> int:
     parser = ArgumentParser(
         prog="onnx-web model converter", description="convert checkpoint models to ONNX"
