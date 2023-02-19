@@ -116,7 +116,19 @@ which can be converted into a diffusers directory and finally ONNX models.
 Weights exported by the two repositories are not compatible with the other and you must use the same scripts that
 originally created a set of weights to merge them.
 
-Try the other repository if you get an error about missing metadata, for example:
+If you have a `.safetensors` file, check the metadata keys:
+
+```python
+>>> import safetensors
+>>> t = safetensors.safe_open("/home/ssube/lora-weights/jack.safetensors", framework="pt")
+>>> print(t.metadata())
+{'ss_batch_size_per_device': '1', 'ss_bucket_info': 'null', 'ss_cache_latents': 'True', 'ss_clip_skip': '2', ...}
+```
+
+If they start with `lora_`, it's probably from the `cloneofsimo/lora` scripts. If they start with `ss_`, it's
+probably from the `kohya-ss/sd-scripts` scripts.
+
+If you get an error about missing metadata, try the other repository. For example:
 
 ```none
   warnings.warn(
