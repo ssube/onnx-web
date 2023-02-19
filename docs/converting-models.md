@@ -1,7 +1,7 @@
 # Converting Models
 
-This guide describes the process for converting models from various formats, including Dreambooth and LoRA, to
-the checkpoints used by `diffusers` and on to the ONNX models used by `onnx-web`.
+This guide describes the process for converting models from various formats, including Dreambooth checkpoints and LoRA
+weights, to the directories used by `diffusers` and on to the ONNX models used by `onnx-web`.
 
 ## Contents
 
