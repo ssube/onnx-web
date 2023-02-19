@@ -287,7 +287,7 @@ class UpscaleParams:
         }
 
     def with_args(self, **kwargs):
-        return ImageParams(
+        return UpscaleParams(
             kwargs.get("upscale_model", self.upscale_model),
             kwargs.get("correction_model", self.correction_model),
             kwargs.get("denoise", self.denoise),
