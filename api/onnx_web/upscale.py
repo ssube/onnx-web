@@ -2,16 +2,15 @@ from logging import getLogger
 
 from PIL import Image
 
-from ..chain import (
+from .chain import (
     ChainPipeline,
     correct_codeformer,
     correct_gfpgan,
     upscale_resrgan,
     upscale_stable_diffusion,
 )
-from ..params import ImageParams, SizeChart, StageParams, UpscaleParams
-from ..utils import ServerContext
-from .device_pool import JobContext, ProgressCallback
+from .params import ImageParams, SizeChart, StageParams, UpscaleParams
+from .server import JobContext, ProgressCallback, ServerContext
 
 logger = getLogger(__name__)
 

@@ -5,8 +5,7 @@ from boto3 import Session
 from PIL import Image
 
 from ..params import ImageParams, StageParams
-from ..server.device_pool import JobContext
-from ..utils import ServerContext
+from ..server import JobContext, ServerContext
 
 logger = getLogger(__name__)
 

@@ -8,7 +8,7 @@ import basicsr.utils.download_util
 import codeformer.facelib.utils.misc
 import facexlib.utils
 
-from ..utils import ServerContext
+from .context import ServerContext
 
 logger = getLogger(__name__)
 

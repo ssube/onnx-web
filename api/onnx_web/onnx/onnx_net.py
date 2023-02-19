@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from onnxruntime import InferenceSession, SessionOptions
 
-from ..utils import ServerContext
+from ..server import ServerContext
 
 
 class OnnxTensor:

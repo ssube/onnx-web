@@ -4,8 +4,7 @@ from PIL import Image
 
 from ..output import save_image
 from ..params import ImageParams, StageParams
-from ..server.device_pool import JobContext
-from ..utils import ServerContext
+from ..server import JobContext, ServerContext
 
 logger = getLogger(__name__)
 

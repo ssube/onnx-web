@@ -36,14 +36,14 @@ from .server import (
     DeviceParams,
     DevicePoolExecutor,
     ModelCache,
+    ServerContext,
     apply_patch_basicsr,
     apply_patch_codeformer,
     apply_patch_facexlib,
     apply_patches,
-    run_upscale_correction,
 )
+from .upscale import run_upscale_correction
 from .utils import (
-    ServerContext,
     base_join,
     get_and_clamp_float,
     get_and_clamp_int,

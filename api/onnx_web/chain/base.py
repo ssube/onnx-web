@@ -7,8 +7,8 @@ from PIL import Image
 
 from ..output import save_image
 from ..params import ImageParams, StageParams
-from ..server.device_pool import JobContext, ProgressCallback
-from ..utils import ServerContext, is_debug
+from ..server import JobContext, ProgressCallback, ServerContext
+from ..utils import is_debug
 from .utils import process_tile_order
 
 logger = getLogger(__name__)

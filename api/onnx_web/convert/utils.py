@@ -11,7 +11,7 @@ import torch
 from huggingface_hub.utils.tqdm import tqdm
 from yaml import safe_load
 
-from ..utils import ServerContext
+from ..server import ServerContext
 
 logger = getLogger(__name__)
 

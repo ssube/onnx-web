@@ -26,7 +26,8 @@ except ImportError:
     from .stub_scheduler import StubScheduler as DEISMultistepScheduler
 
 from ..params import DeviceParams, Size
-from ..utils import ServerContext, run_gc
+from ..server import ServerContext
+from ..utils import run_gc
 
 logger = getLogger(__name__)
 

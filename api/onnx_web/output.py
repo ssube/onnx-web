@@ -10,7 +10,8 @@ from PIL import Image
 
 from .diffusion.load import get_scheduler_name
 from .params import Border, ImageParams, Param, Size, UpscaleParams
-from .utils import ServerContext, base_join
+from .server import ServerContext
+from .utils import base_join
 
 logger = getLogger(__name__)
 
