@@ -1,11 +1,14 @@
 from . import logging
 from .chain import correct_gfpgan, upscale_resrgan, upscale_stable_diffusion
-from .diffusion.load import get_latents_from_seed, load_pipeline
+from .diffusion.load import get_latents_from_seed, load_pipeline, optimize_pipeline
 from .diffusion.run import (
+    run_blend_pipeline,
     run_img2img_pipeline,
     run_inpaint_pipeline,
     run_txt2img_pipeline,
+    run_upscale_pipeline,
 )
+from .diffusion.stub_scheduler import StubScheduler
 from .image import (
     expand_image,
     mask_filter_gaussian_multiply,
@@ -17,9 +20,28 @@ from .image import (
     noise_source_histogram,
     noise_source_normal,
     noise_source_uniform,
+    valid_image,
 )
-from .params import Border, ImageParams, Param, Point, Size, StageParams, UpscaleParams
-from .server.upscale import run_upscale_correction
+from .onnx import OnnxNet, OnnxTensor
+from .params import (
+    Border,
+    ImageParams,
+    Param,
+    Point,
+    Size,
+    StageParams,
+    UpscaleParams,
+)
+from .server import (
+    DeviceParams,
+    DevicePoolExecutor,
+    ModelCache,
+    apply_patch_basicsr,
+    apply_patch_codeformer,
+    apply_patch_facexlib,
+    apply_patches,
+    run_upscale_correction,
+)
 from .utils import (
     ServerContext,
     base_join,

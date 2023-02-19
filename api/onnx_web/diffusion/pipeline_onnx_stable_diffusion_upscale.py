@@ -240,15 +240,9 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
                 f" {self.tokenizer.model_max_length} tokens: {removed_text}"
             )
 
-        # if hasattr(text_inputs, "attention_mask"):
-        #     attention_mask = text_inputs.attention_mask.to(device)
-        # else:
-        #     attention_mask = None
-
         # no positional arguments to text_encoder
         text_embeddings = self.text_encoder(
             input_ids=text_input_ids.int().to(device),
-            # attention_mask=attention_mask,
         )
         text_embeddings = text_embeddings[0]
 
@@ -287,14 +281,8 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
                 return_tensors="pt",
             )
 
-            # if hasattr(uncond_input, "attention_mask"):
-            #     attention_mask = uncond_input.attention_mask.to(device)
-            # else:
-            #     attention_mask = None
-
             uncond_embeddings = self.text_encoder(
                 input_ids=uncond_input.input_ids.int().to(device),
-                # attention_mask=attention_mask,
             )
             uncond_embeddings = uncond_embeddings[0]
 
