@@ -1,12 +1,11 @@
 import sys
 import traceback
-from collections import Counter
 from io import BytesIO
 from logging import getLogger
 from logging.config import dictConfig
 from os import environ, path
 from time import sleep
-from typing import Optional
+from typing import List, Optional, Union
 
 import cv2
 import numpy as np
@@ -45,7 +44,7 @@ class TestCase:
         query: str,
         max_attempts: int = 20,
         mse_threshold: float = 0.001,
-        source: Image.Image = None,
+        source: Union[Image.Image, List[Image.Image]] = None,
         mask: Image.Image = None,
     ) -> None:
         self.name = name
@@ -133,7 +132,7 @@ TEST_DATA = [
         ),
         source="txt2img-sd-v1-5-512-muffin",
         mask="mask-black",
-        mse_threshold=0.025,
+        mse_threshold=0.010,
     ),
     TestCase(
         "outpaint-horizontal-512",
@@ -143,7 +142,12 @@ TEST_DATA = [
         ),
         source="txt2img-sd-v1-5-512-muffin",
         mask="mask-black",
-        mse_threshold=0.025,
+        mse_threshold=0.010,
+    ),
+    TestCase(
+        "upscale-resrgan-x2-1024-muffin",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x2-plus&scale=2&outscale=2",
+        source="txt2img-sd-v1-5-512-muffin",
     ),
     TestCase(
         "upscale-resrgan-x4-2048-muffin",
@@ -151,9 +155,22 @@ TEST_DATA = [
         source="txt2img-sd-v1-5-512-muffin",
     ),
     TestCase(
-        "upscale-resrgan-x2-1024-muffin",
+        "blend-512-muffin-black",
         "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x2-plus&scale=2&outscale=2",
-        source="txt2img-sd-v1-5-512-muffin",
+        mask="mask-black",
+        source=[
+            "txt2img-sd-v1-5-512-muffin",
+            "txt2img-sd-v2-1-512-muffin",
+        ],
+    ),
+    TestCase(
+        "blend-512-muffin-white",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x2-plus&scale=2&outscale=2",
+        mask="mask-white",
+        source=[
+            "txt2img-sd-v2-1-512-muffin",
+            "txt2img-sd-v1-5-512-muffin",
+        ],
     ),
 ]
 
@@ -161,13 +178,25 @@ TEST_DATA = [
 def generate_image(root: str, test: TestCase) -> Optional[str]:
     files = {}
     if test.source is not None:
-        logger.debug("loading test source: %s", test.source)
-        source_path = test_path(path.join("test-refs", f"{test.source}.png"))
-        source_image = Image.open(source_path)
-        source_bytes = BytesIO()
-        source_image.save(source_bytes, "png")
-        source_bytes.seek(0)
-        files["source"] = source_bytes
+        if isinstance(test.source, list):
+            for i in range(len(test.source)):
+                source = test.source[i]
+                logger.debug("loading test source %s: %s", i, source)
+                source_path = test_path(path.join("test-refs", f"{source}.png"))
+                source_image = Image.open(source_path)
+                source_bytes = BytesIO()
+                source_image.save(source_bytes, "png")
+                source_bytes.seek(0)
+                files[f"source:{i}"] = source_bytes
+
+        else:
+            logger.debug("loading test source: %s", test.source)
+            source_path = test_path(path.join("test-refs", f"{test.source}.png"))
+            source_image = Image.open(source_path)
+            source_bytes = BytesIO()
+            source_image.save(source_bytes, "png")
+            source_bytes.seek(0)
+            files["source"] = source_bytes
 
     if test.mask is not None:
         logger.debug("loading test mask: %s", test.mask)
