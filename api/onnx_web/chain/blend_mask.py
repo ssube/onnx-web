@@ -39,4 +39,4 @@ def blend_mask(
         for s in sources
     ]
 
-    return Image.composite(resized[0], resized[1], mult_mask)
+    return Image.composite(resized[1], resized[0], mult_mask)
