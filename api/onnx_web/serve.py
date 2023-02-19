@@ -589,13 +589,6 @@ def inpaint():
     fill_color = get_not_empty(request.args, "fillColor", "white")
     mask_filter = get_from_map(request.args, "filter", mask_filters, "none")
     noise_source = get_from_map(request.args, "noise", noise_sources, "histogram")
-    strength = get_and_clamp_float(
-        request.args,
-        "strength",
-        get_config_value("strength"),
-        get_config_value("strength", "max"),
-        get_config_value("strength", "min"),
-    )
     tile_order = get_from_list(
         request.args, "tileOrder", [TileOrder.grid, TileOrder.kernel, TileOrder.spiral]
     )
@@ -612,7 +605,6 @@ def inpaint():
             expand.bottom,
             mask_filter.__name__,
             noise_source.__name__,
-            strength,
             fill_color,
             tile_order,
         ),
@@ -634,7 +626,6 @@ def inpaint():
         expand,
         noise_source,
         mask_filter,
-        strength,
         fill_color,
         tile_order,
         needs_device=device,

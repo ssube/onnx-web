@@ -170,7 +170,6 @@ def run_inpaint_pipeline(
     border: Border,
     noise_source: Any,
     mask_filter: Any,
-    strength: float,
     fill_color: str,
     tile_order: str,
 ) -> None:
