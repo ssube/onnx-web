@@ -21,8 +21,11 @@ def persist_s3(
     bucket: str,
     endpoint_url: str = None,
     profile_name: str = None,
+    stage_source: Image.Image = None,
     **kwargs,
 ) -> Image.Image:
+    source = stage_source or source
+
     session = Session(profile_name=profile_name)
     s3 = session.client("s3", endpoint_url=endpoint_url)
 

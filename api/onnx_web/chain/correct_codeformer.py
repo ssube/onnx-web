@@ -24,8 +24,10 @@ def correct_codeformer(
     # must be within the load function for patch to take effect
     from codeformer import CodeFormer
 
+    source = stage_source or source
+
     upscale = upscale.with_args(**kwargs)
 
     device = job.get_device()
     pipe = CodeFormer(upscale=upscale.face_outscale).to(device.torch_str())
-    return pipe(stage_source or source)
+    return pipe(source)

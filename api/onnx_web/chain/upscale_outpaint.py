@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Callable, Tuple
+from typing import Callable, Optional, Tuple
 
 import numpy as np
 import torch
@@ -25,47 +25,47 @@ def upscale_outpaint(
     source: Image.Image,
     *,
     border: Border,
-    prompt: str = None,
-    mask: Image.Image = None,
+    stage_source: Optional[Image.Image] = None,
+    stage_mask: Optional[Image.Image] = None,
     fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
     callback: ProgressCallback = None,
     **kwargs,
 ) -> Image.Image:
-    prompt = prompt or params.prompt
+    source = stage_source or source
     logger.info("upscaling image by expanding borders: %s", border)
 
     margin_x = float(max(border.left, border.right))
     margin_y = float(max(border.top, border.bottom))
     overlap = min(margin_x / source.width, margin_y / source.height)
 
-    if mask is None:
+    if stage_mask is None:
         # if no mask was provided, keep the full source image
-        mask = Image.new("RGB", source.size, "black")
+        stage_mask = Image.new("RGB", source.size, "black")
 
-    source, mask, noise, full_dims = expand_image(
+    source, stage_mask, noise, full_dims = expand_image(
         source,
-        mask,
+        stage_mask,
         border,
         fill=fill_color,
         noise_source=noise_source,
         mask_filter=mask_filter,
     )
 
-    draw_mask = ImageDraw.Draw(mask)
+    draw_mask = ImageDraw.Draw(stage_mask)
     full_size = Size(*full_dims)
     full_latents = get_latents_from_seed(params.seed, full_size)
 
     if is_debug():
         save_image(server, "last-source.png", source)
-        save_image(server, "last-mask.png", mask)
+        save_image(server, "last-mask.png", stage_mask)
         save_image(server, "last-noise.png", noise)
 
     def outpaint(tile_source: Image.Image, dims: Tuple[int, int, int]):
         left, top, tile = dims
         size = Size(*tile_source.size)
-        tile_mask = mask.crop((left, top, left + tile, top + tile))
+        tile_mask = stage_mask.crop((left, top, left + tile, top + tile))
 
         if is_debug():
             save_image(server, "tile-source.png", tile_source)
@@ -86,7 +86,7 @@ def upscale_outpaint(
             result = pipe.inpaint(
                 tile_source,
                 tile_mask,
-                prompt,
+                params.prompt,
                 generator=rng,
                 guidance_scale=params.cfg,
                 height=size.height,
@@ -99,7 +99,7 @@ def upscale_outpaint(
         else:
             rng = np.random.RandomState(params.seed)
             result = pipe(
-                prompt,
+                params.prompt,
                 tile_source,
                 generator=rng,
                 guidance_scale=params.cfg,

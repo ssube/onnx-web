@@ -188,7 +188,7 @@ def run_inpaint_pipeline(
         params,
         source,
         border=border,
-        mask=mask,
+        stage_mask=mask,
         fill_color=fill_color,
         mask_filter=mask_filter,
         noise_source=noise_source,
@@ -255,7 +255,7 @@ def run_blend_pipeline(
         stage,
         params,
         sources=sources,
-        mask=mask,
+        stage_mask=mask,
         callback=progress,
     )
     image = image.convert("RGB")

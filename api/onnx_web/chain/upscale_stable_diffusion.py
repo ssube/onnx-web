@@ -69,11 +69,13 @@ def upscale_stable_diffusion(
     source: Image.Image,
     *,
     upscale: UpscaleParams,
+    stage_source: Image.Image = None,
     callback: ProgressCallback = None,
     **kwargs,
 ) -> Image.Image:
     params = params.with_args(**kwargs)
     upscale = upscale.with_args(**kwargs)
+    source = stage_source or source
     logger.info(
         "upscaling with Stable Diffusion, %s steps: %s", params.steps, params.prompt
     )

@@ -103,8 +103,10 @@ def upscale_resrgan(
     source: Image.Image,
     *,
     upscale: UpscaleParams,
+    stage_source: Image.Image = None,
     **kwargs,
 ) -> Image.Image:
+    source = stage_source or source
     logger.info("upscaling image with Real ESRGAN: x%s", upscale.scale)
 
     output = np.array(source)

@@ -18,8 +18,10 @@ def source_noise(
     *,
     size: Size,
     noise_source: Callable,
+    stage_source: Image.Image,
     **kwargs,
 ) -> Image.Image:
+    source = stage_source or source
     logger.info("generating image from noise source")
 
     if source is not None:

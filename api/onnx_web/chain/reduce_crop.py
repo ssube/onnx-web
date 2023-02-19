@@ -17,8 +17,11 @@ def reduce_crop(
     *,
     origin: Size,
     size: Size,
+    stage_source: Image.Image = None,
     **kwargs,
 ) -> Image.Image:
+    source = stage_source or source
+
     image = source.crop((origin.width, origin.height, size.width, size.height))
     logger.info("created thumbnail with dimensions: %sx%s", image.width, image.height)
     return image

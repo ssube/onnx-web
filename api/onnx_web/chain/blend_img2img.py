@@ -20,9 +20,11 @@ def blend_img2img(
     source: Image.Image,
     *,
     callback: ProgressCallback = None,
+    stage_source: Image.Image,
     **kwargs,
 ) -> Image.Image:
     params = params.with_args(**kwargs)
+    source = stage_source or source
     logger.info(
         "blending image using img2img, %s steps: %s", params.steps, params.prompt
     )

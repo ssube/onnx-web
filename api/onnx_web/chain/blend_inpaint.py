@@ -25,7 +25,8 @@ def blend_inpaint(
     source: Image.Image,
     *,
     expand: Border,
-    mask: Optional[Image.Image] = None,
+    stage_source: Optional[Image.Image] = None,
+    stage_mask: Optional[Image.Image] = None,
     fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
@@ -34,17 +35,18 @@ def blend_inpaint(
 ) -> Image.Image:
     params = params.with_args(**kwargs)
     expand = expand.with_args(**kwargs)
+    source = source or stage_source
     logger.info(
         "blending image using inpaint, %s steps: %s", params.steps, params.prompt
     )
 
-    if mask is None:
+    if stage_mask is None:
         # if no mask was provided, keep the full source image
-        mask = Image.new("RGB", source.size, "black")
+        stage_mask = Image.new("RGB", source.size, "black")
 
-    source, mask, noise, _full_dims = expand_image(
+    source, stage_mask, noise, _full_dims = expand_image(
         source,
-        mask,
+        stage_mask,
         expand,
         fill=fill_color,
         noise_source=noise_source,
@@ -53,13 +55,13 @@ def blend_inpaint(
 
     if is_debug():
         save_image(server, "last-source.png", source)
-        save_image(server, "last-mask.png", mask)
+        save_image(server, "last-mask.png", stage_mask)
         save_image(server, "last-noise.png", noise)
 
     def outpaint(tile_source: Image.Image, dims: Tuple[int, int, int]):
         left, top, tile = dims
         size = Size(*tile_source.size)
-        tile_mask = mask.crop((left, top, left + tile, top + tile))
+        tile_mask = stage_mask.crop((left, top, left + tile, top + tile))
 
         if is_debug():
             save_image(server, "tile-source.png", tile_source)
@@ -100,7 +102,7 @@ def blend_inpaint(
                 height=size.height,
                 image=tile_source,
                 latents=latents,
-                mask_image=mask,
+                mask_image=stage_mask,
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 width=size.width,

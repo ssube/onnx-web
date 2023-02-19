@@ -20,18 +20,18 @@ def blend_mask(
     _params: ImageParams,
     *,
     sources: Optional[List[Image.Image]] = None,
-    mask: Optional[Image.Image] = None,
+    stage_mask: Optional[Image.Image] = None,
     _callback: ProgressCallback = None,
     **kwargs,
 ) -> Image.Image:
     logger.info("blending image using mask")
 
-    mult_mask = Image.new("RGBA", mask.size, color="black")
-    mult_mask.alpha_composite(mask)
+    mult_mask = Image.new("RGBA", stage_mask.size, color="black")
+    mult_mask.alpha_composite(stage_mask)
     mult_mask = mult_mask.convert("L")
 
     if is_debug():
-        save_image(server, "last-mask.png", mask)
+        save_image(server, "last-mask.png", stage_mask)
         save_image(server, "last-mult-mask.png", mult_mask)
 
     resized = [

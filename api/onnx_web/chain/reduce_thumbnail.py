@@ -16,8 +16,10 @@ def reduce_thumbnail(
     source: Image.Image,
     *,
     size: Size,
+    stage_source: Image.Image,
     **kwargs,
 ) -> Image.Image:
+    source = stage_source or source
     image = source.copy()
 
     # TODO: should use a call to valid_image
