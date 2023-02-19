@@ -18,13 +18,13 @@ class ServerContext:
         cors_origin: str = "*",
         num_workers: int = 1,
         any_platform: bool = True,
-        block_platforms: List[str] = [],
+        block_platforms: List[str] = None,
         default_platform: str = None,
         image_format: str = "png",
         cache: ModelCache = None,
         cache_path: str = None,
         show_progress: bool = True,
-        optimizations: List[str] = [],
+        optimizations: List[str] = None,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -33,13 +33,13 @@ class ServerContext:
         self.cors_origin = cors_origin
         self.num_workers = num_workers
         self.any_platform = any_platform
-        self.block_platforms = block_platforms
+        self.block_platforms = block_platforms or []
         self.default_platform = default_platform
         self.image_format = image_format
         self.cache = cache or ModelCache(num_workers)
         self.cache_path = cache_path or path.join(model_path, ".cache")
         self.show_progress = show_progress
-        self.optimizations = optimizations
+        self.optimizations = optimizations or []
 
     @classmethod
     def from_environ(cls):
