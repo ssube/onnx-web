@@ -411,6 +411,8 @@ export function createStateSlices(server: ServerParams) {
       upscaleOrder: server.upscaleOrder.default,
     },
     upscaleTab: {
+      negativePrompt: server.negativePrompt.default,
+      prompt: server.prompt.default,
       source: null,
     },
     setUpscale(upscale) {
@@ -432,6 +434,8 @@ export function createStateSlices(server: ServerParams) {
     resetUpscaleTab() {
       set({
         upscaleTab: {
+          negativePrompt: server.negativePrompt.default,
+          prompt: server.prompt.default,
           source: null,
         },
       });
@@ -452,12 +456,12 @@ export function createStateSlices(server: ServerParams) {
       }));
     },
     resetBlend() {
-      set((prev) => ({
+      set({
         blend: {
           mask: null,
           sources: [],
         },
-      }));
+      });
     },
   });
 

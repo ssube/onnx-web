@@ -129,6 +129,8 @@ export interface UpscaleParams {
  * Parameters for upscale requests.
  */
 export interface UpscaleReqParams {
+  prompt: string;
+  negativePrompt?: string;
   source: Blob;
 }
 
@@ -475,6 +477,12 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       if (doesExist(upscale)) {
         appendUpscaleToURL(url, upscale);
+      }
+
+      url.searchParams.append('prompt', params.prompt);
+
+      if (doesExist(params.negativePrompt)) {
+        url.searchParams.append('negativePrompt', params.negativePrompt);
       }
 
       const body = new FormData();

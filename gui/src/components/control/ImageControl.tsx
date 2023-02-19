@@ -1,6 +1,6 @@
 import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Casino } from '@mui/icons-material';
-import { Button, Stack, TextField } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useQuery } from 'react-query';
@@ -11,9 +11,8 @@ import { STALE_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
 import { SCHEDULER_LABELS } from '../../strings.js';
 import { NumericField } from '../input/NumericField.js';
+import { PromptInput } from '../input/PromptInput.js';
 import { QueryList } from '../input/QueryList.js';
-
-export const PROMPT_LIMIT = 70;
 
 export interface ImageControlProps {
   selector: (state: OnnxState) => BaseImgParams;
@@ -33,17 +32,6 @@ export function ImageControl(props: ImageControlProps) {
   const schedulers = useQuery('schedulers', async () => client.schedulers(), {
     staleTime: STALE_TIME,
   });
-
-  const promptLength = controlState.prompt.split(' ').length;
-  const error = promptLength > PROMPT_LIMIT;
-
-  function promptHelper() {
-    if (error) {
-      return `Too many tokens: ${promptLength}/${PROMPT_LIMIT}`;
-    } else {
-      return `Tokens: ${promptLength}/${PROMPT_LIMIT}`;
-    }
-  }
 
   return <Stack spacing={2}>
     <QueryList
@@ -126,30 +114,14 @@ export function ImageControl(props: ImageControlProps) {
         New Seed
       </Button>
     </Stack>
-    <TextField
-      error={error}
-      label='Prompt'
-      helperText={promptHelper()}
-      variant='outlined'
-      value={controlState.prompt}
-      onChange={(event) => {
+    <PromptInput
+      prompt={controlState.prompt}
+      negativePrompt={controlState.negativePrompt}
+      onChange={(value) => {
         if (doesExist(props.onChange)) {
           props.onChange({
             ...controlState,
-            prompt: event.target.value,
-          });
-        }
-      }}
-    />
-    <TextField
-      label='Negative Prompt'
-      variant='outlined'
-      value={controlState.negativePrompt}
-      onChange={(event) => {
-        if (doesExist(props.onChange)) {
-          props.onChange({
-            ...controlState,
-            negativePrompt: event.target.value,
+            ...value,
           });
         }
       }}

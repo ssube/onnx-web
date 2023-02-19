@@ -9,6 +9,7 @@ import { IMAGE_FILTER } from '../../config.js';
 import { ClientContext, StateContext } from '../../state.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
+import { PromptInput } from '../input/PromptInput.js';
 
 export function Upscale() {
   async function uploadSource() {
@@ -45,6 +46,13 @@ export function Upscale() {
           setSource({
             source: file,
           });
+        }}
+      />
+      <PromptInput
+        prompt={params.prompt}
+        negativePrompt={params.negativePrompt}
+        onChange={(value) => {
+          setSource(value);
         }}
       />
       <UpscaleControl />
