@@ -265,8 +265,8 @@ class UpscaleParams:
             face_outscale *= self.face_outscale
 
         return Size(
-            size.width * self.outscale * self.face_outscale,
-            size.height * self.outscale * self.face_outscale,
+            size.width * self.outscale * face_outscale,
+            size.height * self.outscale * face_outscale,
         )
 
     def tojson(self):

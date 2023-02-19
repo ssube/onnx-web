@@ -44,16 +44,13 @@ def json_params(
     json["params"]["model"] = path.basename(params.model)
     json["params"]["scheduler"] = get_scheduler_name(params.scheduler)
 
-    if upscale is not None and border is not None:
-        size = upscale.resize(size.add_border(border))
+    if border is not None:
+        json["border"] = border.tojson()
+        size = size.add_border(border)
 
     if upscale is not None:
         json["upscale"] = upscale.tojson()
         size = upscale.resize(size)
-
-    if border is not None:
-        json["border"] = border.tojson()
-        size = size.add_border(border)
 
     json["size"] = size.tojson()
 
