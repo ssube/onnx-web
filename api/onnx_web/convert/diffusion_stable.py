@@ -93,7 +93,6 @@ def convert_diffusion_stable(
         source,
         torch_dtype=dtype,
         use_auth_token=ctx.token,
-        # cache_dir=path.join(ctx.cache_path, name)
     ).to(ctx.training_device)
     output_path = Path(dest_path)
 

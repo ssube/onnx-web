@@ -67,7 +67,7 @@ def noise_source_fill_edge(
 
 
 def noise_source_fill_mask(
-    _source: Image.Image, dims: Point, origin: Point, fill="white", **kw
+    _source: Image.Image, dims: Point, _origin: Point, fill="white", **kw
 ) -> Image.Image:
     """
     Fill the whole canvas, no source or noise.
@@ -95,7 +95,7 @@ def noise_source_gaussian(
 
 
 def noise_source_uniform(
-    _source: Image.Image, dims: Point, origin: Point, **kw
+    _source: Image.Image, dims: Point, _origin: Point, **kw
 ) -> Image.Image:
     width, height = dims
     size = width * height
@@ -115,7 +115,7 @@ def noise_source_uniform(
 
 
 def noise_source_normal(
-    _source: Image.Image, dims: Point, origin: Point, **kw
+    _source: Image.Image, dims: Point, _origin: Point, **kw
 ) -> Image.Image:
     width, height = dims
     size = width * height
@@ -135,7 +135,7 @@ def noise_source_normal(
 
 
 def noise_source_histogram(
-    source: Image.Image, dims: Point, origin: Point, **kw
+    source: Image.Image, dims: Point, _origin: Point, **kw
 ) -> Image.Image:
     r, g, b = source.split()
     width, height = dims
