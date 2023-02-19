@@ -31,11 +31,10 @@ class ModelCache:
 
         for i in range(len(self.cache)):
             t, k, v = self.cache[i]
-            if tag == t:
-                if key != k:
-                    logger.debug("updating model cache: %s", tag)
-                    self.cache[i] = (tag, key, value)
-                    return
+            if tag == t and key != k:
+                logger.debug("updating model cache: %s", tag)
+                self.cache[i] = (tag, key, value)
+                return
 
         logger.debug("adding new model to cache: %s", tag)
         self.cache.append((tag, key, value))

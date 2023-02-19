@@ -208,7 +208,6 @@ class DevicePoolExecutor:
             except ValueError as e:
                 logger.warning("error removing pruned job from pending: %s", e)
 
-        # self.jobs[:] = [job for job in self.jobs if not job.future.done()]
         recent_count = len(self.recent)
         if recent_count > self.recent_limit:
             logger.debug(

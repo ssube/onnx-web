@@ -214,12 +214,12 @@ def load_tensor(name: str, map_location=None):
         except Exception as e:
             try:
                 logger.warning(
-                    "failed to load as safetensors file, falling back to torch", e
+                    "failed to load as safetensors file, falling back to torch: %s", e
                 )
                 checkpoint = torch.jit.load(name)
             except Exception as e:
                 logger.warning(
-                    "failed to load with Torch JIT, falling back to PyTorch", e
+                    "failed to load with Torch JIT, falling back to PyTorch: %s", e
                 )
                 checkpoint = torch.load(name, map_location=map_location)
                 checkpoint = (

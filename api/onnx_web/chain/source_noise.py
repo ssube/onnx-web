@@ -13,7 +13,7 @@ def source_noise(
     _job: JobContext,
     _server: ServerContext,
     _stage: StageParams,
-    params: ImageParams,
+    _params: ImageParams,
     source: Image.Image,
     *,
     size: Size,

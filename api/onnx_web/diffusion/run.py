@@ -173,7 +173,6 @@ def run_inpaint_pipeline(
     fill_color: str,
     tile_order: str,
 ) -> None:
-    # device = job.get_device()
     progress = job.get_progress_callback()
     stage = StageParams(tile_order=tile_order)
 
@@ -218,7 +217,6 @@ def run_upscale_pipeline(
     upscale: UpscaleParams,
     source: Image.Image,
 ) -> None:
-    # device = job.get_device()
     progress = job.get_progress_callback()
     stage = StageParams()
 

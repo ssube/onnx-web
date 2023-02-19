@@ -113,5 +113,5 @@ def blend_inpaint(
 
     output = process_tile_order(stage.tile_order, source, SizeChart.auto, 1, [outpaint])
 
-    logger.info("final output image size", output.size)
+    logger.info("final output image size: %s", output.size)
     return output

@@ -1397,8 +1397,6 @@ def extract_checkpoint(
 
     logger.info(result_status)
 
-    return
-
 
 def convert_diffusion_original(
     ctx: ConversionContext,

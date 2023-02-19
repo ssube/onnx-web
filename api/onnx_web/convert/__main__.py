@@ -149,7 +149,7 @@ def fetch_model(
     if model_format is None:
         url = urlparse(source)
         ext = path.basename(url.path)
-        file, ext = path.splitext(ext)
+        _filename, ext = path.splitext(ext)
         if ext is not None:
             cache_name += ext
     else:
