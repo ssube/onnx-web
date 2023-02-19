@@ -12,8 +12,8 @@ weights, to the directories used by `diffusers` and on to the ONNX models used b
   - [Converting SD and Dreambooth checkpoints](#converting-sd-and-dreambooth-checkpoints)
   - [Converting LoRA weights](#converting-lora-weights)
     - [Figuring out which script produced the LoRA weights](#figuring-out-which-script-produced-the-lora-weights)
-    - [LoRA models from cloneofsimo/lora](#lora-models-from-cloneofsimolora)
-    - [LoRA models from kohya-ss/sd-scripts](#lora-models-from-kohya-sssd-scripts)
+    - [LoRA weights from cloneofsimo/lora](#lora-weights-from-cloneofsimolora)
+    - [LoRA weights from kohya-ss/sd-scripts](#lora-weights-from-kohya-sssd-scripts)
 
 ## Conversion steps for each type of model
 
@@ -144,7 +144,7 @@ ValueError: Tensor lora_te_text_model_encoder_layers_0_mlp_fc1.alpha has no meta
 
 See https://github.com/cloneofsimo/lora/issues/191 for more information.
 
-### LoRA models from cloneofsimo/lora
+### LoRA weights from cloneofsimo/lora
 
 Download the `lora` repo and create a virtual environment for it:
 
@@ -182,7 +182,7 @@ Based on docs in:
 
 - https://github.com/cloneofsimo/lora#merging-full-model-with-lora
 
-### LoRA models from kohya-ss/sd-scripts
+### LoRA weights from kohya-ss/sd-scripts
 
 Download the `sd-scripts` repo and create a virtual environment for it:
 
