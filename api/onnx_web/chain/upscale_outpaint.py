@@ -105,7 +105,7 @@ def upscale_outpaint(
                 guidance_scale=params.cfg,
                 height=size.height,
                 latents=latents,
-                mask=tile_mask,
+                mask_image=tile_mask,
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 width=size.width,
