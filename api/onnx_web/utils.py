@@ -82,13 +82,13 @@ def get_size(val: Union[int, str, None]) -> SizeChart:
     raise Exception("invalid size")
 
 
-def run_gc(devices: List[DeviceParams] = []):
+def run_gc(devices: List[DeviceParams] = None):
     logger.debug(
         "running garbage collection with %s active threads", threading.active_count()
     )
     gc.collect()
 
-    if torch.cuda.is_available():
+    if torch.cuda.is_available() and devices is not None:
         for device in devices:
             logger.debug("running Torch garbage collection for device: %s", device)
             with torch.cuda.device(device.torch_str()):

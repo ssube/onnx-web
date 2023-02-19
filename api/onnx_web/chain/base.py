@@ -61,12 +61,12 @@ class ChainPipeline:
 
     def __init__(
         self,
-        stages: List[PipelineStage] = [],
+        stages: List[PipelineStage] = None,
     ):
         """
         Create a new pipeline that will run the given stages.
         """
-        self.stages = list(stages)
+        self.stages = list(stages or [])
 
     def append(self, stage: PipelineStage):
         """
