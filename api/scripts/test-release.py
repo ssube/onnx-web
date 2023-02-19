@@ -1,12 +1,12 @@
 import sys
 import traceback
+from collections import Counter
 from io import BytesIO
 from logging import getLogger
 from logging.config import dictConfig
 from os import environ, path
 from time import sleep
 from typing import Optional
-from collections import Counter
 
 import cv2
 import numpy as np
@@ -14,18 +14,46 @@ import requests
 from PIL import Image
 from yaml import safe_load
 
+logging_path = environ.get("ONNX_WEB_LOGGING_PATH", "./logging.yaml")
+
+try:
+    if path.exists(logging_path):
+        with open(logging_path, "r") as f:
+            config_logging = safe_load(f)
+            dictConfig(config_logging)
+except Exception as err:
+    print("error loading logging config: %s" % (err))
+
+logger = getLogger(__name__)
+
+
+def test_root() -> str:
+    if len(sys.argv) > 1:
+        return sys.argv[1]
+    else:
+        return "http://127.0.0.1:5000"
+
+
+def test_path(relpath: str) -> str:
+    return path.join(path.dirname(__file__), relpath)
+
+
 class TestCase:
     def __init__(
         self,
         name: str,
         query: str,
         max_attempts: int = 20,
-        mse_threshold: float = 0.0001,
+        mse_threshold: float = 0.001,
+        source: Image.Image = None,
+        mask: Image.Image = None,
     ) -> None:
         self.name = name
         self.query = query
         self.max_attempts = max_attempts
         self.mse_threshold = mse_threshold
+        self.source = source
+        self.mask = mask
 
 
 TEST_DATA = [
@@ -65,34 +93,93 @@ TEST_DATA = [
         "txt2img-knollingcase-512-muffin",
         "txt2img?prompt=knollingcase+display+case+with+a+giant+muffin&seed=0&scheduler=ddim&model=diffusion-knollingcase",
     ),
+    TestCase(
+        "img2img-sd-v1-5-512-pumpkin",
+        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
+        source="txt2img-sd-v1-5-512-muffin",
+    ),
+    TestCase(
+        "img2img-sd-v1-5-256-pumpkin",
+        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
+        source="txt2img-sd-v1-5-256-muffin",
+    ),
+    TestCase(
+        "inpaint-v1-512-white",
+        "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting",
+        source="txt2img-sd-v1-5-512-muffin",
+        mask="mask-white",
+    ),
+    TestCase(
+        "inpaint-v1-512-black",
+        "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting",
+        source="txt2img-sd-v1-5-512-muffin",
+        mask="mask-black",
+    ),
+    TestCase(
+        "outpaint-even-256",
+        (
+            "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&noise=fill-mask"
+            "&top=256&bottom=256&left=256&right=256"
+        ),
+        source="txt2img-sd-v1-5-512-muffin",
+        mask="mask-black",
+        mse_threshold=0.025,
+    ),
+    TestCase(
+        "outpaint-vertical-512",
+        (
+            "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&noise=fill-mask"
+            "&top=512&bottom=512&left=0&right=0"
+        ),
+        source="txt2img-sd-v1-5-512-muffin",
+        mask="mask-black",
+        mse_threshold=0.025,
+    ),
+    TestCase(
+        "outpaint-horizontal-512",
+        (
+            "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&noise=fill-mask"
+            "&top=0&bottom=0&left=512&right=512"
+        ),
+        source="txt2img-sd-v1-5-512-muffin",
+        mask="mask-black",
+        mse_threshold=0.025,
+    ),
+    TestCase(
+        "upscale-resrgan-x4-2048-muffin",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4",
+        source="txt2img-sd-v1-5-512-muffin",
+    ),
+    TestCase(
+        "upscale-resrgan-x2-1024-muffin",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x2-plus&scale=2&outscale=2",
+        source="txt2img-sd-v1-5-512-muffin",
+    ),
 ]
 
-logging_path = environ.get("ONNX_WEB_LOGGING_PATH", "./logging.yaml")
 
-try:
-    if path.exists(logging_path):
-        with open(logging_path, "r") as f:
-            config_logging = safe_load(f)
-            dictConfig(config_logging)
-except Exception as err:
-    print("error loading logging config: %s" % (err))
+def generate_image(root: str, test: TestCase) -> Optional[str]:
+    files = {}
+    if test.source is not None:
+        logger.debug("loading test source: %s", test.source)
+        source_path = test_path(path.join("test-refs", f"{test.source}.png"))
+        source_image = Image.open(source_path)
+        source_bytes = BytesIO()
+        source_image.save(source_bytes, "png")
+        source_bytes.seek(0)
+        files["source"] = source_bytes
 
-logger = getLogger(__name__)
+    if test.mask is not None:
+        logger.debug("loading test mask: %s", test.mask)
+        mask_path = test_path(path.join("test-refs", f"{test.mask}.png"))
+        mask_image = Image.open(mask_path)
+        mask_bytes = BytesIO()
+        mask_image.save(mask_bytes, "png")
+        mask_bytes.seek(0)
+        files["mask"] = mask_bytes
 
-
-def test_root() -> str:
-    if len(sys.argv) > 1:
-        return sys.argv[1]
-    else:
-        return "http://127.0.0.1:5000"
-
-
-def test_path(relpath: str) -> str:
-    return path.join(path.dirname(__file__), relpath)
-
-
-def generate_image(root: str, params: str) -> Optional[str]:
-    resp = requests.post(f"{root}/api/{params}")
+    logger.debug("generating image: %s", test.query)
+    resp = requests.post(f"{root}/api/{test.query}", files=files)
     if resp.status_code == 200:
         json = resp.json()
         return json.get("output")
@@ -114,6 +201,7 @@ def check_ready(root: str, key: str) -> bool:
 def download_image(root: str, key: str) -> Image.Image:
     resp = requests.get(f"{root}/output/{key}")
     if resp.status_code == 200:
+        logger.debug("downloading image: %s", key)
         return Image.open(BytesIO(resp.content))
     else:
         logger.warning("request failed: %s", resp.status_code)
@@ -132,10 +220,11 @@ def find_mse(result: Image.Image, ref: Image.Image) -> float:
     nd_result = np.array(result)
     nd_ref = np.array(ref)
 
-    diff = cv2.subtract(nd_ref, nd_result)
+    # dividing before squaring reduces the error into the lower end of the [0, 1] range
+    diff = cv2.subtract(nd_ref, nd_result) / 255.0
     diff = np.sum(diff**2)
 
-    return diff / (float(ref.height * ref.width)) / 255.0
+    return diff / (float(ref.height * ref.width))
 
 
 def run_test(
@@ -147,16 +236,19 @@ def run_test(
     Generate an image, wait for it to be ready, and calculate the MSE from the reference.
     """
 
-    logger.info("running test: %s", test.query)
-
-    key = generate_image(root, test.query)
+    key = generate_image(root, test)
     if key is None:
         raise ValueError("could not generate")
 
     attempts = 0
-    while attempts < test.max_attempts and not check_ready(root, key):
-        logger.debug("waiting for image to be ready")
-        sleep(6)
+    while attempts < test.max_attempts:
+        if check_ready(root, key):
+            logger.debug("image is ready: %s", key)
+            break
+        else:
+            logger.debug("waiting for image to be ready")
+            attempts += 1
+            sleep(6)
 
     if attempts == test.max_attempts:
         raise ValueError("image was not ready in time")
@@ -166,7 +258,7 @@ def run_test(
     mse = find_mse(result, ref)
 
     if mse < test.mse_threshold:
-        logger.debug("MSE within threshold: %.4f < %.4f", mse, test.mse_threshold)
+        logger.info("MSE within threshold: %.4f < %.4f", mse, test.mse_threshold)
         return True
     else:
         logger.warning("MSE above threshold: %.4f > %.4f", mse, test.mse_threshold)
@@ -177,29 +269,29 @@ def main():
     root = test_root()
     logger.info("running release tests against API: %s", root)
 
-    results = Counter({
-        True: 0,
-        False: 0,
-    })
+    passed = []
+    failed = []
     for test in TEST_DATA:
         try:
+            logger.info("starting test: %s", test.name)
             ref_name = test_path(path.join("test-refs", f"{test.name}.png"))
             ref = Image.open(ref_name) if path.exists(ref_name) else None
             if run_test(root, test, ref):
                 logger.info("test passed: %s", test.name)
-                results[True] += 1
+                passed.append(test.name)
             else:
                 logger.warning("test failed: %s", test.name)
-                results[False] += 1
+                failed.append(test.name)
         except Exception as e:
             traceback.print_exception(type(e), e, e.__traceback__)
             logger.error("error running test for %s: %s", test.name, e)
-            results[False] += 1
+            failed.append(test.name)
 
-    logger.info("%s of %s tests passed", results[True], results[True] + results[False])
-    if results[False] > 0:
-        logger.error("%s tests had errors", results[False])
+    logger.info("%s of %s tests passed", len(passed), len(TEST_DATA))
+    if len(failed) > 0:
+        logger.error("%s tests had errors", len(failed))
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

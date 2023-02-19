@@ -65,46 +65,63 @@ Testing:
 - txt2img
   - 256x256 with SD v1.5
     - [ ] should fail: neon blobs
+    - has automation
   - 512x512 with SD v1.5
     - DEIS Multi
       - [ ] should work
     - DPM Multi
       - [ ] should work
+      - has automation
     - Euler A
       - [ ] should work
+    - Heun
+      - [ ] should work
+      - has automation
   - 512x512 with SD v2.1
     - [ ] should work
+    - has automation
   - 768x768 with SD v2.1
     - [ ] should work, given sufficient memory
+    - has automation
   - extra models
     - 512x512 with Knollingcase
       - [ ] should work
+      - has automation
     - 512x512 with OpenJourney
       - [ ] should work
+      - has automation
     - 256x256 with OpenJourney
       - [ ] should work
 - img2img
   - 256x256 input
     - [ ] should fail: neon blobs
+    - has automation
   - 512x512 input
     - [ ] should work
+    - has automation
   - 1024x768 input
     - [ ] should work
 - inpaint
   - regular inpaint
     - black mask
       - [ ] should keep all pixels, same image
+      - has automation
     - white mask
       - [ ] should replace all pixels, different image
+      - has automation
   - outpaint
     - 0 all sides
       - [ ] should work, run 1 tile
+      - primarily a client-side test
     - 256 all sides
       - [ ] should work, run 8 tiles
+      - has automation
     - 512 top and bottom, 0 left and right
       - [ ] should work, run 3 tiles
+      - has automation
     - 512 left and right, 0 top and bottom
       - [ ] should work, run 3 tiles
+      - has automation
 - upscale
   - Real ESRGAN
     - x4 with CodeFormer
@@ -113,6 +130,10 @@ Testing:
       - [ ] should work
     - x4 without face correction
       - [ ] should work
+      - has automation
+    - x2 without face correction
+      - [ ] should work
+      - has automation
     - x2 model and x4 scale
       - [ ] should sort of work: ignores scale and uses x2
     - x4 model and x2 scale
