@@ -27,7 +27,7 @@ export function PromptInput(props: PromptInputProps) {
     }
   }
 
-  return <Stack>
+  return <Stack spacing={2}>
     <TextField
       error={error}
       label='Prompt'
