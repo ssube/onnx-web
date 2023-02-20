@@ -68,6 +68,21 @@ export function ImageControl(props: ImageControlProps) {
           }
         }}
       />
+      <NumericField
+        label='Batch Size'
+        min={params.batch.min}
+        max={params.batch.max}
+        step={params.batch.step}
+        value={controlState.batch}
+        onChange={(batch) => {
+          if (doesExist(props.onChange)) {
+            props.onChange({
+              ...controlState,
+              batch,
+            });
+          }
+        }}
+      />
     </Stack>
     <Stack direction='row' spacing={4}>
       <NumericField

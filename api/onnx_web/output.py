@@ -4,7 +4,7 @@ from logging import getLogger
 from os import path
 from struct import pack
 from time import time
-from typing import Any, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 from PIL import Image
 
@@ -63,7 +63,7 @@ def make_output_name(
     params: ImageParams,
     size: Size,
     extras: Optional[Tuple[Param]] = None,
-) -> str:
+) -> List[str]:
     now = int(time())
     sha = sha256()
 
@@ -82,13 +82,10 @@ def make_output_name(
         for param in extras:
             hash_value(sha, param)
 
-    return "%s_%s_%s_%s.%s" % (
-        mode,
-        params.seed,
-        sha.hexdigest(),
-        now,
-        ctx.image_format,
-    )
+    return [
+        f"{mode}_{params.seed}_{sha.hexdigest()}_{now}_{i}.{ctx.image_format}"
+        for i in range(params.batch)
+    ]
 
 
 def save_image(ctx: ServerContext, output: str, image: Image.Image) -> str:
@@ -106,7 +103,7 @@ def save_params(
     upscale: Optional[UpscaleParams] = None,
     border: Optional[Border] = None,
 ) -> str:
-    path = base_join(ctx.output_path, "%s.json" % (output))
+    path = base_join(ctx.output_path, f"{output}.json")
     json = json_params(output, params, size, upscale=upscale, border=border)
     with open(path, "w") as f:
         f.write(dumps(json))

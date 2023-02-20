@@ -1,5 +1,11 @@
 {
   "version": "0.7.1",
+  "batch": {
+    "default": 1,
+    "min": 1,
+    "max": 5,
+    "step": 1
+  },
   "bottom": {
     "default": 0,
     "min": 0,

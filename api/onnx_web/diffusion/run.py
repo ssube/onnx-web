@@ -25,7 +25,7 @@ def run_txt2img_pipeline(
     server: ServerContext,
     params: ImageParams,
     size: Size,
-    output: str,
+    outputs: List[str],
     upscale: UpscaleParams,
 ) -> None:
     latents = get_latents_from_seed(params.seed, size)
@@ -50,6 +50,7 @@ def run_txt2img_pipeline(
             guidance_scale=params.cfg,
             latents=latents,
             negative_prompt=params.negative_prompt,
+            num_images_per_prompt=params.batch,
             num_inference_steps=params.steps,
             eta=params.eta,
             callback=progress,
@@ -64,27 +65,27 @@ def run_txt2img_pipeline(
             guidance_scale=params.cfg,
             latents=latents,
             negative_prompt=params.negative_prompt,
+            num_images_per_prompt=params.batch,
             num_inference_steps=params.steps,
             eta=params.eta,
             callback=progress,
         )
 
-    image = result.images[0]
-    image = run_upscale_correction(
-        job,
-        server,
-        StageParams(),
-        params,
-        image,
-        upscale=upscale,
-        callback=progress,
-    )
+    for image, output in zip(result.images, outputs):
+        image = run_upscale_correction(
+            job,
+            server,
+            StageParams(),
+            params,
+            image,
+            upscale=upscale,
+            callback=progress,
+        )
 
-    dest = save_image(server, output, image)
-    save_params(server, output, params, size, upscale=upscale)
+        dest = save_image(server, output, image)
+        save_params(server, output, params, size, upscale=upscale)
 
     del pipe
-    del image
     del result
 
     run_gc([job.get_device()])
@@ -96,7 +97,7 @@ def run_img2img_pipeline(
     job: JobContext,
     server: ServerContext,
     params: ImageParams,
-    output: str,
+    outputs: List[str],
     upscale: UpscaleParams,
     source: Image.Image,
     strength: float,
@@ -119,6 +120,7 @@ def run_img2img_pipeline(
             generator=rng,
             guidance_scale=params.cfg,
             negative_prompt=params.negative_prompt,
+            num_images_per_prompt=params.batch,
             num_inference_steps=params.steps,
             strength=strength,
             eta=params.eta,
@@ -132,29 +134,29 @@ def run_img2img_pipeline(
             generator=rng,
             guidance_scale=params.cfg,
             negative_prompt=params.negative_prompt,
+            num_images_per_prompt=params.batch,
             num_inference_steps=params.steps,
             strength=strength,
             eta=params.eta,
             callback=progress,
         )
 
-    image = result.images[0]
-    image = run_upscale_correction(
-        job,
-        server,
-        StageParams(),
-        params,
-        image,
-        upscale=upscale,
-        callback=progress,
-    )
+    for image, output in zip(result.images, outputs):
+        image = run_upscale_correction(
+            job,
+            server,
+            StageParams(),
+            params,
+            image,
+            upscale=upscale,
+            callback=progress,
+        )
 
-    dest = save_image(server, output, image)
-    size = Size(*source.size)
-    save_params(server, output, params, size, upscale=upscale)
+        dest = save_image(server, output, image)
+        size = Size(*source.size)
+        save_params(server, output, params, size, upscale=upscale)
 
     del pipe
-    del image
     del result
 
     run_gc([job.get_device()])
@@ -167,7 +169,7 @@ def run_inpaint_pipeline(
     server: ServerContext,
     params: ImageParams,
     size: Size,
-    output: str,
+    outputs: List[str],
     upscale: UpscaleParams,
     source: Image.Image,
     mask: Image.Image,
@@ -202,8 +204,8 @@ def run_inpaint_pipeline(
         job, server, stage, params, image, upscale=upscale, callback=progress
     )
 
-    dest = save_image(server, output, image)
-    save_params(server, output, params, size, upscale=upscale, border=border)
+    dest = save_image(server, outputs[0], image)
+    save_params(server, outputs[0], params, size, upscale=upscale, border=border)
 
     del image
 
@@ -217,7 +219,7 @@ def run_upscale_pipeline(
     server: ServerContext,
     params: ImageParams,
     size: Size,
-    output: str,
+    outputs: List[str],
     upscale: UpscaleParams,
     source: Image.Image,
 ) -> None:
@@ -228,8 +230,8 @@ def run_upscale_pipeline(
         job, server, stage, params, source, upscale=upscale, callback=progress
     )
 
-    dest = save_image(server, output, image)
-    save_params(server, output, params, size, upscale=upscale)
+    dest = save_image(server, outputs[0], image)
+    save_params(server, outputs[0], params, size, upscale=upscale)
 
     del image
 
@@ -243,7 +245,7 @@ def run_blend_pipeline(
     server: ServerContext,
     params: ImageParams,
     size: Size,
-    output: str,
+    outputs: List[str],
     upscale: UpscaleParams,
     sources: List[Image.Image],
     mask: Image.Image,
@@ -266,8 +268,8 @@ def run_blend_pipeline(
         job, server, stage, params, image, upscale=upscale, callback=progress
     )
 
-    dest = save_image(server, output, image)
-    save_params(server, output, params, size, upscale=upscale)
+    dest = save_image(server, outputs[0], image)
+    save_params(server, outputs[0], params, size, upscale=upscale)
 
     del image
 

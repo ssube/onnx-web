@@ -156,6 +156,7 @@ class ImageParams:
         negative_prompt: Optional[str] = None,
         lpw: bool = False,
         eta: float = 0.0,
+        batch: int = 1,
     ) -> None:
         self.model = model
         self.scheduler = scheduler
@@ -166,6 +167,7 @@ class ImageParams:
         self.steps = steps
         self.lpw = lpw or False
         self.eta = eta
+        self.batch = batch
 
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
@@ -178,6 +180,7 @@ class ImageParams:
             "steps": self.steps,
             "lpw": self.lpw,
             "eta": self.eta,
+            "batch": self.batch,
         }
 
     def with_args(self, **kwargs):
@@ -191,6 +194,7 @@ class ImageParams:
             kwargs.get("negative_prompt", self.negative_prompt),
             kwargs.get("lpw", self.lpw),
             kwargs.get("eta", self.eta),
+            kwargs.get("batch", self.batch),
         )
 
 

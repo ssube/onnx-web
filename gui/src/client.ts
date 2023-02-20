@@ -42,6 +42,7 @@ export interface BaseImgParams {
   prompt: string;
   negativePrompt?: string;
 
+  batch: number;
   cfg: number;
   steps: number;
   seed: number;

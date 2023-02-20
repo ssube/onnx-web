@@ -199,6 +199,7 @@ export const DEFAULT_HISTORY = {
 
 export function baseParamsFromServer(defaults: ServerParams): Required<BaseImgParams> {
   return {
+    batch: defaults.batch.default,
     cfg: defaults.cfg.default,
     eta: defaults.eta.default,
     negativePrompt: defaults.negativePrompt.default,
