@@ -20,17 +20,22 @@ Please [see the User Guide](https://github.com/ssube/onnx-web/blob/main/docs/use
 
 ## Features
 
-- supports AMD and Nvidia hardware acceleration using CUDA, DirectML, or ROCm
+- AMD and Nvidia hardware acceleration using CUDA, DirectML, or ROCm
 - web app to generate and view images
   - [hosted on Github Pages](https://ssube.github.io/onnx-web), from your CDN, or locally
-  - keeps your recent image history as you change tabs
+  - keeps your recent images  and progress as you change tabs
+  - queue up multiple images
+- convert and load your own models
+  - directly supports HuggingFace Hub and Civitai
+  - supports LoRA with [an extra conversion step](./docs/converting-models.md)
 - supports many `diffusers` pipelines
   - txt2img
   - img2img
   - inpainting
   - upscale (with ONNX acceleration)
+  - long prompt weighting
 - blending mode for combining images
-- supports upscaling and face correction
+- upscaling and face correction
   - upscaling with Real ESRGAN or Stable Diffusion
   - face correction with CodeFormer or GFPGAN
 - API server can run models on a remote GPU
