@@ -172,6 +172,13 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
         get_config_value("cfg", "max"),
         get_config_value("cfg", "min"),
     )
+    eta = get_and_clamp_float(
+        request.args,
+        "eta",
+        get_config_value("eta"),
+        get_config_value("eta", "max"),
+        get_config_value("eta", "min"),
+    )
     steps = get_and_clamp_int(
         request.args,
         "steps",
@@ -220,6 +227,7 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
         cfg,
         steps,
         seed,
+        eta=eta,
         lpw=lpw,
         negative_prompt=negative_prompt,
     )

@@ -51,6 +51,7 @@ def run_txt2img_pipeline(
             latents=latents,
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
+            eta=params.eta,
             callback=progress,
         )
     else:
@@ -64,6 +65,7 @@ def run_txt2img_pipeline(
             latents=latents,
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
+            eta=params.eta,
             callback=progress,
         )
 
@@ -119,6 +121,7 @@ def run_img2img_pipeline(
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
             strength=strength,
+            eta=params.eta,
             callback=progress,
         )
     else:
@@ -131,6 +134,7 @@ def run_img2img_pipeline(
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
             strength=strength,
+            eta=params.eta,
             callback=progress,
         )
 

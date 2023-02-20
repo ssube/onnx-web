@@ -34,23 +34,41 @@ export function ImageControl(props: ImageControlProps) {
   });
 
   return <Stack spacing={2}>
-    <QueryList
-      id='schedulers'
-      labels={SCHEDULER_LABELS}
-      name='Scheduler'
-      query={{
-        result: schedulers,
-      }}
-      value={mustDefault(controlState.scheduler, '')}
-      onChange={(value) => {
-        if (doesExist(props.onChange)) {
-          props.onChange({
-            ...controlState,
-            scheduler: value,
-          });
-        }
-      }}
-    />
+    <Stack direction='row' spacing={4}>
+      <QueryList
+        id='schedulers'
+        labels={SCHEDULER_LABELS}
+        name='Scheduler'
+        query={{
+          result: schedulers,
+        }}
+        value={mustDefault(controlState.scheduler, '')}
+        onChange={(value) => {
+          if (doesExist(props.onChange)) {
+            props.onChange({
+              ...controlState,
+              scheduler: value,
+            });
+          }
+        }}
+      />
+      <NumericField
+        decimal
+        label='Eta'
+        min={params.eta.min}
+        max={params.eta.max}
+        step={params.eta.step}
+        value={controlState.eta}
+        onChange={(eta) => {
+          if (doesExist(props.onChange)) {
+            props.onChange({
+              ...controlState,
+              eta,
+            });
+          }
+        }}
+      />
+    </Stack>
     <Stack direction='row' spacing={4}>
       <NumericField
         decimal

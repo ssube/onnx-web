@@ -45,6 +45,7 @@ export interface BaseImgParams {
   cfg: number;
   steps: number;
   seed: number;
+  eta: number;
 }
 
 /**
@@ -279,6 +280,7 @@ export function makeApiUrl(root: string, ...path: Array<string>) {
 export function makeImageURL(root: string, type: string, params: BaseImgParams): URL {
   const url = makeApiUrl(root, type);
   url.searchParams.append('cfg', params.cfg.toFixed(FIXED_FLOAT));
+  url.searchParams.append('eta', params.eta.toFixed(FIXED_FLOAT));
   url.searchParams.append('steps', params.steps.toFixed(FIXED_INTEGER));
 
   if (doesExist(params.scheduler)) {

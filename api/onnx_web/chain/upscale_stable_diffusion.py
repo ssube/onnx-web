@@ -88,5 +88,6 @@ def upscale_stable_diffusion(
         source,
         generator=generator,
         num_inference_steps=params.steps,
+        eta=params.eta,
         callback=callback,
     ).images[0]

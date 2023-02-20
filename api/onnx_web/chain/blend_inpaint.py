@@ -91,6 +91,7 @@ def blend_inpaint(
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 width=size.width,
+                eta=params.eta,
                 callback=callback,
             )
         else:
@@ -106,6 +107,7 @@ def blend_inpaint(
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 width=size.width,
+                eta=params.eta,
                 callback=callback,
             )
 

@@ -154,7 +154,8 @@ class ImageParams:
         steps: int,
         seed: int,
         negative_prompt: Optional[str] = None,
-        lpw: Optional[bool] = False,
+        lpw: bool = False,
+        eta: float = 0.0,
     ) -> None:
         self.model = model
         self.scheduler = scheduler
@@ -164,6 +165,7 @@ class ImageParams:
         self.seed = seed
         self.steps = steps
         self.lpw = lpw or False
+        self.eta = eta
 
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
@@ -175,6 +177,7 @@ class ImageParams:
             "seed": self.seed,
             "steps": self.steps,
             "lpw": self.lpw,
+            "eta": self.eta,
         }
 
     def with_args(self, **kwargs):
@@ -187,6 +190,7 @@ class ImageParams:
             kwargs.get("seed", self.seed),
             kwargs.get("negative_prompt", self.negative_prompt),
             kwargs.get("lpw", self.lpw),
+            kwargs.get("eta", self.eta),
         )
 
 
