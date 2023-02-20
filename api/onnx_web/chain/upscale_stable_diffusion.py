@@ -87,6 +87,8 @@ def upscale_stable_diffusion(
         params.prompt,
         source,
         generator=generator,
+        guidance_scale=params.cfg,
+        negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
         eta=params.eta,
         callback=callback,
