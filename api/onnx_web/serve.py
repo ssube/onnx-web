@@ -803,8 +803,8 @@ def ready():
     done, progress = executor.done(output_file)
 
     if done is None:
-        file = base_join(context.output_path, output_file)
-        if path.exists(file):
+        output = base_join(context.output_path, output_file)
+        if path.exists(output):
             return ready_reply(True)
 
     return ready_reply(done, progress=progress)

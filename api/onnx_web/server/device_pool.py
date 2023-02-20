@@ -44,7 +44,7 @@ class JobContext:
         with self.device_index.get_lock():
             device_index = self.device_index.value
             if device_index < 0:
-                raise Exception("job has not been assigned to a device")
+                raise ValueError("job has not been assigned to a device")
             else:
                 device = self.devices[device_index]
                 logger.debug("job %s assigned to device %s", self.key, device)
@@ -57,7 +57,7 @@ class JobContext:
         def on_progress(step: int, timestep: int, latents: Any):
             on_progress.step = step
             if self.is_cancelled():
-                raise Exception("job has been cancelled")
+                raise RuntimeError("job has been cancelled")
             else:
                 logger.debug("setting progress for job %s to %s", self.key, step)
                 self.set_progress(step)

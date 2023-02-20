@@ -52,7 +52,7 @@ def process_tile_spiral(
     **kwargs,
 ) -> Image.Image:
     if scale != 1:
-        raise Exception("unsupported scale")
+        raise ValueError("unsupported scale")
 
     width, height = source.size
     image = Image.new("RGB", (width * scale, height * scale))

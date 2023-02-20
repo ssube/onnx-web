@@ -30,7 +30,7 @@ def mask_filter_gaussian_multiply(
     """
     noise = mask_filter_none(mask, dims, origin)
 
-    for i in range(rounds):
+    for _i in range(rounds):
         blur = noise.filter(ImageFilter.GaussianBlur(5))
         noise = ImageChops.multiply(noise, blur)
 
@@ -45,7 +45,7 @@ def mask_filter_gaussian_screen(
     """
     noise = mask_filter_none(mask, dims, origin)
 
-    for i in range(rounds):
+    for _i in range(rounds):
         blur = noise.filter(ImageFilter.GaussianBlur(5))
         noise = ImageChops.screen(noise, blur)
 
@@ -88,7 +88,7 @@ def noise_source_gaussian(
     noise = noise_source_uniform(source, dims, origin)
     noise.paste(source, origin)
 
-    for i in range(rounds):
+    for _i in range(rounds):
         noise = noise.filter(ImageFilter.GaussianBlur(5))
 
     return noise

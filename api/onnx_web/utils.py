@@ -65,7 +65,7 @@ def get_not_empty(args: Any, key: str, default: Any) -> Any:
     return val
 
 
-def get_size(val: Union[int, str, None]) -> SizeChart:
+def get_size(val: Union[int, str, None]) -> Union[int, SizeChart]:
     if val is None:
         return SizeChart.auto
 
@@ -79,7 +79,7 @@ def get_size(val: Union[int, str, None]) -> SizeChart:
 
         return int(val)
 
-    raise Exception("invalid size")
+    raise ValueError("invalid size")
 
 
 def run_gc(devices: List[DeviceParams] = None):

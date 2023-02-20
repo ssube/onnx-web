@@ -35,7 +35,7 @@ def load_resrgan(
         return cache_pipe
 
     if not path.isfile(model_path):
-        raise Exception("Real ESRGAN model not found at %s" % model_path)
+        raise FileNotFoundError("Real ESRGAN model not found at %s" % model_path)
 
     if params.format == "onnx":
         # use ONNX acceleration, if available
@@ -66,7 +66,7 @@ def load_resrgan(
                 scale=params.scale,
             )
     else:
-        raise Exception("unknown platform %s" % params.format)
+        raise ValueError("unknown platform %s" % params.format)
 
     dni_weight = None
     if params.upscale_model == TAG_X4_V3 and params.denoise != 1:
