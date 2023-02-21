@@ -25,7 +25,7 @@ export function GridItem(props: { xs: number; children: React.ReactNode }) {
 
 export function ImageCard(props: ImageCardProps) {
   const { value } = props;
-  const { params, output, size } = value;
+  const { params, outputs, size } = value;
 
   const [_hash, setHash] = useHash();
   const [anchor, setAnchor] = useState<Maybe<HTMLElement>>();
@@ -42,7 +42,7 @@ export function ImageCard(props: ImageCardProps) {
   const setBlend = useStore(state, (s) => s.setBlend);
 
   async function loadSource() {
-    const req = await fetch(output[0].url);
+    const req = await fetch(outputs[index].url);
     return req.blob();
   }
 
@@ -88,7 +88,7 @@ export function ImageCard(props: ImageCardProps) {
   }
 
   function downloadImage() {
-    window.open(output[0].url, '_blank');
+    window.open(outputs[index].url, '_blank');
   }
 
   function close() {
@@ -103,7 +103,7 @@ export function ImageCard(props: ImageCardProps) {
   return <Card sx={{ maxWidth: config.params.width.default }} elevation={2}>
     <CardMedia sx={{ height: config.params.height.default }}
       component='img'
-      image={output[index].url}
+      image={outputs[index].url}
       title={params.prompt}
     />
     <CardContent>
@@ -114,7 +114,7 @@ export function ImageCard(props: ImageCardProps) {
               <IconButton onClick={() => {
                 const prevIndex = index - 1;
                 if (prevIndex < 0) {
-                  setIndex(output.length + prevIndex);
+                  setIndex(outputs.length + prevIndex);
                 } else {
                   setIndex(prevIndex);
                 }
@@ -124,12 +124,12 @@ export function ImageCard(props: ImageCardProps) {
             </Tooltip>
           </GridItem>
           <GridItem xs={4}>
-            {visibleIndex(index)} of {output.length}
+            {visibleIndex(index)} of {outputs.length}
           </GridItem>
           <GridItem xs={4}>
             <Tooltip title='Next'>
               <IconButton onClick={() => {
-                setIndex((index + 1) % output.length);
+                setIndex((index + 1) % outputs.length);
               }}>
                 <ArrowRight />
               </IconButton>

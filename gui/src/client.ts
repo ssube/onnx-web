@@ -145,7 +145,7 @@ export interface BlendParams {
  * General response for most image requests.
  */
 export interface ImageResponse {
-  output: Array<{
+  outputs: Array<{
     key: string;
     url: string;
   }>;
@@ -258,7 +258,7 @@ export const FIXED_FLOAT = 2;
 export const STATUS_SUCCESS = 200;
 
 export function equalResponse(a: ImageResponse, b: ImageResponse): boolean {
-  return a.output === b.output;
+  return a.outputs === b.outputs;
 }
 
 /**
@@ -546,12 +546,12 @@ export function makeClient(root: string, f = fetch): ApiClient {
  * that into a full URL, since it already knows the root URL of the server.
  */
 export async function parseApiResponse(root: string, res: Response): Promise<ImageResponse> {
-  type LimitedResponse = Omit<ImageResponse, 'output'> & { output: Array<string> };
+  type LimitedResponse = Omit<ImageResponse, 'outputs'> & { outputs: Array<string> };
 
   if (res.status === STATUS_SUCCESS) {
     const data = await res.json() as LimitedResponse;
 
-    const images = data.output.map((output) => {
+    const outputs = data.outputs.map((output) => {
       const url = new URL(joinPath('output', output), root).toString();
       return {
         key: output,
@@ -561,7 +561,7 @@ export async function parseApiResponse(root: string, res: Response): Promise<Ima
 
     return {
       ...data,
-      output: images,
+      outputs,
     };
   } else {
     throw new Error('request error');

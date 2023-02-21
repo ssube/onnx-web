@@ -164,7 +164,7 @@ export const STATE_KEY = 'onnx-web';
 /**
  * Current state version for zustand persistence.
  */
-export const STATE_VERSION = 5;
+export const STATE_VERSION = 6;
 
 export const BLEND_SOURCES = 2;
 
@@ -311,7 +311,7 @@ export function createStateSlices(server: ServerParams) {
     clearLoading(image) {
       set((prev) => ({
         ...prev,
-        loading: prev.loading.filter((it) => it.image.output[0].key !== image.output[0].key),
+        loading: prev.loading.filter((it) => it.image.outputs[0].key !== image.outputs[0].key),
       }));
     },
     pushHistory(image) {
@@ -321,7 +321,7 @@ export function createStateSlices(server: ServerParams) {
           image,
           ...prev.history,
         ].slice(0, prev.limit + DEFAULT_HISTORY.scrollback),
-        loading: prev.loading.filter((it) => it.image.output[0].key !== image.output[0].key),
+        loading: prev.loading.filter((it) => it.image.outputs[0].key !== image.outputs[0].key),
       }));
     },
     pushLoading(image) {
@@ -342,7 +342,7 @@ export function createStateSlices(server: ServerParams) {
     removeHistory(image) {
       set((prev) => ({
         ...prev,
-        history: prev.history.filter((it) => it.output !== image.output),
+        history: prev.history.filter((it) => it.outputs !== image.outputs),
       }));
     },
     setLimit(limit) {
@@ -354,7 +354,7 @@ export function createStateSlices(server: ServerParams) {
     setReady(image, ready) {
       set((prev) => {
         const loading = [...prev.loading];
-        const idx = loading.findIndex((it) => it.image.output[0].key === image.output[0].key);
+        const idx = loading.findIndex((it) => it.image.outputs[0].key === image.outputs[0].key);
         if (idx >= 0) {
           loading[idx].ready = ready;
         } else {

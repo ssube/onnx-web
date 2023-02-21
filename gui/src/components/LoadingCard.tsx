@@ -33,8 +33,8 @@ export function LoadingCard(props: LoadingCardProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setReady = useStore(state, (s) => s.setReady);
 
-  const cancel = useMutation(() => client.cancel(loading.output[index].key));
-  const ready = useQuery(`ready-${loading.output[index].key}`, () => client.ready(loading.output[index].key), {
+  const cancel = useMutation(() => client.cancel(loading.outputs[index].key));
+  const ready = useQuery(`ready-${loading.outputs[index].key}`, () => client.ready(loading.outputs[index].key), {
     // data will always be ready without this, even if the API says its not
     cacheTime: 0,
     refetchInterval: POLL_TIME,
