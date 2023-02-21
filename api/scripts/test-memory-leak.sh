@@ -4,7 +4,7 @@ test_images=0
 while true;
 do
   curl "http://${test_host}:5000/api/txt2img?"\
-'cfg=16.00&steps=35&scheduler=deis-multi&seed=-1&'\
+'cfg=16.00&steps=3&scheduler=deis-multi&seed=-1&'\
 'prompt=an+astronaut+eating+a+hamburger&negativePrompt=&'\
 'model=stable-diffusion-onnx-v1-5&platform=any&'\
 'upscaling=upscaling-real-esrgan-x2-plus&correction=correction-codeformer&'\
@@ -14,5 +14,5 @@ do
     --insecure || break;
   ((test_images++));
   echo "waiting after $test_images";
-  sleep 30;
+  sleep 10;
 done
