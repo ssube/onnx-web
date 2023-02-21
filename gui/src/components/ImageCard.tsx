@@ -1,5 +1,5 @@
 import { doesExist, Maybe, mustDefault, mustExist } from '@apextoaster/js-utils';
-import { Blender, Brush, ContentCopy, Delete, Download, ZoomOutMap } from '@mui/icons-material';
+import { ArrowLeft, ArrowRight, Blender, Brush, ContentCopy, Delete, Download, ZoomOutMap } from '@mui/icons-material';
 import { Box, Card, CardContent, CardMedia, Grid, IconButton, Menu, MenuItem, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import { useContext, useState } from 'react';
@@ -95,18 +95,46 @@ export function ImageCard(props: ImageCardProps) {
     setAnchor(undefined);
   }
 
+  const [index, setIndex] = useState(0);
+
   const model = mustDefault(MODEL_LABELS[params.model], params.model);
   const scheduler = mustDefault(SCHEDULER_LABELS[params.scheduler], params.scheduler);
 
   return <Card sx={{ maxWidth: config.params.width.default }} elevation={2}>
     <CardMedia sx={{ height: config.params.height.default }}
       component='img'
-      image={output[0].url}
+      image={output[index].url}
       title={params.prompt}
     />
     <CardContent>
       <Box textAlign='center'>
         <Grid container spacing={2}>
+          <GridItem xs={4}>
+            <Tooltip title='Previous'>
+              <IconButton onClick={() => {
+                const prevIndex = index - 1;
+                if (prevIndex < 0) {
+                  setIndex(output.length + prevIndex);
+                } else {
+                  setIndex(prevIndex);
+                }
+              }}>
+                <ArrowLeft />
+              </IconButton>
+            </Tooltip>
+          </GridItem>
+          <GridItem xs={4}>
+            {visibleIndex(index)} of {output.length}
+          </GridItem>
+          <GridItem xs={4}>
+            <Tooltip title='Next'>
+              <IconButton onClick={() => {
+                setIndex((index + 1) % output.length);
+              }}>
+                <ArrowRight />
+              </IconButton>
+            </Tooltip>
+          </GridItem>
           <GridItem xs={4}>Model: {model}</GridItem>
           <GridItem xs={4}>Scheduler: {scheduler}</GridItem>
           <GridItem xs={4}>Seed: {params.seed}</GridItem>
