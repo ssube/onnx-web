@@ -7,6 +7,7 @@
   - [API Development](#api-development)
     - [Style](#style)
     - [Models and Pipelines](#models-and-pipelines)
+    - [Memory Profiling](#memory-profiling)
   - [GUI Development](#gui-development)
     - [Updating Github Pages](#updating-github-pages)
     - [Watch mode](#watch-mode)
@@ -30,6 +31,19 @@ whenever reasonably possible.
 
 Most pipeline stages will have a corresponding load function somewhere, like `upscale_stable_diffusion` and `load_stable_diffusion`. The load function should compare its parameters and reuse the existing pipeline when
 that is possible without causing memory access errors. Most logging from the load function should be `debug` level.
+
+### Memory Profiling
+
+To track memory usage and leaks, run the API under `fil`:
+
+```shell
+> fil-profile run -m flask --app=onnx_web.serve run --host=0.0.0.0
+
+> fil-profile run -m waitress --listen=0.0.0.0:5000 onnx_web.serve:app
+```
+
+Using `memray` will break the CUDA bridge or driver somehow, and prevents hardware acceleration from working. That
+makes it extremely time consuming to test any kind of memory leak.
 
 ## GUI Development
 
