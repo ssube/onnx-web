@@ -42,7 +42,7 @@ export function ImageCard(props: ImageCardProps) {
   const setBlend = useStore(state, (s) => s.setBlend);
 
   async function loadSource() {
-    const req = await fetch(output.url);
+    const req = await fetch(output[0].url);
     return req.blob();
   }
 
@@ -88,7 +88,7 @@ export function ImageCard(props: ImageCardProps) {
   }
 
   function downloadImage() {
-    window.open(output.url, '_blank');
+    window.open(output[0].url, '_blank');
   }
 
   function close() {
@@ -101,7 +101,7 @@ export function ImageCard(props: ImageCardProps) {
   return <Card sx={{ maxWidth: config.params.width.default }} elevation={2}>
     <CardMedia sx={{ height: config.params.height.default }}
       component='img'
-      image={output.url}
+      image={output[0].url}
       title={params.prompt}
     />
     <CardContent>

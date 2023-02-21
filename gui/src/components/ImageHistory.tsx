@@ -18,11 +18,11 @@ export function ImageHistory() {
   const children = [];
 
   if (loading.length > 0) {
-    children.push(...loading.map((item) => <LoadingCard key={`loading-${item.image.output.key}`} loading={item.image} />));
+    children.push(...loading.map((item) => <LoadingCard key={`loading-${item.image.output[0].key}`} index={0} loading={item.image} />));
   }
 
   if (history.length > 0) {
-    children.push(...history.map((item) => <ImageCard key={`history-${item.output.key}`} value={item} onDelete={removeHistory} />));
+    children.push(...history.map((item) => <ImageCard key={`history-${item.output[0].key}`} value={item} onDelete={removeHistory} />));
   } else {
     if (doesExist(loading) === false) {
       children.push(<Typography>No results. Press Generate.</Typography>);

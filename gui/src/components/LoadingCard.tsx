@@ -14,10 +14,12 @@ const LOADING_PERCENT = 100;
 const LOADING_OVERAGE = 99;
 
 export interface LoadingCardProps {
+  index: number;
   loading: ImageResponse;
 }
 
 export function LoadingCard(props: LoadingCardProps) {
+  const { index, loading } = props;
   const { steps } = props.loading.params;
 
   const client = mustExist(React.useContext(ClientContext));
@@ -31,8 +33,8 @@ export function LoadingCard(props: LoadingCardProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setReady = useStore(state, (s) => s.setReady);
 
-  const cancel = useMutation(() => client.cancel(props.loading));
-  const ready = useQuery(`ready-${props.loading.output.key}`, () => client.ready(props.loading), {
+  const cancel = useMutation(() => client.cancel(loading.output[index].key));
+  const ready = useQuery(`ready-${loading.output[index].key}`, () => client.ready(loading.output[index].key), {
     // data will always be ready without this, even if the API says its not
     cacheTime: 0,
     refetchInterval: POLL_TIME,

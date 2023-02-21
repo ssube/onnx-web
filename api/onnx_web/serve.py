@@ -542,11 +542,12 @@ def img2img():
     )
 
     output = make_output_name(context, "img2img", params, size, extras=(strength,))
-    logger.info("img2img job queued for: %s", output)
+    job_name = output[0]
+    logger.info("img2img job queued for: %s", job_name)
 
     source = valid_image(source, min_dims=size, max_dims=size)
     executor.submit(
-        output,
+        job_name,
         run_img2img_pipeline,
         context,
         params,
@@ -566,10 +567,11 @@ def txt2img():
     upscale = upscale_from_request()
 
     output = make_output_name(context, "txt2img", params, size)
-    logger.info("txt2img job queued for: %s", output)
+    job_name = output[0]
+    logger.info("txt2img job queued for: %s", job_name)
 
     executor.submit(
-        output,
+        job_name,
         run_txt2img_pipeline,
         context,
         params,
@@ -623,12 +625,13 @@ def inpaint():
             tile_order,
         ),
     )
-    logger.info("inpaint job queued for: %s", output)
+    job_name = output[0]
+    logger.info("inpaint job queued for: %s", job_name)
 
     source = valid_image(source, min_dims=size, max_dims=size)
     mask = valid_image(mask, min_dims=size, max_dims=size)
     executor.submit(
-        output,
+        job_name,
         run_inpaint_pipeline,
         context,
         params,
@@ -660,11 +663,12 @@ def upscale():
     upscale = upscale_from_request()
 
     output = make_output_name(context, "upscale", params, size)
-    logger.info("upscale job queued for: %s", output)
+    job_name = output[0]
+    logger.info("upscale job queued for: %s", job_name)
 
     source = valid_image(source, min_dims=size, max_dims=size)
     executor.submit(
-        output,
+        job_name,
         run_upscale_pipeline,
         context,
         params,
@@ -697,6 +701,7 @@ def chain():
     # get defaults from the regular parameters
     device, params, size = pipeline_from_request()
     output = make_output_name(context, "chain", params, size)
+    job_name = output[0]
 
     pipeline = ChainPipeline()
     for stage_data in data.get("stages", []):
@@ -750,7 +755,7 @@ def chain():
     # build and run chain pipeline
     empty_source = Image.new("RGB", (size.width, size.height))
     executor.submit(
-        output,
+        job_name,
         pipeline,
         context,
         params,
@@ -785,10 +790,11 @@ def blend():
     upscale = upscale_from_request()
 
     output = make_output_name(context, "upscale", params, size)
-    logger.info("upscale job queued for: %s", output)
+    job_name = output[0]
+    logger.info("upscale job queued for: %s", job_name)
 
     executor.submit(
-        output,
+        job_name,
         run_blend_pipeline,
         context,
         params,

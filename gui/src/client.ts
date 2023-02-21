@@ -145,10 +145,10 @@ export interface BlendParams {
  * General response for most image requests.
  */
 export interface ImageResponse {
-  output: {
+  output: Array<{
     key: string;
     url: string;
-  };
+  }>;
   params: Required<BaseImgParams> & Required<ModelParams>;
   size: {
     width: number;
@@ -237,9 +237,9 @@ export interface ApiClient {
   /**
    * Check whether some pipeline's output is ready yet.
    */
-  ready(params: ImageResponse): Promise<ReadyResponse>;
+  ready(key: string): Promise<ReadyResponse>;
 
-  cancel(params: ImageResponse): Promise<boolean>;
+  cancel(key: string): Promise<boolean>;
 }
 
 /**
@@ -520,16 +520,16 @@ export function makeClient(root: string, f = fetch): ApiClient {
         method: 'POST',
       });
     },
-    async ready(params: ImageResponse): Promise<ReadyResponse> {
+    async ready(key: string): Promise<ReadyResponse> {
       const path = makeApiUrl(root, 'ready');
-      path.searchParams.append('output', params.output.key);
+      path.searchParams.append('output', key);
 
       const res = await f(path);
       return await res.json() as ReadyResponse;
     },
-    async cancel(params: ImageResponse): Promise<boolean> {
+    async cancel(key: string): Promise<boolean> {
       const path = makeApiUrl(root, 'cancel');
-      path.searchParams.append('output', params.output.key);
+      path.searchParams.append('output', key);
 
       const res = await f(path, {
         method: 'PUT',
@@ -546,17 +546,22 @@ export function makeClient(root: string, f = fetch): ApiClient {
  * that into a full URL, since it already knows the root URL of the server.
  */
 export async function parseApiResponse(root: string, res: Response): Promise<ImageResponse> {
-  type LimitedResponse = Omit<ImageResponse, 'output'> & { output: string };
+  type LimitedResponse = Omit<ImageResponse, 'output'> & { output: Array<string> };
 
   if (res.status === STATUS_SUCCESS) {
     const data = await res.json() as LimitedResponse;
-    const url = new URL(joinPath('output', data.output), root).toString();
+
+    const images = data.output.map((output) => {
+      const url = new URL(joinPath('output', output), root).toString();
+      return {
+        key: output,
+        url,
+      };
+    });
+
     return {
       ...data,
-      output: {
-        key: data.output,
-        url,
-      },
+      output: images,
     };
   } else {
     throw new Error('request error');

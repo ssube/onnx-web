@@ -311,7 +311,7 @@ export function createStateSlices(server: ServerParams) {
     clearLoading(image) {
       set((prev) => ({
         ...prev,
-        loading: prev.loading.filter((it) => it.image.output.key !== image.output.key),
+        loading: prev.loading.filter((it) => it.image.output[0].key !== image.output[0].key),
       }));
     },
     pushHistory(image) {
@@ -321,7 +321,7 @@ export function createStateSlices(server: ServerParams) {
           image,
           ...prev.history,
         ].slice(0, prev.limit + DEFAULT_HISTORY.scrollback),
-        loading: prev.loading.filter((it) => it.image.output.key !== image.output.key),
+        loading: prev.loading.filter((it) => it.image.output[0].key !== image.output[0].key),
       }));
     },
     pushLoading(image) {
@@ -354,7 +354,7 @@ export function createStateSlices(server: ServerParams) {
     setReady(image, ready) {
       set((prev) => {
         const loading = [...prev.loading];
-        const idx = loading.findIndex((it) => it.image.output.key === image.output.key);
+        const idx = loading.findIndex((it) => it.image.output[0].key === image.output[0].key);
         if (idx >= 0) {
           loading[idx].ready = ready;
         } else {

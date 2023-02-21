@@ -30,7 +30,7 @@ def hash_value(sha, param: Param):
 
 
 def json_params(
-    output: str,
+    output: List[str],
     params: ImageParams,
     size: Size,
     upscale: Optional[UpscaleParams] = None,
