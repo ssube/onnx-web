@@ -122,8 +122,9 @@ chain_stages = {
 available_platforms: List[DeviceParams] = []
 
 # loaded from model_path
-diffusion_models: List[str] = []
 correction_models: List[str] = []
+diffusion_models: List[str] = []
+inversion_models: List[str] = []
 upscaling_models: List[str] = []
 
 
@@ -301,8 +302,9 @@ def get_model_name(model: str) -> str:
 
 
 def load_models(context: ServerContext) -> None:
-    global diffusion_models
     global correction_models
+    global diffusion_models
+    global inversion_models
     global upscaling_models
 
     diffusion_models = [
@@ -322,6 +324,12 @@ def load_models(context: ServerContext) -> None:
     ]
     correction_models = list(set(correction_models))
     correction_models.sort()
+
+    inversion_models = [
+        get_model_name(f) for f in glob(path.join(context.model_path, "inversion-*"))
+    ]
+    inversion_models = list(set(inversion_models))
+    inversion_models.sort()
 
     upscaling_models = [
         get_model_name(f) for f in glob(path.join(context.model_path, "upscaling-*"))
@@ -496,8 +504,9 @@ def list_mask_filters():
 def list_models():
     return jsonify(
         {
-            "diffusion": diffusion_models,
             "correction": correction_models,
+            "diffusion": diffusion_models,
+            "inversion": inversion_models,
             "upscaling": upscaling_models,
         }
     )

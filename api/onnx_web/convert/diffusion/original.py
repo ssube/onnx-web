@@ -53,8 +53,8 @@ from transformers import (
     CLIPVisionConfig,
 )
 
-from .diffusion_stable import convert_diffusion_stable
-from .utils import ConversionContext, ModelDict, load_tensor, load_yaml, sanitize_name
+from .diffusers import convert_diffusion_diffusers
+from ..utils import ConversionContext, ModelDict, load_tensor, load_yaml, sanitize_name
 
 logger = getLogger(__name__)
 
@@ -1428,5 +1428,5 @@ def convert_diffusion_original(
     if "vae" in model:
         del model["vae"]
 
-    convert_diffusion_stable(ctx, model, working_name)
+    convert_diffusion_diffusers(ctx, model, working_name)
     logger.info("ONNX pipeline saved to %s", name)

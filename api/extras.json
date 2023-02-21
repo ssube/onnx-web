@@ -1,6 +1,11 @@
 {
   "diffusion": [
     {
+      "name": "diffusion-ugly-sonic",
+      "source": "runwayml/stable-diffusion-v1-5",
+      "inversion": "sd-concepts-library/ugly-sonic"
+    },
+    {
       "name": "diffusion-knollingcase",
       "source": "Aybeeceedee/knollingcase"
     },

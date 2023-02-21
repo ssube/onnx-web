@@ -10,8 +10,9 @@ from jsonschema import ValidationError, validate
 from yaml import safe_load
 
 from .correction_gfpgan import convert_correction_gfpgan
-from .diffusion_original import convert_diffusion_original
-from .diffusion_stable import convert_diffusion_stable
+from .diffusion.original import convert_diffusion_original
+from .diffusion.diffusers import convert_diffusion_diffusers
+from .diffusion.textual_inversion import convert_diffusion_textual_inversion
 from .upscale_resrgan import convert_upscale_resrgan
 from .utils import (
     ConversionContext,
@@ -216,6 +217,9 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                         ctx, name, model["source"], model_format=model_format
                     )
 
+                    if "inversion" in model:
+                        convert_diffusion_textual_inversion(ctx, source, model["inversion"])
+
                     if model_format in model_formats_original:
                         convert_diffusion_original(
                             ctx,
@@ -223,7 +227,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             source,
                         )
                     else:
-                        convert_diffusion_stable(
+                        convert_diffusion_diffusers(
                             ctx,
                             model,
                             source,

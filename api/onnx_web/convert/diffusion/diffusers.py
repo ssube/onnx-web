@@ -25,12 +25,11 @@ from diffusers import (
 from onnx import load, save_model
 from torch.onnx import export
 
-from onnx_web.diffusion.load import optimize_pipeline
-
-from ..diffusion.pipeline_onnx_stable_diffusion_upscale import (
+from ...diffusion.load import optimize_pipeline
+from ...diffusion.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
-from .utils import ConversionContext
+from ..utils import ConversionContext
 
 logger = getLogger(__name__)
 
@@ -63,7 +62,7 @@ def onnx_export(
 
 
 @torch.no_grad()
-def convert_diffusion_stable(
+def convert_diffusion_diffusers(
     ctx: ConversionContext,
     model: Dict,
     source: str,
