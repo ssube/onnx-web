@@ -17,12 +17,12 @@ def persist_disk(
     _params: ImageParams,
     source: Image.Image,
     *,
-    output: List[str],
+    output: str,
     stage_source: Image.Image,
     **kwargs,
 ) -> Image.Image:
     source = stage_source or source
 
-    dest = save_image(server, output[0], source)
+    dest = save_image(server, output, source)
     logger.info("saved image to %s", dest)
     return source

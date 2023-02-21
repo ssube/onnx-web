@@ -760,7 +760,7 @@ def chain():
         context,
         params,
         empty_source,
-        output=output,
+        output=output[0],
         size=size,
         needs_device=device,
     )

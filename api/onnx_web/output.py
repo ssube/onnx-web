@@ -30,14 +30,14 @@ def hash_value(sha, param: Param):
 
 
 def json_params(
-    output: List[str],
+    outputs: List[str],
     params: ImageParams,
     size: Size,
     upscale: Optional[UpscaleParams] = None,
     border: Optional[Border] = None,
 ) -> Any:
     json = {
-        "output": output,
+        "outputs": outputs,
         "params": params.tojson(),
     }
 
