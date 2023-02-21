@@ -164,6 +164,13 @@ package-api-twine:
     expire_in: 7 days
     paths:
       - dist/
+  cache:
+    key:
+      files:
+        - api/dev-requirements.txt
+    paths:
+      - .cache/pip
+    policy: pull-push
 
 package-api-twine-dry:
   extends:
