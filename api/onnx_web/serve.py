@@ -165,6 +165,13 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
     if negative_prompt is not None and negative_prompt.strip() == "":
         negative_prompt = None
 
+    batch = get_and_clamp_int(
+        request.args,
+        "batch",
+        get_config_value("batch"),
+        get_config_value("batch", "max"),
+        get_config_value("batch", "min"),
+    )
     cfg = get_and_clamp_float(
         request.args,
         "cfg",
@@ -230,6 +237,7 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
         eta=eta,
         lpw=lpw,
         negative_prompt=negative_prompt,
+        batch=batch,
     )
     size = Size(width, height)
     return (device, params, size)
