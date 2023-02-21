@@ -28,7 +28,7 @@ def run_txt2img_pipeline(
     outputs: List[str],
     upscale: UpscaleParams,
 ) -> None:
-    latents = get_latents_from_seed(params.seed, size)
+    latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     pipe = load_pipeline(
         server,
         OnnxStableDiffusionPipeline,
