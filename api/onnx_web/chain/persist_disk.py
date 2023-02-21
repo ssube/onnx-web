@@ -1,5 +1,4 @@
 from logging import getLogger
-from typing import List
 
 from PIL import Image
 
