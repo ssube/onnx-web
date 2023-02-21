@@ -39460,7 +39460,9 @@
   __name(makeApiUrl, "makeApiUrl");
   function makeImageURL(root, type, params) {
     const url = makeApiUrl(root, type);
+    url.searchParams.append("batch", params.batch.toFixed(FIXED_INTEGER));
     url.searchParams.append("cfg", params.cfg.toFixed(FIXED_FLOAT));
+    url.searchParams.append("eta", params.eta.toFixed(FIXED_FLOAT));
     url.searchParams.append("steps", params.steps.toFixed(FIXED_INTEGER));
     if (doesExist2(params.scheduler)) {
       url.searchParams.append("scheduler", params.scheduler);
@@ -39646,15 +39648,15 @@
           method: "POST"
         });
       },
-      async ready(params) {
+      async ready(key) {
         const path = makeApiUrl(root, "ready");
-        path.searchParams.append("output", params.output.key);
+        path.searchParams.append("output", key);
         const res = await f2(path);
         return await res.json();
       },
-      async cancel(params) {
+      async cancel(key) {
         const path = makeApiUrl(root, "cancel");
-        path.searchParams.append("output", params.output.key);
+        path.searchParams.append("output", key);
         const res = await f2(path, {
           method: "PUT"
         });
@@ -39666,11 +39668,14 @@
   async function parseApiResponse(root, res) {
     if (res.status === STATUS_SUCCESS) {
       const data = await res.json();
-      const url = new URL(joinPath("output", data.output), root).toString();
-      return Object.assign(Object.assign({}, data), { output: {
-        key: data.output,
-        url
-      } });
+      const outputs = data.outputs.map((output) => {
+        const url = new URL(joinPath("output", output), root).toString();
+        return {
+          key: output,
+          url
+        };
+      });
+      return Object.assign(Object.assign({}, data), { outputs });
     } else {
       throw new Error("request error");
     }
@@ -64659,7 +64664,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   var LoggerContext = (0, import_react18.createContext)(void 0);
   var StateContext = (0, import_react18.createContext)(void 0);
   var STATE_KEY = "onnx-web";
-  var STATE_VERSION = 5;
+  var STATE_VERSION = 6;
   var BLEND_SOURCES = 2;
   var DEFAULT_BRUSH = {
     color: 255,
@@ -64679,7 +64684,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   };
   function baseParamsFromServer(defaults) {
     return {
+      batch: defaults.batch.default,
       cfg: defaults.cfg.default,
+      eta: defaults.eta.default,
       negativePrompt: defaults.negativePrompt.default,
       prompt: defaults.prompt.default,
       scheduler: defaults.scheduler.default,
@@ -64734,13 +64741,13 @@ Please use another name.` : formatMuiErrorMessage(18));
       limit: DEFAULT_HISTORY.limit,
       loading: [],
       clearLoading(image) {
-        set((prev2) => Object.assign(Object.assign({}, prev2), { loading: prev2.loading.filter((it) => it.image.output.key !== image.output.key) }));
+        set((prev2) => Object.assign(Object.assign({}, prev2), { loading: prev2.loading.filter((it) => it.image.outputs[0].key !== image.outputs[0].key) }));
       },
       pushHistory(image) {
         set((prev2) => Object.assign(Object.assign({}, prev2), { history: [
           image,
           ...prev2.history
-        ].slice(0, prev2.limit + DEFAULT_HISTORY.scrollback), loading: prev2.loading.filter((it) => it.image.output.key !== image.output.key) }));
+        ].slice(0, prev2.limit + DEFAULT_HISTORY.scrollback), loading: prev2.loading.filter((it) => it.image.outputs[0].key !== image.outputs[0].key) }));
       },
       pushLoading(image) {
         set((prev2) => Object.assign(Object.assign({}, prev2), { loading: [
@@ -64755,7 +64762,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         ] }));
       },
       removeHistory(image) {
-        set((prev2) => Object.assign(Object.assign({}, prev2), { history: prev2.history.filter((it) => it.output !== image.output) }));
+        set((prev2) => Object.assign(Object.assign({}, prev2), { history: prev2.history.filter((it) => it.outputs !== image.outputs) }));
       },
       setLimit(limit) {
         set((prev2) => Object.assign(Object.assign({}, prev2), { limit }));
@@ -64763,7 +64770,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       setReady(image, ready) {
         set((prev2) => {
           const loading = [...prev2.loading];
-          const idx = loading.findIndex((it) => it.image.output.key === image.output.key);
+          const idx = loading.findIndex((it) => it.image.outputs[0].key === image.outputs[0].key);
           if (idx >= 0) {
             loading[idx].ready = ready;
           } else {
@@ -65405,85 +65412,97 @@ Please use another name.` : formatMuiErrorMessage(18));
   var import_react23 = __toESM(require_react(), 1);
   var React109 = __toESM(require_react(), 1);
 
-  // node_modules/@mui/icons-material/esm/Blender.js
+  // node_modules/@mui/icons-material/esm/ArrowLeft.js
   var import_jsx_runtime97 = __toESM(require_jsx_runtime());
-  var Blender_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime97.jsx)("path", {
+  var ArrowLeft_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime97.jsx)("path", {
+    d: "m14 7-5 5 5 5V7z"
+  }), "ArrowLeft");
+
+  // node_modules/@mui/icons-material/esm/ArrowRight.js
+  var import_jsx_runtime98 = __toESM(require_jsx_runtime());
+  var ArrowRight_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime98.jsx)("path", {
+    d: "m10 17 5-5-5-5v10z"
+  }), "ArrowRight");
+
+  // node_modules/@mui/icons-material/esm/Blender.js
+  var import_jsx_runtime99 = __toESM(require_jsx_runtime());
+  var Blender_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime99.jsx)("path", {
     d: "M16.13 15.13 18 3h-4V2h-4v1H5c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h2.23l.64 4.13C6.74 16.05 6 17.43 6 19v1c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-1c0-1.57-.74-2.95-1.87-3.87zM5 9V5h1.31l.62 4H5zm7 10c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2.29-5H9.72L8.33 5h7.34l-1.38 9z"
   }), "Blender");
 
   // node_modules/@mui/icons-material/esm/Brush.js
-  var import_jsx_runtime98 = __toESM(require_jsx_runtime());
-  var Brush_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime98.jsx)("path", {
+  var import_jsx_runtime100 = __toESM(require_jsx_runtime());
+  var Brush_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime100.jsx)("path", {
     d: "M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37-1.34-1.34a.9959.9959 0 0 0-1.41 0L9 12.25 11.75 15l8.96-8.96c.39-.39.39-1.02 0-1.41z"
   }), "Brush");
 
   // node_modules/@mui/icons-material/esm/Casino.js
-  var import_jsx_runtime99 = __toESM(require_jsx_runtime());
-  var Casino_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime99.jsx)("path", {
+  var import_jsx_runtime101 = __toESM(require_jsx_runtime());
+  var Casino_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime101.jsx)("path", {
     d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"
   }), "Casino");
 
   // node_modules/@mui/icons-material/esm/ContentCopy.js
-  var import_jsx_runtime100 = __toESM(require_jsx_runtime());
-  var ContentCopy_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime100.jsx)("path", {
+  var import_jsx_runtime102 = __toESM(require_jsx_runtime());
+  var ContentCopy_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime102.jsx)("path", {
     d: "M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
   }), "ContentCopy");
 
   // node_modules/@mui/icons-material/esm/Delete.js
-  var import_jsx_runtime101 = __toESM(require_jsx_runtime());
-  var Delete_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime101.jsx)("path", {
+  var import_jsx_runtime103 = __toESM(require_jsx_runtime());
+  var Delete_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime103.jsx)("path", {
     d: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
   }), "Delete");
 
   // node_modules/@mui/icons-material/esm/Download.js
-  var import_jsx_runtime102 = __toESM(require_jsx_runtime());
-  var Download_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime102.jsx)("path", {
+  var import_jsx_runtime104 = __toESM(require_jsx_runtime());
+  var Download_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime104.jsx)("path", {
     d: "M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"
   }), "Download");
 
   // node_modules/@mui/icons-material/esm/FormatColorFill.js
-  var import_jsx_runtime103 = __toESM(require_jsx_runtime());
-  var FormatColorFill_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime103.jsx)("path", {
+  var import_jsx_runtime105 = __toESM(require_jsx_runtime());
+  var FormatColorFill_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime105.jsx)("path", {
     d: "M16.56 8.94 7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10 10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5zM2 20h20v4H2v-4z"
   }), "FormatColorFill");
 
   // node_modules/@mui/icons-material/esm/Gradient.js
-  var import_jsx_runtime104 = __toESM(require_jsx_runtime());
-  var Gradient_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime104.jsx)("path", {
+  var import_jsx_runtime106 = __toESM(require_jsx_runtime());
+  var Gradient_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime106.jsx)("path", {
     d: "M11 9h2v2h-2zm-2 2h2v2H9zm4 0h2v2h-2zm2-2h2v2h-2zM7 9h2v2H7zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V5h14v6z"
   }), "Gradient");
 
   // node_modules/@mui/icons-material/esm/InvertColors.js
-  var import_jsx_runtime105 = __toESM(require_jsx_runtime());
-  var InvertColors_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime105.jsx)("path", {
+  var import_jsx_runtime107 = __toESM(require_jsx_runtime());
+  var InvertColors_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime107.jsx)("path", {
     d: "M12 4.81V19c-3.31 0-6-2.63-6-5.87 0-1.56.62-3.03 1.75-4.14L12 4.81M6.35 7.56C4.9 8.99 4 10.96 4 13.13 4 17.48 7.58 21 12 21s8-3.52 8-7.87c0-2.17-.9-4.14-2.35-5.57L12 2 6.35 7.56z"
   }), "InvertColors");
 
   // node_modules/@mui/icons-material/esm/PhotoCamera.js
-  var import_jsx_runtime106 = __toESM(require_jsx_runtime());
-  var PhotoCamera_default = createSvgIcon([/* @__PURE__ */ (0, import_jsx_runtime106.jsx)("circle", {
+  var import_jsx_runtime108 = __toESM(require_jsx_runtime());
+  var PhotoCamera_default = createSvgIcon([/* @__PURE__ */ (0, import_jsx_runtime108.jsx)("circle", {
     cx: "12",
     cy: "12",
     r: "3.2"
-  }, "0"), /* @__PURE__ */ (0, import_jsx_runtime106.jsx)("path", {
+  }, "0"), /* @__PURE__ */ (0, import_jsx_runtime108.jsx)("path", {
     d: "M9 2 7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"
   }, "1")], "PhotoCamera");
 
   // node_modules/@mui/icons-material/esm/Refresh.js
-  var import_jsx_runtime107 = __toESM(require_jsx_runtime());
-  var Refresh_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime107.jsx)("path", {
+  var import_jsx_runtime109 = __toESM(require_jsx_runtime());
+  var Refresh_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime109.jsx)("path", {
     d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
   }), "Refresh");
 
   // node_modules/@mui/icons-material/esm/Undo.js
-  var import_jsx_runtime108 = __toESM(require_jsx_runtime());
-  var Undo_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime108.jsx)("path", {
+  var import_jsx_runtime110 = __toESM(require_jsx_runtime());
+  var Undo_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime110.jsx)("path", {
     d: "M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"
   }), "Undo");
 
   // node_modules/@mui/icons-material/esm/ZoomOutMap.js
-  var import_jsx_runtime109 = __toESM(require_jsx_runtime());
-  var ZoomOutMap_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime109.jsx)("path", {
+  var import_jsx_runtime111 = __toESM(require_jsx_runtime());
+  var ZoomOutMap_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime111.jsx)("path", {
     d: "m15 3 2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3h-6zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3v6zm6 12-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6h6zm12-6-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6v-6z"
   }), "ZoomOutMap");
 
@@ -65501,7 +65520,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(GridItem, "GridItem");
   function ImageCard(props) {
     const { value } = props;
-    const { params, output, size } = value;
+    const { params, outputs, size } = value;
     const [_hash, setHash] = (0, import_useHash.useHash)();
     const [anchor, setAnchor] = (0, import_react21.useState)();
     const config = mustExist((0, import_react21.useContext)(ConfigContext));
@@ -65511,7 +65530,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const setUpscale = useStore(state, (s) => s.setUpscaleTab);
     const setBlend = useStore(state, (s) => s.setBlend);
     async function loadSource() {
-      const req = await fetch(output.url);
+      const req = await fetch(outputs[index].url);
       return req.blob();
     }
     __name(loadSource, "loadSource");
@@ -65557,19 +65576,20 @@ Please use another name.` : formatMuiErrorMessage(18));
     }
     __name(deleteImage, "deleteImage");
     function downloadImage() {
-      window.open(output.url, "_blank");
+      window.open(outputs[index].url, "_blank");
     }
     __name(downloadImage, "downloadImage");
     function close() {
       setAnchor(void 0);
     }
     __name(close, "close");
+    const [index, setIndex] = (0, import_react21.useState)(0);
     const model = mustDefault(MODEL_LABELS[params.model], params.model);
     const scheduler = mustDefault(SCHEDULER_LABELS[params.scheduler], params.scheduler);
     return React107.createElement(
       Card_default,
       { sx: { maxWidth: config.params.width.default }, elevation: 2 },
-      React107.createElement(CardMedia_default, { sx: { height: config.params.height.default }, component: "img", image: output.url, title: params.prompt }),
+      React107.createElement(CardMedia_default, { sx: { height: config.params.height.default }, component: "img", image: outputs[index].url, title: params.prompt }),
       React107.createElement(
         CardContent_default,
         null,
@@ -65579,6 +65599,48 @@ Please use another name.` : formatMuiErrorMessage(18));
           React107.createElement(
             Grid_default,
             { container: true, spacing: 2 },
+            React107.createElement(
+              GridItem,
+              { xs: 4 },
+              React107.createElement(
+                Tooltip_default,
+                { title: "Previous" },
+                React107.createElement(
+                  IconButton_default,
+                  { onClick: () => {
+                    const prevIndex = index - 1;
+                    if (prevIndex < 0) {
+                      setIndex(outputs.length + prevIndex);
+                    } else {
+                      setIndex(prevIndex);
+                    }
+                  } },
+                  React107.createElement(ArrowLeft_default, null)
+                )
+              )
+            ),
+            React107.createElement(
+              GridItem,
+              { xs: 4 },
+              visibleIndex(index),
+              " of ",
+              outputs.length
+            ),
+            React107.createElement(
+              GridItem,
+              { xs: 4 },
+              React107.createElement(
+                Tooltip_default,
+                { title: "Next" },
+                React107.createElement(
+                  IconButton_default,
+                  { onClick: () => {
+                    setIndex((index + 1) % outputs.length);
+                  } },
+                  React107.createElement(ArrowRight_default, null)
+                )
+              )
+            ),
             React107.createElement(
               GridItem,
               { xs: 4 },
@@ -65720,6 +65782,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   var LOADING_PERCENT = 100;
   var LOADING_OVERAGE = 99;
   function LoadingCard(props) {
+    const { index, loading } = props;
     const { steps } = props.loading.params;
     const client = mustExist(React108.useContext(ClientContext));
     const { params } = mustExist((0, import_react22.useContext)(ConfigContext));
@@ -65727,8 +65790,8 @@ Please use another name.` : formatMuiErrorMessage(18));
     const clearLoading = useStore(state, (s) => s.clearLoading);
     const pushHistory = useStore(state, (s) => s.pushHistory);
     const setReady = useStore(state, (s) => s.setReady);
-    const cancel = useMutation(() => client.cancel(props.loading));
-    const ready = useQuery(`ready-${props.loading.output.key}`, () => client.ready(props.loading), {
+    const cancel = useMutation(() => client.cancel(loading.outputs[index].key));
+    const ready = useQuery(`ready-${loading.outputs[index].key}`, () => client.ready(loading.outputs[index].key), {
       // data will always be ready without this, even if the API says its not
       cacheTime: 0,
       refetchInterval: POLL_TIME
@@ -65826,10 +65889,10 @@ Please use another name.` : formatMuiErrorMessage(18));
     const removeHistory = useStore(mustExist((0, import_react23.useContext)(StateContext)), (state) => state.removeHistory);
     const children = [];
     if (loading.length > 0) {
-      children.push(...loading.map((item) => React109.createElement(LoadingCard, { key: `loading-${item.image.output.key}`, loading: item.image })));
+      children.push(...loading.map((item) => React109.createElement(LoadingCard, { key: `loading-${item.image.outputs[0].key}`, index: 0, loading: item.image })));
     }
     if (history.length > 0) {
-      children.push(...history.map((item) => React109.createElement(ImageCard, { key: `history-${item.output.key}`, value: item, onDelete: removeHistory })));
+      children.push(...history.map((item) => React109.createElement(ImageCard, { key: `history-${item.outputs[0].key}`, value: item, onDelete: removeHistory })));
     } else {
       if (doesExist2(loading) === false) {
         children.push(React109.createElement(Typography_default, null, "No results. Press Generate."));
@@ -66398,13 +66461,27 @@ Please use another name.` : formatMuiErrorMessage(18));
     return React116.createElement(
       Stack_default2,
       { spacing: 2 },
-      React116.createElement(QueryList, { id: "schedulers", labels: SCHEDULER_LABELS, name: "Scheduler", query: {
-        result: schedulers
-      }, value: mustDefault(controlState.scheduler, ""), onChange: (value) => {
-        if (doesExist2(props.onChange)) {
-          props.onChange(Object.assign(Object.assign({}, controlState), { scheduler: value }));
-        }
-      } }),
+      React116.createElement(
+        Stack_default2,
+        { direction: "row", spacing: 4 },
+        React116.createElement(QueryList, { id: "schedulers", labels: SCHEDULER_LABELS, name: "Scheduler", query: {
+          result: schedulers
+        }, value: mustDefault(controlState.scheduler, ""), onChange: (value) => {
+          if (doesExist2(props.onChange)) {
+            props.onChange(Object.assign(Object.assign({}, controlState), { scheduler: value }));
+          }
+        } }),
+        React116.createElement(NumericField, { decimal: true, label: "Eta", min: params.eta.min, max: params.eta.max, step: params.eta.step, value: controlState.eta, onChange: (eta) => {
+          if (doesExist2(props.onChange)) {
+            props.onChange(Object.assign(Object.assign({}, controlState), { eta }));
+          }
+        } }),
+        React116.createElement(NumericField, { label: "Batch Size", min: params.batch.min, max: params.batch.max, step: params.batch.step, value: controlState.batch, onChange: (batch) => {
+          if (doesExist2(props.onChange)) {
+            props.onChange(Object.assign(Object.assign({}, controlState), { batch }));
+          }
+        } })
+      ),
       React116.createElement(
         Stack_default2,
         { direction: "row", spacing: 4 },
