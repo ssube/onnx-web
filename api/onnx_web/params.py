@@ -157,6 +157,7 @@ class ImageParams:
         lpw: bool = False,
         eta: float = 0.0,
         batch: int = 1,
+        inversion: str = None,
     ) -> None:
         self.model = model
         self.scheduler = scheduler
@@ -168,6 +169,7 @@ class ImageParams:
         self.lpw = lpw or False
         self.eta = eta
         self.batch = batch
+        self.inversion = inversion
 
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
@@ -181,6 +183,7 @@ class ImageParams:
             "lpw": self.lpw,
             "eta": self.eta,
             "batch": self.batch,
+            "inversion": self.inversion,
         }
 
     def with_args(self, **kwargs):
@@ -195,6 +198,7 @@ class ImageParams:
             kwargs.get("lpw", self.lpw),
             kwargs.get("eta", self.eta),
             kwargs.get("batch", self.batch),
+            kwargs.get("inversion", self.inversion),
         )
 
 

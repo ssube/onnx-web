@@ -159,6 +159,8 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
     scheduler = get_from_map(
         request.args, "scheduler", pipeline_schedulers, get_config_value("scheduler")
     )
+    inversion = get_not_empty(request.args, "inversion", get_config_value("inversion"))
+    inversion_path = get_model_path(inversion)
 
     # image params
     prompt = get_not_empty(request.args, "prompt", get_config_value("prompt"))
@@ -240,6 +242,7 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
         lpw=lpw,
         negative_prompt=negative_prompt,
         batch=batch,
+        inversion=inversion_path,
     )
     size = Size(width, height)
     return (device, params, size)

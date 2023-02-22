@@ -36,6 +36,7 @@ def run_txt2img_pipeline(
         params.scheduler,
         job.get_device(),
         params.lpw,
+        params.inversion,
     )
     progress = job.get_progress_callback()
 
@@ -109,6 +110,7 @@ def run_img2img_pipeline(
         params.scheduler,
         job.get_device(),
         params.lpw,
+        params.inversion,
     )
     progress = job.get_progress_callback()
     if params.lpw:

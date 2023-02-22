@@ -19,6 +19,8 @@ logger = getLogger(__name__)
 def hash_value(sha, param: Param):
     if param is None:
         return
+    elif isinstance(param, bool):
+        sha.update(bytearray(pack("!B", param)))
     elif isinstance(param, float):
         sha.update(bytearray(pack("!f", param)))
     elif isinstance(param, int):
@@ -73,8 +75,12 @@ def make_output_name(
     hash_value(sha, params.prompt)
     hash_value(sha, params.negative_prompt)
     hash_value(sha, params.cfg)
-    hash_value(sha, params.steps)
     hash_value(sha, params.seed)
+    hash_value(sha, params.steps)
+    hash_value(sha, params.lpw)
+    hash_value(sha, params.eta)
+    hash_value(sha, params.batch)
+    hash_value(sha, params.inversion)
     hash_value(sha, size.width)
     hash_value(sha, size.height)
 

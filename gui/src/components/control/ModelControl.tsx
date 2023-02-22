@@ -55,6 +55,21 @@ export function ModelControl() {
       }}
     />
     <QueryList
+      id='inversion'
+      labels={MODEL_LABELS}
+      name='Textual Inversion'
+      query={{
+        result: models,
+        selector: (result) => result.inversion,
+      }}
+      value={params.inversion}
+      onChange={(inversion) => {
+        setModel({
+          inversion,
+        });
+      }}
+    />
+    <QueryList
       id='upscaling'
       labels={MODEL_LABELS}
       name='Upscaling Model'

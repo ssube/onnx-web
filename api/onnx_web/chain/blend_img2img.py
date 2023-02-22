@@ -36,6 +36,7 @@ def blend_img2img(
         params.scheduler,
         job.get_device(),
         params.lpw,
+        params.inversion,
     )
     if params.lpw:
         logger.debug("using LPW pipeline for img2img")

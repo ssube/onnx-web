@@ -18,6 +18,7 @@ from diffusers import (
     LMSDiscreteScheduler,
     PNDMScheduler,
     StableDiffusionPipeline,
+    OnnxRuntimeModel,
 )
 
 try:
@@ -138,8 +139,9 @@ def load_pipeline(
     scheduler_type: Any,
     device: DeviceParams,
     lpw: bool,
+    inversion: Optional[str],
 ):
-    pipe_key = (pipeline, model, device.device, device.provider, lpw)
+    pipe_key = (pipeline, model, device.device, device.provider, lpw, inversion)
     scheduler_key = (scheduler_type, model)
 
     cache_pipe = server.cache.get("diffusion", pipe_key)
@@ -182,6 +184,17 @@ def load_pipeline(
             sess_options=device.sess_options(),
             subfolder="scheduler",
         )
+
+        text_encoder = None
+        if inversion is not None:
+            logger.debug("loading text encoder from %s", inversion)
+            text_encoder = OnnxRuntimeModel.from_pretrained(
+                inversion,
+                provider=device.ort_provider(),
+                sess_options=device.sess_options(),
+                subfolder="text_encoder",
+            )
+
         pipe = pipeline.from_pretrained(
             model,
             custom_pipeline=custom_pipeline,
@@ -190,6 +203,7 @@ def load_pipeline(
             revision="onnx",
             safety_checker=None,
             scheduler=scheduler,
+            text_encoder=text_encoder,
         )
 
         if not server.show_progress:
