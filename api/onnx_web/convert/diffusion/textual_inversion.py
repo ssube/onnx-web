@@ -1,4 +1,4 @@
-from os import mkdirs, path
+from os import makedirs, path
 from huggingface_hub.file_download import hf_hub_download
 from transformers import CLIPTokenizer, CLIPTextModel
 from torch.onnx import export
@@ -18,7 +18,7 @@ def convert_diffusion_textual_inversion(context: ConversionContext, name: str, b
     if path.exists(dest_path):
         logger.info("ONNX model already exists, skipping.")
 
-    mkdirs(path.join(dest_path, "text_encoder"))
+    makedirs(path.join(dest_path, "text_encoder"))
 
     embeds_file = hf_hub_download(repo_id=inversion, filename="learned_embeds.bin")
     token_file = hf_hub_download(repo_id=inversion, filename="token_identifier.txt")
