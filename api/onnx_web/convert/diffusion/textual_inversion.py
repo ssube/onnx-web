@@ -2,22 +2,23 @@ from os import mkdir, path
 from huggingface_hub.file_download import hf_hub_download
 from transformers import CLIPTokenizer, CLIPTextModel
 from torch.onnx import export
-from sys import argv
 from logging import getLogger
 
-from ..utils import ConversionContext, sanitize_name
+from ..utils import ConversionContext
 
 import torch
 
 logger = getLogger(__name__)
 
 
-def convert_diffusion_textual_inversion(context: ConversionContext, base_model: str, inversion: str):
-    cache_path = path.join(context.cache_path, f"inversion-{sanitize_name(inversion)}")
-    logger.info("converting textual inversion: %s -> %s", inversion, cache_path)
+def convert_diffusion_textual_inversion(context: ConversionContext, name: str, base_model: str, inversion: str):
+    cache_path = path.join(context.cache_path, f"inversion-{name}")
+    logger.info("converting Textual Inversion: %s + %s -> %s", base_model, inversion, cache_path)
 
-    if not path.exists(cache_path):
-        mkdir(cache_path)
+    if path.exists(cache_path):
+        logger.info("ONNX model already exists, skipping.")
+
+    mkdir(cache_path)
 
     embeds_file = hf_hub_download(repo_id=inversion, filename="learned_embeds.bin")
     token_file = hf_hub_download(repo_id=inversion, filename="token_identifier.txt")
@@ -82,7 +83,3 @@ def convert_diffusion_textual_inversion(context: ConversionContext, base_model: 
         do_constant_folding=True,
         opset_version=context.opset,
     )
-
-if __name__ == "__main__":
-    context = ConversionContext.from_environ()
-    convert_diffusion_textual_inversion(context, argv[1], argv[2])

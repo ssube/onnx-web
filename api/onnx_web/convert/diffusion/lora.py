@@ -39,7 +39,7 @@ def blend_loras(base: ModelProto, weights: List[ModelProto], alphas: List[float]
   return results
 
 
-def convert_loras(part: str):
+def convert_diffusion_lora(part: str):
   lora_weights = [
     f"diffusion-lora-jack/{part}/model.onnx",
     f"diffusion-lora-taters/{part}/model.onnx",
@@ -90,5 +90,5 @@ def convert_loras(part: str):
 
 
 if __name__ == "__main__":
-  convert_loras("unet")
-  convert_loras("text_encoder")
+  convert_diffusion_lora("unet")
+  convert_diffusion_lora("text_encoder")

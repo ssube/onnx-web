@@ -217,9 +217,6 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                         ctx, name, model["source"], model_format=model_format
                     )
 
-                    if "inversion" in model:
-                        convert_diffusion_textual_inversion(ctx, source, model["inversion"])
-
                     if model_format in model_formats_original:
                         convert_diffusion_original(
                             ctx,
@@ -232,6 +229,13 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             model,
                             source,
                         )
+
+                    for inversion in model.get("inversions", []):
+                        inversion_name = inversion["name"]
+                        inversion_source = inversion["source"]
+                        inversion_source = fetch_model(ctx, f"{name}-inversion-{inversion_name}", inversion_source)
+                        convert_diffusion_textual_inversion(ctx, inversion_name, source, inversion_source)
+
                 except Exception as e:
                     logger.error("error converting diffusion model %s: %s", name, e)
 

@@ -10,6 +10,15 @@ $defs:
         - type: number
         - type: string
 
+  textual_inversion:
+    type: object
+    required: [name, source]
+    properties:
+      name:
+        type: string
+      source:
+        type: string
+
   base_model:
     type: object
     required: [name, source]
@@ -37,6 +46,10 @@ $defs:
         properties:
           config:
             type: string
+          inversions:
+            type: array
+            items:
+              $ref: "#/$defs/textual_inversion"
           vae:
             type: string
 
