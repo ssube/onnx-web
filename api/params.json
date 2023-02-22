@@ -60,6 +60,10 @@
     "max": 1024,
     "step": 8
   },
+  "inversion": {
+    "default": "",
+    "keys": []
+  },
   "left": {
     "default": 0,
     "min": 0,

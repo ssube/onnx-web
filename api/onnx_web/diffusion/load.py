@@ -1,4 +1,5 @@
 from logging import getLogger
+from os import path
 from typing import Any, Optional, Tuple
 
 import numpy as np
@@ -189,10 +190,9 @@ def load_pipeline(
         if inversion is not None:
             logger.debug("loading text encoder from %s", inversion)
             text_encoder = OnnxRuntimeModel.from_pretrained(
-                inversion,
+                path.join(inversion, "text_encoder"),
                 provider=device.ort_provider(),
                 sess_options=device.sess_options(),
-                subfolder="text_encoder",
             )
 
         pipe = pipeline.from_pretrained(
