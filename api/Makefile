@@ -29,7 +29,7 @@ package-upload:
 	twine upload dist/*
 
 lint-check:
-	black --check --preview onnx_web/
+	black --check onnx_web/
 	isort --check-only --skip __init__.py --filter-files onnx_web
 	flake8 onnx_web
 
