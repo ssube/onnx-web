@@ -22,6 +22,28 @@
       "name": "diffusion-unstable-ink-dream-v6",
       "source": "civitai://5796",
       "format": "safetensors"
+    },
+    {
+      "name": "stable-diffusion-onnx-v1-5",
+      "source": "runwayml/stable-diffusion-v1-5",
+      "inversions": [
+        {
+          "name": "line-art",
+          "source": "sd-concepts-library/line-art"
+        },
+        {
+          "name": "cubex",
+          "source": "sd-concepts-library/cubex"
+        },
+        {
+          "name": "birb",
+          "source": "sd-concepts-library/birb-style"
+        },
+        {
+          "name": "minecraft",
+          "source": "sd-concepts-library/minecraft-concept-art"
+        }
+      ]
     }
   ],
   "correction": [],

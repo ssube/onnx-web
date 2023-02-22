@@ -17,9 +17,9 @@ from diffusers import (
     KDPM2AncestralDiscreteScheduler,
     KDPM2DiscreteScheduler,
     LMSDiscreteScheduler,
+    OnnxRuntimeModel,
     PNDMScheduler,
     StableDiffusionPipeline,
-    OnnxRuntimeModel,
 )
 
 try:

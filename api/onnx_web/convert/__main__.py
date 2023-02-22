@@ -10,8 +10,8 @@ from jsonschema import ValidationError, validate
 from yaml import safe_load
 
 from .correction_gfpgan import convert_correction_gfpgan
-from .diffusion.original import convert_diffusion_original
 from .diffusion.diffusers import convert_diffusion_diffusers
+from .diffusion.original import convert_diffusion_original
 from .diffusion.textual_inversion import convert_diffusion_textual_inversion
 from .upscale_resrgan import convert_upscale_resrgan
 from .utils import (
@@ -233,8 +233,12 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                     for inversion in model.get("inversions", []):
                         inversion_name = inversion["name"]
                         inversion_source = inversion["source"]
-                        inversion_source = fetch_model(ctx, f"{name}-inversion-{inversion_name}", inversion_source)
-                        convert_diffusion_textual_inversion(ctx, inversion_name, model["source"], inversion_source)
+                        inversion_source = fetch_model(
+                            ctx, f"{name}-inversion-{inversion_name}", inversion_source
+                        )
+                        convert_diffusion_textual_inversion(
+                            ctx, inversion_name, model["source"], inversion_source
+                        )
 
                 except Exception as e:
                     logger.error("error converting diffusion model %s: %s", name, e)
