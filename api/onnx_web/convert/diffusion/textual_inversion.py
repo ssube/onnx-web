@@ -29,11 +29,11 @@ def convert_diffusion_textual_inversion(context: ConversionContext, name: str, b
     tokenizer = CLIPTokenizer.from_pretrained(
         base_model,
         subfolder="tokenizer",
-    )
+    ).to(context.training_device)
     text_encoder = CLIPTextModel.from_pretrained(
         base_model,
         subfolder="text_encoder",
-    )
+    ).to(context.training_device)
 
     loaded_embeds = torch.load(embeds_file, map_location=context.map_location)
 
