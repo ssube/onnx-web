@@ -107,6 +107,7 @@ class DevicePoolExecutor:
     jobs: List[Job] = None
     next_device: int = 0
     pool: Union[ProcessPoolExecutor, ThreadPoolExecutor] = None
+    prune_counter: int = 0
     recent: List[Tuple[str, int]] = None
 
     def __init__(
@@ -208,6 +209,11 @@ class DevicePoolExecutor:
             except ValueError as e:
                 logger.warning("error removing pruned job from pending: %s", e)
 
+        if len(self.jobs) == 0:
+            logger.info("no pending jobs, recycling pool")
+            self.pool.shutdown(wait=True, cancel_futures=True)
+            self.pool = ThreadPoolExecutor(len(self.devices))
+
         recent_count = len(self.recent)
         if recent_count > self.recent_limit:
             logger.debug(
@@ -216,6 +222,7 @@ class DevicePoolExecutor:
                 recent_count,
             )
             self.recent[:] = self.recent[-self.recent_limit :]
+
 
     def submit(
         self,
