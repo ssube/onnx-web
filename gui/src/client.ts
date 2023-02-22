@@ -112,7 +112,7 @@ export interface BrushParams {
 }
 
 /**
- * Additional parameters for upscaling.
+ * Additional parameters for upscaling. May be sent with most other requests to run a post-pipeline.
  */
 export interface UpscaleParams {
   enabled: boolean;
@@ -136,24 +136,37 @@ export interface UpscaleReqParams {
   source: Blob;
 }
 
+/**
+ * Parameters for blend requests.
+ */
 export interface BlendParams {
   sources: Array<Blob>;
   mask: Blob;
 }
 
 /**
+ * Output image data within the response.
+ */
+export interface ImageOutput {
+  key: string;
+  url: string;
+}
+
+/**
+ * Output image size, after upscaling and outscale.
+ */
+export interface ImageSize {
+  width: number;
+  height: number;
+}
+
+/**
  * General response for most image requests.
  */
 export interface ImageResponse {
-  outputs: Array<{
-    key: string;
-    url: string;
-  }>;
+  outputs: Array<ImageOutput>;
   params: Required<BaseImgParams> & Required<ModelParams>;
-  size: {
-    width: number;
-    height: number;
-  };
+  size: ImageSize;
 }
 
 /**
