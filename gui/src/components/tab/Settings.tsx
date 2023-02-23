@@ -1,6 +1,6 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
-import { Refresh } from '@mui/icons-material';
-import { Alert, Button, Stack, TextField } from '@mui/material';
+import { Refresh, Brightness4, Brightness7 } from '@mui/icons-material';
+import { Alert, Button, Stack, Switch, TextField } from '@mui/material';
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useStore } from 'zustand';
@@ -78,6 +78,13 @@ export function Settings() {
         Load
       </Button>
     </Stack>
+    <Switch onClick={() => {
+      if (state.theme === 'light') {
+        state.setTheme('dark');
+      } else {
+        state.setTheme('light');
+      }
+    }} />
     <Stack direction='row' spacing={2}>
       <Button onClick={() => state.resetTxt2Img()} color='warning'>Reset Txt2Img</Button>
       <Button onClick={() => state.resetImg2Img()} color='warning'>Reset Img2Img</Button>
