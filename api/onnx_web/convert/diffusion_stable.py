@@ -25,6 +25,8 @@ from diffusers import (
 from onnx import load, save_model
 from torch.onnx import export
 
+from onnx_web.diffusion.load import optimize_pipeline
+
 from ..diffusion.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
@@ -95,6 +97,8 @@ def convert_diffusion_stable(
         use_auth_token=ctx.token,
     ).to(ctx.training_device)
     output_path = Path(dest_path)
+
+    optimize_pipeline(ctx, pipeline)
 
     # TEXT ENCODER
     num_tokens = pipeline.text_encoder.config.max_position_embeddings
