@@ -102,6 +102,7 @@ class DeviceParams:
         self.provider = provider
         self.options = options
         self.optimizations = optimizations or []
+        self.sess_options_cache = None
 
     def __str__(self) -> str:
         return "%s - %s (%s)" % (self.device, self.provider, self.options)
@@ -113,6 +114,9 @@ class DeviceParams:
             return (self.provider, self.options)
 
     def sess_options(self) -> SessionOptions:
+        if self.sess_options_cache is not None:
+            return self.sess_options_cache
+
         sess = SessionOptions()
 
         if "onnx-low-memory" in self.optimizations:
@@ -135,6 +139,7 @@ class DeviceParams:
             logger.debug("enabling ONNX deterministic compute")
             sess.use_deterministic_compute = True
 
+        self.sess_options_cache = sess
         return sess
 
     def torch_str(self) -> str:
