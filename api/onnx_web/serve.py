@@ -159,8 +159,11 @@ def pipeline_from_request() -> Tuple[DeviceParams, ImageParams, Size]:
     scheduler = get_from_map(
         request.args, "scheduler", pipeline_schedulers, get_config_value("scheduler")
     )
-    inversion = get_not_empty(request.args, "inversion", get_config_value("inversion"))
-    inversion_path = get_model_path(inversion)
+
+    inversion = request.args.get("inversion", None)
+    inversion_path = None
+    if inversion is not None and inversion.strip() != "":
+        inversion_path = get_model_path(inversion)
 
     # image params
     prompt = get_not_empty(request.args, "prompt", get_config_value("prompt"))

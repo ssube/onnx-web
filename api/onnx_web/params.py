@@ -157,7 +157,7 @@ class ImageParams:
         lpw: bool = False,
         eta: float = 0.0,
         batch: int = 1,
-        inversion: str = None,
+        inversion: Optional[str] = None,
     ) -> None:
         self.model = model
         self.scheduler = scheduler
