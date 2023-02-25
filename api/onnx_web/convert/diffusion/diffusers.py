@@ -23,6 +23,7 @@ from diffusers import (
     StableDiffusionPipeline,
 )
 from onnx import load, save_model
+from onnxruntime.transformers.float16 import convert_float_to_float16
 from torch.onnx import export
 
 from ...diffusion.load import optimize_pipeline
@@ -42,11 +43,14 @@ def onnx_export(
     output_names,
     dynamic_axes,
     opset,
-    use_external_data_format=False,
+    half=False,
 ):
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
     """
+
+    if half:
+        model = convert_float_to_float16(model, keep_io_types=True, force_fp16_initializers=True)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     export(
@@ -75,7 +79,7 @@ def convert_diffusion_diffusers(
     single_vae = model.get("single_vae")
     replace_vae = model.get("vae")
 
-    dtype = torch.float16 if ctx.half else torch.float32
+    dtype = torch.float32 # torch.float16 if ctx.half else torch.float32
     dest_path = path.join(ctx.model_path, name)
 
     # diffusers go into a directory rather than .onnx file
@@ -122,6 +126,7 @@ def convert_diffusion_diffusers(
             "input_ids": {0: "batch", 1: "sequence"},
         },
         opset=ctx.opset,
+        half=ctx.half,
     )
     del pipeline.text_encoder
 
@@ -162,7 +167,7 @@ def convert_diffusion_diffusers(
             "encoder_hidden_states": {0: "batch", 1: "sequence"},
         },
         opset=ctx.opset,
-        use_external_data_format=True,  # UNet is > 2GB, so the weights need to be split
+        half=ctx.half,
     )
     unet_model_path = str(unet_path.absolute().as_posix())
     unet_dir = path.dirname(unet_model_path)
@@ -210,6 +215,7 @@ def convert_diffusion_diffusers(
                 "latent_sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
             },
             opset=ctx.opset,
+            half=ctx.half,
         )
     else:
         # VAE ENCODER
@@ -235,6 +241,7 @@ def convert_diffusion_diffusers(
                 "sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
             },
             opset=ctx.opset,
+            half=ctx.half,
         )
 
         # VAE DECODER
@@ -258,46 +265,10 @@ def convert_diffusion_diffusers(
                 "latent_sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
             },
             opset=ctx.opset,
+            half=ctx.half,
         )
 
     del pipeline.vae
-
-    # SAFETY CHECKER
-    if pipeline.safety_checker is not None:
-        safety_checker = pipeline.safety_checker
-        clip_num_channels = safety_checker.config.vision_config.num_channels
-        clip_image_size = safety_checker.config.vision_config.image_size
-        safety_checker.forward = safety_checker.forward_onnx
-        onnx_export(
-            pipeline.safety_checker,
-            model_args=(
-                torch.randn(
-                    1,
-                    clip_num_channels,
-                    clip_image_size,
-                    clip_image_size,
-                ).to(device=ctx.training_device, dtype=dtype),
-                torch.randn(1, vae_sample_size, vae_sample_size, vae_out_channels).to(
-                    device=ctx.training_device, dtype=dtype
-                ),
-            ),
-            output_path=output_path / "safety_checker" / "model.onnx",
-            ordered_input_names=["clip_input", "images"],
-            output_names=["out_images", "has_nsfw_concepts"],
-            dynamic_axes={
-                "clip_input": {0: "batch", 1: "channels", 2: "height", 3: "width"},
-                "images": {0: "batch", 1: "height", 2: "width", 3: "channels"},
-            },
-            opset=ctx.opset,
-        )
-        del pipeline.safety_checker
-        safety_checker = OnnxRuntimeModel.from_pretrained(
-            output_path / "safety_checker"
-        )
-        feature_extractor = pipeline.feature_extractor
-    else:
-        safety_checker = None
-        feature_extractor = None
 
     if single_vae:
         onnx_pipeline = OnnxStableDiffusionUpscalePipeline(
@@ -316,9 +287,9 @@ def convert_diffusion_diffusers(
             tokenizer=pipeline.tokenizer,
             unet=OnnxRuntimeModel.from_pretrained(output_path / "unet"),
             scheduler=pipeline.scheduler,
-            safety_checker=safety_checker,
-            feature_extractor=feature_extractor,
-            requires_safety_checker=safety_checker is not None,
+            safety_checker=None,
+            feature_extractor=None,
+            requires_safety_checker=False,
         )
 
     logger.info("exporting ONNX model")
