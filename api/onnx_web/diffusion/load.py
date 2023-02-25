@@ -215,6 +215,6 @@ def load_pipeline(
             pipe = pipe.to(device.torch_str())
 
         server.cache.set("diffusion", pipe_key, pipe)
-        server.cache.set("scheduler", scheduler_key, scheduler)
+        server.cache.set("scheduler", scheduler_key, components["scheduler"])
 
     return pipe
