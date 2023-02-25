@@ -27,14 +27,14 @@ def run_txt2txt_pipeline(
     input_ids = tokenizer.encode(params.prompt, return_tensors="pt").to(
         device.torch_device()
     )
-    output = model.generate(
+    results = model.generate(
         input_ids,
         do_sample=True,
         max_length=tokens,
         temperature=0.8,
     )
-    result = tokenizer.decode(output[0], skip_special_tokens=True)
+    result_text = tokenizer.decode(results[0], skip_special_tokens=True)
 
-    print("Server says: %s" % result)
+    print("Server says: %s" % result_text)
 
     logger.info("finished txt2txt job: %s", output)
