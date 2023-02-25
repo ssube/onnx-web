@@ -44,6 +44,7 @@ def onnx_export(
     dynamic_axes,
     opset,
     half=False,
+    external_data=False,
 ):
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
@@ -66,7 +67,13 @@ def onnx_export(
         logger.info("converting model to FP16 internally")
         base_model = load_model(output_file)
         opt_model = convert_float_to_float16(base_model, keep_io_types=True, force_fp16_initializers=True)
-        save_model(opt_model, f"{output_file}-optimized")
+        save_model(
+            opt_model,
+            f"{output_file}-optimized",
+            save_as_external_data=external_data,
+            all_tensors_to_one_file=True,
+            location=f"{output_file}-tensors",
+        )
 
 
 
@@ -173,6 +180,7 @@ def convert_diffusion_diffusers(
         },
         opset=ctx.opset,
         half=ctx.half,
+        external_data=True,
     )
     unet_model_path = str(unet_path.absolute().as_posix())
     unet_dir = path.dirname(unet_model_path)
