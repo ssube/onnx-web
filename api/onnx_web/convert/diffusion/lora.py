@@ -1,15 +1,22 @@
 from logging import getLogger
+from os import path
+from sys import argv
 from typing import List, Tuple
 
+import onnx.checker
+import torch
 from numpy import ndarray
 from onnx import ModelProto, TensorProto, helper, load, numpy_helper, save_model
-from sys import argv
 from safetensors import safe_open
 
-import torch
-import onnx.checker
+from ..utils import ConversionContext
 
 logger = getLogger(__name__)
+
+
+###
+# everything in this file is still super experimental and may not produce valid ONNX models
+###
 
 
 def load_lora(filename: str):
@@ -51,13 +58,13 @@ def blend_loras(
     return results
 
 
-def convert_diffusion_lora(part: str):
+def convert_diffusion_lora(context: ConversionContext, component: str):
     lora_weights = [
-        f"diffusion-lora-jack/{part}/model.onnx",
-        f"diffusion-lora-taters/{part}/model.onnx",
+        f"diffusion-lora-jack/{component}/model.onnx",
+        f"diffusion-lora-taters/{component}/model.onnx",
     ]
 
-    base = load_lora(f"stable-diffusion-onnx-v1-5/{part}/model.onnx")
+    base = load_lora(f"stable-diffusion-onnx-v1-5/{component}/model.onnx")
     weights = [load_lora(f) for f in lora_weights]
     alphas = [1 / len(weights)] * len(weights)
     logger.info("blending LoRAs with alphas: %s, %s", weights, alphas)
@@ -91,17 +98,19 @@ def convert_diffusion_lora(part: str):
     opset = model.opset_import.add()
     opset.version = 14
 
+    onnx_path = path.join(context.cache_path, f"lora-{component}.onnx")
+    tensor_path = path.join(context.cache_path, f"lora-{component}.tensors")
     save_model(
         model,
-        f"/tmp/lora-{part}.onnx",
+        onnx_path,
         save_as_external_data=True,
         all_tensors_to_one_file=True,
-        location=f"/tmp/lora-{part}.tensors",
+        location=tensor_path,
     )
     logger.info(
         "saved model to %s and tensors to %s",
-        f"/tmp/lora-{part}.onnx",
-        f"/tmp/lora-{part}.tensors",
+        onnx_path,
+        tensor_path,
     )
 
 
@@ -124,40 +133,59 @@ def merge_lora():
 
         for key in lora_model.keys():
             if "lora_down" in key:
-                lora_key = key[:key.index("lora_down")].replace("lora_unet_", "")
+                lora_key = key[: key.index("lora_down")].replace("lora_unet_", "")
                 if lora_key.startswith(base_key):
                     print("down for key:", base_key, lora_key)
 
                     up_key = key.replace("lora_down", "lora_up")
-                    alpha_key = key[:key.index("lora_down")] + 'alpha'
+                    alpha_key = key[: key.index("lora_down")] + "alpha"
 
                     down_weight = lora_model.get_tensor(key).to(dtype=torch.float32)
                     up_weight = lora_model.get_tensor(up_key).to(dtype=torch.float32)
 
                     dim = down_weight.size()[0]
                     alpha = lora_model.get(alpha_key).numpy() or dim
-                    scale = alpha / dim
 
                     np_vals = numpy_helper.to_array(base_node)
                     print(np_vals.shape, up_weight.shape, down_weight.shape)
 
-                    squoze = (up_weight.squeeze(3).squeeze(2) @ down_weight.squeeze(3).squeeze(2)).unsqueeze(2).unsqueeze(3)
+                    squoze = (
+                        (
+                            up_weight.squeeze(3).squeeze(2)
+                            @ down_weight.squeeze(3).squeeze(2)
+                        )
+                        .unsqueeze(2)
+                        .unsqueeze(3)
+                    )
                     print(squoze.shape)
 
                     np_vals = np_vals + (alpha * squoze.numpy())
 
                     try:
                         if len(up_weight.size()) == 2:
-                            squoze = (up_weight @ down_weight)
+                            squoze = up_weight @ down_weight
                             print(squoze.shape)
                             np_vals = np_vals + (squoze.numpy() * (alpha / dim))
                         else:
-                            squoze = (up_weight.squeeze(3).squeeze(2) @ down_weight.squeeze(3).squeeze(2)).unsqueeze(2).unsqueeze(3)
+                            squoze = (
+                                (
+                                    up_weight.squeeze(3).squeeze(2)
+                                    @ down_weight.squeeze(3).squeeze(2)
+                                )
+                                .unsqueeze(2)
+                                .unsqueeze(3)
+                            )
                             print(squoze.shape)
                             np_vals = np_vals + (alpha * squoze.numpy())
 
                         # retensor = numpy_helper.from_array(np_vals, base_node.name)
-                        retensor = helper.make_tensor(base_node.name, base_node.data_type, base_node.dim, np_vals, raw=True)
+                        retensor = helper.make_tensor(
+                            base_node.name,
+                            base_node.data_type,
+                            base_node.dim,
+                            np_vals,
+                            raw=True,
+                        )
                         print(retensor)
 
                         # TypeError: does not support assignment
@@ -166,7 +194,6 @@ def merge_lora():
                         break
                     except Exception as e:
                         print(e)
-
 
         if retensor is None:
             print("no lora found for key", base_key)
@@ -177,7 +204,6 @@ def merge_lora():
     base_model.graph.initializer.extend(lora_nodes)
 
     onnx.checker.check_model(base_model)
-
 
 
 if __name__ == "__main__":

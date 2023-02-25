@@ -1,11 +1,6 @@
 {
   "diffusion": [
     {
-      "name": "diffusion-ugly-sonic",
-      "source": "runwayml/stable-diffusion-v1-5",
-      "inversion": "sd-concepts-library/ugly-sonic"
-    },
-    {
       "name": "diffusion-knollingcase",
       "source": "Aybeeceedee/knollingcase"
     },
@@ -42,6 +37,10 @@
         {
           "name": "minecraft",
           "source": "sd-concepts-library/minecraft-concept-art"
+        },
+        {
+          "name": "ugly-sonic",
+          "source": "sd-concepts-library/ugly-sonic"
         }
       ]
     }
