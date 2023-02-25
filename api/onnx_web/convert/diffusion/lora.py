@@ -207,5 +207,6 @@ def merge_lora():
 
 
 if __name__ == "__main__":
-    convert_diffusion_lora("unet")
-    convert_diffusion_lora("text_encoder")
+    context = ConversionContext.from_environ()
+    convert_diffusion_lora(context, "unet")
+    convert_diffusion_lora(context, "text_encoder")
