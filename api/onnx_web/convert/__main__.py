@@ -4,6 +4,7 @@ from logging import getLogger
 from os import makedirs, path
 from sys import exit
 from typing import Any, Dict, List, Optional, Tuple
+from traceback import format_exception
 from urllib.parse import urlparse
 
 from jsonschema import ValidationError, validate
@@ -241,7 +242,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                         )
 
                 except Exception as e:
-                    logger.error("error converting diffusion model %s: %s", name, e)
+                    logger.error("error converting diffusion model %s: %s", name, format_exception(type(e), e, e.__traceback__))
 
     if args.upscaling and "upscaling" in models:
         for model in models.get("upscaling"):
@@ -259,7 +260,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                     )
                     convert_upscale_resrgan(ctx, model, source)
                 except Exception as e:
-                    logger.error("error converting upscaling model %s: %s", name, e)
+                    logger.error("error converting upscaling model %s: %s", name, format_exception(type(e), e, e.__traceback__))
 
     if args.correction and "correction" in models:
         for model in models.get("correction"):
@@ -276,7 +277,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                     )
                     convert_correction_gfpgan(ctx, model, source)
                 except Exception as e:
-                    logger.error("error converting correction model %s: %s", name, e)
+                    logger.error("error converting correction model %s: %s", name, format_exception(type(e), e, e.__traceback__))
 
 
 def main() -> int:
