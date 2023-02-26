@@ -1,7 +1,8 @@
 from logging import getLogger
+import torch # has to come before ORT
 from onnxruntime import get_available_providers
 from torch.multiprocessing import Lock, Queue
-from traceback import print_exception
+from traceback import format_exception
 
 from .context import WorkerContext
 
@@ -30,5 +31,5 @@ def worker_init(lock: Lock, context: WorkerContext):
             fn(context, *args, **kwargs)
             logger.info("finished job")
         except Exception as e:
-            print_exception(type(e), e, e.__traceback__)
+            logger.error(format_exception(type(e), e, e.__traceback__))
 

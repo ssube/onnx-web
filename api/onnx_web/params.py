@@ -2,6 +2,7 @@ from enum import IntEnum
 from logging import getLogger
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
+import torch
 from onnxruntime import GraphOptimizationLevel, SessionOptions
 
 logger = getLogger(__name__)
