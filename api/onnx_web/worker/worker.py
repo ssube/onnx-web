@@ -2,7 +2,7 @@ from logging import getLogger
 from traceback import format_exception
 
 from setproctitle import setproctitle
-from torch.multiprocessing import Lock, Queue
+from torch.multiprocessing import Queue
 
 from ..onnx.torch_before_ort import get_available_providers
 from ..server import ServerContext, apply_patches
@@ -11,11 +11,10 @@ from .context import WorkerContext
 logger = getLogger(__name__)
 
 
-def logger_init(lock: Lock, logs: Queue):
-    with lock:
-        logger.info("checking in from logger, %s", lock)
-
+def logger_init(logs: Queue):
     setproctitle("onnx-web logger")
+
+    logger.info("checking in from logger, %s")
 
     while True:
         job = logs.get()
@@ -24,12 +23,11 @@ def logger_init(lock: Lock, logs: Queue):
             f.write(str(job) + "\n\n")
 
 
-def worker_init(lock: Lock, context: WorkerContext, server: ServerContext):
-    with lock:
-        logger.info("checking in from worker, %s, %s", lock, get_available_providers())
-
+def worker_init(context: WorkerContext, server: ServerContext):
     apply_patches(server)
     setproctitle("onnx-web worker: %s" % (context.device.device))
+
+    logger.info("checking in from worker, %s, %s", get_available_providers())
 
     while True:
         job = context.pending.get()
@@ -37,18 +35,16 @@ def worker_init(lock: Lock, context: WorkerContext, server: ServerContext):
         try:
             fn, args, kwargs = job
             name = args[3][0]
+
             logger.info("starting job: %s", name)
-            with context.finished.get_lock():
-                context.finished.value = False
-
-            with context.progress.get_lock():
-                context.progress.value = 0
-
+            context.clear_flags()
             fn(context, *args, **kwargs)
-            logger.info("finished job: %s", name)
-
-            with context.finished.get_lock():
-                context.finished.value = True
-
+            logger.info("job succeeded: %s", name)
         except Exception as e:
-            logger.error(format_exception(type(e), e, e.__traceback__))
+            logger.error(
+                "error while running job: %s",
+                format_exception(type(e), e, e.__traceback__),
+            )
+        finally:
+            context.set_finished()
+            logger.info("finished job: %s", name)

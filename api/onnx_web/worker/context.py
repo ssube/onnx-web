@@ -20,12 +20,12 @@ class WorkerContext:
     def __init__(
         self,
         key: str,
-        cancel: "Value[bool]",
         device: DeviceParams,
-        pending: "Queue[Any]",
-        progress: "Value[int]",
-        logs: "Queue[str]",
-        finished: "Value[bool]",
+        cancel: "Value[bool]" = None,
+        finished: "Value[bool]" = None,
+        progress: "Value[int]" = None,
+        logs: "Queue[str]" = None,
+        pending: "Queue[Any]" = None,
     ):
         self.key = key
         self.cancel = cancel
@@ -62,6 +62,15 @@ class WorkerContext:
         with self.cancel.get_lock():
             self.cancel.value = cancel
 
+    def set_finished(self, finished: bool = True) -> None:
+        with self.finished.get_lock():
+            self.finished.value = finished
+
     def set_progress(self, progress: int) -> None:
         with self.progress.get_lock():
             self.progress.value = progress
+
+    def clear_flags(self) -> None:
+        self.set_cancel(False)
+        self.set_finished(False)
+        self.set_progress(0)
