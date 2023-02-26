@@ -93,6 +93,12 @@ class DevicePoolExecutor:
 
         return lowest_devices[0]
 
+    def join(self):
+        for device, worker in self.workers.items():
+            if worker.is_alive():
+                logger.info("stopping worker for device %s", device)
+                worker.join(5)
+
     def prune(self):
         finished_count = len(self.finished)
         if finished_count > self.finished_limit:

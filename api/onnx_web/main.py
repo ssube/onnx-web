@@ -4,6 +4,7 @@ from diffusers.utils.logging import disable_progress_bar
 from flask import Flask
 from flask_cors import CORS
 from huggingface_hub.utils.tqdm import disable_progress_bars
+from torch.multiprocessing import set_start_method
 
 from .server.api import register_api_routes
 from .server.static import register_static_routes
@@ -18,6 +19,8 @@ from .worker import DevicePoolExecutor
 
 
 def main():
+  set_start_method("spawn", force=True)
+
   context = ServerContext.from_environ()
   apply_patches(context)
   check_paths(context)
@@ -42,12 +45,11 @@ def main():
   register_static_routes(app, context, pool)
   register_api_routes(app, context, pool)
 
-  return app #, context, pool
+  return app, pool
 
 
 if __name__ == "__main__":
-  # app, context, pool = main()
-  app = main()
+  app, pool = main()
   app.run("0.0.0.0", 5000, debug=is_debug())
-  # pool.join()
+  pool.join()
 
