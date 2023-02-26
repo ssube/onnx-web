@@ -32,8 +32,20 @@ def worker_init(lock: Lock, context: WorkerContext, server: ServerContext):
         logger.info("got job: %s", job)
         try:
             fn, args, kwargs = job
+            name = args[3][0]
+            logger.info("starting job: %s", name)
+            with context.finished.get_lock():
+                context.finished.value = False
+
+            with context.progress.get_lock():
+                context.progress.value = 0
+
             fn(context, *args, **kwargs)
-            logger.info("finished job")
+            logger.info("finished job: %s", name)
+
+            with context.finished.get_lock():
+                context.finished.value = True
+
         except Exception as e:
             logger.error(format_exception(type(e), e, e.__traceback__))
 

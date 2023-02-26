@@ -14,10 +14,11 @@ logger = getLogger(__name__)
 
 class DevicePoolExecutor:
     devices: List[DeviceParams] = None
-    finished: List[Tuple[str, int]] = None
+    finished: Dict[str, "Value[bool]"] = None
     pending: Dict[str, "Queue[WorkerContext]"] = None
-    progress: Dict[str, Value] = None
+    progress: Dict[str, "Value[int]"] = None
     workers: Dict[str, Process] = None
+    jobs: Dict[str, str] = None
 
     def __init__(
         self,
@@ -27,13 +28,14 @@ class DevicePoolExecutor:
     ):
         self.server = server
         self.devices = devices
-        self.finished = []
+        self.finished = {}
         self.finished_limit = finished_limit
         self.context = {}
         self.locks = {}
         self.pending = {}
         self.progress = {}
         self.workers = {}
+        self.jobs = {} # Dict[Output, Device]
 
         # TODO: make this a method
         logger.debug("starting log worker")
@@ -53,11 +55,13 @@ class DevicePoolExecutor:
             lock = Lock()
             self.locks[name] = lock
             cancel = Value("B", False, lock=lock)
+            finished = Value("B", False)
+            self.finished[name] = finished
             progress = Value("I", 0) # , lock=lock) # needs its own lock for some reason. TODO: why?
             self.progress[name] = progress
             pending = Queue()
             self.pending[name] = pending
-            context = WorkerContext(name, cancel, device, pending, progress)
+            context = WorkerContext(name, cancel, device, pending, progress, self.log_queue, finished)
             self.context[name] = context
 
             logger.debug("starting worker for device %s", device)
@@ -73,12 +77,16 @@ class DevicePoolExecutor:
         raise NotImplementedError()
 
     def done(self, key: str) -> Tuple[Optional[bool], int]:
-        for k, progress in self.finished:
-            if key == k:
-                return (True, progress)
+        if not key in self.jobs:
+            logger.warn("checking status for unknown key: %s", key)
+            return (None, 0)
 
-        logger.warn("checking status for unknown key: %s", key)
-        return (None, 0)
+        device = self.jobs[key]
+        finished = self.finished[device]
+        progress = self.progress[device]
+
+        return (finished.value, progress.value)
+
 
     def get_next_device(self, needs_device: Optional[DeviceParams] = None) -> int:
         # respect overrides if possible
@@ -139,6 +147,8 @@ class DevicePoolExecutor:
         device = self.devices[device_idx]
         queue = self.pending[device.device]
         queue.put((fn, args, kwargs))
+
+        self.jobs[key] = device.device
 
 
     def status(self) -> List[Tuple[str, int, bool, int]]:

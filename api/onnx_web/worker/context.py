@@ -22,12 +22,16 @@ class WorkerContext:
         device: DeviceParams,
         pending: "Queue[Any]",
         progress: "Value[int]",
+        logs: "Queue[str]",
+        finished: "Value[bool]",
     ):
         self.key = key
         self.cancel = cancel
         self.device = device
         self.pending = pending
         self.progress = progress
+        self.logs = logs
+        self.finished = finished
 
     def is_cancelled(self) -> bool:
         return self.cancel.value
