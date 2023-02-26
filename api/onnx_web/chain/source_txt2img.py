@@ -7,13 +7,15 @@ from PIL import Image
 
 from ..diffusion.load import get_latents_from_seed, load_pipeline
 from ..params import ImageParams, Size, StageParams
-from ..server import JobContext, ProgressCallback, ServerContext
+from ..worker import WorkerContext, ProgressCallback
+from ..server import ServerContext
+
 
 logger = getLogger(__name__)
 
 
 def source_txt2img(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     _stage: StageParams,
     params: ImageParams,

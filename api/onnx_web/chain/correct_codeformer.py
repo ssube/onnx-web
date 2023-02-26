@@ -3,7 +3,8 @@ from logging import getLogger
 from PIL import Image
 
 from ..params import ImageParams, StageParams, UpscaleParams
-from ..server import JobContext, ServerContext
+from ..worker import WorkerContext
+from ..server import ServerContext
 
 logger = getLogger(__name__)
 
@@ -11,7 +12,7 @@ device = "cpu"
 
 
 def correct_codeformer(
-    job: JobContext,
+    job: WorkerContext,
     _server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,

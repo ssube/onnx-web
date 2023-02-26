@@ -5,14 +5,14 @@ formatters:
 handlers:
   console:
     class: logging.StreamHandler
-    level: INFO
+    level: DEBUG
     formatter: simple
     stream: ext://sys.stdout
 loggers:
   '':
-    level: INFO
+    level: DEBUG
     handlers: [console]
     propagate: True
 root:
-  level: INFO
+  level: DEBUG
   handlers: [console]

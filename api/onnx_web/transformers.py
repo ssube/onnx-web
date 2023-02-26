@@ -1,13 +1,14 @@
 from logging import getLogger
 
 from .params import ImageParams, Size
-from .server import JobContext, ServerContext
+from .server import ServerContext
+from .worker import WorkerContext
 
 logger = getLogger(__name__)
 
 
 def run_txt2txt_pipeline(
-    job: JobContext,
+    job: WorkerContext,
     _server: ServerContext,
     params: ImageParams,
     _size: Size,

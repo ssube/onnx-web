@@ -10,7 +10,8 @@ from ..diffusion.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
-from ..server import JobContext, ProgressCallback, ServerContext
+from ..worker import WorkerContext, ProgressCallback
+from ..server import ServerContext
 from ..utils import run_gc
 
 logger = getLogger(__name__)
@@ -62,7 +63,7 @@ def load_stable_diffusion(
 
 
 def upscale_stable_diffusion(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     _stage: StageParams,
     params: ImageParams,

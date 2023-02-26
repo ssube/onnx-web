@@ -6,7 +6,8 @@ from PIL import Image
 
 from ..onnx import OnnxNet
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
-from ..server import JobContext, ServerContext
+from ..worker import WorkerContext
+from ..server import ServerContext
 from ..utils import run_gc
 
 logger = getLogger(__name__)
@@ -96,7 +97,7 @@ def load_resrgan(
 
 
 def upscale_resrgan(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     stage: StageParams,
     _params: ImageParams,

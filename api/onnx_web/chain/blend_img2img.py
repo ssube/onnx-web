@@ -7,13 +7,14 @@ from PIL import Image
 
 from ..diffusion.load import load_pipeline
 from ..params import ImageParams, StageParams
-from ..server import JobContext, ProgressCallback, ServerContext
+from ..worker import WorkerContext, ProgressCallback
+from ..server import ServerContext
 
 logger = getLogger(__name__)
 
 
 def blend_img2img(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     _stage: StageParams,
     params: ImageParams,

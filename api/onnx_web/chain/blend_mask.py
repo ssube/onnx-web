@@ -7,14 +7,15 @@ from onnx_web.image import valid_image
 from onnx_web.output import save_image
 
 from ..params import ImageParams, StageParams
-from ..server import JobContext, ProgressCallback, ServerContext
+from ..worker import WorkerContext, ProgressCallback
+from ..server import ServerContext
 from ..utils import is_debug
 
 logger = getLogger(__name__)
 
 
 def blend_mask(
-    _job: JobContext,
+    _job: WorkerContext,
     server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,

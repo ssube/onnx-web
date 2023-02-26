@@ -5,8 +5,10 @@ import numpy as np
 from PIL import Image
 
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
-from ..server import JobContext, ServerContext
 from ..utils import run_gc
+from ..worker import WorkerContext
+from ..server import ServerContext
+
 
 logger = getLogger(__name__)
 
@@ -46,7 +48,7 @@ def load_gfpgan(
 
 
 def correct_gfpgan(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     stage: StageParams,
     _params: ImageParams,

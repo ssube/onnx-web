@@ -25,6 +25,7 @@ from .image import (
 from .onnx import OnnxNet, OnnxTensor
 from .params import (
     Border,
+    DeviceParams,
     ImageParams,
     Param,
     Point,
@@ -33,8 +34,6 @@ from .params import (
     UpscaleParams,
 )
 from .server import (
-    DeviceParams,
-    DevicePoolExecutor,
     ModelCache,
     ServerContext,
     apply_patch_basicsr,
@@ -50,4 +49,7 @@ from .utils import (
     get_from_list,
     get_from_map,
     get_not_empty,
+)
+from .worker import (
+    DevicePoolExecutor,
 )

@@ -5,13 +5,15 @@ from boto3 import Session
 from PIL import Image
 
 from ..params import ImageParams, StageParams
-from ..server import JobContext, ServerContext
+from ..worker import WorkerContext
+from ..server import ServerContext
+
 
 logger = getLogger(__name__)
 
 
 def persist_s3(
-    _job: JobContext,
+    _job: WorkerContext,
     server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,

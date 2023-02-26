@@ -10,13 +10,14 @@ from .chain import (
     upscale_stable_diffusion,
 )
 from .params import ImageParams, SizeChart, StageParams, UpscaleParams
-from .server import JobContext, ProgressCallback, ServerContext
+from .server import ServerContext
+from .worker import WorkerContext, ProgressCallback
 
 logger = getLogger(__name__)
 
 
 def run_upscale_correction(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     stage: StageParams,
     params: ImageParams,

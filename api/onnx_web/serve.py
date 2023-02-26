@@ -63,7 +63,7 @@ from .params import (
     TileOrder,
     UpscaleParams,
 )
-from .server import DevicePoolExecutor, ServerContext, apply_patches
+from .server import ServerContext, apply_patches
 from .transformers import run_txt2txt_pipeline
 from .utils import (
     base_join,
@@ -75,6 +75,7 @@ from .utils import (
     get_size,
     is_debug,
 )
+from .worker import DevicePoolExecutor
 
 logger = getLogger(__name__)
 
