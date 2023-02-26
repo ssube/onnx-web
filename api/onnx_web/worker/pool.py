@@ -37,6 +37,7 @@ class DevicePoolExecutor:
         self.pending = {}
         self.workers = {}
         self.active_job = {}
+        self.finished = []
         self.finished_jobs = 0  # TODO: turn this into a Dict per-worker
 
         self.create_logger_worker()
