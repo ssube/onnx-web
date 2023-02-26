@@ -135,10 +135,12 @@ class DevicePoolExecutor:
             if proc.is_alive():
                 logger.debug("shutting down worker for device %s", name)
                 proc.join(5)
+                proc.terminate()
             else:
                 logger.warning("worker for device %s has died", name)
 
             self.workers[name] = None
+            del proc
 
         logger.info("starting new workers")
 
@@ -161,6 +163,7 @@ class DevicePoolExecutor:
         **kwargs,
     ) -> None:
         self.job_count += 1
+        logger.debug("pool job count: %s", self.job_count)
         if self.job_count > 10:
             self.recycle()
             self.job_count = 0

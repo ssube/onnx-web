@@ -14,5 +14,5 @@ do
     --insecure || break;
   ((test_images++));
   echo "waiting after $test_images";
-  sleep 10;
+  sleep 30;
 done
