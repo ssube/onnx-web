@@ -89,7 +89,7 @@ def run_gc(devices: List[DeviceParams] = None):
     gc.collect()
 
     if torch.cuda.is_available() and devices is not None:
-        for device in devices:
+        for device in [d for d in devices if d.device.startswith("cuda")]:
             logger.debug("running Torch garbage collection for device: %s", device)
             with torch.cuda.device(device.torch_str()):
                 torch.cuda.empty_cache()
