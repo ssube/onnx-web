@@ -1,6 +1,7 @@
 from logging import getLogger
 from torch.multiprocessing import Lock
 from time import sleep
+from traceback import print_exception
 
 from .context import WorkerContext
 
@@ -30,3 +31,10 @@ def worker_init(lock: Lock, context: WorkerContext):
         else:
             job = context.pending.get()
             logger.info("got job: %s", job)
+            try:
+                fn, args, kwargs = job
+                fn(context, *args, **kwargs)
+                logger.info("finished job")
+            except Exception as e:
+                print_exception(type(e), e, e.__traceback__)
+

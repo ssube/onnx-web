@@ -1,6 +1,6 @@
 from logging import getLogger
 from torch.multiprocessing import Queue, Value
-from typing import Any, Callable
+from typing import Any, Callable, Tuple
 
 from ..params import DeviceParams
 
@@ -12,6 +12,7 @@ ProgressCallback = Callable[[int, int, Any], None]
 class WorkerContext:
     cancel: "Value[bool]" = None
     key: str = None
+    pending: "Queue[Tuple[Callable, Any, Any]]" = None
     progress: "Value[int]" = None
 
     def __init__(
