@@ -25,4 +25,4 @@ python3 -m onnx_web.convert \
   --token=${HF_TOKEN:-}
 
 echo "Launching API server..."
-flask --app=onnx_web.serve run --host=0.0.0.0
+flask --app='onnx_web.main:main()' run --host=0.0.0.0

@@ -4,9 +4,11 @@ from typing import Any, Optional, Tuple
 
 import numpy as np
 from diffusers import (
+    DiffusionPipeline,
+    OnnxRuntimeModel,
+    StableDiffusionPipeline,
     DDIMScheduler,
     DDPMScheduler,
-    DiffusionPipeline,
     DPMSolverMultistepScheduler,
     DPMSolverSinglestepScheduler,
     EulerAncestralDiscreteScheduler,
@@ -17,15 +19,13 @@ from diffusers import (
     KDPM2AncestralDiscreteScheduler,
     KDPM2DiscreteScheduler,
     LMSDiscreteScheduler,
-    OnnxRuntimeModel,
     PNDMScheduler,
-    StableDiffusionPipeline,
 )
 
 try:
     from diffusers import DEISMultistepScheduler
 except ImportError:
-    from .stub_scheduler import StubScheduler as DEISMultistepScheduler
+    from ..diffusion.stub_scheduler import StubScheduler as DEISMultistepScheduler
 
 from ..params import DeviceParams, Size
 from ..server import ServerContext
@@ -52,6 +52,10 @@ pipeline_schedulers = {
     "lms-discrete": LMSDiscreteScheduler,
     "pndm": PNDMScheduler,
 }
+
+
+def get_pipeline_schedulers():
+    return pipeline_schedulers
 
 
 def get_scheduler_name(scheduler: Any) -> Optional[str]:
@@ -137,13 +141,14 @@ def load_pipeline(
     server: ServerContext,
     pipeline: DiffusionPipeline,
     model: str,
-    scheduler_type: Any,
+    scheduler_name: str,
     device: DeviceParams,
     lpw: bool,
     inversion: Optional[str],
 ):
     pipe_key = (pipeline, model, device.device, device.provider, lpw, inversion)
-    scheduler_key = (scheduler_type, model)
+    scheduler_key = (scheduler_name, model)
+    scheduler_type = get_pipeline_schedulers()[scheduler_name]
 
     cache_pipe = server.cache.get("diffusion", pipe_key)
 

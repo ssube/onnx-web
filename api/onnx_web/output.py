@@ -8,7 +8,6 @@ from typing import Any, List, Optional, Tuple
 
 from PIL import Image
 
-from .diffusion.load import get_scheduler_name
 from .params import Border, ImageParams, Param, Size, UpscaleParams
 from .server import ServerContext
 from .utils import base_join
@@ -44,7 +43,7 @@ def json_params(
     }
 
     json["params"]["model"] = path.basename(params.model)
-    json["params"]["scheduler"] = get_scheduler_name(params.scheduler)
+    json["params"]["scheduler"] = params.scheduler
 
     if border is not None:
         json["border"] = border.tojson()
@@ -71,7 +70,7 @@ def make_output_name(
 
     hash_value(sha, mode)
     hash_value(sha, params.model)
-    hash_value(sha, params.scheduler.__name__)
+    hash_value(sha, params.scheduler)
     hash_value(sha, params.prompt)
     hash_value(sha, params.negative_prompt)
     hash_value(sha, params.cfg)

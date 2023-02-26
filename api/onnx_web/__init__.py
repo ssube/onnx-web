@@ -1,5 +1,10 @@
 from . import logging
-from .chain import correct_gfpgan, upscale_resrgan, upscale_stable_diffusion
+from .chain import (
+    correct_codeformer,
+    correct_gfpgan,
+    upscale_resrgan,
+    upscale_stable_diffusion,
+)
 from .diffusion.load import get_latents_from_seed, load_pipeline, optimize_pipeline
 from .diffusion.run import (
     run_blend_pipeline,

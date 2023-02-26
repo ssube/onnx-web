@@ -148,7 +148,7 @@ class ImageParams:
     def __init__(
         self,
         model: str,
-        scheduler: Any,
+        scheduler: str,
         prompt: str,
         cfg: float,
         steps: int,
@@ -174,7 +174,7 @@ class ImageParams:
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
             "model": self.model,
-            "scheduler": self.scheduler.__name__,
+            "scheduler": self.scheduler,
             "prompt": self.prompt,
             "negative_prompt": self.negative_prompt,
             "cfg": self.cfg,
