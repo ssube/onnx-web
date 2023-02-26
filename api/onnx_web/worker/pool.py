@@ -31,12 +31,13 @@ class DevicePoolExecutor:
         self.progress = {}
         self.workers = {}
 
-        log_queue = Queue()
-        logger_context = WorkerContext("logger", None, None, log_queue, None)
-
         logger.debug("starting log worker")
-        self.logger = Process(target=logger_init, args=(self.lock, logger_context))
+        self.log_queue = Queue()
+        self.logger = Process(target=logger_init, args=(self.lock, self.log_queue))
         self.logger.start()
+
+        logger.debug("testing log worker")
+        self.log_queue.put("testing")
 
         # create a pending queue and progress value for each device
         for device in devices:
@@ -51,9 +52,6 @@ class DevicePoolExecutor:
             logger.debug("starting worker for device %s", device)
             self.workers[name] = Process(target=worker_init, args=(self.lock, context))
             self.workers[name].start()
-
-        logger.debug("testing log worker")
-        log_queue.put("testing")
 
     def cancel(self, key: str) -> bool:
         """
@@ -98,6 +96,9 @@ class DevicePoolExecutor:
             if worker.is_alive():
                 logger.info("stopping worker for device %s", device)
                 worker.join(5)
+
+        if self.logger.is_alive():
+            self.logger.join(5)
 
     def prune(self):
         finished_count = len(self.finished)
