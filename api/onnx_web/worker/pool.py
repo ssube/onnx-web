@@ -5,6 +5,7 @@ from torch.multiprocessing import Lock, Process, Value
 from typing import Callable, Dict, List, Optional, Tuple
 
 from ..params import DeviceParams
+from ..server import ServerContext
 from .context import WorkerContext
 from .worker import logger_init, worker_init
 
@@ -20,9 +21,11 @@ class DevicePoolExecutor:
 
     def __init__(
         self,
+        server: ServerContext,
         devices: List[DeviceParams],
         finished_limit: int = 10,
     ):
+        self.server = server
         self.devices = devices
         self.finished = []
         self.finished_limit = finished_limit
@@ -32,9 +35,12 @@ class DevicePoolExecutor:
         self.progress = {}
         self.workers = {}
 
+        # TODO: make this a method
         logger.debug("starting log worker")
         self.log_queue = Queue()
-        self.logger = Process(target=logger_init, args=(self.lock, self.log_queue))
+        log_lock = Lock()
+        self.locks["logger"] = log_lock
+        self.logger = Process(target=logger_init, args=(log_lock, self.log_queue))
         self.logger.start()
 
         logger.debug("testing log worker")
@@ -43,10 +49,11 @@ class DevicePoolExecutor:
         # create a pending queue and progress value for each device
         for device in devices:
             name = device.device
+            # TODO: make this a method
             lock = Lock()
             self.locks[name] = lock
             cancel = Value("B", False, lock=lock)
-            progress = Value("I", 0, lock=lock)
+            progress = Value("I", 0) # , lock=lock) # needs its own lock for some reason. TODO: why?
             self.progress[name] = progress
             pending = Queue()
             self.pending[name] = pending
@@ -54,7 +61,7 @@ class DevicePoolExecutor:
             self.context[name] = context
 
             logger.debug("starting worker for device %s", device)
-            self.workers[name] = Process(target=worker_init, args=(lock, context))
+            self.workers[name] = Process(target=worker_init, args=(lock, context, server))
             self.workers[name].start()
 
     def cancel(self, key: str) -> bool:

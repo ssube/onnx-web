@@ -39,7 +39,7 @@ def main():
   CORS(app, origins=context.cors_origin)
 
   # any is a fake device, should not be in the pool
-  pool = DevicePoolExecutor([p for p in get_available_platforms() if p.device != "any"])
+  pool = DevicePoolExecutor(context, [p for p in get_available_platforms() if p.device != "any"])
 
   # register routes
   register_static_routes(app, context, pool)
