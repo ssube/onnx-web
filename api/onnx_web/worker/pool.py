@@ -1,8 +1,9 @@
 from collections import Counter
 from logging import getLogger
 from multiprocessing import Queue
-from torch.multiprocessing import Lock, Process, Value
 from typing import Callable, Dict, List, Optional, Tuple
+
+from torch.multiprocessing import Lock, Process, Value
 
 from ..params import DeviceParams
 from ..server import ServerContext
@@ -35,7 +36,7 @@ class DevicePoolExecutor:
         self.pending = {}
         self.progress = {}
         self.workers = {}
-        self.jobs = {} # Dict[Output, Device]
+        self.jobs = {}  # Dict[Output, Device]
         self.job_count = 0
 
         # TODO: make this a method
@@ -58,15 +59,21 @@ class DevicePoolExecutor:
             cancel = Value("B", False, lock=lock)
             finished = Value("B", False)
             self.finished[name] = finished
-            progress = Value("I", 0) # , lock=lock) # needs its own lock for some reason. TODO: why?
+            progress = Value(
+                "I", 0
+            )  # , lock=lock) # needs its own lock for some reason. TODO: why?
             self.progress[name] = progress
             pending = Queue()
             self.pending[name] = pending
-            context = WorkerContext(name, cancel, device, pending, progress, self.log_queue, finished)
+            context = WorkerContext(
+                name, cancel, device, pending, progress, self.log_queue, finished
+            )
             self.context[name] = context
 
             logger.debug("starting worker for device %s", device)
-            self.workers[name] = Process(target=worker_init, args=(lock, context, server))
+            self.workers[name] = Process(
+                target=worker_init, args=(lock, context, server)
+            )
             self.workers[name].start()
 
     def cancel(self, key: str) -> bool:
@@ -78,7 +85,7 @@ class DevicePoolExecutor:
         raise NotImplementedError()
 
     def done(self, key: str) -> Tuple[Optional[bool], int]:
-        if not key in self.jobs:
+        if key not in self.jobs:
             logger.warn("checking status for unknown key: %s", key)
             return (None, 0)
 
@@ -88,7 +95,6 @@ class DevicePoolExecutor:
 
         return (finished.value, progress.value)
 
-
     def get_next_device(self, needs_device: Optional[DeviceParams] = None) -> int:
         # respect overrides if possible
         if needs_device is not None:
@@ -96,9 +102,7 @@ class DevicePoolExecutor:
                 if self.devices[i].device == needs_device.device:
                     return i
 
-        pending = [
-            self.pending[d.device].qsize() for d in self.devices
-        ]
+        pending = [self.pending[d.device].qsize() for d in self.devices]
         jobs = Counter(range(len(self.devices)))
         jobs.update(pending)
 
@@ -128,7 +132,7 @@ class DevicePoolExecutor:
                 finished_count - self.finished_limit,
                 finished_count,
             )
-            self.finished[:] = self.finished[-self.finished_limit:]
+            self.finished[:] = self.finished[-self.finished_limit :]
 
     def recycle(self):
         for name, proc in self.workers.items():
@@ -149,9 +153,10 @@ class DevicePoolExecutor:
             lock = self.locks[name]
 
             logger.debug("starting worker for device %s", name)
-            self.workers[name] = Process(target=worker_init, args=(lock, context, self.server))
+            self.workers[name] = Process(
+                target=worker_init, args=(lock, context, self.server)
+            )
             self.workers[name].start()
-
 
     def submit(
         self,
@@ -171,7 +176,10 @@ class DevicePoolExecutor:
         self.prune()
         device_idx = self.get_next_device(needs_device=needs_device)
         logger.info(
-            "assigning job %s to device %s: %s", key, device_idx, self.devices[device_idx]
+            "assigning job %s to device %s: %s",
+            key,
+            device_idx,
+            self.devices[device_idx],
         )
 
         device = self.devices[device_idx]
@@ -179,7 +187,6 @@ class DevicePoolExecutor:
         queue.put((fn, args, kwargs))
 
         self.jobs[key] = device.device
-
 
     def status(self) -> List[Tuple[str, int, bool, int]]:
         pending = [

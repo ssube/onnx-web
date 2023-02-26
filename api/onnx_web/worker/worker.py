@@ -1,12 +1,12 @@
 from logging import getLogger
-import torch # has to come before ORT
-from onnxruntime import get_available_providers
-from torch.multiprocessing import Lock, Queue
 from traceback import format_exception
-from setproctitle import setproctitle
 
-from .context import WorkerContext
+from setproctitle import setproctitle
+from torch.multiprocessing import Lock, Queue
+
+from ..onnx.torch_before_ort import get_available_providers
 from ..server import ServerContext, apply_patches
+from .context import WorkerContext
 
 logger = getLogger(__name__)
 
@@ -29,7 +29,7 @@ def worker_init(lock: Lock, context: WorkerContext, server: ServerContext):
         logger.info("checking in from worker, %s, %s", lock, get_available_providers())
 
     apply_patches(server)
-    setproctitle("onnx-web worker: %s", context.device.device)
+    setproctitle("onnx-web worker: %s" % (context.device.device))
 
     while True:
         job = context.pending.get()
@@ -52,4 +52,3 @@ def worker_init(lock: Lock, context: WorkerContext, server: ServerContext):
 
         except Exception as e:
             logger.error(format_exception(type(e), e, e.__traceback__))
-

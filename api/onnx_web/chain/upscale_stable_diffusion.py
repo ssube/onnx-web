@@ -10,9 +10,9 @@ from ..diffusion.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
-from ..worker import WorkerContext, ProgressCallback
 from ..server import ServerContext
 from ..utils import run_gc
+from ..worker import ProgressCallback, WorkerContext
 
 logger = getLogger(__name__)
 

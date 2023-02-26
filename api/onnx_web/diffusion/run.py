@@ -12,10 +12,10 @@ from onnx_web.chain.base import ChainProgress
 from ..chain import upscale_outpaint
 from ..output import save_image, save_params
 from ..params import Border, ImageParams, Size, StageParams, UpscaleParams
-from ..worker import WorkerContext
 from ..server import ServerContext
 from ..upscale import run_upscale_correction
 from ..utils import run_gc
+from ..worker import WorkerContext
 from .load import get_latents_from_seed, load_pipeline
 
 logger = getLogger(__name__)

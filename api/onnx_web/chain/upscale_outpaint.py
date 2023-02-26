@@ -10,9 +10,9 @@ from ..diffusion.load import get_latents_from_seed, get_tile_latents, load_pipel
 from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
 from ..params import Border, ImageParams, Size, SizeChart, StageParams
-from ..worker import WorkerContext, ProgressCallback
 from ..server import ServerContext
 from ..utils import is_debug
+from ..worker import ProgressCallback, WorkerContext
 from .utils import process_tile_grid, process_tile_order
 
 logger = getLogger(__name__)

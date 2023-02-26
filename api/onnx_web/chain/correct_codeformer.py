@@ -3,8 +3,8 @@ from logging import getLogger
 from PIL import Image
 
 from ..params import ImageParams, StageParams, UpscaleParams
-from ..worker import WorkerContext
 from ..server import ServerContext
+from ..worker import WorkerContext
 
 logger = getLogger(__name__)
 

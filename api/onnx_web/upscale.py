@@ -11,7 +11,7 @@ from .chain import (
 )
 from .params import ImageParams, SizeChart, StageParams, UpscaleParams
 from .server import ServerContext
-from .worker import WorkerContext, ProgressCallback
+from .worker import ProgressCallback, WorkerContext
 
 logger = getLogger(__name__)
 

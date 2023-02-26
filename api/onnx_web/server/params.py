@@ -4,30 +4,24 @@ from typing import Tuple
 import numpy as np
 from flask import request
 
-from .context import ServerContext
-
-from .config import get_available_platforms, get_config_value, get_correction_models, get_upscaling_models
-from .utils import get_model_path
-
 from ..diffusion.load import pipeline_schedulers
-from ..params import (
-    Border,
-    DeviceParams,
-    ImageParams,
-    Size,
-    UpscaleParams,
+from ..params import Border, DeviceParams, ImageParams, Size, UpscaleParams
+from ..utils import get_and_clamp_float, get_and_clamp_int, get_from_list, get_not_empty
+from .config import (
+    get_available_platforms,
+    get_config_value,
+    get_correction_models,
+    get_upscaling_models,
 )
-from ..utils import (
-    get_and_clamp_float,
-    get_and_clamp_int,
-    get_from_list,
-    get_not_empty,
-)
+from .context import ServerContext
+from .utils import get_model_path
 
 logger = getLogger(__name__)
 
 
-def pipeline_from_request(context: ServerContext) -> Tuple[DeviceParams, ImageParams, Size]:
+def pipeline_from_request(
+    context: ServerContext,
+) -> Tuple[DeviceParams, ImageParams, Size]:
     user = request.remote_addr
 
     # platform stuff
@@ -43,9 +37,7 @@ def pipeline_from_request(context: ServerContext) -> Tuple[DeviceParams, ImagePa
     lpw = get_not_empty(request.args, "lpw", "false") == "true"
     model = get_not_empty(request.args, "model", get_config_value("model"))
     model_path = get_model_path(context, model)
-    scheduler = get_from_list(
-        request.args, "scheduler", pipeline_schedulers.keys()
-    )
+    scheduler = get_from_list(request.args, "scheduler", pipeline_schedulers.keys())
 
     if scheduler is None:
         scheduler = get_config_value("scheduler")

@@ -4,11 +4,9 @@ from typing import Any, Optional, Tuple
 
 import numpy as np
 from diffusers import (
-    DiffusionPipeline,
-    OnnxRuntimeModel,
-    StableDiffusionPipeline,
     DDIMScheduler,
     DDPMScheduler,
+    DiffusionPipeline,
     DPMSolverMultistepScheduler,
     DPMSolverSinglestepScheduler,
     EulerAncestralDiscreteScheduler,
@@ -19,7 +17,9 @@ from diffusers import (
     KDPM2AncestralDiscreteScheduler,
     KDPM2DiscreteScheduler,
     LMSDiscreteScheduler,
+    OnnxRuntimeModel,
     PNDMScheduler,
+    StableDiffusionPipeline,
 )
 
 try:

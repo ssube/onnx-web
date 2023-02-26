@@ -6,9 +6,9 @@ from PIL import Image
 
 from ..onnx import OnnxNet
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
-from ..worker import WorkerContext
 from ..server import ServerContext
 from ..utils import run_gc
+from ..worker import WorkerContext
 
 logger = getLogger(__name__)
 

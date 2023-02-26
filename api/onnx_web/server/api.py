@@ -7,27 +7,7 @@ from flask import Flask, jsonify, make_response, request, url_for
 from jsonschema import validate
 from PIL import Image
 
-from .context import ServerContext
-from .utils import wrap_route
-from ..worker.pool import DevicePoolExecutor
-
-from .config import (
-  get_available_platforms,
-  get_config_params,
-  get_config_value,
-  get_correction_models,
-  get_diffusion_models,
-  get_inversion_models,
-  get_mask_filters,
-  get_noise_sources,
-  get_upscaling_models,
-)
-from .params import border_from_request, pipeline_from_request, upscale_from_request
-
-from ..chain import (
-    CHAIN_STAGES,
-    ChainPipeline,
-)
+from ..chain import CHAIN_STAGES, ChainPipeline
 from ..diffusion.load import get_pipeline_schedulers
 from ..diffusion.run import (
     run_blend_pipeline,
@@ -36,16 +16,9 @@ from ..diffusion.run import (
     run_txt2img_pipeline,
     run_upscale_pipeline,
 )
-from ..image import (  # mask filters; noise sources
-    valid_image,
-)
+from ..image import valid_image  # mask filters; noise sources
 from ..output import json_params, make_output_name
-from ..params import (
-    Border,
-    StageParams,
-    TileOrder,
-    UpscaleParams,
-)
+from ..params import Border, StageParams, TileOrder, UpscaleParams
 from ..transformers import run_txt2txt_pipeline
 from ..utils import (
     base_join,
@@ -56,6 +29,21 @@ from ..utils import (
     get_not_empty,
     get_size,
 )
+from ..worker.pool import DevicePoolExecutor
+from .config import (
+    get_available_platforms,
+    get_config_params,
+    get_config_value,
+    get_correction_models,
+    get_diffusion_models,
+    get_inversion_models,
+    get_mask_filters,
+    get_noise_sources,
+    get_upscaling_models,
+)
+from .context import ServerContext
+from .params import border_from_request, pipeline_from_request, upscale_from_request
+from .utils import wrap_route
 
 logger = getLogger(__name__)
 
@@ -456,22 +444,38 @@ def status(context: ServerContext, pool: DevicePoolExecutor):
 
 
 def register_api_routes(app: Flask, context: ServerContext, pool: DevicePoolExecutor):
-  return [
-    app.route("/api")(wrap_route(introspect, context, app=app)),
-    app.route("/api/settings/masks")(wrap_route(list_mask_filters, context)),
-    app.route("/api/settings/models")(wrap_route(list_models, context)),
-    app.route("/api/settings/noises")(wrap_route(list_noise_sources, context)),
-    app.route("/api/settings/params")(wrap_route(list_params, context)),
-    app.route("/api/settings/platforms")(wrap_route(list_platforms, context)),
-    app.route("/api/settings/schedulers")(wrap_route(list_schedulers, context)),
-    app.route("/api/img2img", methods=["POST"])(wrap_route(img2img, context, pool=pool)),
-    app.route("/api/txt2img", methods=["POST"])(wrap_route(txt2img, context, pool=pool)),
-    app.route("/api/txt2txt", methods=["POST"])(wrap_route(txt2txt, context, pool=pool)),
-    app.route("/api/inpaint", methods=["POST"])(wrap_route(inpaint, context, pool=pool)),
-    app.route("/api/upscale", methods=["POST"])(wrap_route(upscale, context, pool=pool)),
-    app.route("/api/chain", methods=["POST"])(wrap_route(chain, context, pool=pool)),
-    app.route("/api/blend", methods=["POST"])(wrap_route(blend, context, pool=pool)),
-    app.route("/api/cancel", methods=["PUT"])(wrap_route(cancel, context, pool=pool)),
-    app.route("/api/ready")(wrap_route(ready, context, pool=pool)),
-    app.route("/api/status")(wrap_route(status, context, pool=pool)),
-  ]
+    return [
+        app.route("/api")(wrap_route(introspect, context, app=app)),
+        app.route("/api/settings/masks")(wrap_route(list_mask_filters, context)),
+        app.route("/api/settings/models")(wrap_route(list_models, context)),
+        app.route("/api/settings/noises")(wrap_route(list_noise_sources, context)),
+        app.route("/api/settings/params")(wrap_route(list_params, context)),
+        app.route("/api/settings/platforms")(wrap_route(list_platforms, context)),
+        app.route("/api/settings/schedulers")(wrap_route(list_schedulers, context)),
+        app.route("/api/img2img", methods=["POST"])(
+            wrap_route(img2img, context, pool=pool)
+        ),
+        app.route("/api/txt2img", methods=["POST"])(
+            wrap_route(txt2img, context, pool=pool)
+        ),
+        app.route("/api/txt2txt", methods=["POST"])(
+            wrap_route(txt2txt, context, pool=pool)
+        ),
+        app.route("/api/inpaint", methods=["POST"])(
+            wrap_route(inpaint, context, pool=pool)
+        ),
+        app.route("/api/upscale", methods=["POST"])(
+            wrap_route(upscale, context, pool=pool)
+        ),
+        app.route("/api/chain", methods=["POST"])(
+            wrap_route(chain, context, pool=pool)
+        ),
+        app.route("/api/blend", methods=["POST"])(
+            wrap_route(blend, context, pool=pool)
+        ),
+        app.route("/api/cancel", methods=["PUT"])(
+            wrap_route(cancel, context, pool=pool)
+        ),
+        app.route("/api/ready")(wrap_route(ready, context, pool=pool)),
+        app.route("/api/status")(wrap_route(status, context, pool=pool)),
+    ]

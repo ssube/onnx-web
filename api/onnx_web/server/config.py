@@ -2,13 +2,11 @@ from functools import cmp_to_key
 from glob import glob
 from logging import getLogger
 from os import path
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Union
 
 import torch
 import yaml
-from onnxruntime import get_available_providers
 
-from .context import ServerContext
 from ..image import (  # mask filters; noise sources
     mask_filter_gaussian_multiply,
     mask_filter_gaussian_screen,
@@ -20,9 +18,9 @@ from ..image import (  # mask filters; noise sources
     noise_source_normal,
     noise_source_uniform,
 )
-from ..params import (
-    DeviceParams,
-)
+from ..onnx.torch_before_ort import get_available_providers
+from ..params import DeviceParams
+from .context import ServerContext
 
 logger = getLogger(__name__)
 
@@ -221,4 +219,3 @@ def load_platforms(context: ServerContext) -> None:
         "available acceleration platforms: %s",
         ", ".join([str(p) for p in available_platforms]),
     )
-

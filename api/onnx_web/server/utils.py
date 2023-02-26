@@ -1,6 +1,6 @@
+from functools import partial, update_wrapper
 from os import makedirs, path
 from typing import Callable, Dict, List, Tuple
-from functools import partial, update_wrapper
 
 from flask import Flask
 
@@ -22,7 +22,12 @@ def get_model_path(context: ServerContext, model: str):
     return base_join(context.model_path, model)
 
 
-def register_routes(app: Flask, context: ServerContext, pool: DevicePoolExecutor, routes: List[Tuple[str, Dict, Callable]]):
+def register_routes(
+    app: Flask,
+    context: ServerContext,
+    pool: DevicePoolExecutor,
+    routes: List[Tuple[str, Dict, Callable]],
+):
     pass
 
 

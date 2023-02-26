@@ -7,8 +7,8 @@ from PIL import Image
 
 from ..diffusion.load import load_pipeline
 from ..params import ImageParams, StageParams
-from ..worker import WorkerContext, ProgressCallback
 from ..server import ServerContext
+from ..worker import ProgressCallback, WorkerContext
 
 logger = getLogger(__name__)
 

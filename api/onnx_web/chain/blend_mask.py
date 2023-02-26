@@ -7,9 +7,9 @@ from onnx_web.image import valid_image
 from onnx_web.output import save_image
 
 from ..params import ImageParams, StageParams
-from ..worker import WorkerContext, ProgressCallback
 from ..server import ServerContext
 from ..utils import is_debug
+from ..worker import ProgressCallback, WorkerContext
 
 logger = getLogger(__name__)
 
