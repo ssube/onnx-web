@@ -39483,6 +39483,7 @@
     url.searchParams.append("upscaling", params.upscaling);
     url.searchParams.append("correction", params.correction);
     url.searchParams.append("lpw", String(params.lpw));
+    url.searchParams.append("inversion", params.inversion);
   }
   __name(appendModelToURL, "appendModelToURL");
   function appendUpscaleToURL(url, upscale) {
@@ -64870,6 +64871,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         platform: server.platform.default,
         upscaling: server.upscaling.default,
         correction: server.correction.default,
+        inversion: server.inversion.default,
         lpw: false
       },
       setModel(params) {
@@ -65245,6 +65247,13 @@ Please use another name.` : formatMuiErrorMessage(18));
     "diffusion-pastel-mix": "Pastel Mix",
     "diffusion-unstable-ink-dream-v6": "Unstable Ink Dream v6"
   };
+  var INVERSION_LABELS = {
+    "": "None",
+    "inversion-cubex": "Cubex",
+    "inversion-birb": "Birb Style",
+    "inversion-line-art": "Line Art",
+    "inversion-minecraft": "Minecraft Concept"
+  };
   var PLATFORM_LABELS = {
     amd: "AMD GPU",
     // eslint-disable-next-line id-blacklist
@@ -65292,17 +65301,25 @@ Please use another name.` : formatMuiErrorMessage(18));
     return Reflect.has(query, "selector");
   }
   __name(hasFilter, "hasFilter");
-  function filterQuery(query) {
+  function filterQuery(query, showEmpty) {
     if (hasFilter(query)) {
       const data = mustExist(query.result.data);
-      return query.selector(data);
+      const selected = query.selector(data);
+      if (showEmpty) {
+        return ["", ...selected];
+      }
+      return selected;
     } else {
-      return mustExist(query.result.data);
+      const data = Array.from(mustExist(query.result.data));
+      if (showEmpty) {
+        return ["", ...data];
+      }
+      return data;
     }
   }
   __name(filterQuery, "filterQuery");
   function QueryList(props) {
-    const { labels, query, value } = props;
+    const { labels, query, showEmpty = false, value } = props;
     const { result } = query;
     function firstValidValue() {
       if (doesExist2(value) && data.includes(value)) {
@@ -65314,7 +65331,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     __name(firstValidValue, "firstValidValue");
     (0, import_react19.useEffect)(() => {
       if (result.status === "success" && doesExist2(result.data) && doesExist2(props.onChange)) {
-        const data2 = filterQuery(query);
+        const data2 = filterQuery(query, showEmpty);
         if (data2.includes(value) === false) {
           props.onChange(data2[0]);
         }
@@ -65339,7 +65356,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       return React105.createElement(Typography_default, null, "Idle?");
     }
     const labelID = `query-list-${props.id}-labels`;
-    const data = filterQuery(query);
+    const data = filterQuery(query, showEmpty);
     return React105.createElement(
       FormControl_default,
       null,
@@ -65381,6 +65398,14 @@ Please use another name.` : formatMuiErrorMessage(18));
       }, value: params.model, onChange: (model) => {
         setModel({
           model
+        });
+      } }),
+      React106.createElement(QueryList, { id: "inversion", labels: INVERSION_LABELS, name: "Textual Inversion", query: {
+        result: models,
+        selector: (result) => result.inversion
+      }, showEmpty: true, value: params.inversion, onChange: (inversion) => {
+        setModel({
+          inversion
         });
       } }),
       React106.createElement(QueryList, { id: "upscaling", labels: MODEL_LABELS, name: "Upscaling Model", query: {
