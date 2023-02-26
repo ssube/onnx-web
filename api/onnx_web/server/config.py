@@ -18,8 +18,8 @@ from ..image import (  # mask filters; noise sources
     noise_source_normal,
     noise_source_uniform,
 )
-from ..onnx.torch_before_ort import get_available_providers
 from ..params import DeviceParams
+from ..torch_before_ort import get_available_providers
 from .context import ServerContext
 
 logger = getLogger(__name__)

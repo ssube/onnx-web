@@ -1,4 +1,6 @@
+import atexit
 import gc
+from logging import getLogger
 
 from diffusers.utils.logging import disable_progress_bar
 from flask import Flask
@@ -19,6 +21,8 @@ from .server.static import register_static_routes
 from .server.utils import check_paths
 from .utils import is_debug
 from .worker import DevicePoolExecutor
+
+logger = getLogger(__name__)
 
 
 def main():
@@ -53,7 +57,13 @@ def main():
     return app, pool
 
 
-if __name__ == "__main__":
+def run():
     app, pool = main()
+    atexit.register(lambda: pool.join())
+    return app
+
+
+if __name__ == "__main__":
+    app = run()
     app.run("0.0.0.0", 5000, debug=is_debug())
-    pool.join()
+    logger.info("shutting down app")

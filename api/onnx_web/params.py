@@ -2,7 +2,7 @@ from enum import IntEnum
 from logging import getLogger
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
-from .onnx.torch_before_ort import GraphOptimizationLevel, SessionOptions
+from .torch_before_ort import GraphOptimizationLevel, SessionOptions
 
 logger = getLogger(__name__)
 

@@ -5,7 +5,7 @@ import numpy as np
 import torch
 
 from ..server import ServerContext
-from .torch_before_ort import InferenceSession, SessionOptions
+from ..torch_before_ort import InferenceSession, SessionOptions
 
 
 class OnnxTensor:

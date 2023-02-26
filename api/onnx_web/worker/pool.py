@@ -48,7 +48,7 @@ class DevicePoolExecutor:
 
     def create_logger_worker(self) -> None:
         self.log_queue = Queue()
-        self.logger = Process(target=logger_init, args=(self.log_queue))
+        self.logger = Process(target=logger_init, args=(self.log_queue,))
 
         logger.debug("starting log worker")
         self.logger.start()
