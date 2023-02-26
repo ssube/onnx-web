@@ -82,11 +82,22 @@ class DevicePoolExecutor:
         the future and never execute it. If the job has been started, it
         should be cancelled on the next progress callback.
         """
-        raise NotImplementedError()
+        if key not in self.jobs:
+            logger.warn("attempting to cancel unknown job: %s", key)
+            return False
+
+        device = self.jobs[key]
+        cancel = self.context[device].cancel
+        logger.info("cancelling job %s on device %s", key, device)
+
+        if cancel.get_lock():
+            cancel.value = True
+
+        return True
 
     def done(self, key: str) -> Tuple[Optional[bool], int]:
         if key not in self.jobs:
-            logger.warn("checking status for unknown key: %s", key)
+            logger.warn("checking status for unknown job: %s", key)
             return (None, 0)
 
         device = self.jobs[key]
