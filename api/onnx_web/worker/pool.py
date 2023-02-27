@@ -122,7 +122,7 @@ class DevicePoolExecutor:
             logger.warn("attempting to cancel unknown job: %s", key)
             return False
 
-        device = self.active_jobs[key]
+        device, _progress = self.active_jobs[key]
         context = self.context[device]
         logger.info("cancelling job %s on device %s", key, device)
 
@@ -220,7 +220,7 @@ class DevicePoolExecutor:
         queue = self.pending[device.device]
         queue.put((fn, args, kwargs))
 
-        self.active_jobs[key] = device.device
+        self.active_jobs[key] = (device.device, 0)
 
     def status(self) -> List[Tuple[str, int, bool, int]]:
         pending = [
@@ -232,7 +232,7 @@ class DevicePoolExecutor:
                 False,
                 progress,
             )
-            for name, device, progress in self.active_jobs
+            for name, device, progress in self.active_jobs.items()
         ]
         pending.extend(
             [
