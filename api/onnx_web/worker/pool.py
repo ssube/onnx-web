@@ -134,7 +134,7 @@ class DevicePoolExecutor:
     def done(self, key: str) -> Tuple[Optional[bool], int]:
         for k, p, c in self.finished_jobs:
             if k == key:
-                return (c, p)
+                return (True, p)
 
         if key not in self.active_jobs:
             logger.warn("checking status for unknown job: %s", key)
