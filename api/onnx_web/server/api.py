@@ -402,7 +402,7 @@ def blend(context: ServerContext, pool: DevicePoolExecutor):
 def txt2txt(context: ServerContext, pool: DevicePoolExecutor):
     device, params, size = pipeline_from_request(context)
 
-    output = make_output_name(context, "upscale", params, size)
+    output = make_output_name(context, "txt2txt", params, size)
     logger.info("upscale job queued for: %s", output)
 
     pool.submit(

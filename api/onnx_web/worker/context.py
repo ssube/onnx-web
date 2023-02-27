@@ -71,3 +71,17 @@ class WorkerContext:
     def clear_flags(self) -> None:
         self.set_cancel(False)
         self.set_progress(0)
+
+
+class JobStatus:
+    def __init__(
+        self,
+        name: str,
+        progress: int = 0,
+        cancelled: bool = False,
+        finished: bool = False,
+    ) -> None:
+        self.name = name
+        self.progress = progress
+        self.cancelled = cancelled
+        self.finished = finished
