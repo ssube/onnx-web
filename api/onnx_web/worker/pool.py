@@ -132,7 +132,7 @@ class DevicePoolExecutor:
                 del self.active_jobs[job]
 
         finished_thread = Thread(target=finished_worker, args=(self.finished,))
-        self.thread["finished"] = finished_thread
+        self.threads["finished"] = finished_thread
 
         logger.debug("started finished worker")
         finished_thread.start()
