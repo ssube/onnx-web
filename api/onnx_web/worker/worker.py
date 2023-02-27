@@ -32,12 +32,14 @@ def worker_init(context: WorkerContext, server: ServerContext):
     while True:
         job = context.pending.get()
         logger.info("got job: %s", job)
-        try:
-            fn, args, kwargs = job
-            name = args[3][0]
 
-            logger.info("starting job: %s", name)
+        fn, args, kwargs = job
+        name = args[3][0]
+
+        try:
             context.clear_flags()
+            logger.info("starting job: %s", name)
+            context.put_started(name)
             fn(context, *args, **kwargs)
             logger.info("job succeeded: %s", name)
         except Exception as e:
@@ -46,5 +48,5 @@ def worker_init(context: WorkerContext, server: ServerContext):
                 format_exception(type(e), e, e.__traceback__),
             )
         finally:
-            context.set_finished()
+            context.put_finished(name)
             logger.info("finished job: %s", name)

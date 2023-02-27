@@ -6,10 +6,8 @@ import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline, OnnxStableDiffusionPipeline
 from PIL import Image
 
-from onnx_web.chain import blend_mask
-from onnx_web.chain.base import ChainProgress
-
-from ..chain import upscale_outpaint
+from ..chain import blend_mask, upscale_outpaint
+from ..chain.base import ChainProgress
 from ..output import save_image, save_params
 from ..params import Border, ImageParams, Size, StageParams, UpscaleParams
 from ..server import ServerContext

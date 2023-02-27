@@ -118,35 +118,42 @@ def load_models(context: ServerContext) -> None:
     )
     diffusion_models = list(set(diffusion_models))
     diffusion_models.sort()
+    logger.debug("loaded diffusion models from disk: %s", diffusion_models)
 
     correction_models = [
         get_model_name(f) for f in glob(path.join(context.model_path, "correction-*"))
     ]
     correction_models = list(set(correction_models))
     correction_models.sort()
+    logger.debug("loaded correction models from disk: %s", correction_models)
 
     inversion_models = [
         get_model_name(f) for f in glob(path.join(context.model_path, "inversion-*"))
     ]
     inversion_models = list(set(inversion_models))
     inversion_models.sort()
+    logger.debug("loaded inversion models from disk: %s", inversion_models)
 
     upscaling_models = [
         get_model_name(f) for f in glob(path.join(context.model_path, "upscaling-*"))
     ]
     upscaling_models = list(set(upscaling_models))
     upscaling_models.sort()
+    logger.debug("loaded upscaling models from disk: %s", upscaling_models)
 
 
 def load_params(context: ServerContext) -> None:
     global config_params
+
     params_file = path.join(context.params_path, "params.json")
+    logger.debug("loading server parameters from file: %s", params_file)
+
     with open(params_file, "r") as f:
         config_params = yaml.safe_load(f)
 
         if "platform" in config_params and context.default_platform is not None:
             logger.info(
-                "Overriding default platform from environment: %s",
+                "overriding default platform from environment: %s",
                 context.default_platform,
             )
             config_platform = config_params.get("platform", {})
@@ -157,6 +164,7 @@ def load_platforms(context: ServerContext) -> None:
     global available_platforms
 
     providers = list(get_available_providers())
+    logger.debug("loading available platforms from providers: %s", providers)
 
     for potential in platform_providers:
         if (

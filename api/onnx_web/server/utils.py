@@ -4,9 +4,8 @@ from typing import Callable, Dict, List, Tuple
 
 from flask import Flask
 
-from onnx_web.utils import base_join
-from onnx_web.worker.pool import DevicePoolExecutor
-
+from ..utils import base_join
+from ..worker.pool import DevicePoolExecutor
 from .context import ServerContext
 
 
@@ -28,7 +27,8 @@ def register_routes(
     pool: DevicePoolExecutor,
     routes: List[Tuple[str, Dict, Callable]],
 ):
-    pass
+    for route, kwargs, method in routes:
+        app.route(route, **kwargs)(wrap_route(method, context, pool=pool))
 
 
 def wrap_route(func, *args, **kwargs):

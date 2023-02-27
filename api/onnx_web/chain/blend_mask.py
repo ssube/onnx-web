@@ -3,9 +3,8 @@ from typing import List, Optional
 
 from PIL import Image
 
-from onnx_web.image import valid_image
-from onnx_web.output import save_image
-
+from ..image import valid_image
+from ..output import save_image
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..utils import is_debug

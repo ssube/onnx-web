@@ -22,18 +22,20 @@ class WorkerContext:
         key: str,
         device: DeviceParams,
         cancel: "Value[bool]" = None,
-        finished: "Value[bool]" = None,
         progress: "Value[int]" = None,
+        finished: "Queue[str]" = None,
         logs: "Queue[str]" = None,
         pending: "Queue[Any]" = None,
+        started: "Queue[Tuple[str, str]]" = None,
     ):
         self.key = key
-        self.cancel = cancel
         self.device = device
-        self.pending = pending
+        self.cancel = cancel
         self.progress = progress
-        self.logs = logs
         self.finished = finished
+        self.logs = logs
+        self.pending = pending
+        self.started = started
 
     def is_cancelled(self) -> bool:
         return self.cancel.value
@@ -62,15 +64,16 @@ class WorkerContext:
         with self.cancel.get_lock():
             self.cancel.value = cancel
 
-    def set_finished(self, finished: bool = True) -> None:
-        with self.finished.get_lock():
-            self.finished.value = finished
-
     def set_progress(self, progress: int) -> None:
         with self.progress.get_lock():
             self.progress.value = progress
 
+    def put_finished(self, job: str) -> None:
+        self.finished.put((job, self.device.device))
+
+    def put_started(self, job: str) -> None:
+        self.started.put((job, self.device.device))
+
     def clear_flags(self) -> None:
         self.set_cancel(False)
-        self.set_finished(False)
         self.set_progress(0)
