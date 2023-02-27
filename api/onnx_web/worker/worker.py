@@ -25,7 +25,7 @@ def worker_main(context: WorkerContext, server: ServerContext):
         name = args[3][0]
 
         try:
-            context.key = name  # TODO: hax
+            context.job = name  # TODO: hax
             context.clear_flags()
             logger.info("starting job: %s", name)
             fn(context, *args, **kwargs)

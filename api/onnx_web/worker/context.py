@@ -13,13 +13,13 @@ ProgressCallback = Callable[[int, int, Any], None]
 
 class WorkerContext:
     cancel: "Value[bool]" = None
-    key: str = None
+    job: str = None
     pending: "Queue[Tuple[Callable, Any, Any]]" = None
     progress: "Value[int]" = None
 
     def __init__(
         self,
-        key: str,
+        job: str,
         device: DeviceParams,
         cancel: "Value[bool]" = None,
         logs: "Queue[str]" = None,
@@ -27,7 +27,7 @@ class WorkerContext:
         progress: "Queue[Tuple[str, int]]" = None,
         finished: "Queue[str]" = None,
     ):
-        self.key = key
+        self.job = job
         self.device = device
         self.cancel = cancel
         self.progress = progress
@@ -53,7 +53,7 @@ class WorkerContext:
             if self.is_cancelled():
                 raise RuntimeError("job has been cancelled")
             else:
-                logger.debug("setting progress for job %s to %s", self.key, step)
+                logger.debug("setting progress for job %s to %s", self.job, step)
                 self.set_progress(step)
 
         return on_progress
@@ -63,10 +63,10 @@ class WorkerContext:
             self.cancel.value = cancel
 
     def set_progress(self, progress: int) -> None:
-        self.progress.put((self.key, self.device.device, progress))
+        self.progress.put((self.job, self.device.device, progress))
 
     def set_finished(self) -> None:
-        self.finished.put((self.key, self.device.device))
+        self.finished.put((self.job, self.device.device))
 
     def clear_flags(self) -> None:
         self.set_cancel(False)

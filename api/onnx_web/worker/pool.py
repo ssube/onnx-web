@@ -200,16 +200,14 @@ class DevicePoolExecutor:
         return (False, progress)
 
     def join(self):
-        self.progress_thread.join(self.join_timeout)
-        self.finished_thread.join(self.join_timeout)
-
         for device, worker in self.workers.items():
             if worker.is_alive():
                 logger.info("stopping worker for device %s", device)
                 worker.join(self.join_timeout)
 
-        if self.logger.is_alive():
-            self.logger.join(self.join_timeout)
+        for name, thread in self.threads.items():
+            logger.info("stopping worker thread: %s", name)
+            thread.join(self.join_timeout)
 
     def recycle(self):
         for name, proc in self.workers.items():
