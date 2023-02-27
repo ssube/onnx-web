@@ -37,9 +37,9 @@ def worker_init(context: WorkerContext, server: ServerContext):
         name = args[3][0]
 
         try:
+            context.key = name # TODO: hax
             context.clear_flags()
             logger.info("starting job: %s", name)
-            context.put_started(name)
             fn(context, *args, **kwargs)
             logger.info("job succeeded: %s", name)
         except Exception as e:
@@ -48,5 +48,5 @@ def worker_init(context: WorkerContext, server: ServerContext):
                 format_exception(type(e), e, e.__traceback__),
             )
         finally:
-            context.put_finished(name)
+            context.set_finished()
             logger.info("finished job: %s", name)
