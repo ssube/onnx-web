@@ -237,9 +237,10 @@ class DevicePoolExecutor:
         self.logs.close()
         self.finished.close()
         self.progress.close()
-        for key, queue in self.pending.items():
+        for queue in self.pending.values():
             queue.close()
-            del self.pending[key]
+
+        self.pending.clear()
 
         logger.debug("worker pool fully joined")
 
