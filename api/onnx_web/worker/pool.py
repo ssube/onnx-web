@@ -95,6 +95,8 @@ class DevicePoolExecutor:
                         f.write(str(job) + "\n\n")
                 except Empty:
                     pass
+                except ValueError:
+                    break
                 except Exception as err:
                     logger.error("error in log worker: %s", err)
 
@@ -119,6 +121,8 @@ class DevicePoolExecutor:
                         self.context[device].set_cancel()
                 except Empty:
                     pass
+                except ValueError:
+                    break
                 except Exception as err:
                     logger.error("error in progress worker: %s", err)
 
@@ -141,6 +145,8 @@ class DevicePoolExecutor:
                     del self.active_jobs[job]
                 except Empty:
                     pass
+                except ValueError:
+                    break
                 except Exception as err:
                     logger.error("error in finished worker: %s", err)
 
@@ -219,6 +225,7 @@ class DevicePoolExecutor:
             if worker.is_alive():
                 logger.debug("stopping worker for device %s", device)
                 worker.join(self.join_timeout)
+                worker.terminate()
             else:
                 logger.debug("worker for device %s has died", device)
 

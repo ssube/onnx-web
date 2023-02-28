@@ -29,11 +29,16 @@ def worker_main(context: WorkerContext, server: ServerContext):
             logger.info("starting job: %s", name)
             fn(context, *args, **kwargs)
             logger.info("job succeeded: %s", name)
+            context.pending.task_done()
             context.set_finished()
         except Empty:
             pass
         except KeyboardInterrupt:
+            logger.info("worker got keyboard interrupt")
             exit(0)
+        except ValueError as e:
+            logger.info("value error in worker: %s", e)
+            exit(1)
         except Exception as e:
             logger.error(
                 "error while running job: %s",
