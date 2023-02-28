@@ -88,7 +88,7 @@ class DevicePoolExecutor:
 
             while True:
                 try:
-                    job = logs.get()
+                    job = logs.get(timeout=(self.join_timeout / 2))
                     with open("worker.log", "w") as f:
                         logger.info("got log: %s", job)
                         f.write(str(job) + "\n\n")
@@ -106,7 +106,7 @@ class DevicePoolExecutor:
             logger.info("checking in from progress worker thread")
             while True:
                 try:
-                    job, device, value = progress.get()
+                    job, device, value = progress.get(timeout=(self.join_timeout / 2))
                     logger.info("progress update for job: %s to %s", job, value)
                     self.active_jobs[job] = (device, value)
                     if job in self.cancelled_jobs:
@@ -128,7 +128,7 @@ class DevicePoolExecutor:
             logger.info("checking in from finished worker thread")
             while True:
                 try:
-                    job, device = finished.get()
+                    job, device = finished.get(timeout=(self.join_timeout / 2))
                     logger.info("job has been finished: %s", job)
                     context = self.context[device]
                     _device, progress = self.active_jobs[job]
@@ -256,7 +256,7 @@ class DevicePoolExecutor:
         )
 
         device = self.devices[device_idx].device
-        self.pending[device].put((key, fn, args, kwargs))
+        self.pending[device].put((key, fn, args, kwargs), block=False)
 
     def status(self) -> List[Tuple[str, int, bool, bool]]:
         history = [

@@ -63,7 +63,7 @@ class WorkerContext:
             self.cancel.value = cancel
 
     def set_progress(self, progress: int) -> None:
-        self.progress.put((self.job, self.device.device, progress))
+        self.progress.put((self.job, self.device.device, progress), block=False)
 
     def set_finished(self) -> None:
         self.finished.put((self.job, self.device.device))

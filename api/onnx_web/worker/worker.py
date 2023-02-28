@@ -1,4 +1,5 @@
 from logging import getLogger
+from queue import Empty
 from traceback import format_exception
 
 from setproctitle import setproctitle
@@ -18,7 +19,7 @@ def worker_main(context: WorkerContext, server: ServerContext):
     logger.info("checking in from worker, %s", get_available_providers())
 
     while True:
-        name, fn, args, kwargs = context.pending.get()
+        name, fn, args, kwargs = context.pending.get(timeout=1.0)
         logger.info("worker for %s got job: %s", context.device.device, name)
 
         try:
@@ -27,6 +28,8 @@ def worker_main(context: WorkerContext, server: ServerContext):
             logger.info("starting job: %s", name)
             fn(context, *args, **kwargs)
             logger.info("job succeeded: %s", name)
+        except Empty:
+            pass
         except Exception as e:
             logger.error(
                 "error while running job: %s",
