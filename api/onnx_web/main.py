@@ -59,7 +59,12 @@ def main():
 
 def run():
     app, pool = main()
-    atexit.register(lambda: pool.join())
+
+    def quit():
+        logger.info("shutting down workers")
+        pool.join()
+
+    atexit.register(quit)
     return app
 
 
