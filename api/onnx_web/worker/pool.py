@@ -87,10 +87,13 @@ class DevicePoolExecutor:
             logger.info("checking in from logger worker thread")
 
             while True:
-                job = logs.get()
-                with open("worker.log", "w") as f:
-                    logger.info("got log: %s", job)
-                    f.write(str(job) + "\n\n")
+                try:
+                    job = logs.get()
+                    with open("worker.log", "w") as f:
+                        logger.info("got log: %s", job)
+                        f.write(str(job) + "\n\n")
+                except Exception as err:
+                    logger.error("error in log worker: %s", err)
 
         logger_thread = Thread(target=logger_worker, args=(self.logs,))
         self.threads["logger"] = logger_thread
@@ -112,7 +115,7 @@ class DevicePoolExecutor:
                         )
                         self.context[device].set_cancel()
                 except Exception as err:
-                    logger.error("error during progress update", err)
+                    logger.error("error in progress worker: %s", err)
 
         progress_thread = Thread(target=progress_worker, args=(self.progress,))
         self.threads["progress"] = progress_thread
@@ -124,12 +127,15 @@ class DevicePoolExecutor:
         def finished_worker(finished: Queue):
             logger.info("checking in from finished worker thread")
             while True:
-                job, device = finished.get()
-                logger.info("job has been finished: %s", job)
-                context = self.context[device]
-                _device, progress = self.active_jobs[job]
-                self.finished_jobs.append((job, progress, context.cancel.value))
-                del self.active_jobs[job]
+                try:
+                    job, device = finished.get()
+                    logger.info("job has been finished: %s", job)
+                    context = self.context[device]
+                    _device, progress = self.active_jobs[job]
+                    self.finished_jobs.append((job, progress, context.cancel.value))
+                    del self.active_jobs[job]
+                except Exception as err:
+                    logger.error("error in finished worker: %s", err)
 
         finished_thread = Thread(target=finished_worker, args=(self.finished,))
         self.threads["finished"] = finished_thread
