@@ -29,7 +29,6 @@ def worker_main(context: WorkerContext, server: ServerContext):
             logger.info("starting job: %s", name)
             fn(context, *args, **kwargs)
             logger.info("job succeeded: %s", name)
-            context.pending.task_done()
             context.set_finished()
         except Empty:
             pass
