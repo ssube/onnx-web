@@ -102,7 +102,7 @@ class DevicePoolExecutor:
                 except Exception as err:
                     logger.error("error in log worker: %s", err)
 
-        logger_thread = Thread(target=logger_worker, args=(self.logs,))
+        logger_thread = Thread(target=logger_worker, args=(self.logs,), daemon=True)
         self.threads["logger"] = logger_thread
 
         logger.debug("starting logger worker")
@@ -128,7 +128,7 @@ class DevicePoolExecutor:
                 except Exception as err:
                     logger.error("error in progress worker: %s", err)
 
-        progress_thread = Thread(target=progress_worker, args=(self.progress,))
+        progress_thread = Thread(target=progress_worker, args=(self.progress,), daemon=True)
         self.threads["progress"] = progress_thread
 
         logger.debug("starting progress worker")
@@ -152,7 +152,7 @@ class DevicePoolExecutor:
                 except Exception as err:
                     logger.error("error in finished worker: %s", err)
 
-        finished_thread = Thread(target=finished_worker, args=(self.finished,))
+        finished_thread = Thread(target=finished_worker, args=(self.finished,), daemon=True)
         self.threads["finished"] = finished_thread
 
         logger.debug("started finished worker")
