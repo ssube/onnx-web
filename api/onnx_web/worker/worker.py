@@ -1,5 +1,6 @@
 from logging import getLogger
 from queue import Empty
+from sys import exit
 from traceback import format_exception
 
 from setproctitle import setproctitle
@@ -31,6 +32,8 @@ def worker_main(context: WorkerContext, server: ServerContext):
             context.set_finished()
         except Empty:
             pass
+        except KeyboardInterrupt:
+            exit(0)
         except Exception as e:
             logger.error(
                 "error while running job: %s",
