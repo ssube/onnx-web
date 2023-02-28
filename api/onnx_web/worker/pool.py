@@ -227,7 +227,7 @@ class DevicePoolExecutor:
             if worker.is_alive():
                 logger.debug("stopping worker for device %s", device)
                 worker.join(self.join_timeout)
-                worker.terminate()
+                # worker.terminate()
             else:
                 logger.debug("worker for device %s has died", device)
 
@@ -251,7 +251,7 @@ class DevicePoolExecutor:
             if proc.is_alive():
                 logger.debug("shutting down worker for device %s", name)
                 proc.join(self.join_timeout)
-                proc.terminate()
+                # proc.terminate()
             else:
                 logger.warning("worker for device %s has died", name)
 
