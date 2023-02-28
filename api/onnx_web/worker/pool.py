@@ -63,8 +63,10 @@ class DevicePoolExecutor:
 
         # reuse the queue if possible, to keep queued jobs
         if name in self.pending:
+            logger.debug("using existing pending job queue")
             pending = self.pending[name]
         else:
+            logger.debug("creating new pending job queue")
             pending = Queue()
             self.pending[name] = pending
 
