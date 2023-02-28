@@ -256,7 +256,7 @@ class DevicePoolExecutor:
         )
 
         device = self.devices[device_idx].device
-        self.pending[device].put((fn, args, kwargs))
+        self.pending[device].put((key, fn, args, kwargs))
 
     def status(self) -> List[Tuple[str, int, bool, bool]]:
         history = [

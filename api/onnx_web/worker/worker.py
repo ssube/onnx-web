@@ -18,11 +18,8 @@ def worker_main(context: WorkerContext, server: ServerContext):
     logger.info("checking in from worker, %s", get_available_providers())
 
     while True:
-        job = context.pending.get()
-        logger.info("got job: %s", job)
-
-        fn, args, kwargs = job
-        name = args[3][0]
+        name, fn, args, kwargs = context.pending.get()
+        logger.info("worker for %s got job: %s", context.device.device, name)
 
         try:
             context.job = name  # TODO: hax
