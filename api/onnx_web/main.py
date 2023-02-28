@@ -69,6 +69,7 @@ def run():
 
 
 if __name__ == "__main__":
-    app = run()
+    app, pool = main()
     app.run("0.0.0.0", 5000, debug=is_debug())
     logger.info("shutting down app")
+    pool.join()
