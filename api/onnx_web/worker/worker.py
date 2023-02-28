@@ -19,15 +19,16 @@ def worker_main(context: WorkerContext, server: ServerContext):
     logger.info("checking in from worker, %s", get_available_providers())
 
     while True:
-        name, fn, args, kwargs = context.pending.get(timeout=1.0)
-        logger.info("worker for %s got job: %s", context.device.device, name)
-
         try:
+            name, fn, args, kwargs = context.pending.get(timeout=1.0)
+            logger.info("worker for %s got job: %s", context.device.device, name)
+
             context.job = name  # TODO: hax
             context.clear_flags()
             logger.info("starting job: %s", name)
             fn(context, *args, **kwargs)
             logger.info("job succeeded: %s", name)
+            context.set_finished()
         except Empty:
             pass
         except Exception as e:
@@ -35,6 +36,3 @@ def worker_main(context: WorkerContext, server: ServerContext):
                 "error while running job: %s",
                 format_exception(type(e), e, e.__traceback__),
             )
-        finally:
-            context.set_finished()
-            logger.info("finished job: %s", name)

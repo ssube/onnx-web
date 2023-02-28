@@ -1,5 +1,6 @@
 from collections import Counter
 from logging import getLogger
+from queue import Empty
 from threading import Thread
 from typing import Callable, Dict, List, Optional, Tuple
 
@@ -92,6 +93,8 @@ class DevicePoolExecutor:
                     with open("worker.log", "w") as f:
                         logger.info("got log: %s", job)
                         f.write(str(job) + "\n\n")
+                except Empty:
+                    pass
                 except Exception as err:
                     logger.error("error in log worker: %s", err)
 
@@ -114,6 +117,8 @@ class DevicePoolExecutor:
                             "setting flag for cancelled job: %s on %s", job, device
                         )
                         self.context[device].set_cancel()
+                except Empty:
+                    pass
                 except Exception as err:
                     logger.error("error in progress worker: %s", err)
 
@@ -134,6 +139,8 @@ class DevicePoolExecutor:
                     _device, progress = self.active_jobs[job]
                     self.finished_jobs.append((job, progress, context.cancel.value))
                     del self.active_jobs[job]
+                except Empty:
+                    pass
                 except Exception as err:
                     logger.error("error in finished worker: %s", err)
 
