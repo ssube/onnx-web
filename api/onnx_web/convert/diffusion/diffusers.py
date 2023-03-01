@@ -65,11 +65,7 @@ def onnx_export(
     )
 
     if half:
-        name, _ext = path.splitext(path.basename(output_file))
-        weights_path = output_path.parent / f"{name}.weights"
-        weights_file = weights_path.absolute().as_posix()
-
-        logger.info("converting model to FP16 internally: %s with weights in %s", output_file, weights_file)
+        logger.info("converting model to FP16 internally: %s", output_file)
         infer_shapes_path(output_file)
         base_model = load_model(output_file)
         opt_model = convert_float_to_float16(
@@ -83,7 +79,7 @@ def onnx_export(
             f"{output_file}",
             save_as_external_data=external_data,
             all_tensors_to_one_file=True,
-            location=weights_file,
+            location="weights.pb",
         )
 
 
