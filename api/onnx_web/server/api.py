@@ -28,6 +28,7 @@ from ..utils import (
     get_from_map,
     get_not_empty,
     get_size,
+    sanitize_name,
 )
 from ..worker.pool import DevicePoolExecutor
 from .config import (
@@ -428,6 +429,7 @@ def cancel(context: ServerContext, pool: DevicePoolExecutor):
     if output_file is None:
         return error_reply("output name is required")
 
+    output_file = sanitize_name(output_file)
     cancel = pool.cancel(output_file)
 
     return ready_reply(cancel)
@@ -438,6 +440,7 @@ def ready(context: ServerContext, pool: DevicePoolExecutor):
     if output_file is None:
         return error_reply("output name is required")
 
+    output_file = sanitize_name(output_file)
     done, progress = pool.done(output_file)
 
     if done is None:

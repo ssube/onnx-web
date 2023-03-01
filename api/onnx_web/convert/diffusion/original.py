@@ -53,7 +53,8 @@ from transformers import (
     CLIPVisionConfig,
 )
 
-from ..utils import ConversionContext, ModelDict, load_tensor, load_yaml, sanitize_name
+from ...utils import sanitize_name
+from ..utils import ConversionContext, ModelDict, load_tensor, load_yaml
 from .diffusers import convert_diffusion_diffusers
 
 logger = getLogger(__name__)

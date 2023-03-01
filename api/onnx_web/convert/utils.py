@@ -189,13 +189,6 @@ def load_yaml(file: str) -> Config:
         return Config(data)
 
 
-safe_chars = "._-"
-
-
-def sanitize_name(name):
-    return "".join(x for x in name if (x.isalnum() or x in safe_chars))
-
-
 def remove_prefix(name, prefix):
     if name.startswith(prefix):
         return name[len(prefix) :]

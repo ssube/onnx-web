@@ -10,6 +10,8 @@ from .params import DeviceParams, SizeChart
 
 logger = getLogger(__name__)
 
+SAFE_CHARS = "._-"
+
 
 def base_join(base: str, tail: str) -> str:
     tail_path = path.relpath(path.normpath(path.join("/", tail)), "/")
@@ -100,3 +102,7 @@ def run_gc(devices: Optional[List[DeviceParams]] = None):
                     (mem_total - mem_free),
                     mem_total,
                 )
+
+
+def sanitize_name(name):
+    return "".join(x for x in name if (x.isalnum() or x in SAFE_CHARS))
