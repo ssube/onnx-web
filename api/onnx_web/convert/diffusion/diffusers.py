@@ -51,7 +51,7 @@ def onnx_export(
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
     """
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_file = output_path.as_posix()
+    output_file = output_path.absolute().as_posix()
 
     export(
         model,
@@ -65,7 +65,11 @@ def onnx_export(
     )
 
     if half:
-        logger.info("converting model to FP16 internally: %s", output_file)
+        name, _ext = path.splitext(path.basename(output_file))
+        weights_path = output_path.parent / f"{name}.weights"
+        weights_file = weights_path.absolute().as_posix()
+
+        logger.info("converting model to FP16 internally: %s with weights in %s", output_file, weights_file)
         infer_shapes_path(output_file)
         base_model = load_model(output_file)
         opt_model = convert_float_to_float16(
@@ -79,7 +83,7 @@ def onnx_export(
             f"{output_file}",
             save_as_external_data=external_data,
             all_tensors_to_one_file=True,
-            location=f"{output_file}-weights",
+            location=weights_file,
         )
 
 
