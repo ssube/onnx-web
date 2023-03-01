@@ -9,6 +9,7 @@ from ..diffusion.load import get_latents_from_seed, load_pipeline
 from ..params import ImageParams, Size, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
+from typing import Optional
 
 logger = getLogger(__name__)
 
@@ -21,7 +22,7 @@ def source_txt2img(
     _source: Image.Image,
     *,
     size: Size,
-    callback: ProgressCallback = None,
+    callback: Optional[ProgressCallback] = None,
     **kwargs,
 ) -> Image.Image:
     params = params.with_args(**kwargs)

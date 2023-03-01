@@ -31,7 +31,7 @@ def blend_inpaint(
     fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
-    callback: ProgressCallback = None,
+    callback: Optional[ProgressCallback] = None,
     **kwargs,
 ) -> Image.Image:
     params = params.with_args(**kwargs)

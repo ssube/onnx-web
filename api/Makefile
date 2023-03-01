@@ -39,4 +39,4 @@ lint-fix:
 	flake8 onnx_web
 
 typecheck:
-	mypy -m onnx_web.serve
+	mypy onnx_web

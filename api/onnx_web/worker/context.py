@@ -12,20 +12,20 @@ ProgressCallback = Callable[[int, int, Any], None]
 
 
 class WorkerContext:
-    cancel: "Value[bool]" = None
-    job: str = None
-    pending: "Queue[Tuple[Callable, Any, Any]]" = None
-    progress: "Value[int]" = None
+    cancel: "Value[bool]"
+    job: str
+    pending: "Queue[Tuple[str, Callable[..., None], Any, Any]]"
+    progress: "Value[int]"
 
     def __init__(
         self,
         job: str,
         device: DeviceParams,
-        cancel: "Value[bool]" = None,
-        logs: "Queue[str]" = None,
-        pending: "Queue[Any]" = None,
-        progress: "Queue[Tuple[str, int]]" = None,
-        finished: "Queue[str]" = None,
+        cancel: "Value[bool]",
+        logs: "Queue[str]",
+        pending: "Queue[Tuple[str, Callable[..., None], Any, Any]]",
+        progress: "Queue[Tuple[str, str, int]]",
+        finished: "Queue[Tuple[str, str]]",
     ):
         self.job = job
         self.device = device

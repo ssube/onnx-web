@@ -119,9 +119,8 @@ def patch_not_impl():
 
 
 def patch_cache_path(ctx: ServerContext, url: str, **kwargs) -> str:
-    if url in cache_path_map:
-        cache_path = cache_path_map.get(url)
-    else:
+    cache_path = cache_path_map.get(url, None)
+    if cache_path is None:
         parsed = urlparse(url)
         cache_path = path.basename(parsed.path)
 

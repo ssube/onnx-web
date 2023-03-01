@@ -62,7 +62,7 @@ class ChainPipeline:
 
     def __init__(
         self,
-        stages: List[PipelineStage] = None,
+        stages: Optional[List[PipelineStage]] = None,
     ):
         """
         Create a new pipeline that will run the given stages.
@@ -82,7 +82,7 @@ class ChainPipeline:
         server: ServerContext,
         params: ImageParams,
         source: Image.Image,
-        callback: ProgressCallback = None,
+        callback: Optional[ProgressCallback] = None,
         **pipeline_kwargs
     ) -> Image.Image:
         """

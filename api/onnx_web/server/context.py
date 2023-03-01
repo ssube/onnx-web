@@ -1,6 +1,6 @@
 from logging import getLogger
 from os import environ, path
-from typing import List
+from typing import List, Optional
 
 from ..utils import get_boolean
 from .model_cache import ModelCache
@@ -18,13 +18,13 @@ class ServerContext:
         cors_origin: str = "*",
         num_workers: int = 1,
         any_platform: bool = True,
-        block_platforms: List[str] = None,
-        default_platform: str = None,
+        block_platforms: Optional[List[str]] = None,
+        default_platform: Optional[str] = None,
         image_format: str = "png",
-        cache: ModelCache = None,
-        cache_path: str = None,
+        cache: Optional[ModelCache] = None,
+        cache_path: Optional[str] = None,
         show_progress: bool = True,
-        optimizations: List[str] = None,
+        optimizations: Optional[List[str]] = None,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path

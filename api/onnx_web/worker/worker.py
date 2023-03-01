@@ -4,7 +4,6 @@ from sys import exit
 from traceback import format_exception
 
 from setproctitle import setproctitle
-from torch.multiprocessing import Queue
 
 from ..server import ServerContext, apply_patches
 from ..torch_before_ort import get_available_providers

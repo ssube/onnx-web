@@ -2,7 +2,7 @@ from collections import Counter
 from logging import getLogger
 from queue import Empty
 from threading import Thread
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from torch.multiprocessing import Process, Queue, Value
 
@@ -15,23 +15,38 @@ logger = getLogger(__name__)
 
 
 class DevicePoolExecutor:
-    context: Dict[str, WorkerContext] = None  # Device -> Context
-    devices: List[DeviceParams] = None
-    pending: Dict[str, "Queue[WorkerContext]"] = None
-    workers: Dict[str, Process] = None
-    active_jobs: Dict[str, Tuple[str, int]] = None  # should be Dict[Device, JobStatus]
-    finished_jobs: List[Tuple[str, int, bool]] = None  # should be List[JobStatus]
+    server: ServerContext
+    devices: List[DeviceParams]
+    max_jobs_per_worker: int
+    max_pending_per_worker: int
+    join_timeout: float
+
+    context: Dict[str, WorkerContext]  # Device -> Context
+    pending: Dict[str, "Queue[Tuple[str, Callable[..., None], Any, Any]]"]
+    threads: Dict[str, Thread]
+    workers: Dict[str, Process]
+
+    active_jobs: Dict[str, Tuple[str, int]]  # should be Dict[Device, JobStatus]
+    cancelled_jobs: List[str]
+    finished_jobs: List[Tuple[str, int, bool]]  # should be List[JobStatus]
+    total_jobs: int
+
+    logs: "Queue"
+    progress: "Queue[Tuple[str, str, int]]"
+    finished: "Queue[Tuple[str, str]]"
 
     def __init__(
         self,
         server: ServerContext,
         devices: List[DeviceParams],
         max_jobs_per_worker: int = 10,
+        max_pending_per_worker: int = 100,
         join_timeout: float = 1.0,
     ):
         self.server = server
         self.devices = devices
         self.max_jobs_per_worker = max_jobs_per_worker
+        self.max_pending_per_worker = max_pending_per_worker
         self.join_timeout = join_timeout
 
         self.context = {}
@@ -44,9 +59,9 @@ class DevicePoolExecutor:
         self.finished_jobs = []
         self.total_jobs = 0  # TODO: turn this into a Dict per-worker
 
-        self.logs = Queue()
-        self.progress = Queue()
-        self.finished = Queue()
+        self.logs = Queue(self.max_pending_per_worker)
+        self.progress = Queue(self.max_pending_per_worker)
+        self.finished = Queue(self.max_pending_per_worker)
 
         self.create_logger_worker()
         self.create_progress_worker()
@@ -67,7 +82,7 @@ class DevicePoolExecutor:
             pending = self.pending[name]
         else:
             logger.debug("creating new pending job queue")
-            pending = Queue()
+            pending = Queue(self.max_pending_per_worker)
             self.pending[name] = pending
 
         context = WorkerContext(
@@ -80,7 +95,11 @@ class DevicePoolExecutor:
             pending=pending,
         )
         self.context[name] = context
-        self.workers[name] = Process(target=worker_main, args=(context, self.server))
+        self.workers[name] = Process(
+            name=f"onnx-web worker: {name}",
+            target=worker_main,
+            args=(context, self.server),
+        )
 
         logger.debug("starting worker for device %s", device)
         self.workers[name].start()
@@ -102,7 +121,9 @@ class DevicePoolExecutor:
                 except Exception as err:
                     logger.error("error in log worker: %s", err)
 
-        logger_thread = Thread(target=logger_worker, args=(self.logs,), daemon=True)
+        logger_thread = Thread(
+            name="onnx-web logger", target=logger_worker, args=(self.logs,), daemon=True
+        )
         self.threads["logger"] = logger_thread
 
         logger.debug("starting logger worker")
@@ -128,7 +149,12 @@ class DevicePoolExecutor:
                 except Exception as err:
                     logger.error("error in progress worker: %s", err)
 
-        progress_thread = Thread(target=progress_worker, args=(self.progress,), daemon=True)
+        progress_thread = Thread(
+            name="onnx-web progress",
+            target=progress_worker,
+            args=(self.progress,),
+            daemon=True,
+        )
         self.threads["progress"] = progress_thread
 
         logger.debug("starting progress worker")
@@ -152,7 +178,12 @@ class DevicePoolExecutor:
                 except Exception as err:
                     logger.error("error in finished worker: %s", err)
 
-        finished_thread = Thread(target=finished_worker, args=(self.finished,), daemon=True)
+        finished_thread = Thread(
+            name="onnx-web finished",
+            target=finished_worker,
+            args=(self.finished,),
+            daemon=True,
+        )
         self.threads["finished"] = finished_thread
 
         logger.debug("started finished worker")
@@ -221,8 +252,18 @@ class DevicePoolExecutor:
         return (False, progress)
 
     def join(self):
-        logger.debug("stopping worker pool")
+        logger.info("stopping worker pool")
 
+        logger.debug("closing queues")
+        self.logs.close()
+        self.finished.close()
+        self.progress.close()
+        for queue in self.pending.values():
+            queue.close()
+
+        self.pending.clear()
+
+        logger.debug("stopping device workers")
         for device, worker in self.workers.items():
             if worker.is_alive():
                 logger.debug("stopping worker for device %s", device)
@@ -234,15 +275,6 @@ class DevicePoolExecutor:
         for name, thread in self.threads.items():
             logger.debug("stopping worker thread: %s", name)
             thread.join(self.join_timeout)
-
-        logger.debug("closing queues")
-        self.logs.close()
-        self.finished.close()
-        self.progress.close()
-        for queue in self.pending.values():
-            queue.close()
-
-        self.pending.clear()
 
         logger.debug("worker pool fully joined")
 
@@ -292,7 +324,7 @@ class DevicePoolExecutor:
     def status(self) -> List[Tuple[str, int, bool, bool]]:
         history = [
             (name, progress, False, name in self.cancelled_jobs)
-            for name, _device, progress in self.active_jobs.items()
+            for name, (_device, progress) in self.active_jobs.items()
         ]
         history.extend(
             [

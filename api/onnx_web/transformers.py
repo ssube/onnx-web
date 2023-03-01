@@ -22,13 +22,13 @@ def run_txt2txt_pipeline(
 
     device = job.get_device()
 
-    model = GPTJForCausalLM.from_pretrained(model).to(device.torch_device())
+    pipe = GPTJForCausalLM.from_pretrained(model).to(device.torch_str())
     tokenizer = AutoTokenizer.from_pretrained(model)
 
     input_ids = tokenizer.encode(params.prompt, return_tensors="pt").to(
-        device.torch_device()
+        device.torch_str()
     )
-    results = model.generate(
+    results = pipe.generate(
         input_ids,
         do_sample=True,
         max_length=tokens,

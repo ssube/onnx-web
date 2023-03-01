@@ -6,6 +6,7 @@ from diffusers.utils.logging import disable_progress_bar
 from flask import Flask
 from flask_cors import CORS
 from huggingface_hub.utils.tqdm import disable_progress_bars
+from setproctitle import setproctitle
 from torch.multiprocessing import set_start_method
 
 from .server.api import register_api_routes
@@ -26,6 +27,7 @@ logger = getLogger(__name__)
 
 
 def main():
+    setproctitle("onnx-web server")
     set_start_method("spawn", force=True)
 
     context = ServerContext.from_environ()

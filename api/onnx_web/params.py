@@ -101,12 +101,12 @@ class DeviceParams:
         self.device = device
         self.provider = provider
         self.options = options
-        self.optimizations = optimizations
+        self.optimizations = optimizations or []
 
     def __str__(self) -> str:
         return "%s - %s (%s)" % (self.device, self.provider, self.options)
 
-    def ort_provider(self) -> Tuple[str, Any]:
+    def ort_provider(self) -> Union[str, Tuple[str, Any]]:
         if self.options is None:
             return self.provider
         else:

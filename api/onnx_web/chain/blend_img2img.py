@@ -9,6 +9,7 @@ from ..diffusion.load import load_pipeline
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
+from typing import Optional
 
 logger = getLogger(__name__)
 
@@ -20,7 +21,7 @@ def blend_img2img(
     params: ImageParams,
     source: Image.Image,
     *,
-    callback: ProgressCallback = None,
+    callback: Optional[ProgressCallback] = None,
     stage_source: Image.Image,
     **kwargs,
 ) -> Image.Image:

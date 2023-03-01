@@ -5,6 +5,7 @@ from PIL import Image
 from ..params import ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
+from typing import Optional
 
 logger = getLogger(__name__)
 
@@ -18,7 +19,7 @@ def correct_codeformer(
     _params: ImageParams,
     source: Image.Image,
     *,
-    stage_source: Image.Image = None,
+    stage_source: Optional[Image.Image] = None,
     upscale: UpscaleParams,
     **kwargs,
 ) -> Image.Image:

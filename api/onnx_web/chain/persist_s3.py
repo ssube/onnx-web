@@ -7,6 +7,7 @@ from PIL import Image
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
+from typing import Optional
 
 logger = getLogger(__name__)
 
@@ -20,9 +21,9 @@ def persist_s3(
     *,
     output: str,
     bucket: str,
-    endpoint_url: str = None,
-    profile_name: str = None,
-    stage_source: Image.Image = None,
+    endpoint_url: Optional[str] = None,
+    profile_name: Optional[str] = None,
+    stage_source: Optional[Image.Image] = None,
     **kwargs,
 ) -> Image.Image:
     source = stage_source or source

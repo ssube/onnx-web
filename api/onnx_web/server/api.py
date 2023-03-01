@@ -81,7 +81,7 @@ def introspect(context: ServerContext, app: Flask):
     return {
         "name": "onnx-web",
         "routes": [
-            {"path": url_from_rule(rule), "methods": list(rule.methods).sort()}
+            {"path": url_from_rule(rule), "methods": list(rule.methods or []).sort()}
             for rule in app.url_map.iter_rules()
         ],
     }
@@ -119,10 +119,10 @@ def list_schedulers(context: ServerContext):
 
 
 def img2img(context: ServerContext, pool: DevicePoolExecutor):
-    if "source" not in request.files:
+    source_file = request.files.get("source")
+    if source_file is None:
         return error_reply("source image is required")
 
-    source_file = request.files.get("source")
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
     device, params, size = pipeline_from_request(context)
@@ -136,7 +136,7 @@ def img2img(context: ServerContext, pool: DevicePoolExecutor):
         get_config_value("strength", "min"),
     )
 
-    output = make_output_name(context, "img2img", params, size, extras=(strength,))
+    output = make_output_name(context, "img2img", params, size, extras=[strength])
     job_name = output[0]
     logger.info("img2img job queued for: %s", job_name)
 
@@ -179,16 +179,15 @@ def txt2img(context: ServerContext, pool: DevicePoolExecutor):
 
 
 def inpaint(context: ServerContext, pool: DevicePoolExecutor):
-    if "source" not in request.files:
+    source_file = request.files.get("source")
+    if source_file is None:
         return error_reply("source image is required")
 
-    if "mask" not in request.files:
+    mask_file = request.files.get("mask")
+    if mask_file is None:
         return error_reply("mask image is required")
 
-    source_file = request.files.get("source")
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
-
-    mask_file = request.files.get("mask")
     mask = Image.open(BytesIO(mask_file.read())).convert("RGB")
 
     device, params, size = pipeline_from_request(context)
@@ -207,7 +206,7 @@ def inpaint(context: ServerContext, pool: DevicePoolExecutor):
         "inpaint",
         params,
         size,
-        extras=(
+        extras=[
             expand.left,
             expand.right,
             expand.top,
@@ -216,7 +215,7 @@ def inpaint(context: ServerContext, pool: DevicePoolExecutor):
             noise_source.__name__,
             fill_color,
             tile_order,
-        ),
+        ],
     )
     job_name = output[0]
     logger.info("inpaint job queued for: %s", job_name)
@@ -245,10 +244,10 @@ def inpaint(context: ServerContext, pool: DevicePoolExecutor):
 
 
 def upscale(context: ServerContext, pool: DevicePoolExecutor):
-    if "source" not in request.files:
+    source_file = request.files.get("source")
+    if source_file is None:
         return error_reply("source image is required")
 
-    source_file = request.files.get("source")
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
     device, params, size = pipeline_from_request(context)
@@ -324,9 +323,10 @@ def chain(context: ServerContext, pool: DevicePoolExecutor):
                 stage.name,
             )
             source_file = request.files.get(stage_source_name)
-            source = Image.open(BytesIO(source_file.read())).convert("RGB")
-            source = valid_image(source, max_dims=(size.width, size.height))
-            kwargs["stage_source"] = source
+            if source_file is not None:
+                source = Image.open(BytesIO(source_file.read())).convert("RGB")
+                source = valid_image(source, max_dims=(size.width, size.height))
+                kwargs["stage_source"] = source
 
         if stage_mask_name in request.files:
             logger.debug(
@@ -335,9 +335,10 @@ def chain(context: ServerContext, pool: DevicePoolExecutor):
                 stage.name,
             )
             mask_file = request.files.get(stage_mask_name)
-            mask = Image.open(BytesIO(mask_file.read())).convert("RGB")
-            mask = valid_image(mask, max_dims=(size.width, size.height))
-            kwargs["stage_mask"] = mask
+            if mask_file is not None:
+                mask = Image.open(BytesIO(mask_file.read())).convert("RGB")
+                mask = valid_image(mask, max_dims=(size.width, size.height))
+                kwargs["stage_mask"] = mask
 
         pipeline.append((callback, stage, kwargs))
 
@@ -360,10 +361,10 @@ def chain(context: ServerContext, pool: DevicePoolExecutor):
 
 
 def blend(context: ServerContext, pool: DevicePoolExecutor):
-    if "mask" not in request.files:
+    mask_file = request.files.get("mask")
+    if mask_file is None:
         return error_reply("mask image is required")
 
-    mask_file = request.files.get("mask")
     mask = Image.open(BytesIO(mask_file.read())).convert("RGBA")
     mask = valid_image(mask)
 
@@ -372,9 +373,12 @@ def blend(context: ServerContext, pool: DevicePoolExecutor):
 
     for i in range(max_sources):
         source_file = request.files.get("source:%s" % (i))
-        source = Image.open(BytesIO(source_file.read())).convert("RGBA")
-        source = valid_image(source, mask.size, mask.size)
-        sources.append(source)
+        if source_file is None:
+            logger.warning("missing source %s", i)
+        else:
+            source = Image.open(BytesIO(source_file.read())).convert("RGBA")
+            source = valid_image(source, mask.size, mask.size)
+            sources.append(source)
 
     device, params, size = pipeline_from_request(context)
     upscale = upscale_from_request()
@@ -403,10 +407,11 @@ def txt2txt(context: ServerContext, pool: DevicePoolExecutor):
     device, params, size = pipeline_from_request(context)
 
     output = make_output_name(context, "txt2txt", params, size)
-    logger.info("upscale job queued for: %s", output)
+    job_name = output[0]
+    logger.info("upscale job queued for: %s", job_name)
 
     pool.submit(
-        output,
+        job_name,
         run_txt2txt_pipeline,
         context,
         params,
@@ -420,6 +425,8 @@ def txt2txt(context: ServerContext, pool: DevicePoolExecutor):
 
 def cancel(context: ServerContext, pool: DevicePoolExecutor):
     output_file = request.args.get("output", None)
+    if output_file is None:
+        return error_reply("output name is required")
 
     cancel = pool.cancel(output_file)
 
@@ -428,6 +435,8 @@ def cancel(context: ServerContext, pool: DevicePoolExecutor):
 
 def ready(context: ServerContext, pool: DevicePoolExecutor):
     output_file = request.args.get("output", None)
+    if output_file is None:
+        return error_reply("output name is required")
 
     done, progress = pool.done(output_file)
 
@@ -436,7 +445,7 @@ def ready(context: ServerContext, pool: DevicePoolExecutor):
         if path.exists(output):
             return ready_reply(True)
 
-    return ready_reply(done, progress=progress)
+    return ready_reply(done or False, progress=progress)
 
 
 def status(context: ServerContext, pool: DevicePoolExecutor):

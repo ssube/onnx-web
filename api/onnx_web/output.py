@@ -15,7 +15,7 @@ from .utils import base_join
 logger = getLogger(__name__)
 
 
-def hash_value(sha, param: Param):
+def hash_value(sha, param: Optional[Param]):
     if param is None:
         return
     elif isinstance(param, bool):
@@ -63,7 +63,7 @@ def make_output_name(
     mode: str,
     params: ImageParams,
     size: Size,
-    extras: Optional[Tuple[Param]] = None,
+    extras: Optional[List[Optional[Param]]] = None,
 ) -> List[str]:
     now = int(time())
     sha = sha256()

@@ -12,6 +12,7 @@ from .chain import (
 from .params import ImageParams, SizeChart, StageParams, UpscaleParams
 from .server import ServerContext
 from .worker import ProgressCallback, WorkerContext
+from typing import Optional
 
 logger = getLogger(__name__)
 
@@ -24,7 +25,7 @@ def run_upscale_correction(
     image: Image.Image,
     *,
     upscale: UpscaleParams,
-    callback: ProgressCallback = None,
+    callback: Optional[ProgressCallback] = None,
 ) -> Image.Image:
     """
     This is a convenience method for a chain pipeline that will run upscaling and

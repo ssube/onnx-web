@@ -21,7 +21,7 @@ def blend_mask(
     *,
     sources: Optional[List[Image.Image]] = None,
     stage_mask: Optional[Image.Image] = None,
-    _callback: ProgressCallback = None,
+    _callback: Optional[ProgressCallback] = None,
     **kwargs,
 ) -> Image.Image:
     logger.info("blending image using mask")

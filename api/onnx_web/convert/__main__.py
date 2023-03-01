@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 from logging import getLogger
 from os import makedirs, path
 from sys import exit
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
 from jsonschema import ValidationError, validate
@@ -36,7 +36,7 @@ warnings.filterwarnings(
     ".*Converting a tensor to a Python boolean might cause the trace to be incorrect.*",
 )
 
-Models = Dict[str, List[Tuple[str, str, Optional[int]]]]
+Models = Dict[str, List[Any]]
 
 logger = getLogger(__name__)
 

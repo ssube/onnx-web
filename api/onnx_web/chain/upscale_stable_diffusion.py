@@ -13,6 +13,7 @@ from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..utils import run_gc
 from ..worker import ProgressCallback, WorkerContext
+from typing import Optional
 
 logger = getLogger(__name__)
 
@@ -70,8 +71,8 @@ def upscale_stable_diffusion(
     source: Image.Image,
     *,
     upscale: UpscaleParams,
-    stage_source: Image.Image = None,
-    callback: ProgressCallback = None,
+    stage_source: Optional[Image.Image] = None,
+    callback: Optional[ProgressCallback] = None,
     **kwargs,
 ) -> Image.Image:
     params = params.with_args(**kwargs)

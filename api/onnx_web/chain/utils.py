@@ -110,3 +110,6 @@ def process_tile_order(
     elif order == TileOrder.spiral:
         logger.debug("using spiral tile order with tile size: %s", tile)
         return process_tile_spiral(source, tile, scale, filters, **kwargs)
+    else:
+        logger.warn("unknown tile order: %s", order)
+        raise ValueError()

@@ -9,11 +9,9 @@ from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
+from typing import Optional
 
 logger = getLogger(__name__)
-
-last_pipeline_instance = None
-last_pipeline_params = (None, None)
 
 TAG_X4_V3 = "real-esrgan-x4-v3"
 
@@ -104,7 +102,7 @@ def upscale_resrgan(
     source: Image.Image,
     *,
     upscale: UpscaleParams,
-    stage_source: Image.Image = None,
+    stage_source: Optional[Image.Image] = None,
     **kwargs,
 ) -> Image.Image:
     source = stage_source or source

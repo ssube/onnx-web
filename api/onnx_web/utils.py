@@ -2,7 +2,7 @@ import gc
 import threading
 from logging import getLogger
 from os import environ, path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 import torch
 
@@ -36,7 +36,7 @@ def get_and_clamp_int(
     return min(max(int(args.get(key, default_value)), min_value), max_value)
 
 
-def get_from_list(args: Any, key: str, values: List[Any]) -> Optional[Any]:
+def get_from_list(args: Any, key: str, values: Sequence[Any]) -> Optional[Any]:
     selected = args.get(key, None)
     if selected in values:
         return selected
@@ -82,7 +82,7 @@ def get_size(val: Union[int, str, None]) -> Union[int, SizeChart]:
     raise ValueError("invalid size")
 
 
-def run_gc(devices: List[DeviceParams] = None):
+def run_gc(devices: Optional[List[DeviceParams]] = None):
     logger.debug(
         "running garbage collection with %s active threads", threading.active_count()
     )
