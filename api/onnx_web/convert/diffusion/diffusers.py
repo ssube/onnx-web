@@ -23,6 +23,7 @@ from diffusers import (
     StableDiffusionPipeline,
 )
 from onnx import load_model, save_model
+from onnx.shape_inference import infer_shapes_path
 from onnxruntime.transformers.float16 import convert_float_to_float16
 from torch.onnx import export
 
@@ -64,17 +65,22 @@ def onnx_export(
     )
 
     if half:
-        logger.info("converting model to FP16 internally")
+        logger.info("converting model to FP16 internally: %s", output_file)
+        infer_shapes_path(output_file)
         base_model = load_model(output_file)
-        opt_model = convert_float_to_float16(base_model, keep_io_types=True, force_fp16_initializers=True)
+        opt_model = convert_float_to_float16(
+            base_model,
+            disable_shape_infer=True,
+            keep_io_types=True,
+            force_fp16_initializers=True,
+        )
         save_model(
             opt_model,
-            f"{output_file}-optimized",
+            f"{output_file}",
             save_as_external_data=external_data,
             all_tensors_to_one_file=True,
-            location=f"{output_file}-tensors",
+            location=f"{output_file}-weights",
         )
-
 
 
 @torch.no_grad()
@@ -91,7 +97,7 @@ def convert_diffusion_diffusers(
     single_vae = model.get("single_vae")
     replace_vae = model.get("vae")
 
-    dtype = torch.float32 # torch.float16 if ctx.half else torch.float32
+    dtype = torch.float32  # torch.float16 if ctx.half else torch.float32
     dest_path = path.join(ctx.model_path, name)
 
     # diffusers go into a directory rather than .onnx file

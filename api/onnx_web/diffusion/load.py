@@ -165,7 +165,6 @@ def load_pipeline(
                 provider=device.ort_provider(),
                 sess_options=device.sess_options(),
                 subfolder="scheduler",
-                torch_dtype=torch.float16,
             )
 
             if device is not None and hasattr(scheduler, "to"):
