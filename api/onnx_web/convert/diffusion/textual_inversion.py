@@ -11,6 +11,7 @@ from ..utils import ConversionContext
 logger = getLogger(__name__)
 
 
+@torch.no_grad()
 def convert_diffusion_textual_inversion(
     context: ConversionContext, name: str, base_model: str, inversion: str
 ):

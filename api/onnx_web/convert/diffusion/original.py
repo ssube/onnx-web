@@ -1650,6 +1650,7 @@ def extract_checkpoint(
     logger.info(result_status)
 
 
+@torch.no_grad()
 def convert_diffusion_original(
     ctx: ConversionContext,
     model: ModelDict,

@@ -74,14 +74,22 @@ class WorkerContext:
 
 
 class JobStatus:
+    name: str
+    device: str
+    progress: int
+    cancelled: bool
+    finished: bool
+
     def __init__(
         self,
         name: str,
+        device: DeviceParams,
         progress: int = 0,
         cancelled: bool = False,
         finished: bool = False,
     ) -> None:
         self.name = name
+        self.device = device.device
         self.progress = progress
         self.cancelled = cancelled
         self.finished = finished
