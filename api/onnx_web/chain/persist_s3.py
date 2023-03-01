@@ -1,5 +1,6 @@
 from io import BytesIO
 from logging import getLogger
+from typing import Optional
 
 from boto3 import Session
 from PIL import Image
@@ -7,7 +8,6 @@ from PIL import Image
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
-from typing import Optional
 
 logger = getLogger(__name__)
 

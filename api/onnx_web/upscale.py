@@ -1,4 +1,5 @@
 from logging import getLogger
+from typing import Optional
 
 from PIL import Image
 
@@ -12,7 +13,6 @@ from .chain import (
 from .params import ImageParams, SizeChart, StageParams, UpscaleParams
 from .server import ServerContext
 from .worker import ProgressCallback, WorkerContext
-from typing import Optional
 
 logger = getLogger(__name__)
 

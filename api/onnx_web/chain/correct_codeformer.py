@@ -1,11 +1,11 @@
 from logging import getLogger
+from typing import Optional
 
 from PIL import Image
 
 from ..params import ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
-from typing import Optional
 
 logger = getLogger(__name__)
 

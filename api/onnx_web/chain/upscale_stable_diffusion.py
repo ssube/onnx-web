@@ -1,5 +1,6 @@
 from logging import getLogger
 from os import path
+from typing import Optional
 
 import torch
 from diffusers import StableDiffusionUpscalePipeline
@@ -13,7 +14,6 @@ from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..utils import run_gc
 from ..worker import ProgressCallback, WorkerContext
-from typing import Optional
 
 logger = getLogger(__name__)
 

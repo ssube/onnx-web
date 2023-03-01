@@ -4,7 +4,7 @@ from logging import getLogger
 from os import path
 from struct import pack
 from time import time
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional
 
 from PIL import Image
 

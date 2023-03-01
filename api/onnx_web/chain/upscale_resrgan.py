@@ -1,5 +1,6 @@
 from logging import getLogger
 from os import path
+from typing import Optional
 
 import numpy as np
 from PIL import Image
@@ -9,7 +10,6 @@ from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
-from typing import Optional
 
 logger = getLogger(__name__)
 
