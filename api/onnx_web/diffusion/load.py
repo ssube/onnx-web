@@ -3,7 +3,6 @@ from os import path
 from typing import Any, Optional, Tuple
 
 import numpy as np
-import torch
 from diffusers import (
     DDIMScheduler,
     DDPMScheduler,

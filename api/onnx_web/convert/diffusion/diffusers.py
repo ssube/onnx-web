@@ -216,7 +216,6 @@ def convert_diffusion_diffusers(
         # SINGLE VAE
         vae_only = pipeline.vae
         vae_latent_channels = vae_only.config.latent_channels
-        vae_out_channels = vae_only.config.out_channels
         # forward only through the decoder part
         vae_only.forward = vae_only.decode
         onnx_export(
@@ -266,7 +265,6 @@ def convert_diffusion_diffusers(
         # VAE DECODER
         vae_decoder = pipeline.vae
         vae_latent_channels = vae_decoder.config.latent_channels
-        vae_out_channels = vae_decoder.config.out_channels
         # forward only through the decoder part
         vae_decoder.forward = vae_encoder.decode
         onnx_export(
