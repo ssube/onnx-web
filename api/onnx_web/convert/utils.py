@@ -23,7 +23,7 @@ LegacyModel = Tuple[str, str, Optional[bool], Optional[bool], Optional[int]]
 class ConversionContext(ServerContext):
     def __init__(
         self,
-        model_path: Optional[str] = None,
+        model_path: str,
         cache_path: Optional[str] = None,
         device: Optional[str] = None,
         half: Optional[bool] = False,
@@ -31,7 +31,7 @@ class ConversionContext(ServerContext):
         token: Optional[str] = None,
         **kwargs,
     ) -> None:
-        super().__init__(self, model_path=model_path, cache_path=cache_path)
+        super().__init__(model_path=model_path, cache_path=cache_path)
 
         self.half = half
         self.opset = opset
@@ -153,7 +153,7 @@ def source_format(model: Dict) -> Optional[str]:
         return model["format"]
 
     if "source" in model:
-        ext = path.splitext(model["source"])
+        _name, ext = path.splitext(model["source"])
         if ext in model_formats:
             return ext
 
@@ -183,17 +183,10 @@ class Config(object):
             setattr(target, k, v)
 
 
-def load_yaml(file: str) -> str:
+def load_yaml(file: str) -> Config:
     with open(file, "r") as f:
         data = safe_load(f.read())
         return Config(data)
-
-
-safe_chars = "._-"
-
-
-def sanitize_name(name):
-    return "".join(x for x in name if (x.isalnum() or x in safe_chars))
 
 
 def remove_prefix(name, prefix):

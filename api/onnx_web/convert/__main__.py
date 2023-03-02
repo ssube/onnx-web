@@ -3,15 +3,17 @@ from argparse import ArgumentParser
 from logging import getLogger
 from os import makedirs, path
 from sys import exit
-from typing import Dict, List, Optional, Tuple
+from traceback import format_exception
+from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
 from jsonschema import ValidationError, validate
 from yaml import safe_load
 
 from .correction_gfpgan import convert_correction_gfpgan
-from .diffusion_original import convert_diffusion_original
-from .diffusion_stable import convert_diffusion_stable
+from .diffusion.diffusers import convert_diffusion_diffusers
+from .diffusion.original import convert_diffusion_original
+from .diffusion.textual_inversion import convert_diffusion_textual_inversion
 from .upscale_resrgan import convert_upscale_resrgan
 from .utils import (
     ConversionContext,
@@ -35,7 +37,7 @@ warnings.filterwarnings(
     ".*Converting a tensor to a Python boolean might cause the trace to be incorrect.*",
 )
 
-Models = Dict[str, List[Tuple[str, str, Optional[int]]]]
+Models = Dict[str, List[Any]]
 
 logger = getLogger(__name__)
 
@@ -223,13 +225,33 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             source,
                         )
                     else:
-                        convert_diffusion_stable(
+                        convert_diffusion_diffusers(
                             ctx,
                             model,
                             source,
                         )
+
+                    for inversion in model.get("inversions", []):
+                        inversion_name = inversion["name"]
+                        inversion_source = inversion["source"]
+                        inversion_format = inversion.get("format", "huggingface")
+                        inversion_source = fetch_model(
+                            ctx, f"{name}-inversion-{inversion_name}", inversion_source
+                        )
+                        convert_diffusion_textual_inversion(
+                            ctx,
+                            inversion_name,
+                            model["source"],
+                            inversion_source,
+                            inversion_format,
+                        )
+
                 except Exception as e:
-                    logger.error("error converting diffusion model %s: %s", name, e)
+                    logger.error(
+                        "error converting diffusion model %s: %s",
+                        name,
+                        format_exception(type(e), e, e.__traceback__),
+                    )
 
     if args.upscaling and "upscaling" in models:
         for model in models.get("upscaling"):
@@ -247,7 +269,11 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                     )
                     convert_upscale_resrgan(ctx, model, source)
                 except Exception as e:
-                    logger.error("error converting upscaling model %s: %s", name, e)
+                    logger.error(
+                        "error converting upscaling model %s: %s",
+                        name,
+                        format_exception(type(e), e, e.__traceback__),
+                    )
 
     if args.correction and "correction" in models:
         for model in models.get("correction"):
@@ -264,7 +290,11 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                     )
                     convert_correction_gfpgan(ctx, model, source)
                 except Exception as e:
-                    logger.error("error converting correction model %s: %s", name, e)
+                    logger.error(
+                        "error converting correction model %s: %s",
+                        name,
+                        format_exception(type(e), e, e.__traceback__),
+                    )
 
 
 def main() -> int:

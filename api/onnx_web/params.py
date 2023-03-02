@@ -2,7 +2,7 @@ from enum import IntEnum
 from logging import getLogger
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
-from onnxruntime import GraphOptimizationLevel, SessionOptions
+from .torch_before_ort import GraphOptimizationLevel, SessionOptions
 
 logger = getLogger(__name__)
 
@@ -101,18 +101,22 @@ class DeviceParams:
         self.device = device
         self.provider = provider
         self.options = options
-        self.optimizations = optimizations
+        self.optimizations = optimizations or []
+        self.sess_options_cache = None
 
     def __str__(self) -> str:
         return "%s - %s (%s)" % (self.device, self.provider, self.options)
 
-    def ort_provider(self) -> Tuple[str, Any]:
+    def ort_provider(self) -> Union[str, Tuple[str, Any]]:
         if self.options is None:
             return self.provider
         else:
             return (self.provider, self.options)
 
     def sess_options(self) -> SessionOptions:
+        if self.sess_options_cache is not None:
+            return self.sess_options_cache
+
         sess = SessionOptions()
 
         if "onnx-low-memory" in self.optimizations:
@@ -135,6 +139,7 @@ class DeviceParams:
             logger.debug("enabling ONNX deterministic compute")
             sess.use_deterministic_compute = True
 
+        self.sess_options_cache = sess
         return sess
 
     def torch_str(self) -> str:
@@ -148,7 +153,7 @@ class ImageParams:
     def __init__(
         self,
         model: str,
-        scheduler: Any,
+        scheduler: str,
         prompt: str,
         cfg: float,
         steps: int,
@@ -157,6 +162,7 @@ class ImageParams:
         lpw: bool = False,
         eta: float = 0.0,
         batch: int = 1,
+        inversion: Optional[str] = None,
     ) -> None:
         self.model = model
         self.scheduler = scheduler
@@ -168,11 +174,12 @@ class ImageParams:
         self.lpw = lpw or False
         self.eta = eta
         self.batch = batch
+        self.inversion = inversion
 
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
             "model": self.model,
-            "scheduler": self.scheduler.__name__,
+            "scheduler": self.scheduler,
             "prompt": self.prompt,
             "negative_prompt": self.negative_prompt,
             "cfg": self.cfg,
@@ -181,6 +188,7 @@ class ImageParams:
             "lpw": self.lpw,
             "eta": self.eta,
             "batch": self.batch,
+            "inversion": self.inversion,
         }
 
     def with_args(self, **kwargs):
@@ -195,6 +203,7 @@ class ImageParams:
             kwargs.get("lpw", self.lpw),
             kwargs.get("eta", self.eta),
             kwargs.get("batch", self.batch),
+            kwargs.get("inversion", self.inversion),
         )
 
 

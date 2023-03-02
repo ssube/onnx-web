@@ -1,17 +1,19 @@
 from io import BytesIO
 from logging import getLogger
+from typing import Optional
 
 from boto3 import Session
 from PIL import Image
 
 from ..params import ImageParams, StageParams
-from ..server import JobContext, ServerContext
+from ..server import ServerContext
+from ..worker import WorkerContext
 
 logger = getLogger(__name__)
 
 
 def persist_s3(
-    _job: JobContext,
+    _job: WorkerContext,
     server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
@@ -19,9 +21,9 @@ def persist_s3(
     *,
     output: str,
     bucket: str,
-    endpoint_url: str = None,
-    profile_name: str = None,
-    stage_source: Image.Image = None,
+    endpoint_url: Optional[str] = None,
+    profile_name: Optional[str] = None,
+    stage_source: Optional[Image.Image] = None,
     **kwargs,
 ) -> Image.Image:
     source = stage_source or source

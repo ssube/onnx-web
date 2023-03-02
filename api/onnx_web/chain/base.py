@@ -7,8 +7,9 @@ from PIL import Image
 
 from ..output import save_image
 from ..params import ImageParams, StageParams
-from ..server import JobContext, ProgressCallback, ServerContext
+from ..server import ServerContext
 from ..utils import is_debug
+from ..worker import ProgressCallback, WorkerContext
 from .utils import process_tile_order
 
 logger = getLogger(__name__)
@@ -17,7 +18,7 @@ logger = getLogger(__name__)
 class StageCallback(Protocol):
     def __call__(
         self,
-        job: JobContext,
+        job: WorkerContext,
         ctx: ServerContext,
         stage: StageParams,
         params: ImageParams,
@@ -61,7 +62,7 @@ class ChainPipeline:
 
     def __init__(
         self,
-        stages: List[PipelineStage] = None,
+        stages: Optional[List[PipelineStage]] = None,
     ):
         """
         Create a new pipeline that will run the given stages.
@@ -77,11 +78,11 @@ class ChainPipeline:
 
     def __call__(
         self,
-        job: JobContext,
+        job: WorkerContext,
         server: ServerContext,
         params: ImageParams,
         source: Image.Image,
-        callback: ProgressCallback = None,
+        callback: Optional[ProgressCallback] = None,
         **pipeline_kwargs
     ) -> Image.Image:
         """

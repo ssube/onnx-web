@@ -4,11 +4,10 @@ from logging import getLogger
 from os import path
 from struct import pack
 from time import time
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional
 
 from PIL import Image
 
-from .diffusion.load import get_scheduler_name
 from .params import Border, ImageParams, Param, Size, UpscaleParams
 from .server import ServerContext
 from .utils import base_join
@@ -16,9 +15,11 @@ from .utils import base_join
 logger = getLogger(__name__)
 
 
-def hash_value(sha, param: Param):
+def hash_value(sha, param: Optional[Param]):
     if param is None:
         return
+    elif isinstance(param, bool):
+        sha.update(bytearray(pack("!B", param)))
     elif isinstance(param, float):
         sha.update(bytearray(pack("!f", param)))
     elif isinstance(param, int):
@@ -42,7 +43,7 @@ def json_params(
     }
 
     json["params"]["model"] = path.basename(params.model)
-    json["params"]["scheduler"] = get_scheduler_name(params.scheduler)
+    json["params"]["scheduler"] = params.scheduler
 
     if border is not None:
         json["border"] = border.tojson()
@@ -62,19 +63,23 @@ def make_output_name(
     mode: str,
     params: ImageParams,
     size: Size,
-    extras: Optional[Tuple[Param]] = None,
+    extras: Optional[List[Optional[Param]]] = None,
 ) -> List[str]:
     now = int(time())
     sha = sha256()
 
     hash_value(sha, mode)
     hash_value(sha, params.model)
-    hash_value(sha, params.scheduler.__name__)
+    hash_value(sha, params.scheduler)
     hash_value(sha, params.prompt)
     hash_value(sha, params.negative_prompt)
     hash_value(sha, params.cfg)
-    hash_value(sha, params.steps)
     hash_value(sha, params.seed)
+    hash_value(sha, params.steps)
+    hash_value(sha, params.lpw)
+    hash_value(sha, params.eta)
+    hash_value(sha, params.batch)
+    hash_value(sha, params.inversion)
     hash_value(sha, size.width)
     hash_value(sha, size.height)
 

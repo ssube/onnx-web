@@ -3,9 +3,9 @@ from typing import Any, Optional
 
 import numpy as np
 import torch
-from onnxruntime import InferenceSession, SessionOptions
 
 from ..server import ServerContext
+from ..torch_before_ort import InferenceSession, SessionOptions
 
 
 class OnnxTensor:

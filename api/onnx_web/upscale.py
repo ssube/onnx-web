@@ -1,4 +1,5 @@
 from logging import getLogger
+from typing import Optional
 
 from PIL import Image
 
@@ -10,20 +11,21 @@ from .chain import (
     upscale_stable_diffusion,
 )
 from .params import ImageParams, SizeChart, StageParams, UpscaleParams
-from .server import JobContext, ProgressCallback, ServerContext
+from .server import ServerContext
+from .worker import ProgressCallback, WorkerContext
 
 logger = getLogger(__name__)
 
 
 def run_upscale_correction(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     stage: StageParams,
     params: ImageParams,
     image: Image.Image,
     *,
     upscale: UpscaleParams,
-    callback: ProgressCallback = None,
+    callback: Optional[ProgressCallback] = None,
 ) -> Image.Image:
     """
     This is a convenience method for a chain pipeline that will run upscaling and

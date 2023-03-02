@@ -1,18 +1,17 @@
 from logging import getLogger
 from os import path
+from typing import Optional
 
 import numpy as np
 from PIL import Image
 
 from ..onnx import OnnxNet
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
-from ..server import JobContext, ServerContext
+from ..server import ServerContext
 from ..utils import run_gc
+from ..worker import WorkerContext
 
 logger = getLogger(__name__)
-
-last_pipeline_instance = None
-last_pipeline_params = (None, None)
 
 TAG_X4_V3 = "real-esrgan-x4-v3"
 
@@ -96,14 +95,14 @@ def load_resrgan(
 
 
 def upscale_resrgan(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     stage: StageParams,
     _params: ImageParams,
     source: Image.Image,
     *,
     upscale: UpscaleParams,
-    stage_source: Image.Image = None,
+    stage_source: Optional[Image.Image] = None,
     **kwargs,
 ) -> Image.Image:
     source = stage_source or source

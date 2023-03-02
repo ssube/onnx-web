@@ -32,6 +32,14 @@ export const MODEL_LABELS: Record<string, string> = {
   'diffusion-unstable-ink-dream-v6': 'Unstable Ink Dream v6',
 };
 
+export const INVERSION_LABELS: Record<string, string> = {
+  '': 'None',
+  'inversion-cubex': 'Cubex',
+  'inversion-birb': 'Birb Style',
+  'inversion-line-art': 'Line Art',
+  'inversion-minecraft': 'Minecraft Concept',
+};
+
 export const PLATFORM_LABELS: Record<string, string> = {
   amd: 'AMD GPU',
   // eslint-disable-next-line id-blacklist

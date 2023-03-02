@@ -7,7 +7,7 @@ import { useStore } from 'zustand';
 
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, StateContext } from '../../state.js';
-import { MODEL_LABELS, PLATFORM_LABELS } from '../../strings.js';
+import { INVERSION_LABELS, MODEL_LABELS, PLATFORM_LABELS } from '../../strings.js';
 import { QueryList } from '../input/QueryList.js';
 
 export function ModelControl() {
@@ -51,6 +51,22 @@ export function ModelControl() {
       onChange={(model) => {
         setModel({
           model,
+        });
+      }}
+    />
+    <QueryList
+      id='inversion'
+      labels={INVERSION_LABELS}
+      name='Textual Inversion'
+      query={{
+        result: models,
+        selector: (result) => result.inversion,
+      }}
+      showEmpty={true}
+      value={params.inversion}
+      onChange={(inversion) => {
+        setModel({
+          inversion,
         });
       }}
     />

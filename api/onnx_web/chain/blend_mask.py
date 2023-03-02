@@ -3,25 +3,25 @@ from typing import List, Optional
 
 from PIL import Image
 
-from onnx_web.image import valid_image
-from onnx_web.output import save_image
-
+from ..image import valid_image
+from ..output import save_image
 from ..params import ImageParams, StageParams
-from ..server import JobContext, ProgressCallback, ServerContext
+from ..server import ServerContext
 from ..utils import is_debug
+from ..worker import ProgressCallback, WorkerContext
 
 logger = getLogger(__name__)
 
 
 def blend_mask(
-    _job: JobContext,
+    _job: WorkerContext,
     server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
     *,
     sources: Optional[List[Image.Image]] = None,
     stage_mask: Optional[Image.Image] = None,
-    _callback: ProgressCallback = None,
+    _callback: Optional[ProgressCallback] = None,
     **kwargs,
 ) -> Image.Image:
     logger.info("blending image using mask")

@@ -1,4 +1,5 @@
 from logging import getLogger
+from typing import Optional
 
 import numpy as np
 import torch
@@ -7,20 +8,21 @@ from PIL import Image
 
 from ..diffusion.load import get_latents_from_seed, load_pipeline
 from ..params import ImageParams, Size, StageParams
-from ..server import JobContext, ProgressCallback, ServerContext
+from ..server import ServerContext
+from ..worker import ProgressCallback, WorkerContext
 
 logger = getLogger(__name__)
 
 
 def source_txt2img(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     _stage: StageParams,
     params: ImageParams,
     _source: Image.Image,
     *,
     size: Size,
-    callback: ProgressCallback = None,
+    callback: Optional[ProgressCallback] = None,
     **kwargs,
 ) -> Image.Image:
     params = params.with_args(**kwargs)
@@ -42,6 +44,7 @@ def source_txt2img(
         params.scheduler,
         job.get_device(),
         params.lpw,
+        params.inversion,
     )
 
     if params.lpw:

@@ -4,13 +4,14 @@ from typing import Callable
 from PIL import Image
 
 from ..params import ImageParams, Size, StageParams
-from ..server import JobContext, ServerContext
+from ..server import ServerContext
+from ..worker import WorkerContext
 
 logger = getLogger(__name__)
 
 
 def source_noise(
-    _job: JobContext,
+    _job: WorkerContext,
     _server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,

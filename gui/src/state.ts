@@ -495,6 +495,7 @@ export function createStateSlices(server: ServerParams) {
       platform: server.platform.default,
       upscaling: server.upscaling.default,
       correction: server.correction.default,
+      inversion: server.inversion.default,
       lpw: false,
     },
     setModel(params) {

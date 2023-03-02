@@ -6,22 +6,21 @@ import torch
 from diffusers import OnnxStableDiffusionImg2ImgPipeline, OnnxStableDiffusionPipeline
 from PIL import Image
 
-from onnx_web.chain import blend_mask
-from onnx_web.chain.base import ChainProgress
-
-from ..chain import upscale_outpaint
+from ..chain import blend_mask, upscale_outpaint
+from ..chain.base import ChainProgress
 from ..output import save_image, save_params
 from ..params import Border, ImageParams, Size, StageParams, UpscaleParams
-from ..server import JobContext, ServerContext
+from ..server import ServerContext
 from ..upscale import run_upscale_correction
 from ..utils import run_gc
+from ..worker import WorkerContext
 from .load import get_latents_from_seed, load_pipeline
 
 logger = getLogger(__name__)
 
 
 def run_txt2img_pipeline(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     params: ImageParams,
     size: Size,
@@ -36,6 +35,7 @@ def run_txt2img_pipeline(
         params.scheduler,
         job.get_device(),
         params.lpw,
+        params.inversion,
     )
     progress = job.get_progress_callback()
 
@@ -94,7 +94,7 @@ def run_txt2img_pipeline(
 
 
 def run_img2img_pipeline(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     params: ImageParams,
     outputs: List[str],
@@ -109,6 +109,7 @@ def run_img2img_pipeline(
         params.scheduler,
         job.get_device(),
         params.lpw,
+        params.inversion,
     )
     progress = job.get_progress_callback()
     if params.lpw:
@@ -165,7 +166,7 @@ def run_img2img_pipeline(
 
 
 def run_inpaint_pipeline(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     params: ImageParams,
     size: Size,
@@ -215,7 +216,7 @@ def run_inpaint_pipeline(
 
 
 def run_upscale_pipeline(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     params: ImageParams,
     size: Size,
@@ -241,7 +242,7 @@ def run_upscale_pipeline(
 
 
 def run_blend_pipeline(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     params: ImageParams,
     size: Size,

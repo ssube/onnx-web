@@ -1,5 +1,6 @@
 from logging import getLogger
 from os import path
+from typing import Optional
 
 import torch
 from diffusers import StableDiffusionUpscalePipeline
@@ -10,8 +11,9 @@ from ..diffusion.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
-from ..server import JobContext, ProgressCallback, ServerContext
+from ..server import ServerContext
 from ..utils import run_gc
+from ..worker import ProgressCallback, WorkerContext
 
 logger = getLogger(__name__)
 
@@ -62,15 +64,15 @@ def load_stable_diffusion(
 
 
 def upscale_stable_diffusion(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     _stage: StageParams,
     params: ImageParams,
     source: Image.Image,
     *,
     upscale: UpscaleParams,
-    stage_source: Image.Image = None,
-    callback: ProgressCallback = None,
+    stage_source: Optional[Image.Image] = None,
+    callback: Optional[ProgressCallback] = None,
     **kwargs,
 ) -> Image.Image:
     params = params.with_args(**kwargs)

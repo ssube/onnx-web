@@ -10,15 +10,16 @@ from ..diffusion.load import get_latents_from_seed, load_pipeline
 from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
 from ..params import Border, ImageParams, Size, SizeChart, StageParams
-from ..server import JobContext, ProgressCallback, ServerContext
+from ..server import ServerContext
 from ..utils import is_debug
+from ..worker import ProgressCallback, WorkerContext
 from .utils import process_tile_order
 
 logger = getLogger(__name__)
 
 
 def blend_inpaint(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     stage: StageParams,
     params: ImageParams,
@@ -30,7 +31,7 @@ def blend_inpaint(
     fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
-    callback: ProgressCallback = None,
+    callback: Optional[ProgressCallback] = None,
     **kwargs,
 ) -> Image.Image:
     params = params.with_args(**kwargs)
@@ -75,6 +76,7 @@ def blend_inpaint(
             params.scheduler,
             job.get_device(),
             params.lpw,
+            params.inversion,
         )
 
         if params.lpw:

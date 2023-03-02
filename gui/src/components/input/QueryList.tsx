@@ -20,6 +20,7 @@ export interface QueryListProps<T> {
   value: string;
 
   query: QueryListComplete | QueryListFilter<T>;
+  showEmpty?: boolean;
 
   onChange?: (value: string) => void;
 }
@@ -28,17 +29,25 @@ export function hasFilter<T>(query: QueryListComplete | QueryListFilter<T>): que
   return Reflect.has(query, 'selector');
 }
 
-export function filterQuery<T>(query: QueryListComplete | QueryListFilter<T>): Array<string> {
+export function filterQuery<T>(query: QueryListComplete | QueryListFilter<T>, showEmpty: boolean): Array<string> {
   if (hasFilter(query)) {
     const data = mustExist(query.result.data);
-    return (query as QueryListFilter<unknown>).selector(data);
+    const selected = (query as QueryListFilter<unknown>).selector(data);
+    if (showEmpty) {
+      return ['', ...selected];
+    }
+    return selected;
   } else {
-    return mustExist(query.result.data);
+    const data = Array.from(mustExist(query.result.data));
+    if (showEmpty) {
+      return ['', ...data];
+    }
+    return data;
   }
 }
 
 export function QueryList<T>(props: QueryListProps<T>) {
-  const { labels, query, value } = props;
+  const { labels, query, showEmpty = false, value } = props;
   const { result } = query;
 
   function firstValidValue(): string {
@@ -52,7 +61,7 @@ export function QueryList<T>(props: QueryListProps<T>) {
   // update state when previous selection was invalid: https://github.com/ssube/onnx-web/issues/120
   useEffect(() => {
     if (result.status === 'success' && doesExist(result.data) && doesExist(props.onChange)) {
-      const data = filterQuery(query);
+      const data = filterQuery(query, showEmpty);
       if (data.includes(value) === false) {
         props.onChange(data[0]);
       }
@@ -77,7 +86,7 @@ export function QueryList<T>(props: QueryListProps<T>) {
 
   // else: success
   const labelID = `query-list-${props.id}-labels`;
-  const data = filterQuery(query);
+  const data = filterQuery(query, showEmpty);
 
   return <FormControl>
     <InputLabel id={labelID}>{props.name}</InputLabel>

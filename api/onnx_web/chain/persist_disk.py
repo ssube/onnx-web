@@ -4,13 +4,14 @@ from PIL import Image
 
 from ..output import save_image
 from ..params import ImageParams, StageParams
-from ..server import JobContext, ServerContext
+from ..server import ServerContext
+from ..worker import WorkerContext
 
 logger = getLogger(__name__)
 
 
 def persist_disk(
-    _job: JobContext,
+    _job: WorkerContext,
     server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,

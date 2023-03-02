@@ -1,15 +1,17 @@
 from logging import getLogger
+from typing import Optional
 
 from PIL import Image
 
 from ..params import ImageParams, Size, StageParams
-from ..server import JobContext, ServerContext
+from ..server import ServerContext
+from ..worker import WorkerContext
 
 logger = getLogger(__name__)
 
 
 def reduce_crop(
-    _job: JobContext,
+    _job: WorkerContext,
     _server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
@@ -17,7 +19,7 @@ def reduce_crop(
     *,
     origin: Size,
     size: Size,
-    stage_source: Image.Image = None,
+    stage_source: Optional[Image.Image] = None,
     **kwargs,
 ) -> Image.Image:
     source = stage_source or source

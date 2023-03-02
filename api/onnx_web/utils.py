@@ -2,13 +2,15 @@ import gc
 import threading
 from logging import getLogger
 from os import environ, path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 import torch
 
 from .params import DeviceParams, SizeChart
 
 logger = getLogger(__name__)
+
+SAFE_CHARS = "._-"
 
 
 def base_join(base: str, tail: str) -> str:
@@ -36,7 +38,7 @@ def get_and_clamp_int(
     return min(max(int(args.get(key, default_value)), min_value), max_value)
 
 
-def get_from_list(args: Any, key: str, values: List[Any]) -> Optional[Any]:
+def get_from_list(args: Any, key: str, values: Sequence[Any]) -> Optional[Any]:
     selected = args.get(key, None)
     if selected in values:
         return selected
@@ -82,14 +84,14 @@ def get_size(val: Union[int, str, None]) -> Union[int, SizeChart]:
     raise ValueError("invalid size")
 
 
-def run_gc(devices: List[DeviceParams] = None):
+def run_gc(devices: Optional[List[DeviceParams]] = None):
     logger.debug(
         "running garbage collection with %s active threads", threading.active_count()
     )
     gc.collect()
 
     if torch.cuda.is_available() and devices is not None:
-        for device in devices:
+        for device in [d for d in devices if d.device.startswith("cuda")]:
             logger.debug("running Torch garbage collection for device: %s", device)
             with torch.cuda.device(device.torch_str()):
                 torch.cuda.empty_cache()
@@ -100,3 +102,7 @@ def run_gc(devices: List[DeviceParams] = None):
                     (mem_total - mem_free),
                     mem_total,
                 )
+
+
+def sanitize_name(name):
+    return "".join(x for x in name if (x.isalnum() or x in SAFE_CHARS))

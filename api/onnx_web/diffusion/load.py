@@ -1,4 +1,5 @@
 from logging import getLogger
+from os import path
 from typing import Any, Optional, Tuple
 
 import numpy as np
@@ -16,14 +17,16 @@ from diffusers import (
     KDPM2AncestralDiscreteScheduler,
     KDPM2DiscreteScheduler,
     LMSDiscreteScheduler,
+    OnnxRuntimeModel,
     PNDMScheduler,
     StableDiffusionPipeline,
 )
+from transformers import CLIPTokenizer
 
 try:
     from diffusers import DEISMultistepScheduler
 except ImportError:
-    from .stub_scheduler import StubScheduler as DEISMultistepScheduler
+    from ..diffusion.stub_scheduler import StubScheduler as DEISMultistepScheduler
 
 from ..params import DeviceParams, Size
 from ..server import ServerContext
@@ -50,6 +53,10 @@ pipeline_schedulers = {
     "lms-discrete": LMSDiscreteScheduler,
     "pndm": PNDMScheduler,
 }
+
+
+def get_pipeline_schedulers():
+    return pipeline_schedulers
 
 
 def get_scheduler_name(scheduler: Any) -> Optional[str]:
@@ -135,12 +142,14 @@ def load_pipeline(
     server: ServerContext,
     pipeline: DiffusionPipeline,
     model: str,
-    scheduler_type: Any,
+    scheduler_name: str,
     device: DeviceParams,
     lpw: bool,
+    inversion: Optional[str],
 ):
-    pipe_key = (pipeline, model, device.device, device.provider, lpw)
-    scheduler_key = (scheduler_type, model)
+    pipe_key = (pipeline, model, device.device, device.provider, lpw, inversion)
+    scheduler_key = (scheduler_name, model)
+    scheduler_type = get_pipeline_schedulers()[scheduler_name]
 
     cache_pipe = server.cache.get("diffusion", pipe_key)
 
@@ -176,12 +185,26 @@ def load_pipeline(
             custom_pipeline = None
 
         logger.debug("loading new diffusion pipeline from %s", model)
-        scheduler = scheduler_type.from_pretrained(
-            model,
-            provider=device.ort_provider(),
-            sess_options=device.sess_options(),
-            subfolder="scheduler",
-        )
+        components = {
+            "scheduler": scheduler_type.from_pretrained(
+                model,
+                provider=device.ort_provider(),
+                sess_options=device.sess_options(),
+                subfolder="scheduler",
+            )
+        }
+
+        if inversion is not None:
+            logger.debug("loading text encoder from %s", inversion)
+            components["text_encoder"] = OnnxRuntimeModel.from_pretrained(
+                path.join(inversion, "text_encoder"),
+                provider=device.ort_provider(),
+                sess_options=device.sess_options(),
+            )
+            components["tokenizer"] = CLIPTokenizer.from_pretrained(
+                path.join(inversion, "tokenizer"),
+            )
+
         pipe = pipeline.from_pretrained(
             model,
             custom_pipeline=custom_pipeline,
@@ -189,7 +212,7 @@ def load_pipeline(
             sess_options=device.sess_options(),
             revision="onnx",
             safety_checker=None,
-            scheduler=scheduler,
+            **components,
         )
 
         if not server.show_progress:
@@ -201,6 +224,6 @@ def load_pipeline(
             pipe = pipe.to(device.torch_str())
 
         server.cache.set("diffusion", pipe_key, pipe)
-        server.cache.set("scheduler", scheduler_key, scheduler)
+        server.cache.set("scheduler", scheduler_key, components["scheduler"])
 
     return pipe

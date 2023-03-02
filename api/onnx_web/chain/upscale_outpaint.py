@@ -10,15 +10,16 @@ from ..diffusion.load import get_latents_from_seed, get_tile_latents, load_pipel
 from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
 from ..params import Border, ImageParams, Size, SizeChart, StageParams
-from ..server import JobContext, ProgressCallback, ServerContext
+from ..server import ServerContext
 from ..utils import is_debug
+from ..worker import ProgressCallback, WorkerContext
 from .utils import process_tile_grid, process_tile_order
 
 logger = getLogger(__name__)
 
 
 def upscale_outpaint(
-    job: JobContext,
+    job: WorkerContext,
     server: ServerContext,
     stage: StageParams,
     params: ImageParams,
@@ -30,7 +31,7 @@ def upscale_outpaint(
     fill_color: str = "white",
     mask_filter: Callable = mask_filter_none,
     noise_source: Callable = noise_source_histogram,
-    callback: ProgressCallback = None,
+    callback: Optional[ProgressCallback] = None,
     **kwargs,
 ) -> Image.Image:
     source = stage_source or source
@@ -79,6 +80,7 @@ def upscale_outpaint(
             params.scheduler,
             job.get_device(),
             params.lpw,
+            params.inversion,
         )
         if params.lpw:
             logger.debug("using LPW pipeline for inpaint")
