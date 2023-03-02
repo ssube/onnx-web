@@ -37,7 +37,9 @@ def pipeline_from_request(
     lpw = get_not_empty(request.args, "lpw", "false") == "true"
     model = get_not_empty(request.args, "model", get_config_value("model"))
     model_path = get_model_path(context, model)
-    scheduler = get_from_list(request.args, "scheduler", pipeline_schedulers.keys())
+    scheduler = get_from_list(
+        request.args, "scheduler", list(pipeline_schedulers.keys())
+    )
 
     if scheduler is None:
         scheduler = get_config_value("scheduler")
