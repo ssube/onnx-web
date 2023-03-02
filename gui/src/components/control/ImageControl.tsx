@@ -3,13 +3,13 @@ import { Casino } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { useStore } from 'zustand';
 
 import { BaseImgParams } from '../../client.js';
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
-import { SCHEDULER_LABELS } from '../../strings.js';
 import { NumericField } from '../input/NumericField.js';
 import { PromptInput } from '../input/PromptInput.js';
 import { QueryList } from '../input/QueryList.js';
@@ -27,6 +27,7 @@ export function ImageControl(props: ImageControlProps) {
   const { params } = mustExist(useContext(ConfigContext));
   const state = mustExist(useContext(StateContext));
   const controlState = useStore(state, props.selector);
+  const { t } = useTranslation();
 
   const client = mustExist(useContext(ClientContext));
   const schedulers = useQuery('schedulers', async () => client.schedulers(), {
@@ -37,8 +38,8 @@ export function ImageControl(props: ImageControlProps) {
     <Stack direction='row' spacing={4}>
       <QueryList
         id='schedulers'
-        labels={SCHEDULER_LABELS}
-        name='Scheduler'
+        labelKey='scheduler'
+        name={t('parameter.scheduler')}
         query={{
           result: schedulers,
         }}
@@ -54,7 +55,7 @@ export function ImageControl(props: ImageControlProps) {
       />
       <NumericField
         decimal
-        label='Eta'
+        label={t('parameter.eta')}
         min={params.eta.min}
         max={params.eta.max}
         step={params.eta.step}
@@ -69,7 +70,7 @@ export function ImageControl(props: ImageControlProps) {
         }}
       />
       <NumericField
-        label='Batch Size'
+        label={t('parameter.batch')}
         min={params.batch.min}
         max={params.batch.max}
         step={params.batch.step}
@@ -87,7 +88,7 @@ export function ImageControl(props: ImageControlProps) {
     <Stack direction='row' spacing={4}>
       <NumericField
         decimal
-        label='CFG'
+        label={t('parameter.cfg')}
         min={params.cfg.min}
         max={params.cfg.max}
         step={params.cfg.step}
@@ -102,7 +103,7 @@ export function ImageControl(props: ImageControlProps) {
         }}
       />
       <NumericField
-        label='Steps'
+        label={t('parameter.steps')}
         min={params.steps.min}
         max={params.steps.max}
         step={params.steps.step}
@@ -117,7 +118,7 @@ export function ImageControl(props: ImageControlProps) {
         }}
       />
       <NumericField
-        label='Seed'
+        label={t('parameter.seed')}
         min={params.seed.min}
         max={params.seed.max}
         step={params.seed.step}
@@ -144,7 +145,7 @@ export function ImageControl(props: ImageControlProps) {
           }
         }}
       >
-        New Seed
+        {t('parameter.newSeed')}
       </Button>
     </Stack>
     <PromptInput

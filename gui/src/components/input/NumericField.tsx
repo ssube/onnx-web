@@ -1,6 +1,7 @@
 import { doesExist } from '@apextoaster/js-utils';
 import { Slider, Stack, TextField } from '@mui/material';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export function parseNumber(num: string, decimal = false): number {
   if (decimal) {
@@ -24,14 +25,15 @@ export interface ImageControlProps {
 
 export function NumericField(props: ImageControlProps) {
   const { decimal = false, disabled = false, label, min, max, step, value } = props;
-
   const error = (value < min) || (value > max);
+
+  const { t } = useTranslation();
 
   return <Stack spacing={2}>
     <TextField
       error={error}
       label={label}
-      helperText={error && 'Out of range'}
+      helperText={error && t('input.numeric.error.range')}
       disabled={disabled}
       variant='outlined'
       type='number'

@@ -11,7 +11,7 @@ export interface ConfigNumber {
 
 export interface ConfigString {
   default: string;
-  keys: Array<string>;
+  keys: Record<string, string>;
 }
 
 /**

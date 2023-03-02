@@ -3,6 +3,7 @@ import { Download, FormatColorFill, Gradient, InvertColors, Save, Undo } from '@
 import { Button, Stack, Typography } from '@mui/material';
 import { throttle } from 'lodash';
 import React, { RefObject, useContext, useEffect, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
 import { SAVE_TIME } from '../../config.js';
@@ -201,6 +202,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
   const brush = useStore(state, (s) => s.brush);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setBrush = useStore(state, (s) => s.setBrush);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (dirty.current) {
@@ -308,14 +310,11 @@ export function MaskCanvas(props: MaskCanvasProps) {
       onMouseUp={finishPainting}
       onMouseMove={drawMouse}
     />
-    <Typography variant='body1'>
-      Black pixels in the mask will stay the same, white pixels will be replaced. The masked pixels will be blended
-      with the noise source before the diffusion model runs, giving it more variety to use.
-    </Typography>
+    <Typography variant='body1'>{t('mask.help')}</Typography>
     <Stack>
       <Stack direction='row' spacing={4}>
         <NumericField
-          label='Brush Color'
+          label={t('parameter.brush.color')}
           min={COLORS.black}
           max={COLORS.white}
           step={1}
@@ -325,7 +324,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           }}
         />
         <NumericField
-          label='Brush Size'
+          label={t('parameter.brush.size')}
           min={1}
           max={64}
           step={1}
@@ -336,7 +335,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
         />
         <NumericField
           decimal
-          label='Brush Strength'
+          label={t('parameter.brush.strength')}
           min={0}
           max={1}
           step={0.01}
@@ -353,7 +352,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           onClick={() => {
             drawFill(floodBlack);
           }}>
-          Fill with black
+          {t('mask.fill.black')}
         </Button>
         <Button
           variant='outlined'
@@ -361,7 +360,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           onClick={() => {
             drawFill(floodWhite);
           }}>
-          Fill with white
+          {t('mask.fill.white')}
         </Button>
         <Button
           variant='outlined'
@@ -369,7 +368,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           onClick={() => {
             drawFill(floodInvert);
           }}>
-          Invert
+          {t('mask.invert')}
         </Button>
         <Button
           variant='outlined'
@@ -377,7 +376,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           onClick={() => {
             drawFill(floodBelow);
           }}>
-          Gray to black
+          {t('mask.gray.black')}
         </Button>
         <Button
           variant='outlined'
@@ -385,7 +384,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           onClick={() => {
             drawFill(floodAbove);
           }}>
-          Gray to white
+          {t('mask.gray.white')}
         </Button>
       </Stack>
     </Stack>

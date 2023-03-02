@@ -2,6 +2,7 @@ import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
@@ -35,13 +36,14 @@ export function Upscale() {
   const setSource = useStore(state, (s) => s.setUpscaleTab);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setLoading = useStore(state, (s) => s.pushLoading);
+  const { t } = useTranslation();
 
   return <Box>
     <Stack spacing={2}>
       <ImageInput
         filter={IMAGE_FILTER}
         image={params.source}
-        label='Source'
+        label={t('input.image.source')}
         onChange={(file) => {
           setSource({
             source: file,
@@ -60,7 +62,7 @@ export function Upscale() {
         disabled={doesExist(params.source) === false}
         variant='contained'
         onClick={() => upload.mutate()}
-      >Generate</Button>
+      >{t('generate')}</Button>
     </Stack>
   </Box>;
 }

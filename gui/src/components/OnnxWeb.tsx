@@ -6,6 +6,7 @@ import { useHash } from 'react-use/lib/useHash';
 
 import { ModelControl } from './control/ModelControl.js';
 import { ImageHistory } from './ImageHistory.js';
+import { Logo } from './Logo.js';
 import { Blend } from './tab/Blend.js';
 import { Img2Img } from './tab/Img2Img.js';
 import { Inpaint } from './tab/Inpaint.js';
@@ -41,9 +42,7 @@ export function OnnxWeb() {
   return (
     <Container>
       <Box sx={{ my: 4 }}>
-        <Typography variant='h3' gutterBottom>
-          <Link href='https://github.com/ssube/onnx-web' target='_blank' underline='hover'>ONNX Web</Link>
-        </Typography>
+        <Logo />
       </Box>
       <Box sx={{ mx: 4, my: 4 }}>
         <ModelControl />

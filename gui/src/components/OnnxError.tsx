@@ -1,7 +1,9 @@
-import { Box, Button, Container, Link, Stack, Typography } from '@mui/material';
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import * as React from 'react';
 import { ReactNode } from 'react';
-import { STATE_KEY } from '../state';
+
+import { STATE_KEY } from '../state.js';
+import { Logo } from './Logo.js';
 
 export interface OnnxErrorProps {
   children?: ReactNode;
@@ -19,9 +21,7 @@ export function OnnxError(props: OnnxErrorProps) {
   return (
     <Container>
       <Box sx={{ my: 4 }}>
-        <Typography variant='h3' gutterBottom>
-          <Link href='https://github.com/ssube/onnx-web' target='_blank' underline='hover'>ONNX Web</Link>
-        </Typography>
+        <Logo />
       </Box>
       <Box sx={{ my: 4 }}>
         <Stack spacing={2}>

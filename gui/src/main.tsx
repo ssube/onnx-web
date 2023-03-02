@@ -61,7 +61,10 @@ export async function main() {
             escapeValue: false, // not needed for react as it escapes by default
           },
           resources: I18N_STRINGS,
+          returnEmptyString: false,
         });
+
+      i18n.addResourceBundle(i18n.resolvedLanguage, 'model', params.model.keys);
 
       // prep zustand with a slice for each tab, using local storage
       const {

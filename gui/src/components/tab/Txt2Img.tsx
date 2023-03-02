@@ -2,6 +2,7 @@ import { mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
@@ -33,13 +34,14 @@ export function Txt2Img() {
   const setTxt2Img = useStore(state, (s) => s.setTxt2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setLoading = useStore(state, (s) => s.pushLoading);
+  const { t } = useTranslation();
 
   return <Box>
     <Stack spacing={2}>
       <ImageControl selector={(s) => s.txt2img} onChange={setTxt2Img} />
       <Stack direction='row' spacing={4}>
         <NumericField
-          label='Width'
+          label={t('parameter.width')}
           min={params.width.min}
           max={params.width.max}
           step={params.width.step}
@@ -51,7 +53,7 @@ export function Txt2Img() {
           }}
         />
         <NumericField
-          label='Height'
+          label={t('parameter.height')}
           min={params.height.min}
           max={params.height.max}
           step={params.height.step}
@@ -67,7 +69,7 @@ export function Txt2Img() {
       <Button
         variant='contained'
         onClick={() => generate.mutate()}
-      >Generate</Button>
+      >{t('generate')}</Button>
     </Stack>
   </Box>;
 }

@@ -9,7 +9,6 @@ import { useStore } from 'zustand';
 
 import { ImageResponse } from '../client.js';
 import { BLEND_SOURCES, ConfigContext, StateContext } from '../state.js';
-import { MODEL_LABELS, SCHEDULER_LABELS } from '../strings.js';
 import { range, visibleIndex } from '../utils.js';
 
 export interface ImageCardProps {
@@ -99,8 +98,12 @@ export function ImageCard(props: ImageCardProps) {
   const [index, setIndex] = useState(0);
   const { t } = useTranslation();
 
-  const model = mustDefault(MODEL_LABELS[params.model], params.model);
-  const scheduler = mustDefault(SCHEDULER_LABELS[params.scheduler], params.scheduler);
+  function getLabel(key: string, name: string) {
+    return mustDefault(t(`${key}.${name}`), name);
+  }
+
+  const model = getLabel('model', params.model);
+  const scheduler = getLabel('scheduler', params.scheduler);
 
   return <Card sx={{ maxWidth: config.params.width.default }} elevation={2}>
     <CardMedia sx={{ height: config.params.height.default }}
@@ -138,11 +141,11 @@ export function ImageCard(props: ImageCardProps) {
             </Tooltip>
           </GridItem>
           <GridItem xs={4}>Model: {model}</GridItem>
-          <GridItem xs={4}>Scheduler: {scheduler}</GridItem>
-          <GridItem xs={4}>Seed: {params.seed}</GridItem>
-          <GridItem xs={4}>CFG: {params.cfg}</GridItem>
-          <GridItem xs={4}>Steps: {params.steps}</GridItem>
-          <GridItem xs={4}>Size: {size.width}x{size.height}</GridItem>
+          <GridItem xs={4}>{t('parameter.scheduler')}: {scheduler}</GridItem>
+          <GridItem xs={4}>{t('parameter.seed')}: {params.seed}</GridItem>
+          <GridItem xs={4}>{t('parameter.cfg')}: {params.cfg}</GridItem>
+          <GridItem xs={4}>{t('parameter.steps')}: {params.steps}</GridItem>
+          <GridItem xs={4}>{t('parameter.size')}: {size.width}x{size.height}</GridItem>
           <GridItem xs={12}>
             <Box textAlign='left'>{params.prompt}</Box>
           </GridItem>
