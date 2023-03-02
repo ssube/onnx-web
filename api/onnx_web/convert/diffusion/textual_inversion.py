@@ -74,6 +74,8 @@ def convert_diffusion_textual_inversion(
         return_tensors="pt",
     )
 
+    tokenizer.save_pretrained(path.join(dest_path, "tokenizer"))
+
     export(
         text_encoder,
         # casting to torch.int32 until the CLIP fix is released: https://github.com/huggingface/transformers/pull/18515/files

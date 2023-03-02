@@ -21,6 +21,7 @@ from diffusers import (
     PNDMScheduler,
     StableDiffusionPipeline,
 )
+from transformers import CLIPTokenizer
 
 try:
     from diffusers import DEISMultistepScheduler
@@ -199,6 +200,9 @@ def load_pipeline(
                 path.join(inversion, "text_encoder"),
                 provider=device.ort_provider(),
                 sess_options=device.sess_options(),
+            )
+            components["tokenizer"] = CLIPTokenizer.from_pretrained(
+                path.join(inversion, "tokenizer"),
             )
 
         pipe = pipeline.from_pretrained(
