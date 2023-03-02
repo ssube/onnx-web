@@ -13,7 +13,7 @@ logger = getLogger(__name__)
 
 @torch.no_grad()
 def convert_diffusion_textual_inversion(
-    context: ConversionContext, name: str, base_model: str, inversion: str
+    context: ConversionContext, name: str, base_model: str, inversion: str, format: str
 ):
     dest_path = path.join(context.model_path, f"inversion-{name}")
     logger.info(
@@ -26,11 +26,31 @@ def convert_diffusion_textual_inversion(
 
     makedirs(path.join(dest_path, "text_encoder"), exist_ok=True)
 
-    embeds_file = hf_hub_download(repo_id=inversion, filename="learned_embeds.bin")
-    token_file = hf_hub_download(repo_id=inversion, filename="token_identifier.txt")
+    if format == "huggingface":
+        embeds_file = hf_hub_download(repo_id=inversion, filename="learned_embeds.bin")
+        token_file = hf_hub_download(repo_id=inversion, filename="token_identifier.txt")
 
-    with open(token_file, "r") as f:
-        token = f.read()
+        with open(token_file, "r") as f:
+            token = f.read()
+
+        loaded_embeds = torch.load(embeds_file, map_location=context.map_location)
+
+        # separate token and the embeds
+        trained_token = list(loaded_embeds.keys())[0]
+        embeds = loaded_embeds[trained_token]
+    elif format == "embeddings":
+        loaded_embeds = torch.load(inversion, map_location=context.map_location)
+
+        string_to_token = loaded_embeds["string_to_token"]
+        string_to_param = loaded_embeds["string_to_param"]
+
+        token = name
+
+        # separate token and embeds
+        trained_token = list(string_to_token.keys())[0]
+        embeds = string_to_param[trained_token]
+
+    logger.info("found embedding for token %s: %s", trained_token, embeds.shape)
 
     tokenizer = CLIPTokenizer.from_pretrained(
         base_model,
@@ -40,12 +60,6 @@ def convert_diffusion_textual_inversion(
         base_model,
         subfolder="text_encoder",
     )
-
-    loaded_embeds = torch.load(embeds_file, map_location=context.map_location)
-
-    # separate token and the embeds
-    trained_token = list(loaded_embeds.keys())[0]
-    embeds = loaded_embeds[trained_token]
 
     # cast to dtype of text_encoder
     dtype = text_encoder.get_input_embeddings().weight.dtype
