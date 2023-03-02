@@ -2,6 +2,7 @@ import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Grid, Typography } from '@mui/material';
 import { useContext } from 'react';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
 import { StateContext } from '../state.js';
@@ -15,6 +16,8 @@ export function ImageHistory() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const removeHistory = useStore(mustExist(useContext(StateContext)), (state) => state.removeHistory);
 
+  const { t } = useTranslation();
+
   const children = [];
 
   if (loading.length > 0) {
@@ -25,7 +28,7 @@ export function ImageHistory() {
     children.push(...history.map((item) => <ImageCard key={`history-${item.outputs[0].key}`} value={item} onDelete={removeHistory} />));
   } else {
     if (doesExist(loading) === false) {
-      children.push(<Typography>No results. Press Generate.</Typography>);
+      children.push(<Typography>{t('history.empty')}</Typography>);
     }
   }
 

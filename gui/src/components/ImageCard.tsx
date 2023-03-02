@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Blender, Brush, ContentCopy, Delete, Download, Z
 import { Box, Card, CardContent, CardMedia, Grid, IconButton, Menu, MenuItem, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
 import { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
@@ -96,6 +97,7 @@ export function ImageCard(props: ImageCardProps) {
   }
 
   const [index, setIndex] = useState(0);
+  const { t } = useTranslation();
 
   const model = mustDefault(MODEL_LABELS[params.model], params.model);
   const scheduler = mustDefault(SCHEDULER_LABELS[params.scheduler], params.scheduler);
@@ -110,7 +112,7 @@ export function ImageCard(props: ImageCardProps) {
       <Box textAlign='center'>
         <Grid container spacing={2}>
           <GridItem xs={4}>
-            <Tooltip title='Previous'>
+            <Tooltip title={t('tooltip.previous')}>
               <IconButton onClick={() => {
                 const prevIndex = index - 1;
                 if (prevIndex < 0) {
@@ -127,7 +129,7 @@ export function ImageCard(props: ImageCardProps) {
             {visibleIndex(index)} of {outputs.length}
           </GridItem>
           <GridItem xs={4}>
-            <Tooltip title='Next'>
+            <Tooltip title={t('tooltip.next')}>
               <IconButton onClick={() => {
                 setIndex((index + 1) % outputs.length);
               }}>
@@ -145,35 +147,35 @@ export function ImageCard(props: ImageCardProps) {
             <Box textAlign='left'>{params.prompt}</Box>
           </GridItem>
           <GridItem xs={2}>
-            <Tooltip title='Save'>
+            <Tooltip title={t('tooltip.save')}>
               <IconButton onClick={downloadImage}>
                 <Download />
               </IconButton>
             </Tooltip>
           </GridItem>
           <GridItem xs={2}>
-            <Tooltip title='Img2img'>
+            <Tooltip title={t('tab.img2img')}>
               <IconButton onClick={copySourceToImg2Img}>
                 <ContentCopy />
               </IconButton>
             </Tooltip>
           </GridItem>
           <GridItem xs={2}>
-            <Tooltip title='Inpaint'>
+            <Tooltip title={t('tab.inpaint')}>
               <IconButton onClick={copySourceToInpaint}>
                 <Brush />
               </IconButton>
             </Tooltip>
           </GridItem>
           <GridItem xs={2}>
-            <Tooltip title='Upscale'>
+            <Tooltip title={t('tab.upscale')}>
               <IconButton onClick={copySourceToUpscale}>
                 <ZoomOutMap />
               </IconButton>
             </Tooltip>
           </GridItem>
           <GridItem xs={2}>
-            <Tooltip title='Blend'>
+            <Tooltip title={t('tab.blend')}>
               <IconButton onClick={(event) => {
                 setAnchor(event.currentTarget);
               }}>
@@ -194,7 +196,7 @@ export function ImageCard(props: ImageCardProps) {
             </Menu>
           </GridItem>
           <GridItem xs={2}>
-            <Tooltip title='Delete'>
+            <Tooltip title={t('tooltip.delete')}>
               <IconButton onClick={deleteImage}>
                 <Delete />
               </IconButton>

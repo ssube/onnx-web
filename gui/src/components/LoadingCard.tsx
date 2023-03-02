@@ -3,6 +3,7 @@ import { Box, Button, Card, CardContent, CircularProgress, Typography } from '@m
 import { Stack } from '@mui/system';
 import * as React from 'react';
 import { useContext, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
 import { useStore } from 'zustand';
 
@@ -32,6 +33,7 @@ export function LoadingCard(props: LoadingCardProps) {
   const pushHistory = useStore(state, (s) => s.pushHistory);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setReady = useStore(state, (s) => s.setReady);
+  const { t } = useTranslation();
 
   const cancel = useMutation(() => client.cancel(loading.outputs[index].key));
   const ready = useQuery(`ready-${loading.outputs[index].key}`, () => client.ready(loading.outputs[index].key), {
@@ -63,7 +65,7 @@ export function LoadingCard(props: LoadingCardProps) {
     const progress = getProgress();
     if (progress > steps) {
       // steps was not complete, show 99% until done
-      return 'many';
+      return t('loading.unknown');
     }
 
     return steps.toFixed(0);
@@ -112,8 +114,11 @@ export function LoadingCard(props: LoadingCardProps) {
           sx={{ alignItems: 'center' }}
         >
           {renderProgress()}
-          <Typography>{getProgress()} of {getTotal()} steps</Typography>
-          <Button onClick={() => cancel.mutate()}>Cancel</Button>
+          <Typography>{t('loading.progress', {
+            current: getProgress(),
+            total: getTotal(),
+          })}</Typography>
+          <Button onClick={() => cancel.mutate()}>{t('loading.cancel')}</Button>
         </Stack>
       </Box>
     </CardContent>

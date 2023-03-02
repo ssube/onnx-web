@@ -1,12 +1,15 @@
 /* eslint-disable no-console */
 import { mustDefault, mustExist, timeout } from '@apextoaster/js-utils';
+import { createLogger } from 'browser-bunyan';
+import i18n from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
+import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { satisfies } from 'semver';
 import { createStore } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { createLogger } from 'browser-bunyan';
 
 import { makeClient } from './client.js';
 import { ParamsVersionError } from './components/error/ParamsVersion.js';
@@ -14,7 +17,17 @@ import { ServerParamsError } from './components/error/ServerParams.js';
 import { OnnxError } from './components/OnnxError.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
 import { getApiRoot, loadConfig, mergeConfig, PARAM_VERSION } from './config.js';
-import { ClientContext, ConfigContext, createStateSlices, OnnxState, STATE_VERSION, StateContext, LoggerContext, STATE_KEY } from './state.js';
+import {
+  ClientContext,
+  ConfigContext,
+  createStateSlices,
+  LoggerContext,
+  OnnxState,
+  STATE_KEY,
+  STATE_VERSION,
+  StateContext,
+} from './state.js';
+import { I18N_STRINGS } from './strings/all.js';
 
 export const INITIAL_LOAD_TIMEOUT = 5_000;
 
@@ -36,6 +49,19 @@ export async function main() {
     const version = mustDefault(params.version, '0.0.0');
     if (satisfies(version, PARAM_VERSION)) {
       const completeConfig = mergeConfig(config, params);
+
+      // prep i18next
+      await i18n
+        .use(LanguageDetector)
+        .use(initReactI18next)
+        .init({
+          debug: true,
+          fallbackLng: 'en',
+          interpolation: {
+            escapeValue: false, // not needed for react as it escapes by default
+          },
+          resources: I18N_STRINGS,
+        });
 
       // prep zustand with a slice for each tab, using local storage
       const {
@@ -106,9 +132,11 @@ export async function main() {
         <ClientContext.Provider value={client}>
           <ConfigContext.Provider value={completeConfig}>
             <LoggerContext.Provider value={logger}>
-              <StateContext.Provider value={state}>
-                <OnnxWeb />
-              </StateContext.Provider>
+              <I18nextProvider i18n={i18n}>
+                <StateContext.Provider value={state}>
+                  <OnnxWeb />
+                </StateContext.Provider>
+              </I18nextProvider>
             </LoggerContext.Provider>
           </ConfigContext.Provider>
         </ClientContext.Provider>
