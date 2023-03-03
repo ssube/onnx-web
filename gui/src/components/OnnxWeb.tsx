@@ -1,6 +1,6 @@
 import { doesExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, Divider, Link, Tab, Typography } from '@mui/material';
+import { Box, Container, Divider, Tab } from '@mui/material';
 import * as React from 'react';
 import { useHash } from 'react-use/lib/useHash';
 

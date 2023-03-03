@@ -54,8 +54,8 @@ export const I18N_STRINGS_ES = {
         invert: 'Colores invertidos',
       },
       maskFilter: {
-        'gaussian-multiply': '',
-        'gaussian-screen': '',
+        'gaussian-multiply': 'Gaussiana con multiplicación',
+        'gaussian-screen': 'Gaussiana con pantalla',
       },
       modelType: {
         correction: 'Modelo de corrección',
@@ -85,8 +85,8 @@ export const I18N_STRINGS_ES = {
         lpw: '',
         maskFilter: 'Filtro de máscara',
         noiseSource: 'Fuente de ruido',
-        negativePrompt: '',
-        newSeed: '',
+        negativePrompt: 'Contraindicación',
+        newSeed: 'Nueva semilla',
         outpaint: {
           label: '',
           left: 'Izquierda',
@@ -98,7 +98,7 @@ export const I18N_STRINGS_ES = {
         prompt: 'Aviso',
         scheduler: 'Planificador',
         seed: 'Semilla',
-        size: '',
+        size: 'Tamaño',
         steps: 'Pasos',
         strength: 'Fuerza',
         tileOrder: 'Orden de secciones',
@@ -119,8 +119,8 @@ export const I18N_STRINGS_ES = {
       setting: {
         connectServer: 'Conectar al servidor',
         history: 'Historia de la imagen',
-        loadState: '',
-        prompt: '',
+        loadState: 'Carga estado',
+        prompt: 'Solicitud predeterminada',
         reset: {
           all: 'Resetear todo',
           img2img: 'Resetear img2img',
@@ -150,9 +150,9 @@ export const I18N_STRINGS_ES = {
         save: 'Ahorrar',
       },
       upscaleOrder: {
-        'correction-both': '',
-        'correction-first': '',
-        'correction-last': '',
+        'correction-both': 'corrección en ambos',
+        'correction-first': 'corrección primero',
+        'correction-last': 'última corrección',
       },
     },
   },

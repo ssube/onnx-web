@@ -1,5 +1,5 @@
 import { doesExist, Maybe, mustExist } from '@apextoaster/js-utils';
-import { Download, FormatColorFill, Gradient, InvertColors, Save, Undo } from '@mui/icons-material';
+import { Download, FormatColorFill, Gradient, InvertColors, Undo } from '@mui/icons-material';
 import { Button, Stack, Typography } from '@mui/material';
 import { throttle } from 'lodash';
 import React, { RefObject, useContext, useEffect, useMemo, useRef } from 'react';
