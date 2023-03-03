@@ -234,7 +234,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                     for inversion in model.get("inversions", []):
                         inversion_name = inversion["name"]
                         inversion_source = inversion["source"]
-                        inversion_format = inversion.get("format", "huggingface")
+                        inversion_format = inversion.get("format", "embeddings")
                         inversion_source = fetch_model(
                             ctx, f"{name}-inversion-{inversion_name}", inversion_source
                         )
@@ -244,6 +244,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             model["source"],
                             inversion_source,
                             inversion_format,
+                            base_token=inversion.get("token"),
                         )
 
                 except Exception as e:

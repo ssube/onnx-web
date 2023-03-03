@@ -18,6 +18,11 @@ $defs:
         type: string
       source:
         type: string
+      format:
+        type: string
+        enum: [concept, embeddings]
+      token:
+        type: string
 
   base_model:
     type: object
