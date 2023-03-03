@@ -121,7 +121,7 @@ export function UpscaleControl() {
         }}
       >
         {Object.entries(params.upscaleOrder.keys).map(([key, name]) =>
-          <MenuItem key={key} value={key}>{t(`upscaleOrder.${name}`)}</MenuItem>)
+          <MenuItem key={key} value={name}>{t(`upscaleOrder.${name}`)}</MenuItem>)
         }
       </Select>
     </FormControl>
