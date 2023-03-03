@@ -23,6 +23,8 @@ from diffusers import (
 )
 from transformers import CLIPTokenizer
 
+from .clip_embedder import load_tokenizer
+
 try:
     from diffusers import DEISMultistepScheduler
 except ImportError:
@@ -195,15 +197,18 @@ def load_pipeline(
         }
 
         if inversion is not None:
-            logger.debug("loading text encoder from %s", inversion)
-            components["text_encoder"] = OnnxRuntimeModel.from_pretrained(
-                path.join(inversion, "text_encoder"),
-                provider=device.ort_provider(),
-                sess_options=device.sess_options(),
-            )
-            components["tokenizer"] = CLIPTokenizer.from_pretrained(
-                path.join(inversion, "tokenizer"),
-            )
+            if "ckpt" in inversion:
+                components["tokenizer"] = load_tokenizer(["/home/ssube/textual_inversion/autumn.ckpt"])
+            else:
+                logger.debug("loading text encoder from %s", inversion)
+                components["text_encoder"] = OnnxRuntimeModel.from_pretrained(
+                    path.join(inversion, "text_encoder"),
+                    provider=device.ort_provider(),
+                    sess_options=device.sess_options(),
+                )
+                components["tokenizer"] = CLIPTokenizer.from_pretrained(
+                    path.join(inversion, "tokenizer"),
+                )
 
         pipe = pipeline.from_pretrained(
             model,
