@@ -86,7 +86,9 @@ def convert_diffusion_textual_inversion(
         for i in range(embeds.shape[0]):
             layer_embeds = embeds[i]
             layer_token = token[i]
-            logger.info("embedding %s vector for layer %s", layer_embeds.shape, layer_token)
+            logger.info(
+                "embedding %s vector for layer %s", layer_embeds.shape, layer_token
+            )
             token_id = tokenizer.convert_tokens_to_ids(layer_token)
             text_encoder.get_input_embeddings().weight.data[token_id] = layer_embeds
     else:
