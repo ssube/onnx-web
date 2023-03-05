@@ -6,27 +6,27 @@
 export const I18N_STRINGS_FR = {
   fr: {
     translation: {
-      generate: '',
+      generate: 'générer',
       history: {
-        empty: '',
+        empty: 'pas d\'histoire récente. appuyez sur générer pour créer une image.',
       },
       input: {
         image: {
-          empty: '',
-          mask: '',
-          source: '',
+          empty: 'veuillez sélectionner une image',
+          mask: 'image de masque',
+          source: 'image source',
         },
         list: {
           error: {
             specific: '',
-            unknown: '',
+            unknown: 'erreur inconnue',
           },
           idle: '',
           loading: '',
         },
         numeric: {
           error: {
-            range: '',
+            range: 'hors de portée',
           },
         },
         prompt: {
@@ -37,31 +37,31 @@ export const I18N_STRINGS_FR = {
         },
       },
       loading: {
-        cancel: '',
-        progress: '',
-        unknown: '',
+        cancel: 'Annuler',
+        progress: '{{current}} des {{total}} étapes',
+        unknown: 'nombreuses',
       },
       mask: {
         fill: {
-          black: '',
-          white: '',
+          black: 'remplir de noir',
+          white: 'remplir de blanc',
         },
         gray: {
-          black: '',
-          white: '',
+          black: 'convertir le gris en noir',
+          white: 'convertir le gris en blanc',
         },
         help: '',
-        invert: '',
+        invert: 'Inverser les couleurs',
       },
       maskFilter: {
         'gaussian-multiply': '',
         'gaussian-screen': '',
       },
       modelType: {
-        correction: '',
-        diffusion: '',
+        correction: 'modèle de correction',
+        diffusion: 'modèle de diffusion',
         inversion: '',
-        upscaling: '',
+        upscaling: 'modèle de grossissement',
       },
       noiseSource: {
         'fill-edge': '',
