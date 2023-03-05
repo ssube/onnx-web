@@ -65,8 +65,11 @@ export async function main() {
         });
 
       const strings = await client.strings();
-      for (const [lang, data] of Object.entries(strings)) {
-        i18n.addResourceBundle(lang, 'translation', data, true);
+      for (const [lang, translation] of Object.entries(strings)) {
+        console.log('adding strings', lang, translation);
+        for (const [namespace, data] of Object.entries(translation)) {
+          i18n.addResourceBundle(lang, namespace, data, true);
+        }
       }
 
       // prep zustand with a slice for each tab, using local storage

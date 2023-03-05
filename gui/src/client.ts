@@ -223,7 +223,9 @@ export interface ApiClient {
   /**
    * Load extra strings from the server.
    */
-  strings(): Promise<Record<string, unknown>>;
+  strings(): Promise<Record<string, {
+    translation: Record<string, string>;
+  }>>;
 
   /**
    * Start a txt2img pipeline.
@@ -394,10 +396,14 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const res = await f(path);
       return await res.json() as Array<string>;
     },
-    async strings(): Promise<Record<string, unknown>> {
+    async strings(): Promise<Record<string, {
+      translation: Record<string, string>;
+    }>> {
       const path = makeApiUrl(root, 'settings', 'strings');
       const res = await f(path);
-      return await res.json() as Record<string, unknown>;
+      return await res.json() as Record<string, {
+        translation: Record<string, string>;
+      }>;
     },
     async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse> {
       const url = makeImageURL(root, 'img2img', params);
