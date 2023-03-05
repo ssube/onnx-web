@@ -44,20 +44,6 @@ export const INITIAL_LOAD_TIMEOUT = 5_000;
 export async function renderApp(config: Config, params: ServerParams, logger: Logger, client: ApiClient) {
   const completeConfig = mergeConfig(config, params);
 
-  // prep i18next
-  await i18n
-    .use(LanguageDetector)
-    .use(initReactI18next)
-    .init({
-      debug: true,
-      fallbackLng: 'en',
-      interpolation: {
-        escapeValue: false, // not needed for react as it escapes by default
-      },
-      resources: I18N_STRINGS,
-      returnEmptyString: false,
-    });
-
   logger.info('getting strings from server');
   const strings = await client.strings();
   for (const [lang, translation] of Object.entries(strings)) {
@@ -145,6 +131,12 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
   </QueryClientProvider>;
 }
 
+export async function renderProgress() {
+  return <I18nextProvider i18n={i18n}>
+    <LoadingScreen />
+  </I18nextProvider>;
+}
+
 export async function main() {
   const debug = isDebug();
   const logger = createLogger({
@@ -163,9 +155,23 @@ export async function main() {
   const appElement = mustExist(document.getElementById('app'));
   const app = createRoot(appElement);
 
+  // prep i18next
+  await i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+      debug: true,
+      fallbackLng: 'en',
+      interpolation: {
+        escapeValue: false, // not needed for react as it escapes by default
+      },
+      resources: I18N_STRINGS,
+      returnEmptyString: false,
+    });
+
   try {
     logger.info('getting image parameters from server');
-    app.render(<LoadingScreen />);
+    app.render(await renderProgress());
 
     // load full params from the API server and merge with the initial client config
     const params = await timeout(INITIAL_LOAD_TIMEOUT, client.params());

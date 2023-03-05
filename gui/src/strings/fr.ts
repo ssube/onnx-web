@@ -44,6 +44,7 @@ export const I18N_STRINGS_FR = {
       loading: {
         cancel: 'Annuler',
         progress: '{{current}} des {{total}} étapes',
+        server: 'Connexion au serveur...',
         unknown: 'nombreuses',
       },
       mask: {
