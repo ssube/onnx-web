@@ -101,44 +101,46 @@ def get_model_name(model: str) -> str:
     return file
 
 
+def list_model_globs(context: ServerContext, globs: List[str]) -> List[str]:
+    models = []
+    for pattern in globs:
+        pattern_path = path.join(context.model_path, pattern)
+        logger.debug("loading models from %s", pattern_path)
+
+        models.extend([
+            get_model_name(f) for f in glob(pattern_path)
+        ])
+
+    unique_models = list(set(models))
+    unique_models.sort()
+    return unique_models
+
+
 def load_models(context: ServerContext) -> None:
     global correction_models
     global diffusion_models
     global inversion_models
     global upscaling_models
 
-    diffusion_models = [
-        get_model_name(f) for f in glob(path.join(context.model_path, "diffusion-*"))
-    ]
-    diffusion_models.extend(
-        [
-            get_model_name(f)
-            for f in glob(path.join(context.model_path, "stable-diffusion-*"))
-        ]
-    )
-    diffusion_models = list(set(diffusion_models))
-    diffusion_models.sort()
+    diffusion_models = list_model_globs(context, [
+        "diffusion-*",
+        "stable-diffusion-*",
+    ])
     logger.debug("loaded diffusion models from disk: %s", diffusion_models)
 
-    correction_models = [
-        get_model_name(f) for f in glob(path.join(context.model_path, "correction-*"))
-    ]
-    correction_models = list(set(correction_models))
-    correction_models.sort()
+    correction_models = list_model_globs(context, [
+        "correction-*",
+    ])
     logger.debug("loaded correction models from disk: %s", correction_models)
 
-    inversion_models = [
-        get_model_name(f) for f in glob(path.join(context.model_path, "inversion-*"))
-    ]
-    inversion_models = list(set(inversion_models))
-    inversion_models.sort()
+    inversion_models = list_model_globs(context, [
+        "inversion-*",
+    ])
     logger.debug("loaded inversion models from disk: %s", inversion_models)
 
-    upscaling_models = [
-        get_model_name(f) for f in glob(path.join(context.model_path, "upscaling-*"))
-    ]
-    upscaling_models = list(set(upscaling_models))
-    upscaling_models.sort()
+    upscaling_models = list_model_globs(context, [
+        "upscaling-*",
+    ])
     logger.debug("loaded upscaling models from disk: %s", upscaling_models)
 
 
