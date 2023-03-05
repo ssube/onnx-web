@@ -14,15 +14,9 @@ ENV PATH="/onnx-web/api/onnx_env/bin:$PATH"
 
 RUN pip3 install pip --upgrade
 
-COPY requirements.txt /onnx-web/api/requirements.txt
+COPY requirements/ /onnx-web/api/requirements/
 
-RUN pip3 install -r requirements.txt --no-cache-dir
-
-WORKDIR /ort
-
-RUN wget https://download.onnxruntime.ai/onnxruntime_training-1.14.0.dev20230123001%2Brocm54-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-
-RUN pip3 install /ort/*.whl --ignore-installed
+RUN pip3 install -r requirements/base.txt -r requirements/amd-linux.txt --no-cache-dir
 
 WORKDIR /onnx-web/api
 
