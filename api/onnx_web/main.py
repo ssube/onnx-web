@@ -12,6 +12,7 @@ from torch.multiprocessing import set_start_method
 from .server.api import register_api_routes
 from .server.load import (
     get_available_platforms,
+    load_extras,
     load_models,
     load_params,
     load_platforms,
@@ -33,6 +34,7 @@ def main():
     context = ServerContext.from_environ()
     apply_patches(context)
     check_paths(context)
+    load_extras(context)
     load_models(context)
     load_params(context)
     load_platforms(context)
