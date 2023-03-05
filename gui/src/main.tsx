@@ -1,5 +1,4 @@
 import { mustDefault, mustExist, timeout, TimeoutError } from '@apextoaster/js-utils';
-import { Box, CircularProgress } from '@mui/material';
 import { createLogger, Logger } from 'browser-bunyan';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
@@ -18,15 +17,7 @@ import { ServerParamsError } from './components/error/ServerParams.js';
 import { LoadingScreen } from './components/LoadingScreen.js';
 import { OnnxError } from './components/OnnxError.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
-import {
-  Config,
-  getApiRoot,
-  isDebug,
-  loadConfig,
-  mergeConfig,
-  PARAM_VERSION,
-  ServerParams,
-} from './config.js';
+import { Config, getApiRoot, isDebug, loadConfig, mergeConfig, PARAM_VERSION, ServerParams } from './config.js';
 import {
   ClientContext,
   ConfigContext,
