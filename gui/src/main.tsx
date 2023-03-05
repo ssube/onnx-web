@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { mustDefault, mustExist, timeout } from '@apextoaster/js-utils';
 import { createLogger } from 'browser-bunyan';
 import i18n from 'i18next';
@@ -32,6 +31,11 @@ import { I18N_STRINGS } from './strings/all.js';
 export const INITIAL_LOAD_TIMEOUT = 5_000;
 
 export async function main() {
+  const logger = createLogger({
+    name: 'onnx-web',
+    level: 'debug',
+  });
+
   // load config from GUI server
   const config = await loadConfig();
 
@@ -44,6 +48,7 @@ export async function main() {
   const app = createRoot(appElement);
 
   try {
+    logger.info('getting image parameters from server');
     // load full params from the API server and merge with the initial client config
     const params = await timeout(INITIAL_LOAD_TIMEOUT, client.params());
     const version = mustDefault(params.version, '0.0.0');
@@ -64,9 +69,10 @@ export async function main() {
           returnEmptyString: false,
         });
 
+      logger.info('getting strings from server');
       const strings = await client.strings();
       for (const [lang, translation] of Object.entries(strings)) {
-        console.log('adding strings', lang, translation);
+        logger.debug({ lang, translation }, 'adding server strings');
         for (const [namespace, data] of Object.entries(translation)) {
           i18n.addResourceBundle(lang, namespace, data, true);
         }
@@ -127,20 +133,18 @@ export async function main() {
         version: STATE_VERSION,
       }));
 
-      const logger = createLogger({
-        name: 'onnx-web',
-        system: 'react',
-        level: 'debug',
-      });
-
       // prep react-query client
       const query = new QueryClient();
+
+      const reactLogger = logger.child({
+        system: 'react',
+      });
 
       // go
       app.render(<QueryClientProvider client={query}>
         <ClientContext.Provider value={client}>
           <ConfigContext.Provider value={completeConfig}>
-            <LoggerContext.Provider value={logger}>
+            <LoggerContext.Provider value={reactLogger}>
               <I18nextProvider i18n={i18n}>
                 <StateContext.Provider value={state}>
                   <OnnxWeb />
@@ -163,8 +167,10 @@ export async function main() {
 }
 
 window.addEventListener('load', () => {
+  // eslint-disable-next-line no-console
   console.log('launching onnx-web');
   main().catch((err) => {
+    // eslint-disable-next-line no-console
     console.error('error in main', err);
   });
 }, false);
