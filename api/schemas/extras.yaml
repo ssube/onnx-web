@@ -82,6 +82,15 @@ $defs:
       source:
         type: string
 
+  translation:
+    type: object
+    additionalProperties: False
+    patternProperties:
+      "(\\w|\\.|-)+":
+        oneOf:
+          - type: string
+          - $ref: "#/$defs/translation"
+
 type: object
 additionalProperties: False
 properties:
@@ -111,4 +120,7 @@ properties:
         - $ref: "#/$defs/source_model"
   strings:
     type: object
-    # /\w{2}/: translation: {}
+    additionalProperties: False
+    patternProperties:
+      "^\\w\\w$":
+        $ref: "#/$defs/translation"
