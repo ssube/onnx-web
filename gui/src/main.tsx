@@ -1,4 +1,5 @@
 import { mustDefault, mustExist, timeout, TimeoutError } from '@apextoaster/js-utils';
+import { Box, CircularProgress } from '@mui/material';
 import { createLogger, Logger } from 'browser-bunyan';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
@@ -14,6 +15,7 @@ import { ApiClient, makeClient } from './client/api.js';
 import { LOCAL_CLIENT } from './client/local.js';
 import { ParamsVersionError } from './components/error/ParamsVersion.js';
 import { ServerParamsError } from './components/error/ServerParams.js';
+import { LoadingScreen } from './components/LoadingScreen.js';
 import { OnnxError } from './components/OnnxError.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
 import {
@@ -163,6 +165,8 @@ export async function main() {
 
   try {
     logger.info('getting image parameters from server');
+    app.render(<LoadingScreen />);
+
     // load full params from the API server and merge with the initial client config
     const params = await timeout(INITIAL_LOAD_TIMEOUT, client.params());
     const version = mustDefault(params.version, '0.0.0');
