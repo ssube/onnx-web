@@ -70574,6 +70574,14 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }
     __name(uploadSource, "uploadSource");
+    function preventInpaint() {
+      return doesExist2(source) === false || doesExist2(mask) === false;
+    }
+    __name(preventInpaint, "preventInpaint");
+    function supportsInpaint() {
+      return diffusionModel.includes("inpaint");
+    }
+    __name(supportsInpaint, "supportsInpaint");
     const state = mustExist((0, import_react38.useContext)(StateContext));
     const fillColor = useStore(state, (s) => s.inpaint.fillColor);
     const filter = useStore(state, (s) => s.inpaint.filter);
@@ -70582,6 +70590,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const source = useStore(state, (s) => s.inpaint.source);
     const strength = useStore(state, (s) => s.inpaint.strength);
     const tileOrder = useStore(state, (s) => s.inpaint.tileOrder);
+    const diffusionModel = useStore(state, (s) => s.model.model);
     const setInpaint = useStore(state, (s) => s.setInpaint);
     const setLoading = useStore(state, (s) => s.pushLoading);
     const { t: t2 } = useTranslation();
@@ -70589,12 +70598,21 @@ Please use another name.` : formatMuiErrorMessage(18));
     const upload = useMutation(uploadSource, {
       onSuccess: () => query.invalidateQueries({ queryKey: "ready" })
     });
+    function renderBanner() {
+      if (supportsInpaint()) {
+        return void 0;
+      } else {
+        return React120.createElement(Alert_default, { severity: "warning" }, t2("error.inpaint.support"));
+      }
+    }
+    __name(renderBanner, "renderBanner");
     return React120.createElement(
       Box_default,
       null,
       React120.createElement(
         Stack_default2,
         { spacing: 2 },
+        renderBanner(),
         React120.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), hideSelection: true, onChange: (file) => {
           setInpaint({
             source: file
@@ -70657,7 +70675,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         ),
         React120.createElement(OutpaintControl, null),
         React120.createElement(UpscaleControl, null),
-        React120.createElement(Button_default, { disabled: doesExist2(source) === false || doesExist2(mask) === false, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
+        React120.createElement(Button_default, { disabled: preventInpaint(), variant: "contained", onClick: () => upload.mutate(), color: supportsInpaint() ? void 0 : "warning" }, t2("generate"))
       )
     );
   }
@@ -70917,6 +70935,11 @@ Please use another name.` : formatMuiErrorMessage(18));
   var I18N_STRINGS_DE = {
     de: {
       translation: {
+        error: {
+          inpaint: {
+            support: ""
+          }
+        },
         generate: "Erzeugen",
         history: {
           empty: "Keine neuere Geschichte. Dr\xFCcken Sie Generieren, um ein Bild zu erstellen."
@@ -71073,6 +71096,11 @@ Please use another name.` : formatMuiErrorMessage(18));
   var I18N_STRINGS_EN = {
     en: {
       translation: {
+        error: {
+          inpaint: {
+            support: "This diffusion model may not support inpainting."
+          }
+        },
         generate: "Generate",
         history: {
           empty: "No recent history. Press Generate to create an image."
@@ -71296,6 +71324,11 @@ Please use another name.` : formatMuiErrorMessage(18));
   var I18N_STRINGS_ES = {
     es: {
       translation: {
+        error: {
+          inpaint: {
+            support: ""
+          }
+        },
         generate: "Generar",
         history: {
           empty: "Sin antecedentes recientes. Presiona generar para crear una nueva imagen."
@@ -71452,6 +71485,11 @@ Please use another name.` : formatMuiErrorMessage(18));
   var I18N_STRINGS_FR = {
     fr: {
       translation: {
+        error: {
+          inpaint: {
+            support: ""
+          }
+        },
         generate: "g\xE9n\xE9rer",
         history: {
           empty: "pas d'histoire r\xE9cente. appuyez sur g\xE9n\xE9rer pour cr\xE9er une image."
