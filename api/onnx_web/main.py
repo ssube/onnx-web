@@ -10,7 +10,7 @@ from setproctitle import setproctitle
 from torch.multiprocessing import set_start_method
 
 from .server.api import register_api_routes
-from .server.config import (
+from .server.load import (
     get_available_platforms,
     load_models,
     load_params,

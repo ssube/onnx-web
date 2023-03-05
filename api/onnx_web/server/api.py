@@ -19,7 +19,7 @@ from ..diffusion.run import (
 from ..image import valid_image  # mask filters; noise sources
 from ..output import json_params, make_output_name
 from ..params import Border, StageParams, TileOrder, UpscaleParams
-from ..transformers import run_txt2txt_pipeline
+from ..transformers.run import run_txt2txt_pipeline
 from ..utils import (
     base_join,
     get_and_clamp_float,
@@ -31,7 +31,7 @@ from ..utils import (
     sanitize_name,
 )
 from ..worker.pool import DevicePoolExecutor
-from .config import (
+from .load import (
     get_available_platforms,
     get_config_params,
     get_config_value,
