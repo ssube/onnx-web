@@ -167,7 +167,7 @@ package-api-twine:
   cache:
     key:
       files:
-        - api/dev-requirements.txt
+        - api/requirements/dev.txt
     paths:
       - .cache/pip
     policy: pull-push

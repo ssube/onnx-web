@@ -13,7 +13,7 @@ pip: check-venv
 	pip install -r requirements.txt
 
 pip-dev: check-venv
-	pip install -r dev-requirements.txt
+	pip install -r requirements/dev.txt
 
 test:
 	python -m coverage run -m unittest discover -s tests/

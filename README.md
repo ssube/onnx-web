@@ -172,13 +172,26 @@ Update pip itself:
 
 ### Install pip packages
 
-You can install of the necessary packages at once using [the `requirements.txt` file](./api/requirements.txt):
+You can install all of the necessary packages at once using [the `requirements/base.txt` file](./api/requirements/base.txt)
+and the `requirements/` file for your platform:
 
 ```shell
-> pip install -r requirements.txt
+> pip install -r requirements/base.txt -r requirements/amd-linux.txt
+# or
+> pip install -r requirements/base.txt -r requirements/amd-windows.txt
+# or
+> pip install -r requirements/base.txt -r requirements/amd-windows-nightly.txt
+# or
+> pip install -r requirements/base.txt -r requirements/cpu.txt
+# or
+> pip install -r requirements/base.txt -r requirements/nvidia.txt
 ```
 
-_Or_ you can install them manually using pip:
+Only install one of the platform-specific requirements files, otherwise you may end up with the wrong version of
+PyTorch or the ONNX runtime. The ONNX runtime nightly packages used by `amd-windows-nightly.txt` can be substantially
+faster than the latest release, but may not always be stable.
+
+If you prefer, you can install all of the packages manually using pip:
 
 ```shell
 > pip install "numpy>=1.20,<1.24"
