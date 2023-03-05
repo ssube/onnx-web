@@ -88,6 +88,10 @@ def introspect(context: ServerContext, app: Flask):
     }
 
 
+def get_extra_strings(context: ServerContext):
+    return jsonify(get_extra_strings())
+
+
 def list_mask_filters(context: ServerContext):
     return jsonify(list(get_mask_filters().keys()))
 
@@ -464,6 +468,7 @@ def register_api_routes(app: Flask, context: ServerContext, pool: DevicePoolExec
         app.route("/api/settings/params")(wrap_route(list_params, context)),
         app.route("/api/settings/platforms")(wrap_route(list_platforms, context)),
         app.route("/api/settings/schedulers")(wrap_route(list_schedulers, context)),
+        app.route("/api/settings/strings")(wrap_route(get_extra_strings, context)),
         app.route("/api/img2img", methods=["POST"])(
             wrap_route(img2img, context, pool=pool)
         ),

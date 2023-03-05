@@ -2,11 +2,14 @@ from functools import cmp_to_key
 from glob import glob
 from logging import getLogger
 from os import path
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
+from jsonschema import ValidationError, validate
 
 import torch
 import yaml
+from yaml import safe_load
 
+from ..utils import merge
 from ..image import (  # mask filters; noise sources
     mask_filter_gaussian_multiply,
     mask_filter_gaussian_screen,
@@ -58,6 +61,9 @@ diffusion_models: List[str] = []
 inversion_models: List[str] = []
 upscaling_models: List[str] = []
 
+# Loaded from extra_models
+extra_strings: Dict[str, Any] = {}
+
 
 def get_config_params():
     return config_params
@@ -83,6 +89,10 @@ def get_upscaling_models():
     return upscaling_models
 
 
+def get_extra_strings():
+    return extra_strings
+
+
 def get_mask_filters():
     return mask_filters
 
@@ -99,6 +109,59 @@ def get_model_name(model: str) -> str:
     base = path.basename(model)
     (file, _ext) = path.splitext(base)
     return file
+
+
+def load_extras(context: ServerContext):
+    """
+    Load the extras file(s) and collect the relevant parts for the server: labels and strings
+    """
+    global extra_strings
+
+    labels = {}
+    strings = {}
+
+    with open("./schemas/extras.yaml", "r") as f:
+        extra_schema = safe_load(f.read())
+
+    for file in context.extra_models:
+        if file is not None and file != "":
+            logger.info("loading extra models from %s", file)
+            try:
+                with open(file, "r") as f:
+                    data = safe_load(f.read())
+
+                logger.debug("validating extras file %s", data)
+                try:
+                    validate(data, extra_schema)
+                except ValidationError as err:
+                    logger.error("invalid data in extras file: %s", err)
+                    continue
+
+                if "strings" in data:
+                    logger.debug("collecting strings from %s", file)
+                    merge(strings, data["strings"])
+
+                for model_type in ["diffusion", "correction", "upscaling"]:
+                    if model_type in data:
+                        for model in data[model_type]:
+                            if "label" in model:
+                                model_name = model["name"]
+                                logger.debug("collecting label for model %s from %s", model_name, file)
+                                labels[model_name] = model["label"]
+
+            except Exception as err:
+                logger.error("error loading extras file: %s", err)
+
+    logger.debug("adding labels to strings: %s", labels)
+    merge(strings, {
+        "en": {
+            "translation": {
+                "model": labels,
+            }
+        }
+    })
+
+    extra_strings = strings
 
 
 def list_model_globs(context: ServerContext, globs: List[str]) -> List[str]:

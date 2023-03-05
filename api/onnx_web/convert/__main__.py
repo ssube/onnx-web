@@ -353,20 +353,26 @@ def main() -> int:
     logger.info("converting base models")
     convert_models(ctx, args, base_models)
 
-    for file in args.extras:
+    extras = []
+    extras.extend(ctx.extra_models)
+    extras.extend(args.extras)
+    extras = list(set(extras))
+    extras.sort()
+    logger.debug("loading extra files: %s", extras)
+
+    with open("./schemas/extras.yaml", "r") as f:
+        extra_schema = safe_load(f.read())
+
+    for file in extras:
         if file is not None and file != "":
             logger.info("loading extra models from %s", file)
             try:
                 with open(file, "r") as f:
                     data = safe_load(f.read())
 
-                with open("./schemas/extras.yaml", "r") as f:
-                    schema = safe_load(f.read())
-
-                logger.debug("validating chain request: %s against %s", data, schema)
-
+                logger.debug("validating extras file %s", data)
                 try:
-                    validate(data, schema)
+                    validate(data, extra_schema)
                     logger.info("converting extra models")
                     convert_models(ctx, args, data)
                 except ValidationError as err:

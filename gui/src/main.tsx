@@ -64,7 +64,10 @@ export async function main() {
           returnEmptyString: false,
         });
 
-      i18n.addResourceBundle(i18n.resolvedLanguage, 'model', params.model.keys);
+      const strings = await client.strings();
+      for (const [lang, data] of Object.entries(strings)) {
+        i18n.addResourceBundle(lang, 'translation', data, true);
+      }
 
       // prep zustand with a slice for each tab, using local storage
       const {

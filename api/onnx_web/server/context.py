@@ -25,6 +25,7 @@ class ServerContext:
         cache_path: Optional[str] = None,
         show_progress: bool = True,
         optimizations: Optional[List[str]] = None,
+        extra_models: Optional[List[str]] = None,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -40,6 +41,7 @@ class ServerContext:
         self.cache_path = cache_path or path.join(model_path, ".cache")
         self.show_progress = show_progress
         self.optimizations = optimizations or []
+        self.extra_models = extra_models or []
 
     @classmethod
     def from_environ(cls):
@@ -63,4 +65,5 @@ class ServerContext:
             cache=ModelCache(limit=cache_limit),
             show_progress=get_boolean(environ, "ONNX_WEB_SHOW_PROGRESS", True),
             optimizations=environ.get("ONNX_WEB_OPTIMIZATIONS", "").split(","),
+            extra_models=environ.get("ONNX_WEB_EXTRA_MODELS", "").split(","),
         )
