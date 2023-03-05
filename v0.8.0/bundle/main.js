@@ -43531,6 +43531,11 @@
         const res = await f2(path2);
         return await res.json();
       },
+      async strings() {
+        const path2 = makeApiUrl(root, "settings", "strings");
+        const res = await f2(path2);
+        return await res.json();
+      },
       async img2img(model, params, upscale) {
         const url = makeImageURL(root, "img2img", params);
         appendModelToURL(url, model);
@@ -71447,27 +71452,27 @@ Please use another name.` : formatMuiErrorMessage(18));
   var I18N_STRINGS_FR = {
     fr: {
       translation: {
-        generate: "",
+        generate: "g\xE9n\xE9rer",
         history: {
-          empty: ""
+          empty: "pas d'histoire r\xE9cente. appuyez sur g\xE9n\xE9rer pour cr\xE9er une image."
         },
         input: {
           image: {
-            empty: "",
-            mask: "",
-            source: ""
+            empty: "veuillez s\xE9lectionner une image",
+            mask: "image de masque",
+            source: "image source"
           },
           list: {
             error: {
               specific: "",
-              unknown: ""
+              unknown: "erreur inconnue"
             },
             idle: "",
             loading: ""
           },
           numeric: {
             error: {
-              range: ""
+              range: "hors de port\xE9e"
             }
           },
           prompt: {
@@ -71478,31 +71483,31 @@ Please use another name.` : formatMuiErrorMessage(18));
           }
         },
         loading: {
-          cancel: "",
-          progress: "",
-          unknown: ""
+          cancel: "Annuler",
+          progress: "{{current}} des {{total}} \xE9tapes",
+          unknown: "nombreuses"
         },
         mask: {
           fill: {
-            black: "",
-            white: ""
+            black: "remplir de noir",
+            white: "remplir de blanc"
           },
           gray: {
-            black: "",
-            white: ""
+            black: "convertir le gris en noir",
+            white: "convertir le gris en blanc"
           },
           help: "",
-          invert: ""
+          invert: "Inverser les couleurs"
         },
         maskFilter: {
           "gaussian-multiply": "",
           "gaussian-screen": ""
         },
         modelType: {
-          correction: "",
-          diffusion: "",
+          correction: "mod\xE8le de correction",
+          diffusion: "mod\xE8le de diffusion",
           inversion: "",
-          upscaling: ""
+          upscaling: "mod\xE8le de grossissement"
         },
         noiseSource: {
           "fill-edge": "",
@@ -71605,12 +71610,17 @@ Please use another name.` : formatMuiErrorMessage(18));
   // out/src/main.js
   var INITIAL_LOAD_TIMEOUT = 5e3;
   async function main2() {
+    const logger3 = E({
+      name: "onnx-web",
+      level: "debug"
+    });
     const config = await loadConfig();
     const root = getApiRoot(config);
     const client = makeClient(root);
     const appElement = mustExist(document.getElementById("app"));
     const app = (0, import_client2.createRoot)(appElement);
     try {
+      logger3.info("getting image parameters from server");
       const params = await timeout(INITIAL_LOAD_TIMEOUT, client.params());
       const version = mustDefault(params.version, "0.0.0");
       if ((0, import_semver.satisfies)(version, PARAM_VERSION)) {
@@ -71625,7 +71635,14 @@ Please use another name.` : formatMuiErrorMessage(18));
           resources: I18N_STRINGS,
           returnEmptyString: false
         });
-        instance.addResourceBundle(instance.resolvedLanguage, "model", params.model.keys);
+        logger3.info("getting strings from server");
+        const strings = await client.strings();
+        for (const [lang, translation] of Object.entries(strings)) {
+          logger3.debug({ lang, translation }, "adding server strings");
+          for (const [namespace, data] of Object.entries(translation)) {
+            instance.addResourceBundle(lang, namespace, data, true);
+          }
+        }
         const { createBrushSlice, createDefaultSlice, createHistorySlice, createImg2ImgSlice, createInpaintSlice, createModelSlice, createOutpaintSlice, createTxt2ImgSlice, createUpscaleSlice, createBlendSlice, createResetSlice } = createStateSlices(params);
         const state = createStore(persist((...slice3) => Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, createBrushSlice(...slice3)), createDefaultSlice(...slice3)), createHistorySlice(...slice3)), createImg2ImgSlice(...slice3)), createInpaintSlice(...slice3)), createModelSlice(...slice3)), createTxt2ImgSlice(...slice3)), createOutpaintSlice(...slice3)), createUpscaleSlice(...slice3)), createBlendSlice(...slice3)), createResetSlice(...slice3)), {
           name: STATE_KEY,
@@ -71635,12 +71652,10 @@ Please use another name.` : formatMuiErrorMessage(18));
           storage: createJSONStorage(() => localStorage),
           version: STATE_VERSION
         }));
-        const logger3 = E({
-          name: "onnx-web",
-          system: "react",
-          level: "debug"
-        });
         const query = new QueryClient();
+        const reactLogger = logger3.child({
+          system: "react"
+        });
         app.render(React125.createElement(
           QueryClientProvider,
           { client: query },
@@ -71652,7 +71667,7 @@ Please use another name.` : formatMuiErrorMessage(18));
               { value: completeConfig },
               React125.createElement(
                 LoggerContext.Provider,
-                { value: logger3 },
+                { value: reactLogger },
                 React125.createElement(
                   I18nextProvider,
                   { i18n: instance },
