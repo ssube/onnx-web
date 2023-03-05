@@ -4,7 +4,7 @@ from typing import Tuple
 import numpy as np
 from flask import request
 
-from ..diffusion.load import pipeline_schedulers
+from ..diffusers.load import pipeline_schedulers
 from ..params import Border, DeviceParams, ImageParams, Size, UpscaleParams
 from ..utils import get_and_clamp_float, get_and_clamp_int, get_from_list, get_not_empty
 from .load import (

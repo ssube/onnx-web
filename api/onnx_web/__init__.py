@@ -5,15 +5,15 @@ from .chain import (
     upscale_resrgan,
     upscale_stable_diffusion,
 )
-from .diffusion.load import get_latents_from_seed, load_pipeline, optimize_pipeline
-from .diffusion.run import (
+from .diffusers.load import get_latents_from_seed, load_pipeline, optimize_pipeline
+from .diffusers.run import (
     run_blend_pipeline,
     run_img2img_pipeline,
     run_inpaint_pipeline,
     run_txt2img_pipeline,
     run_upscale_pipeline,
 )
-from .diffusion.stub_scheduler import StubScheduler
+from .diffusers.stub_scheduler import StubScheduler
 from .image import (
     expand_image,
     mask_filter_gaussian_multiply,

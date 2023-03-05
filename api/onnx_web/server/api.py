@@ -8,8 +8,8 @@ from jsonschema import validate
 from PIL import Image
 
 from ..chain import CHAIN_STAGES, ChainPipeline
-from ..diffusion.load import get_pipeline_schedulers
-from ..diffusion.run import (
+from ..diffusers.load import get_pipeline_schedulers
+from ..diffusers.run import (
     run_blend_pipeline,
     run_img2img_pipeline,
     run_inpaint_pipeline,

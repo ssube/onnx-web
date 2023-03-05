@@ -27,8 +27,8 @@ from onnx.shape_inference import infer_shapes_path
 from onnxruntime.transformers.float16 import convert_float_to_float16
 from torch.onnx import export
 
-from ...diffusion.load import optimize_pipeline
-from ...diffusion.pipeline_onnx_stable_diffusion_upscale import (
+from ...diffusers.load import optimize_pipeline
+from ...diffusers.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
 from ..utils import ConversionContext

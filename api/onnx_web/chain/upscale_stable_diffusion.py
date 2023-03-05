@@ -6,8 +6,8 @@ import torch
 from diffusers import StableDiffusionUpscalePipeline
 from PIL import Image
 
-from ..diffusion.load import optimize_pipeline
-from ..diffusion.pipeline_onnx_stable_diffusion_upscale import (
+from ..diffusers.load import optimize_pipeline
+from ..diffusers.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams

@@ -26,7 +26,7 @@ from transformers import CLIPTokenizer
 try:
     from diffusers import DEISMultistepScheduler
 except ImportError:
-    from ..diffusion.stub_scheduler import StubScheduler as DEISMultistepScheduler
+    from ..diffusers.stub_scheduler import StubScheduler as DEISMultistepScheduler
 
 from ..params import DeviceParams, Size
 from ..server import ServerContext

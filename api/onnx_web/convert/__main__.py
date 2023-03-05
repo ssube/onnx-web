@@ -11,9 +11,9 @@ from jsonschema import ValidationError, validate
 from yaml import safe_load
 
 from .correction_gfpgan import convert_correction_gfpgan
-from .diffusion.diffusers import convert_diffusion_diffusers
-from .diffusion.original import convert_diffusion_original
-from .diffusion.textual_inversion import convert_diffusion_textual_inversion
+from .diffusers.diffusers import convert_diffusion_diffusers
+from .diffusers.original import convert_diffusion_original
+from .diffusers.textual_inversion import convert_diffusion_textual_inversion
 from .upscale_resrgan import convert_upscale_resrgan
 from .utils import (
     ConversionContext,
