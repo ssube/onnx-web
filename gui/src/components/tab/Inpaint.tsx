@@ -1,5 +1,5 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
-import { Box, Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Stack } from '@mui/material';
+import { Alert, Box, Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -51,6 +51,14 @@ export function Inpaint() {
     }
   }
 
+  function preventInpaint(): boolean {
+    return doesExist(source) === false || doesExist(mask) === false;
+  }
+
+  function supportsInpaint(): boolean {
+    return diffusionModel.includes('inpaint');
+  }
+
   const state = mustExist(useContext(StateContext));
   const fillColor = useStore(state, (s) => s.inpaint.fillColor);
   const filter = useStore(state, (s) => s.inpaint.filter);
@@ -59,6 +67,7 @@ export function Inpaint() {
   const source = useStore(state, (s) => s.inpaint.source);
   const strength = useStore(state, (s) => s.inpaint.strength);
   const tileOrder = useStore(state, (s) => s.inpaint.tileOrder);
+  const diffusionModel = useStore(state, (s) => s.model.model);
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setInpaint = useStore(state, (s) => s.setInpaint);
@@ -71,8 +80,17 @@ export function Inpaint() {
     onSuccess: () => query.invalidateQueries({ queryKey: 'ready' }),
   });
 
+  function renderBanner() {
+    if (supportsInpaint()) {
+      return undefined;
+    } else {
+      return <Alert severity="warning">{t('error.inpaint.support')}</Alert>;
+    }
+  }
+
   return <Box>
     <Stack spacing={2}>
+      {renderBanner()}
       <ImageInput
         filter={IMAGE_FILTER}
         image={source}
@@ -191,9 +209,10 @@ export function Inpaint() {
       <OutpaintControl />
       <UpscaleControl />
       <Button
-        disabled={doesExist(source) === false || doesExist(mask) === false}
+        disabled={preventInpaint()}
         variant='contained'
         onClick={() => upload.mutate()}
+        color={supportsInpaint() ? undefined : 'warning'}
       >{t('generate')}</Button>
     </Stack>
   </Box>;

@@ -6,6 +6,11 @@
 export const I18N_STRINGS_ES = {
   es: {
     translation: {
+      error: {
+        inpaint: {
+          support: '',
+        },
+      },
       generate: 'Generar',
       history: {
         empty: 'Sin antecedentes recientes. Presiona generar para crear una nueva imagen.',

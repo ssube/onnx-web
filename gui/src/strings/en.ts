@@ -1,6 +1,11 @@
 export const I18N_STRINGS_EN = {
   en: {
     translation: {
+      error: {
+        inpaint: {
+          support: 'This diffusion model may not support inpainting.',
+        },
+      },
       generate: 'Generate',
       history: {
         empty: 'No recent history. Press Generate to create an image.',
