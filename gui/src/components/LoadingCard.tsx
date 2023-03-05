@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
 import { useStore } from 'zustand';
 
-import { ImageResponse } from '../client.js';
+import { ImageResponse } from '../client/api.js';
 import { POLL_TIME } from '../config.js';
 import { ClientContext, ConfigContext, StateContext } from '../state.js';
 

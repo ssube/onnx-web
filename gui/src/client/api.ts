@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 import { doesExist } from '@apextoaster/js-utils';
 
-import { ServerParams } from './config.js';
-import { range } from './utils.js';
+import { ServerParams } from '../config.js';
+import { range } from '../utils.js';
 
 /**
  * Shared parameters for anything using models, which is pretty much everything.

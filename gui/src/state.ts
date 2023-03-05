@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 /* eslint-disable no-null/no-null */
-import { doesExist, Maybe } from '@apextoaster/js-utils';
+import { Maybe } from '@apextoaster/js-utils';
 import { Logger } from 'noicejs';
 import { createContext } from 'react';
 import { StateCreator, StoreApi } from 'zustand';
@@ -19,7 +19,7 @@ import {
   Txt2ImgParams,
   UpscaleParams,
   UpscaleReqParams,
-} from './client.js';
+} from './client/api.js';
 import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
 
 /**

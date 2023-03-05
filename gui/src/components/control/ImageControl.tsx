@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { useStore } from 'zustand';
 
-import { BaseImgParams } from '../../client.js';
+import { BaseImgParams } from '../../client/api.js';
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
 import { NumericField } from '../input/NumericField.js';
