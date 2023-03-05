@@ -1,8 +1,8 @@
 from logging import getLogger
 
-from .params import ImageParams, Size
-from .server import ServerContext
-from .worker import WorkerContext
+from ..params import ImageParams, Size
+from ..server import ServerContext
+from ..worker import WorkerContext
 
 logger = getLogger(__name__)
 
