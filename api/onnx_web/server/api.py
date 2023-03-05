@@ -31,6 +31,7 @@ from ..utils import (
     sanitize_name,
 )
 from ..worker.pool import DevicePoolExecutor
+from .context import ServerContext
 from .load import (
     get_available_platforms,
     get_config_params,
@@ -43,7 +44,6 @@ from .load import (
     get_noise_sources,
     get_upscaling_models,
 )
-from .context import ServerContext
 from .params import border_from_request, pipeline_from_request, upscale_from_request
 from .utils import wrap_route
 

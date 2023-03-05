@@ -10,6 +10,8 @@ from setproctitle import setproctitle
 from torch.multiprocessing import set_start_method
 
 from .server.api import register_api_routes
+from .server.context import ServerContext
+from .server.hacks import apply_patches
 from .server.load import (
     get_available_platforms,
     load_extras,
@@ -17,8 +19,6 @@ from .server.load import (
     load_params,
     load_platforms,
 )
-from .server.context import ServerContext
-from .server.hacks import apply_patches
 from .server.static import register_static_routes
 from .server.utils import check_paths
 from .utils import is_debug

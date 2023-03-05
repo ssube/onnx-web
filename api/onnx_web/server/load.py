@@ -3,13 +3,12 @@ from glob import glob
 from logging import getLogger
 from os import path
 from typing import Any, Dict, List, Union
-from jsonschema import ValidationError, validate
 
 import torch
 import yaml
+from jsonschema import ValidationError, validate
 from yaml import safe_load
 
-from ..utils import merge
 from ..image import (  # mask filters; noise sources
     mask_filter_gaussian_multiply,
     mask_filter_gaussian_screen,
@@ -23,6 +22,7 @@ from ..image import (  # mask filters; noise sources
 )
 from ..params import DeviceParams
 from ..torch_before_ort import get_available_providers
+from ..utils import merge
 from .context import ServerContext
 
 logger = getLogger(__name__)
@@ -146,20 +146,27 @@ def load_extras(context: ServerContext):
                         for model in data[model_type]:
                             if "label" in model:
                                 model_name = model["name"]
-                                logger.debug("collecting label for model %s from %s", model_name, file)
+                                logger.debug(
+                                    "collecting label for model %s from %s",
+                                    model_name,
+                                    file,
+                                )
                                 labels[model_name] = model["label"]
 
             except Exception as err:
                 logger.error("error loading extras file: %s", err)
 
     logger.debug("adding labels to strings: %s", labels)
-    merge(strings, {
-        "en": {
-            "translation": {
-                "model": labels,
+    merge(
+        strings,
+        {
+            "en": {
+                "translation": {
+                    "model": labels,
+                }
             }
-        }
-    })
+        },
+    )
 
     extra_strings = strings
 
@@ -170,9 +177,7 @@ def list_model_globs(context: ServerContext, globs: List[str]) -> List[str]:
         pattern_path = path.join(context.model_path, pattern)
         logger.debug("loading models from %s", pattern_path)
 
-        models.extend([
-            get_model_name(f) for f in glob(pattern_path)
-        ])
+        models.extend([get_model_name(f) for f in glob(pattern_path)])
 
     unique_models = list(set(models))
     unique_models.sort()
@@ -185,25 +190,37 @@ def load_models(context: ServerContext) -> None:
     global inversion_models
     global upscaling_models
 
-    diffusion_models = list_model_globs(context, [
-        "diffusion-*",
-        "stable-diffusion-*",
-    ])
+    diffusion_models = list_model_globs(
+        context,
+        [
+            "diffusion-*",
+            "stable-diffusion-*",
+        ],
+    )
     logger.debug("loaded diffusion models from disk: %s", diffusion_models)
 
-    correction_models = list_model_globs(context, [
-        "correction-*",
-    ])
+    correction_models = list_model_globs(
+        context,
+        [
+            "correction-*",
+        ],
+    )
     logger.debug("loaded correction models from disk: %s", correction_models)
 
-    inversion_models = list_model_globs(context, [
-        "inversion-*",
-    ])
+    inversion_models = list_model_globs(
+        context,
+        [
+            "inversion-*",
+        ],
+    )
     logger.debug("loaded inversion models from disk: %s", inversion_models)
 
-    upscaling_models = list_model_globs(context, [
-        "upscaling-*",
-    ])
+    upscaling_models = list_model_globs(
+        context,
+        [
+            "upscaling-*",
+        ],
+    )
     logger.debug("loaded upscaling models from disk: %s", upscaling_models)
 
 

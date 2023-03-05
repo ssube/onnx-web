@@ -9,8 +9,8 @@ skip_glob = ["*/lpw_stable_diffusion_onnx.py", "*/pipeline_onnx_stable_diffusion
 [tool.mypy]
 # ignore_missing_imports = true
 exclude = [
-    "onnx_web.diffusion.lpw_stable_diffusion_onnx",
-    "onnx_web.diffusion.pipeline_onnx_stable_diffusion_upscale"
+    "onnx_web.diffusers.lpw_stable_diffusion_onnx",
+    "onnx_web.diffusers.pipeline_onnx_stable_diffusion_upscale"
 ]
 
 [[tool.mypy.overrides]]
