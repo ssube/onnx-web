@@ -153,6 +153,17 @@ def load_extras(context: ServerContext):
                                 )
                                 labels[model_name] = model["label"]
 
+                            if "inversions" in model:
+                                for inversion in model["inversions"]:
+                                    if "label" in inversion:
+                                        inversion_name = inversion["name"]
+                                        logger.debug(
+                                            "collecting label for inversion %s from %s",
+                                            inversion_name,
+                                            model_name,
+                                        )
+                                        labels[f"inversion-{inversion_name}"] = inversion["label"]
+
             except Exception as err:
                 logger.error("error loading extras file: %s", err)
 
