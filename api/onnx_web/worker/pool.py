@@ -291,7 +291,9 @@ class DevicePoolExecutor:
                 logger.debug("shutting down worker for device %s", device)
                 worker.join(self.join_timeout)
                 if worker.is_alive():
-                    logger.error("leaking worker for device %s could not be shut down", device)
+                    logger.error(
+                        "leaking worker for device %s could not be shut down", device
+                    )
 
             self.leaking[:] = [dw for dw in self.leaking if dw[1].is_alive()]
 
