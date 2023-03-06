@@ -66,7 +66,7 @@ class WorkerContext:
         self.progress.put((self.job, self.device.device, progress), block=False)
 
     def set_finished(self) -> None:
-        self.finished.put((self.job, self.device.device))
+        self.finished.put((self.job, self.device.device), block=False)
 
     def clear_flags(self) -> None:
         self.set_cancel(False)
