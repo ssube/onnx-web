@@ -43,10 +43,11 @@ class WorkerContext:
         return self.cancel.value
 
     def is_current(self) -> bool:
-        if self.current.value > 0:
-            return self.current.value == getpid()
+        return self.get_current() == getpid()
 
-        return True
+    def get_current(self) -> int:
+        with self.current.get_lock():
+            return self.current.value
 
     def get_device(self) -> DeviceParams:
         """
