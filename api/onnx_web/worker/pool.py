@@ -171,6 +171,7 @@ class DevicePoolExecutor:
                     _device, progress = self.active_jobs[job]
                     self.finished_jobs.append((job, progress, context.cancel.value))
                     del self.active_jobs[job]
+                    self.join_leaking()
                 except Empty:
                     pass
                 except ValueError:
@@ -262,6 +263,7 @@ class DevicePoolExecutor:
             queue.close()
 
         self.pending.clear()
+        self.join_leaking()
 
         logger.debug("stopping device workers")
         for device, worker in self.workers.items():
@@ -282,9 +284,7 @@ class DevicePoolExecutor:
 
         logger.debug("worker pool stopped")
 
-    def recycle(self):
-        logger.debug("recycling worker pool")
-
+    def join_leaking(self):
         if len(self.leaking) > 0:
             logger.warning("cleaning up %s leaking workers", len(self.leaking))
             for device, worker in self.leaking:
@@ -296,6 +296,10 @@ class DevicePoolExecutor:
                     )
 
             self.leaking[:] = [dw for dw in self.leaking if dw[1].is_alive()]
+
+    def recycle(self):
+        logger.debug("recycling worker pool")
+        self.join_leaking()
 
         needs_restart = []
 
