@@ -245,7 +245,7 @@ class DevicePoolExecutor:
                 return (True, p)
 
         if key not in self.active_jobs:
-            logger.warn("checking status for unknown job: %s", key)
+            logger.debug("checking status for unknown job: %s", key)
             return (None, 0)
 
         _device, progress = self.active_jobs[key]
@@ -357,7 +357,7 @@ class DevicePoolExecutor:
         else:
             self.total_jobs[device] = 1
 
-        logger.debug("device job count: %s", self.total_jobs[device])
+        logger.debug("job count for device %s: %s", device, self.total_jobs[device])
         self.recycle()
 
         self.pending[device].put((key, fn, args, kwargs), block=False)
