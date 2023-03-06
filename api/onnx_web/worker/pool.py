@@ -23,6 +23,7 @@ class DevicePoolExecutor:
 
     leaking: List[Tuple[str, Process]]
     context: Dict[str, WorkerContext]  # Device -> Context
+    current: Dict[str, "Value[int]"]
     pending: Dict[str, "Queue[Tuple[str, Callable[..., None], Any, Any]]"]
     threads: Dict[str, Thread]
     workers: Dict[str, Process]
@@ -52,6 +53,7 @@ class DevicePoolExecutor:
 
         self.leaking = []
         self.context = {}
+        self.current = {}
         self.pending = {}
         self.threads = {}
         self.workers = {}
@@ -85,6 +87,14 @@ class DevicePoolExecutor:
             pending = Queue(self.max_pending_per_worker)
             self.pending[name] = pending
 
+        if name in self.current:
+            logger.debug("using existing current worker value")
+            current = self.current[name]
+        else:
+            logger.debug("creating new current worker value")
+            current = Value("L", 0)
+            self.current[name] = current
+
         context = WorkerContext(
             name,
             device,
@@ -93,16 +103,19 @@ class DevicePoolExecutor:
             finished=self.finished,
             logs=self.logs,
             pending=pending,
+            current=current,
         )
         self.context[name] = context
-        self.workers[name] = Process(
+        worker = Process(
             name=f"onnx-web worker: {name}",
             target=worker_main,
             args=(context, self.server),
         )
 
         logger.debug("starting worker for device %s", device)
-        self.workers[name].start()
+        worker.start()
+        self.workers[name] = worker
+        current.value = worker.pid
 
     def create_logger_worker(self) -> None:
         def logger_worker(logs: Queue):

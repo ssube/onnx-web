@@ -24,6 +24,10 @@ def worker_main(context: WorkerContext, server: ServerContext):
 
     while True:
         try:
+            if not context.is_current():
+                logger.warning("worker has been replaced, exiting")
+                exit(3)
+
             name, fn, args, kwargs = context.pending.get(timeout=1.0)
             logger.info("worker for %s got job: %s", context.device.device, name)
 
