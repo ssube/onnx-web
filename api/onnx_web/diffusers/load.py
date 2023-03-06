@@ -147,7 +147,7 @@ def load_pipeline(
     lpw: bool,
     inversion: Optional[str],
 ):
-    pipe_key = (pipeline, model, device.device, device.provider, lpw, inversion)
+    pipe_key = (pipeline.__name__, model, device.device, device.provider, lpw, inversion)
     scheduler_key = (scheduler_name, model)
     scheduler_type = get_pipeline_schedulers()[scheduler_name]
 
