@@ -268,18 +268,18 @@ class DevicePoolExecutor:
         logger.debug("stopping device workers")
         for device, worker in self.workers.items():
             if worker.is_alive():
-                logger.debug("stopping worker for device %s", device)
+                logger.debug("stopping worker %s for device %s", worker.pid, device)
                 worker.join(self.join_timeout)
                 if worker.is_alive():
                     logger.warning(
-                        "worker for device %s could not be stopped in time", device
+                        "worker %s for device %s could not be stopped in time", worker.pid, device
                     )
                     self.leaking.append((device, worker))
             else:
                 logger.debug("worker for device %s has died", device)
 
         for name, thread in self.threads.items():
-            logger.debug("stopping worker thread: %s", name)
+            logger.debug("stopping worker %s for thread %s", thread.ident, name)
             thread.join(self.join_timeout)
 
         logger.debug("worker pool stopped")
@@ -288,11 +288,11 @@ class DevicePoolExecutor:
         if len(self.leaking) > 0:
             logger.warning("cleaning up %s leaking workers", len(self.leaking))
             for device, worker in self.leaking:
-                logger.debug("shutting down worker for device %s", device)
+                logger.debug("shutting down worker %s for device %s", worker.pid, device)
                 worker.join(self.join_timeout)
                 if worker.is_alive():
                     logger.error(
-                        "leaking worker for device %s could not be shut down", device
+                        "leaking worker %s for device %s could not be shut down", worker.pid, device
                     )
 
             self.leaking[:] = [dw for dw in self.leaking if dw[1].is_alive()]
@@ -315,7 +315,7 @@ class DevicePoolExecutor:
                 worker.join(self.join_timeout)
                 if worker.is_alive():
                     logger.warning(
-                        "worker for device %s could not be recycled in time", device
+                        "worker %s for device %s could not be recycled in time", worker.pid, device
                     )
                     self.leaking.append((device, worker))
                 else:
@@ -325,7 +325,7 @@ class DevicePoolExecutor:
                 needs_restart.append(device)
             else:
                 logger.debug(
-                    "worker for device %s does not need to be recycled", device
+                    "worker %s for device %s does not need to be recycled", worker.pid, device
                 )
 
         logger.debug("starting new workers")
