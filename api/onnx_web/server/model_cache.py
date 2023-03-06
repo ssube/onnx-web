@@ -12,11 +12,15 @@ class ModelCache:
         self.cache = []
         self.limit = limit
 
-    def drop(self, tag: str, key: Any) -> None:
+    def drop(self, tag: str, key: Any) -> int:
         logger.debug("dropping item from cache: %s", tag)
-        self.cache[:] = [
-            model for model in self.cache if model[0] != tag and model[1] != key
+        removed = [
+            model for model in self.cache if model[0] == tag and model[1] == key
         ]
+        for item in removed:
+            self.cache.remove(item)
+
+        return len(removed)
 
     def get(self, tag: str, key: Any) -> Any:
         for t, k, v in self.cache:
@@ -52,3 +56,7 @@ class ModelCache:
             self.cache[:] = self.cache[-self.limit :]
         else:
             logger.debug("model cache below limit, %s of %s", total, self.limit)
+
+    @property
+    def size(self):
+        return len(self.cache)

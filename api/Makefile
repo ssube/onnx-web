@@ -17,8 +17,8 @@ pip-dev: check-venv
 
 test:
 	python -m coverage run -m unittest discover -s tests/
-	python -m coverage html
-	python -m coverage xml
+	python -m coverage html -i
+	python -m coverage xml -i
 
 package: package-dist package-upload
 
