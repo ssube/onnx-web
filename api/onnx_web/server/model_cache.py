@@ -21,10 +21,10 @@ class ModelCache:
     def get(self, tag: str, key: Any) -> Any:
         for t, k, v in self.cache:
             if tag == t and key == k:
-                logger.debug("found cached model: %s", tag)
+                logger.debug("found cached model: %s %s", tag, key)
                 return v
 
-        logger.debug("model not found in cache: %s", tag)
+        logger.debug("model not found in cache: %s %s", tag, key)
         return None
 
     def set(self, tag: str, key: Any, value: Any) -> None:
@@ -35,11 +35,11 @@ class ModelCache:
         for i in range(len(self.cache)):
             t, k, v = self.cache[i]
             if tag == t and key != k:
-                logger.debug("updating model cache: %s", tag)
+                logger.debug("updating model cache: %s %s", tag, key)
                 self.cache[i] = (tag, key, value)
                 return
 
-        logger.debug("adding new model to cache: %s", tag)
+        logger.debug("adding new model to cache: %s %s", tag, key)
         self.cache.append((tag, key, value))
         self.prune()
 
