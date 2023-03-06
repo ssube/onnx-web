@@ -15,7 +15,7 @@ class WorkerContext:
     cancel: "Value[bool]"
     job: str
     pending: "Queue[Tuple[str, Callable[..., None], Any, Any]]"
-    progress: "Value[int]"
+    progress: "Queue[Tuple[str, str, int]]"
 
     def __init__(
         self,

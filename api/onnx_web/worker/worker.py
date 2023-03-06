@@ -18,6 +18,10 @@ def worker_main(context: WorkerContext, server: ServerContext):
 
     logger.info("checking in from worker, %s", get_available_providers())
 
+    # make leaking workers easier to recycle
+    context.progress.cancel_join_thread()
+    context.finished.cancel_join_thread()
+
     while True:
         try:
             name, fn, args, kwargs = context.pending.get(timeout=1.0)
