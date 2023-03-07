@@ -54,6 +54,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Outscale parameter](#outscale-parameter)
       - [Denoise parameter](#denoise-parameter)
       - [Face correction and strength](#face-correction-and-strength)
+    - [Blend tab](#blend-tab)
     - [Settings tab](#settings-tab)
       - [Image history setting](#image-history-setting)
       - [API server setting](#api-server-setting)
@@ -515,6 +516,15 @@ Run face correction the the output image before returning it to the client.
 Enabling this will run GFPGAN and requires a correction model.
 
 Check out [the GFPGAN Github](https://github.com/TencentARC/GFPGAN) for more details.
+
+### Blend tab
+
+The blend tab provides a way to blend two images together by painting a mask.
+
+The mask can be uploaded or edited directly in the browser. The first image will be used as the source for black pixels
+in the mask and the second image will be used as the source for white pixels. Gray values will blend the two.
+
+Upscaling and correction run after the images have been blended.
 
 ### Settings tab
 
