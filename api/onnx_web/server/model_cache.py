@@ -13,10 +13,8 @@ class ModelCache:
         self.limit = limit
 
     def drop(self, tag: str, key: Any) -> int:
-        logger.debug("dropping item from cache: %s", tag)
-        removed = [
-            model for model in self.cache if model[0] == tag and model[1] == key
-        ]
+        logger.debug("dropping item from cache: %s %s", tag, key)
+        removed = [model for model in self.cache if model[0] == tag and model[1] == key]
         for item in removed:
             self.cache.remove(item)
 

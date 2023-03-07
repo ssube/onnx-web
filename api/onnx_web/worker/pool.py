@@ -285,7 +285,9 @@ class DevicePoolExecutor:
                 worker.join(self.join_timeout)
                 if worker.is_alive():
                     logger.warning(
-                        "worker %s for device %s could not be stopped in time", worker.pid, device
+                        "worker %s for device %s could not be stopped in time",
+                        worker.pid,
+                        device,
                     )
                     self.leaking.append((device, worker))
             else:
@@ -301,11 +303,15 @@ class DevicePoolExecutor:
         if len(self.leaking) > 0:
             logger.warning("cleaning up %s leaking workers", len(self.leaking))
             for device, worker in self.leaking:
-                logger.debug("shutting down worker %s for device %s", worker.pid, device)
+                logger.debug(
+                    "shutting down worker %s for device %s", worker.pid, device
+                )
                 worker.join(self.join_timeout)
                 if worker.is_alive():
                     logger.error(
-                        "leaking worker %s for device %s could not be shut down", worker.pid, device
+                        "leaking worker %s for device %s could not be shut down",
+                        worker.pid,
+                        device,
                     )
 
             self.leaking[:] = [dw for dw in self.leaking if dw[1].is_alive()]
@@ -328,7 +334,9 @@ class DevicePoolExecutor:
                 worker.join(self.join_timeout)
                 if worker.is_alive():
                     logger.warning(
-                        "worker %s for device %s could not be recycled in time", worker.pid, device
+                        "worker %s for device %s could not be recycled in time",
+                        worker.pid,
+                        device,
                     )
                     self.leaking.append((device, worker))
                 else:
@@ -338,7 +346,9 @@ class DevicePoolExecutor:
                 needs_restart.append(device)
             else:
                 logger.debug(
-                    "worker %s for device %s does not need to be recycled", worker.pid, device
+                    "worker %s for device %s does not need to be recycled",
+                    worker.pid,
+                    device,
                 )
 
         logger.debug("starting new workers")

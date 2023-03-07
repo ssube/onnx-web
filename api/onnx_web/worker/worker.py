@@ -1,6 +1,6 @@
 from logging import getLogger
-from queue import Empty
 from os import getpid
+from queue import Empty
 from sys import exit
 from traceback import format_exception
 
@@ -32,7 +32,11 @@ def worker_main(context: WorkerContext, server: ServerContext):
     while True:
         try:
             if not context.is_current():
-                logger.warning("worker %s has been replaced by %s, exiting", getpid(), context.get_current())
+                logger.warning(
+                    "worker %s has been replaced by %s, exiting",
+                    getpid(),
+                    context.get_current(),
+                )
                 exit(EXIT_REPLACED)
 
             name, fn, args, kwargs = context.pending.get(timeout=1.0)
