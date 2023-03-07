@@ -16,6 +16,7 @@ pip-dev: check-venv
 	pip install -r requirements/dev.txt
 
 test:
+	python -m coverage erase
 	python -m coverage run -m unittest discover -s tests/
 	python -m coverage html -i
 	python -m coverage xml -i
