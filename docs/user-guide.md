@@ -31,6 +31,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Model sources](#model-sources)
       - [Downloading models from Civitai](#downloading-models-from-civitai)
     - [Using a custom VAE](#using-a-custom-vae)
+    - [Using and controlling Textual Inversions](#using-and-controlling-textual-inversions)
   - [Tabs](#tabs)
     - [Txt2img tab](#txt2img-tab)
       - [Scheduler parameter](#scheduler-parameter)
@@ -299,6 +300,20 @@ Some common VAE models include:
 - https://huggingface.co/stabilityai/sd-vae-ft-ema-original
 - https://huggingface.co/stabilityai/sd-vae-ft-mse
 - https://huggingface.co/stabilityai/sd-vae-ft-mse-original
+
+### Using and controlling Textual Inversions
+
+You can use a Textual Inversion along with a diffusion model by giving one or more of the tokens from the inversion
+model. Some Textual Inversions only have a single layer and some have 75 or more.
+
+You can provide more than one of the numbered layer tokens using the `base-{X,Y}` range syntax in your prompt. This
+uses the Python range rules, so `X` is inclusive and `Y` is not. The range `autumn-{0,5}` will be expanded into the
+tokens `autumn-0 autumn-1 autumn-2 autumn-3 autumn-4`. You can use the layer tokens individually, out of order, and
+repeat some layers or omit them entirely. You can provide a step as the third parameter, which will skip layers:
+`even-layers-{0,100,2}` will be expanded into
+`even-layers-0 even-layers-2 even-layers-4 even-layers-6 ... even-layers-98`.
+
+The range syntax does not currently work when the Long Prompt Weighting pipeline is enabled.
 
 ## Tabs
 
