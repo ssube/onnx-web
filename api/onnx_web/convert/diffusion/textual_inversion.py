@@ -60,7 +60,7 @@ def convert_diffusion_textual_inversion(
     else:
         raise ValueError(f"unknown textual inversion format: {format}")
 
-    logger.info("found embedding for token %s: %s", trained_token, embeds.shape)
+    logger.info("found embeddings for token %s: %s", token, embeds.shape)
 
     tokenizer = CLIPTokenizer.from_pretrained(
         base_model,
@@ -92,7 +92,7 @@ def convert_diffusion_textual_inversion(
         for i in range(embeds.shape[0]):
             layer_embeds = embeds[i]
             layer_token = token[i]
-            logger.info(
+            logger.debug(
                 "embedding %s vector for layer %s", layer_embeds.shape, layer_token
             )
             token_id = tokenizer.convert_tokens_to_ids(layer_token)
