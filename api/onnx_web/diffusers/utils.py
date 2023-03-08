@@ -10,13 +10,15 @@ logger = getLogger(__name__)
 
 
 MAX_TOKENS_PER_GROUP = 77
-PATTERN_RANGE = compile("(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
+PATTERN_RANGE = compile("(\\w+)-{(\\d+),(\\d+)(?:,(\\d+))?}")
 
 
 def expand_prompt_ranges(prompt: str) -> str:
     def expand_range(match):
         (base_token, start, end, step) = match.groups(default=1)
-        num_tokens = [f"{base_token}-{i}" for i in range(int(start), int(end), int(step))]
+        num_tokens = [
+            f"{base_token}-{i}" for i in range(int(start), int(end), int(step))
+        ]
         return " ".join(num_tokens)
 
     return PATTERN_RANGE.sub(expand_range, prompt)
