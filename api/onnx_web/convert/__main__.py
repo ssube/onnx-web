@@ -138,14 +138,7 @@ base_models: Models = {
 def fetch_model(
     ctx: ConversionContext, name: str, source: str, model_format: Optional[str] = None
 ) -> str:
-    cache_name = path.join(ctx.cache_path, name)
-    model_path = path.join(ctx.model_path, name)
-    model_onnx = model_path + ".onnx"
-
-    for p in [model_path, model_onnx]:
-        if path.exists(p):
-            logger.debug("model already exists, skipping fetch")
-            return p
+    cache_path = path.join(ctx.cache_path, name)
 
     # add an extension if possible, some of the conversion code checks for it
     if model_format is None:
@@ -155,7 +148,11 @@ def fetch_model(
         if ext is not None:
             cache_name += ext
     else:
-        cache_name = "%s.%s" % (cache_name, model_format)
+        cache_name = "%s.%s" % (cache_path, model_format)
+
+    if path.exists(cache_name):
+        logger.debug("model already exists in cache, skipping fetch")
+        return cache_name
 
     for proto in model_sources:
         api_name, api_root = model_sources.get(proto)
