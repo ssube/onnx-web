@@ -73,6 +73,7 @@ build-api-coverage:
     - .build-python
   stage: build
   script:
+    - apt-get -y update && apt-get -y install python3-opencv
     - cd api
     - ${CI_PROJECT_DIR}/common/scripts/make-venv.sh
     - make ci
