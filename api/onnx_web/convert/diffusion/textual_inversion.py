@@ -32,7 +32,7 @@ def convert_diffusion_textual_inversion(
 
     makedirs(path.join(dest_path, "text_encoder"), exist_ok=True)
 
-    if format == "huggingface":
+    if format == "concept":
         embeds_file = hf_hub_download(repo_id=inversion, filename="learned_embeds.bin")
         token_file = hf_hub_download(repo_id=inversion, filename="token_identifier.txt")
 
