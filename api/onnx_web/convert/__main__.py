@@ -146,9 +146,11 @@ def fetch_model(
         ext = path.basename(url.path)
         _filename, ext = path.splitext(ext)
         if ext is not None:
-            cache_name += ext
+            cache_name = cache_path + ext
+        else:
+            cache_name = cache_path
     else:
-        cache_name = "%s.%s" % (cache_path, model_format)
+        cache_name = f"{cache_path}.{model_format}"
 
     if path.exists(cache_name):
         logger.debug("model already exists in cache, skipping fetch")
