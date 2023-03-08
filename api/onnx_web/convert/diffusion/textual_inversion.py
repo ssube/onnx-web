@@ -30,7 +30,11 @@ def convert_diffusion_textual_inversion(
     encoder_model = path.join(encoder_path, "model.onnx")
     tokenizer_path = path.join(dest_path, "tokenizer")
 
-    if path.exists(dest_path) and path.exists(encoder_model) and path.exists(tokenizer_path):
+    if (
+        path.exists(dest_path)
+        and path.exists(encoder_model)
+        and path.exists(tokenizer_path)
+    ):
         logger.info("ONNX model already exists, skipping.")
         return
 
