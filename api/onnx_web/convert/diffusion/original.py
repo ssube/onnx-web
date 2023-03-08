@@ -1667,20 +1667,22 @@ def convert_diffusion_original(
     name = model["name"]
     source = source or model["source"]
 
-    dest = os.path.join(ctx.model_path, name)
+    dest_path = os.path.join(ctx.model_path, name)
+    dest_index = os.path.join(dest_path, "model_index.json")
     logger.info(
-        "converting original Diffusers checkpoint %s: %s -> %s", name, source, dest
+        "converting original Diffusers checkpoint %s: %s -> %s", name, source, dest_path
     )
 
-    if os.path.exists(dest):
+    if os.path.exists(dest_path) and os.path.exists(dest_index):
         logger.info("ONNX pipeline already exists, skipping")
         return
 
     torch_name = name + "-torch"
     torch_path = os.path.join(ctx.cache_path, torch_name)
     working_name = os.path.join(ctx.cache_path, torch_name, "working")
+    model_index = os.path.join(working_name, "model_index.json")
 
-    if os.path.exists(torch_path):
+    if os.path.exists(torch_path) and os.path.exists(model_index):
         logger.info("torch pipeline already exists, reusing: %s", torch_path)
     else:
         logger.info(

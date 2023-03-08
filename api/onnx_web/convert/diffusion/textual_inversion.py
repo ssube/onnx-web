@@ -26,11 +26,15 @@ def convert_diffusion_textual_inversion(
         "converting Textual Inversion: %s + %s -> %s", base_model, inversion, dest_path
     )
 
-    if path.exists(dest_path):
+    encoder_path = path.join(dest_path, "text_encoder")
+    encoder_model = path.join(encoder_path, "model.onnx")
+    tokenizer_path = path.join(dest_path, "tokenizer")
+
+    if path.exists(dest_path) and path.exists(encoder_model) and path.exists(tokenizer_path):
         logger.info("ONNX model already exists, skipping.")
         return
 
-    makedirs(path.join(dest_path, "text_encoder"), exist_ok=True)
+    makedirs(encoder_path, exist_ok=True)
 
     if format == "concept":
         embeds_file = hf_hub_download(repo_id=inversion, filename="learned_embeds.bin")
@@ -112,14 +116,14 @@ def convert_diffusion_textual_inversion(
     )
 
     logger.info("saving tokenizer for textual inversion")
-    tokenizer.save_pretrained(path.join(dest_path, "tokenizer"))
+    tokenizer.save_pretrained(tokenizer_path)
 
     logger.info("saving text encoder for textual inversion")
     export(
         text_encoder,
         # casting to torch.int32 until the CLIP fix is released: https://github.com/huggingface/transformers/pull/18515/files
         (text_input.input_ids.to(dtype=torch.int32)),
-        f=path.join(dest_path, "text_encoder", "model.onnx"),
+        f=encoder_model,
         input_names=["input_ids"],
         output_names=["last_hidden_state", "pooler_output"],
         dynamic_axes={

@@ -65,7 +65,7 @@ def onnx_export(
     )
 
     if half:
-        logger.info("converting model to FP16 internally: %s", output_file)
+        logger.info("converting model to fp16 internally: %s", output_file)
         infer_shapes_path(output_file)
         base_model = load_model(output_file)
         opt_model = convert_float_to_float16(
@@ -99,6 +99,7 @@ def convert_diffusion_diffusers(
 
     dtype = torch.float32  # torch.float16 if ctx.half else torch.float32
     dest_path = path.join(ctx.model_path, name)
+    model_index = path.join(dest_path, "model_index.json")
 
     # diffusers go into a directory rather than .onnx file
     logger.info(
@@ -108,7 +109,7 @@ def convert_diffusion_diffusers(
     if single_vae:
         logger.info("converting model with single VAE")
 
-    if path.exists(dest_path):
+    if path.exists(dest_path) and path.exists(model_index):
         logger.info("ONNX model already exists, skipping")
         return
 
