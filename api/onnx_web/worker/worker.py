@@ -54,7 +54,10 @@ def worker_main(context: WorkerContext, server: ServerContext):
             logger.info("worker got keyboard interrupt")
             exit(EXIT_INTERRUPT)
         except ValueError as e:
-            logger.info("value error in worker, exiting: %s", e)
+            logger.info(
+                "value error in worker, exiting: %s",
+                format_exception(type(e), e, e.__traceback__),
+            )
             exit(EXIT_ERROR)
         except Exception as e:
             if "Failed to allocate memory" in str(e):

@@ -23,6 +23,8 @@ from diffusers import (
 )
 from transformers import CLIPTokenizer
 
+from onnx_web.diffusers.utils import expand_prompt
+
 try:
     from diffusers import DEISMultistepScheduler
 except ImportError:
@@ -229,6 +231,10 @@ def load_pipeline(
 
         if device is not None and hasattr(pipe, "to"):
             pipe = pipe.to(device.torch_str())
+
+        # monkey-patch pipeline
+        if not lpw:
+            pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
 
         server.cache.set("diffusion", pipe_key, pipe)
         server.cache.set("scheduler", scheduler_key, components["scheduler"])
