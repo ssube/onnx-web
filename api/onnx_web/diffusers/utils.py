@@ -48,7 +48,7 @@ def expand_prompt(
     )
 
     groups_count = ceil(tokens.input_ids.shape[1] / MAX_TOKENS_PER_GROUP)
-    logger.info("splitting %s into %s groups", tokens.input_ids.shape, groups_count)
+    logger.debug("splitting %s into %s groups", tokens.input_ids.shape, groups_count)
 
     groups = []
     # np.array_split(tokens.input_ids, groups_count, axis=1)
@@ -57,19 +57,19 @@ def expand_prompt(
         group_end = min(
             group_start + MAX_TOKENS_PER_GROUP, tokens.input_ids.shape[1]
         )  # or should this be 1?
-        logger.info("building group for token slice [%s : %s]", group_start, group_end)
+        logger.debug("building group for token slice [%s : %s]", group_start, group_end)
         groups.append(tokens.input_ids[:, group_start:group_end])
 
     # encode each chunk
-    logger.info("group token shapes: %s", [t.shape for t in groups])
+    logger.debug("group token shapes: %s", [t.shape for t in groups])
     group_embeds = []
     for group in groups:
-        logger.info("encoding group: %s", group.shape)
+        logger.debug("encoding group: %s", group.shape)
         embeds = self.text_encoder(input_ids=group.astype(np.int32))[0]
         group_embeds.append(embeds)
 
     # concat those embeds
-    logger.info("group embeds shape: %s", [t.shape for t in group_embeds])
+    logger.debug("group embeds shape: %s", [t.shape for t in group_embeds])
     prompt_embeds = np.concatenate(group_embeds, axis=1)
     prompt_embeds = np.repeat(prompt_embeds, num_images_per_prompt, axis=0)
 
@@ -105,7 +105,7 @@ def expand_prompt(
             input_ids=uncond_input.input_ids.astype(np.int32)
         )[0]
         negative_padding = tokens.input_ids.shape[1] - negative_prompt_embeds.shape[1]
-        logger.info(
+        logger.debug(
             "padding negative prompt to match input: %s, %s, %s extra tokens",
             tokens.input_ids.shape,
             negative_prompt_embeds.shape,
@@ -126,5 +126,5 @@ def expand_prompt(
         # to avoid doing two forward passes
         prompt_embeds = np.concatenate([negative_prompt_embeds, prompt_embeds])
 
-    logger.info("expanded prompt shape: %s", prompt_embeds.shape)
+    logger.debug("expanded prompt shape: %s", prompt_embeds.shape)
     return prompt_embeds
