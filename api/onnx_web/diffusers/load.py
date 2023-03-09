@@ -189,7 +189,7 @@ def load_pipeline(
         run_gc([device])
 
         if lpw:
-            custom_pipeline = "./onnx_web/diffusion/lpw_stable_diffusion_onnx.py"
+            custom_pipeline = "./onnx_web/diffusers/lpw_stable_diffusion_onnx.py"
         else:
             custom_pipeline = None
 
