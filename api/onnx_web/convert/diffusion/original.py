@@ -1704,4 +1704,9 @@ def convert_diffusion_original(
         del model["vae"]
 
     convert_diffusion_diffusers(ctx, model, working_name)
+
+    if "torch" in ctx.prune:
+        logger.info("removing intermediate Torch models: %s", torch_path)
+        shutil.rmtree(torch_path)
+
     logger.info("ONNX pipeline saved to %s", name)

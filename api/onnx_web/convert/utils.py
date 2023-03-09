@@ -29,6 +29,7 @@ class ConversionContext(ServerContext):
         half: Optional[bool] = False,
         opset: Optional[int] = None,
         token: Optional[str] = None,
+        prune: Optional[List[str]] = None,
         **kwargs,
     ) -> None:
         super().__init__(model_path=model_path, cache_path=cache_path)
@@ -36,6 +37,7 @@ class ConversionContext(ServerContext):
         self.half = half
         self.opset = opset
         self.token = token
+        self.prune = prune or []
 
         if device is not None:
             self.training_device = device

@@ -310,6 +310,7 @@ def main() -> int:
 
     # extra models
     parser.add_argument("--extras", nargs="*", type=str, default=[])
+    parser.add_argument("--prune", nargs="*", type=str, default=[])
     parser.add_argument("--skip", nargs="*", type=str, default=[])
 
     # export options
