@@ -162,7 +162,7 @@ TEST_DATA = [
     ),
     TestCase(
         "blend-512-muffin-black",
-        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x2-plus&scale=2&outscale=2",
+        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
         mask="mask-black",
         source=[
             "txt2img-sd-v1-5-512-muffin-0",
@@ -171,8 +171,17 @@ TEST_DATA = [
     ),
     TestCase(
         "blend-512-muffin-white",
-        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x2-plus&scale=2&outscale=2",
+        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
         mask="mask-white",
+        source=[
+            "txt2img-sd-v2-1-512-muffin-0",
+            "txt2img-sd-v1-5-512-muffin-0",
+        ],
+    ),
+    TestCase(
+        "blend-512-muffin-blend",
+        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
+        mask="mask-blend",
         source=[
             "txt2img-sd-v2-1-512-muffin-0",
             "txt2img-sd-v1-5-512-muffin-0",
