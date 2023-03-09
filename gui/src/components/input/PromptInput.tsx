@@ -2,6 +2,7 @@ import { doesExist, Maybe } from '@apextoaster/js-utils';
 import { TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface PromptValue {
   prompt: string;
@@ -19,18 +20,25 @@ export function PromptInput(props: PromptInputProps) {
   const promptLength = prompt.split(' ').length;
   const error = promptLength > PROMPT_LIMIT;
 
+  const { t } = useTranslation();
+
   function promptHelper() {
+    const params = {
+      current: promptLength,
+      max: PROMPT_LIMIT,
+    };
+
     if (error) {
-      return `Too many tokens: ${promptLength}/${PROMPT_LIMIT}`;
+      return t('input.prompt.error.length', params);
     } else {
-      return `Tokens: ${promptLength}/${PROMPT_LIMIT}`;
+      return t('input.prompt.tokens', params);
     }
   }
 
   return <Stack spacing={2}>
     <TextField
       error={error}
-      label='Prompt'
+      label={t('parameter.prompt')}
       helperText={promptHelper()}
       variant='outlined'
       value={prompt}
@@ -44,7 +52,7 @@ export function PromptInput(props: PromptInputProps) {
       }}
     />
     <TextField
-      label='Negative Prompt'
+      label={t('parameter.negativePrompt')}
       variant='outlined'
       value={negativePrompt}
       onChange={(event) => {

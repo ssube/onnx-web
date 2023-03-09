@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 import { doesExist } from '@apextoaster/js-utils';
 
-import { ServerParams } from './config.js';
-import { range } from './utils.js';
+import { ServerParams } from '../config.js';
+import { range } from '../utils.js';
 
 /**
  * Shared parameters for anything using models, which is pretty much everything.
@@ -221,6 +221,13 @@ export interface ApiClient {
   schedulers(): Promise<Array<string>>;
 
   /**
+   * Load extra strings from the server.
+   */
+  strings(): Promise<Record<string, {
+    translation: Record<string, string>;
+  }>>;
+
+  /**
    * Start a txt2img pipeline.
    */
   txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse>;
@@ -388,6 +395,15 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const path = makeApiUrl(root, 'settings', 'platforms');
       const res = await f(path);
       return await res.json() as Array<string>;
+    },
+    async strings(): Promise<Record<string, {
+      translation: Record<string, string>;
+    }>> {
+      const path = makeApiUrl(root, 'settings', 'strings');
+      const res = await f(path);
+      return await res.json() as Record<string, {
+        translation: Record<string, string>;
+      }>;
     },
     async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse> {
       const url = makeImageURL(root, 'img2img', params);

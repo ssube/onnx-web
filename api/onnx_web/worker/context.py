@@ -1,4 +1,5 @@
 from logging import getLogger
+from os import getpid
 from typing import Any, Callable, Tuple
 
 from torch.multiprocessing import Queue, Value
@@ -15,7 +16,8 @@ class WorkerContext:
     cancel: "Value[bool]"
     job: str
     pending: "Queue[Tuple[str, Callable[..., None], Any, Any]]"
-    progress: "Value[int]"
+    current: "Value[int]"
+    progress: "Queue[Tuple[str, str, int]]"
 
     def __init__(
         self,
@@ -26,6 +28,7 @@ class WorkerContext:
         pending: "Queue[Tuple[str, Callable[..., None], Any, Any]]",
         progress: "Queue[Tuple[str, str, int]]",
         finished: "Queue[Tuple[str, str]]",
+        current: "Value[int]",
     ):
         self.job = job
         self.device = device
@@ -34,9 +37,17 @@ class WorkerContext:
         self.finished = finished
         self.logs = logs
         self.pending = pending
+        self.current = current
 
     def is_cancelled(self) -> bool:
         return self.cancel.value
+
+    def is_current(self) -> bool:
+        return self.get_current() == getpid()
+
+    def get_current(self) -> int:
+        with self.current.get_lock():
+            return self.current.value
 
     def get_device(self) -> DeviceParams:
         """
@@ -66,7 +77,7 @@ class WorkerContext:
         self.progress.put((self.job, self.device.device, progress), block=False)
 
     def set_finished(self) -> None:
-        self.finished.put((self.job, self.device.device))
+        self.finished.put((self.job, self.device.device), block=False)
 
     def clear_flags(self) -> None:
         self.set_cancel(False)

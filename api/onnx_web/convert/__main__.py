@@ -138,14 +138,7 @@ base_models: Models = {
 def fetch_model(
     ctx: ConversionContext, name: str, source: str, model_format: Optional[str] = None
 ) -> str:
-    cache_name = path.join(ctx.cache_path, name)
-    model_path = path.join(ctx.model_path, name)
-    model_onnx = model_path + ".onnx"
-
-    for p in [model_path, model_onnx]:
-        if path.exists(p):
-            logger.debug("model already exists, skipping fetch")
-            return p
+    cache_path = path.join(ctx.cache_path, name)
 
     # add an extension if possible, some of the conversion code checks for it
     if model_format is None:
@@ -153,9 +146,15 @@ def fetch_model(
         ext = path.basename(url.path)
         _filename, ext = path.splitext(ext)
         if ext is not None:
-            cache_name += ext
+            cache_name = cache_path + ext
+        else:
+            cache_name = cache_path
     else:
-        cache_name = "%s.%s" % (cache_name, model_format)
+        cache_name = f"{cache_path}.{model_format}"
+
+    if path.exists(cache_name):
+        logger.debug("model already exists in cache, skipping fetch")
+        return cache_name
 
     for proto in model_sources:
         api_name, api_root = model_sources.get(proto)
@@ -234,7 +233,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                     for inversion in model.get("inversions", []):
                         inversion_name = inversion["name"]
                         inversion_source = inversion["source"]
-                        inversion_format = inversion.get("format", "huggingface")
+                        inversion_format = inversion.get("format", "embeddings")
                         inversion_source = fetch_model(
                             ctx, f"{name}-inversion-{inversion_name}", inversion_source
                         )
@@ -244,6 +243,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             model["source"],
                             inversion_source,
                             inversion_format,
+                            base_token=inversion.get("token"),
                         )
 
                 except Exception as e:
@@ -310,6 +310,7 @@ def main() -> int:
 
     # extra models
     parser.add_argument("--extras", nargs="*", type=str, default=[])
+    parser.add_argument("--prune", nargs="*", type=str, default=[])
     parser.add_argument("--skip", nargs="*", type=str, default=[])
 
     # export options
@@ -352,20 +353,26 @@ def main() -> int:
     logger.info("converting base models")
     convert_models(ctx, args, base_models)
 
-    for file in args.extras:
+    extras = []
+    extras.extend(ctx.extra_models)
+    extras.extend(args.extras)
+    extras = list(set(extras))
+    extras.sort()
+    logger.debug("loading extra files: %s", extras)
+
+    with open("./schemas/extras.yaml", "r") as f:
+        extra_schema = safe_load(f.read())
+
+    for file in extras:
         if file is not None and file != "":
             logger.info("loading extra models from %s", file)
             try:
                 with open(file, "r") as f:
                     data = safe_load(f.read())
 
-                with open("./schemas/extras.yaml", "r") as f:
-                    schema = safe_load(f.read())
-
-                logger.debug("validating chain request: %s against %s", data, schema)
-
+                logger.debug("validating extras file %s", data)
                 try:
-                    validate(data, schema)
+                    validate(data, extra_schema)
                     logger.info("converting extra models")
                     convert_models(ctx, args, data)
                 except ValidationError as err:

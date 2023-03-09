@@ -1,8 +1,8 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Stack } from '@mui/material';
-import { startCase } from 'lodash';
 import * as React from 'react';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
 import { ConfigContext, StateContext } from '../../state.js';
@@ -14,10 +14,11 @@ export function UpscaleControl() {
   const upscale = useStore(state, (s) => s.upscale);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setUpscale = useStore(state, (s) => s.setUpscale);
+  const { t } = useTranslation();
 
   return <Stack direction='row' spacing={4}>
     <FormControlLabel
-      label='Upscale'
+      label={t('parameter.upscale.label')}
       control={<Checkbox
         checked={upscale.enabled}
         value='check'
@@ -29,7 +30,7 @@ export function UpscaleControl() {
       />}
     />
     <NumericField
-      label='Denoise'
+      label={t('parameter.upscale.denoise')}
       decimal
       disabled={upscale.enabled === false}
       min={params.denoise.min}
@@ -43,7 +44,7 @@ export function UpscaleControl() {
       }}
     />
     <NumericField
-      label='Scale'
+      label={t('parameter.upscale.scale')}
       disabled={upscale.enabled === false}
       min={params.scale.min}
       max={params.scale.max}
@@ -56,7 +57,7 @@ export function UpscaleControl() {
       }}
     />
     <NumericField
-      label='Outscale'
+      label={t('parameter.upscale.outscale')}
       disabled={upscale.enabled === false}
       min={params.outscale.min}
       max={params.outscale.max}
@@ -69,7 +70,7 @@ export function UpscaleControl() {
       }}
     />
     <FormControlLabel
-      label='Face Correction'
+      label={t('parameter.correction.label')}
       control={<Checkbox
         checked={upscale.faces}
         value='check'
@@ -81,7 +82,7 @@ export function UpscaleControl() {
       />}
     />
     <NumericField
-      label='Strength'
+      label={t('parameter.correction.strength')}
       decimal
       disabled={upscale.faces === false}
       min={params.faceStrength.min}
@@ -95,7 +96,7 @@ export function UpscaleControl() {
       }}
     />
     <NumericField
-      label='Outscale'
+      label={t('parameter.correction.outscale')}
       disabled={upscale.faces === false}
       min={params.faceOutscale.min}
       max={params.faceOutscale.max}
@@ -111,7 +112,7 @@ export function UpscaleControl() {
       <InputLabel id={'upscale-order'}>Upscale Order</InputLabel>
       <Select
         labelId={'upscale-order'}
-        label={'Upscale Order'}
+        label={t('parameter.upscale.order')}
         value={upscale.upscaleOrder}
         onChange={(e) => {
           setUpscale({
@@ -119,8 +120,8 @@ export function UpscaleControl() {
           });
         }}
       >
-        {params.upscaleOrder.keys.map((name) =>
-          <MenuItem key={name} value={name}>{startCase(name)}</MenuItem>)
+        {Object.entries(params.upscaleOrder.keys).map(([key, name]) =>
+          <MenuItem key={key} value={name}>{t(`upscaleOrder.${name}`)}</MenuItem>)
         }
       </Select>
     </FormControl>

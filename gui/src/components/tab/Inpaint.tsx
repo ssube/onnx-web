@@ -1,14 +1,13 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
-import { Box, Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Stack } from '@mui/material';
-import { capitalize } from 'lodash';
+import { Alert, Box, Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
 import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, StateContext } from '../../state.js';
-import { MASK_LABELS, NOISE_LABELS } from '../../strings.js';
 import { ImageControl } from '../control/ImageControl.js';
 import { OutpaintControl } from '../control/OutpaintControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
@@ -52,6 +51,14 @@ export function Inpaint() {
     }
   }
 
+  function preventInpaint(): boolean {
+    return doesExist(source) === false || doesExist(mask) === false;
+  }
+
+  function supportsInpaint(): boolean {
+    return diffusionModel.includes('inpaint');
+  }
+
   const state = mustExist(useContext(StateContext));
   const fillColor = useStore(state, (s) => s.inpaint.fillColor);
   const filter = useStore(state, (s) => s.inpaint.filter);
@@ -60,23 +67,34 @@ export function Inpaint() {
   const source = useStore(state, (s) => s.inpaint.source);
   const strength = useStore(state, (s) => s.inpaint.strength);
   const tileOrder = useStore(state, (s) => s.inpaint.tileOrder);
+  const diffusionModel = useStore(state, (s) => s.model.model);
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setInpaint = useStore(state, (s) => s.setInpaint);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setLoading = useStore(state, (s) => s.pushLoading);
+  const { t } = useTranslation();
 
   const query = useQueryClient();
   const upload = useMutation(uploadSource, {
     onSuccess: () => query.invalidateQueries({ queryKey: 'ready' }),
   });
 
+  function renderBanner() {
+    if (supportsInpaint()) {
+      return undefined;
+    } else {
+      return <Alert severity="warning">{t('error.inpaint.support')}</Alert>;
+    }
+  }
+
   return <Box>
     <Stack spacing={2}>
+      {renderBanner()}
       <ImageInput
         filter={IMAGE_FILTER}
         image={source}
-        label='Source'
+        label={t('input.image.source')}
         hideSelection={true}
         onChange={(file) => {
           setInpaint({
@@ -87,7 +105,7 @@ export function Inpaint() {
       <ImageInput
         filter={IMAGE_FILTER}
         image={mask}
-        label='Mask'
+        label={t('input.image.mask')}
         hideSelection={true}
         onChange={(file) => {
           setInpaint({
@@ -111,7 +129,7 @@ export function Inpaint() {
         }}
       />
       <NumericField
-        label='Strength'
+        label={t('parameter.strength')}
         min={params.strength.min}
         max={params.strength.max}
         step={params.strength.step}
@@ -125,8 +143,9 @@ export function Inpaint() {
       <Stack direction='row' spacing={2}>
         <QueryList
           id='masks'
-          labels={MASK_LABELS}
-          name='Mask Filter'
+          labelKey={'maskFilter'}
+          showEmpty={true}
+          name={t('parameter.maskFilter')}
           query={{
             result: masks,
           }}
@@ -139,8 +158,8 @@ export function Inpaint() {
         />
         <QueryList
           id='noises'
-          labels={NOISE_LABELS}
-          name='Noise Source'
+          labelKey={'noiseSource'}
+          name={t('parameter.noiseSource')}
           query={{
             result: noises,
           }}
@@ -155,7 +174,7 @@ export function Inpaint() {
           <InputLabel id={'outpaint-tiling'}>Tile Order</InputLabel>
           <Select
             labelId={'outpaint-tiling'}
-            label={'Tile Order'}
+            label={t('parameter.tileOrder')}
             value={tileOrder}
             onChange={(e) => {
               setInpaint({
@@ -163,14 +182,14 @@ export function Inpaint() {
               });
             }}
           >
-            {params.tileOrder.keys.map((name) =>
-              <MenuItem key={name} value={name}>{capitalize(name)}</MenuItem>)
+            {Object.entries(params.tileOrder.keys).map(([key, name]) =>
+              <MenuItem key={key} value={key}>{t(`tileOrder.${name}`)}</MenuItem>)
             }
           </Select>
         </FormControl>
         <Stack direction='row' spacing={2}>
           <FormControlLabel
-            label='Fill Color'
+            label={t('parameter.fillColor')}
             sx={{ mx: 1 }}
             control={
               <input
@@ -190,10 +209,11 @@ export function Inpaint() {
       <OutpaintControl />
       <UpscaleControl />
       <Button
-        disabled={doesExist(source) === false || doesExist(mask) === false}
+        disabled={preventInpaint()}
         variant='contained'
         onClick={() => upload.mutate()}
-      >Generate</Button>
+        color={supportsInpaint() ? undefined : 'warning'}
+      >{t('generate')}</Button>
     </Stack>
   </Box>;
 }

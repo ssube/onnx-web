@@ -46,7 +46,7 @@ class TestCase:
         name: str,
         query: str,
         max_attempts: int = FAST_TEST,
-        mse_threshold: float = 0.001,
+        mse_threshold: float = 1e-4,
         source: Union[Image.Image, List[Image.Image]] = None,
         mask: Image.Image = None,
     ) -> None:
@@ -86,6 +86,7 @@ TEST_DATA = [
     TestCase(
         "txt2img-sd-v2-1-768-muffin",
         "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v2-1&width=768&height=768",
+        max_attempts=SLOW_TEST,
     ),
     TestCase(
         "txt2img-openjourney-512-muffin",
@@ -162,7 +163,7 @@ TEST_DATA = [
     ),
     TestCase(
         "blend-512-muffin-black",
-        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x2-plus&scale=2&outscale=2",
+        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
         mask="mask-black",
         source=[
             "txt2img-sd-v1-5-512-muffin-0",
@@ -171,8 +172,17 @@ TEST_DATA = [
     ),
     TestCase(
         "blend-512-muffin-white",
-        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x2-plus&scale=2&outscale=2",
+        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
         mask="mask-white",
+        source=[
+            "txt2img-sd-v2-1-512-muffin-0",
+            "txt2img-sd-v1-5-512-muffin-0",
+        ],
+    ),
+    TestCase(
+        "blend-512-muffin-blend",
+        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
+        mask="mask-blend",
         source=[
             "txt2img-sd-v2-1-512-muffin-0",
             "txt2img-sd-v1-5-512-muffin-0",
@@ -303,9 +313,9 @@ def run_test(
         mse = find_mse(result, ref)
 
         if mse < test.mse_threshold:
-            logger.info("MSE within threshold: %.4f < %.4f", mse, test.mse_threshold)
+            logger.info("MSE within threshold: %.5f < %.5f", mse, test.mse_threshold)
         else:
-            logger.warning("MSE above threshold: %.4f > %.4f", mse, test.mse_threshold)
+            logger.warning("MSE above threshold: %.5f > %.5f", mse, test.mse_threshold)
             passed = False
 
     return passed

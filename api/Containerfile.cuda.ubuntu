@@ -16,13 +16,9 @@ ENV PATH="/onnx-web/api/onnx_env/bin:$PATH"
 
 RUN pip3 install pip --upgrade
 
-RUN pip3 install torch torchvision --extra-index-url https://download.pytorch.org/whl/cu117 --no-cache-dir --ignore-installed
+COPY requirements/ /onnx-web/api/requirements/
 
-COPY requirements.txt /onnx-web/api/requirements.txt
-
-RUN pip3 install -r requirements.txt --no-cache-dir
-
-RUN pip3 install onnxruntime-gpu --no-cache-dir
+RUN pip3 install -r requirements/base.txt -r requirements/nvidia.txt --no-cache-dir
 
 COPY onnx_web/ /onnx-web/api/onnx_web/
 

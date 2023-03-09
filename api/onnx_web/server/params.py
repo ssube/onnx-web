@@ -4,16 +4,16 @@ from typing import Tuple
 import numpy as np
 from flask import request
 
-from ..diffusion.load import pipeline_schedulers
+from ..diffusers.load import pipeline_schedulers
 from ..params import Border, DeviceParams, ImageParams, Size, UpscaleParams
 from ..utils import get_and_clamp_float, get_and_clamp_int, get_from_list, get_not_empty
-from .config import (
+from .context import ServerContext
+from .load import (
     get_available_platforms,
     get_config_value,
     get_correction_models,
     get_upscaling_models,
 )
-from .context import ServerContext
 from .utils import get_model_path
 
 logger = getLogger(__name__)

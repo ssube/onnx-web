@@ -2,6 +2,7 @@ import { mustExist } from '@apextoaster/js-utils';
 import { Checkbox, FormControlLabel, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
 import { ConfigContext, StateContext } from '../../state.js';
@@ -13,14 +14,15 @@ export function OutpaintControl() {
   const outpaint = useStore(state, (s) => s.outpaint);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setOutpaint = useStore(state, (s) => s.setOutpaint);
+  const { t } = useTranslation();
 
   return <Stack direction='row' spacing={4}>
     <FormControlLabel
-      label='Outpaint'
+      label={t('parameter.outpaint.label')}
       control={<Checkbox
         checked={outpaint.enabled}
         value='check'
-        onChange={(event) => {
+        onChange={(_event) => {
           setOutpaint({
             enabled: outpaint.enabled === false,
           });
@@ -28,7 +30,7 @@ export function OutpaintControl() {
       />}
     />
     <NumericField
-      label='Left'
+      label={t('parameter.outpaint.left')}
       disabled={outpaint.enabled === false}
       min={0}
       max={params.width.max}
@@ -41,7 +43,7 @@ export function OutpaintControl() {
       }}
     />
     <NumericField
-      label='Right'
+      label={t('parameter.outpaint.right')}
       disabled={outpaint.enabled === false}
       min={0}
       max={params.width.max}
@@ -54,7 +56,7 @@ export function OutpaintControl() {
       }}
     />
     <NumericField
-      label='Top'
+      label={t('parameter.outpaint.top')}
       disabled={outpaint.enabled === false}
       min={0}
       max={params.height.max}
@@ -67,7 +69,7 @@ export function OutpaintControl() {
       }}
     />
     <NumericField
-      label='Bottom'
+      label={t('parameter.outpaint.bottom')}
       disabled={outpaint.enabled === false}
       min={0}
       max={params.height.max}

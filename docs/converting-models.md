@@ -14,6 +14,9 @@ weights, to the directories used by `diffusers` and on to the ONNX models used b
     - [Figuring out which script produced the LoRA weights](#figuring-out-which-script-produced-the-lora-weights)
     - [LoRA weights from cloneofsimo/lora](#lora-weights-from-cloneofsimolora)
     - [LoRA weights from kohya-ss/sd-scripts](#lora-weights-from-kohya-sssd-scripts)
+  - [Converting Textual Inversion embeddings](#converting-textual-inversion-embeddings)
+    - [Figuring out what token a Textual Inversion uses](#figuring-out-what-token-a-textual-inversion-uses)
+    - [Figuring out how many layers a Textual Inversion uses](#figuring-out-how-many-layers-a-textual-inversion-uses)
 
 ## Conversion steps for each type of model
 
@@ -25,11 +28,14 @@ You can start from a diffusers directory, HuggingFace Hub repository, or an SD c
 3. diffusers directory or LoRA weights from `cloneofsimo/lora` to...
 4. ONNX models
 
-One disadvantage of using ONNX is that LoRA weights must be merged with the base model before being converted,
-so the final output is roughly the size of the base model. Hopefully this can be reduced in the future.
+Textual inversions can be converted directly to ONNX by merging them with the base model.
+
+One current disadvantage of using ONNX is that LoRA weights must be merged with the base model before being converted,
+so the final output is roughly the size of the base model. Hopefully this can be reduced in the future
+(https://github.com/ssube/onnx-web/issues/213).
 
 If you are using the Auto1111 web UI or another tool, you may not need to convert the models to ONNX. In that case,
-you will not have an `extras.json` file and should skip step 4.
+you will not have an `extras.json` file and should skip the last step.
 
 ## Converting diffusers models
 
@@ -233,3 +239,51 @@ Make sure to set the `format` key and that it matches the format you used to exp
 Based on docs in:
 
 - https://github.com/kohya-ss/sd-scripts/blob/main/train_network_README-ja.md#%E3%83%9E%E3%83%BC%E3%82%B8%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6
+
+## Converting Textual Inversion embeddings
+
+You can convert Textual Inversion embeddings by merging their weights and tokens into a copy of their base model,
+which is directly supported by the conversion script in `onnx-web` with no additional steps.
+
+Textual Inversions may have more than one set of weights, which can be used and controlled separately. Some Textual
+Inversions provide their own token, but you can set a custom token for any of them.
+
+### Figuring out what token a Textual Inversion uses
+
+The base token, without any layer numbers, should be printed to the logs with the string `found embedding for token`:
+
+```none
+[2023-03-08 04:54:00,234] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: found embedding for token <concept>: torch.Size([768])
+[2023-03-08 04:54:01,624] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: added 1 tokens
+[2023-03-08 04:54:01,814] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: saving tokenizer for textual inversion
+[2023-03-08 04:54:01,859] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: saving text encoder for textual inversion
+```
+
+If you have set a custom token, that will be shown instead. If more than one token has been added, they will be
+numbered following the pattern `base-N`, starting with 0.
+
+### Figuring out how many layers a Textual Inversion uses
+
+Textual Inversions produced by [the Stable Conceptualizer notebook](https://colab.research.google.com/github/huggingface/notebooks/blob/main/diffusers/stable_conceptualizer_inference.ipynb)
+only have a single layer, while many others have more than one.
+
+The number of layers is shown in the server logs when the model is converted:
+
+```none
+[2023-03-08 04:54:00,234] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: found embedding for token <concept>: torch.Size([768])
+[2023-03-08 04:54:01,624] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: added 1 tokens
+[2023-03-08 04:54:01,814] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: saving tokenizer for textual inversion
+[2023-03-08 04:54:01,859] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: saving text encoder for textual inversion
+...
+[2023-03-08 04:58:06,378] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: generating 74 layer tokens
+[2023-03-08 04:58:06,379] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: found embedding for token ['goblin-0', 'goblin-1', 'goblin-2', 'goblin-3', 'goblin-4', 'goblin-5', 'goblin-6', 'gob
+lin-7', 'goblin-8', 'goblin-9', 'goblin-10', 'goblin-11', 'goblin-12', 'goblin-13', 'goblin-14', 'goblin-15', 'goblin-16', 'goblin-17', 'goblin-18', 'goblin-19', 'goblin-20', 'goblin-21', 'goblin-22', 'goblin-23', 'goblin-24', 'goblin-25', 'goblin-26', 'goblin-27', 'goblin-28', 'goblin-29', 'goblin-30', 'goblin-31', 'goblin-32', 'goblin-33', 'goblin-34', 'goblin-35', 'goblin-36', 'goblin-37', 'goblin-38', 'goblin-39', 'goblin-40', 'goblin-41', 'goblin-42', 'goblin-43', 'goblin-44', 'goblin-45', 'goblin-46', 'goblin-47', 'goblin-48', 'goblin-49', 'goblin-50', 'goblin-51', 'goblin-52', 'goblin-53', 'goblin-54', 'goblin-55', 'goblin-56', 'goblin-57', 'goblin-58', 'goblin-59', 'goblin-60', 'goblin-61', 'goblin-62', 'goblin-63', 'goblin-64', 'goblin-65', 'goblin-66', 'goblin-67', 'goblin-68', 'goblin-69', 'goblin-70', 'goblin-71', 'goblin-72', 'goblin-73'] (*): torch.Size([74, 768])
+[2023-03-08 04:58:07,685] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: added 74 tokens
+[2023-03-08 04:58:07,874] DEBUG: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: embedding torch.Size([768]) vector for layer goblin-0
+[2023-03-08 04:58:07,874] DEBUG: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: embedding torch.Size([768]) vector for layer goblin-1
+[2023-03-08 04:58:07,874] DEBUG: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: embedding torch.Size([768]) vector for layer goblin-2
+[2023-03-08 04:58:07,875] DEBUG: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: embedding torch.Size([768]) vector for layer goblin-3
+```
+
+Figuring out the number of layers after the model has been converted currently requires the original tensor file
+(https://github.com/ssube/onnx-web/issues/212).

@@ -6,7 +6,7 @@ import torch
 from diffusers import OnnxStableDiffusionPipeline
 from PIL import Image
 
-from ..diffusion.load import get_latents_from_seed, load_pipeline
+from ..diffusers.load import get_latents_from_seed, load_pipeline
 from ..params import ImageParams, Size, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext

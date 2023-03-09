@@ -1,6 +1,6 @@
 import { doesExist, Maybe } from '@apextoaster/js-utils';
 import { merge } from 'lodash';
-import { Img2ImgParams, InpaintParams, ModelParams, OutpaintParams, STATUS_SUCCESS, Txt2ImgParams, UpscaleParams } from './client.js';
+import { Img2ImgParams, InpaintParams, ModelParams, OutpaintParams, STATUS_SUCCESS, Txt2ImgParams, UpscaleParams } from './client/api.js';
 
 export interface ConfigNumber {
   default: number;
@@ -11,7 +11,7 @@ export interface ConfigNumber {
 
 export interface ConfigString {
   default: string;
-  keys: Array<string>;
+  keys: Record<string, string>;
 }
 
 /**
@@ -111,5 +111,18 @@ export function getApiRoot(config: Config): string {
     return api;
   } else {
     return config.api.root;
+  }
+}
+
+export function isDebug(): boolean {
+  const query = new URLSearchParams(window.location.search);
+  const debug = query.get('debug');
+
+  if (doesExist(debug)) {
+    const val = debug.toLowerCase();
+    // eslint-disable-next-line no-restricted-syntax
+    return val === '1' || val === 't' || val === 'true' || val === 'y' || val === 'yes';
+  } else {
+    return false;
   }
 }

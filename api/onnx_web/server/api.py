@@ -8,8 +8,8 @@ from jsonschema import validate
 from PIL import Image
 
 from ..chain import CHAIN_STAGES, ChainPipeline
-from ..diffusion.load import get_pipeline_schedulers
-from ..diffusion.run import (
+from ..diffusers.load import get_pipeline_schedulers
+from ..diffusers.run import (
     run_blend_pipeline,
     run_img2img_pipeline,
     run_inpaint_pipeline,
@@ -19,7 +19,7 @@ from ..diffusion.run import (
 from ..image import valid_image  # mask filters; noise sources
 from ..output import json_params, make_output_name
 from ..params import Border, StageParams, TileOrder, UpscaleParams
-from ..transformers import run_txt2txt_pipeline
+from ..transformers.run import run_txt2txt_pipeline
 from ..utils import (
     base_join,
     get_and_clamp_float,
@@ -31,18 +31,19 @@ from ..utils import (
     sanitize_name,
 )
 from ..worker.pool import DevicePoolExecutor
-from .config import (
+from .context import ServerContext
+from .load import (
     get_available_platforms,
     get_config_params,
     get_config_value,
     get_correction_models,
     get_diffusion_models,
+    get_extra_strings,
     get_inversion_models,
     get_mask_filters,
     get_noise_sources,
     get_upscaling_models,
 )
-from .context import ServerContext
 from .params import border_from_request, pipeline_from_request, upscale_from_request
 from .utils import wrap_route
 
@@ -86,6 +87,10 @@ def introspect(context: ServerContext, app: Flask):
             for rule in app.url_map.iter_rules()
         ],
     }
+
+
+def list_extra_strings(context: ServerContext):
+    return jsonify(get_extra_strings())
 
 
 def list_mask_filters(context: ServerContext):
@@ -464,6 +469,7 @@ def register_api_routes(app: Flask, context: ServerContext, pool: DevicePoolExec
         app.route("/api/settings/params")(wrap_route(list_params, context)),
         app.route("/api/settings/platforms")(wrap_route(list_platforms, context)),
         app.route("/api/settings/schedulers")(wrap_route(list_schedulers, context)),
+        app.route("/api/settings/strings")(wrap_route(list_extra_strings, context)),
         app.route("/api/img2img", methods=["POST"])(
             wrap_route(img2img, context, pool=pool)
         ),

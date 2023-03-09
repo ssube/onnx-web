@@ -10,15 +10,9 @@ ENV PATH="/onnx-web/api/onnx_env/bin:$PATH"
 
 RUN pip3 install pip --upgrade
 
-RUN pip3 install torch torchvision --extra-index-url https://download.pytorch.org/whl/cpu --no-cache-dir --ignore-installed
+COPY requirements/ /onnx-web/api/requirements/
 
-RUN pip3 install onnxruntime-directml --force-reinstall
-
-RUN pip3 install --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/ORT-Nightly/pypi/simple/ ort-nightly-directml --force-reinstall
-
-COPY requirements.txt /onnx-web/api/requirements.txt
-
-RUN pip3 install -r requirements.txt --no-cache-dir
+RUN pip3 install -r requirements/base.txt -r requirements/amd-windows-nightly.txt --no-cache-dir
 
 COPY onnx_web/ /onnx-web/api/onnx_web/
 

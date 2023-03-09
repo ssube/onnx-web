@@ -2,6 +2,7 @@ import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Alert, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import * as React from 'react';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { UseQueryResult } from 'react-query';
 
 export interface QueryListComplete {
@@ -15,7 +16,7 @@ export interface QueryListFilter<T> {
 
 export interface QueryListProps<T> {
   id: string;
-  labels: Record<string, string>;
+  labelKey: string;
   name: string;
   value: string;
 
@@ -47,8 +48,10 @@ export function filterQuery<T>(query: QueryListComplete | QueryListFilter<T>, sh
 }
 
 export function QueryList<T>(props: QueryListProps<T>) {
-  const { labels, query, showEmpty = false, value } = props;
+  const { labelKey, query, showEmpty = false, value } = props;
   const { result } = query;
+
+  const { t } = useTranslation();
 
   function firstValidValue(): string {
     if (doesExist(value) && data.includes(value)) {
@@ -56,6 +59,10 @@ export function QueryList<T>(props: QueryListProps<T>) {
     } else {
       return data[0];
     }
+  }
+
+  function getLabel(name: string) {
+    return mustDefault(t(`${labelKey}.${name}`), name);
   }
 
   // update state when previous selection was invalid: https://github.com/ssube/onnx-web/issues/120
@@ -70,18 +77,20 @@ export function QueryList<T>(props: QueryListProps<T>) {
 
   if (result.status === 'error') {
     if (result.error instanceof Error) {
-      return <Alert severity='error'>Error: {result.error.message}</Alert>;
+      return <Alert severity='error'>{t('input.list.error.specific', {
+        message: result.error.message,
+      })}</Alert>;
     } else {
-      return <Alert severity='error'>Unknown Error</Alert>;
+      return <Alert severity='error'>{t('input.list.error.unknown')}</Alert>;
     }
   }
 
   if (result.status === 'loading') {
-    return <Typography>Loading...</Typography>;
+    return <Typography>{t('input.list.loading')}</Typography>;
   }
 
   if (result.status === 'idle') {
-    return <Typography>Idle?</Typography>;
+    return <Typography>{t('input.list.idle')}</Typography>;
   }
 
   // else: success
@@ -100,7 +109,7 @@ export function QueryList<T>(props: QueryListProps<T>) {
         }
       }}
     >
-      {data.map((name) => <MenuItem key={name} value={name}>{mustDefault(labels[name], name)}</MenuItem>)}
+      {data.map((name) => <MenuItem key={name} value={name}>{getLabel(name)}</MenuItem>)}
     </Select>
   </FormControl>;
 }

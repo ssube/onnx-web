@@ -18,6 +18,13 @@ $defs:
         type: string
       source:
         type: string
+      format:
+        type: string
+        enum: [concept, embeddings]
+      label:
+        type: string
+      token:
+        type: string
 
   base_model:
     type: object
@@ -28,6 +35,8 @@ $defs:
         enum: [onnx, pth, ckpt, safetensors]
       half:
         type: boolean
+      label:
+        type: string
       name:
         type: string
       opset:
@@ -73,6 +82,15 @@ $defs:
       source:
         type: string
 
+  translation:
+    type: object
+    additionalProperties: False
+    patternProperties:
+      "(\\w|\\.|-)+":
+        oneOf:
+          - type: string
+          - $ref: "#/$defs/translation"
+
 type: object
 additionalProperties: False
 properties:
@@ -100,3 +118,9 @@ properties:
       oneOf:
         - $ref: "#/$defs/legacy_tuple"
         - $ref: "#/$defs/source_model"
+  strings:
+    type: object
+    additionalProperties: False
+    patternProperties:
+      "^\\w\\w$":
+        $ref: "#/$defs/translation"

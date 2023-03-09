@@ -2,10 +2,12 @@ from functools import cmp_to_key
 from glob import glob
 from logging import getLogger
 from os import path
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
 
 import torch
 import yaml
+from jsonschema import ValidationError, validate
+from yaml import safe_load
 
 from ..image import (  # mask filters; noise sources
     mask_filter_gaussian_multiply,
@@ -20,6 +22,7 @@ from ..image import (  # mask filters; noise sources
 )
 from ..params import DeviceParams
 from ..torch_before_ort import get_available_providers
+from ..utils import merge
 from .context import ServerContext
 
 logger = getLogger(__name__)
@@ -58,6 +61,9 @@ diffusion_models: List[str] = []
 inversion_models: List[str] = []
 upscaling_models: List[str] = []
 
+# Loaded from extra_models
+extra_strings: Dict[str, Any] = {}
+
 
 def get_config_params():
     return config_params
@@ -83,6 +89,10 @@ def get_upscaling_models():
     return upscaling_models
 
 
+def get_extra_strings():
+    return extra_strings
+
+
 def get_mask_filters():
     return mask_filters
 
@@ -101,44 +111,129 @@ def get_model_name(model: str) -> str:
     return file
 
 
+def load_extras(context: ServerContext):
+    """
+    Load the extras file(s) and collect the relevant parts for the server: labels and strings
+    """
+    global extra_strings
+
+    labels = {}
+    strings = {}
+
+    with open("./schemas/extras.yaml", "r") as f:
+        extra_schema = safe_load(f.read())
+
+    for file in context.extra_models:
+        if file is not None and file != "":
+            logger.info("loading extra models from %s", file)
+            try:
+                with open(file, "r") as f:
+                    data = safe_load(f.read())
+
+                logger.debug("validating extras file %s", data)
+                try:
+                    validate(data, extra_schema)
+                except ValidationError as err:
+                    logger.error("invalid data in extras file: %s", err)
+                    continue
+
+                if "strings" in data:
+                    logger.debug("collecting strings from %s", file)
+                    merge(strings, data["strings"])
+
+                for model_type in ["diffusion", "correction", "upscaling"]:
+                    if model_type in data:
+                        for model in data[model_type]:
+                            if "label" in model:
+                                model_name = model["name"]
+                                logger.debug(
+                                    "collecting label for model %s from %s",
+                                    model_name,
+                                    file,
+                                )
+                                labels[model_name] = model["label"]
+
+                            if "inversions" in model:
+                                for inversion in model["inversions"]:
+                                    if "label" in inversion:
+                                        inversion_name = inversion["name"]
+                                        logger.debug(
+                                            "collecting label for inversion %s from %s",
+                                            inversion_name,
+                                            model_name,
+                                        )
+                                        labels[
+                                            f"inversion-{inversion_name}"
+                                        ] = inversion["label"]
+
+            except Exception as err:
+                logger.error("error loading extras file: %s", err)
+
+    logger.debug("adding labels to strings: %s", labels)
+    merge(
+        strings,
+        {
+            "en": {
+                "translation": {
+                    "model": labels,
+                }
+            }
+        },
+    )
+
+    extra_strings = strings
+
+
+def list_model_globs(context: ServerContext, globs: List[str]) -> List[str]:
+    models = []
+    for pattern in globs:
+        pattern_path = path.join(context.model_path, pattern)
+        logger.debug("loading models from %s", pattern_path)
+
+        models.extend([get_model_name(f) for f in glob(pattern_path)])
+
+    unique_models = list(set(models))
+    unique_models.sort()
+    return unique_models
+
+
 def load_models(context: ServerContext) -> None:
     global correction_models
     global diffusion_models
     global inversion_models
     global upscaling_models
 
-    diffusion_models = [
-        get_model_name(f) for f in glob(path.join(context.model_path, "diffusion-*"))
-    ]
-    diffusion_models.extend(
+    diffusion_models = list_model_globs(
+        context,
         [
-            get_model_name(f)
-            for f in glob(path.join(context.model_path, "stable-diffusion-*"))
-        ]
+            "diffusion-*",
+            "stable-diffusion-*",
+        ],
     )
-    diffusion_models = list(set(diffusion_models))
-    diffusion_models.sort()
     logger.debug("loaded diffusion models from disk: %s", diffusion_models)
 
-    correction_models = [
-        get_model_name(f) for f in glob(path.join(context.model_path, "correction-*"))
-    ]
-    correction_models = list(set(correction_models))
-    correction_models.sort()
+    correction_models = list_model_globs(
+        context,
+        [
+            "correction-*",
+        ],
+    )
     logger.debug("loaded correction models from disk: %s", correction_models)
 
-    inversion_models = [
-        get_model_name(f) for f in glob(path.join(context.model_path, "inversion-*"))
-    ]
-    inversion_models = list(set(inversion_models))
-    inversion_models.sort()
+    inversion_models = list_model_globs(
+        context,
+        [
+            "inversion-*",
+        ],
+    )
     logger.debug("loaded inversion models from disk: %s", inversion_models)
 
-    upscaling_models = [
-        get_model_name(f) for f in glob(path.join(context.model_path, "upscaling-*"))
-    ]
-    upscaling_models = list(set(upscaling_models))
-    upscaling_models.sort()
+    upscaling_models = list_model_globs(
+        context,
+        [
+            "upscaling-*",
+        ],
+    )
     logger.debug("loaded upscaling models from disk: %s", upscaling_models)
 
 

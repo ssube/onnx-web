@@ -2,6 +2,7 @@ import { doesExist, Maybe, mustDefault, mustExist } from '@apextoaster/js-utils'
 import { PhotoCamera } from '@mui/icons-material';
 import { Button, Stack, Typography } from '@mui/material';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface ImageInputProps {
   filter: string;
@@ -14,6 +15,8 @@ export interface ImageInputProps {
 }
 
 export function ImageInput(props: ImageInputProps) {
+  const { t } = useTranslation();
+
   function renderImage() {
     if (doesExist(props.image)) {
       if (mustDefault(props.hideSelection, false)) {
@@ -28,7 +31,7 @@ export function ImageInput(props: ImageInputProps) {
         }}
       />;
     } else {
-      return <Typography>Please select an image.</Typography>;
+      return <Typography>{t('input.image.empty')}</Typography>;
     }
   }
 

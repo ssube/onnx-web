@@ -76,6 +76,12 @@ Others:
   - disabling this can reduce noise in server logs, especially when logging to a file
 - `ONNX_WEB_OPTIMIZATIONS`
   - comma-delimited list of optimizations to enable
+- `ONNX_WEB_EXTRA_ARGS`
+  - extra arguments to the launch script
+  - set this to `--half` to convert models to fp16
+- `ONNX_WEB_EXTRA_MODELS`
+  - extra model files to be loaded
+  - one or more filenames or paths, to JSON or YAML files matching [the extras schema](../api/schemas/extras.yaml)
 
 ### Pipeline Optimizations
 

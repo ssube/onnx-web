@@ -1,0 +1,26 @@
+### Specific versions ###
+numpy>=1.20,<1.24
+protobuf<4,>=3.20.2
+
+### AI packages ###
+accelerate
+diffusers
+onnx
+# onnxruntime has many platform-specific packages
+safetensors
+transformers
+
+#### Upscaling and face correction
+basicsr
+codeformer-perceptor
+facexlib
+gfpgan
+realesrgan
+
+### Server packages ###
+boto3
+flask
+flask-cors
+jsonschema
+pyyaml
+setproctitle

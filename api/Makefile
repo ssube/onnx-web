@@ -13,12 +13,13 @@ pip: check-venv
 	pip install -r requirements.txt
 
 pip-dev: check-venv
-	pip install -r dev-requirements.txt
+	pip install -r requirements/dev.txt
 
 test:
+	python -m coverage erase
 	python -m coverage run -m unittest discover -s tests/
-	python -m coverage html
-	python -m coverage xml
+	python -m coverage html -i
+	python -m coverage xml -i
 
 package: package-dist package-upload
 

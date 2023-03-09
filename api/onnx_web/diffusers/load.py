@@ -23,10 +23,17 @@ from diffusers import (
 )
 from transformers import CLIPTokenizer
 
+from onnx_web.diffusers.utils import expand_prompt
+
 try:
     from diffusers import DEISMultistepScheduler
 except ImportError:
-    from ..diffusion.stub_scheduler import StubScheduler as DEISMultistepScheduler
+    from ..diffusers.stub_scheduler import StubScheduler as DEISMultistepScheduler
+
+try:
+    from diffusers import UniPCMultistepScheduler
+except ImportError:
+    from ..diffusers.stub_scheduler import StubScheduler as UniPCMultistepScheduler
 
 from ..params import DeviceParams, Size
 from ..server import ServerContext
@@ -52,6 +59,7 @@ pipeline_schedulers = {
     "karras-ve": KarrasVeScheduler,
     "lms-discrete": LMSDiscreteScheduler,
     "pndm": PNDMScheduler,
+    "unipc-multi": UniPCMultistepScheduler,
 }
 
 
@@ -147,7 +155,14 @@ def load_pipeline(
     lpw: bool,
     inversion: Optional[str],
 ):
-    pipe_key = (pipeline, model, device.device, device.provider, lpw, inversion)
+    pipe_key = (
+        pipeline.__name__,
+        model,
+        device.device,
+        device.provider,
+        lpw,
+        inversion,
+    )
     scheduler_key = (scheduler_name, model)
     scheduler_type = get_pipeline_schedulers()[scheduler_name]
 
@@ -180,7 +195,7 @@ def load_pipeline(
         run_gc([device])
 
         if lpw:
-            custom_pipeline = "./onnx_web/diffusion/lpw_stable_diffusion_onnx.py"
+            custom_pipeline = "./onnx_web/diffusers/lpw_stable_diffusion_onnx.py"
         else:
             custom_pipeline = None
 
@@ -222,6 +237,10 @@ def load_pipeline(
 
         if device is not None and hasattr(pipe, "to"):
             pipe = pipe.to(device.torch_str())
+
+        # monkey-patch pipeline
+        if not lpw:
+            pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
 
         server.cache.set("diffusion", pipe_key, pipe)
         server.cache.set("scheduler", scheduler_key, components["scheduler"])

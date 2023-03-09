@@ -5,8 +5,7 @@ import { copy } from 'esbuild-plugin-copy';
 
 function envTrue(key) {
     const val = (process.env[key] || '').toLowerCase();
-    return val == '1' || val == 't' || val == 'true' || val == 'y' || val == 'yes';
-
+    return val === '1' || val === 't' || val === 'true' || val === 'y' || val === 'yes';
 }
 
 const debug = envTrue('DEBUG');

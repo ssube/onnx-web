@@ -21,7 +21,9 @@ class DevicePoolExecutor:
     max_pending_per_worker: int
     join_timeout: float
 
+    leaking: List[Tuple[str, Process]]
     context: Dict[str, WorkerContext]  # Device -> Context
+    current: Dict[str, "Value[int]"]
     pending: Dict[str, "Queue[Tuple[str, Callable[..., None], Any, Any]]"]
     threads: Dict[str, Thread]
     workers: Dict[str, Process]
@@ -49,7 +51,9 @@ class DevicePoolExecutor:
         self.max_pending_per_worker = max_pending_per_worker
         self.join_timeout = join_timeout
 
+        self.leaking = []
         self.context = {}
+        self.current = {}
         self.pending = {}
         self.threads = {}
         self.workers = {}
@@ -83,6 +87,14 @@ class DevicePoolExecutor:
             pending = Queue(self.max_pending_per_worker)
             self.pending[name] = pending
 
+        if name in self.current:
+            logger.debug("using existing current worker value")
+            current = self.current[name]
+        else:
+            logger.debug("creating new current worker value")
+            current = Value("L", 0)
+            self.current[name] = current
+
         context = WorkerContext(
             name,
             device,
@@ -91,16 +103,19 @@ class DevicePoolExecutor:
             finished=self.finished,
             logs=self.logs,
             pending=pending,
+            current=current,
         )
         self.context[name] = context
-        self.workers[name] = Process(
+        worker = Process(
             name=f"onnx-web worker: {name}",
             target=worker_main,
             args=(context, self.server),
         )
 
         logger.debug("starting worker for device %s", device)
-        self.workers[name].start()
+        worker.start()
+        self.workers[name] = worker
+        current.value = worker.pid
 
     def create_logger_worker(self) -> None:
         def logger_worker(logs: Queue):
@@ -133,7 +148,7 @@ class DevicePoolExecutor:
             while True:
                 try:
                     job, device, value = progress.get(timeout=(self.join_timeout / 2))
-                    logger.info("progress update for job: %s to %s", job, value)
+                    logger.debug("progress update for job: %s to %s", job, value)
                     self.active_jobs[job] = (device, value)
                     if job in self.cancelled_jobs:
                         logger.debug(
@@ -169,6 +184,7 @@ class DevicePoolExecutor:
                     _device, progress = self.active_jobs[job]
                     self.finished_jobs.append((job, progress, context.cancel.value))
                     del self.active_jobs[job]
+                    self.join_leaking()
                 except Empty:
                     pass
                 except ValueError:
@@ -243,7 +259,7 @@ class DevicePoolExecutor:
                 return (True, p)
 
         if key not in self.active_jobs:
-            logger.warn("checking status for unknown job: %s", key)
+            logger.debug("checking status for unknown job: %s", key)
             return (None, 0)
 
         _device, progress = self.active_jobs[key]
@@ -260,50 +276,79 @@ class DevicePoolExecutor:
             queue.close()
 
         self.pending.clear()
+        self.join_leaking()
 
         logger.debug("stopping device workers")
         for device, worker in self.workers.items():
             if worker.is_alive():
-                logger.debug("stopping worker for device %s", device)
+                logger.debug("stopping worker %s for device %s", worker.pid, device)
                 worker.join(self.join_timeout)
                 if worker.is_alive():
                     logger.warning(
-                        "worker for device %s could not be stopped in time", device
+                        "worker %s for device %s could not be stopped in time",
+                        worker.pid,
+                        device,
                     )
+                    self.leaking.append((device, worker))
             else:
                 logger.debug("worker for device %s has died", device)
 
         for name, thread in self.threads.items():
-            logger.debug("stopping worker thread: %s", name)
+            logger.debug("stopping worker %s for thread %s", thread.ident, name)
             thread.join(self.join_timeout)
 
         logger.debug("worker pool stopped")
 
+    def join_leaking(self):
+        if len(self.leaking) > 0:
+            logger.warning("cleaning up %s leaking workers", len(self.leaking))
+            for device, worker in self.leaking:
+                logger.debug(
+                    "shutting down worker %s for device %s", worker.pid, device
+                )
+                worker.join(self.join_timeout)
+                if worker.is_alive():
+                    logger.error(
+                        "leaking worker %s for device %s could not be shut down",
+                        worker.pid,
+                        device,
+                    )
+
+            self.leaking[:] = [dw for dw in self.leaking if dw[1].is_alive()]
+
     def recycle(self):
         logger.debug("recycling worker pool")
+        self.join_leaking()
+
         needs_restart = []
 
-        for device, proc in self.workers.items():
+        for device, worker in self.workers.items():
             jobs = self.total_jobs.get(device, 0)
-            if not proc.is_alive():
+            if not worker.is_alive():
                 logger.warning("worker for device %s has died", device)
                 needs_restart.append(device)
             elif jobs > self.max_jobs_per_worker:
                 logger.info(
                     "shutting down worker for device %s after %s jobs", device, jobs
                 )
-                proc.join(self.join_timeout)
-                if proc.is_alive():
+                worker.join(self.join_timeout)
+                if worker.is_alive():
                     logger.warning(
-                        "worker for device %s could not be recycled in time", device
+                        "worker %s for device %s could not be recycled in time",
+                        worker.pid,
+                        device,
                     )
+                    self.leaking.append((device, worker))
+                else:
+                    del worker
 
                 self.workers[device] = None
-                del proc
                 needs_restart.append(device)
             else:
                 logger.debug(
-                    "worker for device %s does not need to be recycled", device
+                    "worker %s for device %s does not need to be recycled",
+                    worker.pid,
+                    device,
                 )
 
         logger.debug("starting new workers")
@@ -339,7 +384,7 @@ class DevicePoolExecutor:
         else:
             self.total_jobs[device] = 1
 
-        logger.debug("device job count: %s", self.total_jobs[device])
+        logger.debug("job count for device %s: %s", device, self.total_jobs[device])
         self.recycle()
 
         self.pending[device].put((key, fn, args, kwargs), block=False)

@@ -2,6 +2,7 @@ import { mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
@@ -37,6 +38,7 @@ export function Blend() {
   const setBlend = useStore(state, (s) => s.setBlend);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setLoading = useStore(state, (s) => s.pushLoading);
+  const { t } = useTranslation();
 
   const sources = mustDefault(blend.sources, []);
 
@@ -48,7 +50,7 @@ export function Blend() {
           filter={IMAGE_FILTER}
           image={sources[idx]}
           hideSelection={true}
-          label='Source'
+          label={t('input.image.source')}
           onChange={(file) => {
             const newSources = [...sources];
             newSources[idx] = file;
@@ -73,7 +75,7 @@ export function Blend() {
         disabled={sources.length === 0}
         variant='contained'
         onClick={() => upload.mutate()}
-      >Generate</Button>
+      >{t('generate')}</Button>
     </Stack>
   </Box>;
 }

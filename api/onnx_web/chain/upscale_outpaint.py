@@ -6,7 +6,7 @@ import torch
 from diffusers import OnnxStableDiffusionInpaintPipeline
 from PIL import Image, ImageDraw
 
-from ..diffusion.load import get_latents_from_seed, get_tile_latents, load_pipeline
+from ..diffusers.load import get_latents_from_seed, get_tile_latents, load_pipeline
 from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
 from ..params import Border, ImageParams, Size, SizeChart, StageParams
