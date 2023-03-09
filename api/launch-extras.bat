@@ -6,8 +6,7 @@ python -m onnx_web.convert ^
 --upscaling ^
 --correction ^
 --extras=%ONNX_WEB_EXTRA_MODELS% ^
---token=%HF_TOKEN% ^
-%ONNX_WEB_EXTRA_ARGS%
+--token=%HF_TOKEN% %ONNX_WEB_EXTRA_ARGS%
 
 echo "Launching API server..."
 flask --app="onnx_web.main:run" run --host=0.0.0.0
