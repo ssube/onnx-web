@@ -198,6 +198,7 @@ export const I18N_STRINGS_EN = {
         'ipndm': 'iPNDM',
         'lms-discrete': 'LMS',
         'pndm': 'PNDM',
+        'unipc-multi': 'UniPC Multistep',
       },
       tab: {
         blend: 'Blend',

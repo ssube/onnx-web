@@ -30,6 +30,11 @@ try:
 except ImportError:
     from ..diffusers.stub_scheduler import StubScheduler as DEISMultistepScheduler
 
+try:
+    from diffusers import UniPCMultistepScheduler
+except ImportError:
+    from ..diffusers.stub_scheduler import StubScheduler as UniPCMultistepScheduler
+
 from ..params import DeviceParams, Size
 from ..server import ServerContext
 from ..utils import run_gc
@@ -54,6 +59,7 @@ pipeline_schedulers = {
     "karras-ve": KarrasVeScheduler,
     "lms-discrete": LMSDiscreteScheduler,
     "pndm": PNDMScheduler,
+    "unipc-multi": UniPCMultistepScheduler,
 }
 
 
