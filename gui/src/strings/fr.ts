@@ -62,6 +62,7 @@ export const I18N_STRINGS_FR = {
       maskFilter: {
         'gaussian-multiply': '',
         'gaussian-screen': '',
+        'none': '',
       },
       modelType: {
         correction: 'modèle de correction',

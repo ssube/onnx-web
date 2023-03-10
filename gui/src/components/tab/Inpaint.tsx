@@ -144,7 +144,6 @@ export function Inpaint() {
         <QueryList
           id='masks'
           labelKey={'maskFilter'}
-          showEmpty={true}
           name={t('parameter.maskFilter')}
           query={{
             result: masks,

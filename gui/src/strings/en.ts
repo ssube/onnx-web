@@ -58,6 +58,7 @@ export const I18N_STRINGS_EN = {
       maskFilter: {
         'gaussian-multiply': 'Gaussian Multiply',
         'gaussian-screen': 'Gaussian Screen',
+        'none': 'None',
       },
       model: {
         '': 'None',
