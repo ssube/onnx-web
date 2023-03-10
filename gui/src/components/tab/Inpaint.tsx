@@ -181,8 +181,8 @@ export function Inpaint() {
               });
             }}
           >
-            {Object.entries(params.tileOrder.keys).map(([key, name]) =>
-              <MenuItem key={key} value={key}>{t(`tileOrder.${name}`)}</MenuItem>)
+            {Object.entries(params.tileOrder.keys).map(([_key, name]) =>
+              <MenuItem key={name} value={name}>{t(`tileOrder.${name}`)}</MenuItem>)
             }
           </Select>
         </FormControl>
