@@ -74,7 +74,7 @@ class Size:
     def add_border(self, border: Border):
         return Size(
             border.left + self.width + border.right,
-            border.top + self.height + border.right,
+            border.top + self.height + border.bottom,
         )
 
     def tojson(self) -> Dict[str, int]:
