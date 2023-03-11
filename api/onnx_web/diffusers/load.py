@@ -190,9 +190,9 @@ def load_pipeline(
             run_gc([device])
 
     else:
-        logger.debug("unloading previous diffusion pipeline")
-        server.cache.drop("diffusion", pipe_key)
-        run_gc([device])
+        if server.cache.drop("diffusion", pipe_key) > 0:
+            logger.debug("unloading previous diffusion pipeline")
+            run_gc([device])
 
         if lpw:
             custom_pipeline = "./onnx_web/diffusers/lpw_stable_diffusion_onnx.py"
