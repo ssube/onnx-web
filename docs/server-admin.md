@@ -68,20 +68,17 @@ Others:
 - `ONNX_WEB_DEFAULT_PLATFORM`
   - the default platform to show in the client
   - overrides the `params.json` file
-- `ONNX_WEB_NUM_WORKERS`
-  - number of background workers for image pipelines
-  - this should be equal to or less than the number of available GPUs
-- `ONNX_WEB_SHOW_PROGRESS`
-  - show progress bars in the logs
-  - disabling this can reduce noise in server logs, especially when logging to a file
-- `ONNX_WEB_OPTIMIZATIONS`
-  - comma-delimited list of optimizations to enable
 - `ONNX_WEB_EXTRA_ARGS`
   - extra arguments to the launch script
   - set this to `--half` to convert models to fp16
 - `ONNX_WEB_EXTRA_MODELS`
   - extra model files to be loaded
   - one or more filenames or paths, to JSON or YAML files matching [the extras schema](../api/schemas/extras.yaml)
+- `ONNX_WEB_SHOW_PROGRESS`
+  - show progress bars in the logs
+  - disabling this can reduce noise in server logs, especially when logging to a file
+- `ONNX_WEB_OPTIMIZATIONS`
+  - comma-delimited list of optimizations to enable
 
 ### Pipeline Optimizations
 
