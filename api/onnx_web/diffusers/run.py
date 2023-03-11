@@ -85,9 +85,6 @@ def run_txt2img_pipeline(
         dest = save_image(server, output, image)
         save_params(server, output, params, size, upscale=upscale)
 
-    del pipe
-    del result
-
     run_gc([job.get_device()])
 
     logger.info("finished txt2img job: %s", dest)
@@ -156,9 +153,6 @@ def run_img2img_pipeline(
         dest = save_image(server, output, image)
         size = Size(*source.size)
         save_params(server, output, params, size, upscale=upscale)
-
-    del pipe
-    del result
 
     run_gc([job.get_device()])
 
