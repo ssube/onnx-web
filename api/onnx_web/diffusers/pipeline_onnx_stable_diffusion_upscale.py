@@ -77,7 +77,7 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         scheduler: Any,
         max_noise_level: int = 350,
     ):
-        if getattr(vae, "config") is None:
+        if hasattr(vae, "config") == False:
             setattr(vae, "config", {
                 "scaling_factor": 0.08333,
             })
