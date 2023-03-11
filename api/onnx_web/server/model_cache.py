@@ -11,6 +11,7 @@ class ModelCache:
     def __init__(self, limit: int) -> None:
         self.cache = []
         self.limit = limit
+        logger.debug("creating model cache with limit of %s models", limit)
 
     def drop(self, tag: str, key: Any) -> int:
         logger.debug("dropping item from cache: %s %s", tag, key)
