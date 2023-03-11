@@ -1,5 +1,6 @@
 from logging import getLogger
 from os import path
+from typing import Optional
 
 import numpy as np
 from PIL import Image
@@ -54,7 +55,7 @@ def correct_gfpgan(
     source: Image.Image,
     *,
     upscale: UpscaleParams,
-    stage_source: Image.Image,
+    stage_source: Optional[Image.Image] = None,
     **kwargs,
 ) -> Image.Image:
     upscale = upscale.with_args(**kwargs)
