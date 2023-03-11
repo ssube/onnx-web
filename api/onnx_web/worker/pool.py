@@ -351,7 +351,8 @@ class DevicePoolExecutor:
                     device,
                 )
 
-        logger.debug("starting new workers")
+        if len(needs_restart) > 0:
+            logger.debug("starting new workers")
 
         for device in self.devices:
             if device.device in needs_restart:
