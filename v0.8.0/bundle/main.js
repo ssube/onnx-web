@@ -544,7 +544,7 @@
             }
             return element;
           }, "ReactElement");
-          function createElement31(type, config, children) {
+          function createElement32(type, config, children) {
             var propName;
             var props = {};
             var key = null;
@@ -608,7 +608,7 @@
             }
             return ReactElement(type, key, ref, self2, source, ReactCurrentOwner.current, props);
           }
-          __name(createElement31, "createElement");
+          __name(createElement32, "createElement");
           function cloneAndReplaceKey(oldElement, newKey) {
             var newElement = ReactElement(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
             return newElement;
@@ -1697,7 +1697,7 @@
                 error2("React.createElement: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", typeString, info);
               }
             }
-            var element = createElement31.apply(this, arguments);
+            var element = createElement32.apply(this, arguments);
             if (element == null) {
               return element;
             }
@@ -2505,9 +2505,9 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React126 = require_react();
+          var React127 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React126.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React127.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -4181,7 +4181,7 @@
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React126.Children.forEach(props.children, function(child) {
+                  React127.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -9862,7 +9862,7 @@
             }
           }
           __name(updateDOMProperties, "updateDOMProperties");
-          function createElement31(type, props, rootContainerElement, parentNamespace) {
+          function createElement32(type, props, rootContainerElement, parentNamespace) {
             var isCustomComponentTag;
             var ownerDocument2 = getOwnerDocumentFromRootContainer(rootContainerElement);
             var domElement;
@@ -9910,7 +9910,7 @@
             }
             return domElement;
           }
-          __name(createElement31, "createElement");
+          __name(createElement32, "createElement");
           function createTextNode(text, rootContainerElement) {
             return getOwnerDocumentFromRootContainer(rootContainerElement).createTextNode(text);
           }
@@ -10741,7 +10741,7 @@
               }
               parentNamespace = hostContextDev.namespace;
             }
-            var domElement = createElement31(type, props, rootContainerInstance, parentNamespace);
+            var domElement = createElement32(type, props, rootContainerInstance, parentNamespace);
             precacheFiberNode(internalInstanceHandle, domElement);
             updateFiberProps(domElement, props);
             return domElement;
@@ -13086,7 +13086,7 @@
           }
           __name(commitUpdateQueue, "commitUpdateQueue");
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React126.Component().refs;
+          var emptyRefsObject = new React127.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -26972,8 +26972,8 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React126 = require_react();
-          var ReactSharedInternals = React126.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var React127 = require_react();
+          var ReactSharedInternals = React127.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function error2(format2) {
             {
               {
@@ -27006,13 +27006,13 @@
           }
           __name(is, "is");
           var objectIs = typeof Object.is === "function" ? Object.is : is;
-          var useState23 = React126.useState, useEffect24 = React126.useEffect, useLayoutEffect3 = React126.useLayoutEffect, useDebugValue4 = React126.useDebugValue;
+          var useState23 = React127.useState, useEffect24 = React127.useEffect, useLayoutEffect3 = React127.useLayoutEffect, useDebugValue4 = React127.useDebugValue;
           var didWarnOld18Alpha = false;
           var didWarnUncachedGetSnapshot = false;
           function useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
             {
               if (!didWarnOld18Alpha) {
-                if (React126.startTransition !== void 0) {
+                if (React127.startTransition !== void 0) {
                   didWarnOld18Alpha = true;
                   error2("You are using an outdated, pre-release alpha of React 18 that does not support useSyncExternalStore. The use-sync-external-store shim will not work correctly. Upgrade to a newer pre-release.");
                 }
@@ -27080,7 +27080,7 @@
           var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined");
           var isServerEnvironment = !canUseDOM;
           var shim = isServerEnvironment ? useSyncExternalStore$1 : useSyncExternalStore;
-          var useSyncExternalStore$2 = React126.useSyncExternalStore !== void 0 ? React126.useSyncExternalStore : shim;
+          var useSyncExternalStore$2 = React127.useSyncExternalStore !== void 0 ? React127.useSyncExternalStore : shim;
           exports.useSyncExternalStore = useSyncExternalStore$2;
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(new Error());
@@ -27112,7 +27112,7 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React126 = require_react();
+          var React127 = require_react();
           var shim = require_shim();
           function is(x, y2) {
             return x === y2 && (x !== 0 || 1 / x === 1 / y2) || x !== x && y2 !== y2;
@@ -27120,7 +27120,7 @@
           __name(is, "is");
           var objectIs = typeof Object.is === "function" ? Object.is : is;
           var useSyncExternalStore = shim.useSyncExternalStore;
-          var useRef26 = React126.useRef, useEffect24 = React126.useEffect, useMemo10 = React126.useMemo, useDebugValue4 = React126.useDebugValue;
+          var useRef26 = React127.useRef, useEffect24 = React127.useEffect, useMemo10 = React127.useMemo, useDebugValue4 = React127.useDebugValue;
           function useSyncExternalStoreWithSelector2(subscribe, getSnapshot, getServerSnapshot, selector, isEqual) {
             var instRef = useRef26(null);
             var inst;
@@ -28526,7 +28526,7 @@
       if (true) {
         (function() {
           "use strict";
-          var React126 = require_react();
+          var React127 = require_react();
           var REACT_ELEMENT_TYPE = Symbol.for("react.element");
           var REACT_PORTAL_TYPE = Symbol.for("react.portal");
           var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
@@ -28553,7 +28553,7 @@
             return null;
           }
           __name(getIteratorFn, "getIteratorFn");
-          var ReactSharedInternals = React126.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React127.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function error2(format2) {
             {
               {
@@ -40054,8 +40054,8 @@
   Browser.type = "languageDetector";
 
   // out/src/main.js
-  var React125 = __toESM(require_react(), 1);
-  var import_client2 = __toESM(require_client(), 1);
+  var React126 = __toESM(require_react(), 1);
+  var import_client = __toESM(require_client(), 1);
 
   // node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
   function _objectWithoutPropertiesLoose(source, excluded) {
@@ -43441,7 +43441,7 @@
   }
   __name(visibleIndex, "visibleIndex");
 
-  // out/src/client.js
+  // out/src/client/api.js
   var FIXED_INTEGER = 0;
   var FIXED_FLOAT = 2;
   var STATUS_SUCCESS = 200;
@@ -43682,6 +43682,61 @@
     }
   }
   __name(parseApiResponse, "parseApiResponse");
+
+  // out/src/client/local.js
+  var NoServerError = class extends BaseError {
+    constructor() {
+      super("cannot connect to server");
+    }
+  };
+  __name(NoServerError, "NoServerError");
+  var LOCAL_CLIENT = {
+    async masks() {
+      throw new NoServerError();
+    },
+    async blend(model, params, upscale) {
+      throw new NoServerError();
+    },
+    async img2img(model, params, upscale) {
+      throw new NoServerError();
+    },
+    async txt2img(model, params, upscale) {
+      throw new NoServerError();
+    },
+    async inpaint(model, params, upscale) {
+      throw new NoServerError();
+    },
+    async upscale(model, params, upscale) {
+      throw new NoServerError();
+    },
+    async outpaint(model, params, upscale) {
+      throw new NoServerError();
+    },
+    async noises() {
+      throw new NoServerError();
+    },
+    async params() {
+      throw new NoServerError();
+    },
+    async ready(key) {
+      throw new NoServerError();
+    },
+    async cancel(key) {
+      throw new NoServerError();
+    },
+    async models() {
+      throw new NoServerError();
+    },
+    async platforms() {
+      throw new NoServerError();
+    },
+    async schedulers() {
+      throw new NoServerError();
+    },
+    async strings() {
+      return {};
+    }
+  };
 
   // node_modules/@mui/material/colors/common.js
   var common = {
@@ -68579,6 +68634,17 @@ Please use another name.` : formatMuiErrorMessage(18));
     }
   }
   __name(getApiRoot, "getApiRoot");
+  function isDebug2() {
+    const query = new URLSearchParams(window.location.search);
+    const debug = query.get("debug");
+    if (doesExist2(debug)) {
+      const val = debug.toLowerCase();
+      return val === "1" || val === "t" || val === "true" || val === "y" || val === "yes";
+    } else {
+      return false;
+    }
+  }
+  __name(isDebug2, "isDebug");
 
   // out/src/components/error/ParamsVersion.js
   function ParamsVersionError(props) {
@@ -68629,8 +68695,30 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(ServerParamsError, "ServerParamsError");
 
+  // out/src/components/LoadingScreen.js
+  var React101 = __toESM(require_react(), 1);
+  function LoadingScreen() {
+    const { t: t2 } = useTranslation();
+    return React101.createElement(
+      Box_default,
+      { sx: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: window.innerHeight
+      } },
+      React101.createElement(
+        Stack_default2,
+        { direction: "column", spacing: 2, sx: { alignItems: "center" } },
+        React101.createElement(CircularProgress_default, null),
+        React101.createElement(Typography_default, null, t2("loading.server"))
+      )
+    );
+  }
+  __name(LoadingScreen, "LoadingScreen");
+
   // out/src/components/OnnxError.js
-  var React102 = __toESM(require_react(), 1);
+  var React103 = __toESM(require_react(), 1);
 
   // out/src/state.js
   var import_react26 = __toESM(require_react(), 1);
@@ -68884,12 +68972,12 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(createStateSlices, "createStateSlices");
 
   // out/src/components/Logo.js
-  var React101 = __toESM(require_react(), 1);
+  var React102 = __toESM(require_react(), 1);
   function Logo() {
-    return React101.createElement(
+    return React102.createElement(
       Typography_default,
       { variant: "h3", gutterBottom: true },
-      React101.createElement(Link_default, { href: "https://github.com/ssube/onnx-web", target: "_blank", underline: "hover" }, "ONNX Web")
+      React102.createElement(Link_default, { href: "https://github.com/ssube/onnx-web", target: "_blank", underline: "hover" }, "ONNX Web")
     );
   }
   __name(Logo, "Logo");
@@ -68902,40 +68990,40 @@ Please use another name.` : formatMuiErrorMessage(18));
       window.location.reload();
     }
     __name(clearState, "clearState");
-    return React102.createElement(
+    return React103.createElement(
       Container_default,
       null,
-      React102.createElement(
+      React103.createElement(
         Box_default,
         { sx: { my: 4 } },
-        React102.createElement(Logo, null)
+        React103.createElement(Logo, null)
       ),
-      React102.createElement(
+      React103.createElement(
         Box_default,
         { sx: { my: 4 } },
-        React102.createElement(
+        React103.createElement(
           Stack_default2,
           { spacing: 2 },
           props.children,
-          React102.createElement(Typography_default, { variant: "body1" }, "This is a web UI for running ONNX models with GPU acceleration or in software, running locally or on a remote machine."),
-          React102.createElement(Typography_default, { variant: "body1" }, "The API runs on both Linux and Windows and provides access to the major functionality of diffusers, along with metadata about the available models and accelerators, and the output of previous runs. Hardware acceleration is supported on both AMD and Nvidia, with a CPU fallback capable of running on laptop-class machines."),
-          React102.createElement(Typography_default, { variant: "body1", gutterBottom: true }, "The GUI runs in all major browsers, including on mobile devices, and allows you to select the model and accelerator being used, along with the prompt and other image parameters. The last few output images are shown below the image controls, making it easy to refer back to previous parameters or save an image from earlier."),
-          React102.createElement(
+          React103.createElement(Typography_default, { variant: "body1" }, "This is a web UI for running ONNX models with GPU acceleration or in software, running locally or on a remote machine."),
+          React103.createElement(Typography_default, { variant: "body1" }, "The API runs on both Linux and Windows and provides access to the major functionality of diffusers, along with metadata about the available models and accelerators, and the output of previous runs. Hardware acceleration is supported on both AMD and Nvidia, with a CPU fallback capable of running on laptop-class machines."),
+          React103.createElement(Typography_default, { variant: "body1", gutterBottom: true }, "The GUI runs in all major browsers, including on mobile devices, and allows you to select the model and accelerator being used, along with the prompt and other image parameters. The last few output images are shown below the image controls, making it easy to refer back to previous parameters or save an image from earlier."),
+          React103.createElement(
             Typography_default,
             { variant: "body1" },
             "Please ",
-            React102.createElement("a", { href: "https://github.com/ssube/onnx-web" }, "visit the Github project"),
+            React103.createElement("a", { href: "https://github.com/ssube/onnx-web" }, "visit the Github project"),
             " for more information and make sure that ",
-            React102.createElement("a", { href: "https://github.com/ssube/onnx-web#configuring-and-running-the-server" }, "your API server is running"),
+            React103.createElement("a", { href: "https://github.com/ssube/onnx-web#configuring-and-running-the-server" }, "your API server is running"),
             " at ",
-            React102.createElement("a", { href: props.root }, props.root),
+            React103.createElement("a", { href: props.root }, props.root),
             "."
           ),
-          React102.createElement(
+          React103.createElement(
             Typography_default,
             { variant: "body1" },
             "If you are trying to use a remote API server or an alternative port, you can put the address into the query string, like ",
-            React102.createElement(
+            React103.createElement(
               "code",
               null,
               linkback,
@@ -68943,22 +69031,22 @@ Please use another name.` : formatMuiErrorMessage(18));
             ),
             "."
           ),
-          React102.createElement(
+          React103.createElement(
             Typography_default,
             { variant: "body1" },
             "If you recently upgraded and keep seeing errors, especially if you have been using a pre-release version or you are getting ",
-            React102.createElement("code", null, "Cannot read properties of undefined"),
+            React103.createElement("code", null, "Cannot read properties of undefined"),
             " errors, you can try resetting the client state:"
           ),
-          React102.createElement(Button_default, { onClick: clearState, color: "error" }, "Reset State"),
-          React102.createElement(
+          React103.createElement(Button_default, { onClick: clearState, color: "error" }, "Reset State"),
+          React103.createElement(
             Typography_default,
             { variant: "body1" },
             "If your server is running and available at ",
-            React102.createElement("a", { href: props.root }, props.root),
+            React103.createElement("a", { href: props.root }, props.root),
             ", make sure you are using a compatible client and try updating to the latest release or unstable version:"
           ),
-          React102.createElement(
+          React103.createElement(
             "pre",
             null,
             "> git branch",
@@ -68969,11 +69057,11 @@ Please use another name.` : formatMuiErrorMessage(18));
             "> git pull",
             "\n"
           ),
-          React102.createElement(
+          React103.createElement(
             Typography_default,
             { variant: "body1", gutterBottom: true },
             "You can also use ",
-            React102.createElement("a", { href: "https://github.com/ssube/onnx-web/releases" }, "a recent release"),
+            React103.createElement("a", { href: "https://github.com/ssube/onnx-web/releases" }, "a recent release"),
             "."
           )
         )
@@ -68983,16 +69071,16 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(OnnxError, "OnnxError");
 
   // node_modules/@mui/lab/TabContext/TabContext.js
-  var React103 = __toESM(require_react());
+  var React104 = __toESM(require_react());
   var import_prop_types72 = __toESM(require_prop_types());
   var import_jsx_runtime94 = __toESM(require_jsx_runtime());
-  var Context = /* @__PURE__ */ React103.createContext(null);
+  var Context = /* @__PURE__ */ React104.createContext(null);
   if (true) {
     Context.displayName = "TabContext";
   }
   function useUniquePrefix() {
-    const [id, setId] = React103.useState(null);
-    React103.useEffect(() => {
+    const [id, setId] = React104.useState(null);
+    React104.useEffect(() => {
       setId(`mui-p-${Math.round(Math.random() * 1e5)}`);
     }, []);
     return id;
@@ -69004,7 +69092,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       value
     } = props;
     const idPrefix = useUniquePrefix();
-    const context = React103.useMemo(() => {
+    const context = React104.useMemo(() => {
       return {
         idPrefix,
         value
@@ -69031,7 +69119,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     value: import_prop_types72.default.string.isRequired
   } : void 0;
   function useTabContext() {
-    return React103.useContext(Context);
+    return React104.useContext(Context);
   }
   __name(useTabContext, "useTabContext");
   function getPanelId(context, value) {
@@ -69056,11 +69144,11 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(getTabId, "getTabId");
 
   // node_modules/@mui/lab/TabList/TabList.js
-  var React104 = __toESM(require_react());
+  var React105 = __toESM(require_react());
   var import_prop_types73 = __toESM(require_prop_types());
   var import_jsx_runtime95 = __toESM(require_jsx_runtime());
   var _excluded70 = ["children"];
-  var TabList = /* @__PURE__ */ React104.forwardRef(/* @__PURE__ */ __name(function TabList2(props, ref) {
+  var TabList = /* @__PURE__ */ React105.forwardRef(/* @__PURE__ */ __name(function TabList2(props, ref) {
     const {
       children: childrenProp
     } = props, other = _objectWithoutPropertiesLoose(props, _excluded70);
@@ -69068,11 +69156,11 @@ Please use another name.` : formatMuiErrorMessage(18));
     if (context === null) {
       throw new TypeError("No TabContext provided");
     }
-    const children = React104.Children.map(childrenProp, (child) => {
-      if (!/* @__PURE__ */ React104.isValidElement(child)) {
+    const children = React105.Children.map(childrenProp, (child) => {
+      if (!/* @__PURE__ */ React105.isValidElement(child)) {
         return null;
       }
-      return /* @__PURE__ */ React104.cloneElement(child, {
+      return /* @__PURE__ */ React105.cloneElement(child, {
         // SOMEDAY: `Tabs` will set those themselves
         "aria-controls": getPanelId(context, child.props.value),
         id: getTabId(context, child.props.value)
@@ -69097,7 +69185,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   var TabList_default = TabList;
 
   // node_modules/@mui/lab/TabPanel/TabPanel.js
-  var React105 = __toESM(require_react());
+  var React106 = __toESM(require_react());
   var import_prop_types74 = __toESM(require_prop_types());
 
   // node_modules/@mui/lab/TabPanel/tabPanelClasses.js
@@ -69128,7 +69216,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   }) => ({
     padding: theme.spacing(3)
   }));
-  var TabPanel = /* @__PURE__ */ React105.forwardRef(/* @__PURE__ */ __name(function TabPanel2(inProps, ref) {
+  var TabPanel = /* @__PURE__ */ React106.forwardRef(/* @__PURE__ */ __name(function TabPanel2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiTabPanel"
@@ -69188,15 +69276,15 @@ Please use another name.` : formatMuiErrorMessage(18));
   var TabPanel_default = TabPanel;
 
   // out/src/components/OnnxWeb.js
-  var React124 = __toESM(require_react(), 1);
+  var React125 = __toESM(require_react(), 1);
   var import_useHash2 = __toESM(require_useHash(), 1);
 
   // out/src/components/control/ModelControl.js
-  var React107 = __toESM(require_react(), 1);
+  var React108 = __toESM(require_react(), 1);
   var import_react28 = __toESM(require_react(), 1);
 
   // out/src/components/input/QueryList.js
-  var React106 = __toESM(require_react(), 1);
+  var React107 = __toESM(require_react(), 1);
   var import_react27 = __toESM(require_react(), 1);
   function hasFilter(query) {
     return Reflect.has(query, "selector");
@@ -69245,30 +69333,30 @@ Please use another name.` : formatMuiErrorMessage(18));
     }, [result.status]);
     if (result.status === "error") {
       if (result.error instanceof Error) {
-        return React106.createElement(Alert_default, { severity: "error" }, t2("input.list.error.specific", {
+        return React107.createElement(Alert_default, { severity: "error" }, t2("input.list.error.specific", {
           message: result.error.message
         }));
       } else {
-        return React106.createElement(Alert_default, { severity: "error" }, t2("input.list.error.unknown"));
+        return React107.createElement(Alert_default, { severity: "error" }, t2("input.list.error.unknown"));
       }
     }
     if (result.status === "loading") {
-      return React106.createElement(Typography_default, null, t2("input.list.loading"));
+      return React107.createElement(Typography_default, null, t2("input.list.loading"));
     }
     if (result.status === "idle") {
-      return React106.createElement(Typography_default, null, t2("input.list.idle"));
+      return React107.createElement(Typography_default, null, t2("input.list.idle"));
     }
     const labelID = `query-list-${props.id}-labels`;
     const data = filterQuery(query, showEmpty);
-    return React106.createElement(
+    return React107.createElement(
       FormControl_default,
       null,
-      React106.createElement(InputLabel_default, { id: labelID }, props.name),
-      React106.createElement(Select_default, { labelId: labelID, label: props.name, value: firstValidValue(), onChange: (e2) => {
+      React107.createElement(InputLabel_default, { id: labelID }, props.name),
+      React107.createElement(Select_default, { labelId: labelID, label: props.name, value: firstValidValue(), onChange: (e2) => {
         if (doesExist2(props.onChange)) {
           props.onChange(e2.target.value);
         }
-      } }, data.map((name) => React106.createElement(MenuItem_default, { key: name, value: name }, getLabel(name))))
+      } }, data.map((name) => React107.createElement(MenuItem_default, { key: name, value: name }, getLabel(name))))
     );
   }
   __name(QueryList, "QueryList");
@@ -69286,17 +69374,17 @@ Please use another name.` : formatMuiErrorMessage(18));
     const platforms = useQuery("platforms", async () => client.platforms(), {
       staleTime: STALE_TIME
     });
-    return React107.createElement(
+    return React108.createElement(
       Stack_default2,
       { direction: "row", spacing: 2 },
-      React107.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t2("parameter.platform"), query: {
+      React108.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t2("parameter.platform"), query: {
         result: platforms
       }, value: params.platform, onChange: (platform) => {
         setModel({
           platform
         });
       } }),
-      React107.createElement(QueryList, { id: "diffusion", labelKey: "model", name: t2("modelType.diffusion"), query: {
+      React108.createElement(QueryList, { id: "diffusion", labelKey: "model", name: t2("modelType.diffusion"), query: {
         result: models,
         selector: (result) => result.diffusion
       }, value: params.model, onChange: (model) => {
@@ -69304,7 +69392,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           model
         });
       } }),
-      React107.createElement(QueryList, { id: "inversion", labelKey: "model", name: t2("modelType.inversion"), query: {
+      React108.createElement(QueryList, { id: "inversion", labelKey: "model", name: t2("modelType.inversion"), query: {
         result: models,
         selector: (result) => result.inversion
       }, showEmpty: true, value: params.inversion, onChange: (inversion) => {
@@ -69312,7 +69400,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           inversion
         });
       } }),
-      React107.createElement(QueryList, { id: "upscaling", labelKey: "model", name: t2("modelType.upscaling"), query: {
+      React108.createElement(QueryList, { id: "upscaling", labelKey: "model", name: t2("modelType.upscaling"), query: {
         result: models,
         selector: (result) => result.upscaling
       }, value: params.upscaling, onChange: (upscaling) => {
@@ -69320,7 +69408,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           upscaling
         });
       } }),
-      React107.createElement(QueryList, { id: "correction", labelKey: "model", name: t2("modelType.correction"), query: {
+      React108.createElement(QueryList, { id: "correction", labelKey: "model", name: t2("modelType.correction"), query: {
         result: models,
         selector: (result) => result.correction
       }, value: params.correction, onChange: (correction) => {
@@ -69328,7 +69416,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           correction
         });
       } }),
-      React107.createElement(FormControlLabel_default, { label: t2("parameter.lpw"), control: React107.createElement(Checkbox_default, { checked: params.lpw, value: "check", onChange: (event) => {
+      React108.createElement(FormControlLabel_default, { label: t2("parameter.lpw"), control: React108.createElement(Checkbox_default, { checked: params.lpw, value: "check", onChange: (event) => {
         setModel({
           lpw: params.lpw === false
         });
@@ -69339,7 +69427,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/ImageHistory.js
   var import_react31 = __toESM(require_react(), 1);
-  var React110 = __toESM(require_react(), 1);
+  var React111 = __toESM(require_react(), 1);
 
   // node_modules/@mui/icons-material/esm/ArrowLeft.js
   var import_jsx_runtime97 = __toESM(require_jsx_runtime());
@@ -69436,14 +69524,14 @@ Please use another name.` : formatMuiErrorMessage(18));
   }), "ZoomOutMap");
 
   // out/src/components/ImageCard.js
-  var React108 = __toESM(require_react(), 1);
+  var React109 = __toESM(require_react(), 1);
   var import_react29 = __toESM(require_react(), 1);
   var import_useHash = __toESM(require_useHash(), 1);
   function GridItem(props) {
-    return React108.createElement(
+    return React109.createElement(
       Grid_default,
       { item: true, xs: props.xs },
-      React108.createElement(Paper_default, { elevation: 0, sx: { padding: 1 } }, props.children)
+      React109.createElement(Paper_default, { elevation: 0, sx: { padding: 1 } }, props.children)
     );
   }
   __name(GridItem, "GridItem");
@@ -69520,26 +69608,26 @@ Please use another name.` : formatMuiErrorMessage(18));
     __name(getLabel, "getLabel");
     const model = getLabel("model", params.model);
     const scheduler = getLabel("scheduler", params.scheduler);
-    return React108.createElement(
+    return React109.createElement(
       Card_default,
       { sx: { maxWidth: config.params.width.default }, elevation: 2 },
-      React108.createElement(CardMedia_default, { sx: { height: config.params.height.default }, component: "img", image: outputs[index].url, title: params.prompt }),
-      React108.createElement(
+      React109.createElement(CardMedia_default, { sx: { height: config.params.height.default }, component: "img", image: outputs[index].url, title: params.prompt }),
+      React109.createElement(
         CardContent_default,
         null,
-        React108.createElement(
+        React109.createElement(
           Box_default,
           { textAlign: "center" },
-          React108.createElement(
+          React109.createElement(
             Grid_default,
             { container: true, spacing: 2 },
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 4 },
-              React108.createElement(
+              React109.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.previous") },
-                React108.createElement(
+                React109.createElement(
                   IconButton_default,
                   { onClick: () => {
                     const prevIndex = index - 1;
@@ -69549,68 +69637,68 @@ Please use another name.` : formatMuiErrorMessage(18));
                       setIndex(prevIndex);
                     }
                   } },
-                  React108.createElement(ArrowLeft_default, null)
+                  React109.createElement(ArrowLeft_default, null)
                 )
               )
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 4 },
               visibleIndex(index),
               " of ",
               outputs.length
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 4 },
-              React108.createElement(
+              React109.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.next") },
-                React108.createElement(
+                React109.createElement(
                   IconButton_default,
                   { onClick: () => {
                     setIndex((index + 1) % outputs.length);
                   } },
-                  React108.createElement(ArrowRight_default, null)
+                  React109.createElement(ArrowRight_default, null)
                 )
               )
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 4 },
               t2("modelType.diffusion"),
               ": ",
               model
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.scheduler"),
               ": ",
               scheduler
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.seed"),
               ": ",
               params.seed
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.cfg"),
               ": ",
               params.cfg
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.steps"),
               ": ",
               params.steps
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.size"),
@@ -69619,93 +69707,93 @@ Please use another name.` : formatMuiErrorMessage(18));
               "x",
               size.height
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 12 },
-              React108.createElement(Box_default, { textAlign: "left" }, params.prompt)
+              React109.createElement(Box_default, { textAlign: "left" }, params.prompt)
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 2 },
-              React108.createElement(
+              React109.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.save") },
-                React108.createElement(
+                React109.createElement(
                   IconButton_default,
                   { onClick: downloadImage },
-                  React108.createElement(Download_default, null)
+                  React109.createElement(Download_default, null)
                 )
               )
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 2 },
-              React108.createElement(
+              React109.createElement(
                 Tooltip_default,
                 { title: t2("tab.img2img") },
-                React108.createElement(
+                React109.createElement(
                   IconButton_default,
                   { onClick: copySourceToImg2Img },
-                  React108.createElement(ContentCopy_default, null)
+                  React109.createElement(ContentCopy_default, null)
                 )
               )
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 2 },
-              React108.createElement(
+              React109.createElement(
                 Tooltip_default,
                 { title: t2("tab.inpaint") },
-                React108.createElement(
+                React109.createElement(
                   IconButton_default,
                   { onClick: copySourceToInpaint },
-                  React108.createElement(Brush_default, null)
+                  React109.createElement(Brush_default, null)
                 )
               )
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 2 },
-              React108.createElement(
+              React109.createElement(
                 Tooltip_default,
                 { title: t2("tab.upscale") },
-                React108.createElement(
+                React109.createElement(
                   IconButton_default,
                   { onClick: copySourceToUpscale },
-                  React108.createElement(ZoomOutMap_default, null)
+                  React109.createElement(ZoomOutMap_default, null)
                 )
               )
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 2 },
-              React108.createElement(
+              React109.createElement(
                 Tooltip_default,
                 { title: t2("tab.blend") },
-                React108.createElement(
+                React109.createElement(
                   IconButton_default,
                   { onClick: (event) => {
                     setAnchor(event.currentTarget);
                   } },
-                  React108.createElement(Blender_default, null)
+                  React109.createElement(Blender_default, null)
                 )
               ),
-              React108.createElement(Menu_default, { anchorEl: anchor, open: doesExist2(anchor), onClose: close }, range(BLEND_SOURCES).map((idx) => React108.createElement(MenuItem_default, { key: idx, onClick: () => {
+              React109.createElement(Menu_default, { anchorEl: anchor, open: doesExist2(anchor), onClose: close }, range(BLEND_SOURCES).map((idx) => React109.createElement(MenuItem_default, { key: idx, onClick: () => {
                 copySourceToBlend(idx).catch((err) => {
                 });
                 close();
               } }, visibleIndex(idx))))
             ),
-            React108.createElement(
+            React109.createElement(
               GridItem,
               { xs: 2 },
-              React108.createElement(
+              React109.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.delete") },
-                React108.createElement(
+                React109.createElement(
                   IconButton_default,
                   { onClick: deleteImage },
-                  React108.createElement(Delete_default, null)
+                  React109.createElement(Delete_default, null)
                 )
               )
             )
@@ -69717,14 +69805,14 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(ImageCard, "ImageCard");
 
   // out/src/components/LoadingCard.js
-  var React109 = __toESM(require_react(), 1);
+  var React110 = __toESM(require_react(), 1);
   var import_react30 = __toESM(require_react(), 1);
   var LOADING_PERCENT = 100;
   var LOADING_OVERAGE = 99;
   function LoadingCard(props) {
     const { index, loading } = props;
     const { steps } = props.loading.params;
-    const client = mustExist(React109.useContext(ClientContext));
+    const client = mustExist(React110.useContext(ClientContext));
     const { params } = mustExist((0, import_react30.useContext)(ConfigContext));
     const state = mustExist((0, import_react30.useContext)(StateContext));
     const clearLoading = useStore(state, (s) => s.clearLoading);
@@ -69765,15 +69853,15 @@ Please use another name.` : formatMuiErrorMessage(18));
       return doesExist2(ready.data) && ready.data.ready;
     }
     __name(getReady, "getReady");
-    function renderProgress() {
+    function renderProgress2() {
       const progress = getProgress();
       if (progress > 0 && progress <= steps) {
-        return React109.createElement(CircularProgress_default, { variant: "determinate", value: getPercent() });
+        return React110.createElement(CircularProgress_default, { variant: "determinate", value: getPercent() });
       } else {
-        return React109.createElement(CircularProgress_default, null);
+        return React110.createElement(CircularProgress_default, null);
       }
     }
-    __name(renderProgress, "renderProgress");
+    __name(renderProgress2, "renderProgress");
     (0, import_react30.useEffect)(() => {
       if (cancel.status === "success") {
         clearLoading(props.loading);
@@ -69788,13 +69876,13 @@ Please use another name.` : formatMuiErrorMessage(18));
         }
       }
     }, [ready.status, getReady(), getProgress()]);
-    return React109.createElement(
+    return React110.createElement(
       Card_default,
       { sx: { maxWidth: params.width.default } },
-      React109.createElement(
+      React110.createElement(
         CardContent_default,
         { sx: { height: params.height.default } },
-        React109.createElement(
+        React110.createElement(
           Box_default,
           { sx: {
             display: "flex",
@@ -69802,15 +69890,15 @@ Please use another name.` : formatMuiErrorMessage(18));
             justifyContent: "center",
             minHeight: params.height.default
           } },
-          React109.createElement(
+          React110.createElement(
             Stack_default,
             { direction: "column", spacing: 2, sx: { alignItems: "center" } },
-            renderProgress(),
-            React109.createElement(Typography_default, null, t2("loading.progress", {
+            renderProgress2(),
+            React110.createElement(Typography_default, null, t2("loading.progress", {
               current: getProgress(),
               total: getTotal()
             })),
-            React109.createElement(Button_default, { onClick: () => cancel.mutate() }, t2("loading.cancel"))
+            React110.createElement(Button_default, { onClick: () => cancel.mutate() }, t2("loading.cancel"))
           )
         )
       )
@@ -69827,30 +69915,30 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { t: t2 } = useTranslation();
     const children = [];
     if (loading.length > 0) {
-      children.push(...loading.map((item) => React110.createElement(LoadingCard, { key: `loading-${item.image.outputs[0].key}`, index: 0, loading: item.image })));
+      children.push(...loading.map((item) => React111.createElement(LoadingCard, { key: `loading-${item.image.outputs[0].key}`, index: 0, loading: item.image })));
     }
     if (history.length > 0) {
-      children.push(...history.map((item) => React110.createElement(ImageCard, { key: `history-${item.outputs[0].key}`, value: item, onDelete: removeHistory })));
+      children.push(...history.map((item) => React111.createElement(ImageCard, { key: `history-${item.outputs[0].key}`, value: item, onDelete: removeHistory })));
     } else {
       if (doesExist2(loading) === false) {
-        children.push(React110.createElement(Typography_default, null, t2("history.empty")));
+        children.push(React111.createElement(Typography_default, null, t2("history.empty")));
       }
     }
     const limited = children.slice(0, limit);
-    return React110.createElement(Grid_default, { container: true, spacing: 2 }, limited.map((child, idx) => React110.createElement(Grid_default, { item: true, key: idx, xs: 6 }, child)));
+    return React111.createElement(Grid_default, { container: true, spacing: 2 }, limited.map((child, idx) => React111.createElement(Grid_default, { item: true, key: idx, xs: 6 }, child)));
   }
   __name(ImageHistory, "ImageHistory");
 
   // out/src/components/tab/Blend.js
-  var React115 = __toESM(require_react(), 1);
+  var React116 = __toESM(require_react(), 1);
   var import_react34 = __toESM(require_react(), 1);
 
   // out/src/components/control/UpscaleControl.js
-  var React112 = __toESM(require_react(), 1);
+  var React113 = __toESM(require_react(), 1);
   var import_react32 = __toESM(require_react(), 1);
 
   // out/src/components/input/NumericField.js
-  var React111 = __toESM(require_react(), 1);
+  var React112 = __toESM(require_react(), 1);
   function parseNumber(num, decimal = false) {
     if (decimal) {
       return parseFloat(num);
@@ -69863,15 +69951,15 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { decimal = false, disabled = false, label, min: min2, max: max2, step, value } = props;
     const error2 = value < min2 || value > max2;
     const { t: t2 } = useTranslation();
-    return React111.createElement(
+    return React112.createElement(
       Stack_default2,
       { spacing: 2 },
-      React111.createElement(TextField_default, { error: error2, label, helperText: error2 && t2("input.numeric.error.range"), disabled, variant: "outlined", type: "number", inputProps: { min: min2, max: max2, step }, value, onChange: (event) => {
+      React112.createElement(TextField_default, { error: error2, label, helperText: error2 && t2("input.numeric.error.range"), disabled, variant: "outlined", type: "number", inputProps: { min: min2, max: max2, step }, value, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange(parseNumber(event.target.value, decimal));
         }
       } }),
-      React111.createElement(Slider_default, { disabled, min: min2, max: max2, step, value, onChange: (_event, newValue) => {
+      React112.createElement(Slider_default, { disabled, min: min2, max: max2, step, value, onChange: (_event, newValue) => {
         if (doesExist2(props.onChange)) {
           if (Array.isArray(newValue)) {
             props.onChange(newValue[0]);
@@ -69891,60 +69979,60 @@ Please use another name.` : formatMuiErrorMessage(18));
     const upscale = useStore(state, (s) => s.upscale);
     const setUpscale = useStore(state, (s) => s.setUpscale);
     const { t: t2 } = useTranslation();
-    return React112.createElement(
+    return React113.createElement(
       Stack_default2,
       { direction: "row", spacing: 4 },
-      React112.createElement(FormControlLabel_default, { label: t2("parameter.upscale.label"), control: React112.createElement(Checkbox_default, { checked: upscale.enabled, value: "check", onChange: (event) => {
+      React113.createElement(FormControlLabel_default, { label: t2("parameter.upscale.label"), control: React113.createElement(Checkbox_default, { checked: upscale.enabled, value: "check", onChange: (event) => {
         setUpscale({
           enabled: upscale.enabled === false
         });
       } }) }),
-      React112.createElement(NumericField, { label: t2("parameter.upscale.denoise"), decimal: true, disabled: upscale.enabled === false, min: params.denoise.min, max: params.denoise.max, step: params.denoise.step, value: upscale.denoise, onChange: (denoise) => {
+      React113.createElement(NumericField, { label: t2("parameter.upscale.denoise"), decimal: true, disabled: upscale.enabled === false, min: params.denoise.min, max: params.denoise.max, step: params.denoise.step, value: upscale.denoise, onChange: (denoise) => {
         setUpscale({
           denoise
         });
       } }),
-      React112.createElement(NumericField, { label: t2("parameter.upscale.scale"), disabled: upscale.enabled === false, min: params.scale.min, max: params.scale.max, step: params.scale.step, value: upscale.scale, onChange: (scale) => {
+      React113.createElement(NumericField, { label: t2("parameter.upscale.scale"), disabled: upscale.enabled === false, min: params.scale.min, max: params.scale.max, step: params.scale.step, value: upscale.scale, onChange: (scale) => {
         setUpscale({
           scale
         });
       } }),
-      React112.createElement(NumericField, { label: t2("parameter.upscale.outscale"), disabled: upscale.enabled === false, min: params.outscale.min, max: params.outscale.max, step: params.outscale.step, value: upscale.outscale, onChange: (outscale) => {
+      React113.createElement(NumericField, { label: t2("parameter.upscale.outscale"), disabled: upscale.enabled === false, min: params.outscale.min, max: params.outscale.max, step: params.outscale.step, value: upscale.outscale, onChange: (outscale) => {
         setUpscale({
           outscale
         });
       } }),
-      React112.createElement(FormControlLabel_default, { label: t2("parameter.correction.label"), control: React112.createElement(Checkbox_default, { checked: upscale.faces, value: "check", onChange: (event) => {
+      React113.createElement(FormControlLabel_default, { label: t2("parameter.correction.label"), control: React113.createElement(Checkbox_default, { checked: upscale.faces, value: "check", onChange: (event) => {
         setUpscale({
           faces: upscale.faces === false
         });
       } }) }),
-      React112.createElement(NumericField, { label: t2("parameter.correction.strength"), decimal: true, disabled: upscale.faces === false, min: params.faceStrength.min, max: params.faceStrength.max, step: params.faceStrength.step, value: upscale.faceStrength, onChange: (faceStrength) => {
+      React113.createElement(NumericField, { label: t2("parameter.correction.strength"), decimal: true, disabled: upscale.faces === false, min: params.faceStrength.min, max: params.faceStrength.max, step: params.faceStrength.step, value: upscale.faceStrength, onChange: (faceStrength) => {
         setUpscale({
           faceStrength
         });
       } }),
-      React112.createElement(NumericField, { label: t2("parameter.correction.outscale"), disabled: upscale.faces === false, min: params.faceOutscale.min, max: params.faceOutscale.max, step: params.faceOutscale.step, value: upscale.faceOutscale, onChange: (faceOutscale) => {
+      React113.createElement(NumericField, { label: t2("parameter.correction.outscale"), disabled: upscale.faces === false, min: params.faceOutscale.min, max: params.faceOutscale.max, step: params.faceOutscale.step, value: upscale.faceOutscale, onChange: (faceOutscale) => {
         setUpscale({
           faceOutscale
         });
       } }),
-      React112.createElement(
+      React113.createElement(
         FormControl_default,
         null,
-        React112.createElement(InputLabel_default, { id: "upscale-order" }, "Upscale Order"),
-        React112.createElement(Select_default, { labelId: "upscale-order", label: t2("parameter.upscale.order"), value: upscale.upscaleOrder, onChange: (e2) => {
+        React113.createElement(InputLabel_default, { id: "upscale-order" }, "Upscale Order"),
+        React113.createElement(Select_default, { labelId: "upscale-order", label: t2("parameter.upscale.order"), value: upscale.upscaleOrder, onChange: (e2) => {
           setUpscale({
             upscaleOrder: e2.target.value
           });
-        } }, Object.entries(params.upscaleOrder.keys).map(([key, name]) => React112.createElement(MenuItem_default, { key, value: name }, t2(`upscaleOrder.${name}`))))
+        } }, Object.entries(params.upscaleOrder.keys).map(([key, name]) => React113.createElement(MenuItem_default, { key, value: name }, t2(`upscaleOrder.${name}`))))
       )
     );
   }
   __name(UpscaleControl, "UpscaleControl");
 
   // out/src/components/input/ImageInput.js
-  var React113 = __toESM(require_react(), 1);
+  var React114 = __toESM(require_react(), 1);
   function ImageInput(props) {
     const { t: t2 } = useTranslation();
     function renderImage() {
@@ -69952,26 +70040,26 @@ Please use another name.` : formatMuiErrorMessage(18));
         if (mustDefault(props.hideSelection, false)) {
           return void 0;
         }
-        return React113.createElement("img", { src: URL.createObjectURL(props.image), style: {
+        return React114.createElement("img", { src: URL.createObjectURL(props.image), style: {
           maxWidth: 512,
           maxHeight: 512
         } });
       } else {
-        return React113.createElement(Typography_default, null, t2("input.image.empty"));
+        return React114.createElement(Typography_default, null, t2("input.image.empty"));
       }
     }
     __name(renderImage, "renderImage");
-    return React113.createElement(
+    return React114.createElement(
       Stack_default2,
       { direction: "row", spacing: 2 },
-      React113.createElement(
+      React114.createElement(
         Stack_default2,
         null,
-        React113.createElement(
+        React114.createElement(
           Button_default,
-          { component: "label", startIcon: React113.createElement(PhotoCamera_default, null), variant: "outlined" },
+          { component: "label", startIcon: React114.createElement(PhotoCamera_default, null), variant: "outlined" },
           props.label,
-          React113.createElement("input", { hidden: true, accept: props.filter, type: "file", onChange: (event) => {
+          React114.createElement("input", { hidden: true, accept: props.filter, type: "file", onChange: (event) => {
             const { files } = event.target;
             if (doesExist2(files) && files.length > 0) {
               const file = mustExist(files[0]);
@@ -70320,41 +70408,41 @@ Please use another name.` : formatMuiErrorMessage(18));
     const setLoading = useStore(state, (s) => s.pushLoading);
     const { t: t2 } = useTranslation();
     const sources = mustDefault(blend.sources, []);
-    return React115.createElement(
+    return React116.createElement(
       Box_default,
       null,
-      React115.createElement(
+      React116.createElement(
         Stack_default2,
         { spacing: 2 },
-        range(BLEND_SOURCES).map((idx) => React115.createElement(ImageInput, { key: `source-${idx.toFixed(0)}`, filter: IMAGE_FILTER, image: sources[idx], hideSelection: true, label: t2("input.image.source"), onChange: (file) => {
+        range(BLEND_SOURCES).map((idx) => React116.createElement(ImageInput, { key: `source-${idx.toFixed(0)}`, filter: IMAGE_FILTER, image: sources[idx], hideSelection: true, label: t2("input.image.source"), onChange: (file) => {
           const newSources = [...sources];
           newSources[idx] = file;
           setBlend({
             sources: newSources
           });
         } })),
-        React115.createElement(MaskCanvas, { source: sources[0], mask: blend.mask, onSave: (mask) => {
+        React116.createElement(MaskCanvas, { source: sources[0], mask: blend.mask, onSave: (mask) => {
           setBlend({
             mask
           });
         } }),
-        React115.createElement(UpscaleControl, null),
-        React115.createElement(Button_default, { disabled: sources.length === 0, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
+        React116.createElement(UpscaleControl, null),
+        React116.createElement(Button_default, { disabled: sources.length === 0, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
       )
     );
   }
   __name(Blend, "Blend");
 
   // out/src/components/tab/Img2Img.js
-  var React118 = __toESM(require_react(), 1);
+  var React119 = __toESM(require_react(), 1);
   var import_react36 = __toESM(require_react(), 1);
 
   // out/src/components/control/ImageControl.js
-  var React117 = __toESM(require_react(), 1);
+  var React118 = __toESM(require_react(), 1);
   var import_react35 = __toESM(require_react(), 1);
 
   // out/src/components/input/PromptInput.js
-  var React116 = __toESM(require_react(), 1);
+  var React117 = __toESM(require_react(), 1);
   var PROMPT_LIMIT = 77;
   function PromptInput(props) {
     const { prompt = "", negativePrompt = "" } = props;
@@ -70373,10 +70461,10 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }
     __name(promptHelper, "promptHelper");
-    return React116.createElement(
+    return React117.createElement(
       Stack_default,
       { spacing: 2 },
-      React116.createElement(TextField_default, { error: error2, label: t2("parameter.prompt"), helperText: promptHelper(), variant: "outlined", value: prompt, onChange: (event) => {
+      React117.createElement(TextField_default, { error: error2, label: t2("parameter.prompt"), helperText: promptHelper(), variant: "outlined", value: prompt, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange({
             prompt: event.target.value,
@@ -70384,7 +70472,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           });
         }
       } }),
-      React116.createElement(TextField_default, { label: t2("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
+      React117.createElement(TextField_default, { label: t2("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange({
             prompt,
@@ -70406,56 +70494,56 @@ Please use another name.` : formatMuiErrorMessage(18));
     const schedulers = useQuery("schedulers", async () => client.schedulers(), {
       staleTime: STALE_TIME
     });
-    return React117.createElement(
+    return React118.createElement(
       Stack_default2,
       { spacing: 2 },
-      React117.createElement(
+      React118.createElement(
         Stack_default2,
         { direction: "row", spacing: 4 },
-        React117.createElement(QueryList, { id: "schedulers", labelKey: "scheduler", name: t2("parameter.scheduler"), query: {
+        React118.createElement(QueryList, { id: "schedulers", labelKey: "scheduler", name: t2("parameter.scheduler"), query: {
           result: schedulers
         }, value: mustDefault(controlState.scheduler, ""), onChange: (value) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { scheduler: value }));
           }
         } }),
-        React117.createElement(NumericField, { decimal: true, label: t2("parameter.eta"), min: params.eta.min, max: params.eta.max, step: params.eta.step, value: controlState.eta, onChange: (eta) => {
+        React118.createElement(NumericField, { decimal: true, label: t2("parameter.eta"), min: params.eta.min, max: params.eta.max, step: params.eta.step, value: controlState.eta, onChange: (eta) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { eta }));
           }
         } }),
-        React117.createElement(NumericField, { label: t2("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: controlState.batch, onChange: (batch) => {
+        React118.createElement(NumericField, { label: t2("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: controlState.batch, onChange: (batch) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { batch }));
           }
         } })
       ),
-      React117.createElement(
+      React118.createElement(
         Stack_default2,
         { direction: "row", spacing: 4 },
-        React117.createElement(NumericField, { decimal: true, label: t2("parameter.cfg"), min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: controlState.cfg, onChange: (cfg) => {
+        React118.createElement(NumericField, { decimal: true, label: t2("parameter.cfg"), min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: controlState.cfg, onChange: (cfg) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { cfg }));
           }
         } }),
-        React117.createElement(NumericField, { label: t2("parameter.steps"), min: params.steps.min, max: params.steps.max, step: params.steps.step, value: controlState.steps, onChange: (steps) => {
+        React118.createElement(NumericField, { label: t2("parameter.steps"), min: params.steps.min, max: params.steps.max, step: params.steps.step, value: controlState.steps, onChange: (steps) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { steps }));
           }
         } }),
-        React117.createElement(NumericField, { label: t2("parameter.seed"), min: params.seed.min, max: params.seed.max, step: params.seed.step, value: controlState.seed, onChange: (seed) => {
+        React118.createElement(NumericField, { label: t2("parameter.seed"), min: params.seed.min, max: params.seed.max, step: params.seed.step, value: controlState.seed, onChange: (seed) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { seed }));
           }
         } }),
-        React117.createElement(Button_default, { variant: "outlined", startIcon: React117.createElement(Casino_default, null), onClick: () => {
+        React118.createElement(Button_default, { variant: "outlined", startIcon: React118.createElement(Casino_default, null), onClick: () => {
           const seed = Math.floor(Math.random() * params.seed.max);
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { seed }));
           }
         } }, t2("parameter.newSeed"))
       ),
-      React117.createElement(PromptInput, { prompt: controlState.prompt, negativePrompt: controlState.negativePrompt, onChange: (value) => {
+      React118.createElement(PromptInput, { prompt: controlState.prompt, negativePrompt: controlState.negativePrompt, onChange: (value) => {
         if (doesExist2(props.onChange)) {
           props.onChange(Object.assign(Object.assign({}, controlState), value));
         }
@@ -70484,36 +70572,36 @@ Please use another name.` : formatMuiErrorMessage(18));
     const setImg2Img = useStore(state, (s) => s.setImg2Img);
     const setLoading = useStore(state, (s) => s.pushLoading);
     const { t: t2 } = useTranslation();
-    return React118.createElement(
+    return React119.createElement(
       Box_default,
       null,
-      React118.createElement(
+      React119.createElement(
         Stack_default2,
         { spacing: 2 },
-        React118.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), onChange: (file) => {
+        React119.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), onChange: (file) => {
           setImg2Img({
             source: file
           });
         } }),
-        React118.createElement(ImageControl, { selector: (s) => s.img2img, onChange: setImg2Img }),
-        React118.createElement(NumericField, { decimal: true, label: t2("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
+        React119.createElement(ImageControl, { selector: (s) => s.img2img, onChange: setImg2Img }),
+        React119.createElement(NumericField, { decimal: true, label: t2("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
           setImg2Img({
             strength: value
           });
         } }),
-        React118.createElement(UpscaleControl, null),
-        React118.createElement(Button_default, { disabled: doesExist2(source) === false, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
+        React119.createElement(UpscaleControl, null),
+        React119.createElement(Button_default, { disabled: doesExist2(source) === false, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
       )
     );
   }
   __name(Img2Img, "Img2Img");
 
   // out/src/components/tab/Inpaint.js
-  var React120 = __toESM(require_react(), 1);
+  var React121 = __toESM(require_react(), 1);
   var import_react38 = __toESM(require_react(), 1);
 
   // out/src/components/control/OutpaintControl.js
-  var React119 = __toESM(require_react(), 1);
+  var React120 = __toESM(require_react(), 1);
   var import_react37 = __toESM(require_react(), 1);
   function OutpaintControl() {
     const { params } = mustExist((0, import_react37.useContext)(ConfigContext));
@@ -70521,30 +70609,30 @@ Please use another name.` : formatMuiErrorMessage(18));
     const outpaint = useStore(state, (s) => s.outpaint);
     const setOutpaint = useStore(state, (s) => s.setOutpaint);
     const { t: t2 } = useTranslation();
-    return React119.createElement(
+    return React120.createElement(
       Stack_default2,
       { direction: "row", spacing: 4 },
-      React119.createElement(FormControlLabel_default, { label: t2("parameter.outpaint.label"), control: React119.createElement(Checkbox_default, { checked: outpaint.enabled, value: "check", onChange: (_event) => {
+      React120.createElement(FormControlLabel_default, { label: t2("parameter.outpaint.label"), control: React120.createElement(Checkbox_default, { checked: outpaint.enabled, value: "check", onChange: (_event) => {
         setOutpaint({
           enabled: outpaint.enabled === false
         });
       } }) }),
-      React119.createElement(NumericField, { label: t2("parameter.outpaint.left"), disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.left, onChange: (left2) => {
+      React120.createElement(NumericField, { label: t2("parameter.outpaint.left"), disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.left, onChange: (left2) => {
         setOutpaint({
           left: left2
         });
       } }),
-      React119.createElement(NumericField, { label: t2("parameter.outpaint.right"), disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.right, onChange: (right2) => {
+      React120.createElement(NumericField, { label: t2("parameter.outpaint.right"), disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.right, onChange: (right2) => {
         setOutpaint({
           right: right2
         });
       } }),
-      React119.createElement(NumericField, { label: t2("parameter.outpaint.top"), disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.top, onChange: (top2) => {
+      React120.createElement(NumericField, { label: t2("parameter.outpaint.top"), disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.top, onChange: (top2) => {
         setOutpaint({
           top: top2
         });
       } }),
-      React119.createElement(NumericField, { label: t2("parameter.outpaint.bottom"), disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.bottom, onChange: (bottom2) => {
+      React120.createElement(NumericField, { label: t2("parameter.outpaint.bottom"), disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.bottom, onChange: (bottom2) => {
         setOutpaint({
           bottom: bottom2
         });
@@ -70602,87 +70690,87 @@ Please use another name.` : formatMuiErrorMessage(18));
       if (supportsInpaint()) {
         return void 0;
       } else {
-        return React120.createElement(Alert_default, { severity: "warning" }, t2("error.inpaint.support"));
+        return React121.createElement(Alert_default, { severity: "warning" }, t2("error.inpaint.support"));
       }
     }
     __name(renderBanner, "renderBanner");
-    return React120.createElement(
+    return React121.createElement(
       Box_default,
       null,
-      React120.createElement(
+      React121.createElement(
         Stack_default2,
         { spacing: 2 },
         renderBanner(),
-        React120.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), hideSelection: true, onChange: (file) => {
+        React121.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), hideSelection: true, onChange: (file) => {
           setInpaint({
             source: file
           });
         } }),
-        React120.createElement(ImageInput, { filter: IMAGE_FILTER, image: mask, label: t2("input.image.mask"), hideSelection: true, onChange: (file) => {
+        React121.createElement(ImageInput, { filter: IMAGE_FILTER, image: mask, label: t2("input.image.mask"), hideSelection: true, onChange: (file) => {
           setInpaint({
             mask: file
           });
         } }),
-        React120.createElement(MaskCanvas, { source, mask, onSave: (file) => {
+        React121.createElement(MaskCanvas, { source, mask, onSave: (file) => {
           setInpaint({
             mask: file
           });
         } }),
-        React120.createElement(ImageControl, { selector: (s) => s.inpaint, onChange: (newParams) => {
+        React121.createElement(ImageControl, { selector: (s) => s.inpaint, onChange: (newParams) => {
           setInpaint(newParams);
         } }),
-        React120.createElement(NumericField, { label: t2("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
+        React121.createElement(NumericField, { label: t2("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
           setInpaint({
             strength: value
           });
         } }),
-        React120.createElement(
+        React121.createElement(
           Stack_default2,
           { direction: "row", spacing: 2 },
-          React120.createElement(QueryList, { id: "masks", labelKey: "maskFilter", showEmpty: true, name: t2("parameter.maskFilter"), query: {
+          React121.createElement(QueryList, { id: "masks", labelKey: "maskFilter", name: t2("parameter.maskFilter"), query: {
             result: masks
           }, value: filter, onChange: (newFilter) => {
             setInpaint({
               filter: newFilter
             });
           } }),
-          React120.createElement(QueryList, { id: "noises", labelKey: "noiseSource", name: t2("parameter.noiseSource"), query: {
+          React121.createElement(QueryList, { id: "noises", labelKey: "noiseSource", name: t2("parameter.noiseSource"), query: {
             result: noises
           }, value: noise, onChange: (newNoise) => {
             setInpaint({
               noise: newNoise
             });
           } }),
-          React120.createElement(
+          React121.createElement(
             FormControl_default,
             null,
-            React120.createElement(InputLabel_default, { id: "outpaint-tiling" }, "Tile Order"),
-            React120.createElement(Select_default, { labelId: "outpaint-tiling", label: t2("parameter.tileOrder"), value: tileOrder, onChange: (e2) => {
+            React121.createElement(InputLabel_default, { id: "outpaint-tiling" }, "Tile Order"),
+            React121.createElement(Select_default, { labelId: "outpaint-tiling", label: t2("parameter.tileOrder"), value: tileOrder, onChange: (e2) => {
               setInpaint({
                 tileOrder: e2.target.value
               });
-            } }, Object.entries(params.tileOrder.keys).map(([key, name]) => React120.createElement(MenuItem_default, { key, value: key }, t2(`tileOrder.${name}`))))
+            } }, Object.entries(params.tileOrder.keys).map(([_key, name]) => React121.createElement(MenuItem_default, { key: name, value: name }, t2(`tileOrder.${name}`))))
           ),
-          React120.createElement(
+          React121.createElement(
             Stack_default2,
             { direction: "row", spacing: 2 },
-            React120.createElement(FormControlLabel_default, { label: t2("parameter.fillColor"), sx: { mx: 1 }, control: React120.createElement("input", { defaultValue: fillColor, name: "fill-color", type: "color", onBlur: (event) => {
+            React121.createElement(FormControlLabel_default, { label: t2("parameter.fillColor"), sx: { mx: 1 }, control: React121.createElement("input", { defaultValue: fillColor, name: "fill-color", type: "color", onBlur: (event) => {
               setInpaint({
                 fillColor: event.target.value
               });
             } }) })
           )
         ),
-        React120.createElement(OutpaintControl, null),
-        React120.createElement(UpscaleControl, null),
-        React120.createElement(Button_default, { disabled: preventInpaint(), variant: "contained", onClick: () => upload.mutate(), color: supportsInpaint() ? void 0 : "warning" }, t2("generate"))
+        React121.createElement(OutpaintControl, null),
+        React121.createElement(UpscaleControl, null),
+        React121.createElement(Button_default, { disabled: preventInpaint(), variant: "contained", onClick: () => upload.mutate(), color: supportsInpaint() ? void 0 : "warning" }, t2("generate"))
       )
     );
   }
   __name(Inpaint, "Inpaint");
 
   // out/src/components/tab/Settings.js
-  var React121 = __toESM(require_react(), 1);
+  var React122 = __toESM(require_react(), 1);
   var import_react39 = __toESM(require_react(), 1);
   function removeBlobs(key, value) {
     if (value instanceof Blob || value instanceof File) {
@@ -70703,58 +70791,58 @@ Please use another name.` : formatMuiErrorMessage(18));
     const [json, setJson] = (0, import_react39.useState)(JSON.stringify(state, removeBlobs));
     const [root, setRoot] = (0, import_react39.useState)(getApiRoot(config));
     const { t: t2 } = useTranslation();
-    return React121.createElement(
+    return React122.createElement(
       Stack_default2,
       { spacing: 2 },
-      React121.createElement(NumericField, { label: t2("setting.history"), min: 2, max: 20, step: 1, value: state.limit, onChange: (value) => state.setLimit(value) }),
-      React121.createElement(TextField_default, { variant: "outlined", label: t2("setting.prompt"), value: state.defaults.prompt, onChange: (event) => {
+      React122.createElement(NumericField, { label: t2("setting.history"), min: 2, max: 20, step: 1, value: state.limit, onChange: (value) => state.setLimit(value) }),
+      React122.createElement(TextField_default, { variant: "outlined", label: t2("setting.prompt"), value: state.defaults.prompt, onChange: (event) => {
         state.setDefaults({
           prompt: event.target.value
         });
       } }),
-      React121.createElement(TextField_default, { variant: "outlined", label: t2("setting.scheduler"), value: state.defaults.scheduler, onChange: (event) => {
+      React122.createElement(TextField_default, { variant: "outlined", label: t2("setting.scheduler"), value: state.defaults.scheduler, onChange: (event) => {
         state.setDefaults({
           scheduler: event.target.value
         });
       } }),
-      React121.createElement(
+      React122.createElement(
         Stack_default2,
         { direction: "row", spacing: 2 },
-        React121.createElement(TextField_default, { variant: "outlined", label: t2("setting.server"), value: root, onChange: (event) => {
+        React122.createElement(TextField_default, { variant: "outlined", label: t2("setting.server"), value: root, onChange: (event) => {
           setRoot(event.target.value);
         } }),
-        React121.createElement(Button_default, { variant: "contained", startIcon: React121.createElement(Refresh_default, null), onClick: () => {
+        React122.createElement(Button_default, { variant: "contained", startIcon: React122.createElement(Refresh_default, null), onClick: () => {
           const query = new URLSearchParams(window.location.search);
           query.set("api", root);
           window.location.search = query.toString();
         } }, t2("setting.connectServer")),
-        React121.createElement(Alert_default, { variant: "outlined", severity: "success" }, config.params.version)
+        React122.createElement(Alert_default, { variant: "outlined", severity: "success" }, config.params.version)
       ),
-      React121.createElement(
+      React122.createElement(
         Stack_default2,
         { direction: "row", spacing: 2 },
-        React121.createElement(TextField_default, { variant: "outlined", label: t2("setting.state"), value: json, onChange: (event) => {
+        React122.createElement(TextField_default, { variant: "outlined", label: t2("setting.state"), value: json, onChange: (event) => {
           setJson(event.target.value);
         } }),
-        React121.createElement(Button_default, { variant: "contained", startIcon: React121.createElement(Refresh_default, null), onClick: () => {
+        React122.createElement(Button_default, { variant: "contained", startIcon: React122.createElement(Refresh_default, null), onClick: () => {
           window.localStorage.setItem(STATE_KEY, json);
           window.location.reload();
         } }, t2("setting.loadState"))
       ),
-      React121.createElement(
+      React122.createElement(
         Stack_default2,
         { direction: "row", spacing: 2 },
-        React121.createElement(Button_default, { onClick: () => state.resetTxt2Img(), color: "warning" }, t2("setting.reset.txt2img")),
-        React121.createElement(Button_default, { onClick: () => state.resetImg2Img(), color: "warning" }, t2("setting.reset.img2img")),
-        React121.createElement(Button_default, { onClick: () => state.resetInpaint(), color: "warning" }, t2("setting.reset.inpaint")),
-        React121.createElement(Button_default, { onClick: () => state.resetAll(), color: "error" }, t2("setting.reset.all"))
+        React122.createElement(Button_default, { onClick: () => state.resetTxt2Img(), color: "warning" }, t2("setting.reset.txt2img")),
+        React122.createElement(Button_default, { onClick: () => state.resetImg2Img(), color: "warning" }, t2("setting.reset.img2img")),
+        React122.createElement(Button_default, { onClick: () => state.resetInpaint(), color: "warning" }, t2("setting.reset.inpaint")),
+        React122.createElement(Button_default, { onClick: () => state.resetAll(), color: "error" }, t2("setting.reset.all"))
       )
     );
   }
   __name(Settings, "Settings");
 
   // out/src/components/tab/Txt2Img.js
-  var React122 = __toESM(require_react(), 1);
+  var React123 = __toESM(require_react(), 1);
   var import_react40 = __toESM(require_react(), 1);
   function Txt2Img() {
     const { params } = mustExist((0, import_react40.useContext)(ConfigContext));
@@ -70775,36 +70863,36 @@ Please use another name.` : formatMuiErrorMessage(18));
     const setTxt2Img = useStore(state, (s) => s.setTxt2Img);
     const setLoading = useStore(state, (s) => s.pushLoading);
     const { t: t2 } = useTranslation();
-    return React122.createElement(
+    return React123.createElement(
       Box_default,
       null,
-      React122.createElement(
+      React123.createElement(
         Stack_default2,
         { spacing: 2 },
-        React122.createElement(ImageControl, { selector: (s) => s.txt2img, onChange: setTxt2Img }),
-        React122.createElement(
+        React123.createElement(ImageControl, { selector: (s) => s.txt2img, onChange: setTxt2Img }),
+        React123.createElement(
           Stack_default2,
           { direction: "row", spacing: 4 },
-          React122.createElement(NumericField, { label: t2("parameter.width"), min: params.width.min, max: params.width.max, step: params.width.step, value: width2, onChange: (value) => {
+          React123.createElement(NumericField, { label: t2("parameter.width"), min: params.width.min, max: params.width.max, step: params.width.step, value: width2, onChange: (value) => {
             setTxt2Img({
               width: value
             });
           } }),
-          React122.createElement(NumericField, { label: t2("parameter.height"), min: params.height.min, max: params.height.max, step: params.height.step, value: height2, onChange: (value) => {
+          React123.createElement(NumericField, { label: t2("parameter.height"), min: params.height.min, max: params.height.max, step: params.height.step, value: height2, onChange: (value) => {
             setTxt2Img({
               height: value
             });
           } })
         ),
-        React122.createElement(UpscaleControl, null),
-        React122.createElement(Button_default, { variant: "contained", onClick: () => generate.mutate() }, t2("generate"))
+        React123.createElement(UpscaleControl, null),
+        React123.createElement(Button_default, { variant: "contained", onClick: () => generate.mutate() }, t2("generate"))
       )
     );
   }
   __name(Txt2Img, "Txt2Img");
 
   // out/src/components/tab/Upscale.js
-  var React123 = __toESM(require_react(), 1);
+  var React124 = __toESM(require_react(), 1);
   var import_react41 = __toESM(require_react(), 1);
   function Upscale() {
     async function uploadSource() {
@@ -70823,22 +70911,22 @@ Please use another name.` : formatMuiErrorMessage(18));
     const setSource = useStore(state, (s) => s.setUpscaleTab);
     const setLoading = useStore(state, (s) => s.pushLoading);
     const { t: t2 } = useTranslation();
-    return React123.createElement(
+    return React124.createElement(
       Box_default,
       null,
-      React123.createElement(
+      React124.createElement(
         Stack_default2,
         { spacing: 2 },
-        React123.createElement(ImageInput, { filter: IMAGE_FILTER, image: params.source, label: t2("input.image.source"), onChange: (file) => {
+        React124.createElement(ImageInput, { filter: IMAGE_FILTER, image: params.source, label: t2("input.image.source"), onChange: (file) => {
           setSource({
             source: file
           });
         } }),
-        React123.createElement(PromptInput, { prompt: params.prompt, negativePrompt: params.negativePrompt, onChange: (value) => {
+        React124.createElement(PromptInput, { prompt: params.prompt, negativePrompt: params.negativePrompt, onChange: (value) => {
           setSource(value);
         } }),
-        React123.createElement(UpscaleControl, null),
-        React123.createElement(Button_default, { disabled: doesExist2(params.source) === false, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
+        React124.createElement(UpscaleControl, null),
+        React124.createElement(Button_default, { disabled: doesExist2(params.source) === false, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
       )
     );
   }
@@ -70867,65 +70955,65 @@ Please use another name.` : formatMuiErrorMessage(18));
       return TAB_LABELS[0];
     }
     __name(tab, "tab");
-    return React124.createElement(
+    return React125.createElement(
       Container_default,
       null,
-      React124.createElement(
+      React125.createElement(
         Box_default,
         { sx: { my: 4 } },
-        React124.createElement(Logo, null)
+        React125.createElement(Logo, null)
       ),
-      React124.createElement(
+      React125.createElement(
         Box_default,
         { sx: { mx: 4, my: 4 } },
-        React124.createElement(ModelControl, null)
+        React125.createElement(ModelControl, null)
       ),
-      React124.createElement(
+      React125.createElement(
         TabContext,
         { value: tab() },
-        React124.createElement(
+        React125.createElement(
           Box_default,
           { sx: { borderBottom: 1, borderColor: "divider" } },
-          React124.createElement(TabList_default, { onChange: (_e, idx) => {
+          React125.createElement(TabList_default, { onChange: (_e, idx) => {
             setHash(idx);
-          } }, TAB_LABELS.map((name) => React124.createElement(Tab_default, { key: name, label: name, value: name })))
+          } }, TAB_LABELS.map((name) => React125.createElement(Tab_default, { key: name, label: name, value: name })))
         ),
-        React124.createElement(
+        React125.createElement(
           TabPanel_default,
           { value: "txt2img" },
-          React124.createElement(Txt2Img, null)
+          React125.createElement(Txt2Img, null)
         ),
-        React124.createElement(
+        React125.createElement(
           TabPanel_default,
           { value: "img2img" },
-          React124.createElement(Img2Img, null)
+          React125.createElement(Img2Img, null)
         ),
-        React124.createElement(
+        React125.createElement(
           TabPanel_default,
           { value: "inpaint" },
-          React124.createElement(Inpaint, null)
+          React125.createElement(Inpaint, null)
         ),
-        React124.createElement(
+        React125.createElement(
           TabPanel_default,
           { value: "upscale" },
-          React124.createElement(Upscale, null)
+          React125.createElement(Upscale, null)
         ),
-        React124.createElement(
+        React125.createElement(
           TabPanel_default,
           { value: "blend" },
-          React124.createElement(Blend, null)
+          React125.createElement(Blend, null)
         ),
-        React124.createElement(
+        React125.createElement(
           TabPanel_default,
           { value: "settings" },
-          React124.createElement(Settings, null)
+          React125.createElement(Settings, null)
         )
       ),
-      React124.createElement(Divider_default, { variant: "middle" }),
-      React124.createElement(
+      React125.createElement(Divider_default, { variant: "middle" }),
+      React125.createElement(
         Box_default,
         { sx: { mx: 4, my: 4 } },
-        React124.createElement(ImageHistory, null)
+        React125.createElement(ImageHistory, null)
       )
     );
   }
@@ -70973,6 +71061,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         loading: {
           cancel: "Stornieren",
           progress: "{{current}} von {{total}} Schritten",
+          server: "Verbindung zum Server...",
           unknown: "vielen"
         },
         mask: {
@@ -70989,7 +71078,8 @@ Please use another name.` : formatMuiErrorMessage(18));
         },
         maskFilter: {
           "gaussian-multiply": "Gau\xDFsche mit Multiplikation",
-          "gaussian-screen": "Gau\xDFsche mit Schirm"
+          "gaussian-screen": "Gau\xDFsche mit Schirm",
+          "none": "Keiner"
         },
         modelType: {
           correction: "Korrekturmodelle",
@@ -71134,6 +71224,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         loading: {
           cancel: "Cancel",
           progress: "{{current}} of {{total}} steps",
+          server: "Connecting to server...",
           unknown: "many"
         },
         mask: {
@@ -71151,7 +71242,8 @@ Please use another name.` : formatMuiErrorMessage(18));
         },
         maskFilter: {
           "gaussian-multiply": "Gaussian Multiply",
-          "gaussian-screen": "Gaussian Screen"
+          "gaussian-screen": "Gaussian Screen",
+          "none": "None"
         },
         model: {
           "": "None",
@@ -71291,7 +71383,8 @@ Please use another name.` : formatMuiErrorMessage(18));
           "karras-ve": "Karras Ve",
           "ipndm": "iPNDM",
           "lms-discrete": "LMS",
-          "pndm": "PNDM"
+          "pndm": "PNDM",
+          "unipc-multi": "UniPC Multistep"
         },
         tab: {
           blend: "Blend",
@@ -71362,6 +71455,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         loading: {
           cancel: "Cancelar",
           progress: "{{current}} de {{total}} pasos",
+          server: "Conectando al servidor...",
           unknown: "muchos"
         },
         mask: {
@@ -71378,7 +71472,8 @@ Please use another name.` : formatMuiErrorMessage(18));
         },
         maskFilter: {
           "gaussian-multiply": "Gaussiana con multiplicaci\xF3n",
-          "gaussian-screen": "Gaussiana con pantalla"
+          "gaussian-screen": "Gaussiana con pantalla",
+          "none": "Ninguno"
         },
         modelType: {
           correction: "Modelo de correcci\xF3n",
@@ -71523,6 +71618,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         loading: {
           cancel: "Annuler",
           progress: "{{current}} des {{total}} \xE9tapes",
+          server: "Connexion au serveur...",
           unknown: "nombreuses"
         },
         mask: {
@@ -71539,7 +71635,8 @@ Please use another name.` : formatMuiErrorMessage(18));
         },
         maskFilter: {
           "gaussian-multiply": "",
-          "gaussian-screen": ""
+          "gaussian-screen": "",
+          "none": ""
         },
         modelType: {
           correction: "mod\xE8le de correction",
@@ -71647,91 +71744,109 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/main.js
   var INITIAL_LOAD_TIMEOUT = 5e3;
+  async function renderApp(config, params, logger3, client) {
+    const completeConfig = mergeConfig(config, params);
+    logger3.info("getting strings from server");
+    const strings = await client.strings();
+    for (const [lang, translation] of Object.entries(strings)) {
+      logger3.debug({ lang, translation }, "adding server strings");
+      for (const [namespace, data] of Object.entries(translation)) {
+        instance.addResourceBundle(lang, namespace, data, true);
+      }
+    }
+    const { createBrushSlice, createDefaultSlice, createHistorySlice, createImg2ImgSlice, createInpaintSlice, createModelSlice, createOutpaintSlice, createTxt2ImgSlice, createUpscaleSlice, createBlendSlice, createResetSlice } = createStateSlices(params);
+    const state = createStore(persist((...slice3) => Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, createBrushSlice(...slice3)), createDefaultSlice(...slice3)), createHistorySlice(...slice3)), createImg2ImgSlice(...slice3)), createInpaintSlice(...slice3)), createModelSlice(...slice3)), createTxt2ImgSlice(...slice3)), createOutpaintSlice(...slice3)), createUpscaleSlice(...slice3)), createBlendSlice(...slice3)), createResetSlice(...slice3)), {
+      name: STATE_KEY,
+      partialize(s) {
+        return Object.assign(Object.assign({}, s), { img2img: Object.assign(Object.assign({}, s.img2img), { source: void 0 }), inpaint: Object.assign(Object.assign({}, s.inpaint), { mask: void 0, source: void 0 }), upscaleTab: Object.assign(Object.assign({}, s.upscaleTab), { source: void 0 }), blend: Object.assign(Object.assign({}, s.blend), { mask: void 0, sources: [] }) });
+      },
+      storage: createJSONStorage(() => localStorage),
+      version: STATE_VERSION
+    }));
+    const query = new QueryClient();
+    const reactLogger = logger3.child({
+      system: "react"
+    });
+    return React126.createElement(
+      QueryClientProvider,
+      { client: query },
+      React126.createElement(
+        ClientContext.Provider,
+        { value: client },
+        React126.createElement(
+          ConfigContext.Provider,
+          { value: completeConfig },
+          React126.createElement(
+            LoggerContext.Provider,
+            { value: reactLogger },
+            React126.createElement(
+              I18nextProvider,
+              { i18n: instance },
+              React126.createElement(
+                StateContext.Provider,
+                { value: state },
+                React126.createElement(OnnxWeb, null)
+              )
+            )
+          )
+        )
+      )
+    );
+  }
+  __name(renderApp, "renderApp");
+  async function renderProgress() {
+    return React126.createElement(
+      I18nextProvider,
+      { i18n: instance },
+      React126.createElement(LoadingScreen, null)
+    );
+  }
+  __name(renderProgress, "renderProgress");
   async function main2() {
+    const debug = isDebug2();
     const logger3 = E({
       name: "onnx-web",
-      level: "debug"
+      level: debug ? "debug" : "info"
     });
     const config = await loadConfig();
     const root = getApiRoot(config);
     const client = makeClient(root);
     const appElement = mustExist(document.getElementById("app"));
-    const app = (0, import_client2.createRoot)(appElement);
+    const app = (0, import_client.createRoot)(appElement);
+    await instance.use(Browser).use(initReactI18next).init({
+      debug: true,
+      fallbackLng: "en",
+      interpolation: {
+        escapeValue: false
+        // not needed for react as it escapes by default
+      },
+      resources: I18N_STRINGS,
+      returnEmptyString: false
+    });
     try {
       logger3.info("getting image parameters from server");
+      app.render(await renderProgress());
       const params = await timeout(INITIAL_LOAD_TIMEOUT, client.params());
       const version = mustDefault(params.version, "0.0.0");
       if ((0, import_semver.satisfies)(version, PARAM_VERSION)) {
-        const completeConfig = mergeConfig(config, params);
-        await instance.use(Browser).use(initReactI18next).init({
-          debug: true,
-          fallbackLng: "en",
-          interpolation: {
-            escapeValue: false
-            // not needed for react as it escapes by default
-          },
-          resources: I18N_STRINGS,
-          returnEmptyString: false
-        });
-        logger3.info("getting strings from server");
-        const strings = await client.strings();
-        for (const [lang, translation] of Object.entries(strings)) {
-          logger3.debug({ lang, translation }, "adding server strings");
-          for (const [namespace, data] of Object.entries(translation)) {
-            instance.addResourceBundle(lang, namespace, data, true);
-          }
-        }
-        const { createBrushSlice, createDefaultSlice, createHistorySlice, createImg2ImgSlice, createInpaintSlice, createModelSlice, createOutpaintSlice, createTxt2ImgSlice, createUpscaleSlice, createBlendSlice, createResetSlice } = createStateSlices(params);
-        const state = createStore(persist((...slice3) => Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, createBrushSlice(...slice3)), createDefaultSlice(...slice3)), createHistorySlice(...slice3)), createImg2ImgSlice(...slice3)), createInpaintSlice(...slice3)), createModelSlice(...slice3)), createTxt2ImgSlice(...slice3)), createOutpaintSlice(...slice3)), createUpscaleSlice(...slice3)), createBlendSlice(...slice3)), createResetSlice(...slice3)), {
-          name: STATE_KEY,
-          partialize(s) {
-            return Object.assign(Object.assign({}, s), { img2img: Object.assign(Object.assign({}, s.img2img), { source: void 0 }), inpaint: Object.assign(Object.assign({}, s.inpaint), { mask: void 0, source: void 0 }), upscaleTab: Object.assign(Object.assign({}, s.upscaleTab), { source: void 0 }), blend: Object.assign(Object.assign({}, s.blend), { mask: void 0, sources: [] }) });
-          },
-          storage: createJSONStorage(() => localStorage),
-          version: STATE_VERSION
-        }));
-        const query = new QueryClient();
-        const reactLogger = logger3.child({
-          system: "react"
-        });
-        app.render(React125.createElement(
-          QueryClientProvider,
-          { client: query },
-          React125.createElement(
-            ClientContext.Provider,
-            { value: client },
-            React125.createElement(
-              ConfigContext.Provider,
-              { value: completeConfig },
-              React125.createElement(
-                LoggerContext.Provider,
-                { value: reactLogger },
-                React125.createElement(
-                  I18nextProvider,
-                  { i18n: instance },
-                  React125.createElement(
-                    StateContext.Provider,
-                    { value: state },
-                    React125.createElement(OnnxWeb, null)
-                  )
-                )
-              )
-            )
-          )
-        ));
+        app.render(await renderApp(config, params, logger3, client));
       } else {
-        app.render(React125.createElement(
+        app.render(React126.createElement(
           OnnxError,
           { root },
-          React125.createElement(ParamsVersionError, { root, version })
+          React126.createElement(ParamsVersionError, { root, version })
         ));
       }
     } catch (err) {
-      app.render(React125.createElement(
-        OnnxError,
-        { root },
-        React125.createElement(ServerParamsError, { root, error: err })
-      ));
+      if (err instanceof TimeoutError || err instanceof Error && err.message.includes("Failed to fetch")) {
+        app.render(await renderApp(config, config.params, logger3, LOCAL_CLIENT));
+      } else {
+        app.render(React126.createElement(
+          OnnxError,
+          { root },
+          React126.createElement(ServerParamsError, { root, error: err })
+        ));
+      }
     }
   }
   __name(main2, "main");
