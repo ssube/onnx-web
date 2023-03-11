@@ -65,6 +65,12 @@ def preprocess(image):
 
     return image
 
+class FakeConfig():
+    scaling_factor: float
+
+    def __init__(self) -> None:
+        self.scaling_factor = 0.08333
+
 
 class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
     def __init__(
@@ -78,9 +84,7 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         max_noise_level: int = 350,
     ):
         if hasattr(vae, "config") == False:
-            config = {}
-            setattr(config, "scaling_factor", 0.08333)
-            setattr(vae, "config", config)
+            setattr(vae, "config", FakeConfig())
 
         super().__init__(vae, text_encoder, tokenizer, unet, low_res_scheduler, scheduler, max_noise_level)
 
