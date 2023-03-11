@@ -53,6 +53,11 @@ class ModelCache:
         cache.append((tag, key, value))
         self.prune()
 
+    def clear(self):
+        global cache
+
+        cache.clear()
+
     def prune(self):
         global cache
 
