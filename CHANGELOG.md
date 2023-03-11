@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+### [0.8.1](https://github.com/ssube/onnx-web/compare/v0.8.0...v0.8.1) (2023-03-11)
+
+
+### Bug Fixes
+
+* **api:** make cache global within each worker process ([#227](https://github.com/ssube/onnx-web/issues/227)) ([575cb88](https://github.com/ssube/onnx-web/commit/575cb8831b0038b43df36751cd0a94c4ee6a9d3b))
+* **api:** only run GC when a diffusion model has been replaced ([cb2b054](https://github.com/ssube/onnx-web/commit/cb2b054fde9e20be5aa6b15fa4f9887434efcfb0))
+* **api:** remove unused num_workers logic from server ([01d3519](https://github.com/ssube/onnx-web/commit/01d3519aa3f475183311ab4ae72e8cc4eb03d2ed))
+* **docs:** remove reference to removed num_workers server variable ([db61697](https://github.com/ssube/onnx-web/commit/db6169705ba2656f131ca56e4e6d99f5965a9a74))
+* **tests:** clear cache between tests ([919f88c](https://github.com/ssube/onnx-web/commit/919f88c7d06bd6a1695c2f01df93c9c3ccbb4caa))
+
 ## [0.8.0](https://github.com/ssube/onnx-web/compare/v0.7.1...v0.8.0) (2023-03-11)
 
 
