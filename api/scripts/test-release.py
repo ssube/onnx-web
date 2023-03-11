@@ -4,6 +4,7 @@ from io import BytesIO
 from logging import getLogger
 from logging.config import dictConfig
 from os import environ, path
+from sys import argv
 from time import sleep
 from typing import List, Optional, Union
 
@@ -78,6 +79,10 @@ TEST_DATA = [
     TestCase(
         "txt2img-sd-v1-5-512-muffin-heun",
         "txt2img?prompt=a+giant+muffin&seed=0&scheduler=heun",
+    ),
+    TestCase(
+        "txt2img-sd-v1-5-512-muffin-unipc",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=unipc-multi",
     ),
     TestCase(
         "txt2img-sd-v2-1-512-muffin",
@@ -175,8 +180,8 @@ TEST_DATA = [
         "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
         mask="mask-white",
         source=[
-            "txt2img-sd-v2-1-512-muffin-0",
             "txt2img-sd-v1-5-512-muffin-0",
+            "txt2img-sd-v2-1-512-muffin-0",
         ],
     ),
     TestCase(
@@ -184,8 +189,8 @@ TEST_DATA = [
         "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
         mask="mask-blend",
         source=[
-            "txt2img-sd-v2-1-512-muffin-0",
             "txt2img-sd-v1-5-512-muffin-0",
+            "txt2img-sd-v2-1-512-muffin-0",
         ],
     ),
 ]
