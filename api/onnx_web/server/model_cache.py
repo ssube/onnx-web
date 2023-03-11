@@ -47,9 +47,14 @@ class ModelCache:
 
     def prune(self):
         total = len(self.cache)
-        if total > self.limit:
+        overage = total - self.limit
+        if overage > 0:
+            removed = self.cache[:overage]
             logger.info(
-                "removing models from cache, %s of %s", (total - self.limit), total
+                "removing %s of %s models from cache, %s",
+                overage,
+                total,
+                [m[0] for m in removed],
             )
             self.cache[:] = self.cache[-self.limit :]
         else:
