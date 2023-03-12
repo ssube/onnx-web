@@ -14,7 +14,8 @@ from ..server import ServerContext
 from ..upscale import run_upscale_correction
 from ..utils import run_gc
 from ..worker import WorkerContext
-from .load import get_latents_from_seed, load_pipeline
+from .load import load_pipeline
+from .utils import get_latents_from_seed
 
 logger = getLogger(__name__)
 

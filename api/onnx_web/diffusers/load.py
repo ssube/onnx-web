@@ -1,8 +1,7 @@
 from logging import getLogger
 from os import path
-from typing import Any, Optional, Tuple
+from typing import Any, Optional
 
-import numpy as np
 from diffusers import (
     DDIMScheduler,
     DDPMScheduler,
@@ -23,7 +22,7 @@ from diffusers import (
 )
 from transformers import CLIPTokenizer
 
-from onnx_web.diffusers.utils import expand_prompt
+from .utils import expand_prompt
 
 try:
     from diffusers import DEISMultistepScheduler
@@ -35,14 +34,11 @@ try:
 except ImportError:
     from ..diffusers.stub_scheduler import StubScheduler as UniPCMultistepScheduler
 
-from ..params import DeviceParams, Size
+from ..params import DeviceParams
 from ..server import ServerContext
 from ..utils import run_gc
 
 logger = getLogger(__name__)
-
-latent_channels = 4
-latent_factor = 8
 
 pipeline_schedulers = {
     "ddim": DDIMScheduler,
@@ -73,35 +69,6 @@ def get_scheduler_name(scheduler: Any) -> Optional[str]:
             return k
 
     return None
-
-
-def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
-    """
-    From https://www.travelneil.com/stable-diffusion-updates.html.
-    This one needs to use np.random because of the return type.
-    """
-    latents_shape = (
-        batch,
-        latent_channels,
-        size.height // latent_factor,
-        size.width // latent_factor,
-    )
-    rng = np.random.default_rng(seed)
-    image_latents = rng.standard_normal(latents_shape).astype(np.float32)
-    return image_latents
-
-
-def get_tile_latents(
-    full_latents: np.ndarray, dims: Tuple[int, int, int]
-) -> np.ndarray:
-    x, y, tile = dims
-    t = tile // latent_factor
-    x = x // latent_factor
-    y = y // latent_factor
-    xt = x + t
-    yt = y + t
-
-    return full_latents[:, :, y:yt, x:xt]
 
 
 def optimize_pipeline(

@@ -1,13 +1,19 @@
 from logging import getLogger
 from math import ceil
 from re import compile
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import numpy as np
 from diffusers import OnnxStableDiffusionPipeline
+from scipy import interpolate
+
+from ..params import Size
 
 logger = getLogger(__name__)
 
+
+LATENT_CHANNELS = 4
+LATENT_FACTOR = 8
 
 MAX_TOKENS_PER_GROUP = 77
 PATTERN_RANGE = compile("(\\w+)-{(\\d+),(\\d+)(?:,(\\d+))?}")
@@ -128,3 +134,55 @@ def expand_prompt(
 
     logger.debug("expanded prompt shape: %s", prompt_embeds.shape)
     return prompt_embeds
+
+
+def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
+    """
+    From https://www.travelneil.com/stable-diffusion-updates.html.
+    This one needs to use np.random because of the return type.
+    """
+    latents_shape = (
+        batch,
+        LATENT_CHANNELS,
+        size.height // LATENT_FACTOR,
+        size.width // LATENT_FACTOR,
+    )
+    rng = np.random.default_rng(seed)
+    image_latents = rng.standard_normal(latents_shape).astype(np.float32)
+    return image_latents
+
+
+def get_tile_latents(
+    full_latents: np.ndarray, dims: Tuple[int, int, int]
+) -> np.ndarray:
+    x, y, tile = dims
+    t = tile // LATENT_FACTOR
+    x = x // LATENT_FACTOR
+    y = y // LATENT_FACTOR
+    xt = x + t
+    yt = y + t
+
+    (batches, channels, ys, xs) = full_latents.shape
+    tile_latents = np.ones(full_latents.shape)
+    orig_latents = full_latents[:, :, y:yt, x:xt]
+    for batch in range(batches):
+        for channel in range(channels):
+            layer = orig_latents[batch, channel]
+
+            x = np.linspace(0, xs, layer.shape[1])
+            y = np.linspace(0, ys, layer.shape[0])
+            f = interpolate.interp2d(x, y, layer, kind="linear")
+
+            x_new = np.arange(0, xs)
+            y_new = np.arange(0, ys)
+            expanded_latents = f(x_new, y_new)
+
+            logger.debug(
+                "expanded tile latents from %s to %s",
+                orig_latents.shape,
+                expanded_latents.shape,
+            )
+
+            tile_latents[batch, channel] = expanded_latents
+
+    return tile_latents

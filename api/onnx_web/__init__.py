@@ -5,7 +5,7 @@ from .chain import (
     upscale_resrgan,
     upscale_stable_diffusion,
 )
-from .diffusers.load import get_latents_from_seed, load_pipeline, optimize_pipeline
+from .diffusers.load import load_pipeline, optimize_pipeline
 from .diffusers.run import (
     run_blend_pipeline,
     run_img2img_pipeline,
@@ -14,6 +14,7 @@ from .diffusers.run import (
     run_upscale_pipeline,
 )
 from .diffusers.stub_scheduler import StubScheduler
+from .diffusers.utils import get_latents_from_seed, get_tile_latents
 from .image import (
     expand_image,
     mask_filter_gaussian_multiply,
