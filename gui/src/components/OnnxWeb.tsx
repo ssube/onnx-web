@@ -1,9 +1,12 @@
-import { doesExist } from '@apextoaster/js-utils';
+import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, Divider, Tab } from '@mui/material';
+import { Box, Container, Divider, PaletteMode, Tab, useMediaQuery } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import * as React from 'react';
 import { useHash } from 'react-use/lib/useHash';
 
+import { useStore } from 'zustand';
 import { ModelControl } from './control/ModelControl.js';
 import { ImageHistory } from './ImageHistory.js';
 import { Logo } from './Logo.js';
@@ -13,6 +16,7 @@ import { Inpaint } from './tab/Inpaint.js';
 import { Settings } from './tab/Settings.js';
 import { Txt2Img } from './tab/Txt2Img.js';
 import { Upscale } from './tab/Upscale.js';
+import { StateContext } from '../state.js';
 
 const REMOVE_HASH = /^#?(.*)$/;
 const TAB_LABELS = [
@@ -25,6 +29,37 @@ const TAB_LABELS = [
 ];
 
 export function OnnxWeb() {
+  /* checks for system light/dark mode preference */
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const state = useStore(mustExist(React.useContext(StateContext)));
+
+  const theme = React.useMemo(
+    () => {
+      if (state.theme === '') {
+        if (prefersDarkMode) {
+          return createTheme({
+            palette: {
+              mode: 'dark'
+            },
+          });
+        } else {
+          return createTheme({
+            palette: {
+              mode: 'light'
+            },
+          });
+        }
+      } else {
+        return createTheme({
+          palette: {
+            mode: state.theme as PaletteMode
+          },
+        });
+      }
+    },
+    [prefersDarkMode, state.theme],
+  );
+
   const [hash, setHash] = useHash();
 
   function tab(): string {

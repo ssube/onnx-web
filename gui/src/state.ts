@@ -40,8 +40,10 @@ interface BrushSlice {
 
 interface DefaultSlice {
   defaults: TabState<BaseImgParams>;
+  theme: string;
 
   setDefaults(param: Partial<BaseImgParams>): void;
+  setTheme(theme: string): void;
 }
 
 interface HistorySlice {
@@ -471,6 +473,7 @@ export function createStateSlices(server: ServerParams) {
     defaults: {
       ...base,
     },
+    theme: '',
     setDefaults(params) {
       set((prev) => ({
         defaults: {
@@ -479,6 +482,11 @@ export function createStateSlices(server: ServerParams) {
         }
       }));
     },
+    setTheme(theme) {
+      set((prev) => ({
+        theme,
+      }));
+    }
   });
 
   const createModelSlice: Slice<ModelSlice> = (set) => ({
