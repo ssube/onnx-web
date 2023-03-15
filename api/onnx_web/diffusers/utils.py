@@ -1,6 +1,6 @@
 from logging import getLogger
 from math import ceil
-from re import compile
+from re import compile, Pattern
 from typing import List, Optional, Tuple
 
 import numpy as np
@@ -9,8 +9,10 @@ from diffusers import OnnxStableDiffusionPipeline
 logger = getLogger(__name__)
 
 
+INVERSION_TOKEN = compile(r"\<inversion:(\w+):([\.|\d]+)\>")
+LORA_TOKEN = compile(r"\<lora:(\w+):([\.|\d]+)\>")
 MAX_TOKENS_PER_GROUP = 77
-PATTERN_RANGE = compile("(\\w+)-{(\\d+),(\\d+)(?:,(\\d+))?}")
+PATTERN_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
 
 
 def expand_prompt_ranges(prompt: str) -> str:
@@ -130,18 +132,28 @@ def expand_prompt(
     return prompt_embeds
 
 
-def get_loras_from_prompt(prompt: str) -> Tuple[str, List[Tuple[str, float]]]:
+def get_tokens_from_prompt(prompt: str, pattern: Pattern[str]) -> Tuple[str, List[Tuple[str, float]]]:
+    """
+    TODO: replace with Arpeggio
+    """
     remaining_prompt = prompt
-    lora_expr = compile(r"\<lora:(\w+):([\.|\d]+)\>")
 
-    loras = []
-    next_match = lora_expr.search(remaining_prompt)
+    tokens = []
+    next_match = pattern.search(remaining_prompt)
     while next_match is not None:
-        logger.debug("found LoRA token in prompt: %s", next_match)
+        logger.debug("found token in prompt: %s", next_match)
         name, weight = next_match.groups()
-        loras.append((name, float(weight)))
+        tokens.append((name, float(weight)))
         # remove this match and look for another
         remaining_prompt = remaining_prompt[:next_match.start()] + remaining_prompt[next_match.end():]
-        next_match = lora_expr.search(remaining_prompt)
+        next_match = pattern.search(remaining_prompt)
 
-    return (remaining_prompt, loras)
+    return (remaining_prompt, tokens)
+
+
+def get_loras_from_prompt(prompt: str) -> Tuple[str, List[Tuple[str, float]]]:
+    return get_tokens_from_prompt(prompt, LORA_TOKEN)
+
+
+def get_inversions_from_prompt(prompt: str) -> Tuple[str, List[Tuple[str, float]]]:
+    return get_tokens_from_prompt(prompt, INVERSION_TOKEN)

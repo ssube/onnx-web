@@ -156,7 +156,7 @@ def load_pipeline(
     scheduler_name: str,
     device: DeviceParams,
     lpw: bool,
-    inversion: Optional[str],
+    inversions: Optional[List[Tuple[str, float]]] = None,
     loras: Optional[List[Tuple[str, float]]] = None,
 ):
     loras = loras or []
@@ -166,7 +166,7 @@ def load_pipeline(
         device.device,
         device.provider,
         lpw,
-        inversion,
+        inversions,
         loras,
     )
     scheduler_key = (scheduler_name, model)
@@ -215,19 +215,21 @@ def load_pipeline(
             )
         }
 
-        if inversion is not None:
-            logger.debug("loading text encoder from %s", inversion)
+        if inversions is not None and len(inversions) > 0:
+            inversion = inversions[0]
+            logger.debug("loading Textual Inversion from %s", inversion)
+            # TODO: blend the inversion models
             components["text_encoder"] = OnnxRuntimeModel.from_pretrained(
-                path.join(inversion, "text_encoder"),
+                path.join(server.model_path, inversion, "text_encoder"),
                 provider=device.ort_provider(),
                 sess_options=device.sess_options(),
             )
             components["tokenizer"] = CLIPTokenizer.from_pretrained(
-                path.join(inversion, "tokenizer"),
+                path.join(server.model_path, inversions, "tokenizer"),
             )
 
         # test LoRA blending
-        if len(loras) > 0:
+        if loras is not None and len(loras) > 0:
             lora_names, lora_weights = zip(*loras)
             lora_models = [path.join(server.model_path, "lora", f"{name}.safetensors") for name in lora_names]
             logger.info("blending base model %s with LoRA models: %s", model, lora_models)

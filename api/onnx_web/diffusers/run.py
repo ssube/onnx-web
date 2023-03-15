@@ -15,7 +15,7 @@ from ..upscale import run_upscale_correction
 from ..utils import run_gc
 from ..worker import WorkerContext
 from .load import get_latents_from_seed, load_pipeline
-from .utils import get_loras_from_prompt
+from .utils import get_inversions_from_prompt, get_loras_from_prompt
 
 logger = getLogger(__name__)
 
@@ -31,6 +31,7 @@ def run_txt2img_pipeline(
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
 
     (prompt, loras) = get_loras_from_prompt(params.prompt)
+    (prompt, inversions) = get_inversions_from_prompt(prompt)
     params.prompt = prompt
 
     pipe = load_pipeline(
@@ -40,7 +41,7 @@ def run_txt2img_pipeline(
         params.scheduler,
         job.get_device(),
         params.lpw,
-        params.inversion,
+        inversions,
         loras,
     )
     progress = job.get_progress_callback()
@@ -106,6 +107,7 @@ def run_img2img_pipeline(
     strength: float,
 ) -> None:
     (prompt, loras) = get_loras_from_prompt(params.prompt)
+    (prompt, inversions) = get_inversions_from_prompt(prompt)
     params.prompt = prompt
 
     pipe = load_pipeline(
@@ -115,7 +117,7 @@ def run_img2img_pipeline(
         params.scheduler,
         job.get_device(),
         params.lpw,
-        params.inversion,
+        inversions,
         loras,
     )
     progress = job.get_progress_callback()
