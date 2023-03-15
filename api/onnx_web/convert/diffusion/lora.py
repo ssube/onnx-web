@@ -61,7 +61,7 @@ def fix_node_name(key: str):
 
 def merge_lora(
     base_name: str,
-    lora_names: str,
+    lora_names: List[str],
     dest_type: Literal["text_encoder", "unet"],
     lora_weights: "np.NDArray[np.float64]" = None,
 ):

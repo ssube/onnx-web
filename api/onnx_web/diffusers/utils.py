@@ -1,7 +1,7 @@
 from logging import getLogger
 from math import ceil
 from re import compile
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import numpy as np
 from diffusers import OnnxStableDiffusionPipeline
@@ -128,3 +128,20 @@ def expand_prompt(
 
     logger.debug("expanded prompt shape: %s", prompt_embeds.shape)
     return prompt_embeds
+
+
+def get_loras_from_prompt(prompt: str) -> Tuple[str, List[Tuple[str, float]]]:
+    remaining_prompt = prompt
+    lora_expr = compile(r"\<lora:(\w+):([\.|\d]+)\>")
+
+    loras = []
+    next_match = lora_expr.search(remaining_prompt)
+    while next_match is not None:
+        logger.debug("found LoRA token in prompt: %s", next_match)
+        name, weight = next_match.groups()
+        loras.append((name, float(weight)))
+        # remove this match and look for another
+        remaining_prompt = remaining_prompt[:next_match.start()] + remaining_prompt[next_match.end():]
+        next_match = lora_expr.search(remaining_prompt)
+
+    return (remaining_prompt, loras)
