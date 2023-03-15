@@ -21,6 +21,7 @@ from diffusers import (
     PNDMScheduler,
     StableDiffusionPipeline,
 )
+from onnxruntime import SessionOptions
 from transformers import CLIPTokenizer
 
 from onnx_web.diffusers.utils import expand_prompt
@@ -35,6 +36,7 @@ try:
 except ImportError:
     from ..diffusers.stub_scheduler import StubScheduler as UniPCMultistepScheduler
 
+from ..convert.diffusion.lora import merge_lora, buffer_external_data_tensors
 from ..params import DeviceParams, Size
 from ..server import ServerContext
 from ..utils import run_gc
@@ -219,6 +221,28 @@ def load_pipeline(
             components["tokenizer"] = CLIPTokenizer.from_pretrained(
                 path.join(inversion, "tokenizer"),
             )
+
+        # test LoRA blending
+        lora_models = [path.join(server.model_path, "lora", f"{i}.safetensors") for i in [
+            "arch",
+            "glass",
+        ]]
+
+        logger.info("blending text encoder with LoRA models: %s", lora_models)
+        blended_text_encoder = merge_lora("text_encoder", lora_models, None, "text_encoder")
+        (text_encoder_model, text_encoder_data) = buffer_external_data_tensors(blended_text_encoder)
+        text_encoder_names, text_encoder_values = zip(*text_encoder_data)
+        text_encoder_opts = SessionOptions()
+        text_encoder_opts.add_external_initializers(list(text_encoder_names), list(text_encoder_values))
+        components["text_encoder"] = OnnxRuntimeModel.from_pretrained(text_encoder_model, sess_options=text_encoder_opts)
+
+        logger.info("blending unet with LoRA models: %s", lora_models)
+        blended_unet = merge_lora("unet", lora_models, None, "unet")
+        (unet_model, unet_data) = buffer_external_data_tensors(blended_unet)
+        unet_names, unet_values = zip(*unet_data)
+        unet_opts = SessionOptions()
+        unet_opts.add_external_initializers(list(unet_names), list(unet_values))
+        components["unet"] = OnnxRuntimeModel.from_pretrained(unet_model, sess_options=unet_opts)
 
         pipe = pipeline.from_pretrained(
             model,

@@ -205,27 +205,15 @@ def merge_lora(
         else:
             logger.info("could not find any nodes for %s", base_key)
 
-    logger.info("node counts: %s -> %s, %s -> %s", len(fixed_initializer_names), len(base_model.graph.initializer), len(fixed_node_names), len(base_model.graph.node))
+    logger.info(
+        "node counts: %s -> %s, %s -> %s",
+        len(fixed_initializer_names),
+        len(base_model.graph.initializer),
+        len(fixed_node_names),
+        len(base_model.graph.node)
+    )
 
-    if dest_path is None or dest_path == "" or dest_path == "ort":
-        # convert to external data and save to memory
-        (bare_model, external_data) = buffer_external_data_tensors(base_model)
-        logger.info("saved external data for %s nodes", len(external_data))
-
-        external_names, external_values = zip(*external_data)
-        opts = SessionOptions()
-        opts.add_external_initializers(list(external_names), list(external_values))
-        sess = InferenceSession(bare_model.SerializeToString(), sess_options=opts, providers=["CPUExecutionProvider"])
-        logger.info("successfully loaded model: %s", [i.name for i in sess.get_inputs()])
-    else:
-        convert_model_to_external_data(base_model, all_tensors_to_one_file=True, location=f"lora-{dest_type}.pb")
-        bare_model = write_external_data_tensors(base_model, dest_path)
-        dest_file = path.join(dest_path, f"lora-{dest_type}.onnx")
-
-        with open(dest_file, "w+b") as model_file:
-            model_file.write(bare_model.SerializeToString())
-
-        logger.info("successfully saved model: %s", dest_file)
+    return base_model
 
 
 if __name__ == "__main__":
@@ -238,4 +226,24 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     logger.info("merging %s with %s with weights: %s", args.lora_models, args.base, args.lora_weights)
-    merge_lora(args.base, args.lora_models, args.dest, args.type, args.lora_weights)
+
+    blend_model = merge_lora(args.base, args.lora_models, args.dest, args.type, args.lora_weights)
+    if args.dest is None or args.dest == "" or args.dest == "ort":
+        # convert to external data and save to memory
+        (bare_model, external_data) = buffer_external_data_tensors(blend_model)
+        logger.info("saved external data for %s nodes", len(external_data))
+
+        external_names, external_values = zip(*external_data)
+        opts = SessionOptions()
+        opts.add_external_initializers(list(external_names), list(external_values))
+        sess = InferenceSession(bare_model.SerializeToString(), sess_options=opts, providers=["CPUExecutionProvider"])
+        logger.info("successfully loaded blended model: %s", [i.name for i in sess.get_inputs()])
+    else:
+        convert_model_to_external_data(blend_model, all_tensors_to_one_file=True, location=f"lora-{args.type}.pb")
+        bare_model = write_external_data_tensors(blend_model, args.path)
+        dest_file = path.join(args.path, f"lora-{args.type}.onnx")
+
+        with open(dest_file, "w+b") as model_file:
+            model_file.write(bare_model.SerializeToString())
+
+        logger.info("successfully saved blended model: %s", dest_file)
