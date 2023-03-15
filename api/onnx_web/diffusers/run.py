@@ -28,7 +28,10 @@ def run_txt2img_pipeline(
     upscale: UpscaleParams,
 ) -> None:
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
-    loras = get_loras_from_prompt(params.prompt)
+
+    (prompt, loras) = get_loras_from_prompt(params.prompt)
+    params.prompt = prompt
+
     pipe = load_pipeline(
         server,
         OnnxStableDiffusionPipeline,
@@ -101,7 +104,9 @@ def run_img2img_pipeline(
     source: Image.Image,
     strength: float,
 ) -> None:
-    loras = get_loras_from_prompt(params.prompt)
+    (prompt, loras) = get_loras_from_prompt(params.prompt)
+    params.prompt = prompt
+
     pipe = load_pipeline(
         server,
         OnnxStableDiffusionImg2ImgPipeline,

@@ -1,5 +1,6 @@
 from logging import getLogger
 from os import path
+from re import compile
 from typing import Any, List, Optional, Tuple
 
 import numpy as np
@@ -106,11 +107,21 @@ def get_tile_latents(
     return full_latents[:, :, y:yt, x:xt]
 
 
-def get_loras_from_prompt(prompt: str) -> List[str]:
-    return [
-        "arch",
-        "glass",
-    ]
+def get_loras_from_prompt(prompt: str) -> Tuple[str, List[str]]:
+    remaining_prompt = prompt
+    lora_expr = compile(r"\<lora:(\w+):([\.|\d]+)\>")
+
+    loras = []
+    next_match = lora_expr.search(remaining_prompt)
+    while next_match is not None:
+        logger.debug("found LoRA token in prompt: %s", next_match)
+        name, weight = next_match.groups()
+        loras.append(name)
+        # remove this match and look for another
+        remaining_prompt = remaining_prompt[:next_match.start()] + remaining_prompt[next_match.end():]
+        next_match = lora_expr.search(remaining_prompt)
+
+    return (remaining_prompt, loras)
 
 
 def optimize_pipeline(
