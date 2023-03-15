@@ -14,7 +14,7 @@ from ..server import ServerContext
 from ..upscale import run_upscale_correction
 from ..utils import run_gc
 from ..worker import WorkerContext
-from .load import get_latents_from_seed, load_pipeline
+from .load import get_latents_from_seed, get_loras_from_prompt, load_pipeline
 
 logger = getLogger(__name__)
 
@@ -28,6 +28,7 @@ def run_txt2img_pipeline(
     upscale: UpscaleParams,
 ) -> None:
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
+    loras = get_loras_from_prompt(params.prompt)
     pipe = load_pipeline(
         server,
         OnnxStableDiffusionPipeline,
@@ -36,6 +37,7 @@ def run_txt2img_pipeline(
         job.get_device(),
         params.lpw,
         params.inversion,
+        loras,
     )
     progress = job.get_progress_callback()
 
@@ -99,6 +101,7 @@ def run_img2img_pipeline(
     source: Image.Image,
     strength: float,
 ) -> None:
+    loras = get_loras_from_prompt(params.prompt)
     pipe = load_pipeline(
         server,
         OnnxStableDiffusionImg2ImgPipeline,
@@ -107,6 +110,7 @@ def run_img2img_pipeline(
         job.get_device(),
         params.lpw,
         params.inversion,
+        loras,
     )
     progress = job.get_progress_callback()
     if params.lpw:

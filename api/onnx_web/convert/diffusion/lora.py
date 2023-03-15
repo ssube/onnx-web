@@ -8,7 +8,6 @@ import torch
 from onnx import ModelProto, load, numpy_helper
 from onnx.checker import check_model
 from onnx.external_data_helper import (
-    ExternalDataInfo,
     convert_model_to_external_data,
     set_external_data,
     write_external_data_tensors,
@@ -61,7 +60,6 @@ def fix_node_name(key: str):
 def merge_lora(
     base_name: str,
     lora_names: str,
-    dest_path: str,
     dest_type: Literal["text_encoder", "unet"],
     lora_weights: "np.NDArray[np.float64]" = None,
 ):
@@ -227,7 +225,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     logger.info("merging %s with %s with weights: %s", args.lora_models, args.base, args.lora_weights)
 
-    blend_model = merge_lora(args.base, args.lora_models, args.dest, args.type, args.lora_weights)
+    blend_model = merge_lora(args.base, args.lora_models, args.type, args.lora_weights)
     if args.dest is None or args.dest == "" or args.dest == "ort":
         # convert to external data and save to memory
         (bare_model, external_data) = buffer_external_data_tensors(blend_model)
@@ -247,3 +245,7 @@ if __name__ == "__main__":
             model_file.write(bare_model.SerializeToString())
 
         logger.info("successfully saved blended model: %s", dest_file)
+
+        check_model(dest_file)
+
+        logger.info("checked blended model")

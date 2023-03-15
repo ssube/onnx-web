@@ -1,6 +1,6 @@
 from logging import getLogger
 from os import path
-from typing import Any, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 import numpy as np
 from diffusers import (
@@ -106,6 +106,13 @@ def get_tile_latents(
     return full_latents[:, :, y:yt, x:xt]
 
 
+def get_loras_from_prompt(prompt: str) -> List[str]:
+    return [
+        "arch",
+        "glass",
+    ]
+
+
 def optimize_pipeline(
     server: ServerContext,
     pipe: StableDiffusionPipeline,
@@ -156,7 +163,9 @@ def load_pipeline(
     device: DeviceParams,
     lpw: bool,
     inversion: Optional[str],
+    loras: Optional[List[str]] = None,
 ):
+    loras = loras or []
     pipe_key = (
         pipeline.__name__,
         model,
@@ -164,6 +173,7 @@ def load_pipeline(
         device.provider,
         lpw,
         inversion,
+        loras,
     )
     scheduler_key = (scheduler_name, model)
     scheduler_type = get_pipeline_schedulers()[scheduler_name]
@@ -223,26 +233,36 @@ def load_pipeline(
             )
 
         # test LoRA blending
-        lora_models = [path.join(server.model_path, "lora", f"{i}.safetensors") for i in [
-            "arch",
-            "glass",
-        ]]
+        lora_models = [path.join(server.model_path, "lora", f"{i}.safetensors") for i in loras]
+        logger.info("blending base model %s with LoRA models: %s", model, lora_models)
 
-        logger.info("blending text encoder with LoRA models: %s", lora_models)
-        blended_text_encoder = merge_lora(path.join(server.model_path, "stable-diffusion-onnx-v1-5/text_encoder/model.onnx"), lora_models, None, "text_encoder")
+        # blend and load text encoder
+        blended_text_encoder = merge_lora(path.join(model, "text_encoder", "model.onnx"), lora_models, None, "text_encoder")
         (text_encoder_model, text_encoder_data) = buffer_external_data_tensors(blended_text_encoder)
         text_encoder_names, text_encoder_values = zip(*text_encoder_data)
         text_encoder_opts = SessionOptions()
         text_encoder_opts.add_external_initializers(list(text_encoder_names), list(text_encoder_values))
-        components["text_encoder"] = OnnxRuntimeModel(OnnxRuntimeModel.load_model(text_encoder_model.SerializeToString(), provider=device.ort_provider(), sess_options=text_encoder_opts))
+        components["text_encoder"] = OnnxRuntimeModel(
+            OnnxRuntimeModel.load_model(
+                text_encoder_model.SerializeToString(),
+                provider=device.ort_provider(),
+                sess_options=text_encoder_opts,
+            )
+        )
 
-        logger.info("blending unet with LoRA models: %s", lora_models)
-        blended_unet = merge_lora(path.join(server.model_path, "stable-diffusion-onnx-v1-5/unet/model.onnx"), lora_models, None, "unet")
+        # blend and load unet
+        blended_unet = merge_lora(path.join(model, "unet", "model.onnx"), lora_models, None, "unet")
         (unet_model, unet_data) = buffer_external_data_tensors(blended_unet)
         unet_names, unet_values = zip(*unet_data)
         unet_opts = SessionOptions()
         unet_opts.add_external_initializers(list(unet_names), list(unet_values))
-        components["unet"] = OnnxRuntimeModel(OnnxRuntimeModel.load_model(unet_model.SerializeToString(), provider=device.ort_provider(), sess_options=unet_opts))
+        components["unet"] = OnnxRuntimeModel(
+            OnnxRuntimeModel.load_model(
+                unet_model.SerializeToString(),
+                provider=device.ort_provider(),
+                sess_options=unet_opts,
+            )
+        )
 
         pipe = pipeline.from_pretrained(
             model,
