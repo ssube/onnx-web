@@ -225,7 +225,7 @@ def load_pipeline(
                 sess_options=device.sess_options(),
             )
             components["tokenizer"] = CLIPTokenizer.from_pretrained(
-                path.join(server.model_path, inversions, "tokenizer"),
+                path.join(server.model_path, inversion, "tokenizer"),
             )
 
         # test LoRA blending
