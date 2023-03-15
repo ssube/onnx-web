@@ -15,14 +15,9 @@ from onnx.external_data_helper import (
 from onnxruntime import InferenceSession, OrtValue, SessionOptions
 from safetensors.torch import load_file
 
-from onnx_web.convert.utils import ConversionContext
+from ..utils import ConversionContext
 
 logger = getLogger(__name__)
-
-
-###
-# everything in this file is still super experimental and may not produce valid ONNX models
-###
 
 
 def buffer_external_data_tensors(
@@ -32,7 +27,7 @@ def buffer_external_data_tensors(
     for tensor in model.graph.initializer:
         name = tensor.name
 
-        logger.info("externalizing tensor: %s", name)
+        logger.debug("externalizing tensor: %s", name)
         if tensor.HasField("raw_data"):
             npt = numpy_helper.to_array(tensor)
             orv = OrtValue.ortvalue_from_numpy(npt)
@@ -59,13 +54,13 @@ def fix_node_name(key: str):
         return fixed_name
 
 
-def merge_lora(
+def blend_loras(
     base_name: str,
     lora_names: List[str],
     dest_type: Literal["text_encoder", "unet"],
     lora_weights: "np.NDArray[np.float64]" = None,
 ):
-    base_model = load(base_name)
+    base_model = base_name if isinstance(base_name, ModelProto) else load(base_name)
     lora_models = [load_file(name) for name in lora_names]
     lora_count = len(lora_models)
     lora_weights = lora_weights or (np.ones((lora_count)) / lora_count)
@@ -86,7 +81,7 @@ def merge_lora(
 
                 up_key = key.replace("lora_down", "lora_up")
                 alpha_key = key[: key.index("lora_down")] + "alpha"
-                logger.info(
+                logger.debug(
                     "blending weights for keys: %s, %s, %s", key, up_key, alpha_key
                 )
 
@@ -99,7 +94,7 @@ def merge_lora(
                 try:
                     if len(up_weight.size()) == 2:
                         # blend for nn.Linear
-                        logger.info(
+                        logger.debug(
                             "blending weights for Linear node: %s, %s, %s",
                             down_weight.shape,
                             up_weight.shape,
@@ -109,7 +104,7 @@ def merge_lora(
                         np_weights = weights.numpy() * (alpha / dim)
                     elif len(up_weight.size()) == 4 and up_weight.shape[-2:] == (1, 1):
                         # blend for nn.Conv2d 1x1
-                        logger.info(
+                        logger.debug(
                             "blending weights for Conv node: %s, %s, %s",
                             down_weight.shape,
                             up_weight.shape,
@@ -161,7 +156,7 @@ def merge_lora(
         conv_key = base_key + "_Conv"
         matmul_key = base_key + "_MatMul"
 
-        logger.info(
+        logger.debug(
             "key %s has conv: %s, matmul: %s",
             base_key,
             conv_key in fixed_node_names,
@@ -171,20 +166,20 @@ def merge_lora(
         if conv_key in fixed_node_names:
             conv_idx = fixed_node_names.index(conv_key)
             conv_node = base_model.graph.node[conv_idx]
-            logger.info("found conv node: %s", conv_node.name)
+            logger.debug("found conv node: %s", conv_node.name)
 
             # find weight initializer
-            logger.info("conv inputs: %s", conv_node.input)
+            logger.debug("conv inputs: %s", conv_node.input)
             weight_name = [n for n in conv_node.input if ".weight" in n][0]
             weight_name = fix_initializer_name(weight_name)
 
             weight_idx = fixed_initializer_names.index(weight_name)
             weight_node = base_model.graph.initializer[weight_idx]
-            logger.info("found weight initializer: %s", weight_node.name)
+            logger.debug("found weight initializer: %s", weight_node.name)
 
             # blending
             base_weights = numpy_helper.to_array(weight_node)
-            logger.info(
+            logger.debug(
                 "found blended weights for conv: %s, %s",
                 weights.shape,
                 base_weights.shape,
@@ -192,7 +187,7 @@ def merge_lora(
 
             blended = base_weights.squeeze((3, 2)) + weights.squeeze((3, 2))
             blended = np.expand_dims(blended, (2, 3))
-            logger.info("blended weight shape: %s", blended.shape)
+            logger.debug("blended weight shape: %s", blended.shape)
 
             # replace the original initializer
             updated_node = numpy_helper.from_array(blended, weight_node.name)
@@ -201,33 +196,33 @@ def merge_lora(
         elif matmul_key in fixed_node_names:
             weight_idx = fixed_node_names.index(matmul_key)
             weight_node = base_model.graph.node[weight_idx]
-            logger.info("found matmul node: %s", weight_node.name)
+            logger.debug("found matmul node: %s", weight_node.name)
 
             # find the MatMul initializer
-            logger.info("matmul inputs: %s", weight_node.input)
+            logger.debug("matmul inputs: %s", weight_node.input)
             matmul_name = [n for n in weight_node.input if "MatMul" in n][0]
 
             matmul_idx = fixed_initializer_names.index(matmul_name)
             matmul_node = base_model.graph.initializer[matmul_idx]
-            logger.info("found matmul initializer: %s", matmul_node.name)
+            logger.debug("found matmul initializer: %s", matmul_node.name)
 
             # blending
             base_weights = numpy_helper.to_array(matmul_node)
-            logger.info(
+            logger.debug(
                 "found blended weights for matmul: %s, %s",
                 weights.shape,
                 base_weights.shape,
             )
 
             blended = base_weights + weights.transpose()
-            logger.info("blended weight shape: %s", blended.shape)
+            logger.debug("blended weight shape: %s", blended.shape)
 
             # replace the original initializer
             updated_node = numpy_helper.from_array(blended, matmul_node.name)
             del base_model.graph.initializer[matmul_idx]
             base_model.graph.initializer.insert(matmul_idx, updated_node)
         else:
-            logger.info("could not find any nodes for %s", base_key)
+            logger.warning("could not find any nodes for %s", base_key)
 
     logger.info(
         "node counts: %s -> %s, %s -> %s",
@@ -256,7 +251,7 @@ if __name__ == "__main__":
         args.lora_weights,
     )
 
-    blend_model = merge_lora(args.base, args.lora_models, args.type, args.lora_weights)
+    blend_model = blend_loras(args.base, args.lora_models, args.type, args.lora_weights)
     if args.dest is None or args.dest == "" or args.dest == "ort":
         # convert to external data and save to memory
         (bare_model, external_data) = buffer_external_data_tensors(blend_model)
