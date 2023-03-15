@@ -248,7 +248,7 @@ def load_pipeline(
         logger.info("blending base model %s with LoRA models: %s", model, lora_models)
 
         # blend and load text encoder
-        blended_text_encoder = merge_lora(path.join(model, "text_encoder", "model.onnx"), lora_models, None, "text_encoder")
+        blended_text_encoder = merge_lora(path.join(model, "text_encoder", "model.onnx"), lora_models, "text_encoder")
         (text_encoder_model, text_encoder_data) = buffer_external_data_tensors(blended_text_encoder)
         text_encoder_names, text_encoder_values = zip(*text_encoder_data)
         text_encoder_opts = SessionOptions()
@@ -262,7 +262,7 @@ def load_pipeline(
         )
 
         # blend and load unet
-        blended_unet = merge_lora(path.join(model, "unet", "model.onnx"), lora_models, None, "unet")
+        blended_unet = merge_lora(path.join(model, "unet", "model.onnx"), lora_models, "unet")
         (unet_model, unet_data) = buffer_external_data_tensors(blended_unet)
         unet_names, unet_values = zip(*unet_data)
         unet_opts = SessionOptions()

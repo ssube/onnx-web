@@ -238,8 +238,8 @@ if __name__ == "__main__":
         logger.info("successfully loaded blended model: %s", [i.name for i in sess.get_inputs()])
     else:
         convert_model_to_external_data(blend_model, all_tensors_to_one_file=True, location=f"lora-{args.type}.pb")
-        bare_model = write_external_data_tensors(blend_model, args.path)
-        dest_file = path.join(args.path, f"lora-{args.type}.onnx")
+        bare_model = write_external_data_tensors(blend_model, args.dest)
+        dest_file = path.join(args.dest, f"lora-{args.type}.onnx")
 
         with open(dest_file, "w+b") as model_file:
             model_file.write(bare_model.SerializeToString())
