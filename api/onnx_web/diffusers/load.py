@@ -227,11 +227,11 @@ def load_pipeline(
             )
 
         # test LoRA blending
-        lora_names, lora_weights = zip(*loras)
-        lora_models = [path.join(server.model_path, "lora", f"{name}.safetensors") for name in lora_names]
-        logger.info("blending base model %s with LoRA models: %s", model, lora_models)
+        if len(loras) > 0:
+            lora_names, lora_weights = zip(*loras)
+            lora_models = [path.join(server.model_path, "lora", f"{name}.safetensors") for name in lora_names]
+            logger.info("blending base model %s with LoRA models: %s", model, lora_models)
 
-        if len(lora_models) > 0:
             # blend and load text encoder
             blended_text_encoder = merge_lora(path.join(model, "text_encoder", "model.onnx"), lora_models, "text_encoder", lora_weights=lora_weights)
             (text_encoder_model, text_encoder_data) = buffer_external_data_tensors(blended_text_encoder)
