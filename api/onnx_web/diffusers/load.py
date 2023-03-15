@@ -216,7 +216,7 @@ def load_pipeline(
         }
 
         if inversions is not None and len(inversions) > 0:
-            inversion = inversions[0]
+            inversion = inversions[0][0]
             logger.debug("loading Textual Inversion from %s", inversion)
             # TODO: blend the inversion models
             components["text_encoder"] = OnnxRuntimeModel.from_pretrained(
