@@ -31,7 +31,12 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Model sources](#model-sources)
       - [Downloading models from Civitai](#downloading-models-from-civitai)
     - [Using a custom VAE](#using-a-custom-vae)
-    - [Using and controlling Textual Inversions](#using-and-controlling-textual-inversions)
+  - [Prompts](#prompts)
+    - [General structure](#general-structure)
+    - [Useful keywords](#useful-keywords)
+    - [Extra network tokens](#extra-network-tokens)
+      - [LoRA tokens](#lora-tokens)
+      - [Textual Inversion tokens](#textual-inversion-tokens)
   - [Tabs](#tabs)
     - [Txt2img tab](#txt2img-tab)
       - [Scheduler parameter](#scheduler-parameter)
@@ -129,6 +134,10 @@ image from history if you don't like it.
 ![a smiling astronaut holding a hamburger and another astronaut whose head is a hamburger](output/astronaut-hamburger.png)
 
 ### Scheduler comparison
+
+The Stable Diffusion pipeline can be run using different schedulers, which generally produce similar results but
+each have their own advantages. Some schedulers are faster than other or require fewer steps, especially the recent
+DEIS multistep and Euler Ancestral schedulers.
 
 - https://huggingface.co/docs/diffusers/main/en/using-diffusers/schedulers#compare-schedulers
 - https://i.imgur.com/2pQPgf0.jpeg
@@ -301,10 +310,49 @@ Some common VAE models include:
 - https://huggingface.co/stabilityai/sd-vae-ft-mse
 - https://huggingface.co/stabilityai/sd-vae-ft-mse-original
 
-### Using and controlling Textual Inversions
+## Prompts
 
-You can use a Textual Inversion along with a diffusion model by giving one or more of the tokens from the inversion
-model. Some Textual Inversions only have a single layer and some have 75 or more.
+### General structure
+
+TODO
+
+### Useful keywords
+
+TODO
+
+### Extra network tokens
+
+You can blend extra networks with the diffusion model using `<type:name:weight>` tokens.
+
+#### LoRA tokens
+
+You can blend one or more [LoRA embeddings](TODO: whitepaper) with the ONNX diffusion model using a `lora` token:
+
+```none
+<lora:name:0.5>
+```
+
+LoRA models must be placed in the `models/lora` directory.
+
+The type of network, name, and weight must be separated by colons. The LoRA name must be alphanumeric and must not
+contain any special characters.
+
+#### Textual Inversion tokens
+
+You can blend one or more [Textual Inversions](TODO: whitepaper) with the ONNX diffusion model using the `inversion`
+token:
+
+```none
+<inversion:autumn:1.0>
+```
+
+Textual Inversion embeddings must be placed in the `models/inversion` directory.
+
+The type of network, name, and weight must be separated by colons. The Textual Inversion name must be alphanumeric
+and must not contain any special characters.
+
+Once the Textual Inversion has been blended, you can activate some or all of its layers using the trained token(s)
+in your prompt. Some Textual Inversions only have a single layer and some have 75 or more.
 
 You can provide more than one of the numbered layer tokens using the `base-{X,Y}` range syntax in your prompt. This
 uses the Python range rules, so `X` is inclusive and `Y` is not. The range `autumn-{0,5}` will be expanded into the
