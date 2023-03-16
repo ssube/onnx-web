@@ -326,7 +326,7 @@ You can blend extra networks with the diffusion model using `<type:name:weight>`
 
 #### LoRA tokens
 
-You can blend one or more [LoRA embeddings](TODO: whitepaper) with the ONNX diffusion model using a `lora` token:
+You can blend one or more [LoRA embeddings](https://arxiv.org/abs/2106.09685) with the ONNX diffusion model using a `lora` token:
 
 ```none
 <lora:name:0.5>
@@ -337,9 +337,11 @@ LoRA models must be placed in the `models/lora` directory.
 The type of network, name, and weight must be separated by colons. The LoRA name must be alphanumeric and must not
 contain any special characters.
 
+- https://github.com/kohya-ss/sd-scripts
+
 #### Textual Inversion tokens
 
-You can blend one or more [Textual Inversions](TODO: whitepaper) with the ONNX diffusion model using the `inversion`
+You can blend one or more [Textual Inversions](https://textual-inversion.github.io/) with the ONNX diffusion model using the `inversion`
 token:
 
 ```none
