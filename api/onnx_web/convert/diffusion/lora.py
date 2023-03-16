@@ -15,6 +15,7 @@ from onnx.external_data_helper import (
 from onnxruntime import InferenceSession, OrtValue, SessionOptions
 from safetensors.torch import load_file
 
+from ...server.context import ServerContext
 from ..utils import ConversionContext
 
 logger = getLogger(__name__)
@@ -55,6 +56,7 @@ def fix_node_name(key: str):
 
 
 def blend_loras(
+    context: ServerContext,
     base_name: str,
     lora_names: List[str],
     dest_type: Literal["text_encoder", "unet"],
@@ -236,6 +238,7 @@ def blend_loras(
 
 
 if __name__ == "__main__":
+    context = ConversionContext.from_environ()
     parser = ArgumentParser()
     parser.add_argument("--base", type=str)
     parser.add_argument("--dest", type=str)
@@ -251,7 +254,9 @@ if __name__ == "__main__":
         args.lora_weights,
     )
 
-    blend_model = blend_loras(args.base, args.lora_models, args.type, args.lora_weights)
+    blend_model = blend_loras(
+        context, args.base, args.lora_models, args.type, args.lora_weights
+    )
     if args.dest is None or args.dest == "" or args.dest == "ort":
         # convert to external data and save to memory
         (bare_model, external_data) = buffer_external_data_tensors(blend_model)

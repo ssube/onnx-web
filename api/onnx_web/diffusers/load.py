@@ -221,7 +221,10 @@ def load_pipeline(
             inversion_names, inversion_weights = zip(*inversions)
             logger.debug("blending Textual Inversions from %s", inversion_names)
 
-            inversion_models = [path.join(server.model_path, "inversion", f"{name}.ckpt") for name in inversion_names]
+            inversion_models = [
+                path.join(server.model_path, "inversion", f"{name}.ckpt")
+                for name in inversion_names
+            ]
             text_encoder = load_model(path.join(model, "text_encoder", "model.onnx"))
             tokenizer = CLIPTokenizer.from_pretrained(
                 model,
@@ -249,16 +252,33 @@ def load_pipeline(
         # test LoRA blending
         if loras is not None and len(loras) > 0:
             lora_names, lora_weights = zip(*loras)
-            lora_models = [path.join(server.model_path, "lora", f"{name}.safetensors") for name in lora_names]
-            logger.info("blending base model %s with LoRA models: %s", model, lora_models)
+            lora_models = [
+                path.join(server.model_path, "lora", f"{name}.safetensors")
+                for name in lora_names
+            ]
+            logger.info(
+                "blending base model %s with LoRA models: %s", model, lora_models
+            )
 
             # blend and load text encoder
-            text_encoder = text_encoder or path.join(model, "text_encoder", "model.onnx")
-            blended_text_encoder = blend_loras(text_encoder, lora_models, "text_encoder", lora_weights=lora_weights)
-            (text_encoder, text_encoder_data) = buffer_external_data_tensors(blended_text_encoder)
+            text_encoder = text_encoder or path.join(
+                model, "text_encoder", "model.onnx"
+            )
+            text_encoder = blend_loras(
+                server,
+                text_encoder,
+                lora_models,
+                "text_encoder",
+                lora_weights=lora_weights,
+            )
+            (text_encoder, text_encoder_data) = buffer_external_data_tensors(
+                text_encoder
+            )
             text_encoder_names, text_encoder_values = zip(*text_encoder_data)
             text_encoder_opts = SessionOptions()
-            text_encoder_opts.add_external_initializers(list(text_encoder_names), list(text_encoder_values))
+            text_encoder_opts.add_external_initializers(
+                list(text_encoder_names), list(text_encoder_values)
+            )
             components["text_encoder"] = OnnxRuntimeModel(
                 OnnxRuntimeModel.load_model(
                     text_encoder.SerializeToString(),
@@ -268,7 +288,13 @@ def load_pipeline(
             )
 
             # blend and load unet
-            blended_unet = blend_loras(path.join(model, "unet", "model.onnx"), lora_models, "unet", lora_weights=lora_weights)
+            blended_unet = blend_loras(
+                server,
+                path.join(model, "unet", "model.onnx"),
+                lora_models,
+                "unet",
+                lora_weights=lora_weights,
+            )
             (unet_model, unet_data) = buffer_external_data_tensors(blended_unet)
             unet_names, unet_values = zip(*unet_data)
             unet_opts = SessionOptions()

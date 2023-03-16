@@ -1,6 +1,6 @@
 from logging import getLogger
 from math import ceil
-from re import compile, Pattern
+from re import Pattern, compile
 from typing import List, Optional, Tuple
 
 import numpy as np
@@ -132,7 +132,9 @@ def expand_prompt(
     return prompt_embeds
 
 
-def get_tokens_from_prompt(prompt: str, pattern: Pattern[str]) -> Tuple[str, List[Tuple[str, float]]]:
+def get_tokens_from_prompt(
+    prompt: str, pattern: Pattern[str]
+) -> Tuple[str, List[Tuple[str, float]]]:
     """
     TODO: replace with Arpeggio
     """
@@ -145,7 +147,10 @@ def get_tokens_from_prompt(prompt: str, pattern: Pattern[str]) -> Tuple[str, Lis
         name, weight = next_match.groups()
         tokens.append((name, float(weight)))
         # remove this match and look for another
-        remaining_prompt = remaining_prompt[:next_match.start()] + remaining_prompt[next_match.end():]
+        remaining_prompt = (
+            remaining_prompt[: next_match.start()]
+            + remaining_prompt[next_match.end() :]
+        )
         next_match = pattern.search(remaining_prompt)
 
     return (remaining_prompt, tokens)

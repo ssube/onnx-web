@@ -6,7 +6,6 @@ import numpy as np
 import torch
 from huggingface_hub.file_download import hf_hub_download
 from onnx import ModelProto, load_model, numpy_helper, save_model
-from torch.onnx import export
 from transformers import CLIPTokenizer
 
 from ...server.context import ServerContext
@@ -25,11 +24,15 @@ def blend_textual_inversions(
     inversion_weights: Optional[List[float]] = None,
     base_tokens: Optional[List[str]] = None,
 ) -> Tuple[ModelProto, CLIPTokenizer]:
-    dtype = np.float # TODO: fixed type, which one?
-    # prev: text_encoder.get_input_embeddings().weight.dtype
+    dtype = np.float
     embeds = {}
 
-    for name, format, weight, base_token in zip(inversion_names, inversion_formats, inversion_weights, base_tokens or inversion_names):
+    for name, format, weight, base_token in zip(
+        inversion_names,
+        inversion_formats,
+        inversion_weights,
+        base_tokens or inversion_names,
+    ):
         logger.info("blending Textual Inversion %s with weight of %s", name, weight)
         if format == "concept":
             embeds_file = hf_hub_download(repo_id=name, filename="learned_embeds.bin")
@@ -64,7 +67,7 @@ def blend_textual_inversions(
 
             for i in range(num_tokens):
                 token = f"{base_token or name}-{i}"
-                layer = trained_embeds[i,:].cpu().numpy().astype(dtype)
+                layer = trained_embeds[i, :].cpu().numpy().astype(dtype)
                 layer *= weight
                 if token in embeds:
                     embeds[token] += layer
@@ -74,7 +77,9 @@ def blend_textual_inversions(
             raise ValueError(f"unknown Textual Inversion format: {format}")
 
         # add the tokens to the tokenizer
-        logger.info("found embeddings for %s tokens: %s", len(embeds.keys()), embeds.keys())
+        logger.info(
+            "found embeddings for %s tokens: %s", len(embeds.keys()), embeds.keys()
+        )
         num_added_tokens = tokenizer.add_tokens(list(embeds.keys()))
         if num_added_tokens == 0:
             raise ValueError(
@@ -85,7 +90,11 @@ def blend_textual_inversions(
 
         # resize the token embeddings
         # text_encoder.resize_token_embeddings(len(tokenizer))
-        embedding_node = [n for n in text_encoder.graph.initializer if n.name == "text_model.embeddings.token_embedding.weight"][0]
+        embedding_node = [
+            n
+            for n in text_encoder.graph.initializer
+            if n.name == "text_model.embeddings.token_embedding.weight"
+        ][0]
         embedding_weights = numpy_helper.to_array(embedding_node)
 
         weights_dim = embedding_weights.shape[1]
@@ -94,15 +103,18 @@ def blend_textual_inversions(
 
         for token, weights in embeds.items():
             token_id = tokenizer.convert_tokens_to_ids(token)
-            logger.debug(
-                "embedding %s weights for token %s", weights.shape, token
-            )
+            logger.debug("embedding %s weights for token %s", weights.shape, token)
             embedding_weights[token_id] = weights
 
         # replace embedding_node
         for i in range(len(text_encoder.graph.initializer)):
-            if text_encoder.graph.initializer[i].name == "text_model.embeddings.token_embedding.weight":
-                new_initializer = numpy_helper.from_array(embedding_weights.astype(np.float32), embedding_node.name)
+            if (
+                text_encoder.graph.initializer[i].name
+                == "text_model.embeddings.token_embedding.weight"
+            ):
+                new_initializer = numpy_helper.from_array(
+                    embedding_weights.astype(np.float32), embedding_node.name
+                )
                 logger.debug("new initializer data type: %s", new_initializer.data_type)
                 del text_encoder.graph.initializer[i]
                 text_encoder.graph.initializer.insert(i, new_initializer)
