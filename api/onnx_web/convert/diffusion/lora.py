@@ -129,7 +129,9 @@ def blend_loras(
                             up_weight.shape,
                             alpha,
                         )
-                        weights = torch.nn.functional.conv2d(down_weight.permute(1, 0, 2, 3), up_weight).permute(1, 0, 2, 3)
+                        weights = torch.nn.functional.conv2d(
+                            down_weight.permute(1, 0, 2, 3), up_weight
+                        ).permute(1, 0, 2, 3)
                         np_weights = weights.numpy() * (alpha / dim)
                     else:
                         logger.warning(
