@@ -356,9 +356,9 @@ and must not contain any special characters.
 Once the Textual Inversion has been blended, you can activate some or all of its layers using the trained token(s)
 in your prompt. Some Textual Inversions only have a single layer and some have 75 or more.
 
-You can provide more than one of the numbered layer tokens using the `base-{X,Y}` range syntax in your prompt. This
-uses the Python range rules, so `X` is inclusive and `Y` is not. The range `autumn-{0,5}` will be expanded into the
-tokens `autumn-0 autumn-1 autumn-2 autumn-3 autumn-4`. You can use the layer tokens individually, out of order, and
+You can provide more than one of the numbered layer tokens using the `base-{X,Y}` range syntax in your prompt, where
+`X` is inclusive and `Y` is not. The range `autumn-{0,5}` will be expanded into the tokens
+`autumn-0 autumn-1 autumn-2 autumn-3 autumn-4`. You can use the layer tokens individually, out of order, and
 repeat some layers or omit them entirely. You can provide a step as the third parameter, which will skip layers:
 `even-layers-{0,100,2}` will be expanded into
 `even-layers-0 even-layers-2 even-layers-4 even-layers-6 ... even-layers-98`.
