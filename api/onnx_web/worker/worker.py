@@ -60,7 +60,8 @@ def worker_main(context: WorkerContext, server: ServerContext):
             )
             exit(EXIT_ERROR)
         except Exception as e:
-            if "Failed to allocate memory" in str(e) or "CUDA out of memory" in str(e):
+            e_str = str(e)
+            if "Failed to allocate memory" in e_str or "out of memory" in e_str:
                 logger.error("detected out-of-memory error, exiting: %s", e)
                 exit(EXIT_MEMORY)
             else:
