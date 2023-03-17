@@ -3,7 +3,6 @@ from argparse import ArgumentParser
 from logging import getLogger
 from os import makedirs, path
 from sys import exit
-from traceback import format_exception
 from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
@@ -199,8 +198,8 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 try:
                     dest = fetch_model(ctx, name, source, model_format=model_format)
                     logger.info("finished downloading source: %s -> %s", source, dest)
-                except Exception as e:
-                    logger.error("error fetching source %s: %s", name, e)
+                except Exception:
+                    logger.exception("error fetching source %s", name)
 
     if args.diffusion and "diffusion" in models:
         for model in models.get("diffusion"):
@@ -246,11 +245,10 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             base_token=inversion.get("token"),
                         )
 
-                except Exception as e:
-                    logger.error(
-                        "error converting diffusion model %s: %s",
+                except Exception:
+                    logger.exception(
+                        "error converting diffusion model %s",
                         name,
-                        format_exception(type(e), e, e.__traceback__),
                     )
 
     if args.upscaling and "upscaling" in models:
@@ -268,11 +266,10 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                         ctx, name, model["source"], model_format=model_format
                     )
                     convert_upscale_resrgan(ctx, model, source)
-                except Exception as e:
-                    logger.error(
-                        "error converting upscaling model %s: %s",
+                except Exception:
+                    logger.exception(
+                        "error converting upscaling model %s",
                         name,
-                        format_exception(type(e), e, e.__traceback__),
                     )
 
     if args.correction and "correction" in models:
@@ -289,11 +286,10 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                         ctx, name, model["source"], model_format=model_format
                     )
                     convert_correction_gfpgan(ctx, model, source)
-                except Exception as e:
-                    logger.error(
-                        "error converting correction model %s: %s",
+                except Exception:
+                    logger.exception(
+                        "error converting correction model %s",
                         name,
-                        format_exception(type(e), e, e.__traceback__),
                     )
 
 
@@ -375,10 +371,10 @@ def main() -> int:
                     validate(data, extra_schema)
                     logger.info("converting extra models")
                     convert_models(ctx, args, data)
-                except ValidationError as err:
-                    logger.error("invalid data in extras file: %s", err)
-            except Exception as err:
-                logger.error("error converting extra models: %s", err)
+                except ValidationError:
+                    logger.exception("invalid data in extras file")
+            except Exception:
+                logger.exception("error converting extra models")
 
     return 0
 

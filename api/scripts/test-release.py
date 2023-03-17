@@ -342,8 +342,7 @@ def main():
                 logger.warning("test failed: %s", test.name)
                 failed.append(test.name)
         except Exception as e:
-            traceback.print_exception(type(e), e, e.__traceback__)
-            logger.error("error running test for %s: %s", test.name, e)
+            logger.exception("error running test for %s", test.name)
             failed.append(test.name)
 
     logger.info("%s of %s tests passed", len(passed), len(TEST_DATA))

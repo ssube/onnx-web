@@ -131,8 +131,8 @@ class DevicePoolExecutor:
                     pass
                 except ValueError:
                     break
-                except Exception as err:
-                    logger.error("error in log worker: %s", err)
+                except Exception:
+                    logger.exception("error in log worker")
 
         logger_thread = Thread(
             name="onnx-web logger", target=logger_worker, args=(self.logs,), daemon=True
@@ -159,8 +159,8 @@ class DevicePoolExecutor:
                     pass
                 except ValueError:
                     break
-                except Exception as err:
-                    logger.error("error in progress worker: %s", err)
+                except Exception:
+                    logger.exception("error in progress worker")
 
         progress_thread = Thread(
             name="onnx-web progress",
@@ -189,8 +189,8 @@ class DevicePoolExecutor:
                     pass
                 except ValueError:
                     break
-                except Exception as err:
-                    logger.error("error in finished worker: %s", err)
+                except Exception:
+                    logger.exception("error in finished worker")
 
         finished_thread = Thread(
             name="onnx-web finished",

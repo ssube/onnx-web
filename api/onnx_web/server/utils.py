@@ -32,6 +32,9 @@ def register_routes(
 
 
 def wrap_route(func, *args, **kwargs):
+    """
+    From http://louistiao.me/posts/adding-__name__-and-__doc__-attributes-to-functoolspartial-objects/
+    """
     partial_func = partial(func, *args, **kwargs)
     update_wrapper(partial_func, func)
     return partial_func

@@ -104,7 +104,7 @@ class ChainPipeline:
             kwargs = stage_kwargs or {}
             kwargs = {**pipeline_kwargs, **kwargs}
 
-            logger.info(
+            logger.debug(
                 "running stage %s on image with dimensions %sx%s, %s",
                 name,
                 image.width,
@@ -145,7 +145,7 @@ class ChainPipeline:
                     [stage_tile],
                 )
             else:
-                logger.info("image within tile size, running stage")
+                logger.debug("image within tile size, running stage")
                 image = stage_pipe(
                     job,
                     server,
@@ -156,7 +156,7 @@ class ChainPipeline:
                     **kwargs
                 )
 
-            logger.info(
+            logger.debug(
                 "finished stage %s, result size: %sx%s", name, image.width, image.height
             )
 

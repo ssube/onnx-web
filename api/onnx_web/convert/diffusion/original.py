@@ -17,8 +17,6 @@ import json
 import os
 import re
 import shutil
-import sys
-import traceback
 from logging import getLogger
 from typing import Dict, List
 
@@ -1395,7 +1393,6 @@ def extract_checkpoint(
     image_size = 512 if is_512 else 768
     # Needed for V2 models so we can create the right text encoder.
     upcast_attention = False
-    msg = None
 
     # Create empty config
     db_config = TrainingConfig(
@@ -1607,15 +1604,13 @@ def extract_checkpoint(
                 scheduler=scheduler,
             )
     except Exception:
-        logger.error(
-            "exception setting up output: %s",
-            traceback.format_exception(*sys.exc_info()),
+        logger.exception(
+            "error setting up output",
         )
         pipe = None
 
     if pipe is None or db_config is None:
-        msg = "pipeline or config is not set, unable to continue."
-        logger.error(msg)
+        logger.error("pipeline or config is not set, unable to continue")
         return
     else:
         logger.info("saving diffusion model")

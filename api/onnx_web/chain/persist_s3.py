@@ -38,7 +38,7 @@ def persist_s3(
     try:
         s3.upload_fileobj(data, bucket, output)
         logger.info("saved image to %s/%s", bucket, output)
-    except Exception as err:
-        logger.error("error saving image to S3: %s", err)
+    except Exception:
+        logger.exception("error saving image to S3")
 
     return source

@@ -133,8 +133,8 @@ def load_extras(context: ServerContext):
                 logger.debug("validating extras file %s", data)
                 try:
                     validate(data, extra_schema)
-                except ValidationError as err:
-                    logger.error("invalid data in extras file: %s", err)
+                except ValidationError:
+                    logger.exception("invalid data in extras file")
                     continue
 
                 if "strings" in data:
@@ -166,8 +166,8 @@ def load_extras(context: ServerContext):
                                             f"inversion-{inversion_name}"
                                         ] = inversion["label"]
 
-            except Exception as err:
-                logger.error("error loading extras file: %s", err)
+            except Exception:
+                logger.exception("error loading extras file")
 
     logger.debug("adding labels to strings: %s", labels)
     merge(

@@ -160,10 +160,10 @@ def blend_loras(
     fixed_initializer_names = [
         fix_initializer_name(node.name) for node in base_model.graph.initializer
     ]
-    # logger.info("fixed initializer names: %s", fixed_initializer_names)
+    logger.trace("fixed initializer names: %s", fixed_initializer_names)
 
     fixed_node_names = [fix_node_name(node.name) for node in base_model.graph.node]
-    # logger.info("fixed node names: %s", fixed_node_names)
+    logger.trace("fixed node names: %s", fixed_node_names)
 
     for base_key, weights in blended.items():
         conv_key = base_key + "_Conv"

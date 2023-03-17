@@ -65,7 +65,6 @@ def worker_main(context: WorkerContext, server: ServerContext):
                 logger.error("detected out-of-memory error, exiting: %s", e)
                 exit(EXIT_MEMORY)
             else:
-                logger.error(
-                    "error while running job: %s",
-                    format_exception(type(e), e, e.__traceback__),
+                logger.exception(
+                    "error while running job",
                 )
