@@ -63,7 +63,7 @@ def blend_textual_inversions(
             trained_embeds = string_to_param[trained_token]
 
             num_tokens = trained_embeds.shape[0]
-            logger.debug("generating %s layer tokens", num_tokens)
+            logger.debug("generating %s layer tokens for %s", num_tokens, name)
 
             for i in range(num_tokens):
                 token = f"{base_token or name}-{i}"
@@ -77,7 +77,7 @@ def blend_textual_inversions(
             raise ValueError(f"unknown Textual Inversion format: {format}")
 
         # add the tokens to the tokenizer
-        logger.info(
+        logger.debug(
             "found embeddings for %s tokens: %s", len(embeds.keys()), embeds.keys()
         )
         num_added_tokens = tokenizer.add_tokens(list(embeds.keys()))
@@ -86,7 +86,7 @@ def blend_textual_inversions(
                 f"The tokenizer already contains the token {token}. Please pass a different `token` that is not already in the tokenizer."
             )
 
-        logger.debug("added %s tokens", num_added_tokens)
+        logger.trace("added %s tokens", num_added_tokens)
 
         # resize the token embeddings
         # text_encoder.resize_token_embeddings(len(tokenizer))
@@ -103,7 +103,7 @@ def blend_textual_inversions(
 
         for token, weights in embeds.items():
             token_id = tokenizer.convert_tokens_to_ids(token)
-            logger.debug("embedding %s weights for token %s", weights.shape, token)
+            logger.trace("embedding %s weights for token %s", weights.shape, token)
             embedding_weights[token_id] = weights
 
         # replace embedding_node
@@ -115,7 +115,7 @@ def blend_textual_inversions(
                 new_initializer = numpy_helper.from_array(
                     embedding_weights.astype(np.float32), embedding_node.name
                 )
-                logger.debug("new initializer data type: %s", new_initializer.data_type)
+                logger.trace("new initializer data type: %s", new_initializer.data_type)
                 del text_encoder.graph.initializer[i]
                 text_encoder.graph.initializer.insert(i, new_initializer)
 
