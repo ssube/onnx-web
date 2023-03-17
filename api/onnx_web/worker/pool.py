@@ -119,7 +119,7 @@ class DevicePoolExecutor:
 
     def create_logger_worker(self) -> None:
         def logger_worker(logs: Queue):
-            logger.info("checking in from logger worker thread")
+            logger.trace("checking in from logger worker thread")
 
             while True:
                 try:
@@ -144,7 +144,7 @@ class DevicePoolExecutor:
 
     def create_progress_worker(self) -> None:
         def progress_worker(progress: Queue):
-            logger.info("checking in from progress worker thread")
+            logger.trace("checking in from progress worker thread")
             while True:
                 try:
                     job, device, value = progress.get(timeout=(self.join_timeout / 2))
@@ -175,7 +175,7 @@ class DevicePoolExecutor:
 
     def create_finished_worker(self) -> None:
         def finished_worker(finished: Queue):
-            logger.info("checking in from finished worker thread")
+            logger.trace("checking in from finished worker thread")
             while True:
                 try:
                     job, device = finished.get(timeout=(self.join_timeout / 2))
@@ -218,7 +218,7 @@ class DevicePoolExecutor:
         jobs.update([self.pending[d.device].qsize() for d in self.devices])
 
         queued = jobs.most_common()
-        logger.debug("jobs queued by device: %s", queued)
+        logger.trace("jobs queued by device: %s", queued)
 
         lowest_count = queued[-1][1]
         lowest_devices = [d[0] for d in queued if d[1] == lowest_count]

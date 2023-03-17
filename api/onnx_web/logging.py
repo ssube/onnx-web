@@ -47,25 +47,25 @@ def add_logging_level(level_name, level_num, method_name=None):
     # This method was inspired by the answers to Stack Overflow post
     # http://stackoverflow.com/q/2183233/2988730, especially
     # http://stackoverflow.com/a/13638084/2988730
-    def logForLevel(self, message, *args, **kwargs):
-        if self.isEnabledFor(level_num):
-            self._log(level_num, message, args, **kwargs)
+    def log_for_level(self, message, *args, **kwargs):
+        self.log(level_num, message, args, **kwargs)
 
-    def logToRoot(message, *args, **kwargs):
+    def log_to_root(message, *args, **kwargs):
         logging.log(level_num, message, *args, **kwargs)
 
     logging.addLevelName(level_num, level_name)
     setattr(logging, level_name, level_num)
-    setattr(logging.getLoggerClass(), method_name, logForLevel)
-    setattr(logging, method_name, logToRoot)
+    setattr(logging.getLoggerClass(), method_name, log_for_level)
+    setattr(logging, method_name, log_to_root)
 
 
 # setup logging config before anything else loads
+add_logging_level("TRACE", logging.DEBUG - 5)
+
 try:
     if path.exists(logging_path):
         with open(logging_path, "r") as f:
             config_logging = safe_load(f)
             dictConfig(config_logging)
-            add_logging_level("TRACE", logging.DEBUG - 5)
 except Exception as err:
     print("error loading logging config: %s" % (err))
