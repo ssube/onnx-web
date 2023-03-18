@@ -326,7 +326,8 @@ You can blend extra networks with the diffusion model using `<type:name:weight>`
 
 #### LoRA tokens
 
-You can blend one or more [LoRA embeddings](https://arxiv.org/abs/2106.09685) with the ONNX diffusion model using a `lora` token:
+You can blend one or more [LoRA embeddings](https://arxiv.org/abs/2106.09685) with the ONNX diffusion model using a
+`lora` token:
 
 ```none
 <lora:name:0.5>
@@ -341,8 +342,8 @@ contain any special characters.
 
 #### Textual Inversion tokens
 
-You can blend one or more [Textual Inversions](https://textual-inversion.github.io/) with the ONNX diffusion model using the `inversion`
-token:
+You can blend one or more [Textual Inversions](https://textual-inversion.github.io/) with the ONNX diffusion model
+using the `inversion` token:
 
 ```none
 <inversion:autumn:1.0>

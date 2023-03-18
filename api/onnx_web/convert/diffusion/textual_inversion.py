@@ -130,6 +130,7 @@ def convert_diffusion_textual_inversion(
     inversion: str,
     format: str,
     base_token: Optional[str] = None,
+    weight: Optional[float] = 1.0,
 ):
     dest_path = path.join(context.model_path, f"inversion-{name}")
     logger.info(
@@ -161,7 +162,7 @@ def convert_diffusion_textual_inversion(
         tokenizer,
         [inversion],
         [format],
-        [1.0],
+        [weight],
         base_token=(base_token or name),
     )
 
