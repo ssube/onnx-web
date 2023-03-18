@@ -1706,4 +1706,3 @@ def convert_diffusion_original(
 
     logger.info("ONNX pipeline saved to %s", name)
     return result
-

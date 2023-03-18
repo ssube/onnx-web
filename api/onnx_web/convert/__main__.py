@@ -220,7 +220,13 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 source = network["source"]
 
                 try:
-                    dest = fetch_model(ctx, name, source, dest=path.join(ctx.model_path, network_type), format=network_format)
+                    dest = fetch_model(
+                        ctx,
+                        name,
+                        source,
+                        dest=path.join(ctx.model_path, network_type),
+                        format=network_format,
+                    )
                     logger.info("finished downloading network: %s -> %s", source, dest)
                 except Exception:
                     logger.exception("error fetching network %s", name)
@@ -264,10 +270,22 @@ def convert_models(ctx: ConversionContext, args, models: Models):
 
                         for inversion in model.get("inversions", []):
                             if "text_encoder" not in blend_models:
-                                blend_models["text_encoder"] = load_model(path.join(ctx.model_path, model, "text_encoder", "model.onnx"))
+                                blend_models["text_encoder"] = load_model(
+                                    path.join(
+                                        ctx.model_path,
+                                        model,
+                                        "text_encoder",
+                                        "model.onnx",
+                                    )
+                                )
 
                             if "tokenizer" not in blend_models:
-                                blend_models["tokenizer"] = CLIPTokenizer.from_pretrained(path.join(ctx.model_path, model), subfolder="tokenizer")
+                                blend_models[
+                                    "tokenizer"
+                                ] = CLIPTokenizer.from_pretrained(
+                                    path.join(ctx.model_path, model),
+                                    subfolder="tokenizer",
+                                )
 
                             inversion_name = inversion["name"]
                             inversion_source = inversion["source"]
@@ -293,10 +311,21 @@ def convert_models(ctx: ConversionContext, args, models: Models):
 
                         for lora in model.get("loras", []):
                             if "text_encoder" not in blend_models:
-                                blend_models["text_encoder"] = load_model(path.join(ctx.model_path, model, "text_encoder", "model.onnx"))
+                                blend_models["text_encoder"] = load_model(
+                                    path.join(
+                                        ctx.model_path,
+                                        model,
+                                        "text_encoder",
+                                        "model.onnx",
+                                    )
+                                )
 
                             if "unet" not in blend_models:
-                                blend_models["text_encoder"] = load_model(path.join(ctx.model_path, model, "unet", "model.onnx"))
+                                blend_models["text_encoder"] = load_model(
+                                    path.join(
+                                        ctx.model_path, model, "unet", "model.onnx"
+                                    )
+                                )
 
                             # load models if not loaded yet
                             lora_name = lora["name"]
@@ -325,8 +354,12 @@ def convert_models(ctx: ConversionContext, args, models: Models):
 
                         for name in ["text_encoder", "unet"]:
                             if name in blend_models:
-                                dest_path = path.join(ctx.model_path, model, name, "model.onnx")
-                                logger.debug("saving blended %s model to %s", name, dest_path)
+                                dest_path = path.join(
+                                    ctx.model_path, model, name, "model.onnx"
+                                )
+                                logger.debug(
+                                    "saving blended %s model to %s", name, dest_path
+                                )
                                 save_model(
                                     blend_models[name],
                                     dest_path,
@@ -334,7 +367,6 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                                     all_tensors_to_one_file=True,
                                     location="weights.pb",
                                 )
-
 
                 except Exception:
                     logger.exception(
