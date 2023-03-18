@@ -373,7 +373,7 @@ have added your own.
 ### Test the models
 
 You should verify that all of the steps up to this point have worked correctly by attempting to run the
-`api/test-diffusers.py` script, which is a slight variation on the original txt2img script.
+`api/scripts/test-diffusers.py` script, which is a slight variation on the original txt2img script.
 
 If the script works, there will be an image of an astronaut in `outputs/test.png`.
 

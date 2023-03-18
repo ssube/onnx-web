@@ -12,9 +12,9 @@ steps = 22
 height = 512
 width = 512
 
-model = path.join('..', 'models', 'stable-diffusion-onnx-v1-5')
+model = path.join('..', '..', 'models', 'stable-diffusion-onnx-v1-5')
 prompt = 'an astronaut eating a hamburger'
-output = path.join('..', 'outputs', 'test.png')
+output = path.join('..', '..', 'outputs', 'test.png')
 
 print('generating test image...')
 pipe = OnnxStableDiffusionPipeline.from_pretrained(model, provider='DmlExecutionProvider', safety_checker=None)
