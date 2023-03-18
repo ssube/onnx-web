@@ -23,8 +23,8 @@ class DevicePoolExecutor:
     join_timeout: float
 
     leaking: List[Tuple[str, Process]]
-    context: Dict[str, WorkerContext]   # Device -> Context
-    current: Dict[str, "Value[int]"]    # Device -> pid
+    context: Dict[str, WorkerContext]  # Device -> Context
+    current: Dict[str, "Value[int]"]  # Device -> pid
     pending: Dict[str, "Queue[JobCommand]"]
     threads: Dict[str, Thread]
     workers: Dict[str, Process]
@@ -202,7 +202,9 @@ class DevicePoolExecutor:
 
         for job in self.pending_jobs:
             if job.name == key:
-                self.pending_jobs[:] = [job for job in self.pending_jobs if job.name != key]
+                self.pending_jobs[:] = [
+                    job for job in self.pending_jobs if job.name != key
+                ]
                 logger.info("cancelled pending job: %s", key)
                 return True
 
@@ -387,7 +389,8 @@ class DevicePoolExecutor:
                     False,
                     False,
                     False,
-                ) for job in self.pending_jobs
+                )
+                for job in self.pending_jobs
             ]
         )
         history.extend(
@@ -420,7 +423,9 @@ class DevicePoolExecutor:
                 "progress update for job: %s to %s", progress.job, progress.progress
             )
             self.running_jobs[progress.job] = progress
-            self.pending_jobs[:] = [job for job in self.pending_jobs if job.name != progress.job]
+            self.pending_jobs[:] = [
+                job for job in self.pending_jobs if job.name != progress.job
+            ]
 
             if progress.job in self.cancelled_jobs:
                 logger.debug(

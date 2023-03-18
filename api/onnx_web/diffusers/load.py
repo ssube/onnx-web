@@ -217,8 +217,8 @@ def load_pipeline(
 
         text_encoder = None
         if inversions is not None and len(inversions) > 0:
+            logger.debug("blending Textual Inversions from %s", inversions)
             inversion_names, inversion_weights = zip(*inversions)
-            logger.debug("blending Textual Inversions from %s", inversion_names)
 
             inversion_models = [
                 path.join(server.model_path, "inversion", f"{name}.ckpt")
@@ -233,7 +233,14 @@ def load_pipeline(
                 server,
                 text_encoder,
                 tokenizer,
-                list(zip(inversion_models, inversion_weights, inversion_names)),
+                list(
+                    zip(
+                        inversion_models,
+                        inversion_weights,
+                        inversion_names,
+                        [None] * len(inversion_models),
+                    )
+                ),
             )
 
             components["tokenizer"] = tokenizer
