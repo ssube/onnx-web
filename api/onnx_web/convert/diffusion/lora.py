@@ -62,10 +62,7 @@ def blend_loras(
     model_type: Literal["text_encoder", "unet"],
 ):
     base_model = base_name if isinstance(base_name, ModelProto) else load(base_name)
-
-    lora_count = len(loras)
     lora_models = [load_file(name) for name, _weight in loras]
-    lora_weights = lora_weights or (np.ones((lora_count)) / lora_count)
 
     if model_type == "text_encoder":
         lora_prefix = "lora_te_"

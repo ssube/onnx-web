@@ -248,13 +248,13 @@ def convert_models(ctx: ConversionContext, args, models: Models):
 
                     converted = False
                     if model_format in model_formats_original:
-                        converted, _dest = convert_diffusion_original(
+                        converted, dest = convert_diffusion_original(
                             ctx,
                             model,
                             source,
                         )
                     else:
-                        converted, _dest = convert_diffusion_diffusers(
+                        converted, dest = convert_diffusion_diffusers(
                             ctx,
                             model,
                             source,
@@ -272,8 +272,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             if "text_encoder" not in blend_models:
                                 blend_models["text_encoder"] = load_model(
                                     path.join(
-                                        ctx.model_path,
-                                        model,
+                                        dest,
                                         "text_encoder",
                                         "model.onnx",
                                     )
@@ -283,7 +282,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                                 blend_models[
                                     "tokenizer"
                                 ] = CLIPTokenizer.from_pretrained(
-                                    path.join(ctx.model_path, model),
+                                    dest,
                                     subfolder="tokenizer",
                                 )
 
@@ -292,7 +291,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             inversion_format = inversion.get("format", None)
                             inversion_source = fetch_model(
                                 ctx,
-                                f"{name}-inversion-{inversion_name}",
+                                inversion_name,
                                 inversion_source,
                                 dest=inversion_dest,
                             )
@@ -317,8 +316,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             if "text_encoder" not in blend_models:
                                 blend_models["text_encoder"] = load_model(
                                     path.join(
-                                        ctx.model_path,
-                                        model,
+                                        dest,
                                         "text_encoder",
                                         "model.onnx",
                                     )
@@ -326,9 +324,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
 
                             if "unet" not in blend_models:
                                 blend_models["text_encoder"] = load_model(
-                                    path.join(
-                                        ctx.model_path, model, "unet", "model.onnx"
-                                    )
+                                    path.join(dest, "unet", "model.onnx")
                                 )
 
                             # load models if not loaded yet
