@@ -268,13 +268,19 @@ def load_platforms(context: ServerContext) -> None:
         ):
             if potential == "cuda":
                 for i in range(torch.cuda.device_count()):
+                    options = {
+                        "device_id": i,
+                    }
+
+                    if context.memory_limit is not None:
+                        options["arena_extend_strategy"] = "kSameAsRequested"
+                        options["gpu_mem_limit"] = context.memory_limit
+
                     available_platforms.append(
                         DeviceParams(
                             potential,
                             platform_providers[potential],
-                            {
-                                "device_id": i,
-                            },
+                            options,
                             context.optimizations,
                         )
                     )

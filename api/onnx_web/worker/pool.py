@@ -41,13 +41,12 @@ class DevicePoolExecutor:
         self,
         server: ServerContext,
         devices: List[DeviceParams],
-        max_jobs_per_worker: int = 10,
         max_pending_per_worker: int = 100,
         join_timeout: float = 1.0,
     ):
         self.server = server
         self.devices = devices
-        self.max_jobs_per_worker = max_jobs_per_worker
+        self.max_jobs_per_worker = server.job_limit
         self.max_pending_per_worker = max_pending_per_worker
         self.join_timeout = join_timeout
 
