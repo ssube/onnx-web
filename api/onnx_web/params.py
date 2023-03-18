@@ -113,8 +113,8 @@ class DeviceParams:
         else:
             return (self.provider, self.options)
 
-    def sess_options(self) -> SessionOptions:
-        if self.sess_options_cache is not None:
+    def sess_options(self, cache = True) -> SessionOptions:
+        if cache and self.sess_options_cache is not None:
             return self.sess_options_cache
 
         sess = SessionOptions()
@@ -139,7 +139,9 @@ class DeviceParams:
             logger.debug("enabling ONNX deterministic compute")
             sess.use_deterministic_compute = True
 
-        self.sess_options_cache = sess
+        if cache:
+            self.sess_options_cache = sess
+
         return sess
 
     def torch_str(self) -> str:
