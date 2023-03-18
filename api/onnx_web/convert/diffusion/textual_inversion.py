@@ -95,7 +95,7 @@ def blend_textual_inversions(
 
         # add the tokens to the tokenizer
         logger.debug(
-            "found embeddings for %s tokens: %s", len(embeds.keys()), embeds.keys()
+            "found embeddings for %s tokens: %s", len(embeds.keys()), list(embeds.keys())
         )
         num_added_tokens = tokenizer.add_tokens(list(embeds.keys()))
         if num_added_tokens == 0:
