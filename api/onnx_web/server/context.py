@@ -7,7 +7,7 @@ from .model_cache import ModelCache
 
 logger = getLogger(__name__)
 
-DEFAULT_CACHE_LIMIT = 2
+DEFAULT_CACHE_LIMIT = 5
 DEFAULT_JOB_LIMIT = 10
 DEFAULT_IMAGE_FORMAT = "png"
 
