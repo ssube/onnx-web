@@ -6,8 +6,8 @@ class ProgressCommand:
     job: str
     finished: bool
     progress: int
-    cancel: bool
-    error: bool
+    cancelled: bool
+    failed: bool
 
     def __init__(
         self,
@@ -15,15 +15,15 @@ class ProgressCommand:
         device: str,
         finished: bool,
         progress: int,
-        cancel: bool = False,
-        error: bool = False,
+        cancelled: bool = False,
+        failed: bool = False,
     ):
         self.job = job
         self.device = device
         self.finished = finished
         self.progress = progress
-        self.cancel = cancel
-        self.error = error
+        self.cancelled = cancelled
+        self.failed = failed
 
 
 class JobCommand:

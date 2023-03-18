@@ -51,12 +51,17 @@ logger = getLogger(__name__)
 
 
 def ready_reply(
-    ready: bool, progress: int = 0, error: bool = False, cancel: bool = False
+    ready: bool = False,
+    cancelled: bool = False,
+    failed: bool = False,
+    pending: bool = False,
+    progress: int = 0,
 ):
     return jsonify(
         {
-            "cancel": cancel,
-            "error": error,
+            "cancelled": cancelled,
+            "failed": failed,
+            "pending": pending,
             "progress": progress,
             "ready": ready,
         }
@@ -439,9 +444,9 @@ def cancel(context: ServerContext, pool: DevicePoolExecutor):
         return error_reply("output name is required")
 
     output_file = sanitize_name(output_file)
-    cancel = pool.cancel(output_file)
+    cancelled = pool.cancel(output_file)
 
-    return ready_reply(cancel is not False, cancel=cancel)
+    return ready_reply(cancelled=cancelled)
 
 
 def ready(context: ServerContext, pool: DevicePoolExecutor):
@@ -450,22 +455,26 @@ def ready(context: ServerContext, pool: DevicePoolExecutor):
         return error_reply("output name is required")
 
     output_file = sanitize_name(output_file)
-    progress = pool.done(output_file)
+    pending, progress = pool.done(output_file)
+
+    if pending:
+        return ready_reply(pending=True)
 
     if progress is None:
         output = base_join(context.output_path, output_file)
         if path.exists(output):
-            return ready_reply(True)
+            return ready_reply(ready=True)
         else:
             return ready_reply(
-                True, error=True
+                ready=True,
+                failed=True,
             )  # is a missing image really an error? yes will display the retry button
 
     return ready_reply(
-        progress.finished,
+        ready=progress.finished,
         progress=progress.progress,
-        error=progress.error,
-        cancel=progress.cancel,
+        failed=progress.error,
+        cancelled=progress.cancel,
     )
 
 

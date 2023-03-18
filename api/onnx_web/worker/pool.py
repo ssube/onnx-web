@@ -232,7 +232,7 @@ class DevicePoolExecutor:
         for job in self.pending_jobs:
             if job.name == key:
                 logger.debug("checking status for pending job: %s", key)
-                return (True, ProgressCommand(job.name, job.device, False, 0))
+                return (True, None)
 
         logger.trace("checking status for unknown job: %s", key)
         return (False, None)
@@ -365,25 +365,39 @@ class DevicePoolExecutor:
         self.pending_jobs.append(job)
         self.pending[device].put(job, block=False)
 
-    def status(self) -> List[Tuple[str, int, bool, bool, bool]]:
+    def status(self) -> List[Tuple[str, int, bool, bool, bool, bool]]:
         history = [
             (
                 name,
                 job.progress,
+                False,
                 job.finished,
-                job.cancel,
-                job.error,
+                job.cancelled,
+                job.failed,
             )
             for name, job in self.running_jobs.items()
         ]
         history.extend(
             [
                 (
+                    job.name,
+                    0,
+                    True,
+                    False,
+                    False,
+                    False,
+                ) for job in self.pending_jobs
+            ]
+        )
+        history.extend(
+            [
+                (
                     job.job,
                     job.progress,
+                    False,
                     job.finished,
-                    job.cancel,
-                    job.error,
+                    job.cancelled,
+                    job.failed,
                 )
                 for job in self.finished_jobs
             ]
