@@ -93,5 +93,6 @@ def upscale_stable_diffusion(
         negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
         eta=params.eta,
+        noise_level=upscale.denoise,
         callback=callback,
     ).images[0]
