@@ -1,4 +1,4 @@
---extra-index-url https://download.pytorch.org/whl/rocm5.2
-torch
+--extra-index-url https://download.pytorch.org/whl/rocm5.4
+torch>=1.12,<2
 torchvision
-onnxruntime
+onnxruntime>=1.13

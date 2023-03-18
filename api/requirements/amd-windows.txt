@@ -1,4 +1,4 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch
+torch>=1.12,<2
 torchvision
 onnxruntime-directml
