@@ -18,7 +18,9 @@ RUN pip3 install pip --upgrade
 
 COPY requirements/ /onnx-web/api/requirements/
 
-RUN pip3 install -r requirements/base.txt -r requirements/nvidia.txt --no-cache-dir
+RUN pip3 install -r requirements/nvidia.txt --no-cache-dir
+
+RUN pip3 install -r requirements/base.txt --no-cache-dir
 
 COPY onnx_web/ /onnx-web/api/onnx_web/
 
