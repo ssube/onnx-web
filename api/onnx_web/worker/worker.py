@@ -26,7 +26,6 @@ def worker_main(context: WorkerContext, server: ServerContext):
 
     # make leaking workers easier to recycle
     context.progress.cancel_join_thread()
-    context.finished.cancel_join_thread()
 
     while True:
         try:
