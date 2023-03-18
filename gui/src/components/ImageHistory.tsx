@@ -8,7 +8,7 @@ import { useStore } from 'zustand';
 import { StateContext } from '../state.js';
 import { ImageCard } from './card/ImageCard.js';
 import { LoadingCard } from './card/LoadingCard.js';
-import { ErrorCard } from './card/RetryCard.js';
+import { ErrorCard } from './card/ErrorCard.js';
 
 export function ImageHistory() {
   const history = useStore(mustExist(useContext(StateContext)), (state) => state.history);
