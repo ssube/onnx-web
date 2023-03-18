@@ -27,6 +27,7 @@ class ProgressCommand:
 
 
 class JobCommand:
+    device: str
     name: str
     fn: Callable[..., None]
     args: Any
@@ -35,6 +36,7 @@ class JobCommand:
     def __init__(
         self,
         name: str,
+        device: str,
         fn: Callable[..., None],
         args: Any,
         kwargs: dict[str, Any],
