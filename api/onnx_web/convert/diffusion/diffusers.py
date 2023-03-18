@@ -13,7 +13,7 @@ from logging import getLogger
 from os import mkdir, path
 from pathlib import Path
 from shutil import rmtree
-from typing import Dict
+from typing import Dict, Tuple
 
 import torch
 from diffusers import (

@@ -208,6 +208,23 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 except Exception:
                     logger.exception("error fetching source %s", name)
 
+    if args.networks and "networks" in models:
+        for network in models.get("networks"):
+            name = network["name"]
+
+            if name in args.skip:
+                logger.info("skipping network: %s", name)
+            else:
+                network_format = source_format(network)
+                network_type = network["type"]
+                source = network["source"]
+
+                try:
+                    dest = fetch_model(ctx, name, source, dest=path.join(ctx.model_path, network_type), format=network_format)
+                    logger.info("finished downloading network: %s -> %s", source, dest)
+                except Exception:
+                    logger.exception("error fetching network %s", name)
+
     if args.diffusion and "diffusion" in models:
         for model in models.get("diffusion"):
             model = tuple_to_diffusion(model)
