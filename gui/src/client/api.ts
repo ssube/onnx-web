@@ -175,6 +175,8 @@ export interface ImageResponse {
  * Status response from the ready endpoint.
  */
 export interface ReadyResponse {
+  cancel: boolean;
+  error: boolean;
   progress: number;
   ready: boolean;
 }

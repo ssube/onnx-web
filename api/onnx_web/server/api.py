@@ -50,9 +50,11 @@ from .utils import wrap_route
 logger = getLogger(__name__)
 
 
-def ready_reply(ready: bool, progress: int = 0):
+def ready_reply(ready: bool, progress: int = 0, error: bool = False, cancel: bool = False):
     return jsonify(
         {
+            "cancel": cancel,
+            "error": error,
             "progress": progress,
             "ready": ready,
         }
@@ -437,7 +439,7 @@ def cancel(context: ServerContext, pool: DevicePoolExecutor):
     output_file = sanitize_name(output_file)
     cancel = pool.cancel(output_file)
 
-    return ready_reply(cancel)
+    return ready_reply(cancel == False, cancel=cancel)
 
 
 def ready(context: ServerContext, pool: DevicePoolExecutor):
@@ -446,14 +448,14 @@ def ready(context: ServerContext, pool: DevicePoolExecutor):
         return error_reply("output name is required")
 
     output_file = sanitize_name(output_file)
-    done, progress = pool.done(output_file)
+    progress = pool.done(output_file)
 
-    if done is None:
+    if progress is None:
         output = base_join(context.output_path, output_file)
         if path.exists(output):
             return ready_reply(True)
 
-    return ready_reply(done or False, progress=progress)
+    return ready_reply(progress.finished, progress=progress.progress, error=progress.error, cancel=progress.cancel)
 
 
 def status(context: ServerContext, pool: DevicePoolExecutor):

@@ -39,32 +39,36 @@ def worker_main(context: WorkerContext, server: ServerContext):
                 )
                 exit(EXIT_REPLACED)
 
-            name, fn, args, kwargs = context.pending.get(timeout=1.0)
-            logger.info("worker for %s got job: %s", context.device.device, name)
+            job = context.pending.get(timeout=1.0)
+            logger.info("worker for %s got job: %s", context.device.device, job.name)
 
-            context.job = name  # TODO: hax
-            context.clear_flags()
-            logger.info("starting job: %s", name)
-            fn(context, *args, **kwargs)
-            logger.info("job succeeded: %s", name)
+            context.job = job.name  # TODO: hax
+            logger.info("starting job: %s", job.name)
+            context.set_progress(0)
+            job.fn(context, *job.args, **job.kwargs)
+            logger.info("job succeeded: %s", job.name)
             context.set_finished()
         except Empty:
             pass
         except KeyboardInterrupt:
             logger.info("worker got keyboard interrupt")
+            context.set_failed()
             exit(EXIT_INTERRUPT)
         except ValueError as e:
-            logger.info(
-                "value error in worker, exiting: %s",
-                format_exception(type(e), e, e.__traceback__),
+            logger.exception(
+                "value error in worker, exiting: %s"
             )
+            context.set_failed()
             exit(EXIT_ERROR)
         except Exception as e:
             e_str = str(e)
             if "Failed to allocate memory" in e_str or "out of memory" in e_str:
                 logger.error("detected out-of-memory error, exiting: %s", e)
+                context.set_failed()
                 exit(EXIT_MEMORY)
             else:
                 logger.exception(
                     "error while running job",
                 )
+                context.set_failed()
+                # carry on

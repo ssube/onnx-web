@@ -4,6 +4,7 @@ from typing import Any, Callable, Tuple
 
 from torch.multiprocessing import Queue, Value
 
+from .command import JobCommand, ProgressCommand
 from ..params import DeviceParams
 
 logger = getLogger(__name__)
@@ -15,9 +16,9 @@ ProgressCallback = Callable[[int, int, Any], None]
 class WorkerContext:
     cancel: "Value[bool]"
     job: str
-    pending: "Queue[Tuple[str, Callable[..., None], Any, Any]]"
+    pending: "Queue[JobCommand]"
     current: "Value[int]"
-    progress: "Queue[Tuple[str, str, int]]"
+    progress: "Queue[ProgressCommand]"
 
     def __init__(
         self,
@@ -25,16 +26,14 @@ class WorkerContext:
         device: DeviceParams,
         cancel: "Value[bool]",
         logs: "Queue[str]",
-        pending: "Queue[Tuple[str, Callable[..., None], Any, Any]]",
-        progress: "Queue[Tuple[str, str, int]]",
-        finished: "Queue[Tuple[str, str]]",
+        pending: "Queue[JobCommand]",
+        progress: "Queue[ProgressCommand]",
         current: "Value[int]",
     ):
         self.job = job
         self.device = device
         self.cancel = cancel
         self.progress = progress
-        self.finished = finished
         self.logs = logs
         self.pending = pending
         self.current = current
@@ -61,11 +60,7 @@ class WorkerContext:
     def get_progress_callback(self) -> ProgressCallback:
         def on_progress(step: int, timestep: int, latents: Any):
             on_progress.step = step
-            if self.is_cancelled():
-                raise RuntimeError("job has been cancelled")
-            else:
-                logger.debug("setting progress for job %s to %s", self.job, step)
-                self.set_progress(step)
+            self.set_progress(step)
 
         return on_progress
 
@@ -74,14 +69,22 @@ class WorkerContext:
             self.cancel.value = cancel
 
     def set_progress(self, progress: int) -> None:
-        self.progress.put((self.job, self.device.device, progress), block=False)
+        if self.is_cancelled():
+            raise RuntimeError("job has been cancelled")
+        else:
+            logger.debug("setting progress for job %s to %s", self.job, progress)
+            self.progress.put(ProgressCommand(self.job, self.device.device, False, progress, self.is_cancelled(), False), block=False)
 
     def set_finished(self) -> None:
-        self.finished.put((self.job, self.device.device), block=False)
+        logger.debug("setting finished for job %s", self.job)
+        self.progress.put(ProgressCommand(self.job, self.device.device, True, self.get_progress(), self.is_cancelled(), False), block=False)
 
-    def clear_flags(self) -> None:
-        self.set_cancel(False)
-        self.set_progress(0)
+    def set_failed(self) -> None:
+        logger.warning("setting failure for job %s", self.job)
+        try:
+            self.progress.put(ProgressCommand(self.job, self.device.device, True, self.get_progress(), self.is_cancelled(), True), block=False)
+        except:
+            logger.exception("error setting failure on job %s", self.job)
 
 
 class JobStatus:
