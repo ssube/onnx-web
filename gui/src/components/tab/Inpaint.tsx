@@ -32,22 +32,22 @@ export function Inpaint() {
     const { model, inpaint, outpaint, upscale } = state.getState();
 
     if (outpaint.enabled) {
-      const output = await client.outpaint(model, {
+      const { image, retry } = await client.outpaint(model, {
         ...inpaint,
         ...outpaint,
         mask: mustExist(mask),
         source: mustExist(source),
       }, upscale);
 
-      pushHistory(output);
+      pushHistory(image, retry);
     } else {
-      const output = await client.inpaint(model, {
+      const { image, retry } = await client.inpaint(model, {
         ...inpaint,
         mask: mustExist(mask),
         source: mustExist(source),
       }, upscale);
 
-      pushHistory(output);
+      pushHistory(image, retry);
     }
   }
 

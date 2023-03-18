@@ -154,6 +154,7 @@ export const I18N_STRINGS_ES = {
         delete: 'Borrar',
         next: 'Próximo',
         previous: 'Anterior',
+        retry: '',
         save: 'Ahorrar',
       },
       upscaleOrder: {

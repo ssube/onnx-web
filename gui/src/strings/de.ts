@@ -154,6 +154,7 @@ export const I18N_STRINGS_DE = {
         delete: 'Löschen',
         next: 'Nächste',
         previous: 'Vorherige',
+        retry: '',
         save: 'Speichern',
       },
       upscaleOrder: {

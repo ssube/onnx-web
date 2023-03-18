@@ -217,6 +217,7 @@ export const I18N_STRINGS_EN = {
         delete: 'Delete',
         next: 'Next',
         previous: 'Previous',
+        retry: 'Retry',
         save: 'Save',
       },
       upscaleOrder: {

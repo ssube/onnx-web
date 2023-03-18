@@ -18,13 +18,12 @@ export function Img2Img() {
 
   async function uploadSource() {
     const { model, img2img, upscale } = state.getState();
-
-    const output = await client.img2img(model, {
+    const { image, retry } = await client.img2img(model, {
       ...img2img,
       source: mustExist(img2img.source), // TODO: show an error if this doesn't exist
     }, upscale);
 
-    pushHistory(output);
+    pushHistory(image, retry);
   }
 
   const client = mustExist(useContext(ClientContext));

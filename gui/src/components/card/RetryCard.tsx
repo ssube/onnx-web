@@ -1,5 +1,6 @@
 import { mustExist } from '@apextoaster/js-utils';
-import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { Delete, Replay } from '@mui/icons-material';
+import { Box, Card, CardContent, IconButton, Tooltip, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import * as React from 'react';
 import { useContext } from 'react';
@@ -7,31 +8,35 @@ import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
 import { useStore } from 'zustand';
 
-import { ImageResponse, ReadyResponse } from '../../client/api.js';
+import { ImageResponse, ReadyResponse, RetryParams } from '../../client/api.js';
 import { ClientContext, ConfigContext, StateContext } from '../../state.js';
 
 export interface ErrorCardProps {
   image: ImageResponse;
   ready: ReadyResponse;
+  retry: RetryParams;
 }
 
 export function ErrorCard(props: ErrorCardProps) {
-  const { image, ready } = props;
+  const { image, ready, retry: retryParams } = props;
 
   const client = mustExist(React.useContext(ClientContext));
   const { params } = mustExist(useContext(ConfigContext));
 
   const state = mustExist(useContext(StateContext));
   // eslint-disable-next-line @typescript-eslint/unbound-method
+  const pushHistory = useStore(state, (s) => s.pushHistory);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const removeHistory = useStore(state, (s) => s.removeHistory);
   const { t } = useTranslation();
 
-  // TODO: actually retry
-  const retry = useMutation(() => {
-    // eslint-disable-next-line no-console
-    console.log('retry', image);
-    return Promise.resolve(true);
-  });
+  async function retryImage() {
+    removeHistory(image);
+    const { image: nextImage, retry: nextRetry } = await client.retry(retryParams);
+    pushHistory(nextImage, nextRetry);
+  }
+
+  const retry = useMutation(retryImage);
 
   return <Card sx={{ maxWidth: params.width.default }}>
     <CardContent sx={{ height: params.height.default }}>
@@ -50,8 +55,18 @@ export function ErrorCard(props: ErrorCardProps) {
             current: ready.progress,
             total: image.params.steps,
           })}</Typography>
-          <Button onClick={() => retry.mutate()}>{t('loading.retry')}</Button>
-          <Button onClick={() => removeHistory(image)}>{t('loading.remove')}</Button>
+          <Stack direction='row' spacing={2}>
+            <Tooltip title={t('tooltip.retry')}>
+              <IconButton onClick={() => retry.mutate()}>
+                <Replay />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t('tooltip.delete')}>
+              <IconButton onClick={() => removeHistory(image)}>
+                <Delete />
+              </IconButton>
+            </Tooltip>
+          </Stack>
         </Stack>
       </Box>
     </CardContent>

@@ -30,7 +30,7 @@ export function ImageHistory() {
 
     if (doesExist(item.ready) && item.ready.ready) {
       if (item.ready.cancelled || item.ready.failed) {
-        children.push([key, <ErrorCard key={`history-${key}`} image={item.image} ready={item.ready} />]);
+        children.push([key, <ErrorCard key={`history-${key}`} image={item.image} ready={item.ready} retry={item.retry} />]);
         continue;
       }
 

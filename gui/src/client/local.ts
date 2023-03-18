@@ -44,6 +44,9 @@ export const LOCAL_CLIENT = {
   async cancel(key) {
     throw new NoServerError();
   },
+  async retry(params) {
+    throw new NoServerError();
+  },
   async models() {
     throw new NoServerError();
   },

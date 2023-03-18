@@ -16,9 +16,9 @@ export function Txt2Img() {
 
   async function generateImage() {
     const { model, txt2img, upscale } = state.getState();
-    const output = await client.txt2img(model, txt2img, upscale);
+    const { image, retry } = await client.txt2img(model, txt2img, upscale);
 
-    pushHistory(output);
+    pushHistory(image, retry);
   }
 
   const client = mustExist(useContext(ClientContext));

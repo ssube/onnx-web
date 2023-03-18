@@ -16,6 +16,7 @@ import {
   ModelParams,
   OutpaintPixels,
   ReadyResponse,
+  RetryParams,
   Txt2ImgParams,
   UpscaleParams,
   UpscaleReqParams,
@@ -30,6 +31,7 @@ type TabState<TabParams> = ConfigFiles<Required<TabParams>> & ConfigState<Requir
 interface HistoryItem {
   image: ImageResponse;
   ready: Maybe<ReadyResponse>;
+  retry: RetryParams;
 }
 
 interface BrushSlice {
@@ -48,7 +50,7 @@ interface HistorySlice {
   history: Array<HistoryItem>;
   limit: number;
 
-  pushHistory(image: ImageResponse): void;
+  pushHistory(image: ImageResponse, retry: RetryParams): void;
   removeHistory(image: ImageResponse): void;
   setLimit(limit: number): void;
   setReady(image: ImageResponse, ready: ReadyResponse): void;
@@ -301,7 +303,7 @@ export function createStateSlices(server: ServerParams) {
   const createHistorySlice: Slice<HistorySlice> = (set) => ({
     history: [],
     limit: DEFAULT_HISTORY.limit,
-    pushHistory(image) {
+    pushHistory(image, retry) {
       set((prev) => ({
         ...prev,
         history: [
@@ -313,6 +315,7 @@ export function createStateSlices(server: ServerParams) {
               progress: 0,
               ready: false,
             },
+            retry,
           },
           ...prev.history,
         ],
