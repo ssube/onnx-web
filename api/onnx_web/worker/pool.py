@@ -64,12 +64,10 @@ class DevicePoolExecutor:
 
         self.logs = Queue(self.max_pending_per_worker)
         self.progress = Queue(self.max_pending_per_worker)
-        self.finished = Queue(self.max_pending_per_worker)
 
         # TODO: these should be part of a start method
         self.create_logger_worker()
         self.create_progress_worker()
-        self.create_finished_worker()
 
         for device in devices:
             self.create_device_worker(device)
@@ -99,7 +97,6 @@ class DevicePoolExecutor:
             device,
             cancel=Value("B", False),
             progress=self.progress,
-            finished=self.finished,
             logs=self.logs,
             pending=pending,
             current=current,
@@ -185,31 +182,6 @@ class DevicePoolExecutor:
         logger.debug("starting progress worker")
         progress_thread.start()
 
-    def create_finished_worker(self) -> None:
-        def finished_worker(finished: Queue):
-            logger.trace("checking in from finished worker thread")
-            while True:
-                try:
-                    job, device = finished.get(timeout=(self.join_timeout / 2))
-
-                except Empty:
-                    pass
-                except ValueError:
-                    break
-                except Exception:
-                    logger.exception("error in finished worker")
-
-        finished_thread = Thread(
-            name="onnx-web finished",
-            target=finished_worker,
-            args=(self.finished,),
-            daemon=True,
-        )
-        self.threads["finished"] = finished_thread
-
-        logger.debug("started finished worker")
-        finished_thread.start()
-
     def get_job_context(self, key: str) -> WorkerContext:
         device, _progress = self.active_jobs[key]
         return self.context[device]
@@ -276,7 +248,6 @@ class DevicePoolExecutor:
 
         logger.debug("closing queues")
         self.logs.close()
-        self.finished.close()
         self.progress.close()
         for queue in self.pending.values():
             queue.close()
