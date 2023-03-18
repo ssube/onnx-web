@@ -38,6 +38,7 @@ class WorkerContext:
         self.logs = logs
         self.pending = pending
         self.active_pid = active_pid
+        self.last_progress = None
 
     def is_cancelled(self) -> bool:
         return self.cancel.value
