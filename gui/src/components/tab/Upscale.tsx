@@ -21,7 +21,7 @@ export function Upscale() {
       source: mustExist(params.source), // TODO: show an error if this doesn't exist
     }, upscale);
 
-    setLoading(output);
+    pushHistory(output);
   }
 
   const client = mustExist(useContext(ClientContext));
@@ -35,7 +35,7 @@ export function Upscale() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setSource = useStore(state, (s) => s.setUpscaleTab);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setLoading = useStore(state, (s) => s.pushLoading);
+  const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
 
   return <Box>

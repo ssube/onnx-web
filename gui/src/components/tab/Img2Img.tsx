@@ -24,7 +24,7 @@ export function Img2Img() {
       source: mustExist(img2img.source), // TODO: show an error if this doesn't exist
     }, upscale);
 
-    setLoading(output);
+    pushHistory(output);
   }
 
   const client = mustExist(useContext(ClientContext));
@@ -39,7 +39,7 @@ export function Img2Img() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setLoading = useStore(state, (s) => s.pushLoading);
+  const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
 
   return <Box>

@@ -23,7 +23,7 @@ export function Blend() {
       sources: mustExist(blend.sources), // TODO: show an error if this doesn't exist
     }, upscale);
 
-    setLoading(output);
+    pushHistory(output);
   }
 
   const client = mustExist(useContext(ClientContext));
@@ -37,7 +37,7 @@ export function Blend() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setBlend = useStore(state, (s) => s.setBlend);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setLoading = useStore(state, (s) => s.pushLoading);
+  const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
 
   const sources = mustDefault(blend.sources, []);

@@ -39,7 +39,7 @@ export function Inpaint() {
         source: mustExist(source),
       }, upscale);
 
-      setLoading(output);
+      pushHistory(output);
     } else {
       const output = await client.inpaint(model, {
         ...inpaint,
@@ -47,7 +47,7 @@ export function Inpaint() {
         source: mustExist(source),
       }, upscale);
 
-      setLoading(output);
+      pushHistory(output);
     }
   }
 
@@ -72,7 +72,7 @@ export function Inpaint() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setInpaint = useStore(state, (s) => s.setInpaint);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setLoading = useStore(state, (s) => s.pushLoading);
+  const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
 
   const query = useQueryClient();

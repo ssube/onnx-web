@@ -7,36 +7,34 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
 import { useStore } from 'zustand';
 
-import { ImageResponse } from '../client/api.js';
-import { POLL_TIME } from '../config.js';
-import { ClientContext, ConfigContext, StateContext } from '../state.js';
+import { ImageResponse } from '../../client/api.js';
+import { POLL_TIME } from '../../config.js';
+import { ClientContext, ConfigContext, StateContext } from '../../state.js';
 
 const LOADING_PERCENT = 100;
 const LOADING_OVERAGE = 99;
 
 export interface LoadingCardProps {
+  image: ImageResponse;
   index: number;
-  loading: ImageResponse;
 }
 
 export function LoadingCard(props: LoadingCardProps) {
-  const { index, loading } = props;
-  const { steps } = props.loading.params;
+  const { image, index } = props;
+  const { steps } = props.image.params;
 
   const client = mustExist(React.useContext(ClientContext));
   const { params } = mustExist(useContext(ConfigContext));
 
   const state = mustExist(useContext(StateContext));
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const clearLoading = useStore(state, (s) => s.clearLoading);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const pushHistory = useStore(state, (s) => s.pushHistory);
+  const removeHistory = useStore(state, (s) => s.removeHistory);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setReady = useStore(state, (s) => s.setReady);
   const { t } = useTranslation();
 
-  const cancel = useMutation(() => client.cancel(loading.outputs[index].key));
-  const ready = useQuery(`ready-${loading.outputs[index].key}`, () => client.ready(loading.outputs[index].key), {
+  const cancel = useMutation(() => client.cancel(image.outputs[index].key));
+  const ready = useQuery(`ready-${image.outputs[index].key}`, () => client.ready(image.outputs[index].key), {
     // data will always be ready without this, even if the API says its not
     cacheTime: 0,
     refetchInterval: POLL_TIME,
@@ -86,17 +84,13 @@ export function LoadingCard(props: LoadingCardProps) {
 
   useEffect(() => {
     if (cancel.status === 'success') {
-      clearLoading(props.loading);
+      removeHistory(props.image);
     }
   }, [cancel.status]);
 
   useEffect(() => {
-    if (ready.status === 'success') {
-      if (ready.data.ready) {
-        pushHistory(props.loading);
-      } else {
-        setReady(props.loading, ready.data);
-      }
+    if (ready.status === 'success' && getReady()) {
+      setReady(props.image, ready.data);
     }
   }, [ready.status, getReady(), getProgress()]);
 

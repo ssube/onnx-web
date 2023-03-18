@@ -7,12 +7,12 @@ import { useTranslation } from 'react-i18next';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
-import { ImageResponse } from '../client/api.js';
-import { BLEND_SOURCES, ConfigContext, StateContext } from '../state.js';
-import { range, visibleIndex } from '../utils.js';
+import { ImageResponse } from '../../client/api.js';
+import { BLEND_SOURCES, ConfigContext, StateContext } from '../../state.js';
+import { range, visibleIndex } from '../../utils.js';
 
 export interface ImageCardProps {
-  value: ImageResponse;
+  image: ImageResponse;
 
   onDelete?: (key: ImageResponse) => void;
 }
@@ -24,8 +24,8 @@ export function GridItem(props: { xs: number; children: React.ReactNode }) {
 }
 
 export function ImageCard(props: ImageCardProps) {
-  const { value } = props;
-  const { params, outputs, size } = value;
+  const { image } = props;
+  const { params, outputs, size } = image;
 
   const [_hash, setHash] = useHash();
   const [anchor, setAnchor] = useState<Maybe<HTMLElement>>();
@@ -83,7 +83,7 @@ export function ImageCard(props: ImageCardProps) {
 
   function deleteImage() {
     if (doesExist(props.onDelete)) {
-      props.onDelete(value);
+      props.onDelete(image);
     }
   }
 
