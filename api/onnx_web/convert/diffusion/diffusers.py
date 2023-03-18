@@ -88,7 +88,7 @@ def convert_diffusion_diffusers(
     ctx: ConversionContext,
     model: Dict,
     source: str,
-):
+) -> Tuple[bool, str]:
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
     """
@@ -111,7 +111,7 @@ def convert_diffusion_diffusers(
 
     if path.exists(dest_path) and path.exists(model_index):
         logger.info("ONNX model already exists, skipping")
-        return
+        return (False, dest_path)
 
     pipeline = StableDiffusionPipeline.from_pretrained(
         source,
@@ -328,3 +328,5 @@ def convert_diffusion_diffusers(
         )
 
     logger.info("ONNX pipeline is loadable")
+
+    return (True, dest_path)

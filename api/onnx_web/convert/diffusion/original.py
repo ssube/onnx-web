@@ -18,7 +18,7 @@ import os
 import re
 import shutil
 from logging import getLogger
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import torch
 from diffusers import (
@@ -1658,7 +1658,7 @@ def convert_diffusion_original(
     ctx: ConversionContext,
     model: ModelDict,
     source: str,
-):
+) -> Tuple[bool, str]:
     name = model["name"]
     source = source or model["source"]
 
@@ -1670,7 +1670,7 @@ def convert_diffusion_original(
 
     if os.path.exists(dest_path) and os.path.exists(dest_index):
         logger.info("ONNX pipeline already exists, skipping")
-        return
+        return (False, dest_path)
 
     torch_name = name + "-torch"
     torch_path = os.path.join(ctx.cache_path, torch_name)
@@ -1698,10 +1698,12 @@ def convert_diffusion_original(
     if "vae" in model:
         del model["vae"]
 
-    convert_diffusion_diffusers(ctx, model, working_name)
+    result = convert_diffusion_diffusers(ctx, model, working_name)
 
     if "torch" in ctx.prune:
         logger.info("removing intermediate Torch models: %s", torch_path)
         shutil.rmtree(torch_path)
 
     logger.info("ONNX pipeline saved to %s", name)
+    return result
+

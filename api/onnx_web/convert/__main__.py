@@ -223,97 +223,100 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                         ctx, name, model["source"], format=model_format
                     )
 
+                    converted = False
                     if model_format in model_formats_original:
-                        convert_diffusion_original(
+                        converted, _dest = convert_diffusion_original(
                             ctx,
                             model,
                             source,
                         )
                     else:
-                        convert_diffusion_diffusers(
+                        converted, _dest = convert_diffusion_diffusers(
                             ctx,
                             model,
                             source,
                         )
 
-                    # keep track of which models have been blended
-                    blend_models = {}
+                    # make sure blending only happens once, not every run
+                    if converted:
+                        # keep track of which models have been blended
+                        blend_models = {}
 
-                    inversion_dest = path.join(ctx.model_path, "inversion")
-                    lora_dest = path.join(ctx.model_path, "lora")
+                        inversion_dest = path.join(ctx.model_path, "inversion")
+                        lora_dest = path.join(ctx.model_path, "lora")
 
-                    for inversion in model.get("inversions", []):
-                        if "text_encoder" not in blend_models:
-                            blend_models["text_encoder"] = load_model(path.join(ctx.model_path, model, "text_encoder", "model.onnx"))
+                        for inversion in model.get("inversions", []):
+                            if "text_encoder" not in blend_models:
+                                blend_models["text_encoder"] = load_model(path.join(ctx.model_path, model, "text_encoder", "model.onnx"))
 
-                        if "tokenizer" not in blend_models:
-                            blend_models["tokenizer"] = CLIPTokenizer.from_pretrained(path.join(ctx.model_path, model), subfolder="tokenizer")
+                            if "tokenizer" not in blend_models:
+                                blend_models["tokenizer"] = CLIPTokenizer.from_pretrained(path.join(ctx.model_path, model), subfolder="tokenizer")
 
-                        inversion_name = inversion["name"]
-                        inversion_source = inversion["source"]
-                        inversion_format = inversion.get("format", "embeddings")
-                        inversion_source = fetch_model(
-                            ctx,
-                            f"{name}-inversion-{inversion_name}",
-                            inversion_source,
-                            dest=inversion_dest,
-                        )
-                        inversion_token = inversion.get("token", inversion_name)
-                        inversion_weight = inversion.get("weight", 1.0)
-
-                        blend_textual_inversions(
-                            ctx,
-                            blend_models["text_encoder"],
-                            blend_models["tokenizer"],
-                            [inversion_source],
-                            [inversion_format],
-                            base_token=inversion_token,
-                            inversion_weights=[inversion_weight],
-                        )
-
-                    for lora in model.get("loras", []):
-                        if "text_encoder" not in blend_models:
-                            blend_models["text_encoder"] = load_model(path.join(ctx.model_path, model, "text_encoder", "model.onnx"))
-
-                        if "unet" not in blend_models:
-                            blend_models["text_encoder"] = load_model(path.join(ctx.model_path, model, "unet", "model.onnx"))
-
-                        # load models if not loaded yet
-                        lora_name = lora["name"]
-                        lora_source = lora["source"]
-                        lora_source = fetch_model(
-                            ctx,
-                            f"{name}-lora-{lora_name}",
-                            lora_source
-                            dest=lora_dest,
-                        )
-                        lora_weight = lora.get("weight", 1.0)
-
-                        blend_loras(
-                            ctx,
-                            blend_models["text_encoder"],
-                            [lora_name],
-                            [lora_source],
-                            "text_encoder",
-                            lora_weights=[lora_weight],
-                        )
-
-                    if "tokenizer" in blend_models:
-                        dest_path = path.join(ctx.model_path, model, "tokenizer")
-                        logger.debug("saving blended tokenizer to %s", dest_path)
-                        blend_models["tokenizer"].save_pretrained(dest_path)
-
-                    for name in ["text_encoder", "unet"]:
-                        if name in blend_models:
-                            dest_path = path.join(ctx.model_path, model, name, "model.onnx")
-                            logger.debug("saving blended %s model to %s", name, dest_path)
-                            save_model(
-                                blend_models[name],
-                                dest_path,
-                                save_as_external_data=True,
-                                all_tensors_to_one_file=True,
-                                location="weights.pb",
+                            inversion_name = inversion["name"]
+                            inversion_source = inversion["source"]
+                            inversion_format = inversion.get("format", "embeddings")
+                            inversion_source = fetch_model(
+                                ctx,
+                                f"{name}-inversion-{inversion_name}",
+                                inversion_source,
+                                dest=inversion_dest,
                             )
+                            inversion_token = inversion.get("token", inversion_name)
+                            inversion_weight = inversion.get("weight", 1.0)
+
+                            blend_textual_inversions(
+                                ctx,
+                                blend_models["text_encoder"],
+                                blend_models["tokenizer"],
+                                [inversion_source],
+                                [inversion_format],
+                                base_token=inversion_token,
+                                inversion_weights=[inversion_weight],
+                            )
+
+                        for lora in model.get("loras", []):
+                            if "text_encoder" not in blend_models:
+                                blend_models["text_encoder"] = load_model(path.join(ctx.model_path, model, "text_encoder", "model.onnx"))
+
+                            if "unet" not in blend_models:
+                                blend_models["text_encoder"] = load_model(path.join(ctx.model_path, model, "unet", "model.onnx"))
+
+                            # load models if not loaded yet
+                            lora_name = lora["name"]
+                            lora_source = lora["source"]
+                            lora_source = fetch_model(
+                                ctx,
+                                f"{name}-lora-{lora_name}",
+                                lora_source,
+                                dest=lora_dest,
+                            )
+                            lora_weight = lora.get("weight", 1.0)
+
+                            blend_loras(
+                                ctx,
+                                blend_models["text_encoder"],
+                                [lora_name],
+                                [lora_source],
+                                "text_encoder",
+                                lora_weights=[lora_weight],
+                            )
+
+                        if "tokenizer" in blend_models:
+                            dest_path = path.join(ctx.model_path, model, "tokenizer")
+                            logger.debug("saving blended tokenizer to %s", dest_path)
+                            blend_models["tokenizer"].save_pretrained(dest_path)
+
+                        for name in ["text_encoder", "unet"]:
+                            if name in blend_models:
+                                dest_path = path.join(ctx.model_path, model, name, "model.onnx")
+                                logger.debug("saving blended %s model to %s", name, dest_path)
+                                save_model(
+                                    blend_models[name],
+                                    dest_path,
+                                    save_as_external_data=True,
+                                    all_tensors_to_one_file=True,
+                                    location="weights.pb",
+                                )
 
 
                 except Exception:
