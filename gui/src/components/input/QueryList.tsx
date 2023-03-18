@@ -1,5 +1,5 @@
 import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
-import { Alert, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { Alert, FormControl, FormLabel, InputLabel, LinearProgress, MenuItem, Select, Typography } from '@mui/material';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -50,6 +50,7 @@ export function filterQuery<T>(query: QueryListComplete | QueryListFilter<T>, sh
 export function QueryList<T>(props: QueryListProps<T>) {
   const { labelKey, query, showEmpty = false, value } = props;
   const { result } = query;
+  const labelID = `query-list-${props.id}-labels`;
 
   const { t } = useTranslation();
 
@@ -86,7 +87,10 @@ export function QueryList<T>(props: QueryListProps<T>) {
   }
 
   if (result.status === 'loading') {
-    return <Typography>{t('input.list.loading')}</Typography>;
+    return <FormControl>
+      <FormLabel id={labelID}>{props.name}</FormLabel>
+      <LinearProgress />
+    </FormControl>;
   }
 
   if (result.status === 'idle') {
@@ -94,7 +98,6 @@ export function QueryList<T>(props: QueryListProps<T>) {
   }
 
   // else: success
-  const labelID = `query-list-${props.id}-labels`;
   const data = filterQuery(query, showEmpty);
 
   return <FormControl>
