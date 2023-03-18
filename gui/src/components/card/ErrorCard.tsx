@@ -1,6 +1,6 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { Delete, Replay } from '@mui/icons-material';
-import { Box, Card, CardContent, IconButton, Tooltip, Typography } from '@mui/material';
+import { Alert, Box, Card, CardContent, IconButton, Tooltip } from '@mui/material';
 import { Stack } from '@mui/system';
 import * as React from 'react';
 import { useContext } from 'react';
@@ -51,10 +51,10 @@ export function ErrorCard(props: ErrorCardProps) {
           spacing={2}
           sx={{ alignItems: 'center' }}
         >
-          <Typography>{t('loading.progress', {
+          <Alert severity='error'>{t('loading.progress', {
             current: ready.progress,
             total: image.params.steps,
-          })}</Typography>
+          })}</Alert>
           <Stack direction='row' spacing={2}>
             <Tooltip title={t('tooltip.retry')}>
               <IconButton onClick={() => retry.mutate()}>
