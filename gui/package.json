@@ -16,7 +16,7 @@
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.18",
     "browser-bunyan": "^1.8.0",
-    "i18next": "^22.4.10",
+    "i18next": "^22.4.12",
     "i18next-browser-languagedetector": "^7.0.1",
     "lodash": "^4.17.21",
     "noicejs": "^5.0.0-3",
