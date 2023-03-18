@@ -142,7 +142,8 @@ properties:
         - $ref: "#/$defs/correction_model"
   networks:
     type: array
-    items: "#/$defs/source_network"
+    items:
+      $ref: "#/$defs/source_network"
   sources:
     type: array
     items:
