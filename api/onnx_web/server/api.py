@@ -473,8 +473,8 @@ def ready(context: ServerContext, pool: DevicePoolExecutor):
     return ready_reply(
         ready=progress.finished,
         progress=progress.progress,
-        failed=progress.error,
-        cancelled=progress.cancel,
+        failed=progress.failed,
+        cancelled=progress.cancelled,
     )
 
 
