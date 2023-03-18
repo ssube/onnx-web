@@ -348,14 +348,14 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             )
 
                         if "tokenizer" in blend_models:
-                            dest_path = path.join(ctx.model_path, model, "tokenizer")
+                            dest_path = path.join(dest, "tokenizer")
                             logger.debug("saving blended tokenizer to %s", dest_path)
                             blend_models["tokenizer"].save_pretrained(dest_path)
 
                         for name in ["text_encoder", "unet"]:
                             if name in blend_models:
                                 dest_path = path.join(
-                                    ctx.model_path, model, name, "model.onnx"
+                                    dest, name, "model.onnx"
                                 )
                                 logger.debug(
                                     "saving blended %s model to %s", name, dest_path
