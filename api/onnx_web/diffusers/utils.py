@@ -133,7 +133,7 @@ def expand_prompt(
 
 
 def get_tokens_from_prompt(
-    prompt: str, pattern: Pattern[str]
+    prompt: str, pattern: Pattern
 ) -> Tuple[str, List[Tuple[str, float]]]:
     """
     TODO: replace with Arpeggio
