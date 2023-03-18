@@ -2,7 +2,6 @@ from logging import getLogger
 from os import getpid
 from queue import Empty
 from sys import exit
-from traceback import format_exception
 
 from setproctitle import setproctitle
 
@@ -54,10 +53,8 @@ def worker_main(context: WorkerContext, server: ServerContext):
             logger.info("worker got keyboard interrupt")
             context.set_failed()
             exit(EXIT_INTERRUPT)
-        except ValueError as e:
-            logger.exception(
-                "value error in worker, exiting: %s"
-            )
+        except ValueError:
+            logger.exception("value error in worker, exiting: %s")
             context.set_failed()
             exit(EXIT_ERROR)
         except Exception as e:

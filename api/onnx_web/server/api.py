@@ -50,7 +50,9 @@ from .utils import wrap_route
 logger = getLogger(__name__)
 
 
-def ready_reply(ready: bool, progress: int = 0, error: bool = False, cancel: bool = False):
+def ready_reply(
+    ready: bool, progress: int = 0, error: bool = False, cancel: bool = False
+):
     return jsonify(
         {
             "cancel": cancel,
@@ -439,7 +441,7 @@ def cancel(context: ServerContext, pool: DevicePoolExecutor):
     output_file = sanitize_name(output_file)
     cancel = pool.cancel(output_file)
 
-    return ready_reply(cancel == False, cancel=cancel)
+    return ready_reply(cancel is not False, cancel=cancel)
 
 
 def ready(context: ServerContext, pool: DevicePoolExecutor):
@@ -454,8 +456,15 @@ def ready(context: ServerContext, pool: DevicePoolExecutor):
         output = base_join(context.output_path, output_file)
         if path.exists(output):
             return ready_reply(True)
+        else:
+            return ready_reply(True, error=True) # is a missing image really an error? yes will display the retry button
 
-    return ready_reply(progress.finished, progress=progress.progress, error=progress.error, cancel=progress.cancel)
+    return ready_reply(
+        progress.finished,
+        progress=progress.progress,
+        error=progress.error,
+        cancel=progress.cancel,
+    )
 
 
 def status(context: ServerContext, pool: DevicePoolExecutor):

@@ -1,11 +1,11 @@
 from logging import getLogger
 from os import getpid
-from typing import Any, Callable, Tuple
+from typing import Any, Callable
 
 from torch.multiprocessing import Queue, Value
 
-from .command import JobCommand, ProgressCommand
 from ..params import DeviceParams
+from .command import JobCommand, ProgressCommand
 
 logger = getLogger(__name__)
 
@@ -73,17 +73,47 @@ class WorkerContext:
             raise RuntimeError("job has been cancelled")
         else:
             logger.debug("setting progress for job %s to %s", self.job, progress)
-            self.progress.put(ProgressCommand(self.job, self.device.device, False, progress, self.is_cancelled(), False), block=False)
+            self.progress.put(
+                ProgressCommand(
+                    self.job,
+                    self.device.device,
+                    False,
+                    progress,
+                    self.is_cancelled(),
+                    False,
+                ),
+                block=False,
+            )
 
     def set_finished(self) -> None:
         logger.debug("setting finished for job %s", self.job)
-        self.progress.put(ProgressCommand(self.job, self.device.device, True, self.get_progress(), self.is_cancelled(), False), block=False)
+        self.progress.put(
+            ProgressCommand(
+                self.job,
+                self.device.device,
+                True,
+                self.get_progress(),
+                self.is_cancelled(),
+                False,
+            ),
+            block=False,
+        )
 
     def set_failed(self) -> None:
         logger.warning("setting failure for job %s", self.job)
         try:
-            self.progress.put(ProgressCommand(self.job, self.device.device, True, self.get_progress(), self.is_cancelled(), True), block=False)
-        except:
+            self.progress.put(
+                ProgressCommand(
+                    self.job,
+                    self.device.device,
+                    True,
+                    self.get_progress(),
+                    self.is_cancelled(),
+                    True,
+                ),
+                block=False,
+            )
+        except Exception:
             logger.exception("error setting failure on job %s", self.job)
 
 

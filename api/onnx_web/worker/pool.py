@@ -2,7 +2,7 @@ from collections import Counter
 from logging import getLogger
 from queue import Empty
 from threading import Thread
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Tuple
 
 from torch.multiprocessing import Process, Queue, Value
 
@@ -29,7 +29,7 @@ class DevicePoolExecutor:
     threads: Dict[str, Thread]
     workers: Dict[str, Process]
 
-    active_jobs: Dict[str, ProgressCommand] # Device -> job progress
+    active_jobs: Dict[str, ProgressCommand]  # Device -> job progress
     cancelled_jobs: List[str]
     finished_jobs: List[ProgressCommand]
     total_jobs: Dict[str, int]  # Device -> job count
@@ -149,11 +149,15 @@ class DevicePoolExecutor:
                 del self.active_jobs[progress.job]
                 self.join_leaking()
             else:
-                logger.debug("progress update for job: %s to %s", progress.job, progress.progress)
+                logger.debug(
+                    "progress update for job: %s to %s", progress.job, progress.progress
+                )
                 self.active_jobs[progress.job] = progress
                 if progress.job in self.cancelled_jobs:
                     logger.debug(
-                        "setting flag for cancelled job: %s on %s", progress.job, progress.device
+                        "setting flag for cancelled job: %s on %s",
+                        progress.job,
+                        progress.device,
                     )
                     self.context[progress.device].set_cancel()
 
