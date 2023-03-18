@@ -234,10 +234,7 @@ def load_pipeline(
                 server,
                 text_encoder,
                 tokenizer,
-                inversion_models,
-                ["embeddings"] * len(inversion_names),
-                inversion_weights,
-                base_tokens=inversion_names,
+                list(zip(inversion_models, inversion_weights, inversion_names)),
             )
 
             # should be pretty small and should not need external data
@@ -267,9 +264,8 @@ def load_pipeline(
             text_encoder = blend_loras(
                 server,
                 text_encoder,
-                lora_models,
+                list(zip(lora_models, lora_weights)),
                 "text_encoder",
-                lora_weights=lora_weights,
             )
             (text_encoder, text_encoder_data) = buffer_external_data_tensors(
                 text_encoder
@@ -291,9 +287,8 @@ def load_pipeline(
             blended_unet = blend_loras(
                 server,
                 path.join(model, "unet", "model.onnx"),
-                lora_models,
+                list(zip(lora_models, lora_weights)),
                 "unet",
-                lora_weights=lora_weights,
             )
             (unet_model, unet_data) = buffer_external_data_tensors(blended_unet)
             unet_names, unet_values = zip(*unet_data)

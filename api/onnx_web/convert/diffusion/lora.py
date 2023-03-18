@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from logging import getLogger
 from os import path
-from typing import Dict, List, Literal, Tuple
+from typing import Dict, List, Literal, Tuple, Union
 
 import numpy as np
 import torch
@@ -57,25 +57,23 @@ def fix_node_name(key: str):
 
 def blend_loras(
     context: ServerContext,
-    base_name: str,
-    lora_names: List[str],
-    dest_type: Literal["text_encoder", "unet"],
-    lora_weights: "np.NDArray[np.float64]" = None,
+    base_name: Union[str, ModelProto],
+    loras: List[Tuple[str, float]],
+    model_type: Literal["text_encoder", "unet"],
 ):
     base_model = base_name if isinstance(base_name, ModelProto) else load(base_name)
-    lora_models = [load_file(name) for name in lora_names]
-    lora_count = len(lora_models)
+
+    lora_count = len(loras)
+    lora_models = [load_file(name) for name, _weight in loras]
     lora_weights = lora_weights or (np.ones((lora_count)) / lora_count)
 
-    if dest_type == "text_encoder":
+    if model_type == "text_encoder":
         lora_prefix = "lora_te_"
     else:
-        lora_prefix = f"lora_{dest_type}_"
+        lora_prefix = f"lora_{model_type}_"
 
     blended: Dict[str, np.ndarray] = {}
-    for lora_name, lora_model, lora_weight in zip(
-        lora_names, lora_models, lora_weights
-    ):
+    for (lora_name, lora_weight), lora_model in zip(loras, lora_models):
         logger.info("blending LoRA from %s with weight of %s", lora_name, lora_weight)
         for key in lora_model.keys():
             if ".lora_down" in key and lora_prefix in key:
@@ -254,8 +252,8 @@ if __name__ == "__main__":
     parser.add_argument("--base", type=str)
     parser.add_argument("--dest", type=str)
     parser.add_argument("--type", type=str, choices=["text_encoder", "unet"])
-    parser.add_argument("--lora_models", nargs="+", type=str)
-    parser.add_argument("--lora_weights", nargs="+", type=float)
+    parser.add_argument("--lora_models", nargs="+", type=str, default=[])
+    parser.add_argument("--lora_weights", nargs="+", type=float, default=[])
 
     args = parser.parse_args()
     logger.info(
@@ -265,10 +263,17 @@ if __name__ == "__main__":
         args.lora_weights,
     )
 
+    default_weight = 1.0 / len(args.lora_models)
+    while len(args.lora_weights) < len(args.lora_models):
+        args.lora_weights.append(default_weight)
+
     blend_model = blend_loras(
-        context, args.base, args.lora_models, args.type, args.lora_weights
+        context,
+        args.base,
+        list(zip(args.lora_models, args.lora_weights)),
+        args.type,
     )
-    if args.dest is None or args.dest == "" or args.dest == "ort":
+    if args.dest is None or args.dest == "" or args.dest == ":load":
         # convert to external data and save to memory
         (bare_model, external_data) = buffer_external_data_tensors(blend_model)
         logger.info("saved external data for %s nodes", len(external_data))

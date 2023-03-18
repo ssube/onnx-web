@@ -191,7 +191,7 @@ def load_yaml(file: str) -> Config:
         return Config(data)
 
 
-def remove_prefix(name, prefix):
+def remove_prefix(name: str, prefix: str) -> str:
     if name.startswith(prefix):
         return name[len(prefix) :]
 

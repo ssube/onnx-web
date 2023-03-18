@@ -289,7 +289,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
 
                             inversion_name = inversion["name"]
                             inversion_source = inversion["source"]
-                            inversion_format = inversion.get("format", "embeddings")
+                            inversion_format = inversion.get("format", None)
                             inversion_source = fetch_model(
                                 ctx,
                                 f"{name}-inversion-{inversion_name}",
@@ -303,10 +303,14 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                                 ctx,
                                 blend_models["text_encoder"],
                                 blend_models["tokenizer"],
-                                [inversion_source],
-                                [inversion_format],
-                                base_token=inversion_token,
-                                inversion_weights=[inversion_weight],
+                                [
+                                    (
+                                        inversion_source,
+                                        inversion_weight,
+                                        inversion_token,
+                                        inversion_format,
+                                    )
+                                ],
                             )
 
                         for lora in model.get("loras", []):

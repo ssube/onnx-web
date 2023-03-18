@@ -17,24 +17,30 @@ logger = getLogger(__name__)
 @torch.no_grad()
 def blend_textual_inversions(
     context: ServerContext,
-    text_encoder: Optional[ModelProto],
-    tokenizer: Optional[CLIPTokenizer],
-    inversion_names: List[str],
-    inversion_formats: List[str],
-    inversion_weights: Optional[List[float]] = None,
-    base_tokens: Optional[List[str]] = None,
+    text_encoder: ModelProto,
+    tokenizer: CLIPTokenizer,
+    inversions: List[Tuple[str, float, Optional[str], Optional[str]]],
 ) -> Tuple[ModelProto, CLIPTokenizer]:
     dtype = np.float
     embeds = {}
 
-    for name, format, weight, base_token in zip(
-        inversion_names,
-        inversion_formats,
-        inversion_weights,
-        base_tokens or inversion_names,
-    ):
-        logger.info("blending Textual Inversion %s with weight of %s", name, weight)
+    for name, weight, base_token, format in inversions:
+        if base_token is None:
+            base_token = name
+
+        if format is None:
+            # TODO: detect concept format
+            format = "embeddings"
+
+        logger.info(
+            "blending Textual Inversion %s with weight of %s for token %s",
+            name,
+            weight,
+            base_token,
+        )
+
         if format == "concept":
+            # TODO: this should be done in fetch, maybe
             embeds_file = hf_hub_download(repo_id=name, filename="learned_embeds.bin")
             token_file = hf_hub_download(repo_id=name, filename="token_identifier.txt")
 
@@ -68,9 +74,10 @@ def blend_textual_inversions(
             sum_layer = np.zeros(trained_embeds[0, :].shape)
 
             for i in range(num_tokens):
-                token = f"{base_token or name}-{i}"
+                token = f"{base_token}-{i}"
                 layer = trained_embeds[i, :].cpu().numpy().astype(dtype)
                 layer *= weight
+
                 sum_layer += layer
                 if token in embeds:
                     embeds[token] += layer
@@ -78,7 +85,7 @@ def blend_textual_inversions(
                     embeds[token] = layer
 
             # add sum layer to embeds
-            sum_token = f"{base_token or name}-all"
+            sum_token = f"{base_token}-all"
             if sum_token in embeds:
                 embeds[sum_token] += sum_layer
             else:
@@ -170,19 +177,16 @@ def convert_diffusion_textual_inversion(
         context,
         text_encoder,
         tokenizer,
-        [inversion],
-        [format],
-        [weight],
-        base_token=(base_token or name),
+        [(inversion, weight, base_token, format)],
     )
 
-    logger.info("saving tokenizer for textual inversion")
+    logger.info("saving tokenizer for Textual Inversion")
     tokenizer.save_pretrained(tokenizer_path)
 
-    logger.info("saving text encoder for textual inversion")
+    logger.info("saving text encoder for Textual Inversion")
     save_model(
         text_encoder,
         f=encoder_model,
     )
 
-    logger.info("textual inversion saved to %s", dest_path)
+    logger.info("Textual Inversion saved to %s", dest_path)
