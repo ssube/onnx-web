@@ -58,9 +58,10 @@ class DevicePoolExecutor:
         self.threads = {}
         self.workers = {}
 
-        self.running_jobs = {}
         self.cancelled_jobs = []
         self.finished_jobs = []
+        self.pending_jobs = []
+        self.running_jobs = {}
         self.total_jobs = {}
 
         self.logs = Queue(self.max_pending_per_worker)
