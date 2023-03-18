@@ -99,7 +99,7 @@ class DevicePoolExecutor:
             progress=self.progress,
             logs=self.logs,
             pending=pending,
-            current=current,
+            active_pid=current,
         )
         self.context[name] = context
         worker = Process(

@@ -457,7 +457,9 @@ def ready(context: ServerContext, pool: DevicePoolExecutor):
         if path.exists(output):
             return ready_reply(True)
         else:
-            return ready_reply(True, error=True) # is a missing image really an error? yes will display the retry button
+            return ready_reply(
+                True, error=True
+            )  # is a missing image really an error? yes will display the retry button
 
     return ready_reply(
         progress.finished,

@@ -29,11 +29,11 @@ def worker_main(context: WorkerContext, server: ServerContext):
 
     while True:
         try:
-            if not context.is_current():
+            if not context.is_active():
                 logger.warning(
                     "worker %s has been replaced by %s, exiting",
                     getpid(),
-                    context.get_current(),
+                    context.get_active(),
                 )
                 exit(EXIT_REPLACED)
 
