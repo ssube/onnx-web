@@ -3,7 +3,7 @@ from typing import List
 
 REQUIRED_MODULES = ["onnx", "diffusers", "safetensors", "torch"]
 
-REQUIRED_RUNTIME = [
+RUNTIME_MODULES = [
     "onnxruntime",
     "onnxruntime_gpu",
     "onnxruntime_rocm",
@@ -22,6 +22,21 @@ def check_modules() -> List[str]:
             )
         except ImportError as e:
             results.append(f"unable to import required module {name}: {e}")
+
+    return results
+
+
+def check_runtimes() -> List[str]:
+    results = []
+    for name in RUNTIME_MODULES:
+        try:
+            __import__(name)
+            module_version = version(name)
+            results.append(
+                f"runtime module {name} is present at version {module_version}"
+            )
+        except ImportError as e:
+            results.append(f"unable to import runtime module {name}: {e}")
 
     return results
 
@@ -46,6 +61,7 @@ def check_providers() -> List[str]:
 
 ALL_CHECKS = [
     check_modules,
+    check_runtimes,
     check_providers,
 ]
 
