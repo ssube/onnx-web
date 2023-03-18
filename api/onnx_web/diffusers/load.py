@@ -236,14 +236,16 @@ def load_pipeline(
                 list(zip(inversion_models, inversion_weights, inversion_names)),
             )
 
-            # should be pretty small and should not need external data
-            components["text_encoder"] = OnnxRuntimeModel(
-                OnnxRuntimeModel.load_model(
-                    text_encoder.SerializeToString(),
-                    provider=device.ort_provider(),
-                )
-            )
             components["tokenizer"] = tokenizer
+
+            # should be pretty small and should not need external data
+            if loras is None or len(loras) == 0:
+                components["text_encoder"] = OnnxRuntimeModel(
+                    OnnxRuntimeModel.load_model(
+                        text_encoder.SerializeToString(),
+                        provider=device.ort_provider(),
+                    )
+                )
 
         # test LoRA blending
         if loras is not None and len(loras) > 0:
