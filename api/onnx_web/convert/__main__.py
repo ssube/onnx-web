@@ -354,9 +354,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
 
                         for name in ["text_encoder", "unet"]:
                             if name in blend_models:
-                                dest_path = path.join(
-                                    dest, name, "model.onnx"
-                                )
+                                dest_path = path.join(dest, name, "model.onnx")
                                 logger.debug(
                                     "saving blended %s model to %s", name, dest_path
                                 )

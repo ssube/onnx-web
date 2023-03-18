@@ -145,9 +145,9 @@ def convert_diffusion_textual_inversion(
     name: str,
     base_model: str,
     inversion: str,
-    format: str,
+    inversion_format: str,
     base_token: Optional[str] = None,
-    weight: Optional[float] = 1.0,
+    inversion_weight: Optional[float] = 1.0,
 ):
     dest_path = path.join(context.model_path, f"inversion-{name}")
     logger.info(
@@ -177,16 +177,16 @@ def convert_diffusion_textual_inversion(
         context,
         text_encoder,
         tokenizer,
-        [(inversion, weight, base_token, format)],
+        [(inversion, inversion_weight, base_token, inversion_format)],
     )
 
-    logger.info("saving tokenizer for Textual Inversion")
+    logger.info("saving tokenizer for textual inversion")
     tokenizer.save_pretrained(tokenizer_path)
 
-    logger.info("saving text encoder for Textual Inversion")
+    logger.info("saving text encoder for textual inversion")
     save_model(
         text_encoder,
         f=encoder_model,
     )
 
-    logger.info("Textual Inversion saved to %s", dest_path)
+    logger.info("textual inversion saved to %s", dest_path)
