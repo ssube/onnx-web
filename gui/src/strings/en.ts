@@ -30,10 +30,7 @@ export const I18N_STRINGS_EN = {
           },
         },
         prompt: {
-          tokens: 'Tokens: {{current}}/{{max}}',
-          error: {
-            length: 'Too many tokens: {{current}}/{{max}}',
-          },
+          tokens: '{{tokens}} tokens, {{groups}} groups',
         },
       },
       loading: {
