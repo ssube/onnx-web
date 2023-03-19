@@ -152,7 +152,11 @@ def load_extras(context: ServerContext):
                                     model_name,
                                     file,
                                 )
-                                labels[model_name] = model["label"]
+
+                                if "type" in model:
+                                    labels[f'{model["type"]}.{model["label"]}']
+                                else:
+                                    labels[model_name] = model["label"]
 
                             if "inversions" in model:
                                 for inversion in model["inversions"]:
