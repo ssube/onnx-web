@@ -420,8 +420,8 @@ def main() -> int:
     )
 
     # model groups
-    parser.add_argument("--networks", action="store_false", default=True)
-    parser.add_argument("--sources", action="store_false", default=True)
+    parser.add_argument("--networks", action="store_true", default=True)
+    parser.add_argument("--sources", action="store_true", default=True)
     parser.add_argument("--correction", action="store_true", default=False)
     parser.add_argument("--diffusion", action="store_true", default=False)
     parser.add_argument("--upscaling", action="store_true", default=False)
