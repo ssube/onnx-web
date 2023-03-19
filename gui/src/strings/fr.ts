@@ -68,6 +68,7 @@ export const I18N_STRINGS_FR = {
         correction: 'modèle de correction',
         diffusion: 'modèle de diffusion',
         inversion: '',
+        lora: '',
         upscaling: 'modèle de grossissement',
       },
       noiseSource: {

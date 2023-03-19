@@ -104,6 +104,7 @@ export const I18N_STRINGS_EN = {
         correction: 'Correction Model',
         diffusion: 'Diffusion Model',
         inversion: 'Textual Inversion',
+        lora: 'LoRA',
         upscaling: 'Upscaling Model',
       },
       noiseSource: {
