@@ -9,8 +9,8 @@ from diffusers import OnnxStableDiffusionPipeline
 logger = getLogger(__name__)
 
 
-INVERSION_TOKEN = compile(r"\<inversion:(\w+):([\.|\d]+)\>")
-LORA_TOKEN = compile(r"\<lora:(\w+):([\.|\d]+)\>")
+INVERSION_TOKEN = compile(r"\<inversion:([-\w]+):([\.|\d]+)\>")
+LORA_TOKEN = compile(r"\<lora:([-\w]+):([\.|\d]+)\>")
 MAX_TOKENS_PER_GROUP = 77
 PATTERN_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
 
