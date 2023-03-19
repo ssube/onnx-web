@@ -9,6 +9,7 @@ import { useStore } from 'zustand';
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, StateContext } from '../../state.js';
 import { QueryList } from '../input/QueryList.js';
+import { QueryMenu } from '../input/QueryMenu.js';
 
 export function ModelControl() {
   const client = mustExist(useContext(ClientContext));
@@ -97,7 +98,7 @@ export function ModelControl() {
         }}
       />}
     />
-    <QueryList
+    <QueryMenu
       id='inversion'
       labelKey='model.inversion'
       name={t('modelType.inversion')}
@@ -105,12 +106,16 @@ export function ModelControl() {
         result: models,
         selector: (result) => result.networks.filter((network) => network.type === 'inversion').map((network) => network.name),
       }}
-      value={params.correction}
-      onChange={(correction) => {
-        // noop
+      onSelect={(name) => {
+        const current = state.getState();
+        const { prompt } = current.txt2img;
+
+        current.setTxt2Img({
+          prompt: `<inversion:${name}:1.0> ${prompt}`,
+        });
       }}
     />
-    <QueryList
+    <QueryMenu
       id='lora'
       labelKey='model.lora'
       name={t('modelType.lora')}
@@ -118,9 +123,13 @@ export function ModelControl() {
         result: models,
         selector: (result) => result.networks.filter((network) => network.type === 'lora').map((network) => network.name),
       }}
-      value={params.correction}
-      onChange={(correction) => {
-        // noop
+      onSelect={(name) => {
+        const current = state.getState();
+        const { prompt } = current.txt2img;
+
+        current.setTxt2Img({
+          prompt: `<lora:${name}:1.0> ${prompt}`,
+        });
       }}
     />
   </Stack>;
