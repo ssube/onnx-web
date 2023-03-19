@@ -188,7 +188,7 @@ def load_pipeline(
             inversion_names, inversion_weights = zip(*inversions)
 
             inversion_models = [
-                path.join(server.model_path, "inversion", f"{name}.ckpt")
+                path.join(server.model_path, "inversion", name)
                 for name in inversion_names
             ]
             text_encoder = load_model(path.join(model, "text_encoder", "model.onnx"))
@@ -226,7 +226,7 @@ def load_pipeline(
         if loras is not None and len(loras) > 0:
             lora_names, lora_weights = zip(*loras)
             lora_models = [
-                path.join(server.model_path, "lora", f"{name}.safetensors")
+                path.join(server.model_path, "lora", name)
                 for name in lora_names
             ]
             logger.info(
