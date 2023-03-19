@@ -80,7 +80,6 @@ def upscale_outpaint(
             params.scheduler,
             job.get_device(),
             params.lpw,
-            params.inversion,
         )
         if params.lpw:
             logger.debug("using LPW pipeline for inpaint")

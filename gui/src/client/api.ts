@@ -32,8 +32,6 @@ export interface ModelParams {
    * Use the long prompt weighting pipeline.
    */
   lpw: boolean;
-
-  inversion: string;
 }
 
 /**
@@ -383,7 +381,6 @@ export function appendModelToURL(url: URL, params: ModelParams) {
   url.searchParams.append('upscaling', params.upscaling);
   url.searchParams.append('correction', params.correction);
   url.searchParams.append('lpw', String(params.lpw));
-  url.searchParams.append('inversion', params.inversion);
 }
 
 /**
