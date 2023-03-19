@@ -71,7 +71,7 @@ export function Blend() {
       />
       <UpscaleControl />
       <Button
-        disabled={sources.length === 0}
+        disabled={sources.length < 2}
         variant='contained'
         onClick={() => upload.mutate()}
       >{t('generate')}</Button>
