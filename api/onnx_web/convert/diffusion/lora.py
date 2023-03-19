@@ -75,6 +75,10 @@ def blend_loras(
     blended: Dict[str, np.ndarray] = {}
     for (lora_name, lora_weight), lora_model in zip(loras, lora_models):
         logger.info("blending LoRA from %s with weight of %s", lora_name, lora_weight)
+        if lora_model is None:
+            logger.warning("unable to load tensor for LoRA")
+            continue
+
         for key in lora_model.keys():
             if ".lora_down" in key and lora_prefix in key:
                 base_key = key[: key.index(".lora_down")].replace(lora_prefix, "")

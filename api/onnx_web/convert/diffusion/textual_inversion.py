@@ -50,6 +50,9 @@ def blend_textual_inversions(
                 token = base_token or f.read()
 
             loaded_embeds = load_tensor(embeds_file, map_location=device)
+            if loaded_embeds is None:
+                logger.warning("unable to load tensor")
+                continue
 
             # separate token and the embeds
             trained_token = list(loaded_embeds.keys())[0]
@@ -62,6 +65,9 @@ def blend_textual_inversions(
                 embeds[token] = layer
         elif inversion_format == "embeddings":
             loaded_embeds = load_tensor(name, map_location=device)
+            if loaded_embeds is None:
+                logger.warning("unable to load tensor")
+                continue
 
             string_to_token = loaded_embeds["string_to_token"]
             string_to_param = loaded_embeds["string_to_param"]

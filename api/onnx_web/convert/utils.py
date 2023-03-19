@@ -218,6 +218,7 @@ def load_tensor(name: str, map_location=None) -> Optional[Dict]:
     _, extension = path.splitext(name)
     extension = extension[1:].lower()
 
+    checkpoint = None
     if extension == "":
         # if no extension was intentional, do not search for others
         if path.exists(name):
@@ -225,25 +226,39 @@ def load_tensor(name: str, map_location=None) -> Optional[Dict]:
             checkpoint = torch.load(name, map_location=map_location)
         else:
             logger.debug("searching for tensors with known extensions")
-            for try_extension in ["safetensors", "ckpt", "pt", "bin"]:
-                checkpoint = load_tensor(f"{name}.{try_extension}", map_location=map_location)
-                if checkpoint is not None:
-                    break
+            for next_extension in ["safetensors", "ckpt", "pt", "bin"]:
+                next_name = f"{name}.{next_extension}"
+                if path.exists(next_name):
+                    checkpoint = load_tensor(next_name, map_location=map_location)
+                    if checkpoint is not None:
+                        break
     elif extension == "safetensors":
-        environ["SAFETENSORS_FAST_GPU"] = "1"
         logger.debug("loading safetensors")
-        checkpoint = safetensors.torch.load_file(name, device="cpu")
+        try:
+            environ["SAFETENSORS_FAST_GPU"] = "1"
+            checkpoint = safetensors.torch.load_file(name, device="cpu")
+        except Exception as e:
+            logger.warning("error loading safetensor: %s", e)
     elif extension in ["bin", "ckpt", "pt"]:
         logger.debug("loading pickle tensor")
-        checkpoint = load_torch(name, map_location=map_location)
+        try:
+            checkpoint = load_torch(name, map_location=map_location)
+        except Exception as e:
+            logger.warning("error loading pickle tensor: %s", e)
     elif extension in ["onnx", "pt"]:
         logger.warning("tensor has ONNX extension, falling back to PyTorch: %s", extension)
-        checkpoint = load_torch(name, map_location=map_location)
+        try:
+            checkpoint = load_torch(name, map_location=map_location)
+        except Exception as e:
+            logger.warning("error loading tensor: %s", e)
     else:
         logger.warning("unknown tensor type, falling back to PyTorch: %s", extension)
-        checkpoint = load_torch(name, map_location=map_location)
+        try:
+            checkpoint = load_torch(name, map_location=map_location)
+        except Exception as e:
+            logger.warning("error loading tensor: %s", e)
 
-    if "state_dict" in checkpoint:
+    if checkpoint is not None and "state_dict" in checkpoint:
         checkpoint = checkpoint["state_dict"]
 
     return checkpoint

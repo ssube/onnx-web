@@ -1410,6 +1410,9 @@ def extract_checkpoint(
         # Try to determine if v1 or v2 model if we have a ckpt
         logger.info("loading model from checkpoint")
         checkpoint = load_tensor(checkpoint_file, map_location=map_location)
+        if checkpoint is None:
+            logger.warning("unable to load tensor")
+            return
 
         rev_keys = ["db_global_step", "global_step"]
         epoch_keys = ["db_epoch", "epoch"]
