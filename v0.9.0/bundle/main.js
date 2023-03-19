@@ -69791,7 +69791,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       React108.createElement(Button_default, { id: `${id}-button`, onClick: openMenu, endIcon: React108.createElement(KeyboardArrowDown_default, null), variant: "outlined" }, name),
       React108.createElement(Menu_default, { id: `${id}-menu`, anchorEl: anchor, open: doesExist2(anchor), onClose: closeMenu, MenuListProps: {
         "aria-labelledby": `${id}-button`
-      } }, data.map((it, idx) => React108.createElement(MenuItem_default, { key: idx, onClick: () => selectItem(it) }, getLabel(it))))
+      } }, data.map((it, idx) => React108.createElement(MenuItem_default, { key: it, onClick: () => selectItem(it) }, getLabel(it))))
     );
   }
   __name(QueryMenu, "QueryMenu");
@@ -69811,63 +69811,71 @@ Please use another name.` : formatMuiErrorMessage(18));
     });
     return React109.createElement(
       Stack_default2,
-      { direction: "row", spacing: 2 },
-      React109.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t2("parameter.platform"), query: {
-        result: platforms
-      }, value: params.platform, onChange: (platform) => {
-        setModel({
-          platform
-        });
-      } }),
-      React109.createElement(QueryList, { id: "diffusion", labelKey: "model", name: t2("modelType.diffusion"), query: {
-        result: models,
-        selector: (result) => result.diffusion
-      }, value: params.model, onChange: (model) => {
-        setModel({
-          model
-        });
-      } }),
-      React109.createElement(QueryList, { id: "upscaling", labelKey: "model", name: t2("modelType.upscaling"), query: {
-        result: models,
-        selector: (result) => result.upscaling
-      }, value: params.upscaling, onChange: (upscaling) => {
-        setModel({
-          upscaling
-        });
-      } }),
-      React109.createElement(QueryList, { id: "correction", labelKey: "model", name: t2("modelType.correction"), query: {
-        result: models,
-        selector: (result) => result.correction
-      }, value: params.correction, onChange: (correction) => {
-        setModel({
-          correction
-        });
-      } }),
-      React109.createElement(FormControlLabel_default, { label: t2("parameter.lpw"), control: React109.createElement(Checkbox_default, { checked: params.lpw, value: "check", onChange: (event) => {
-        setModel({
-          lpw: params.lpw === false
-        });
-      } }) }),
-      React109.createElement(QueryMenu, { id: "inversion", labelKey: "model.inversion", name: t2("modelType.inversion"), query: {
-        result: models,
-        selector: (result) => result.networks.filter((network) => network.type === "inversion").map((network) => network.name)
-      }, onSelect: (name) => {
-        const current = state.getState();
-        const { prompt } = current.txt2img;
-        current.setTxt2Img({
-          prompt: `<inversion:${name}:1.0> ${prompt}`
-        });
-      } }),
-      React109.createElement(QueryMenu, { id: "lora", labelKey: "model.lora", name: t2("modelType.lora"), query: {
-        result: models,
-        selector: (result) => result.networks.filter((network) => network.type === "lora").map((network) => network.name)
-      }, onSelect: (name) => {
-        const current = state.getState();
-        const { prompt } = current.txt2img;
-        current.setTxt2Img({
-          prompt: `<lora:${name}:1.0> ${prompt}`
-        });
-      } })
+      { direction: "column", spacing: 2 },
+      React109.createElement(
+        Stack_default2,
+        { direction: "row", spacing: 2 },
+        React109.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t2("parameter.platform"), query: {
+          result: platforms
+        }, value: params.platform, onChange: (platform) => {
+          setModel({
+            platform
+          });
+        } }),
+        React109.createElement(QueryList, { id: "diffusion", labelKey: "model", name: t2("modelType.diffusion"), query: {
+          result: models,
+          selector: (result) => result.diffusion
+        }, value: params.model, onChange: (model) => {
+          setModel({
+            model
+          });
+        } }),
+        React109.createElement(QueryList, { id: "upscaling", labelKey: "model", name: t2("modelType.upscaling"), query: {
+          result: models,
+          selector: (result) => result.upscaling
+        }, value: params.upscaling, onChange: (upscaling) => {
+          setModel({
+            upscaling
+          });
+        } }),
+        React109.createElement(QueryList, { id: "correction", labelKey: "model", name: t2("modelType.correction"), query: {
+          result: models,
+          selector: (result) => result.correction
+        }, value: params.correction, onChange: (correction) => {
+          setModel({
+            correction
+          });
+        } })
+      ),
+      React109.createElement(
+        Stack_default2,
+        { direction: "row", spacing: 2 },
+        React109.createElement(FormControlLabel_default, { label: t2("parameter.lpw"), control: React109.createElement(Checkbox_default, { checked: params.lpw, value: "check", onChange: (event) => {
+          setModel({
+            lpw: params.lpw === false
+          });
+        } }) }),
+        React109.createElement(QueryMenu, { id: "inversion", labelKey: "model.inversion", name: t2("modelType.inversion"), query: {
+          result: models,
+          selector: (result) => result.networks.filter((network) => network.type === "inversion").map((network) => network.name)
+        }, onSelect: (name) => {
+          const current = state.getState();
+          const { prompt } = current.txt2img;
+          current.setTxt2Img({
+            prompt: `<inversion:${name}:1.0> ${prompt}`
+          });
+        } }),
+        React109.createElement(QueryMenu, { id: "lora", labelKey: "model.lora", name: t2("modelType.lora"), query: {
+          result: models,
+          selector: (result) => result.networks.filter((network) => network.type === "lora").map((network) => network.name)
+        }, onSelect: (name) => {
+          const current = state.getState();
+          const { prompt } = current.txt2img;
+          current.setTxt2Img({
+            prompt: `<lora:${name}:1.0> ${prompt}`
+          });
+        } })
+      )
     );
   }
   __name(ModelControl, "ModelControl");
@@ -70847,7 +70855,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           });
         } }),
         React118.createElement(UpscaleControl, null),
-        React118.createElement(Button_default, { disabled: sources.length === 0, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
+        React118.createElement(Button_default, { disabled: sources.length < 2, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
       )
     );
   }
@@ -70863,28 +70871,24 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/input/PromptInput.js
   var React119 = __toESM(require_react(), 1);
-  var PROMPT_LIMIT = 77;
+  var PROMPT_GROUP = 75;
+  function splitPrompt(prompt) {
+    return prompt.split(",").flatMap((phrase) => phrase.split(" ")).map((word) => word.trim()).filter((word) => word.length > 0);
+  }
+  __name(splitPrompt, "splitPrompt");
   function PromptInput(props) {
     const { prompt = "", negativePrompt = "" } = props;
-    const promptLength = prompt.split(" ").length;
-    const error2 = promptLength > PROMPT_LIMIT;
+    const tokens = splitPrompt(prompt);
+    const groups = Math.ceil(tokens.length / PROMPT_GROUP);
     const { t: t2 } = useTranslation();
-    function promptHelper() {
-      const params = {
-        current: promptLength,
-        max: PROMPT_LIMIT
-      };
-      if (error2) {
-        return t2("input.prompt.error.length", params);
-      } else {
-        return t2("input.prompt.tokens", params);
-      }
-    }
-    __name(promptHelper, "promptHelper");
+    const helper = t2("input.prompt.tokens", {
+      groups,
+      tokens: tokens.length
+    });
     return React119.createElement(
       Stack_default,
       { spacing: 2 },
-      React119.createElement(TextField_default, { error: error2, label: t2("parameter.prompt"), helperText: promptHelper(), variant: "outlined", value: prompt, onChange: (event) => {
+      React119.createElement(TextField_default, { label: t2("parameter.prompt"), helperText: helper, variant: "outlined", value: prompt, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange({
             prompt: event.target.value,
@@ -71637,10 +71641,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             }
           },
           prompt: {
-            tokens: "Tokens: {{current}}/{{max}}",
-            error: {
-              length: "Too many tokens: {{current}}/{{max}}"
-            }
+            tokens: "{{tokens}} tokens, {{groups}} groups"
           }
         },
         loading: {
