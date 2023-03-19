@@ -318,7 +318,7 @@ export function createStateSlices(server: ServerParams) {
             retry,
           },
           ...prev.history,
-        ],
+        ].slice(0, prev.limit + DEFAULT_HISTORY.scrollback),
       }));
     },
     removeHistory(image) {
