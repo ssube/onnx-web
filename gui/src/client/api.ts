@@ -181,13 +181,20 @@ export interface ReadyResponse {
   ready: boolean;
 }
 
+export interface NetworkModel {
+  name: string;
+  type: 'inversion' | 'lora';
+  // TODO: add token
+  // TODO: add layer/token count
+}
+
 /**
  * List of available models.
  */
 export interface ModelsResponse {
-  diffusion: Array<string>;
   correction: Array<string>;
-  inversion: Array<string>;
+  diffusion: Array<string>;
+  networks: Array<NetworkModel>;
   upscaling: Array<string>;
 }
 

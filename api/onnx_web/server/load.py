@@ -2,7 +2,7 @@ from functools import cmp_to_key
 from glob import glob
 from logging import getLogger
 from os import path
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 import torch
 import yaml
@@ -20,6 +20,7 @@ from ..image import (  # mask filters; noise sources
     noise_source_normal,
     noise_source_uniform,
 )
+from ..models import NetworkModel
 from ..params import DeviceParams
 from ..torch_before_ort import get_available_providers
 from ..utils import merge
@@ -58,7 +59,7 @@ available_platforms: List[DeviceParams] = []
 # loaded from model_path
 correction_models: List[str] = []
 diffusion_models: List[str] = []
-inversion_models: List[str] = []
+network_models: List[NetworkModel] = []
 upscaling_models: List[str] = []
 
 # Loaded from extra_models
@@ -81,8 +82,8 @@ def get_diffusion_models():
     return diffusion_models
 
 
-def get_inversion_models():
-    return inversion_models
+def get_network_models():
+    return network_models
 
 
 def get_upscaling_models():
@@ -184,10 +185,12 @@ def load_extras(context: ServerContext):
     extra_strings = strings
 
 
-def list_model_globs(context: ServerContext, globs: List[str]) -> List[str]:
+def list_model_globs(
+    context: ServerContext, globs: List[str], base_path: Optional[str] = None
+) -> List[str]:
     models = []
     for pattern in globs:
-        pattern_path = path.join(context.model_path, pattern)
+        pattern_path = path.join(base_path or context.model_path, pattern)
         logger.debug("loading models from %s", pattern_path)
 
         models.extend([get_model_name(f) for f in glob(pattern_path)])
@@ -200,9 +203,10 @@ def list_model_globs(context: ServerContext, globs: List[str]) -> List[str]:
 def load_models(context: ServerContext) -> None:
     global correction_models
     global diffusion_models
-    global inversion_models
+    global network_models
     global upscaling_models
 
+    # main categories
     diffusion_models = list_model_globs(
         context,
         [
@@ -220,14 +224,6 @@ def load_models(context: ServerContext) -> None:
     )
     logger.debug("loaded correction models from disk: %s", correction_models)
 
-    inversion_models = list_model_globs(
-        context,
-        [
-            "inversion-*",
-        ],
-    )
-    logger.debug("loaded inversion models from disk: %s", inversion_models)
-
     upscaling_models = list_model_globs(
         context,
         [
@@ -235,6 +231,29 @@ def load_models(context: ServerContext) -> None:
         ],
     )
     logger.debug("loaded upscaling models from disk: %s", upscaling_models)
+
+    # additional networks
+    inversion_models = list_model_globs(
+        context,
+        [
+            "*",
+        ],
+        base_path=path.join(context.model_path, "inversion"),
+    )
+    logger.debug("loaded Textual Inversion models from disk: %s", inversion_models)
+    network_models.extend(
+        [NetworkModel(model, "inversion") for model in inversion_models]
+    )
+
+    lora_models = list_model_globs(
+        context,
+        [
+            "*",
+        ],
+        base_path=path.join(context.model_path, "lora"),
+    )
+    logger.debug("loaded LoRA models from disk: %s", lora_models)
+    network_models.extend([NetworkModel(model, "lora") for model in lora_models])
 
 
 def load_params(context: ServerContext) -> None:

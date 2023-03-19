@@ -39,8 +39,8 @@ from .load import (
     get_correction_models,
     get_diffusion_models,
     get_extra_strings,
-    get_inversion_models,
     get_mask_filters,
+    get_network_models,
     get_noise_sources,
     get_upscaling_models,
 )
@@ -111,7 +111,7 @@ def list_models(context: ServerContext):
         {
             "correction": get_correction_models(),
             "diffusion": get_diffusion_models(),
-            "inversion": get_inversion_models(),
+            "networks": get_network_models(),
             "upscaling": get_upscaling_models(),
         }
     )

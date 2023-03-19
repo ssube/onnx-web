@@ -42,7 +42,7 @@ export function ModelControl() {
     />
     <QueryList
       id='diffusion'
-      labelKey='model'
+      labelKey='diffusion'
       name={t('modelType.diffusion')}
       query={{
         result: models,
@@ -56,24 +56,8 @@ export function ModelControl() {
       }}
     />
     <QueryList
-      id='inversion'
-      labelKey='model'
-      name={t('modelType.inversion')}
-      query={{
-        result: models,
-        selector: (result) => result.inversion,
-      }}
-      showEmpty={true}
-      value={params.inversion}
-      onChange={(inversion) => {
-        setModel({
-          inversion,
-        });
-      }}
-    />
-    <QueryList
       id='upscaling'
-      labelKey='model'
+      labelKey='upscaling'
       name={t('modelType.upscaling')}
       query={{
         result: models,
@@ -88,7 +72,7 @@ export function ModelControl() {
     />
     <QueryList
       id='correction'
-      labelKey='model'
+      labelKey='correction'
       name={t('modelType.correction')}
       query={{
         result: models,
@@ -112,6 +96,32 @@ export function ModelControl() {
           });
         }}
       />}
+    />
+    <QueryList
+      id='inversion'
+      labelKey='inversion'
+      name={t('modelType.inversion')}
+      query={{
+        result: models,
+        selector: (result) => result.networks.filter((network) => network.type === 'inversion').map((network) => network.name),
+      }}
+      value={params.correction}
+      onChange={(correction) => {
+        // noop
+      }}
+    />
+    <QueryList
+      id='lora'
+      labelKey='lora'
+      name={t('modelType.lora')}
+      query={{
+        result: models,
+        selector: (result) => result.networks.filter((network) => network.type === 'lora').map((network) => network.name),
+      }}
+      value={params.correction}
+      onChange={(correction) => {
+        // noop
+      }}
     />
   </Stack>;
 }
