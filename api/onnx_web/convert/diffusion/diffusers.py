@@ -136,11 +136,17 @@ def convert_diffusion_diffusers(
         pipeline.text_encoder,
         # casting to torch.int32 until the CLIP fix is released: https://github.com/huggingface/transformers/pull/18515/files
         model_args=(
-            text_input.input_ids.to(device=ctx.training_device, dtype=torch.int32)
+            text_input.input_ids.to(device=ctx.training_device, dtype=torch.int32),
+            None,   # attention mask
+            None,   # position ids
+            None,   # output attentions
+            torch.tensor(True).to(
+                device=ctx.training_device, dtype=torch.bool
+            ),
         ),
         output_path=output_path / "text_encoder" / "model.onnx",
         ordered_input_names=["input_ids"],
-        output_names=["last_hidden_state", "pooler_output"],
+        output_names=["last_hidden_state", "pooler_output", "hidden_states"],
         dynamic_axes={
             "input_ids": {0: "batch", 1: "sequence"},
         },

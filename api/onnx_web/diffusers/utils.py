@@ -5,6 +5,7 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 from diffusers import OnnxStableDiffusionPipeline
+from transformers import CLIPTextModel
 
 logger = getLogger(__name__)
 
@@ -26,16 +27,19 @@ def expand_prompt_ranges(prompt: str) -> str:
     return PATTERN_RANGE.sub(expand_range, prompt)
 
 
+@torch.no_grad()
 def expand_prompt(
     self: OnnxStableDiffusionPipeline,
     prompt: str,
     num_images_per_prompt: int,
     do_classifier_free_guidance: bool,
     negative_prompt: Optional[str] = None,
+    skip_clip_states: Optional[str] = 0,
 ) -> "np.NDArray":
     # self provides:
     #   tokenizer: CLIPTokenizer
     #   encoder: OnnxRuntimeModel
+
 
     batch_size = len(prompt) if isinstance(prompt, list) else 1
     prompt = expand_prompt_ranges(prompt)
@@ -63,12 +67,23 @@ def expand_prompt(
         groups.append(tokens.input_ids[:, group_start:group_end])
 
     # encode each chunk
+    torch_encoder = CLIPTextModel.from_pretrained("runwayml/stable-diffusion-v1-5", subfolder="text_encoder")
     logger.trace("group token shapes: %s", [t.shape for t in groups])
     group_embeds = []
     for group in groups:
         logger.trace("encoding group: %s", group.shape)
-        embeds = self.text_encoder(input_ids=group.astype(np.int32))[0]
-        group_embeds.append(embeds)
+
+        text_result = self.text_encoder(input_ids=group.astype(np.int32))
+        logger.info("text encoder result: %s", text_result)
+
+        last_state, _pooled_output, *hidden_states = text_result
+        if skip_clip_states > 1:
+            last_state = hidden_states[-skip_clip_states]
+            norm_state = torch_encoder.text_model.final_layer_norm(torch.from_numpy(last_state).detach())
+            logger.info("normalized results after skipping %s layers: %s", skip_clip_states, norm_state.shape)
+            group_embeds.append(norm_state)
+        else:
+            group_embeds.append(last_state)
 
     # concat those embeds
     logger.trace("group embeds shape: %s", [t.shape for t in group_embeds])
