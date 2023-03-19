@@ -199,9 +199,11 @@ def remove_prefix(name: str, prefix: str) -> str:
 
 
 def load_tensor(name: str, map_location=None):
-    logger.info("loading model from checkpoint")
+    logger.debug("loading tensor: %s", name)
     _, extension = path.splitext(name)
-    if extension.lower() == ".safetensors":
+    extension = extension[1:].lower()
+
+    if extension == "safetensors":
         environ["SAFETENSORS_FAST_GPU"] = "1"
         try:
             logger.debug("loading safetensors")
@@ -209,7 +211,7 @@ def load_tensor(name: str, map_location=None):
         except Exception as e:
             try:
                 logger.warning(
-                    "failed to load as safetensors file, falling back to torch: %s", e
+                    "failed to load as safetensors file, falling back to Torch JIT: %s", e
                 )
                 checkpoint = torch.jit.load(name)
             except Exception as e:
@@ -217,16 +219,17 @@ def load_tensor(name: str, map_location=None):
                     "failed to load with Torch JIT, falling back to PyTorch: %s", e
                 )
                 checkpoint = torch.load(name, map_location=map_location)
-                checkpoint = (
-                    checkpoint["state_dict"]
-                    if "state_dict" in checkpoint
-                    else checkpoint
-                )
-    else:
+    elif extension in ["", "bin", "ckpt", "pt"]:
         logger.debug("loading ckpt")
         checkpoint = torch.load(name, map_location=map_location)
-        checkpoint = (
-            checkpoint["state_dict"] if "state_dict" in checkpoint else checkpoint
-        )
+    elif extension in ["onnx", "pt"]:
+        logger.warning("unknown tensor extension, may be ONNX model: %s", extension)
+        checkpoint = torch.load(name, map_location=map_location)
+    else:
+        logger.warning("unknown tensor extension: %s", extension)
+        checkpoint = torch.load(name, map_location=map_location)
+
+    if "state_dict" in checkpoint:
+        checkpoint = checkpoint["state_dict"]
 
     return checkpoint

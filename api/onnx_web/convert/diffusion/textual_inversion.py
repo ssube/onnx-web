@@ -9,7 +9,7 @@ from onnx import ModelProto, load_model, numpy_helper, save_model
 from transformers import CLIPTokenizer
 
 from ...server.context import ServerContext
-from ..utils import ConversionContext
+from ..utils import ConversionContext, load_tensor
 
 logger = getLogger(__name__)
 
@@ -21,6 +21,8 @@ def blend_textual_inversions(
     tokenizer: CLIPTokenizer,
     inversions: List[Tuple[str, float, Optional[str], Optional[str]]],
 ) -> Tuple[ModelProto, CLIPTokenizer]:
+    # always load to CPU for blending
+    device = torch.device("cpu")
     dtype = np.float
     embeds = {}
 
@@ -47,19 +49,19 @@ def blend_textual_inversions(
             with open(token_file, "r") as f:
                 token = base_token or f.read()
 
-            loaded_embeds = torch.load(embeds_file)
+            loaded_embeds = load_tensor(embeds_file, map_location=device)
 
             # separate token and the embeds
             trained_token = list(loaded_embeds.keys())[0]
 
-            layer = loaded_embeds[trained_token].cpu().numpy().astype(dtype)
+            layer = loaded_embeds[trained_token].numpy().astype(dtype)
             layer *= weight
             if trained_token in embeds:
                 embeds[token] += layer
             else:
                 embeds[token] = layer
         elif inversion_format == "embeddings":
-            loaded_embeds = torch.load(name)
+            loaded_embeds = load_tensor(name, map_location=device)
 
             string_to_token = loaded_embeds["string_to_token"]
             string_to_param = loaded_embeds["string_to_param"]
@@ -75,7 +77,7 @@ def blend_textual_inversions(
 
             for i in range(num_tokens):
                 token = f"{base_token}-{i}"
-                layer = trained_embeds[i, :].cpu().numpy().astype(dtype)
+                layer = trained_embeds[i, :].numpy().astype(dtype)
                 layer *= weight
 
                 sum_layer += layer

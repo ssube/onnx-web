@@ -5,6 +5,8 @@ from .chain import (
     upscale_resrgan,
     upscale_stable_diffusion,
 )
+from .convert.diffusion.lora import blend_loras
+from .convert.diffusion.textual_inversion import blend_textual_inversions
 from .diffusers.load import get_latents_from_seed, load_pipeline, optimize_pipeline
 from .diffusers.run import (
     run_blend_pipeline,

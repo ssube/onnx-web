@@ -16,7 +16,7 @@ from onnxruntime import InferenceSession, OrtValue, SessionOptions
 from safetensors.torch import load_file
 
 from ...server.context import ServerContext
-from ..utils import ConversionContext
+from ..utils import ConversionContext, load_tensor
 
 logger = getLogger(__name__)
 
@@ -61,8 +61,11 @@ def blend_loras(
     loras: List[Tuple[str, float]],
     model_type: Literal["text_encoder", "unet"],
 ):
+    # always load to CPU for blending
+    device = torch.device("cpu")
+
     base_model = base_name if isinstance(base_name, ModelProto) else load(base_name)
-    lora_models = [load_file(name) for name, _weight in loras]
+    lora_models = [load_tensor(name, map_location=device) for name, _weight in loras]
 
     if model_type == "text_encoder":
         lora_prefix = "lora_te_"
