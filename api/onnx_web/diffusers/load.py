@@ -353,7 +353,8 @@ timestep_dtype = None
 
 
 class UNetWrapper(object):
-    def __init__(self, wrapped):
+    def __init__(self, server, wrapped):
+        self.server = server
         self.wrapped = wrapped
 
     def __call__(self, sample=None, timestep=None, encoder_hidden_states=None):
@@ -361,8 +362,12 @@ class UNetWrapper(object):
         timestep_dtype = timestep.dtype
 
         logger.trace("UNet parameter types: %s, %s", sample.dtype, timestep.dtype)
-        if sample.dtype != timestep.dtype:
-            logger.info("converting UNet sample dtype")
+        if "onnx-fp16" in self.server.optimizations:
+            logger.info("converting UNet sample to ONNX fp16")
+            sample = sample.astype(np.float16)
+            encoder_hidden_states = encoder_hidden_states.astype(np.float16)
+        elif sample.dtype != timestep.dtype:
+            logger.info("converting UNet sample to timestep dtype")
             sample = sample.astype(timestep.dtype)
 
         return self.wrapped(
@@ -376,7 +381,8 @@ class UNetWrapper(object):
 
 
 class VAEWrapper(object):
-    def __init__(self, wrapped):
+    def __init__(self, server, wrapped):
+        self.server = server
         self.wrapped = wrapped
 
     def __call__(self, latent_sample=None):
@@ -404,5 +410,5 @@ def patch_pipeline(
     original_unet = pipe.unet
     original_vae = pipe.vae_decoder
 
-    pipe.unet = UNetWrapper(original_unet)
-    pipe.vae_decoder = VAEWrapper(original_vae)
+    pipe.unet = UNetWrapper(server, original_unet)
+    pipe.vae_decoder = VAEWrapper(server, original_vae)

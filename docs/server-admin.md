@@ -99,8 +99,12 @@ Others:
     - not available for ONNX pipelines (most of them)
     - https://huggingface.co/docs/diffusers/optimization/fp16#sliced-vae-decode-for-larger-batches
 - `onnx-*`
-  - `onnx-low-memory`
-    - disable ONNX features that allocate more memory than is strictly required or keep memory after use
+  - `onnx-deterministic-compute`
+    - enable ONNX deterministic compute
+  - `onnx-fp16`
+    - force 16-bit floating point values when running pipelines
+    - use with https://github.com/microsoft/onnxruntime/tree/main/onnxruntime/python/tools/transformers/models/stable_diffusion#optimize-onnx-pipeline
+      and the `--float16` flag
   - `onnx-graph-*`
     - `onnx-graph-disable`
       - disable all ONNX graph optimizations
@@ -108,11 +112,11 @@ Others:
       - enable basic ONNX graph optimizations
     - `onnx-graph-all`
       - enable all ONNX graph optimizations
-  - `onnx-deterministic-compute`
-    - enable ONNX deterministic compute
+  - `onnx-low-memory`
+    - disable ONNX features that allocate more memory than is strictly required or keep memory after use
 - `torch-*`
   - `torch-fp16`
-    - use 16-bit floating point values when loading and converting pipelines
+    - use 16-bit floating point values when converting and running pipelines
     - applies during conversion as well
     - only available on CUDA platform
 
