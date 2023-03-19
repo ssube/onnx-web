@@ -543,7 +543,7 @@
             }
             return element;
           }, "ReactElement");
-          function createElement33(type, config, children) {
+          function createElement34(type, config, children) {
             var propName;
             var props = {};
             var key = null;
@@ -607,7 +607,7 @@
             }
             return ReactElement(type, key, ref, self2, source, ReactCurrentOwner.current, props);
           }
-          __name(createElement33, "createElement");
+          __name(createElement34, "createElement");
           function cloneAndReplaceKey(oldElement, newKey) {
             var newElement = ReactElement(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
             return newElement;
@@ -1138,11 +1138,11 @@
             return dispatcher.useContext(Context2);
           }
           __name(useContext31, "useContext");
-          function useState23(initialState) {
+          function useState24(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
           }
-          __name(useState23, "useState");
+          __name(useState24, "useState");
           function useReducer(reducer2, initialArg, init3) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useReducer(reducer2, initialArg, init3);
@@ -1696,7 +1696,7 @@
                 error2("React.createElement: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: %s.%s", typeString, info);
               }
             }
-            var element = createElement33.apply(this, arguments);
+            var element = createElement34.apply(this, arguments);
             if (element == null) {
               return element;
             }
@@ -1982,7 +1982,7 @@
           exports.useMemo = useMemo11;
           exports.useReducer = useReducer;
           exports.useRef = useRef26;
-          exports.useState = useState23;
+          exports.useState = useState24;
           exports.useSyncExternalStore = useSyncExternalStore;
           exports.useTransition = useTransition;
           exports.version = ReactVersion;
@@ -2504,9 +2504,9 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React128 = require_react();
+          var React129 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React128.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React129.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -4180,7 +4180,7 @@
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React128.Children.forEach(props.children, function(child) {
+                  React129.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -9861,7 +9861,7 @@
             }
           }
           __name(updateDOMProperties, "updateDOMProperties");
-          function createElement33(type, props, rootContainerElement, parentNamespace) {
+          function createElement34(type, props, rootContainerElement, parentNamespace) {
             var isCustomComponentTag;
             var ownerDocument2 = getOwnerDocumentFromRootContainer(rootContainerElement);
             var domElement;
@@ -9909,7 +9909,7 @@
             }
             return domElement;
           }
-          __name(createElement33, "createElement");
+          __name(createElement34, "createElement");
           function createTextNode(text, rootContainerElement) {
             return getOwnerDocumentFromRootContainer(rootContainerElement).createTextNode(text);
           }
@@ -10740,7 +10740,7 @@
               }
               parentNamespace = hostContextDev.namespace;
             }
-            var domElement = createElement33(type, props, rootContainerInstance, parentNamespace);
+            var domElement = createElement34(type, props, rootContainerInstance, parentNamespace);
             precacheFiberNode(internalInstanceHandle, domElement);
             updateFiberProps(domElement, props);
             return domElement;
@@ -13085,7 +13085,7 @@
           }
           __name(commitUpdateQueue, "commitUpdateQueue");
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React128.Component().refs;
+          var emptyRefsObject = new React129.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -26971,8 +26971,8 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React128 = require_react();
-          var ReactSharedInternals = React128.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var React129 = require_react();
+          var ReactSharedInternals = React129.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function error2(format2) {
             {
               {
@@ -27005,13 +27005,13 @@
           }
           __name(is, "is");
           var objectIs = typeof Object.is === "function" ? Object.is : is;
-          var useState23 = React128.useState, useEffect24 = React128.useEffect, useLayoutEffect3 = React128.useLayoutEffect, useDebugValue4 = React128.useDebugValue;
+          var useState24 = React129.useState, useEffect24 = React129.useEffect, useLayoutEffect3 = React129.useLayoutEffect, useDebugValue4 = React129.useDebugValue;
           var didWarnOld18Alpha = false;
           var didWarnUncachedGetSnapshot = false;
           function useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot) {
             {
               if (!didWarnOld18Alpha) {
-                if (React128.startTransition !== void 0) {
+                if (React129.startTransition !== void 0) {
                   didWarnOld18Alpha = true;
                   error2("You are using an outdated, pre-release alpha of React 18 that does not support useSyncExternalStore. The use-sync-external-store shim will not work correctly. Upgrade to a newer pre-release.");
                 }
@@ -27027,7 +27027,7 @@
                 }
               }
             }
-            var _useState = useState23({
+            var _useState = useState24({
               inst: {
                 value,
                 getSnapshot
@@ -27079,7 +27079,7 @@
           var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined");
           var isServerEnvironment = !canUseDOM;
           var shim = isServerEnvironment ? useSyncExternalStore$1 : useSyncExternalStore;
-          var useSyncExternalStore$2 = React128.useSyncExternalStore !== void 0 ? React128.useSyncExternalStore : shim;
+          var useSyncExternalStore$2 = React129.useSyncExternalStore !== void 0 ? React129.useSyncExternalStore : shim;
           exports.useSyncExternalStore = useSyncExternalStore$2;
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(new Error());
@@ -27111,7 +27111,7 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React128 = require_react();
+          var React129 = require_react();
           var shim = require_shim();
           function is(x, y2) {
             return x === y2 && (x !== 0 || 1 / x === 1 / y2) || x !== x && y2 !== y2;
@@ -27119,7 +27119,7 @@
           __name(is, "is");
           var objectIs = typeof Object.is === "function" ? Object.is : is;
           var useSyncExternalStore = shim.useSyncExternalStore;
-          var useRef26 = React128.useRef, useEffect24 = React128.useEffect, useMemo11 = React128.useMemo, useDebugValue4 = React128.useDebugValue;
+          var useRef26 = React129.useRef, useEffect24 = React129.useEffect, useMemo11 = React129.useMemo, useDebugValue4 = React129.useDebugValue;
           function useSyncExternalStoreWithSelector2(subscribe, getSnapshot, getServerSnapshot, selector, isEqual) {
             var instRef = useRef26(null);
             var inst;
@@ -28525,7 +28525,7 @@
       if (true) {
         (function() {
           "use strict";
-          var React128 = require_react();
+          var React129 = require_react();
           var REACT_ELEMENT_TYPE = Symbol.for("react.element");
           var REACT_PORTAL_TYPE = Symbol.for("react.portal");
           var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
@@ -28552,7 +28552,7 @@
             return null;
           }
           __name(getIteratorFn, "getIteratorFn");
-          var ReactSharedInternals = React128.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React129.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function error2(format2) {
             {
               {
@@ -40065,7 +40065,7 @@
   Browser.type = "languageDetector";
 
   // out/src/main.js
-  var React127 = __toESM(require_react(), 1);
+  var React128 = __toESM(require_react(), 1);
   var import_client = __toESM(require_client(), 1);
 
   // node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
@@ -43489,7 +43489,6 @@
     url.searchParams.append("upscaling", params.upscaling);
     url.searchParams.append("correction", params.correction);
     url.searchParams.append("lpw", String(params.lpw));
-    url.searchParams.append("inversion", params.inversion);
   }
   __name(appendModelToURL, "appendModelToURL");
   function appendUpscaleToURL(url, upscale) {
@@ -69145,7 +69144,6 @@ Please use another name.` : formatMuiErrorMessage(18));
         platform: server.platform.default,
         upscaling: server.upscaling.default,
         correction: server.correction.default,
-        inversion: server.inversion.default,
         lpw: false
       },
       setModel(params) {
@@ -69522,11 +69520,11 @@ Please use another name.` : formatMuiErrorMessage(18));
   var TabPanel_default = TabPanel;
 
   // out/src/components/OnnxWeb.js
-  var React126 = __toESM(require_react(), 1);
+  var React127 = __toESM(require_react(), 1);
   var import_useHash2 = __toESM(require_useHash(), 1);
 
   // out/src/components/control/ModelControl.js
-  var React108 = __toESM(require_react(), 1);
+  var React109 = __toESM(require_react(), 1);
   var import_react28 = __toESM(require_react(), 1);
 
   // out/src/components/input/QueryList.js
@@ -69612,76 +69610,6 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(QueryList, "QueryList");
 
-  // out/src/components/control/ModelControl.js
-  function ModelControl() {
-    const client = mustExist((0, import_react28.useContext)(ClientContext));
-    const state = mustExist((0, import_react28.useContext)(StateContext));
-    const params = useStore(state, (s) => s.model);
-    const setModel = useStore(state, (s) => s.setModel);
-    const { t: t2 } = useTranslation();
-    const models = useQuery("models", async () => client.models(), {
-      staleTime: STALE_TIME
-    });
-    const platforms = useQuery("platforms", async () => client.platforms(), {
-      staleTime: STALE_TIME
-    });
-    return React108.createElement(
-      Stack_default2,
-      { direction: "row", spacing: 2 },
-      React108.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t2("parameter.platform"), query: {
-        result: platforms
-      }, value: params.platform, onChange: (platform) => {
-        setModel({
-          platform
-        });
-      } }),
-      React108.createElement(QueryList, { id: "diffusion", labelKey: "model", name: t2("modelType.diffusion"), query: {
-        result: models,
-        selector: (result) => result.diffusion
-      }, value: params.model, onChange: (model) => {
-        setModel({
-          model
-        });
-      } }),
-      React108.createElement(QueryList, { id: "upscaling", labelKey: "model", name: t2("modelType.upscaling"), query: {
-        result: models,
-        selector: (result) => result.upscaling
-      }, value: params.upscaling, onChange: (upscaling) => {
-        setModel({
-          upscaling
-        });
-      } }),
-      React108.createElement(QueryList, { id: "correction", labelKey: "model", name: t2("modelType.correction"), query: {
-        result: models,
-        selector: (result) => result.correction
-      }, value: params.correction, onChange: (correction) => {
-        setModel({
-          correction
-        });
-      } }),
-      React108.createElement(FormControlLabel_default, { label: t2("parameter.lpw"), control: React108.createElement(Checkbox_default, { checked: params.lpw, value: "check", onChange: (event) => {
-        setModel({
-          lpw: params.lpw === false
-        });
-      } }) }),
-      React108.createElement(QueryList, { id: "inversion", labelKey: "model.inversion", name: t2("modelType.inversion"), query: {
-        result: models,
-        selector: (result) => result.networks.filter((network) => network.type === "inversion").map((network) => network.name)
-      }, value: params.correction, onChange: (correction) => {
-      } }),
-      React108.createElement(QueryList, { id: "lora", labelKey: "model.lora", name: t2("modelType.lora"), query: {
-        result: models,
-        selector: (result) => result.networks.filter((network) => network.type === "lora").map((network) => network.name)
-      }, value: params.correction, onChange: (correction) => {
-      } })
-    );
-  }
-  __name(ModelControl, "ModelControl");
-
-  // out/src/components/ImageHistory.js
-  var import_react32 = __toESM(require_react(), 1);
-  var React112 = __toESM(require_react(), 1);
-
   // node_modules/@mui/icons-material/esm/ArrowLeft.js
   var import_jsx_runtime98 = __toESM(require_jsx_runtime());
   var ArrowLeft_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime98.jsx)("path", {
@@ -69748,49 +69676,215 @@ Please use another name.` : formatMuiErrorMessage(18));
     d: "M12 4.81V19c-3.31 0-6-2.63-6-5.87 0-1.56.62-3.03 1.75-4.14L12 4.81M6.35 7.56C4.9 8.99 4 10.96 4 13.13 4 17.48 7.58 21 12 21s8-3.52 8-7.87c0-2.17-.9-4.14-2.35-5.57L12 2 6.35 7.56z"
   }), "InvertColors");
 
-  // node_modules/@mui/icons-material/esm/PhotoCamera.js
+  // node_modules/@mui/icons-material/esm/KeyboardArrowDown.js
   var import_jsx_runtime109 = __toESM(require_jsx_runtime());
-  var PhotoCamera_default = createSvgIcon([/* @__PURE__ */ (0, import_jsx_runtime109.jsx)("circle", {
+  var KeyboardArrowDown_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime109.jsx)("path", {
+    d: "M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+  }), "KeyboardArrowDown");
+
+  // node_modules/@mui/icons-material/esm/PhotoCamera.js
+  var import_jsx_runtime110 = __toESM(require_jsx_runtime());
+  var PhotoCamera_default = createSvgIcon([/* @__PURE__ */ (0, import_jsx_runtime110.jsx)("circle", {
     cx: "12",
     cy: "12",
     r: "3.2"
-  }, "0"), /* @__PURE__ */ (0, import_jsx_runtime109.jsx)("path", {
+  }, "0"), /* @__PURE__ */ (0, import_jsx_runtime110.jsx)("path", {
     d: "M9 2 7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"
   }, "1")], "PhotoCamera");
 
   // node_modules/@mui/icons-material/esm/Refresh.js
-  var import_jsx_runtime110 = __toESM(require_jsx_runtime());
-  var Refresh_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime110.jsx)("path", {
+  var import_jsx_runtime111 = __toESM(require_jsx_runtime());
+  var Refresh_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime111.jsx)("path", {
     d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
   }), "Refresh");
 
   // node_modules/@mui/icons-material/esm/Replay.js
-  var import_jsx_runtime111 = __toESM(require_jsx_runtime());
-  var Replay_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime111.jsx)("path", {
+  var import_jsx_runtime112 = __toESM(require_jsx_runtime());
+  var Replay_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime112.jsx)("path", {
     d: "M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"
   }), "Replay");
 
   // node_modules/@mui/icons-material/esm/Undo.js
-  var import_jsx_runtime112 = __toESM(require_jsx_runtime());
-  var Undo_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime112.jsx)("path", {
+  var import_jsx_runtime113 = __toESM(require_jsx_runtime());
+  var Undo_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime113.jsx)("path", {
     d: "M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"
   }), "Undo");
 
   // node_modules/@mui/icons-material/esm/ZoomOutMap.js
-  var import_jsx_runtime113 = __toESM(require_jsx_runtime());
-  var ZoomOutMap_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime113.jsx)("path", {
+  var import_jsx_runtime114 = __toESM(require_jsx_runtime());
+  var ZoomOutMap_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime114.jsx)("path", {
     d: "m15 3 2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3h-6zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3v6zm6 12-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6h6zm12-6-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6v-6z"
   }), "ZoomOutMap");
 
+  // out/src/components/input/QueryMenu.js
+  var React108 = __toESM(require_react(), 1);
+  function hasFilter2(query) {
+    return Reflect.has(query, "selector");
+  }
+  __name(hasFilter2, "hasFilter");
+  function filterQuery2(query, showEmpty) {
+    if (hasFilter2(query)) {
+      const data = mustExist(query.result.data);
+      const selected = query.selector(data);
+      if (showEmpty) {
+        return ["", ...selected];
+      }
+      return selected;
+    } else {
+      const data = Array.from(mustExist(query.result.data));
+      if (showEmpty) {
+        return ["", ...data];
+      }
+      return data;
+    }
+  }
+  __name(filterQuery2, "filterQuery");
+  function QueryMenu(props) {
+    const { id, labelKey, name, query, showEmpty = false } = props;
+    const { result } = query;
+    const labelID = `query-menu-${props.id}-labels`;
+    const { t: t2 } = useTranslation();
+    const [anchor, setAnchor] = React108.useState(void 0);
+    function closeMenu() {
+      setAnchor(void 0);
+    }
+    __name(closeMenu, "closeMenu");
+    function openMenu(event) {
+      setAnchor(event.currentTarget);
+    }
+    __name(openMenu, "openMenu");
+    function selectItem(value) {
+      closeMenu();
+      if (doesExist2(props.onSelect)) {
+        props.onSelect(value);
+      }
+    }
+    __name(selectItem, "selectItem");
+    function getLabel(key) {
+      return mustDefault(t2(`${labelKey}.${key}`), key);
+    }
+    __name(getLabel, "getLabel");
+    if (result.status === "error") {
+      if (result.error instanceof Error) {
+        return React108.createElement(Alert_default, { severity: "error" }, t2("input.list.error.specific", {
+          message: result.error.message
+        }));
+      } else {
+        return React108.createElement(Alert_default, { severity: "error" }, t2("input.list.error.unknown"));
+      }
+    }
+    if (result.status === "loading") {
+      return React108.createElement(
+        FormControl_default,
+        null,
+        React108.createElement(FormLabel_default, { id: labelID }, props.name),
+        React108.createElement(LinearProgress_default, null)
+      );
+    }
+    if (result.status === "idle") {
+      return React108.createElement(Typography_default, null, t2("input.list.idle"));
+    }
+    const data = filterQuery2(query, showEmpty);
+    return React108.createElement(
+      Box_default,
+      null,
+      React108.createElement(Button_default, { id: `${id}-button`, onClick: openMenu, endIcon: React108.createElement(KeyboardArrowDown_default, null), variant: "outlined" }, name),
+      React108.createElement(Menu_default, { id: `${id}-menu`, anchorEl: anchor, open: doesExist2(anchor), onClose: closeMenu, MenuListProps: {
+        "aria-labelledby": `${id}-button`
+      } }, data.map((it, idx) => React108.createElement(MenuItem_default, { key: idx, onClick: () => selectItem(it) }, getLabel(it))))
+    );
+  }
+  __name(QueryMenu, "QueryMenu");
+
+  // out/src/components/control/ModelControl.js
+  function ModelControl() {
+    const client = mustExist((0, import_react28.useContext)(ClientContext));
+    const state = mustExist((0, import_react28.useContext)(StateContext));
+    const params = useStore(state, (s) => s.model);
+    const setModel = useStore(state, (s) => s.setModel);
+    const { t: t2 } = useTranslation();
+    const models = useQuery("models", async () => client.models(), {
+      staleTime: STALE_TIME
+    });
+    const platforms = useQuery("platforms", async () => client.platforms(), {
+      staleTime: STALE_TIME
+    });
+    return React109.createElement(
+      Stack_default2,
+      { direction: "row", spacing: 2 },
+      React109.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t2("parameter.platform"), query: {
+        result: platforms
+      }, value: params.platform, onChange: (platform) => {
+        setModel({
+          platform
+        });
+      } }),
+      React109.createElement(QueryList, { id: "diffusion", labelKey: "model", name: t2("modelType.diffusion"), query: {
+        result: models,
+        selector: (result) => result.diffusion
+      }, value: params.model, onChange: (model) => {
+        setModel({
+          model
+        });
+      } }),
+      React109.createElement(QueryList, { id: "upscaling", labelKey: "model", name: t2("modelType.upscaling"), query: {
+        result: models,
+        selector: (result) => result.upscaling
+      }, value: params.upscaling, onChange: (upscaling) => {
+        setModel({
+          upscaling
+        });
+      } }),
+      React109.createElement(QueryList, { id: "correction", labelKey: "model", name: t2("modelType.correction"), query: {
+        result: models,
+        selector: (result) => result.correction
+      }, value: params.correction, onChange: (correction) => {
+        setModel({
+          correction
+        });
+      } }),
+      React109.createElement(FormControlLabel_default, { label: t2("parameter.lpw"), control: React109.createElement(Checkbox_default, { checked: params.lpw, value: "check", onChange: (event) => {
+        setModel({
+          lpw: params.lpw === false
+        });
+      } }) }),
+      React109.createElement(QueryMenu, { id: "inversion", labelKey: "model.inversion", name: t2("modelType.inversion"), query: {
+        result: models,
+        selector: (result) => result.networks.filter((network) => network.type === "inversion").map((network) => network.name)
+      }, onSelect: (name) => {
+        const current = state.getState();
+        const { prompt } = current.txt2img;
+        current.setTxt2Img({
+          prompt: `<inversion:${name}:1.0> ${prompt}`
+        });
+      } }),
+      React109.createElement(QueryMenu, { id: "lora", labelKey: "model.lora", name: t2("modelType.lora"), query: {
+        result: models,
+        selector: (result) => result.networks.filter((network) => network.type === "lora").map((network) => network.name)
+      }, onSelect: (name) => {
+        const current = state.getState();
+        const { prompt } = current.txt2img;
+        current.setTxt2Img({
+          prompt: `<lora:${name}:1.0> ${prompt}`
+        });
+      } })
+    );
+  }
+  __name(ModelControl, "ModelControl");
+
+  // out/src/components/ImageHistory.js
+  var import_react32 = __toESM(require_react(), 1);
+  var React113 = __toESM(require_react(), 1);
+
   // out/src/components/card/ImageCard.js
-  var React109 = __toESM(require_react(), 1);
+  var React110 = __toESM(require_react(), 1);
   var import_react29 = __toESM(require_react(), 1);
   var import_useHash = __toESM(require_useHash(), 1);
   function GridItem(props) {
-    return React109.createElement(
+    return React110.createElement(
       Grid_default,
       { item: true, xs: props.xs },
-      React109.createElement(Paper_default, { elevation: 0, sx: { padding: 1 } }, props.children)
+      React110.createElement(Paper_default, { elevation: 0, sx: { padding: 1 } }, props.children)
     );
   }
   __name(GridItem, "GridItem");
@@ -69867,26 +69961,26 @@ Please use another name.` : formatMuiErrorMessage(18));
     __name(getLabel, "getLabel");
     const model = getLabel("model", params.model);
     const scheduler = getLabel("scheduler", params.scheduler);
-    return React109.createElement(
+    return React110.createElement(
       Card_default,
       { sx: { maxWidth: config.params.width.default }, elevation: 2 },
-      React109.createElement(CardMedia_default, { sx: { height: config.params.height.default }, component: "img", image: outputs[index].url, title: params.prompt }),
-      React109.createElement(
+      React110.createElement(CardMedia_default, { sx: { height: config.params.height.default }, component: "img", image: outputs[index].url, title: params.prompt }),
+      React110.createElement(
         CardContent_default,
         null,
-        React109.createElement(
+        React110.createElement(
           Box_default,
           { textAlign: "center" },
-          React109.createElement(
+          React110.createElement(
             Grid_default,
             { container: true, spacing: 2 },
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 4 },
-              React109.createElement(
+              React110.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.previous") },
-                React109.createElement(
+                React110.createElement(
                   IconButton_default,
                   { onClick: () => {
                     const prevIndex = index - 1;
@@ -69896,68 +69990,68 @@ Please use another name.` : formatMuiErrorMessage(18));
                       setIndex(prevIndex);
                     }
                   } },
-                  React109.createElement(ArrowLeft_default, null)
+                  React110.createElement(ArrowLeft_default, null)
                 )
               )
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 4 },
               visibleIndex(index),
               " of ",
               outputs.length
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 4 },
-              React109.createElement(
+              React110.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.next") },
-                React109.createElement(
+                React110.createElement(
                   IconButton_default,
                   { onClick: () => {
                     setIndex((index + 1) % outputs.length);
                   } },
-                  React109.createElement(ArrowRight_default, null)
+                  React110.createElement(ArrowRight_default, null)
                 )
               )
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 4 },
               t2("modelType.diffusion"),
               ": ",
               model
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.scheduler"),
               ": ",
               scheduler
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.seed"),
               ": ",
               params.seed
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.cfg"),
               ": ",
               params.cfg
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.steps"),
               ": ",
               params.steps
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.size"),
@@ -69966,93 +70060,93 @@ Please use another name.` : formatMuiErrorMessage(18));
               "x",
               size.height
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 12 },
-              React109.createElement(Box_default, { textAlign: "left" }, params.prompt)
+              React110.createElement(Box_default, { textAlign: "left" }, params.prompt)
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 2 },
-              React109.createElement(
+              React110.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.save") },
-                React109.createElement(
+                React110.createElement(
                   IconButton_default,
                   { onClick: downloadImage },
-                  React109.createElement(Download_default, null)
+                  React110.createElement(Download_default, null)
                 )
               )
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 2 },
-              React109.createElement(
+              React110.createElement(
                 Tooltip_default,
                 { title: t2("tab.img2img") },
-                React109.createElement(
+                React110.createElement(
                   IconButton_default,
                   { onClick: copySourceToImg2Img },
-                  React109.createElement(ContentCopy_default, null)
+                  React110.createElement(ContentCopy_default, null)
                 )
               )
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 2 },
-              React109.createElement(
+              React110.createElement(
                 Tooltip_default,
                 { title: t2("tab.inpaint") },
-                React109.createElement(
+                React110.createElement(
                   IconButton_default,
                   { onClick: copySourceToInpaint },
-                  React109.createElement(Brush_default, null)
+                  React110.createElement(Brush_default, null)
                 )
               )
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 2 },
-              React109.createElement(
+              React110.createElement(
                 Tooltip_default,
                 { title: t2("tab.upscale") },
-                React109.createElement(
+                React110.createElement(
                   IconButton_default,
                   { onClick: copySourceToUpscale },
-                  React109.createElement(ZoomOutMap_default, null)
+                  React110.createElement(ZoomOutMap_default, null)
                 )
               )
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 2 },
-              React109.createElement(
+              React110.createElement(
                 Tooltip_default,
                 { title: t2("tab.blend") },
-                React109.createElement(
+                React110.createElement(
                   IconButton_default,
                   { onClick: (event) => {
                     setAnchor(event.currentTarget);
                   } },
-                  React109.createElement(Blender_default, null)
+                  React110.createElement(Blender_default, null)
                 )
               ),
-              React109.createElement(Menu_default, { anchorEl: anchor, open: doesExist2(anchor), onClose: close }, range(BLEND_SOURCES).map((idx) => React109.createElement(MenuItem_default, { key: idx, onClick: () => {
+              React110.createElement(Menu_default, { anchorEl: anchor, open: doesExist2(anchor), onClose: close }, range(BLEND_SOURCES).map((idx) => React110.createElement(MenuItem_default, { key: idx, onClick: () => {
                 copySourceToBlend(idx).catch((err) => {
                 });
                 close();
               } }, visibleIndex(idx))))
             ),
-            React109.createElement(
+            React110.createElement(
               GridItem,
               { xs: 2 },
-              React109.createElement(
+              React110.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.delete") },
-                React109.createElement(
+                React110.createElement(
                   IconButton_default,
                   { onClick: deleteImage },
-                  React109.createElement(Delete_default, null)
+                  React110.createElement(Delete_default, null)
                 )
               )
             )
@@ -70064,14 +70158,14 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(ImageCard, "ImageCard");
 
   // out/src/components/card/LoadingCard.js
-  var React110 = __toESM(require_react(), 1);
+  var React111 = __toESM(require_react(), 1);
   var import_react30 = __toESM(require_react(), 1);
   var LOADING_PERCENT = 100;
   var LOADING_OVERAGE = 99;
   function LoadingCard(props) {
     const { image, index } = props;
     const { steps } = props.image.params;
-    const client = mustExist(React110.useContext(ClientContext));
+    const client = mustExist(React111.useContext(ClientContext));
     const { params } = mustExist((0, import_react30.useContext)(ConfigContext));
     const state = mustExist((0, import_react30.useContext)(StateContext));
     const removeHistory = useStore(state, (s) => s.removeHistory);
@@ -70114,9 +70208,9 @@ Please use another name.` : formatMuiErrorMessage(18));
     function renderProgress2() {
       const progress = getProgress();
       if (progress > 0 && progress <= steps) {
-        return React110.createElement(CircularProgress_default, { variant: "determinate", value: getPercent() });
+        return React111.createElement(CircularProgress_default, { variant: "determinate", value: getPercent() });
       } else {
-        return React110.createElement(CircularProgress_default, null);
+        return React111.createElement(CircularProgress_default, null);
       }
     }
     __name(renderProgress2, "renderProgress");
@@ -70130,54 +70224,6 @@ Please use another name.` : formatMuiErrorMessage(18));
         setReady(props.image, ready.data);
       }
     }, [ready.status, getReady(), getProgress()]);
-    return React110.createElement(
-      Card_default,
-      { sx: { maxWidth: params.width.default } },
-      React110.createElement(
-        CardContent_default,
-        { sx: { height: params.height.default } },
-        React110.createElement(
-          Box_default,
-          { sx: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: params.height.default
-          } },
-          React110.createElement(
-            Stack_default,
-            { direction: "column", spacing: 2, sx: { alignItems: "center" } },
-            renderProgress2(),
-            React110.createElement(Typography_default, null, t2("loading.progress", {
-              current: getProgress(),
-              total: getTotal()
-            })),
-            React110.createElement(Button_default, { onClick: () => cancel.mutate() }, t2("loading.cancel"))
-          )
-        )
-      )
-    );
-  }
-  __name(LoadingCard, "LoadingCard");
-
-  // out/src/components/card/ErrorCard.js
-  var React111 = __toESM(require_react(), 1);
-  var import_react31 = __toESM(require_react(), 1);
-  function ErrorCard(props) {
-    const { image, ready, retry: retryParams } = props;
-    const client = mustExist(React111.useContext(ClientContext));
-    const { params } = mustExist((0, import_react31.useContext)(ConfigContext));
-    const state = mustExist((0, import_react31.useContext)(StateContext));
-    const pushHistory = useStore(state, (s) => s.pushHistory);
-    const removeHistory = useStore(state, (s) => s.removeHistory);
-    const { t: t2 } = useTranslation();
-    async function retryImage() {
-      removeHistory(image);
-      const { image: nextImage, retry: nextRetry } = await client.retry(retryParams);
-      pushHistory(nextImage, nextRetry);
-    }
-    __name(retryImage, "retryImage");
-    const retry = useMutation(retryImage);
     return React111.createElement(
       Card_default,
       { sx: { maxWidth: params.width.default } },
@@ -70195,29 +70241,77 @@ Please use another name.` : formatMuiErrorMessage(18));
           React111.createElement(
             Stack_default,
             { direction: "column", spacing: 2, sx: { alignItems: "center" } },
-            React111.createElement(Alert_default, { severity: "error" }, t2("loading.progress", {
+            renderProgress2(),
+            React111.createElement(Typography_default, null, t2("loading.progress", {
+              current: getProgress(),
+              total: getTotal()
+            })),
+            React111.createElement(Button_default, { onClick: () => cancel.mutate() }, t2("loading.cancel"))
+          )
+        )
+      )
+    );
+  }
+  __name(LoadingCard, "LoadingCard");
+
+  // out/src/components/card/ErrorCard.js
+  var React112 = __toESM(require_react(), 1);
+  var import_react31 = __toESM(require_react(), 1);
+  function ErrorCard(props) {
+    const { image, ready, retry: retryParams } = props;
+    const client = mustExist(React112.useContext(ClientContext));
+    const { params } = mustExist((0, import_react31.useContext)(ConfigContext));
+    const state = mustExist((0, import_react31.useContext)(StateContext));
+    const pushHistory = useStore(state, (s) => s.pushHistory);
+    const removeHistory = useStore(state, (s) => s.removeHistory);
+    const { t: t2 } = useTranslation();
+    async function retryImage() {
+      removeHistory(image);
+      const { image: nextImage, retry: nextRetry } = await client.retry(retryParams);
+      pushHistory(nextImage, nextRetry);
+    }
+    __name(retryImage, "retryImage");
+    const retry = useMutation(retryImage);
+    return React112.createElement(
+      Card_default,
+      { sx: { maxWidth: params.width.default } },
+      React112.createElement(
+        CardContent_default,
+        { sx: { height: params.height.default } },
+        React112.createElement(
+          Box_default,
+          { sx: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: params.height.default
+          } },
+          React112.createElement(
+            Stack_default,
+            { direction: "column", spacing: 2, sx: { alignItems: "center" } },
+            React112.createElement(Alert_default, { severity: "error" }, t2("loading.progress", {
               current: ready.progress,
               total: image.params.steps
             })),
-            React111.createElement(
+            React112.createElement(
               Stack_default,
               { direction: "row", spacing: 2 },
-              React111.createElement(
+              React112.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.retry") },
-                React111.createElement(
+                React112.createElement(
                   IconButton_default,
                   { onClick: () => retry.mutate() },
-                  React111.createElement(Replay_default, null)
+                  React112.createElement(Replay_default, null)
                 )
               ),
-              React111.createElement(
+              React112.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.delete") },
-                React111.createElement(
+                React112.createElement(
                   IconButton_default,
                   { onClick: () => removeHistory(image) },
-                  React111.createElement(Delete_default, null)
+                  React112.createElement(Delete_default, null)
                 )
               )
             )
@@ -70236,35 +70330,35 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { t: t2 } = useTranslation();
     const children = [];
     if (history.length === 0) {
-      children.push(["empty", React112.createElement(Typography_default, null, t2("history.empty"))]);
+      children.push(["empty", React113.createElement(Typography_default, null, t2("history.empty"))]);
     }
     const limited = history.slice(0, limit);
     for (const item of limited) {
       const key = item.image.outputs[0].key;
       if (doesExist2(item.ready) && item.ready.ready) {
         if (item.ready.cancelled || item.ready.failed) {
-          children.push([key, React112.createElement(ErrorCard, { key: `history-${key}`, image: item.image, ready: item.ready, retry: item.retry })]);
+          children.push([key, React113.createElement(ErrorCard, { key: `history-${key}`, image: item.image, ready: item.ready, retry: item.retry })]);
           continue;
         }
-        children.push([key, React112.createElement(ImageCard, { key: `history-${key}`, image: item.image, onDelete: removeHistory })]);
+        children.push([key, React113.createElement(ImageCard, { key: `history-${key}`, image: item.image, onDelete: removeHistory })]);
         continue;
       }
-      children.push([key, React112.createElement(LoadingCard, { key: `history-${key}`, index: 0, image: item.image })]);
+      children.push([key, React113.createElement(LoadingCard, { key: `history-${key}`, index: 0, image: item.image })]);
     }
-    return React112.createElement(Grid_default, { container: true, spacing: 2 }, children.map(([key, child]) => React112.createElement(Grid_default, { item: true, key, xs: 6 }, child)));
+    return React113.createElement(Grid_default, { container: true, spacing: 2 }, children.map(([key, child]) => React113.createElement(Grid_default, { item: true, key, xs: 6 }, child)));
   }
   __name(ImageHistory, "ImageHistory");
 
   // out/src/components/tab/Blend.js
-  var React117 = __toESM(require_react(), 1);
+  var React118 = __toESM(require_react(), 1);
   var import_react35 = __toESM(require_react(), 1);
 
   // out/src/components/control/UpscaleControl.js
-  var React114 = __toESM(require_react(), 1);
+  var React115 = __toESM(require_react(), 1);
   var import_react33 = __toESM(require_react(), 1);
 
   // out/src/components/input/NumericField.js
-  var React113 = __toESM(require_react(), 1);
+  var React114 = __toESM(require_react(), 1);
   function parseNumber(num, decimal = false) {
     if (decimal) {
       return parseFloat(num);
@@ -70277,15 +70371,15 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { decimal = false, disabled = false, label, min: min2, max: max2, step, value } = props;
     const error2 = value < min2 || value > max2;
     const { t: t2 } = useTranslation();
-    return React113.createElement(
+    return React114.createElement(
       Stack_default2,
       { spacing: 2 },
-      React113.createElement(TextField_default, { error: error2, label, helperText: error2 && t2("input.numeric.error.range"), disabled, variant: "outlined", type: "number", inputProps: { min: min2, max: max2, step }, value, onChange: (event) => {
+      React114.createElement(TextField_default, { error: error2, label, helperText: error2 && t2("input.numeric.error.range"), disabled, variant: "outlined", type: "number", inputProps: { min: min2, max: max2, step }, value, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange(parseNumber(event.target.value, decimal));
         }
       } }),
-      React113.createElement(Slider_default, { disabled, min: min2, max: max2, step, value, onChange: (_event, newValue) => {
+      React114.createElement(Slider_default, { disabled, min: min2, max: max2, step, value, onChange: (_event, newValue) => {
         if (doesExist2(props.onChange)) {
           if (Array.isArray(newValue)) {
             props.onChange(newValue[0]);
@@ -70305,60 +70399,60 @@ Please use another name.` : formatMuiErrorMessage(18));
     const upscale = useStore(state, (s) => s.upscale);
     const setUpscale = useStore(state, (s) => s.setUpscale);
     const { t: t2 } = useTranslation();
-    return React114.createElement(
+    return React115.createElement(
       Stack_default2,
       { direction: "row", spacing: 4 },
-      React114.createElement(FormControlLabel_default, { label: t2("parameter.upscale.label"), control: React114.createElement(Checkbox_default, { checked: upscale.enabled, value: "check", onChange: (event) => {
+      React115.createElement(FormControlLabel_default, { label: t2("parameter.upscale.label"), control: React115.createElement(Checkbox_default, { checked: upscale.enabled, value: "check", onChange: (event) => {
         setUpscale({
           enabled: upscale.enabled === false
         });
       } }) }),
-      React114.createElement(NumericField, { label: t2("parameter.upscale.denoise"), decimal: true, disabled: upscale.enabled === false, min: params.denoise.min, max: params.denoise.max, step: params.denoise.step, value: upscale.denoise, onChange: (denoise) => {
+      React115.createElement(NumericField, { label: t2("parameter.upscale.denoise"), decimal: true, disabled: upscale.enabled === false, min: params.denoise.min, max: params.denoise.max, step: params.denoise.step, value: upscale.denoise, onChange: (denoise) => {
         setUpscale({
           denoise
         });
       } }),
-      React114.createElement(NumericField, { label: t2("parameter.upscale.scale"), disabled: upscale.enabled === false, min: params.scale.min, max: params.scale.max, step: params.scale.step, value: upscale.scale, onChange: (scale) => {
+      React115.createElement(NumericField, { label: t2("parameter.upscale.scale"), disabled: upscale.enabled === false, min: params.scale.min, max: params.scale.max, step: params.scale.step, value: upscale.scale, onChange: (scale) => {
         setUpscale({
           scale
         });
       } }),
-      React114.createElement(NumericField, { label: t2("parameter.upscale.outscale"), disabled: upscale.enabled === false, min: params.outscale.min, max: params.outscale.max, step: params.outscale.step, value: upscale.outscale, onChange: (outscale) => {
+      React115.createElement(NumericField, { label: t2("parameter.upscale.outscale"), disabled: upscale.enabled === false, min: params.outscale.min, max: params.outscale.max, step: params.outscale.step, value: upscale.outscale, onChange: (outscale) => {
         setUpscale({
           outscale
         });
       } }),
-      React114.createElement(FormControlLabel_default, { label: t2("parameter.correction.label"), control: React114.createElement(Checkbox_default, { checked: upscale.faces, value: "check", onChange: (event) => {
+      React115.createElement(FormControlLabel_default, { label: t2("parameter.correction.label"), control: React115.createElement(Checkbox_default, { checked: upscale.faces, value: "check", onChange: (event) => {
         setUpscale({
           faces: upscale.faces === false
         });
       } }) }),
-      React114.createElement(NumericField, { label: t2("parameter.correction.strength"), decimal: true, disabled: upscale.faces === false, min: params.faceStrength.min, max: params.faceStrength.max, step: params.faceStrength.step, value: upscale.faceStrength, onChange: (faceStrength) => {
+      React115.createElement(NumericField, { label: t2("parameter.correction.strength"), decimal: true, disabled: upscale.faces === false, min: params.faceStrength.min, max: params.faceStrength.max, step: params.faceStrength.step, value: upscale.faceStrength, onChange: (faceStrength) => {
         setUpscale({
           faceStrength
         });
       } }),
-      React114.createElement(NumericField, { label: t2("parameter.correction.outscale"), disabled: upscale.faces === false, min: params.faceOutscale.min, max: params.faceOutscale.max, step: params.faceOutscale.step, value: upscale.faceOutscale, onChange: (faceOutscale) => {
+      React115.createElement(NumericField, { label: t2("parameter.correction.outscale"), disabled: upscale.faces === false, min: params.faceOutscale.min, max: params.faceOutscale.max, step: params.faceOutscale.step, value: upscale.faceOutscale, onChange: (faceOutscale) => {
         setUpscale({
           faceOutscale
         });
       } }),
-      React114.createElement(
+      React115.createElement(
         FormControl_default,
         null,
-        React114.createElement(InputLabel_default, { id: "upscale-order" }, "Upscale Order"),
-        React114.createElement(Select_default, { labelId: "upscale-order", label: t2("parameter.upscale.order"), value: upscale.upscaleOrder, onChange: (e2) => {
+        React115.createElement(InputLabel_default, { id: "upscale-order" }, "Upscale Order"),
+        React115.createElement(Select_default, { labelId: "upscale-order", label: t2("parameter.upscale.order"), value: upscale.upscaleOrder, onChange: (e2) => {
           setUpscale({
             upscaleOrder: e2.target.value
           });
-        } }, Object.entries(params.upscaleOrder.keys).map(([key, name]) => React114.createElement(MenuItem_default, { key, value: name }, t2(`upscaleOrder.${name}`))))
+        } }, Object.entries(params.upscaleOrder.keys).map(([key, name]) => React115.createElement(MenuItem_default, { key, value: name }, t2(`upscaleOrder.${name}`))))
       )
     );
   }
   __name(UpscaleControl, "UpscaleControl");
 
   // out/src/components/input/ImageInput.js
-  var React115 = __toESM(require_react(), 1);
+  var React116 = __toESM(require_react(), 1);
   function ImageInput(props) {
     const { t: t2 } = useTranslation();
     function renderImage() {
@@ -70366,26 +70460,26 @@ Please use another name.` : formatMuiErrorMessage(18));
         if (mustDefault(props.hideSelection, false)) {
           return void 0;
         }
-        return React115.createElement("img", { src: URL.createObjectURL(props.image), style: {
+        return React116.createElement("img", { src: URL.createObjectURL(props.image), style: {
           maxWidth: 512,
           maxHeight: 512
         } });
       } else {
-        return React115.createElement(Typography_default, null, t2("input.image.empty"));
+        return React116.createElement(Typography_default, null, t2("input.image.empty"));
       }
     }
     __name(renderImage, "renderImage");
-    return React115.createElement(
+    return React116.createElement(
       Stack_default2,
       { direction: "row", spacing: 2 },
-      React115.createElement(
+      React116.createElement(
         Stack_default2,
         null,
-        React115.createElement(
+        React116.createElement(
           Button_default,
-          { component: "label", startIcon: React115.createElement(PhotoCamera_default, null), variant: "outlined" },
+          { component: "label", startIcon: React116.createElement(PhotoCamera_default, null), variant: "outlined" },
           props.label,
-          React115.createElement("input", { hidden: true, accept: props.filter, type: "file", onChange: (event) => {
+          React116.createElement("input", { hidden: true, accept: props.filter, type: "file", onChange: (event) => {
             const { files } = event.target;
             if (doesExist2(files) && files.length > 0) {
               const file = mustExist(files[0]);
@@ -70734,41 +70828,41 @@ Please use another name.` : formatMuiErrorMessage(18));
     const pushHistory = useStore(state, (s) => s.pushHistory);
     const { t: t2 } = useTranslation();
     const sources = mustDefault(blend.sources, []);
-    return React117.createElement(
+    return React118.createElement(
       Box_default,
       null,
-      React117.createElement(
+      React118.createElement(
         Stack_default2,
         { spacing: 2 },
-        range(BLEND_SOURCES).map((idx) => React117.createElement(ImageInput, { key: `source-${idx.toFixed(0)}`, filter: IMAGE_FILTER, image: sources[idx], hideSelection: true, label: t2("input.image.source"), onChange: (file) => {
+        range(BLEND_SOURCES).map((idx) => React118.createElement(ImageInput, { key: `source-${idx.toFixed(0)}`, filter: IMAGE_FILTER, image: sources[idx], hideSelection: true, label: t2("input.image.source"), onChange: (file) => {
           const newSources = [...sources];
           newSources[idx] = file;
           setBlend({
             sources: newSources
           });
         } })),
-        React117.createElement(MaskCanvas, { source: sources[0], mask: blend.mask, onSave: (mask) => {
+        React118.createElement(MaskCanvas, { source: sources[0], mask: blend.mask, onSave: (mask) => {
           setBlend({
             mask
           });
         } }),
-        React117.createElement(UpscaleControl, null),
-        React117.createElement(Button_default, { disabled: sources.length === 0, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
+        React118.createElement(UpscaleControl, null),
+        React118.createElement(Button_default, { disabled: sources.length === 0, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
       )
     );
   }
   __name(Blend, "Blend");
 
   // out/src/components/tab/Img2Img.js
-  var React120 = __toESM(require_react(), 1);
+  var React121 = __toESM(require_react(), 1);
   var import_react37 = __toESM(require_react(), 1);
 
   // out/src/components/control/ImageControl.js
-  var React119 = __toESM(require_react(), 1);
+  var React120 = __toESM(require_react(), 1);
   var import_react36 = __toESM(require_react(), 1);
 
   // out/src/components/input/PromptInput.js
-  var React118 = __toESM(require_react(), 1);
+  var React119 = __toESM(require_react(), 1);
   var PROMPT_LIMIT = 77;
   function PromptInput(props) {
     const { prompt = "", negativePrompt = "" } = props;
@@ -70787,10 +70881,10 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }
     __name(promptHelper, "promptHelper");
-    return React118.createElement(
+    return React119.createElement(
       Stack_default,
       { spacing: 2 },
-      React118.createElement(TextField_default, { error: error2, label: t2("parameter.prompt"), helperText: promptHelper(), variant: "outlined", value: prompt, onChange: (event) => {
+      React119.createElement(TextField_default, { error: error2, label: t2("parameter.prompt"), helperText: promptHelper(), variant: "outlined", value: prompt, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange({
             prompt: event.target.value,
@@ -70798,7 +70892,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           });
         }
       } }),
-      React118.createElement(TextField_default, { label: t2("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
+      React119.createElement(TextField_default, { label: t2("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange({
             prompt,
@@ -70820,56 +70914,56 @@ Please use another name.` : formatMuiErrorMessage(18));
     const schedulers = useQuery("schedulers", async () => client.schedulers(), {
       staleTime: STALE_TIME
     });
-    return React119.createElement(
+    return React120.createElement(
       Stack_default2,
       { spacing: 2 },
-      React119.createElement(
+      React120.createElement(
         Stack_default2,
         { direction: "row", spacing: 4 },
-        React119.createElement(QueryList, { id: "schedulers", labelKey: "scheduler", name: t2("parameter.scheduler"), query: {
+        React120.createElement(QueryList, { id: "schedulers", labelKey: "scheduler", name: t2("parameter.scheduler"), query: {
           result: schedulers
         }, value: mustDefault(controlState.scheduler, ""), onChange: (value) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { scheduler: value }));
           }
         } }),
-        React119.createElement(NumericField, { decimal: true, label: t2("parameter.eta"), min: params.eta.min, max: params.eta.max, step: params.eta.step, value: controlState.eta, onChange: (eta) => {
+        React120.createElement(NumericField, { decimal: true, label: t2("parameter.eta"), min: params.eta.min, max: params.eta.max, step: params.eta.step, value: controlState.eta, onChange: (eta) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { eta }));
           }
         } }),
-        React119.createElement(NumericField, { label: t2("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: controlState.batch, onChange: (batch) => {
+        React120.createElement(NumericField, { label: t2("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: controlState.batch, onChange: (batch) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { batch }));
           }
         } })
       ),
-      React119.createElement(
+      React120.createElement(
         Stack_default2,
         { direction: "row", spacing: 4 },
-        React119.createElement(NumericField, { decimal: true, label: t2("parameter.cfg"), min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: controlState.cfg, onChange: (cfg) => {
+        React120.createElement(NumericField, { decimal: true, label: t2("parameter.cfg"), min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: controlState.cfg, onChange: (cfg) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { cfg }));
           }
         } }),
-        React119.createElement(NumericField, { label: t2("parameter.steps"), min: params.steps.min, max: params.steps.max, step: params.steps.step, value: controlState.steps, onChange: (steps) => {
+        React120.createElement(NumericField, { label: t2("parameter.steps"), min: params.steps.min, max: params.steps.max, step: params.steps.step, value: controlState.steps, onChange: (steps) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { steps }));
           }
         } }),
-        React119.createElement(NumericField, { label: t2("parameter.seed"), min: params.seed.min, max: params.seed.max, step: params.seed.step, value: controlState.seed, onChange: (seed) => {
+        React120.createElement(NumericField, { label: t2("parameter.seed"), min: params.seed.min, max: params.seed.max, step: params.seed.step, value: controlState.seed, onChange: (seed) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { seed }));
           }
         } }),
-        React119.createElement(Button_default, { variant: "outlined", startIcon: React119.createElement(Casino_default, null), onClick: () => {
+        React120.createElement(Button_default, { variant: "outlined", startIcon: React120.createElement(Casino_default, null), onClick: () => {
           const seed = Math.floor(Math.random() * params.seed.max);
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { seed }));
           }
         } }, t2("parameter.newSeed"))
       ),
-      React119.createElement(PromptInput, { prompt: controlState.prompt, negativePrompt: controlState.negativePrompt, onChange: (value) => {
+      React120.createElement(PromptInput, { prompt: controlState.prompt, negativePrompt: controlState.negativePrompt, onChange: (value) => {
         if (doesExist2(props.onChange)) {
           props.onChange(Object.assign(Object.assign({}, controlState), value));
         }
@@ -70898,36 +70992,36 @@ Please use another name.` : formatMuiErrorMessage(18));
     const setImg2Img = useStore(state, (s) => s.setImg2Img);
     const pushHistory = useStore(state, (s) => s.pushHistory);
     const { t: t2 } = useTranslation();
-    return React120.createElement(
+    return React121.createElement(
       Box_default,
       null,
-      React120.createElement(
+      React121.createElement(
         Stack_default2,
         { spacing: 2 },
-        React120.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), onChange: (file) => {
+        React121.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), onChange: (file) => {
           setImg2Img({
             source: file
           });
         } }),
-        React120.createElement(ImageControl, { selector: (s) => s.img2img, onChange: setImg2Img }),
-        React120.createElement(NumericField, { decimal: true, label: t2("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
+        React121.createElement(ImageControl, { selector: (s) => s.img2img, onChange: setImg2Img }),
+        React121.createElement(NumericField, { decimal: true, label: t2("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
           setImg2Img({
             strength: value
           });
         } }),
-        React120.createElement(UpscaleControl, null),
-        React120.createElement(Button_default, { disabled: doesExist2(source) === false, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
+        React121.createElement(UpscaleControl, null),
+        React121.createElement(Button_default, { disabled: doesExist2(source) === false, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
       )
     );
   }
   __name(Img2Img, "Img2Img");
 
   // out/src/components/tab/Inpaint.js
-  var React122 = __toESM(require_react(), 1);
+  var React123 = __toESM(require_react(), 1);
   var import_react39 = __toESM(require_react(), 1);
 
   // out/src/components/control/OutpaintControl.js
-  var React121 = __toESM(require_react(), 1);
+  var React122 = __toESM(require_react(), 1);
   var import_react38 = __toESM(require_react(), 1);
   function OutpaintControl() {
     const { params } = mustExist((0, import_react38.useContext)(ConfigContext));
@@ -70935,30 +71029,30 @@ Please use another name.` : formatMuiErrorMessage(18));
     const outpaint = useStore(state, (s) => s.outpaint);
     const setOutpaint = useStore(state, (s) => s.setOutpaint);
     const { t: t2 } = useTranslation();
-    return React121.createElement(
+    return React122.createElement(
       Stack_default2,
       { direction: "row", spacing: 4 },
-      React121.createElement(FormControlLabel_default, { label: t2("parameter.outpaint.label"), control: React121.createElement(Checkbox_default, { checked: outpaint.enabled, value: "check", onChange: (_event) => {
+      React122.createElement(FormControlLabel_default, { label: t2("parameter.outpaint.label"), control: React122.createElement(Checkbox_default, { checked: outpaint.enabled, value: "check", onChange: (_event) => {
         setOutpaint({
           enabled: outpaint.enabled === false
         });
       } }) }),
-      React121.createElement(NumericField, { label: t2("parameter.outpaint.left"), disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.left, onChange: (left2) => {
+      React122.createElement(NumericField, { label: t2("parameter.outpaint.left"), disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.left, onChange: (left2) => {
         setOutpaint({
           left: left2
         });
       } }),
-      React121.createElement(NumericField, { label: t2("parameter.outpaint.right"), disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.right, onChange: (right2) => {
+      React122.createElement(NumericField, { label: t2("parameter.outpaint.right"), disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.right, onChange: (right2) => {
         setOutpaint({
           right: right2
         });
       } }),
-      React121.createElement(NumericField, { label: t2("parameter.outpaint.top"), disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.top, onChange: (top2) => {
+      React122.createElement(NumericField, { label: t2("parameter.outpaint.top"), disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.top, onChange: (top2) => {
         setOutpaint({
           top: top2
         });
       } }),
-      React121.createElement(NumericField, { label: t2("parameter.outpaint.bottom"), disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.bottom, onChange: (bottom2) => {
+      React122.createElement(NumericField, { label: t2("parameter.outpaint.bottom"), disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.bottom, onChange: (bottom2) => {
         setOutpaint({
           bottom: bottom2
         });
@@ -71016,87 +71110,87 @@ Please use another name.` : formatMuiErrorMessage(18));
       if (supportsInpaint()) {
         return void 0;
       } else {
-        return React122.createElement(Alert_default, { severity: "warning" }, t2("error.inpaint.support"));
+        return React123.createElement(Alert_default, { severity: "warning" }, t2("error.inpaint.support"));
       }
     }
     __name(renderBanner, "renderBanner");
-    return React122.createElement(
+    return React123.createElement(
       Box_default,
       null,
-      React122.createElement(
+      React123.createElement(
         Stack_default2,
         { spacing: 2 },
         renderBanner(),
-        React122.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), hideSelection: true, onChange: (file) => {
+        React123.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), hideSelection: true, onChange: (file) => {
           setInpaint({
             source: file
           });
         } }),
-        React122.createElement(ImageInput, { filter: IMAGE_FILTER, image: mask, label: t2("input.image.mask"), hideSelection: true, onChange: (file) => {
+        React123.createElement(ImageInput, { filter: IMAGE_FILTER, image: mask, label: t2("input.image.mask"), hideSelection: true, onChange: (file) => {
           setInpaint({
             mask: file
           });
         } }),
-        React122.createElement(MaskCanvas, { source, mask, onSave: (file) => {
+        React123.createElement(MaskCanvas, { source, mask, onSave: (file) => {
           setInpaint({
             mask: file
           });
         } }),
-        React122.createElement(ImageControl, { selector: (s) => s.inpaint, onChange: (newParams) => {
+        React123.createElement(ImageControl, { selector: (s) => s.inpaint, onChange: (newParams) => {
           setInpaint(newParams);
         } }),
-        React122.createElement(NumericField, { label: t2("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
+        React123.createElement(NumericField, { label: t2("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
           setInpaint({
             strength: value
           });
         } }),
-        React122.createElement(
+        React123.createElement(
           Stack_default2,
           { direction: "row", spacing: 2 },
-          React122.createElement(QueryList, { id: "masks", labelKey: "maskFilter", name: t2("parameter.maskFilter"), query: {
+          React123.createElement(QueryList, { id: "masks", labelKey: "maskFilter", name: t2("parameter.maskFilter"), query: {
             result: masks
           }, value: filter, onChange: (newFilter) => {
             setInpaint({
               filter: newFilter
             });
           } }),
-          React122.createElement(QueryList, { id: "noises", labelKey: "noiseSource", name: t2("parameter.noiseSource"), query: {
+          React123.createElement(QueryList, { id: "noises", labelKey: "noiseSource", name: t2("parameter.noiseSource"), query: {
             result: noises
           }, value: noise, onChange: (newNoise) => {
             setInpaint({
               noise: newNoise
             });
           } }),
-          React122.createElement(
+          React123.createElement(
             FormControl_default,
             null,
-            React122.createElement(InputLabel_default, { id: "outpaint-tiling" }, "Tile Order"),
-            React122.createElement(Select_default, { labelId: "outpaint-tiling", label: t2("parameter.tileOrder"), value: tileOrder, onChange: (e2) => {
+            React123.createElement(InputLabel_default, { id: "outpaint-tiling" }, "Tile Order"),
+            React123.createElement(Select_default, { labelId: "outpaint-tiling", label: t2("parameter.tileOrder"), value: tileOrder, onChange: (e2) => {
               setInpaint({
                 tileOrder: e2.target.value
               });
-            } }, Object.entries(params.tileOrder.keys).map(([_key, name]) => React122.createElement(MenuItem_default, { key: name, value: name }, t2(`tileOrder.${name}`))))
+            } }, Object.entries(params.tileOrder.keys).map(([_key, name]) => React123.createElement(MenuItem_default, { key: name, value: name }, t2(`tileOrder.${name}`))))
           ),
-          React122.createElement(
+          React123.createElement(
             Stack_default2,
             { direction: "row", spacing: 2 },
-            React122.createElement(FormControlLabel_default, { label: t2("parameter.fillColor"), sx: { mx: 1 }, control: React122.createElement("input", { defaultValue: fillColor, name: "fill-color", type: "color", onBlur: (event) => {
+            React123.createElement(FormControlLabel_default, { label: t2("parameter.fillColor"), sx: { mx: 1 }, control: React123.createElement("input", { defaultValue: fillColor, name: "fill-color", type: "color", onBlur: (event) => {
               setInpaint({
                 fillColor: event.target.value
               });
             } }) })
           )
         ),
-        React122.createElement(OutpaintControl, null),
-        React122.createElement(UpscaleControl, null),
-        React122.createElement(Button_default, { disabled: preventInpaint(), variant: "contained", onClick: () => upload.mutate(), color: supportsInpaint() ? void 0 : "warning" }, t2("generate"))
+        React123.createElement(OutpaintControl, null),
+        React123.createElement(UpscaleControl, null),
+        React123.createElement(Button_default, { disabled: preventInpaint(), variant: "contained", onClick: () => upload.mutate(), color: supportsInpaint() ? void 0 : "warning" }, t2("generate"))
       )
     );
   }
   __name(Inpaint, "Inpaint");
 
   // out/src/components/tab/Settings.js
-  var React123 = __toESM(require_react(), 1);
+  var React124 = __toESM(require_react(), 1);
   var import_react40 = __toESM(require_react(), 1);
   function removeBlobs(key, value) {
     if (value instanceof Blob || value instanceof File) {
@@ -71117,58 +71211,58 @@ Please use another name.` : formatMuiErrorMessage(18));
     const [json, setJson] = (0, import_react40.useState)(JSON.stringify(state, removeBlobs));
     const [root, setRoot] = (0, import_react40.useState)(getApiRoot(config));
     const { t: t2 } = useTranslation();
-    return React123.createElement(
+    return React124.createElement(
       Stack_default2,
       { spacing: 2 },
-      React123.createElement(NumericField, { label: t2("setting.history"), min: 2, max: 20, step: 1, value: state.limit, onChange: (value) => state.setLimit(value) }),
-      React123.createElement(TextField_default, { variant: "outlined", label: t2("setting.prompt"), value: state.defaults.prompt, onChange: (event) => {
+      React124.createElement(NumericField, { label: t2("setting.history"), min: 2, max: 20, step: 1, value: state.limit, onChange: (value) => state.setLimit(value) }),
+      React124.createElement(TextField_default, { variant: "outlined", label: t2("setting.prompt"), value: state.defaults.prompt, onChange: (event) => {
         state.setDefaults({
           prompt: event.target.value
         });
       } }),
-      React123.createElement(TextField_default, { variant: "outlined", label: t2("setting.scheduler"), value: state.defaults.scheduler, onChange: (event) => {
+      React124.createElement(TextField_default, { variant: "outlined", label: t2("setting.scheduler"), value: state.defaults.scheduler, onChange: (event) => {
         state.setDefaults({
           scheduler: event.target.value
         });
       } }),
-      React123.createElement(
+      React124.createElement(
         Stack_default2,
         { direction: "row", spacing: 2 },
-        React123.createElement(TextField_default, { variant: "outlined", label: t2("setting.server"), value: root, onChange: (event) => {
+        React124.createElement(TextField_default, { variant: "outlined", label: t2("setting.server"), value: root, onChange: (event) => {
           setRoot(event.target.value);
         } }),
-        React123.createElement(Button_default, { variant: "contained", startIcon: React123.createElement(Refresh_default, null), onClick: () => {
+        React124.createElement(Button_default, { variant: "contained", startIcon: React124.createElement(Refresh_default, null), onClick: () => {
           const query = new URLSearchParams(window.location.search);
           query.set("api", root);
           window.location.search = query.toString();
         } }, t2("setting.connectServer")),
-        React123.createElement(Alert_default, { variant: "outlined", severity: "success" }, config.params.version)
+        React124.createElement(Alert_default, { variant: "outlined", severity: "success" }, config.params.version)
       ),
-      React123.createElement(
+      React124.createElement(
         Stack_default2,
         { direction: "row", spacing: 2 },
-        React123.createElement(TextField_default, { variant: "outlined", label: t2("setting.state"), value: json, onChange: (event) => {
+        React124.createElement(TextField_default, { variant: "outlined", label: t2("setting.state"), value: json, onChange: (event) => {
           setJson(event.target.value);
         } }),
-        React123.createElement(Button_default, { variant: "contained", startIcon: React123.createElement(Refresh_default, null), onClick: () => {
+        React124.createElement(Button_default, { variant: "contained", startIcon: React124.createElement(Refresh_default, null), onClick: () => {
           window.localStorage.setItem(STATE_KEY, json);
           window.location.reload();
         } }, t2("setting.loadState"))
       ),
-      React123.createElement(
+      React124.createElement(
         Stack_default2,
         { direction: "row", spacing: 2 },
-        React123.createElement(Button_default, { onClick: () => state.resetTxt2Img(), color: "warning" }, t2("setting.reset.txt2img")),
-        React123.createElement(Button_default, { onClick: () => state.resetImg2Img(), color: "warning" }, t2("setting.reset.img2img")),
-        React123.createElement(Button_default, { onClick: () => state.resetInpaint(), color: "warning" }, t2("setting.reset.inpaint")),
-        React123.createElement(Button_default, { onClick: () => state.resetAll(), color: "error" }, t2("setting.reset.all"))
+        React124.createElement(Button_default, { onClick: () => state.resetTxt2Img(), color: "warning" }, t2("setting.reset.txt2img")),
+        React124.createElement(Button_default, { onClick: () => state.resetImg2Img(), color: "warning" }, t2("setting.reset.img2img")),
+        React124.createElement(Button_default, { onClick: () => state.resetInpaint(), color: "warning" }, t2("setting.reset.inpaint")),
+        React124.createElement(Button_default, { onClick: () => state.resetAll(), color: "error" }, t2("setting.reset.all"))
       )
     );
   }
   __name(Settings, "Settings");
 
   // out/src/components/tab/Txt2Img.js
-  var React124 = __toESM(require_react(), 1);
+  var React125 = __toESM(require_react(), 1);
   var import_react41 = __toESM(require_react(), 1);
   function Txt2Img() {
     const { params } = mustExist((0, import_react41.useContext)(ConfigContext));
@@ -71189,36 +71283,36 @@ Please use another name.` : formatMuiErrorMessage(18));
     const setTxt2Img = useStore(state, (s) => s.setTxt2Img);
     const pushHistory = useStore(state, (s) => s.pushHistory);
     const { t: t2 } = useTranslation();
-    return React124.createElement(
+    return React125.createElement(
       Box_default,
       null,
-      React124.createElement(
+      React125.createElement(
         Stack_default2,
         { spacing: 2 },
-        React124.createElement(ImageControl, { selector: (s) => s.txt2img, onChange: setTxt2Img }),
-        React124.createElement(
+        React125.createElement(ImageControl, { selector: (s) => s.txt2img, onChange: setTxt2Img }),
+        React125.createElement(
           Stack_default2,
           { direction: "row", spacing: 4 },
-          React124.createElement(NumericField, { label: t2("parameter.width"), min: params.width.min, max: params.width.max, step: params.width.step, value: width2, onChange: (value) => {
+          React125.createElement(NumericField, { label: t2("parameter.width"), min: params.width.min, max: params.width.max, step: params.width.step, value: width2, onChange: (value) => {
             setTxt2Img({
               width: value
             });
           } }),
-          React124.createElement(NumericField, { label: t2("parameter.height"), min: params.height.min, max: params.height.max, step: params.height.step, value: height2, onChange: (value) => {
+          React125.createElement(NumericField, { label: t2("parameter.height"), min: params.height.min, max: params.height.max, step: params.height.step, value: height2, onChange: (value) => {
             setTxt2Img({
               height: value
             });
           } })
         ),
-        React124.createElement(UpscaleControl, null),
-        React124.createElement(Button_default, { variant: "contained", onClick: () => generate.mutate() }, t2("generate"))
+        React125.createElement(UpscaleControl, null),
+        React125.createElement(Button_default, { variant: "contained", onClick: () => generate.mutate() }, t2("generate"))
       )
     );
   }
   __name(Txt2Img, "Txt2Img");
 
   // out/src/components/tab/Upscale.js
-  var React125 = __toESM(require_react(), 1);
+  var React126 = __toESM(require_react(), 1);
   var import_react42 = __toESM(require_react(), 1);
   function Upscale() {
     async function uploadSource() {
@@ -71237,22 +71331,22 @@ Please use another name.` : formatMuiErrorMessage(18));
     const setSource = useStore(state, (s) => s.setUpscaleTab);
     const pushHistory = useStore(state, (s) => s.pushHistory);
     const { t: t2 } = useTranslation();
-    return React125.createElement(
+    return React126.createElement(
       Box_default,
       null,
-      React125.createElement(
+      React126.createElement(
         Stack_default2,
         { spacing: 2 },
-        React125.createElement(ImageInput, { filter: IMAGE_FILTER, image: params.source, label: t2("input.image.source"), onChange: (file) => {
+        React126.createElement(ImageInput, { filter: IMAGE_FILTER, image: params.source, label: t2("input.image.source"), onChange: (file) => {
           setSource({
             source: file
           });
         } }),
-        React125.createElement(PromptInput, { prompt: params.prompt, negativePrompt: params.negativePrompt, onChange: (value) => {
+        React126.createElement(PromptInput, { prompt: params.prompt, negativePrompt: params.negativePrompt, onChange: (value) => {
           setSource(value);
         } }),
-        React125.createElement(UpscaleControl, null),
-        React125.createElement(Button_default, { disabled: doesExist2(params.source) === false, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
+        React126.createElement(UpscaleControl, null),
+        React126.createElement(Button_default, { disabled: doesExist2(params.source) === false, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
       )
     );
   }
@@ -71281,65 +71375,65 @@ Please use another name.` : formatMuiErrorMessage(18));
       return TAB_LABELS[0];
     }
     __name(tab, "tab");
-    return React126.createElement(
+    return React127.createElement(
       Container_default,
       null,
-      React126.createElement(
+      React127.createElement(
         Box_default,
         { sx: { my: 4 } },
-        React126.createElement(Logo, null)
+        React127.createElement(Logo, null)
       ),
-      React126.createElement(
+      React127.createElement(
         Box_default,
         { sx: { mx: 4, my: 4 } },
-        React126.createElement(ModelControl, null)
+        React127.createElement(ModelControl, null)
       ),
-      React126.createElement(
+      React127.createElement(
         TabContext,
         { value: tab() },
-        React126.createElement(
+        React127.createElement(
           Box_default,
           { sx: { borderBottom: 1, borderColor: "divider" } },
-          React126.createElement(TabList_default, { onChange: (_e, idx) => {
+          React127.createElement(TabList_default, { onChange: (_e, idx) => {
             setHash(idx);
-          } }, TAB_LABELS.map((name) => React126.createElement(Tab_default, { key: name, label: name, value: name })))
+          } }, TAB_LABELS.map((name) => React127.createElement(Tab_default, { key: name, label: name, value: name })))
         ),
-        React126.createElement(
+        React127.createElement(
           TabPanel_default,
           { value: "txt2img" },
-          React126.createElement(Txt2Img, null)
+          React127.createElement(Txt2Img, null)
         ),
-        React126.createElement(
+        React127.createElement(
           TabPanel_default,
           { value: "img2img" },
-          React126.createElement(Img2Img, null)
+          React127.createElement(Img2Img, null)
         ),
-        React126.createElement(
+        React127.createElement(
           TabPanel_default,
           { value: "inpaint" },
-          React126.createElement(Inpaint, null)
+          React127.createElement(Inpaint, null)
         ),
-        React126.createElement(
+        React127.createElement(
           TabPanel_default,
           { value: "upscale" },
-          React126.createElement(Upscale, null)
+          React127.createElement(Upscale, null)
         ),
-        React126.createElement(
+        React127.createElement(
           TabPanel_default,
           { value: "blend" },
-          React126.createElement(Blend, null)
+          React127.createElement(Blend, null)
         ),
-        React126.createElement(
+        React127.createElement(
           TabPanel_default,
           { value: "settings" },
-          React126.createElement(Settings, null)
+          React127.createElement(Settings, null)
         )
       ),
-      React126.createElement(Divider_default, { variant: "middle" }),
-      React126.createElement(
+      React127.createElement(Divider_default, { variant: "middle" }),
+      React127.createElement(
         Box_default,
         { sx: { mx: 4, my: 4 } },
-        React126.createElement(ImageHistory, null)
+        React127.createElement(ImageHistory, null)
       )
     );
   }
@@ -72101,25 +72195,25 @@ Please use another name.` : formatMuiErrorMessage(18));
     const reactLogger = logger3.child({
       system: "react"
     });
-    return React127.createElement(
+    return React128.createElement(
       QueryClientProvider,
       { client: query },
-      React127.createElement(
+      React128.createElement(
         ClientContext.Provider,
         { value: client },
-        React127.createElement(
+        React128.createElement(
           ConfigContext.Provider,
           { value: completeConfig },
-          React127.createElement(
+          React128.createElement(
             LoggerContext.Provider,
             { value: reactLogger },
-            React127.createElement(
+            React128.createElement(
               I18nextProvider,
               { i18n: instance },
-              React127.createElement(
+              React128.createElement(
                 StateContext.Provider,
                 { value: state },
-                React127.createElement(OnnxWeb, null)
+                React128.createElement(OnnxWeb, null)
               )
             )
           )
@@ -72129,10 +72223,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(renderApp, "renderApp");
   async function renderProgress() {
-    return React127.createElement(
+    return React128.createElement(
       I18nextProvider,
       { i18n: instance },
-      React127.createElement(LoadingScreen, null)
+      React128.createElement(LoadingScreen, null)
     );
   }
   __name(renderProgress, "renderProgress");
@@ -72165,20 +72259,20 @@ Please use another name.` : formatMuiErrorMessage(18));
       if ((0, import_semver.satisfies)(version, PARAM_VERSION)) {
         app.render(await renderApp(config, params, logger3, client));
       } else {
-        app.render(React127.createElement(
+        app.render(React128.createElement(
           OnnxError,
           { root },
-          React127.createElement(ParamsVersionError, { root, version })
+          React128.createElement(ParamsVersionError, { root, version })
         ));
       }
     } catch (err) {
       if (err instanceof TimeoutError || err instanceof Error && err.message.includes("Failed to fetch")) {
         app.render(await renderApp(config, config.params, logger3, LOCAL_CLIENT));
       } else {
-        app.render(React127.createElement(
+        app.render(React128.createElement(
           OnnxError,
           { root },
-          React127.createElement(ServerParamsError, { root, error: err })
+          React128.createElement(ServerParamsError, { root, error: err })
         ));
       }
     }
