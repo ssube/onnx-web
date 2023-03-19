@@ -92,7 +92,12 @@ def blend_textual_inversions(
                 else:
                     embeds[token] = layer
 
-            # add sum layer to embeds
+            # add base and sum tokens to embeds
+            if base_token in embeds:
+                embeds[base_token] += sum_layer
+            else:
+                embeds[base_token] = sum_layer
+
             sum_token = f"{base_token}-all"
             if sum_token in embeds:
                 embeds[sum_token] += sum_layer
