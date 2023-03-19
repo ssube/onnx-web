@@ -154,7 +154,9 @@ def load_extras(context: ServerContext):
                                 )
 
                                 if "type" in model:
-                                    labels[f'{model["type"]}.{model_name}'] = model["label"]
+                                    labels[f'{model["type"]}.{model_name}'] = model[
+                                        "label"
+                                    ]
                                 else:
                                     labels[model_name] = model["label"]
 
@@ -180,10 +182,7 @@ def load_extras(context: ServerContext):
                                             lora_name,
                                             model_name,
                                         )
-                                        labels[
-                                            f"lora.{lora_name}"
-                                        ] = lora["label"]
-
+                                        labels[f"lora.{lora_name}"] = lora["label"]
 
             except Exception:
                 logger.exception("error loading extras file")
