@@ -23,7 +23,7 @@ LegacyModel = Tuple[str, str, Optional[bool], Optional[bool], Optional[int]]
 class ConversionContext(ServerContext):
     def __init__(
         self,
-        model_path: str,
+        model_path: Optional[str] = None,
         cache_path: Optional[str] = None,
         device: Optional[str] = None,
         half: Optional[bool] = False,
@@ -32,7 +32,7 @@ class ConversionContext(ServerContext):
         prune: Optional[List[str]] = None,
         **kwargs,
     ) -> None:
-        super().__init__(model_path=model_path, cache_path=cache_path)
+        super().__init__(model_path=model_path, cache_path=cache_path, **kwargs)
 
         self.half = half
         self.opset = opset
