@@ -110,6 +110,11 @@ Others:
       - enable all ONNX graph optimizations
   - `onnx-deterministic-compute`
     - enable ONNX deterministic compute
+- `torch-*`
+  - `torch-fp16`
+    - use 16-bit floating point values when loading and converting pipelines
+    - applies during conversion as well
+    - only available on CUDA platform
 
 ### Server Parameters
 

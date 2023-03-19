@@ -97,7 +97,10 @@ def convert_diffusion_diffusers(
     single_vae = model.get("single_vae")
     replace_vae = model.get("vae")
 
-    dtype = torch.float32  # torch.float16 if ctx.half else torch.float32
+    torch_half = "torch-fp16" in ctx.optimizations
+    torch_dtype = torch.float16 if torch_half else torch.float32
+    logger.debug("using Torch dtype %s for pipeline", torch_dtype)
+
     dest_path = path.join(ctx.model_path, name)
     model_index = path.join(dest_path, "model_index.json")
 
@@ -115,7 +118,7 @@ def convert_diffusion_diffusers(
 
     pipeline = StableDiffusionPipeline.from_pretrained(
         source,
-        torch_dtype=dtype,
+        torch_dtype=torch_dtype,
         use_auth_token=ctx.token,
     ).to(ctx.training_device)
     output_path = Path(dest_path)
@@ -172,11 +175,11 @@ def convert_diffusion_diffusers(
         pipeline.unet,
         model_args=(
             torch.randn(2, unet_in_channels, unet_sample_size, unet_sample_size).to(
-                device=ctx.training_device, dtype=dtype
+                device=ctx.training_device, dtype=torch_dtype
             ),
-            torch.randn(2).to(device=ctx.training_device, dtype=dtype),
+            torch.randn(2).to(device=ctx.training_device, dtype=torch_dtype),
             torch.randn(2, num_tokens, text_hidden_size).to(
-                device=ctx.training_device, dtype=dtype
+                device=ctx.training_device, dtype=torch_dtype
             ),
             unet_scale,
         ),
@@ -228,7 +231,7 @@ def convert_diffusion_diffusers(
             model_args=(
                 torch.randn(
                     1, vae_latent_channels, unet_sample_size, unet_sample_size
-                ).to(device=ctx.training_device, dtype=dtype),
+                ).to(device=ctx.training_device, dtype=torch_dtype),
                 False,
             ),
             output_path=output_path / "vae" / "model.onnx",
@@ -253,7 +256,7 @@ def convert_diffusion_diffusers(
             vae_encoder,
             model_args=(
                 torch.randn(1, vae_in_channels, vae_sample_size, vae_sample_size).to(
-                    device=ctx.training_device, dtype=dtype
+                    device=ctx.training_device, dtype=torch_dtype
                 ),
                 False,
             ),
@@ -277,7 +280,7 @@ def convert_diffusion_diffusers(
             model_args=(
                 torch.randn(
                     1, vae_latent_channels, unet_sample_size, unet_sample_size
-                ).to(device=ctx.training_device, dtype=dtype),
+                ).to(device=ctx.training_device, dtype=torch_dtype),
                 False,
             ),
             output_path=output_path / "vae_decoder" / "model.onnx",
