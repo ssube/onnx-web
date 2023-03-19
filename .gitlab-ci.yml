@@ -27,6 +27,7 @@ stages:
     paths:
       - gui/node_modules/
     policy: pull-push
+  interruptible: true
 
 .build-oci:
   extends:
@@ -48,6 +49,7 @@ stages:
     DOCKER_TLS_CERTDIR: "/shared/docker"
     DOCKER_TLS_VERIFY: 1
     VERSION_TAG: "${CI_COMMIT_REF_SLUG}"
+  interruptible: true
 
 .build-python:
   extends:
@@ -62,6 +64,7 @@ stages:
     policy: pull-push
   variables:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  interruptible: true
 
 .build-curl:
   extends:
@@ -172,6 +175,7 @@ package-api-twine:
     paths:
       - .cache/pip
     policy: pull-push
+  interruptible: false
 
 package-api-twine-dry:
   extends:
@@ -203,6 +207,7 @@ package-gui-npm:
     expire_in: 7 days
     paths:
       - "$CI_PROJECT_DIR/*.tgz"
+  interruptible: false
 
 package-gui-npm-dry:
   extends:
