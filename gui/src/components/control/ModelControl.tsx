@@ -26,111 +26,115 @@ export function ModelControl() {
     staleTime: STALE_TIME,
   });
 
-  return <Stack direction='row' spacing={2}>
-    <QueryList
-      id='platforms'
-      labelKey='platform'
-      name={t('parameter.platform')}
-      query={{
-        result: platforms,
-      }}
-      value={params.platform}
-      onChange={(platform) => {
-        setModel({
-          platform,
-        });
-      }}
-    />
-    <QueryList
-      id='diffusion'
-      labelKey='model'
-      name={t('modelType.diffusion')}
-      query={{
-        result: models,
-        selector: (result) => result.diffusion,
-      }}
-      value={params.model}
-      onChange={(model) => {
-        setModel({
-          model,
-        });
-      }}
-    />
-    <QueryList
-      id='upscaling'
-      labelKey='model'
-      name={t('modelType.upscaling')}
-      query={{
-        result: models,
-        selector: (result) => result.upscaling,
-      }}
-      value={params.upscaling}
-      onChange={(upscaling) => {
-        setModel({
-          upscaling,
-        });
-      }}
-    />
-    <QueryList
-      id='correction'
-      labelKey='model'
-      name={t('modelType.correction')}
-      query={{
-        result: models,
-        selector: (result) => result.correction,
-      }}
-      value={params.correction}
-      onChange={(correction) => {
-        setModel({
-          correction,
-        });
-      }}
-    />
-    <FormControlLabel
-      label={t('parameter.lpw')}
-      control={<Checkbox
-        checked={params.lpw}
-        value='check'
-        onChange={(event) => {
+  return <Stack direction='column' spacing={2}>
+    <Stack direction='row' spacing={2}>
+      <QueryList
+        id='platforms'
+        labelKey='platform'
+        name={t('parameter.platform')}
+        query={{
+          result: platforms,
+        }}
+        value={params.platform}
+        onChange={(platform) => {
           setModel({
-            lpw: params.lpw === false,
+            platform,
           });
         }}
-      />}
-    />
-    <QueryMenu
-      id='inversion'
-      labelKey='model.inversion'
-      name={t('modelType.inversion')}
-      query={{
-        result: models,
-        selector: (result) => result.networks.filter((network) => network.type === 'inversion').map((network) => network.name),
-      }}
-      onSelect={(name) => {
-        const current = state.getState();
-        const { prompt } = current.txt2img;
+      />
+      <QueryList
+        id='diffusion'
+        labelKey='model'
+        name={t('modelType.diffusion')}
+        query={{
+          result: models,
+          selector: (result) => result.diffusion,
+        }}
+        value={params.model}
+        onChange={(model) => {
+          setModel({
+            model,
+          });
+        }}
+      />
+      <QueryList
+        id='upscaling'
+        labelKey='model'
+        name={t('modelType.upscaling')}
+        query={{
+          result: models,
+          selector: (result) => result.upscaling,
+        }}
+        value={params.upscaling}
+        onChange={(upscaling) => {
+          setModel({
+            upscaling,
+          });
+        }}
+      />
+      <QueryList
+        id='correction'
+        labelKey='model'
+        name={t('modelType.correction')}
+        query={{
+          result: models,
+          selector: (result) => result.correction,
+        }}
+        value={params.correction}
+        onChange={(correction) => {
+          setModel({
+            correction,
+          });
+        }}
+      />
+    </Stack>
+    <Stack direction='row' spacing={2}>
+      <FormControlLabel
+        label={t('parameter.lpw')}
+        control={<Checkbox
+          checked={params.lpw}
+          value='check'
+          onChange={(event) => {
+            setModel({
+              lpw: params.lpw === false,
+            });
+          }}
+        />}
+      />
+      <QueryMenu
+        id='inversion'
+        labelKey='model.inversion'
+        name={t('modelType.inversion')}
+        query={{
+          result: models,
+          selector: (result) => result.networks.filter((network) => network.type === 'inversion').map((network) => network.name),
+        }}
+        onSelect={(name) => {
+          const current = state.getState();
+          const { prompt } = current.txt2img;
 
-        current.setTxt2Img({
-          prompt: `<inversion:${name}:1.0> ${prompt}`,
-        });
-      }}
-    />
-    <QueryMenu
-      id='lora'
-      labelKey='model.lora'
-      name={t('modelType.lora')}
-      query={{
-        result: models,
-        selector: (result) => result.networks.filter((network) => network.type === 'lora').map((network) => network.name),
-      }}
-      onSelect={(name) => {
-        const current = state.getState();
-        const { prompt } = current.txt2img;
+          current.setTxt2Img({
+            prompt: `<inversion:${name}:1.0> ${prompt}`,
+          });
+        }}
+      />
+      <QueryMenu
+        id='lora'
+        labelKey='model.lora'
+        name={t('modelType.lora')}
+        query={{
+          result: models,
+          selector: (result) => result.networks.filter((network) => network.type === 'lora').map((network) => network.name),
+        }}
+        onSelect={(name) => {
+          const current = state.getState();
+          const { prompt } = current.txt2img;
 
-        current.setTxt2Img({
-          prompt: `<lora:${name}:1.0> ${prompt}`,
-        });
-      }}
-    />
+          current.setTxt2Img({
+            prompt: `<lora:${name}:1.0> ${prompt}`,
+          });
+        }}
+      />
+    </Stack>
   </Stack>;
 }
