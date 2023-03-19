@@ -22,7 +22,7 @@ def worker_main(context: WorkerContext, server: ServerContext):
     apply_patches(server)
     setproctitle("onnx-web worker: %s" % (context.device.device))
 
-    logger.trace("checking in from worker, %s", get_available_providers())
+    logger.trace("checking in from worker with providers: %s", get_available_providers())
 
     # make leaking workers easier to recycle
     context.progress.cancel_join_thread()
@@ -37,34 +37,40 @@ def worker_main(context: WorkerContext, server: ServerContext):
                 )
                 exit(EXIT_REPLACED)
 
+            # wait briefly for the next job
             job = context.pending.get(timeout=1.0)
-            logger.info("worker for %s got job: %s", context.device.device, job.name)
+            logger.info("worker %s got job: %s", context.device.device, job.name)
 
-            context.job = job.name  # TODO: hax
+            # clear flags and save the job name
+            context.start(job.name)
             logger.info("starting job: %s", job.name)
+
+            # reset progress, which does a final check for cancellation
             context.set_progress(0)
             job.fn(context, *job.args, **job.kwargs)
+
+            # confirm completion of the job
             logger.info("job succeeded: %s", job.name)
-            context.set_finished()
+            context.finish()
         except Empty:
             pass
         except KeyboardInterrupt:
             logger.info("worker got keyboard interrupt")
-            context.set_failed()
+            context.fail()
             exit(EXIT_INTERRUPT)
         except ValueError:
             logger.exception("value error in worker, exiting: %s")
-            context.set_failed()
+            context.fail()
             exit(EXIT_ERROR)
         except Exception as e:
             e_str = str(e)
             if "Failed to allocate memory" in e_str or "out of memory" in e_str:
                 logger.error("detected out-of-memory error, exiting: %s", e)
-                context.set_failed()
+                context.fail()
                 exit(EXIT_MEMORY)
             else:
                 logger.exception(
                     "error while running job",
                 )
-                context.set_failed()
+                context.fail()
                 # carry on

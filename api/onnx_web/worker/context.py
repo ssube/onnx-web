@@ -40,6 +40,10 @@ class WorkerContext:
         self.active_pid = active_pid
         self.last_progress = None
 
+    def start(self, job: str) -> None:
+        self.job = job
+        self.set_cancel(cancel=False)
+
     def is_cancelled(self) -> bool:
         return self.cancel.value
 
@@ -92,7 +96,7 @@ class WorkerContext:
                 block=False,
             )
 
-    def set_finished(self) -> None:
+    def finish(self) -> None:
         logger.debug("setting finished for job %s", self.job)
         self.last_progress = ProgressCommand(
             self.job,
@@ -107,7 +111,7 @@ class WorkerContext:
             block=False,
         )
 
-    def set_failed(self) -> None:
+    def fail(self) -> None:
         logger.warning("setting failure for job %s", self.job)
         try:
             self.last_progress = ProgressCommand(
