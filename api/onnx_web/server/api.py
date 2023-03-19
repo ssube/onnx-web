@@ -111,7 +111,7 @@ def list_models(context: ServerContext):
         {
             "correction": get_correction_models(),
             "diffusion": get_diffusion_models(),
-            "networks": get_network_models(),
+            "networks": [model.tojson() for model in get_network_models()],
             "upscaling": get_upscaling_models(),
         }
     )
