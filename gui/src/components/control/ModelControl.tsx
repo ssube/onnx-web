@@ -42,7 +42,7 @@ export function ModelControl() {
     />
     <QueryList
       id='diffusion'
-      labelKey='diffusion'
+      labelKey='model'
       name={t('modelType.diffusion')}
       query={{
         result: models,
@@ -57,7 +57,7 @@ export function ModelControl() {
     />
     <QueryList
       id='upscaling'
-      labelKey='upscaling'
+      labelKey='model'
       name={t('modelType.upscaling')}
       query={{
         result: models,
@@ -72,7 +72,7 @@ export function ModelControl() {
     />
     <QueryList
       id='correction'
-      labelKey='correction'
+      labelKey='model'
       name={t('modelType.correction')}
       query={{
         result: models,
@@ -99,7 +99,7 @@ export function ModelControl() {
     />
     <QueryList
       id='inversion'
-      labelKey='inversion'
+      labelKey='model.inversion'
       name={t('modelType.inversion')}
       query={{
         result: models,
@@ -112,7 +112,7 @@ export function ModelControl() {
     />
     <QueryList
       id='lora'
-      labelKey='lora'
+      labelKey='model.lora'
       name={t('modelType.lora')}
       query={{
         result: models,
