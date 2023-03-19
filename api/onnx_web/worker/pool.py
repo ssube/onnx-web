@@ -413,7 +413,9 @@ class DevicePoolExecutor:
             # move from running to finished
             logger.info("job has finished: %s", progress.job)
             self.finished_jobs.append(progress)
-            del self.running_jobs[progress.job]
+            if progress.job in self.running_jobs:
+                del self.running_jobs[progress.job]
+
             self.join_leaking()
             if progress.job in self.cancelled_jobs:
                 self.cancelled_jobs.remove(progress.job)
