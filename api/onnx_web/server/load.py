@@ -142,7 +142,7 @@ def load_extras(context: ServerContext):
                     logger.debug("collecting strings from %s", file)
                     merge(strings, data["strings"])
 
-                for model_type in ["diffusion", "correction", "upscaling"]:
+                for model_type in ["diffusion", "correction", "upscaling", "networks"]:
                     if model_type in data:
                         for model in data[model_type]:
                             if "label" in model:
@@ -159,13 +159,27 @@ def load_extras(context: ServerContext):
                                     if "label" in inversion:
                                         inversion_name = inversion["name"]
                                         logger.debug(
-                                            "collecting label for inversion %s from %s",
+                                            "collecting label for Textual Inversion %s from %s",
                                             inversion_name,
                                             model_name,
                                         )
                                         labels[
-                                            f"inversion-{inversion_name}"
+                                            f"inversion.{inversion_name}"
                                         ] = inversion["label"]
+
+                            if "loras" in model:
+                                for lora in model["loras"]:
+                                    if "label" in lora:
+                                        lora_name = lora["name"]
+                                        logger.debug(
+                                            "collecting label for LoRA %s from %s",
+                                            lora_name,
+                                            model_name,
+                                        )
+                                        labels[
+                                            f"lora.{lora_name}"
+                                        ] = lora["label"]
+
 
             except Exception:
                 logger.exception("error loading extras file")
