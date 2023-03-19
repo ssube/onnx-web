@@ -2,7 +2,6 @@ import { doesExist, Maybe, mustDefault, mustExist } from '@apextoaster/js-utils'
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { Alert, Box, Button, FormControl, FormLabel, LinearProgress, Menu, MenuItem, Typography } from '@mui/material';
 import * as React from 'react';
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UseQueryResult } from 'react-query';
 
@@ -117,7 +116,7 @@ export function QueryMenu<T>(props: QueryMenuProps<T>) {
         'aria-labelledby': `${id}-button`,
       }}
     >
-      {data.map((it, idx) => <MenuItem key={idx} onClick={() => selectItem(it)}>{getLabel(it)}</MenuItem>)}
+      {data.map((it, idx) => <MenuItem key={it} onClick={() => selectItem(it)}>{getLabel(it)}</MenuItem>)}
     </Menu>
   </Box>;
 }
