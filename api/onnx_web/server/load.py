@@ -154,7 +154,7 @@ def load_extras(context: ServerContext):
                                 )
 
                                 if "type" in model:
-                                    labels[f'{model["type"]}.{model["label"]}']
+                                    labels[f'{model["type"]}.{model_name}'] = model["label"]
                                 else:
                                     labels[model_name] = model["label"]
 
