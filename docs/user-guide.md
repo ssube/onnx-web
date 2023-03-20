@@ -30,6 +30,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Model names](#model-names)
     - [Model sources](#model-sources)
       - [Downloading models from Civitai](#downloading-models-from-civitai)
+      - [Downloading models from HuggingFace](#downloading-models-from-huggingface)
     - [Using a custom VAE](#using-a-custom-vae)
   - [Prompts](#prompts)
     - [General structure](#general-structure)
@@ -288,6 +289,8 @@ models from the HuggingFace hub.
 
 #### Downloading models from Civitai
 
+Use the `civitai://` protocol to download models from [the Civitai catalog](https://civitai.com/).
+
 When downloading models from Civitai, the ID shown in the browser URL bar _may not be_ the ID of the model itself.
 Since models can have multiple versions, make sure you use the correct ID. Use the model ID from the download link,
 which you can see and copy from the right-click menu:
@@ -296,6 +299,16 @@ which you can see and copy from the right-click menu:
 
 You want the Pruned SafeTensor, if one is available. Be careful downloading PickleTensors, they may contain unsafe
 code. The original, non-pruned models are much larger but are better for training.
+
+#### Downloading models from HuggingFace
+
+Use the `huggingface://` protocol to download models from [the HuggingFace hub](https://huggingface.co/models?other=stable-diffusion).
+Most models will detect and download all of the necessary files, while Textual Inversions with `"model": "concept"`
+will only download the `trained_embeds.bin` file.
+
+When downloading models from HuggingFace, you can use the copy button next to the repository name:
+
+![Stable Diffusion v1.5 model card with Copy model name option highlighted](guide-huggingface.png)
 
 ### Using a custom VAE
 
