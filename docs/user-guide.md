@@ -26,8 +26,8 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Image history](#image-history)
     - [Scheduler comparison](#scheduler-comparison)
   - [Models](#models)
-    - [Model names](#model-names)
     - [Adding your own models](#adding-your-own-models)
+    - [Model names](#model-names)
     - [Model sources](#model-sources)
       - [Downloading models from Civitai](#downloading-models-from-civitai)
     - [Using a custom VAE](#using-a-custom-vae)
@@ -167,17 +167,6 @@ The models used by ONNX web are split up into three groups:
 
 There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles.
 
-### Model names
-
-The `name` of each model dictates which category it will appear in on the client.
-
-- `diffusion-*` or `stable-diffusion-*` for diffusion models
-- `upscaling-*` for upscaling models
-- `correction-*` for correction models
-
-Models that do not match one of the prefixes will not be shown, so if you cannot find a model that you have converted,
-make sure it is named correctly.
-
 ### Adding your own models
 
 You can convert and use your own models without making any code changes by copying
@@ -212,13 +201,38 @@ You can convert and use your own models without making any code changes by copyi
       "source": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth",
       "scale": 4
     }
+  ],
+  "networks": [
+    {
+      "name": "cubex",
+      "source": "sd-concepts-library/cubex",
+      "format": "ckpt",
+      "label": "Cubex",
+      "type": "inversion"
+    },
+    {
+      "name": "minecraft",
+      "source": "sd-concepts-library/minecraft-concept-art",
+      "format": "ckpt",
+      "label": "Minecraft Concept",
+      "type": "inversion"
+    },
+  ],
+  "sources": [
+    {
+      "name": "vae-ft-mse-840000-ema-pruned",
+      "source": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors",
+      "format": "safetensors"
+    }
   ]
 }
 ```
 
-Models can be added from the directories used by `diffusers` as well as SafeTensor and Pickle checkpoints. Be careful
-loading PickleTensors, as they may contain unsafe code which can be executed on your machine, and use SafeTensor instead
-whenever possible.
+Models can be added from the directories used by `diffusers` as well as SafeTensor and pickle tensor checkpoints. See
+[the converting models guide](converting-models.md) for more details.
+
+Be careful loading pickle tensors, as they may contain unsafe code which will be executed on your machine. Use
+SafeTensors instead whenever possible.
 
 Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file and make sure to use the `launch-extras`
 script. For example:
@@ -235,6 +249,18 @@ script. For example:
 
 Extras using the older file format with nested arrays (`"diffusion": [[]]`) can be mixed with the newer format. You
 only need to convert them into the newer format if you need to use keys other than `name`, `source`, and `scale`.
+
+### Model names
+
+The `name` of each model dictates which category it will appear in on the client.
+
+- `diffusion-*` or `stable-diffusion-*` for diffusion models
+- `upscaling-*` for upscaling models
+- `correction-*` for correction models
+
+Models that do not match one of the prefixes will not be shown, so if you cannot find a model that you have converted,
+make sure it is named correctly. This applies to models in the `extras.json` file as well as models you have created,
+converted, or copied outside of the conversion script.
 
 ### Model sources
 
