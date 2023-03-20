@@ -34,9 +34,10 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
   - [Prompts](#prompts)
     - [General structure](#general-structure)
     - [Useful keywords](#useful-keywords)
-    - [Extra network tokens](#extra-network-tokens)
+    - [Prompt tokens](#prompt-tokens)
       - [LoRA tokens](#lora-tokens)
       - [Textual Inversion tokens](#textual-inversion-tokens)
+      - [CLIP skip tokens](#clip-skip-tokens)
   - [Tabs](#tabs)
     - [Txt2img tab](#txt2img-tab)
       - [Scheduler parameter](#scheduler-parameter)
@@ -320,23 +321,34 @@ TODO
 
 TODO
 
-### Extra network tokens
+### Prompt tokens
 
-You can blend extra networks with the diffusion model using `<type:name:weight>` tokens.
+You can blend extra networks with the diffusion model using `<type:name:weight>` tokens. There are menus in the
+client for each type of additional network, which will insert the token for you.
+
+The `type` must be one of `clip`, `inversion`, or `lora`.
+
+The `name` must be alphanumeric and must not contain any special characters other than `-` and `_`.
+
+The `weight` must be a number. For `clip`, it must be a positive integer. For `inversion` and `lora`, it can be an
+integer or decimal number and may be negative.
 
 #### LoRA tokens
 
-You can blend one or more [LoRA embeddings](https://arxiv.org/abs/2106.09685) with the ONNX diffusion model using a
+You can blend one or more [LoRA weights](https://arxiv.org/abs/2106.09685) with the ONNX diffusion model using a
 `lora` token:
 
 ```none
 <lora:name:0.5>
 ```
 
-LoRA models must be placed in the `models/lora` directory.
+LoRA models must be placed in the `models/lora` directory and may be any supported tensor format.
 
 The type of network, name, and weight must be separated by colons. The LoRA name must be alphanumeric and must not
-contain any special characters.
+contain any special characters other than `-` and `_`.
+
+LoRA weights often have their own keywords, which can be found on their model card or Civitai page. You need to use
+the `<lora:name:1.0>` token _and_ the keywords to activate the LoRA.
 
 - https://github.com/kohya-ss/sd-scripts
 
@@ -349,22 +361,51 @@ using the `inversion` token:
 <inversion:autumn:1.0>
 ```
 
-Textual Inversion embeddings must be placed in the `models/inversion` directory.
+Textual Inversion embeddings must be placed in the `models/inversion` directory and may be any supported tensor format.
 
 The type of network, name, and weight must be separated by colons. The Textual Inversion name must be alphanumeric
-and must not contain any special characters.
+and must not contain any special characters other than `-` and `_`.
 
 Once the Textual Inversion has been blended, you can activate some or all of its layers using the trained token(s)
-in your prompt. Some Textual Inversions only have a single layer and some have 75 or more.
+in your prompt. Every Textual Inversion is available using its name, as well as tokens for all of the layers and for
+each individual layer. For an embedding called `autumn`, those are:
 
-You can provide more than one of the numbered layer tokens using the `base-{X,Y}` range syntax in your prompt, where
-`X` is inclusive and `Y` is not. The range `autumn-{0,5}` will be expanded into the tokens
-`autumn-0 autumn-1 autumn-2 autumn-3 autumn-4`. You can use the layer tokens individually, out of order, and
-repeat some layers or omit them entirely. You can provide a step as the third parameter, which will skip layers:
-`even-layers-{0,100,2}` will be expanded into
-`even-layers-0 even-layers-2 even-layers-4 even-layers-6 ... even-layers-98`.
+- `autumn`
+- `autumn-all`
+- `autumn-0` through `autumn-5`
 
-The range syntax does not currently work when the Long Prompt Weighting pipeline is enabled.
+The `autumn` and `autumn-all` tokens both activate a layer with the sum weights of the others. This will have a
+similar effect, but will not represent as many tokens in the prompt and may not attract as much attention. You need to
+use the `<inversion:name:1.0>` token _and_ the layer tokens to activate the Textual Inversion.
+
+You can use a range of the numbered layer tokens using the `base-{X,Y}` syntax in your prompt, where `X` is inclusive
+and `Y` is not. The range `autumn-{0,5}` will be expanded into the tokens `autumn-0 autumn-1 autumn-2 autumn-3 autumn-4`.
+You can provide a step as the third parameter, which will skip layers: `even-layers-{0,100,2}` will be expanded into
+`even-layers-0 even-layers-2 even-layers-4 even-layers-6 ... even-layers-98`. Some Textual Inversions only have a
+single layer and some have 75 or more. You can use the layer tokens individually, out of order, and repeat some layers
+or omit them entirely.
+
+The range syntax currently does not work when the Long Prompt Weighting pipeline is enabled.
+
+Some Textual Inversions have their own token, especially ones trained using [the Stable Conceptualizer notebook](TODO)
+and [the sd-concepts-library group](TODO) on HuggingFace hub. The model card should list the token, which will usually
+be wrapped in `<angle-brackets>`. This will be available along with the name token, but these concepts only have a
+single layer, so the numbered tokens are much less useful. For a concept called `cubex` with the token `<cube>`, those
+are:
+
+- `cubex`
+- `<cube>`
+- `cubex-0`
+
+#### CLIP skip tokens
+
+You can skip the last layers of the CLIP text encoder using the `clip` token:
+
+```none
+<clip:skip:2>
+```
+
+This makes your prompt less specific and some models have been trained to work better with some amount of skipping.
 
 ## Tabs
 
