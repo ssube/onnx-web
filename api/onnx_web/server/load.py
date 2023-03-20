@@ -197,7 +197,7 @@ def load_extras(context: ServerContext):
     extra_strings = strings
 
 
-IGNORE_EXTENSIONS = ["crdownload", "lock", "tmp"]
+IGNORE_EXTENSIONS = [".crdownload", ".lock", ".tmp"]
 
 
 def list_model_globs(
