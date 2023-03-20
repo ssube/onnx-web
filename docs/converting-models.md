@@ -19,6 +19,10 @@ Textual Inversion embeddings.
     - [LoRA weights from kohya-ss/sd-scripts](#lora-weights-from-kohya-sssd-scripts)
   - [Converting Textual Inversion embeddings](#converting-textual-inversion-embeddings)
     - [Figuring out how many layers are in a Textual Inversion](#figuring-out-how-many-layers-are-in-a-textual-inversion)
+  - [Optimizing diffusers models](#optimizing-diffusers-models)
+    - [Converting to float16](#converting-to-float16)
+    - [Optimizing with ONNX runtime](#optimizing-with-onnx-runtime)
+    - [Optimizing with HuggingFace Optimum](#optimizing-with-huggingface-optimum)
 
 ## Conversion steps for each type of model
 
@@ -279,3 +283,63 @@ lin-7', 'goblin-8', 'goblin-9', 'goblin-10', 'goblin-11', 'goblin-12', 'goblin-1
 
 You do not need to know how many layers a Textual Inversion has to use the base token, `goblin` or `goblin-all` in this
 example, but it does allow you to control the layers individually.
+
+## Optimizing diffusers models
+
+The ONNX models often include redundant nodes, like division by 1, and are converted using 32-bit floating point
+numbers by default. The models can be optimized to remove some of those nodes and reduce their size, both on disk and
+in VRAM.
+
+The highest levels of optimization will make the converted models platform-specific and must be done after blending
+LoRAs and Textual Inversions, so you cannot select them in the prompt, but reduces memory usage by 50-75%.
+
+### Converting to float16
+
+The size of a model can be roughly cut in half, on disk and in memory, by converting it from float32 to float16. There
+are a few different levels of conversion, which become increasingly platforms-specific.
+
+1. Internal conversion
+   - Converts graph nodes to float16 operations
+   - Leaves inputs and outputs as float32
+   - Initializer data can be converted to float16 or kept as float32
+2. Full conversion
+   - Can be done with ONNX runtime or Torch
+   - Converts inputs, outputs, nodes, and initializer data to float16
+   - Breaks runtime LoRA and Textual Inversion blending
+   - Requires some additional data conversions at runtime, which may introduce subtle rounding errors
+
+Using Stable Diffusion v1.5 as an example, full conversion reduces the size of the model by about half:
+
+```none
+4.0G    ./stable-diffusion-v1-5-fp32
+4.0G    ./stable-diffusion-v1-5-fp32-optimized
+2.6G    ./stable-diffusion-v1-5-fp16-internal
+2.3G    ./stable-diffusion-v1-5-fp16-optimized
+2.0G    ./stable-diffusion-v1-5-fp16-torch
+```
+
+Combined with [the other ONNX optimizations](server-admin.md#pipeline-optimizations), this can make the pipeline usable
+on 4-6GB GPUs and allow much larger batch sizes on GPUs with more memory. The optimized float32 model uses somewhat
+less VRAM than the original model, despite being the same size on disk.
+
+### Optimizing with ONNX runtime
+
+The ONNX runtime provides an optimization script for Stable Diffusion models in their git repository. You will need to
+clone that repository, but you can use an existing virtual environment for `onnx-web` and should not need to install
+any new packages.
+
+```shell
+> git clone https://github.com/microsoft/onnxruntime
+> cd onnxruntime/onnxruntime/python/tools/transformers/models/stable_diffusion
+> python3 optimize_pipeline.py -i /home/ssube/onnx-web/models/stable-diffusion
+```
+
+The `optimize_pipeline.py` script should work on any [diffusers directory with ONNX models](#converting-diffusers-models),
+but you will need to use the `--use_external_data_format` option if you are not using `--float16`. See the `--help` for
+more details.
+
+- https://github.com/microsoft/onnxruntime/tree/main/onnxruntime/python/tools/transformers/models/stable_diffusion
+
+### Optimizing with HuggingFace Optimum
+
+- https://huggingface.co/docs/optimum/v1.7.1/en/onnxruntime/usage_guides/optimization#optimizing-a-model-with-optimum-cli
