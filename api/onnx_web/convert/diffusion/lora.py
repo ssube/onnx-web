@@ -13,7 +13,6 @@ from onnx.external_data_helper import (
     write_external_data_tensors,
 )
 from onnxruntime import InferenceSession, OrtValue, SessionOptions
-from safetensors.torch import load_file
 
 from ...server.context import ServerContext
 from ..utils import ConversionContext, load_tensor

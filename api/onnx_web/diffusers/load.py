@@ -226,8 +226,7 @@ def load_pipeline(
         if loras is not None and len(loras) > 0:
             lora_names, lora_weights = zip(*loras)
             lora_models = [
-                path.join(server.model_path, "lora", name)
-                for name in lora_names
+                path.join(server.model_path, "lora", name) for name in lora_names
             ]
             logger.info(
                 "blending base model %s with LoRA models: %s", model, lora_models

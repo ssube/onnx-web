@@ -4,7 +4,6 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 import torch
-from huggingface_hub.file_download import hf_hub_download
 from onnx import ModelProto, load_model, numpy_helper, save_model
 from transformers import CLIPTokenizer
 
@@ -28,11 +27,8 @@ def blend_textual_inversions(
 
     for name, weight, base_token, inversion_format in inversions:
         if base_token is None:
+            logger.debug("no base token provided, using name: %s", name)
             base_token = name
-
-        if inversion_format is None:
-            # TODO: detect concept format
-            inversion_format = "embeddings"
 
         logger.info(
             "blending Textual Inversion %s with weight of %s for token %s",
@@ -41,23 +37,30 @@ def blend_textual_inversions(
             base_token,
         )
 
-        if inversion_format == "concept":
-            # TODO: this should be done in fetch, maybe
-            embeds_file = hf_hub_download(repo_id=name, filename="learned_embeds.bin")
-            token_file = hf_hub_download(repo_id=name, filename="token_identifier.txt") # not strictly needed
+        loaded_embeds = load_tensor(name, map_location=device)
+        if loaded_embeds is None:
+            logger.warning("unable to load tensor")
+            continue
 
-            with open(token_file, "r") as f:
-                token = f.read()
-
-            loaded_embeds = load_tensor(embeds_file, map_location=device)
-            if loaded_embeds is None:
-                logger.warning("unable to load tensor")
+        if inversion_format is None:
+            keys: List[str] = list(loaded_embeds.keys())
+            if len(keys) == 1 and keys[0].startswith("<") and keys[0].endswith(">"):
+                logger.debug("detected Textual Inversion concept: %s", keys)
+                inversion_format = "concept"
+            elif "string_to_token" in keys and "string_to_param" in keys:
+                logger.debug("detected Textual Inversion embeddings: %s", keys)
+                inversion_format = "embeddings"
+            else:
+                logger.error(
+                    "unknown Textual Inversion format, no recognized keys: %s", keys
+                )
                 continue
 
+        if inversion_format == "concept":
             # separate token and the embeds
-            trained_token = list(loaded_embeds.keys())[0]
+            token = list(loaded_embeds.keys())[0]
 
-            layer = loaded_embeds[trained_token].numpy().astype(dtype)
+            layer = loaded_embeds[token].numpy().astype(dtype)
             layer *= weight
 
             if base_token in embeds:
@@ -70,17 +73,12 @@ def blend_textual_inversions(
             else:
                 embeds[token] = layer
         elif inversion_format == "embeddings":
-            loaded_embeds = load_tensor(name, map_location=device)
-            if loaded_embeds is None:
-                logger.warning("unable to load tensor")
-                continue
-
             string_to_token = loaded_embeds["string_to_token"]
             string_to_param = loaded_embeds["string_to_param"]
 
             # separate token and embeds
-            trained_token = list(string_to_token.keys())[0]
-            trained_embeds = string_to_param[trained_token]
+            token = list(string_to_token.keys())[0]
+            trained_embeds = string_to_param[token]
 
             num_tokens = trained_embeds.shape[0]
             logger.debug("generating %s layer tokens for %s", num_tokens, name)

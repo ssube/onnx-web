@@ -22,7 +22,9 @@ def worker_main(context: WorkerContext, server: ServerContext):
     apply_patches(server)
     setproctitle("onnx-web worker: %s" % (context.device.device))
 
-    logger.trace("checking in from worker with providers: %s", get_available_providers())
+    logger.trace(
+        "checking in from worker with providers: %s", get_available_providers()
+    )
 
     # make leaking workers easier to recycle
     context.progress.cancel_join_thread()

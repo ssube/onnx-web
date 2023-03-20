@@ -108,6 +108,16 @@ $defs:
       format:
         type: string
         enum: [ckpt, safetensors]
+      model:
+        type: string
+        enum: [
+          # inversion
+          concept,
+          embeddings,
+          # lora
+          cloneofsimo,
+          sd-scripts
+        ]
       name:
         type: string
       source:

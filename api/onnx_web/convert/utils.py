@@ -200,9 +200,7 @@ def remove_prefix(name: str, prefix: str) -> str:
 
 def load_torch(name: str, map_location=None) -> Optional[Dict]:
     try:
-        logger.debug(
-            "loading tensor with Torch JIT: %s", name
-        )
+        logger.debug("loading tensor with Torch JIT: %s", name)
         checkpoint = torch.jit.load(name)
     except Exception:
         logger.exception(
@@ -246,7 +244,9 @@ def load_tensor(name: str, map_location=None) -> Optional[Dict]:
         except Exception as e:
             logger.warning("error loading pickle tensor: %s", e)
     elif extension in ["onnx", "pt"]:
-        logger.warning("tensor has ONNX extension, falling back to PyTorch: %s", extension)
+        logger.warning(
+            "tensor has ONNX extension, falling back to PyTorch: %s", extension
+        )
         try:
             checkpoint = load_torch(name, map_location=map_location)
         except Exception as e:

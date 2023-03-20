@@ -6,6 +6,7 @@ from sys import exit
 from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
+from huggingface_hub.file_download import hf_hub_download
 from jsonschema import ValidationError, validate
 from onnx import load_model, save_model
 from transformers import CLIPTokenizer
@@ -216,17 +217,24 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 logger.info("skipping network: %s", name)
             else:
                 network_format = source_format(network)
+                network_model = network.get("model", None)
                 network_type = network["type"]
                 source = network["source"]
 
                 try:
-                    dest = fetch_model(
-                        ctx,
-                        name,
-                        source,
-                        dest=path.join(ctx.model_path, network_type),
-                        format=network_format,
-                    )
+                    if network_type == "inversion" and network_model == "concept":
+                        dest = hf_hub_download(
+                            repo_id=source, filename="learned_embeds.bin"
+                        )
+                    else:
+                        dest = fetch_model(
+                            ctx,
+                            name,
+                            source,
+                            dest=path.join(ctx.model_path, network_type),
+                            format=network_format,
+                        )
+
                     logger.info("finished downloading network: %s -> %s", source, dest)
                 except Exception:
                     logger.exception("error fetching network %s", name)
