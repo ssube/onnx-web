@@ -181,7 +181,7 @@ def fetch_model(
         # from_pretrained has a bunch of useful logic that snapshot_download by itself down not
         if hf_hub_fetch:
             return hf_hub_download(
-                repo_id=source,
+                repo_id=hub_source,
                 filename=hf_hub_filename,
                 cache_dir=cache_path,
                 force_filename=f"{name}.bin",
