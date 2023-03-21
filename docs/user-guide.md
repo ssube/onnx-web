@@ -67,13 +67,16 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Image history setting](#image-history-setting)
       - [API server setting](#api-server-setting)
       - [Reset tab buttons](#reset-tab-buttons)
-  - [Known Errors](#known-errors)
-    - [Client Errors](#client-errors)
+  - [Known errors](#known-errors)
+    - [Check scripts](#check-scripts)
+      - [Check environment script](#check-environment-script)
+      - [Check model script](#check-model-script)
+    - [Client errors](#client-errors)
       - [Error fetching server parameters](#error-fetching-server-parameters)
       - [Parameter version error](#parameter-version-error)
       - [Distorted and noisy images](#distorted-and-noisy-images)
       - [Scattered image tiles](#scattered-image-tiles)
-    - [Server Errors](#server-errors)
+    - [Server errors](#server-errors)
       - [Very slow with high CPU usage, max fan speed during image generation](#very-slow-with-high-cpu-usage-max-fan-speed-during-image-generation)
       - [Connection refused or timeouts](#connection-refused-or-timeouts)
       - [Error: name 'cmd' is not defined](#error-name-cmd-is-not-defined)
@@ -154,7 +157,7 @@ The [ONNX runtime](https://onnxruntime.ai/) is a library for accelerating neural
 using [the ONNX file format](https://onnx.ai/) to share them across different platforms. ONNX web is a server to run
 hardware-accelerated inference using those models and a web client to provide the parameters and view the results.
 
-The models used by ONNX web are split up into three groups:
+The models used by ONNX web are split up into four groups:
 
 1. Diffusion
    1. general models like [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5)
@@ -165,6 +168,9 @@ The models used by ONNX web are split up into three groups:
 3. Correction
    1. [CodeFormer](https://github.com/sczhou/CodeFormer)
    2. [GFPGAN](https://github.com/TencentARC/GFPGAN)
+4. Networks
+   1. [LoRA](https://arxiv.org/abs/2106.09685)
+   2. [Textual Inversion](https://textual-inversion.github.io/)
 
 There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles.
 
@@ -358,7 +364,10 @@ TODO
 
 ### Useful keywords
 
-TODO
+The [OpenArt Stable Diffusion Prompt Book](https://cdn.openart.ai/assets/Stable%20Diffusion%20Prompt%20Book%20From%20OpenArt%2011-13.pdf)
+has a lot of useful tips on how to build a good prompt. You can include keywords to describe the subject, setting,
+style, and level of detail. Throwing a few extra keywords into the end of the prompt can help add specific details,
+like the color and intensity of the lighting.
 
 ### Prompt tokens
 
@@ -389,7 +398,7 @@ contain any special characters other than `-` and `_`.
 LoRA weights often have their own keywords, which can be found on their model card or Civitai page. You need to use
 the `<lora:name:1.0>` token _and_ the keywords to activate the LoRA.
 
-- https://github.com/kohya-ss/sd-scripts
+Check out [the `kohya-ss/sd-scripts` repository](https://github.com/kohya-ss/sd-scripts) for more details.
 
 #### Textual Inversion tokens
 
@@ -407,7 +416,7 @@ and must not contain any special characters other than `-` and `_`.
 
 Once the Textual Inversion has been blended, you can activate some or all of its layers using the trained token(s)
 in your prompt. Every Textual Inversion is available using its name, as well as tokens for all of the layers and for
-each individual layer. For an embedding called `autumn`, those are:
+each individual layer. For an embedding called `autumn`, the available tokens are:
 
 - `autumn`
 - `autumn-all`
@@ -426,11 +435,11 @@ or omit them entirely.
 
 The range syntax currently does not work when the Long Prompt Weighting pipeline is enabled.
 
-Some Textual Inversions have their own token, especially ones trained using [the Stable Conceptualizer notebook](TODO)
-and [the sd-concepts-library group](TODO) on HuggingFace hub. The model card should list the token, which will usually
-be wrapped in `<angle-brackets>`. This will be available along with the name token, but these concepts only have a
-single layer, so the numbered tokens are much less useful. For a concept called `cubex` with the token `<cube>`, those
-are:
+Some Textual Inversions have their own token, especially ones trained using [the Stable Conceptualizer notebook](https://colab.research.google.com/github/huggingface/notebooks/blob/main/diffusers/stable_conceptualizer_inference.ipynb)
+and [the sd-concepts-library](https://huggingface.co/spaces/sd-concepts-library/stable-diffusion-conceptualizer) on
+HuggingFace hub. The model card should list the token, which will usually be wrapped in `<angle-brackets>`. This token
+will be available along with the name token, but these concepts only have a single layer, so the numbered tokens are
+much less useful. For a concept called `cubex` with the token `<cube>`, the available tokens are:
 
 - `cubex`
 - `<cube>`
@@ -494,11 +503,6 @@ Using -1 will generate a new seed on the server for each image.
 #### Prompt parameter
 
 The input text for your image, things that should be included.
-
-The [OpenArt Stable Diffusion Prompt Book](https://cdn.openart.ai/assets/Stable%20Diffusion%20Prompt%20Book%20From%20OpenArt%2011-13.pdf)
-has a lot of useful tips on how to build a good prompt. You can include keywords to describe the subject, setting,
-style, and level of detail. Throwing a few extra keywords into the end of the prompt can help add specific details,
-like the color and intensity of the lighting.
 
 > A puppy dog with wings flying over a deciduous forest, drone, detailed, daylight, wide angle, sports, action camera
 
@@ -691,15 +695,68 @@ Changing the API server will reload the client.
 
 Resets the state of each tab to the default, if some controls become glitchy.
 
-## Known Errors
+## Known errors
 
 This section attempts to cover all of the known errors and their solutions.
 
-If you encounter an error that does not show up here, please [open a Github issue](https://github.com/ssube/onnx-web/issues/new/choose)
-and include as many details as possible. Screenshots of the client and logs from the server are especially helpful,
-and please include any stacktraces that appear in the server logs.
+If you encounter an error that does not show up here, please create a new issue on Github:
 
-### Client Errors
+- collect as many details as possible
+  - screenshots from the client and logs from the server are especially helpful
+  - redact anything you are not comfortable sharing, like IP addresses or prompt text
+  - please include any stacktraces that appear in the server logs
+- run [the check environment script](#check-environment-script)
+- [open a Github issue](https://github.com/ssube/onnx-web/issues/new/choose)
+
+### Check scripts
+
+There are a few scripts provided to check various parts of the app, environment, or models. These can be used to
+collect information for debugging problems or just to figure out what is in a tensor file with a confusing name.
+
+#### Check environment script
+
+The `check-env.py` script will check for required and recommended packages and collect their versions, then list
+the ONNX runtime providers that are available in the current environment.
+
+This can be used to make sure you have the correct packages installed and that your GPU provider appears in the list.
+
+To run the `check-env.py` script using your `onnx-web` virtual environment:
+
+```shell
+# on linux:
+> cd onnx-web/api
+> onnx_env/bin/activate
+> python3 scripts/check-env.py
+
+# on windows:
+> cd onnx-web\api
+> onnx_env\Scripts\Activate.bat
+> python scripts\check-env.py
+```
+
+#### Check model script
+
+The `check-model.py` script will check the format and contents of a model file. The models can be ONNX models,
+Safetensors, or pickle tensors.
+
+The script will attempt to load the file, which can import libraries and execute code in the case of pickle tensors.
+Only run the script on files that you trust enough to load.
+
+To run the `check-model.py` script on a model using your `onnx-web` virtual environment:
+
+```shell
+# on linux:
+> cd onnx-web/api
+> onnx_env/bin/activate
+> python3 scripts/check-model.py /home/ssube/onnx-web/models/inversion/1234.safetensor
+
+# on windows:
+> cd onnx-web\api
+> onnx_env\Scripts\Activate.bat
+> python scripts\check-model.py C:\Users\ssube\onnx-web\models\inversion\1234.safetensor
+```
+
+### Client errors
 
 #### Error fetching server parameters
 
@@ -728,7 +785,7 @@ This can happen when the selected upscaling model is not trained for the current
 
 This often means that the scale parameter does not match the upscaling model.
 
-### Server Errors
+### Server errors
 
 If your image fails to render without any other error messages on the client, check the server logs for errors (if you
 have access).
