@@ -157,8 +157,6 @@ def fetch_model(
         _filename, ext = path.splitext(ext)
         if ext is not None:
             cache_name = cache_name + ext
-        else:
-            cache_name = cache_name
     else:
         cache_name = f"{cache_name}.{format}"
 

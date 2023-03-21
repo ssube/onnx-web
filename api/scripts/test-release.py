@@ -341,7 +341,7 @@ def main():
             else:
                 logger.warning("test failed: %s", test.name)
                 failed.append(test.name)
-        except Exception as e:
+        except Exception:
             logger.exception("error running test for %s", test.name)
             failed.append(test.name)
 

@@ -66,8 +66,8 @@ class OnnxNet:
     def half(self):
         return self
 
-    def load_state_dict(self, net, strict=True) -> None:
+    def load_state_dict(self, _net, strict=True) -> None:
         pass
 
-    def to(self, device):
+    def to(self, _device):
         return self
