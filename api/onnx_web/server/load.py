@@ -106,7 +106,6 @@ def get_config_value(key: str, subkey: str = "default", default=None):
     return config_params.get(key, {}).get(subkey, default)
 
 
-
 def load_extras(context: ServerContext):
     """
     Load the extras file(s) and collect the relevant parts for the server: labels and strings
