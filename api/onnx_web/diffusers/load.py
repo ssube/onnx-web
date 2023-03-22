@@ -360,14 +360,14 @@ class UNetWrapper(object):
         global timestep_dtype
         timestep_dtype = timestep.dtype
 
-        logger.trace("UNet parameter types: %s, %s", sample.dtype, timestep.dtype)
-        if "onnx-fp16" in self.server.optimizations:
-            logger.info("converting UNet sample to ONNX fp16")
-            sample = sample.astype(np.float16)
-            encoder_hidden_states = encoder_hidden_states.astype(np.float16)
-        elif sample.dtype != timestep.dtype:
-            logger.info("converting UNet sample to timestep dtype")
+        logger.trace("UNet parameter types: %s, %s, %s", sample.dtype, timestep.dtype, encoder_hidden_states.dtype)
+        if sample.dtype != timestep.dtype:
+            logger.trace("converting UNet sample to timestep dtype")
             sample = sample.astype(timestep.dtype)
+
+        if sample.dtype != timestep.dtype:
+            logger.trace("converting UNet hidden states to timestep dtype")
+            encoder_hidden_states = encoder_hidden_states.astype(np.float16)
 
         return self.wrapped(
             sample=sample,

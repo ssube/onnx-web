@@ -86,9 +86,3 @@ class ServerContext:
             return torch.float16
         else:
             return torch.float32
-
-    def numpy_dtype(self):
-        if "torch-fp16" in self.optimizations or "onnx-fp16" in self.optimizations:
-            return np.float16
-        else:
-            return np.float32

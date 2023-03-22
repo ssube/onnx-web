@@ -62,7 +62,7 @@ def blend_loras(
 ):
     # always load to CPU for blending
     device = torch.device("cpu")
-    dtype = context.torch_dtype()
+    dtype = torch.float32
 
     base_model = base_name if isinstance(base_name, ModelProto) else load(base_name)
     lora_models = [load_tensor(name, map_location=device) for name, _weight in loras]
