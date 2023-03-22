@@ -62,6 +62,7 @@ def blend_loras(
 ):
     # always load to CPU for blending
     device = torch.device("cpu")
+    dtype = context.torch_dtype()
 
     base_model = base_name if isinstance(base_name, ModelProto) else load(base_name)
     lora_models = [load_tensor(name, map_location=device) for name, _weight in loras]
@@ -88,11 +89,11 @@ def blend_loras(
                     "blending weights for keys: %s, %s, %s", key, up_key, alpha_key
                 )
 
-                down_weight = lora_model[key].to(dtype=torch.float32)
-                up_weight = lora_model[up_key].to(dtype=torch.float32)
+                down_weight = lora_model[key].to(dtype=dtype)
+                up_weight = lora_model[up_key].to(dtype=dtype)
 
                 dim = down_weight.size()[0]
-                alpha = lora_model.get(alpha_key, dim).to(torch.float32).numpy()
+                alpha = lora_model.get(alpha_key, dim).to(dtype).numpy()
 
                 try:
                     if len(up_weight.size()) == 2:
@@ -203,7 +204,7 @@ def blend_loras(
             logger.trace("blended weight shape: %s", blended.shape)
 
             # replace the original initializer
-            updated_node = numpy_helper.from_array(blended, weight_node.name)
+            updated_node = numpy_helper.from_array(blended.astype(base_weights.dtype), weight_node.name)
             del base_model.graph.initializer[weight_idx]
             base_model.graph.initializer.insert(weight_idx, updated_node)
         elif matmul_key in fixed_node_names:
@@ -232,7 +233,7 @@ def blend_loras(
             logger.trace("blended weight shape: %s", blended.shape)
 
             # replace the original initializer
-            updated_node = numpy_helper.from_array(blended, matmul_node.name)
+            updated_node = numpy_helper.from_array(blended.astype(base_weights.dtype), matmul_node.name)
             del base_model.graph.initializer[matmul_idx]
             base_model.graph.initializer.insert(matmul_idx, updated_node)
         else:

@@ -22,7 +22,7 @@ def blend_textual_inversions(
 ) -> Tuple[ModelProto, CLIPTokenizer]:
     # always load to CPU for blending
     device = torch.device("cpu")
-    dtype = np.float
+    dtype = context.numpy_dtype()
     embeds = {}
 
     for name, weight, base_token, inversion_format in inversions:
@@ -149,7 +149,7 @@ def blend_textual_inversions(
                 == "text_model.embeddings.token_embedding.weight"
             ):
                 new_initializer = numpy_helper.from_array(
-                    embedding_weights.astype(np.float32), embedding_node.name
+                    embedding_weights.astype(dtype), embedding_node.name
                 )
                 logger.trace("new initializer data type: %s", new_initializer.data_type)
                 del text_encoder.graph.initializer[i]

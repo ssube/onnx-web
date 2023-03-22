@@ -97,8 +97,7 @@ def convert_diffusion_diffusers(
     single_vae = model.get("single_vae")
     replace_vae = model.get("vae")
 
-    torch_half = "torch-fp16" in ctx.optimizations
-    torch_dtype = torch.float16 if torch_half else torch.float32
+    torch_dtype = ctx.torch_dtype()
     logger.debug("using Torch dtype %s for pipeline", torch_dtype)
 
     dest_path = path.join(ctx.model_path, name)
