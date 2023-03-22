@@ -365,9 +365,9 @@ class UNetWrapper(object):
             logger.trace("converting UNet sample to timestep dtype")
             sample = sample.astype(timestep.dtype)
 
-        if sample.dtype != timestep.dtype:
+        if encoder_hidden_states.dtype != timestep.dtype:
             logger.trace("converting UNet hidden states to timestep dtype")
-            encoder_hidden_states = encoder_hidden_states.astype(np.float16)
+            encoder_hidden_states = encoder_hidden_states.astype(timestep.dtype)
 
         return self.wrapped(
             sample=sample,
