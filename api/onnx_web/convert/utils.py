@@ -200,13 +200,13 @@ def remove_prefix(name: str, prefix: str) -> str:
 
 def load_torch(name: str, map_location=None) -> Optional[Dict]:
     try:
-        logger.debug("loading tensor with Torch JIT: %s", name)
-        checkpoint = torch.jit.load(name)
+        logger.debug("loading tensor with Torch: %s", name)
+        checkpoint = torch.load(name, map_location=map_location)
     except Exception:
         logger.exception(
-            "error loading with Torch JIT, falling back to Torch: %s", name
+            "error loading with Torch JIT, trying with Torch JIT: %s", name
         )
-        checkpoint = torch.load(name, map_location=map_location)
+        checkpoint = torch.jit.load(name)
 
     return checkpoint
 

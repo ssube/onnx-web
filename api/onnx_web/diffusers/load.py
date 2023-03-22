@@ -360,7 +360,12 @@ class UNetWrapper(object):
         global timestep_dtype
         timestep_dtype = timestep.dtype
 
-        logger.trace("UNet parameter types: %s, %s, %s", sample.dtype, timestep.dtype, encoder_hidden_states.dtype)
+        logger.trace(
+            "UNet parameter types: %s, %s, %s",
+            sample.dtype,
+            timestep.dtype,
+            encoder_hidden_states.dtype,
+        )
         if sample.dtype != timestep.dtype:
             logger.trace("converting UNet sample to timestep dtype")
             sample = sample.astype(timestep.dtype)

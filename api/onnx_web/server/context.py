@@ -3,7 +3,6 @@ from os import environ, path
 from typing import List, Optional
 
 import torch
-import numpy as np
 
 from ..utils import get_boolean
 from .model_cache import ModelCache

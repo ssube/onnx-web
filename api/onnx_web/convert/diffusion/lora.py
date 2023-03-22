@@ -204,7 +204,9 @@ def blend_loras(
             logger.trace("blended weight shape: %s", blended.shape)
 
             # replace the original initializer
-            updated_node = numpy_helper.from_array(blended.astype(base_weights.dtype), weight_node.name)
+            updated_node = numpy_helper.from_array(
+                blended.astype(base_weights.dtype), weight_node.name
+            )
             del base_model.graph.initializer[weight_idx]
             base_model.graph.initializer.insert(weight_idx, updated_node)
         elif matmul_key in fixed_node_names:
@@ -233,7 +235,9 @@ def blend_loras(
             logger.trace("blended weight shape: %s", blended.shape)
 
             # replace the original initializer
-            updated_node = numpy_helper.from_array(blended.astype(base_weights.dtype), matmul_node.name)
+            updated_node = numpy_helper.from_array(
+                blended.astype(base_weights.dtype), matmul_node.name
+            )
             del base_model.graph.initializer[matmul_idx]
             base_model.graph.initializer.insert(matmul_idx, updated_node)
         else:
