@@ -18,13 +18,12 @@ export function Img2Img() {
 
   async function uploadSource() {
     const { model, img2img, upscale } = state.getState();
-
-    const output = await client.img2img(model, {
+    const { image, retry } = await client.img2img(model, {
       ...img2img,
       source: mustExist(img2img.source), // TODO: show an error if this doesn't exist
     }, upscale);
 
-    setLoading(output);
+    pushHistory(image, retry);
   }
 
   const client = mustExist(useContext(ClientContext));
@@ -39,7 +38,7 @@ export function Img2Img() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setLoading = useStore(state, (s) => s.pushLoading);
+  const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
 
   return <Box>

@@ -44,11 +44,6 @@ def pipeline_from_request(
     if scheduler is None:
         scheduler = get_config_value("scheduler")
 
-    inversion = request.args.get("inversion", None)
-    inversion_path = None
-    if inversion is not None and inversion.strip() != "":
-        inversion_path = get_model_path(context, inversion)
-
     # image params
     prompt = get_not_empty(request.args, "prompt", get_config_value("prompt"))
     negative_prompt = request.args.get("negativePrompt", None)
@@ -129,7 +124,6 @@ def pipeline_from_request(
         lpw=lpw,
         negative_prompt=negative_prompt,
         batch=batch,
-        inversion=inversion_path,
     )
     size = Size(width, height)
     return (device, params, size)

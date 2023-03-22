@@ -26,12 +26,19 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Image history](#image-history)
     - [Scheduler comparison](#scheduler-comparison)
   - [Models](#models)
-    - [Model names](#model-names)
     - [Adding your own models](#adding-your-own-models)
+    - [Model names](#model-names)
     - [Model sources](#model-sources)
       - [Downloading models from Civitai](#downloading-models-from-civitai)
+      - [Downloading models from HuggingFace](#downloading-models-from-huggingface)
     - [Using a custom VAE](#using-a-custom-vae)
-    - [Using and controlling Textual Inversions](#using-and-controlling-textual-inversions)
+  - [Prompts](#prompts)
+    - [General structure](#general-structure)
+    - [Useful keywords](#useful-keywords)
+    - [Prompt tokens](#prompt-tokens)
+      - [LoRA tokens](#lora-tokens)
+      - [Textual Inversion tokens](#textual-inversion-tokens)
+      - [CLIP skip tokens](#clip-skip-tokens)
   - [Tabs](#tabs)
     - [Txt2img tab](#txt2img-tab)
       - [Scheduler parameter](#scheduler-parameter)
@@ -60,13 +67,16 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Image history setting](#image-history-setting)
       - [API server setting](#api-server-setting)
       - [Reset tab buttons](#reset-tab-buttons)
-  - [Known Errors](#known-errors)
-    - [Client Errors](#client-errors)
+  - [Known errors](#known-errors)
+    - [Check scripts](#check-scripts)
+      - [Check environment script](#check-environment-script)
+      - [Check model script](#check-model-script)
+    - [Client errors](#client-errors)
       - [Error fetching server parameters](#error-fetching-server-parameters)
       - [Parameter version error](#parameter-version-error)
       - [Distorted and noisy images](#distorted-and-noisy-images)
       - [Scattered image tiles](#scattered-image-tiles)
-    - [Server Errors](#server-errors)
+    - [Server errors](#server-errors)
       - [Very slow with high CPU usage, max fan speed during image generation](#very-slow-with-high-cpu-usage-max-fan-speed-during-image-generation)
       - [Connection refused or timeouts](#connection-refused-or-timeouts)
       - [Error: name 'cmd' is not defined](#error-name-cmd-is-not-defined)
@@ -130,6 +140,10 @@ image from history if you don't like it.
 
 ### Scheduler comparison
 
+The Stable Diffusion pipeline can be run using different schedulers, which generally produce similar results but
+each have their own advantages. Some schedulers are faster than other or require fewer steps, especially the recent
+DEIS multistep and Euler Ancestral schedulers.
+
 - https://huggingface.co/docs/diffusers/main/en/using-diffusers/schedulers#compare-schedulers
 - https://i.imgur.com/2pQPgf0.jpeg
 
@@ -143,7 +157,7 @@ The [ONNX runtime](https://onnxruntime.ai/) is a library for accelerating neural
 using [the ONNX file format](https://onnx.ai/) to share them across different platforms. ONNX web is a server to run
 hardware-accelerated inference using those models and a web client to provide the parameters and view the results.
 
-The models used by ONNX web are split up into three groups:
+The models used by ONNX web are split up into four groups:
 
 1. Diffusion
    1. general models like [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5)
@@ -154,19 +168,11 @@ The models used by ONNX web are split up into three groups:
 3. Correction
    1. [CodeFormer](https://github.com/sczhou/CodeFormer)
    2. [GFPGAN](https://github.com/TencentARC/GFPGAN)
+4. Networks
+   1. [LoRA](https://arxiv.org/abs/2106.09685)
+   2. [Textual Inversion](https://textual-inversion.github.io/)
 
 There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles.
-
-### Model names
-
-The `name` of each model dictates which category it will appear in on the client.
-
-- `diffusion-*` or `stable-diffusion-*` for diffusion models
-- `upscaling-*` for upscaling models
-- `correction-*` for correction models
-
-Models that do not match one of the prefixes will not be shown, so if you cannot find a model that you have converted,
-make sure it is named correctly.
 
 ### Adding your own models
 
@@ -202,13 +208,38 @@ You can convert and use your own models without making any code changes by copyi
       "source": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth",
       "scale": 4
     }
+  ],
+  "networks": [
+    {
+      "name": "cubex",
+      "source": "sd-concepts-library/cubex",
+      "format": "ckpt",
+      "label": "Cubex",
+      "type": "inversion"
+    },
+    {
+      "name": "minecraft",
+      "source": "sd-concepts-library/minecraft-concept-art",
+      "format": "ckpt",
+      "label": "Minecraft Concept",
+      "type": "inversion"
+    },
+  ],
+  "sources": [
+    {
+      "name": "vae-ft-mse-840000-ema-pruned",
+      "source": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors",
+      "format": "safetensors"
+    }
   ]
 }
 ```
 
-Models can be added from the directories used by `diffusers` as well as SafeTensor and Pickle checkpoints. Be careful
-loading PickleTensors, as they may contain unsafe code which can be executed on your machine, and use SafeTensor instead
-whenever possible.
+Models can be added from the directories used by `diffusers` as well as SafeTensor and pickle tensor checkpoints. See
+[the converting models guide](converting-models.md) for more details.
+
+Be careful loading pickle tensors, as they may contain unsafe code which will be executed on your machine. Use
+SafeTensors instead whenever possible.
 
 Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file and make sure to use the `launch-extras`
 script. For example:
@@ -225,6 +256,18 @@ script. For example:
 
 Extras using the older file format with nested arrays (`"diffusion": [[]]`) can be mixed with the newer format. You
 only need to convert them into the newer format if you need to use keys other than `name`, `source`, and `scale`.
+
+### Model names
+
+The `name` of each model dictates which category it will appear in on the client.
+
+- `diffusion-*` or `stable-diffusion-*` for diffusion models
+- `upscaling-*` for upscaling models
+- `correction-*` for correction models
+
+Models that do not match one of the prefixes will not be shown, so if you cannot find a model that you have converted,
+make sure it is named correctly. This applies to models in the `extras.json` file as well as models you have created,
+converted, or copied outside of the conversion script.
 
 ### Model sources
 
@@ -252,6 +295,8 @@ models from the HuggingFace hub.
 
 #### Downloading models from Civitai
 
+Use the `civitai://` protocol to download models from [the Civitai catalog](https://civitai.com/).
+
 When downloading models from Civitai, the ID shown in the browser URL bar _may not be_ the ID of the model itself.
 Since models can have multiple versions, make sure you use the correct ID. Use the model ID from the download link,
 which you can see and copy from the right-click menu:
@@ -260,6 +305,16 @@ which you can see and copy from the right-click menu:
 
 You want the Pruned SafeTensor, if one is available. Be careful downloading PickleTensors, they may contain unsafe
 code. The original, non-pruned models are much larger but are better for training.
+
+#### Downloading models from HuggingFace
+
+Use the `huggingface://` protocol to download models from [the HuggingFace hub](https://huggingface.co/models?other=stable-diffusion).
+Most models will detect and download all of the necessary files, while Textual Inversions with `"model": "concept"`
+will only download the `trained_embeds.bin` file.
+
+When downloading models from HuggingFace, you can use the copy button next to the repository name:
+
+![Stable Diffusion v1.5 model card with Copy model name option highlighted](guide-huggingface.png)
 
 ### Using a custom VAE
 
@@ -301,19 +356,104 @@ Some common VAE models include:
 - https://huggingface.co/stabilityai/sd-vae-ft-mse
 - https://huggingface.co/stabilityai/sd-vae-ft-mse-original
 
-### Using and controlling Textual Inversions
+## Prompts
 
-You can use a Textual Inversion along with a diffusion model by giving one or more of the tokens from the inversion
-model. Some Textual Inversions only have a single layer and some have 75 or more.
+### General structure
 
-You can provide more than one of the numbered layer tokens using the `base-{X,Y}` range syntax in your prompt. This
-uses the Python range rules, so `X` is inclusive and `Y` is not. The range `autumn-{0,5}` will be expanded into the
-tokens `autumn-0 autumn-1 autumn-2 autumn-3 autumn-4`. You can use the layer tokens individually, out of order, and
-repeat some layers or omit them entirely. You can provide a step as the third parameter, which will skip layers:
-`even-layers-{0,100,2}` will be expanded into
-`even-layers-0 even-layers-2 even-layers-4 even-layers-6 ... even-layers-98`.
+TODO
 
-The range syntax does not currently work when the Long Prompt Weighting pipeline is enabled.
+### Useful keywords
+
+The [OpenArt Stable Diffusion Prompt Book](https://cdn.openart.ai/assets/Stable%20Diffusion%20Prompt%20Book%20From%20OpenArt%2011-13.pdf)
+has a lot of useful tips on how to build a good prompt. You can include keywords to describe the subject, setting,
+style, and level of detail. Throwing a few extra keywords into the end of the prompt can help add specific details,
+like the color and intensity of the lighting.
+
+### Prompt tokens
+
+You can blend extra networks with the diffusion model using `<type:name:weight>` tokens. There are menus in the
+client for each type of additional network, which will insert the token for you.
+
+The `type` must be one of `clip`, `inversion`, or `lora`.
+
+The `name` must be alphanumeric and must not contain any special characters other than `-` and `_`.
+
+The `weight` must be a number. For `clip`, it must be a positive integer. For `inversion` and `lora`, it can be an
+integer or decimal number and may be negative.
+
+#### LoRA tokens
+
+You can blend one or more [LoRA weights](https://arxiv.org/abs/2106.09685) with the ONNX diffusion model using a
+`lora` token:
+
+```none
+<lora:name:0.5>
+```
+
+LoRA models must be placed in the `models/lora` directory and may be any supported tensor format.
+
+The type of network, name, and weight must be separated by colons. The LoRA name must be alphanumeric and must not
+contain any special characters other than `-` and `_`.
+
+LoRA weights often have their own keywords, which can be found on their model card or Civitai page. You need to use
+the `<lora:name:1.0>` token _and_ the keywords to activate the LoRA.
+
+Check out [the `kohya-ss/sd-scripts` repository](https://github.com/kohya-ss/sd-scripts) for more details.
+
+#### Textual Inversion tokens
+
+You can blend one or more [Textual Inversions](https://textual-inversion.github.io/) with the ONNX diffusion model
+using the `inversion` token:
+
+```none
+<inversion:autumn:1.0>
+```
+
+Textual Inversion embeddings must be placed in the `models/inversion` directory and may be any supported tensor format.
+
+The type of network, name, and weight must be separated by colons. The Textual Inversion name must be alphanumeric
+and must not contain any special characters other than `-` and `_`.
+
+Once the Textual Inversion has been blended, you can activate some or all of its layers using the trained token(s)
+in your prompt. Every Textual Inversion is available using its name, as well as tokens for all of the layers and for
+each individual layer. For an embedding called `autumn`, the available tokens are:
+
+- `autumn`
+- `autumn-all`
+- `autumn-0` through `autumn-5`
+
+The `autumn` and `autumn-all` tokens both activate a layer with the sum weights of the others. This will have a
+similar effect, but will not represent as many tokens in the prompt and may not attract as much attention. You need to
+use the `<inversion:name:1.0>` token _and_ the layer tokens to activate the Textual Inversion.
+
+You can use a range of the numbered layer tokens using the `base-{X,Y}` syntax in your prompt, where `X` is inclusive
+and `Y` is not. The range `autumn-{0,5}` will be expanded into the tokens `autumn-0 autumn-1 autumn-2 autumn-3 autumn-4`.
+You can provide a step as the third parameter, which will skip layers: `even-layers-{0,100,2}` will be expanded into
+`even-layers-0 even-layers-2 even-layers-4 even-layers-6 ... even-layers-98`. Some Textual Inversions only have a
+single layer and some have 75 or more. You can use the layer tokens individually, out of order, and repeat some layers
+or omit them entirely.
+
+The range syntax currently does not work when the Long Prompt Weighting pipeline is enabled.
+
+Some Textual Inversions have their own token, especially ones trained using [the Stable Conceptualizer notebook](https://colab.research.google.com/github/huggingface/notebooks/blob/main/diffusers/stable_conceptualizer_inference.ipynb)
+and [the sd-concepts-library](https://huggingface.co/spaces/sd-concepts-library/stable-diffusion-conceptualizer) on
+HuggingFace hub. The model card should list the token, which will usually be wrapped in `<angle-brackets>`. This token
+will be available along with the name token, but these concepts only have a single layer, so the numbered tokens are
+much less useful. For a concept called `cubex` with the token `<cube>`, the available tokens are:
+
+- `cubex`
+- `<cube>`
+- `cubex-0`
+
+#### CLIP skip tokens
+
+You can skip the last layers of the CLIP text encoder using the `clip` token:
+
+```none
+<clip:skip:2>
+```
+
+This makes your prompt less specific and some models have been trained to work better with some amount of skipping.
 
 ## Tabs
 
@@ -363,11 +503,6 @@ Using -1 will generate a new seed on the server for each image.
 #### Prompt parameter
 
 The input text for your image, things that should be included.
-
-The [OpenArt Stable Diffusion Prompt Book](https://cdn.openart.ai/assets/Stable%20Diffusion%20Prompt%20Book%20From%20OpenArt%2011-13.pdf)
-has a lot of useful tips on how to build a good prompt. You can include keywords to describe the subject, setting,
-style, and level of detail. Throwing a few extra keywords into the end of the prompt can help add specific details,
-like the color and intensity of the lighting.
 
 > A puppy dog with wings flying over a deciduous forest, drone, detailed, daylight, wide angle, sports, action camera
 
@@ -560,15 +695,68 @@ Changing the API server will reload the client.
 
 Resets the state of each tab to the default, if some controls become glitchy.
 
-## Known Errors
+## Known errors
 
 This section attempts to cover all of the known errors and their solutions.
 
-If you encounter an error that does not show up here, please [open a Github issue](https://github.com/ssube/onnx-web/issues/new/choose)
-and include as many details as possible. Screenshots of the client and logs from the server are especially helpful,
-and please include any stacktraces that appear in the server logs.
+If you encounter an error that does not show up here, please create a new issue on Github:
 
-### Client Errors
+- collect as many details as possible
+  - screenshots from the client and logs from the server are especially helpful
+  - redact anything you are not comfortable sharing, like IP addresses or prompt text
+  - please include any stacktraces that appear in the server logs
+- run [the check environment script](#check-environment-script)
+- [open a Github issue](https://github.com/ssube/onnx-web/issues/new/choose)
+
+### Check scripts
+
+There are a few scripts provided to check various parts of the app, environment, or models. These can be used to
+collect information for debugging problems or just to figure out what is in a tensor file with a confusing name.
+
+#### Check environment script
+
+The `check-env.py` script will check for required and recommended packages and collect their versions, then list
+the ONNX runtime providers that are available in the current environment.
+
+This can be used to make sure you have the correct packages installed and that your GPU provider appears in the list.
+
+To run the `check-env.py` script using your `onnx-web` virtual environment:
+
+```shell
+# on linux:
+> cd onnx-web/api
+> onnx_env/bin/activate
+> python3 scripts/check-env.py
+
+# on windows:
+> cd onnx-web\api
+> onnx_env\Scripts\Activate.bat
+> python scripts\check-env.py
+```
+
+#### Check model script
+
+The `check-model.py` script will check the format and contents of a model file. The models can be ONNX models,
+Safetensors, or pickle tensors.
+
+The script will attempt to load the file, which can import libraries and execute code in the case of pickle tensors.
+Only run the script on files that you trust enough to load.
+
+To run the `check-model.py` script on a model using your `onnx-web` virtual environment:
+
+```shell
+# on linux:
+> cd onnx-web/api
+> onnx_env/bin/activate
+> python3 scripts/check-model.py /home/ssube/onnx-web/models/inversion/1234.safetensor
+
+# on windows:
+> cd onnx-web\api
+> onnx_env\Scripts\Activate.bat
+> python scripts\check-model.py C:\Users\ssube\onnx-web\models\inversion\1234.safetensor
+```
+
+### Client errors
 
 #### Error fetching server parameters
 
@@ -597,7 +785,7 @@ This can happen when the selected upscaling model is not trained for the current
 
 This often means that the scale parameter does not match the upscaling model.
 
-### Server Errors
+### Server errors
 
 If your image fails to render without any other error messages on the client, check the server logs for errors (if you
 have access).

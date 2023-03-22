@@ -15,6 +15,7 @@ from ..upscale import run_upscale_correction
 from ..utils import run_gc
 from ..worker import WorkerContext
 from .load import get_latents_from_seed, load_pipeline
+from .utils import get_inversions_from_prompt, get_loras_from_prompt
 
 logger = getLogger(__name__)
 
@@ -28,6 +29,11 @@ def run_txt2img_pipeline(
     upscale: UpscaleParams,
 ) -> None:
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
+
+    (prompt, loras) = get_loras_from_prompt(params.prompt)
+    (prompt, inversions) = get_inversions_from_prompt(prompt)
+    params.prompt = prompt
+
     pipe = load_pipeline(
         server,
         OnnxStableDiffusionPipeline,
@@ -35,7 +41,8 @@ def run_txt2img_pipeline(
         params.scheduler,
         job.get_device(),
         params.lpw,
-        params.inversion,
+        inversions,
+        loras,
     )
     progress = job.get_progress_callback()
 
@@ -85,9 +92,6 @@ def run_txt2img_pipeline(
         dest = save_image(server, output, image)
         save_params(server, output, params, size, upscale=upscale)
 
-    del pipe
-    del result
-
     run_gc([job.get_device()])
 
     logger.info("finished txt2img job: %s", dest)
@@ -102,6 +106,10 @@ def run_img2img_pipeline(
     source: Image.Image,
     strength: float,
 ) -> None:
+    (prompt, loras) = get_loras_from_prompt(params.prompt)
+    (prompt, inversions) = get_inversions_from_prompt(prompt)
+    params.prompt = prompt
+
     pipe = load_pipeline(
         server,
         OnnxStableDiffusionImg2ImgPipeline,
@@ -109,7 +117,8 @@ def run_img2img_pipeline(
         params.scheduler,
         job.get_device(),
         params.lpw,
-        params.inversion,
+        inversions,
+        loras,
     )
     progress = job.get_progress_callback()
     if params.lpw:
@@ -156,9 +165,6 @@ def run_img2img_pipeline(
         dest = save_image(server, output, image)
         size = Size(*source.size)
         save_params(server, output, params, size, upscale=upscale)
-
-    del pipe
-    del result
 
     run_gc([job.get_device()])
 

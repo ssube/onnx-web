@@ -27,7 +27,7 @@ def output(context: ServerContext, filename: str):
 
 
 def register_static_routes(
-    app: Flask, context: ServerContext, pool: DevicePoolExecutor
+    app: Flask, context: ServerContext, _pool: DevicePoolExecutor
 ):
     return [
         app.route("/")(wrap_route(index, context)),

@@ -32,7 +32,7 @@ def process_tile_grid(
             idx = (y * tiles_x) + x
             left = x * tile
             top = y * tile
-            logger.info("processing tile %s of %s, %s.%s", idx + 1, total, y, x)
+            logger.debug("processing tile %s of %s, %s.%s", idx + 1, total, y, x)
             tile_image = source.crop((left, top, left + tile, top + tile))
 
             for filter in filters:
@@ -80,7 +80,7 @@ def process_tile_spiral(
         top = center_y + int(top)
 
         counter += 1
-        logger.info("processing tile %s of %s, %sx%s", counter, len(tiles), left, top)
+        logger.debug("processing tile %s of %s, %sx%s", counter, len(tiles), left, top)
 
         # TODO: only valid for scale == 1, resize source for others
         tile_image = image.crop((left, top, left + tile, top + tile))

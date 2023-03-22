@@ -74,7 +74,7 @@ class Size:
     def add_border(self, border: Border):
         return Size(
             border.left + self.width + border.right,
-            border.top + self.height + border.right,
+            border.top + self.height + border.bottom,
         )
 
     def tojson(self) -> Dict[str, int]:
@@ -113,8 +113,8 @@ class DeviceParams:
         else:
             return (self.provider, self.options)
 
-    def sess_options(self) -> SessionOptions:
-        if self.sess_options_cache is not None:
+    def sess_options(self, cache=True) -> SessionOptions:
+        if cache and self.sess_options_cache is not None:
             return self.sess_options_cache
 
         sess = SessionOptions()
@@ -139,7 +139,9 @@ class DeviceParams:
             logger.debug("enabling ONNX deterministic compute")
             sess.use_deterministic_compute = True
 
-        self.sess_options_cache = sess
+        if cache:
+            self.sess_options_cache = sess
+
         return sess
 
     def torch_str(self) -> str:
@@ -162,7 +164,6 @@ class ImageParams:
         lpw: bool = False,
         eta: float = 0.0,
         batch: int = 1,
-        inversion: Optional[str] = None,
     ) -> None:
         self.model = model
         self.scheduler = scheduler
@@ -174,7 +175,6 @@ class ImageParams:
         self.lpw = lpw or False
         self.eta = eta
         self.batch = batch
-        self.inversion = inversion
 
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
@@ -188,7 +188,6 @@ class ImageParams:
             "lpw": self.lpw,
             "eta": self.eta,
             "batch": self.batch,
-            "inversion": self.inversion,
         }
 
     def with_args(self, **kwargs):
@@ -203,7 +202,6 @@ class ImageParams:
             kwargs.get("lpw", self.lpw),
             kwargs.get("eta", self.eta),
             kwargs.get("batch", self.batch),
-            kwargs.get("inversion", self.inversion),
         )
 
 

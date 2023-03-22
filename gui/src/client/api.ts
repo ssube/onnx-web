@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { doesExist } from '@apextoaster/js-utils';
+import { doesExist, InvalidArgumentError } from '@apextoaster/js-utils';
 
 import { ServerParams } from '../config.js';
 import { range } from '../utils.js';
@@ -32,8 +32,6 @@ export interface ModelParams {
    * Use the long prompt weighting pipeline.
    */
   lpw: boolean;
-
-  inversion: string;
 }
 
 /**
@@ -175,18 +173,64 @@ export interface ImageResponse {
  * Status response from the ready endpoint.
  */
 export interface ReadyResponse {
+  cancelled: boolean;
+  failed: boolean;
   progress: number;
   ready: boolean;
+}
+
+export interface NetworkModel {
+  name: string;
+  type: 'inversion' | 'lora';
+  // TODO: add token
+  // TODO: add layer/token count
 }
 
 /**
  * List of available models.
  */
 export interface ModelsResponse {
-  diffusion: Array<string>;
   correction: Array<string>;
-  inversion: Array<string>;
+  diffusion: Array<string>;
+  networks: Array<NetworkModel>;
   upscaling: Array<string>;
+}
+
+export type RetryParams = {
+  type: 'txt2img';
+  model: ModelParams;
+  params: Txt2ImgParams;
+  upscale?: UpscaleParams;
+} | {
+  type: 'img2img';
+  model: ModelParams;
+  params: Img2ImgParams;
+  upscale?: UpscaleParams;
+} | {
+  type: 'inpaint';
+  model: ModelParams;
+  params: InpaintParams;
+  upscale?: UpscaleParams;
+} | {
+  type: 'outpaint';
+  model: ModelParams;
+  params: OutpaintParams;
+  upscale?: UpscaleParams;
+} | {
+  type: 'upscale';
+  model: ModelParams;
+  params: UpscaleReqParams;
+  upscale?: UpscaleParams;
+} | {
+  type: 'blend';
+  model: ModelParams;
+  params: BlendParams;
+  upscale?: UpscaleParams;
+};
+
+export interface ImageResponseWithRetry {
+  image: ImageResponse;
+  retry: RetryParams;
 }
 
 export interface ApiClient {
@@ -230,32 +274,32 @@ export interface ApiClient {
   /**
    * Start a txt2img pipeline.
    */
-  txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+  txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
 
   /**
    * Start an im2img pipeline.
    */
-  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
 
   /**
    * Start an inpaint pipeline.
    */
-  inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+  inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
 
   /**
    * Start an outpaint pipeline.
    */
-  outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+  outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
 
   /**
    * Start an upscale pipeline.
    */
-  upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+  upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
 
   /**
    * Start a blending pipeline.
    */
-  blend(model: ModelParams, params: BlendParams, upscale?: UpscaleParams): Promise<ImageResponse>;
+  blend(model: ModelParams, params: BlendParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
 
   /**
    * Check whether some pipeline's output is ready yet.
@@ -263,6 +307,8 @@ export interface ApiClient {
   ready(key: string): Promise<ReadyResponse>;
 
   cancel(key: string): Promise<boolean>;
+
+  retry(params: RetryParams): Promise<ImageResponseWithRetry>;
 }
 
 /**
@@ -335,7 +381,6 @@ export function appendModelToURL(url: URL, params: ModelParams) {
   url.searchParams.append('upscaling', params.upscaling);
   url.searchParams.append('correction', params.correction);
   url.searchParams.append('lpw', String(params.lpw));
-  url.searchParams.append('inversion', params.inversion);
 }
 
 /**
@@ -361,7 +406,7 @@ export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
  * Make an API client using the given API root and fetch client.
  */
 export function makeClient(root: string, f = fetch): ApiClient {
-  function throttleRequest(url: URL, options: RequestInit): Promise<ImageResponse> {
+  function parseRequest(url: URL, options: RequestInit): Promise<ImageResponse> {
     return f(url, options).then((res) => parseApiResponse(root, res));
   }
 
@@ -405,7 +450,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
         translation: Record<string, string>;
       }>;
     },
-    async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse> {
+    async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry> {
       const url = makeImageURL(root, 'img2img', params);
       appendModelToURL(url, model);
 
@@ -418,13 +463,21 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const body = new FormData();
       body.append('source', params.source, 'source');
 
-      // eslint-disable-next-line no-return-await
-      return await throttleRequest(url, {
+      const image = await parseRequest(url, {
         body,
         method: 'POST',
       });
+      return {
+        image,
+        retry: {
+          type: 'img2img',
+          model,
+          params,
+          upscale,
+        },
+      };
     },
-    async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ImageResponse> {
+    async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry> {
       const url = makeImageURL(root, 'txt2img', params);
       appendModelToURL(url, model);
 
@@ -440,12 +493,20 @@ export function makeClient(root: string, f = fetch): ApiClient {
         appendUpscaleToURL(url, upscale);
       }
 
-      // eslint-disable-next-line no-return-await
-      return await throttleRequest(url, {
+      const image = await parseRequest(url, {
         method: 'POST',
       });
+      return {
+        image,
+        retry: {
+          type: 'txt2img',
+          model,
+          params,
+          upscale,
+        },
+      };
     },
-    async inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams) {
+    async inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry> {
       const url = makeImageURL(root, 'inpaint', params);
       appendModelToURL(url, model);
 
@@ -462,13 +523,21 @@ export function makeClient(root: string, f = fetch): ApiClient {
       body.append('mask', params.mask, 'mask');
       body.append('source', params.source, 'source');
 
-      // eslint-disable-next-line no-return-await
-      return await throttleRequest(url, {
+      const image = await parseRequest(url, {
         body,
         method: 'POST',
       });
+      return {
+        image,
+        retry: {
+          type: 'inpaint',
+          model,
+          params,
+          upscale,
+        },
+      };
     },
-    async outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams) {
+    async outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry> {
       const url = makeImageURL(root, 'inpaint', params);
       appendModelToURL(url, model);
 
@@ -502,13 +571,21 @@ export function makeClient(root: string, f = fetch): ApiClient {
       body.append('mask', params.mask, 'mask');
       body.append('source', params.source, 'source');
 
-      // eslint-disable-next-line no-return-await
-      return await throttleRequest(url, {
+      const image = await parseRequest(url, {
         body,
         method: 'POST',
       });
+      return {
+        image,
+        retry: {
+          type: 'outpaint',
+          model,
+          params,
+          upscale,
+        },
+      };
     },
-    async upscale(model: ModelParams, params: UpscaleReqParams, upscale: UpscaleParams): Promise<ImageResponse> {
+    async upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry> {
       const url = makeApiUrl(root, 'upscale');
       appendModelToURL(url, model);
 
@@ -525,13 +602,21 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const body = new FormData();
       body.append('source', params.source, 'source');
 
-      // eslint-disable-next-line no-return-await
-      return await throttleRequest(url, {
+      const image = await parseRequest(url, {
         body,
         method: 'POST',
       });
+      return {
+        image,
+        retry: {
+          type: 'upscale',
+          model,
+          params,
+          upscale,
+        },
+      };
     },
-    async blend(model: ModelParams, params: BlendParams, upscale: UpscaleParams): Promise<ImageResponse> {
+    async blend(model: ModelParams, params: BlendParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry> {
       const url = makeApiUrl(root, 'blend');
       appendModelToURL(url, model);
 
@@ -547,11 +632,19 @@ export function makeClient(root: string, f = fetch): ApiClient {
         body.append(name, params.sources[i], name);
       }
 
-      // eslint-disable-next-line no-return-await
-      return await throttleRequest(url, {
+      const image = await parseRequest(url, {
         body,
         method: 'POST',
       });
+      return {
+        image,
+        retry: {
+          type: 'blend',
+          model,
+          params,
+          upscale,
+        }
+      };
     },
     async ready(key: string): Promise<ReadyResponse> {
       const path = makeApiUrl(root, 'ready');
@@ -569,6 +662,24 @@ export function makeClient(root: string, f = fetch): ApiClient {
       });
       return res.status === STATUS_SUCCESS;
     },
+    async retry(retry: RetryParams): Promise<ImageResponseWithRetry> {
+      switch (retry.type) {
+        case 'blend':
+          return this.blend(retry.model, retry.params, retry.upscale);
+        case 'img2img':
+          return this.img2img(retry.model, retry.params, retry.upscale);
+        case 'inpaint':
+          return this.inpaint(retry.model, retry.params, retry.upscale);
+        case 'outpaint':
+          return this.outpaint(retry.model, retry.params, retry.upscale);
+        case 'txt2img':
+          return this.txt2img(retry.model, retry.params, retry.upscale);
+        case 'upscale':
+          return this.upscale(retry.model, retry.params, retry.upscale);
+        default:
+          throw new InvalidArgumentError('unknown request type');
+      }
+    }
   };
 }
 

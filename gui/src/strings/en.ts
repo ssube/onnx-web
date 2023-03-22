@@ -30,10 +30,7 @@ export const I18N_STRINGS_EN = {
           },
         },
         prompt: {
-          tokens: 'Tokens: {{current}}/{{max}}',
-          error: {
-            length: 'Too many tokens: {{current}}/{{max}}',
-          },
+          tokens: '{{tokens}} tokens, {{groups}} groups',
         },
       },
       loading: {
@@ -58,6 +55,7 @@ export const I18N_STRINGS_EN = {
       maskFilter: {
         'gaussian-multiply': 'Gaussian Multiply',
         'gaussian-screen': 'Gaussian Screen',
+        'none': 'None',
       },
       model: {
         '': 'None',
@@ -103,6 +101,7 @@ export const I18N_STRINGS_EN = {
         correction: 'Correction Model',
         diffusion: 'Diffusion Model',
         inversion: 'Textual Inversion',
+        lora: 'LoRA',
         upscaling: 'Upscaling Model',
       },
       noiseSource: {
@@ -216,6 +215,7 @@ export const I18N_STRINGS_EN = {
         delete: 'Delete',
         next: 'Next',
         previous: 'Previous',
+        retry: 'Retry',
         save: 'Save',
       },
       upscaleOrder: {

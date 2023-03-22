@@ -2,12 +2,13 @@ from collections import Counter
 from logging import getLogger
 from queue import Empty
 from threading import Thread
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Tuple
 
 from torch.multiprocessing import Process, Queue, Value
 
 from ..params import DeviceParams
 from ..server import ServerContext
+from .command import JobCommand, ProgressCommand
 from .context import WorkerContext
 from .worker import worker_main
 
@@ -23,31 +24,30 @@ class DevicePoolExecutor:
 
     leaking: List[Tuple[str, Process]]
     context: Dict[str, WorkerContext]  # Device -> Context
-    current: Dict[str, "Value[int]"]
-    pending: Dict[str, "Queue[Tuple[str, Callable[..., None], Any, Any]]"]
+    current: Dict[str, "Value[int]"]  # Device -> pid
+    pending: Dict[str, "Queue[JobCommand]"]
     threads: Dict[str, Thread]
     workers: Dict[str, Process]
 
-    active_jobs: Dict[str, Tuple[str, int]]  # should be Dict[Device, JobStatus]
     cancelled_jobs: List[str]
-    finished_jobs: List[Tuple[str, int, bool]]  # should be List[JobStatus]
+    finished_jobs: List[ProgressCommand]
+    pending_jobs: List[JobCommand]
+    running_jobs: Dict[str, ProgressCommand]  # Device -> job progress
     total_jobs: Dict[str, int]  # Device -> job count
 
-    logs: "Queue"
-    progress: "Queue[Tuple[str, str, int]]"
-    finished: "Queue[Tuple[str, str]]"
+    logs: "Queue[str]"
+    progress: "Queue[ProgressCommand]"
 
     def __init__(
         self,
         server: ServerContext,
         devices: List[DeviceParams],
-        max_jobs_per_worker: int = 10,
         max_pending_per_worker: int = 100,
         join_timeout: float = 1.0,
     ):
         self.server = server
         self.devices = devices
-        self.max_jobs_per_worker = max_jobs_per_worker
+        self.max_jobs_per_worker = server.job_limit
         self.max_pending_per_worker = max_pending_per_worker
         self.join_timeout = join_timeout
 
@@ -58,19 +58,18 @@ class DevicePoolExecutor:
         self.threads = {}
         self.workers = {}
 
-        self.active_jobs = {}
         self.cancelled_jobs = []
         self.finished_jobs = []
+        self.pending_jobs = []
+        self.running_jobs = {}
         self.total_jobs = {}
 
         self.logs = Queue(self.max_pending_per_worker)
         self.progress = Queue(self.max_pending_per_worker)
-        self.finished = Queue(self.max_pending_per_worker)
 
         # TODO: these should be part of a start method
         self.create_logger_worker()
         self.create_progress_worker()
-        self.create_finished_worker()
 
         for device in devices:
             self.create_device_worker(device)
@@ -100,10 +99,9 @@ class DevicePoolExecutor:
             device,
             cancel=Value("B", False),
             progress=self.progress,
-            finished=self.finished,
             logs=self.logs,
             pending=pending,
-            current=current,
+            active_pid=current,
         )
         self.context[name] = context
         worker = Process(
@@ -119,7 +117,7 @@ class DevicePoolExecutor:
 
     def create_logger_worker(self) -> None:
         def logger_worker(logs: Queue):
-            logger.info("checking in from logger worker thread")
+            logger.trace("checking in from logger worker thread")
 
             while True:
                 try:
@@ -131,8 +129,8 @@ class DevicePoolExecutor:
                     pass
                 except ValueError:
                     break
-                except Exception as err:
-                    logger.error("error in log worker: %s", err)
+                except Exception:
+                    logger.exception("error in log worker")
 
         logger_thread = Thread(
             name="onnx-web logger", target=logger_worker, args=(self.logs,), daemon=True
@@ -143,24 +141,18 @@ class DevicePoolExecutor:
         logger_thread.start()
 
     def create_progress_worker(self) -> None:
-        def progress_worker(progress: Queue):
-            logger.info("checking in from progress worker thread")
+        def progress_worker(queue: "Queue[ProgressCommand]"):
+            logger.trace("checking in from progress worker thread")
             while True:
                 try:
-                    job, device, value = progress.get(timeout=(self.join_timeout / 2))
-                    logger.debug("progress update for job: %s to %s", job, value)
-                    self.active_jobs[job] = (device, value)
-                    if job in self.cancelled_jobs:
-                        logger.debug(
-                            "setting flag for cancelled job: %s on %s", job, device
-                        )
-                        self.context[device].set_cancel()
+                    progress = queue.get(timeout=(self.join_timeout / 2))
+                    self.update_job(progress)
                 except Empty:
                     pass
                 except ValueError:
                     break
-                except Exception as err:
-                    logger.error("error in progress worker: %s", err)
+                except Exception:
+                    logger.exception("error in progress worker")
 
         progress_thread = Thread(
             name="onnx-web progress",
@@ -173,38 +165,8 @@ class DevicePoolExecutor:
         logger.debug("starting progress worker")
         progress_thread.start()
 
-    def create_finished_worker(self) -> None:
-        def finished_worker(finished: Queue):
-            logger.info("checking in from finished worker thread")
-            while True:
-                try:
-                    job, device = finished.get(timeout=(self.join_timeout / 2))
-                    logger.info("job has been finished: %s", job)
-                    context = self.context[device]
-                    _device, progress = self.active_jobs[job]
-                    self.finished_jobs.append((job, progress, context.cancel.value))
-                    del self.active_jobs[job]
-                    self.join_leaking()
-                except Empty:
-                    pass
-                except ValueError:
-                    break
-                except Exception as err:
-                    logger.error("error in finished worker: %s", err)
-
-        finished_thread = Thread(
-            name="onnx-web finished",
-            target=finished_worker,
-            args=(self.finished,),
-            daemon=True,
-        )
-        self.threads["finished"] = finished_thread
-
-        logger.debug("started finished worker")
-        finished_thread.start()
-
     def get_job_context(self, key: str) -> WorkerContext:
-        device, _progress = self.active_jobs[key]
+        device, _progress = self.running_jobs[key]
         return self.context[device]
 
     def get_next_device(self, needs_device: Optional[DeviceParams] = None) -> int:
@@ -218,7 +180,7 @@ class DevicePoolExecutor:
         jobs.update([self.pending[d.device].qsize() for d in self.devices])
 
         queued = jobs.most_common()
-        logger.debug("jobs queued by device: %s", queued)
+        logger.trace("jobs queued by device: %s", queued)
 
         lowest_count = queued[-1][1]
         lowest_devices = [d[0] for d in queued if d[1] == lowest_count]
@@ -233,44 +195,56 @@ class DevicePoolExecutor:
         should be cancelled on the next progress callback.
         """
 
+        for job in self.finished_jobs:
+            if job.job == key:
+                logger.debug("cannot cancel finished job: %s", key)
+                return False
+
+        for job in self.pending_jobs:
+            if job.name == key:
+                self.pending_jobs[:] = [
+                    job for job in self.pending_jobs if job.name != key
+                ]
+                logger.info("cancelled pending job: %s", key)
+                return True
+
+        if key not in self.running_jobs:
+            logger.debug("cancelled job is not active: %s", key)
+        else:
+            job = self.running_jobs[key]
+            logger.info("cancelling job %s, active on device %s", key, job.device)
+
         self.cancelled_jobs.append(key)
-
-        if key not in self.active_jobs:
-            logger.debug("cancelled job has not been started yet: %s", key)
-            return True
-
-        device, _progress = self.active_jobs[key]
-        logger.info("cancelling job %s, active on device %s", key, device)
-
-        context = self.context[device]
-        context.set_cancel()
-
         return True
 
-    def done(self, key: str) -> Tuple[Optional[bool], int]:
+    def done(self, key: str) -> Tuple[bool, Optional[ProgressCommand]]:
         """
         Check if a job has been finished and report the last progress update.
 
-        If the job is still active or pending, the first item will be False.
-        If the job is not finished or active, the first item will be None.
+        If the job is still pending, the first item will be True and there will be no ProgressCommand.
         """
-        for k, p, c in self.finished_jobs:
-            if k == key:
-                return (True, p)
+        if key in self.running_jobs:
+            logger.debug("checking status for running job: %s", key)
+            return (False, self.running_jobs[key])
 
-        if key not in self.active_jobs:
-            logger.debug("checking status for unknown job: %s", key)
-            return (None, 0)
+        for job in self.finished_jobs:
+            if job.job == key:
+                logger.debug("checking status for finished job: %s", key)
+                return (False, job)
 
-        _device, progress = self.active_jobs[key]
-        return (False, progress)
+        for job in self.pending_jobs:
+            if job.name == key:
+                logger.debug("checking status for pending job: %s", key)
+                return (True, None)
+
+        logger.trace("checking status for unknown job: %s", key)
+        return (False, None)
 
     def join(self):
         logger.info("stopping worker pool")
 
         logger.debug("closing queues")
         self.logs.close()
-        self.finished.close()
         self.progress.close()
         for queue in self.pending.values():
             queue.close()
@@ -351,7 +325,8 @@ class DevicePoolExecutor:
                     device,
                 )
 
-        logger.debug("starting new workers")
+        if len(needs_restart) > 0:
+            logger.debug("starting new workers")
 
         for device in self.devices:
             if device.device in needs_restart:
@@ -377,32 +352,87 @@ class DevicePoolExecutor:
             self.devices[device_idx],
         )
 
+        # increment job count before recycling (why tho?)
         device = self.devices[device_idx].device
-
         if device in self.total_jobs:
             self.total_jobs[device] += 1
         else:
             self.total_jobs[device] = 1
 
+        # recycle before attempting to run
         logger.debug("job count for device %s: %s", device, self.total_jobs[device])
         self.recycle()
 
-        self.pending[device].put((key, fn, args, kwargs), block=False)
+        # build and queue job
+        job = JobCommand(key, device, fn, args, kwargs)
+        self.pending_jobs.append(job)
+        self.pending[device].put(job, block=False)
 
-    def status(self) -> List[Tuple[str, int, bool, bool]]:
+    def status(self) -> List[Tuple[str, int, bool, bool, bool, bool]]:
         history = [
-            (name, progress, False, name in self.cancelled_jobs)
-            for name, (_device, progress) in self.active_jobs.items()
+            (
+                name,
+                job.progress,
+                False,
+                job.finished,
+                job.cancelled,
+                job.failed,
+            )
+            for name, job in self.running_jobs.items()
         ]
         history.extend(
             [
                 (
-                    name,
-                    progress,
+                    job.name,
+                    0,
                     True,
-                    cancel,
+                    False,
+                    False,
+                    False,
                 )
-                for name, progress, cancel in self.finished_jobs
+                for job in self.pending_jobs
+            ]
+        )
+        history.extend(
+            [
+                (
+                    job.job,
+                    job.progress,
+                    False,
+                    job.finished,
+                    job.cancelled,
+                    job.failed,
+                )
+                for job in self.finished_jobs
             ]
         )
         return history
+
+    def update_job(self, progress: ProgressCommand):
+        if progress.finished:
+            # move from running to finished
+            logger.info("job has finished: %s", progress.job)
+            self.finished_jobs.append(progress)
+            if progress.job in self.running_jobs:
+                del self.running_jobs[progress.job]
+
+            self.join_leaking()
+            if progress.job in self.cancelled_jobs:
+                self.cancelled_jobs.remove(progress.job)
+        else:
+            # move from pending to running
+            logger.debug(
+                "progress update for job: %s to %s", progress.job, progress.progress
+            )
+            self.running_jobs[progress.job] = progress
+            self.pending_jobs[:] = [
+                job for job in self.pending_jobs if job.name != progress.job
+            ]
+
+            if progress.job in self.cancelled_jobs:
+                logger.debug(
+                    "setting flag for cancelled job: %s on %s",
+                    progress.job,
+                    progress.device,
+                )
+                self.context[progress.device].set_cancel()

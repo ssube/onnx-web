@@ -79,7 +79,6 @@ def make_output_name(
     hash_value(sha, params.lpw)
     hash_value(sha, params.eta)
     hash_value(sha, params.batch)
-    hash_value(sha, params.inversion)
     hash_value(sha, size.width)
     hash_value(sha, size.height)
 

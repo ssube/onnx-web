@@ -13,7 +13,7 @@ from logging import getLogger
 from os import mkdir, path
 from pathlib import Path
 from shutil import rmtree
-from typing import Dict
+from typing import Dict, Tuple
 
 import torch
 from diffusers import (
@@ -88,7 +88,7 @@ def convert_diffusion_diffusers(
     ctx: ConversionContext,
     model: Dict,
     source: str,
-):
+) -> Tuple[bool, str]:
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
     """
@@ -97,7 +97,9 @@ def convert_diffusion_diffusers(
     single_vae = model.get("single_vae")
     replace_vae = model.get("vae")
 
-    dtype = torch.float32  # torch.float16 if ctx.half else torch.float32
+    dtype = ctx.torch_dtype()
+    logger.debug("using Torch dtype %s for pipeline", dtype)
+
     dest_path = path.join(ctx.model_path, name)
     model_index = path.join(dest_path, "model_index.json")
 
@@ -111,7 +113,7 @@ def convert_diffusion_diffusers(
 
     if path.exists(dest_path) and path.exists(model_index):
         logger.info("ONNX model already exists, skipping")
-        return
+        return (False, dest_path)
 
     pipeline = StableDiffusionPipeline.from_pretrained(
         source,
@@ -136,11 +138,15 @@ def convert_diffusion_diffusers(
         pipeline.text_encoder,
         # casting to torch.int32 until the CLIP fix is released: https://github.com/huggingface/transformers/pull/18515/files
         model_args=(
-            text_input.input_ids.to(device=ctx.training_device, dtype=torch.int32)
+            text_input.input_ids.to(device=ctx.training_device, dtype=torch.int32),
+            None,  # attention mask
+            None,  # position ids
+            None,  # output attentions
+            torch.tensor(True).to(device=ctx.training_device, dtype=torch.bool),
         ),
         output_path=output_path / "text_encoder" / "model.onnx",
         ordered_input_names=["input_ids"],
-        output_names=["last_hidden_state", "pooler_output"],
+        output_names=["last_hidden_state", "pooler_output", "hidden_states"],
         dynamic_axes={
             "input_ids": {0: "batch", 1: "sequence"},
         },
@@ -328,3 +334,5 @@ def convert_diffusion_diffusers(
         )
 
     logger.info("ONNX pipeline is loadable")
+
+    return (True, dest_path)

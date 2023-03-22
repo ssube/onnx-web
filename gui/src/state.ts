@@ -16,6 +16,7 @@ import {
   ModelParams,
   OutpaintPixels,
   ReadyResponse,
+  RetryParams,
   Txt2ImgParams,
   UpscaleParams,
   UpscaleReqParams,
@@ -27,9 +28,10 @@ import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
  */
 type TabState<TabParams> = ConfigFiles<Required<TabParams>> & ConfigState<Required<TabParams>>;
 
-interface LoadingItem {
+interface HistoryItem {
   image: ImageResponse;
   ready: Maybe<ReadyResponse>;
+  retry: RetryParams;
 }
 
 interface BrushSlice {
@@ -47,18 +49,12 @@ interface DefaultSlice {
 }
 
 interface HistorySlice {
-  history: Array<ImageResponse>;
+  history: Array<HistoryItem>;
   limit: number;
-  loading: Array<LoadingItem>;
 
-  clearLoading(image: ImageResponse): void;
-  pushHistory(image: ImageResponse): void;
-  pushLoading(image: ImageResponse): void;
+  pushHistory(image: ImageResponse, retry: RetryParams): void;
   removeHistory(image: ImageResponse): void;
   setLimit(limit: number): void;
-  /**
-   * @todo should check ready and move the image from loading to history
-   */
   setReady(image: ImageResponse, ready: ReadyResponse): void;
 }
 
@@ -166,7 +162,7 @@ export const STATE_KEY = 'onnx-web';
 /**
  * Current state version for zustand persistence.
  */
-export const STATE_VERSION = 6;
+export const STATE_VERSION = 7;
 
 export const BLEND_SOURCES = 2;
 
@@ -309,42 +305,28 @@ export function createStateSlices(server: ServerParams) {
   const createHistorySlice: Slice<HistorySlice> = (set) => ({
     history: [],
     limit: DEFAULT_HISTORY.limit,
-    loading: [],
-    clearLoading(image) {
-      set((prev) => ({
-        ...prev,
-        loading: prev.loading.filter((it) => it.image.outputs[0].key !== image.outputs[0].key),
-      }));
-    },
-    pushHistory(image) {
+    pushHistory(image, retry) {
       set((prev) => ({
         ...prev,
         history: [
-          image,
-          ...prev.history,
-        ].slice(0, prev.limit + DEFAULT_HISTORY.scrollback),
-        loading: prev.loading.filter((it) => it.image.outputs[0].key !== image.outputs[0].key),
-      }));
-    },
-    pushLoading(image) {
-      set((prev) => ({
-        ...prev,
-        loading: [
           {
             image,
             ready: {
+              cancelled: false,
+              failed: false,
               progress: 0,
               ready: false,
             },
+            retry,
           },
-          ...prev.loading,
-        ],
+          ...prev.history,
+        ].slice(0, prev.limit + DEFAULT_HISTORY.scrollback),
       }));
     },
     removeHistory(image) {
       set((prev) => ({
         ...prev,
-        history: prev.history.filter((it) => it.outputs !== image.outputs),
+        history: prev.history.filter((it) => it.image.outputs[0].key !== image.outputs[0].key),
       }));
     },
     setLimit(limit) {
@@ -355,17 +337,17 @@ export function createStateSlices(server: ServerParams) {
     },
     setReady(image, ready) {
       set((prev) => {
-        const loading = [...prev.loading];
-        const idx = loading.findIndex((it) => it.image.outputs[0].key === image.outputs[0].key);
+        const history = [...prev.history];
+        const idx = history.findIndex((it) => it.image.outputs[0].key === image.outputs[0].key);
         if (idx >= 0) {
-          loading[idx].ready = ready;
+          history[idx].ready = ready;
         } else {
           // TODO: error
         }
 
         return {
           ...prev,
-          loading,
+          history,
         };
       });
     },
@@ -495,7 +477,6 @@ export function createStateSlices(server: ServerParams) {
       platform: server.platform.default,
       upscaling: server.upscaling.default,
       correction: server.correction.default,
-      inversion: server.inversion.default,
       lpw: false,
     },
     setModel(params) {

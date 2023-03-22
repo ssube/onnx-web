@@ -13,33 +13,32 @@ export interface PromptInputProps extends PromptValue {
   onChange?: Maybe<(value: PromptValue) => void>;
 }
 
-export const PROMPT_LIMIT = 77;
+export const PROMPT_GROUP = 75;
+
+function splitPrompt(prompt: string): Array<string> {
+  return prompt
+    .split(',')
+    .flatMap((phrase) => phrase.split(' '))
+    .map((word) => word.trim())
+    .filter((word) => word.length > 0);
+}
 
 export function PromptInput(props: PromptInputProps) {
   const { prompt = '', negativePrompt = '' } = props;
-  const promptLength = prompt.split(' ').length;
-  const error = promptLength > PROMPT_LIMIT;
+
+  const tokens = splitPrompt(prompt);
+  const groups = Math.ceil(tokens.length / PROMPT_GROUP);
 
   const { t } = useTranslation();
-
-  function promptHelper() {
-    const params = {
-      current: promptLength,
-      max: PROMPT_LIMIT,
-    };
-
-    if (error) {
-      return t('input.prompt.error.length', params);
-    } else {
-      return t('input.prompt.tokens', params);
-    }
-  }
+  const helper = t('input.prompt.tokens', {
+    groups,
+    tokens: tokens.length,
+  });
 
   return <Stack spacing={2}>
     <TextField
-      error={error}
       label={t('parameter.prompt')}
-      helperText={promptHelper()}
+      helperText={helper}
       variant='outlined'
       value={prompt}
       onChange={(event) => {

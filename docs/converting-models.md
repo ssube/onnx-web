@@ -1,7 +1,10 @@
 # Converting Models
 
-This guide describes the process for converting models from various formats, including Dreambooth checkpoints and LoRA
-weights, to the directories used by `diffusers` and on to the ONNX models used by `onnx-web`.
+This guide describes the process for converting models and additional networks to the directories used by `diffusers`
+and on to the ONNX models used by `onnx-web`.
+
+Using the `extras.json` file, you can convert SD and diffusers models to ONNX, and blend them with LoRA weights and
+Textual Inversion embeddings.
 
 ## Contents
 
@@ -15,8 +18,11 @@ weights, to the directories used by `diffusers` and on to the ONNX models used b
     - [LoRA weights from cloneofsimo/lora](#lora-weights-from-cloneofsimolora)
     - [LoRA weights from kohya-ss/sd-scripts](#lora-weights-from-kohya-sssd-scripts)
   - [Converting Textual Inversion embeddings](#converting-textual-inversion-embeddings)
-    - [Figuring out what token a Textual Inversion uses](#figuring-out-what-token-a-textual-inversion-uses)
-    - [Figuring out how many layers a Textual Inversion uses](#figuring-out-how-many-layers-a-textual-inversion-uses)
+    - [Figuring out how many layers are in a Textual Inversion](#figuring-out-how-many-layers-are-in-a-textual-inversion)
+  - [Optimizing diffusers models](#optimizing-diffusers-models)
+    - [Converting to float16](#converting-to-float16)
+    - [Optimizing with ONNX runtime](#optimizing-with-onnx-runtime)
+    - [Optimizing with HuggingFace Optimum](#optimizing-with-huggingface-optimum)
 
 ## Conversion steps for each type of model
 
@@ -28,11 +34,9 @@ You can start from a diffusers directory, HuggingFace Hub repository, or an SD c
 3. diffusers directory or LoRA weights from `cloneofsimo/lora` to...
 4. ONNX models
 
-Textual inversions can be converted directly to ONNX by merging them with the base model.
-
-One current disadvantage of using ONNX is that LoRA weights must be merged with the base model before being converted,
-so the final output is roughly the size of the base model. Hopefully this can be reduced in the future
-(https://github.com/ssube/onnx-web/issues/213).
+LoRAs and Textual inversions can be temporarily blended with an ONNX model while the server is running using prompt
+tokens or permanently blended during model conversion using the `extras.json` file. LoRA and Textual Inversion models
+do not need to be converted to ONNX to be used with prompt tokens.
 
 If you are using the Auto1111 web UI or another tool, you may not need to convert the models to ONNX. In that case,
 you will not have an `extras.json` file and should skip the last step.
@@ -110,8 +114,11 @@ Based on docs and code in:
 
 ## Converting LoRA weights
 
-You can merge one or more sets of LoRA weights into their base models, and then use your `extras.json` file to
-convert them into usable ONNX models.
+You can merge one or more sets of LoRA weights into their base models using your `extras.json` file, which is directly
+supported by the conversion script in `onnx-web` with no additional steps.
+
+This is not required to use LoRA weights in the prompt, but it can save memory and enable better caching for
+commonly-used model combinations.
 
 LoRA weights produced by the `cloneofsimo/lora` repository can be converted to a diffusers directory and from there
 on to ONNX, while LoRA weights produced by the `kohya-ss/sd-scripts` repository must be converted to an SD checkpoint,
@@ -245,24 +252,13 @@ Based on docs in:
 You can convert Textual Inversion embeddings by merging their weights and tokens into a copy of their base model,
 which is directly supported by the conversion script in `onnx-web` with no additional steps.
 
-Textual Inversions may have more than one set of weights, which can be used and controlled separately. Some Textual
-Inversions provide their own token, but you can set a custom token for any of them.
+This is not required to use LoRA weights in the prompt, but it can save memory and enable better caching for
+commonly-used model combinations.
 
-### Figuring out what token a Textual Inversion uses
+Some Textual Inversions may have more than one set of weights, which can be used and controlled separately. Some
+Textual Inversions may provide their own token, but you can always use the filename to activate them in `onnx-web`.
 
-The base token, without any layer numbers, should be printed to the logs with the string `found embedding for token`:
-
-```none
-[2023-03-08 04:54:00,234] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: found embedding for token <concept>: torch.Size([768])
-[2023-03-08 04:54:01,624] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: added 1 tokens
-[2023-03-08 04:54:01,814] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: saving tokenizer for textual inversion
-[2023-03-08 04:54:01,859] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: saving text encoder for textual inversion
-```
-
-If you have set a custom token, that will be shown instead. If more than one token has been added, they will be
-numbered following the pattern `base-N`, starting with 0.
-
-### Figuring out how many layers a Textual Inversion uses
+### Figuring out how many layers are in a Textual Inversion
 
 Textual Inversions produced by [the Stable Conceptualizer notebook](https://colab.research.google.com/github/huggingface/notebooks/blob/main/diffusers/stable_conceptualizer_inference.ipynb)
 only have a single layer, while many others have more than one.
@@ -272,8 +268,8 @@ The number of layers is shown in the server logs when the model is converted:
 ```none
 [2023-03-08 04:54:00,234] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: found embedding for token <concept>: torch.Size([768])
 [2023-03-08 04:54:01,624] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: added 1 tokens
-[2023-03-08 04:54:01,814] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: saving tokenizer for textual inversion
-[2023-03-08 04:54:01,859] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: saving text encoder for textual inversion
+[2023-03-08 04:54:01,814] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: saving tokenizer for Textual Inversion
+[2023-03-08 04:54:01,859] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: saving text encoder for Textual Inversion
 ...
 [2023-03-08 04:58:06,378] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: generating 74 layer tokens
 [2023-03-08 04:58:06,379] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: found embedding for token ['goblin-0', 'goblin-1', 'goblin-2', 'goblin-3', 'goblin-4', 'goblin-5', 'goblin-6', 'gob
@@ -285,5 +281,71 @@ lin-7', 'goblin-8', 'goblin-9', 'goblin-10', 'goblin-11', 'goblin-12', 'goblin-1
 [2023-03-08 04:58:07,875] DEBUG: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: embedding torch.Size([768]) vector for layer goblin-3
 ```
 
-Figuring out the number of layers after the model has been converted currently requires the original tensor file
-(https://github.com/ssube/onnx-web/issues/212).
+You do not need to know how many layers a Textual Inversion has to use the base token, `goblin` or `goblin-all` in this
+example, but it does allow you to control the layers individually.
+
+## Optimizing diffusers models
+
+The ONNX models often include redundant nodes, like division by 1, and are converted using 32-bit floating point
+numbers by default. The models can be optimized to remove some of those nodes and reduce their size, both on disk and
+in VRAM.
+
+The highest levels of optimization will make the converted models platform-specific and must be done after blending
+LoRAs and Textual Inversions, so you cannot select them in the prompt, but reduces memory usage by 50-75%.
+
+### Converting to float16
+
+The size of a model can be roughly cut in half, on disk and in memory, by converting it from float32 to float16. There
+are a few different levels of conversion, which become increasingly platforms-specific.
+
+1. Internal conversion
+   - Converts graph nodes to float16 operations
+   - Leaves inputs and outputs as float32
+   - Initializer data can be converted to float16 or kept as float32
+2. Full conversion
+   - Can be done with ONNX runtime or Torch
+   - Converts inputs, outputs, nodes, and initializer data to float16
+   - Breaks runtime LoRA and Textual Inversion blending
+   - Requires some additional data conversions at runtime, which may introduce subtle rounding errors
+
+Using Stable Diffusion v1.5 as an example, full conversion reduces the size of the model by about half:
+
+```none
+4.0G    ./stable-diffusion-v1-5-fp32
+4.0G    ./stable-diffusion-v1-5-fp32-optimized
+2.6G    ./stable-diffusion-v1-5-fp16-internal
+2.3G    ./stable-diffusion-v1-5-fp16-optimized
+2.0G    ./stable-diffusion-v1-5-fp16-torch
+```
+
+Combined with [the other ONNX optimizations](server-admin.md#pipeline-optimizations), this can make the pipeline usable
+on 4-6GB GPUs and allow much larger batch sizes on GPUs with more memory. The optimized float32 model uses somewhat
+less VRAM than the original model, despite being the same size on disk.
+
+### Optimizing with ONNX runtime
+
+The ONNX runtime provides an optimization script for Stable Diffusion models in their git repository. You will need to
+clone that repository, but you can use an existing virtual environment for `onnx-web` and should not need to install
+any new packages.
+
+```shell
+> git clone https://github.com/microsoft/onnxruntime
+> cd onnxruntime/onnxruntime/python/tools/transformers/models/stable_diffusion
+> python3 optimize_pipeline.py \
+    -i /home/ssube/onnx-web/models/stable-diffusion-onnx-v1-5 \
+    -o /home/ssube/onnx-web/models/stable-diffusion-optimized-v1-5 \
+    --use_external_data_format
+```
+
+You can convert the model into ONNX float16 using the `--float16` option. Models converted into ONNX float16 can only
+be run when using [the `onnx-fp16` optimization](server-admin#pipeeline-optimizations).
+
+The `optimize_pipeline.py` script should work on any [diffusers directory with ONNX models](#converting-diffusers-models),
+but you will need to use the `--use_external_data_format` option if you are not using `--float16`. See the `--help` for
+more details.
+
+- https://github.com/microsoft/onnxruntime/tree/main/onnxruntime/python/tools/transformers/models/stable_diffusion
+
+### Optimizing with HuggingFace Optimum
+
+- https://huggingface.co/docs/optimum/v1.7.1/en/onnxruntime/usage_guides/optimization#optimizing-a-model-with-optimum-cli

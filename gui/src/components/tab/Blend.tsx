@@ -16,14 +16,13 @@ import { MaskCanvas } from '../input/MaskCanvas.js';
 export function Blend() {
   async function uploadSource() {
     const { model, blend, upscale } = state.getState();
-
-    const output = await client.blend(model, {
+    const { image, retry } = await client.blend(model, {
       ...blend,
       mask: mustExist(blend.mask),
       sources: mustExist(blend.sources), // TODO: show an error if this doesn't exist
     }, upscale);
 
-    setLoading(output);
+    pushHistory(image, retry);
   }
 
   const client = mustExist(useContext(ClientContext));
@@ -37,7 +36,7 @@ export function Blend() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setBlend = useStore(state, (s) => s.setBlend);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setLoading = useStore(state, (s) => s.pushLoading);
+  const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
 
   const sources = mustDefault(blend.sources, []);
@@ -72,7 +71,7 @@ export function Blend() {
       />
       <UpscaleControl />
       <Button
-        disabled={sources.length === 0}
+        disabled={sources.length < 2}
         variant='contained'
         onClick={() => upload.mutate()}
       >{t('generate')}</Button>

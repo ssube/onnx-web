@@ -17,10 +17,8 @@ import json
 import os
 import re
 import shutil
-import sys
-import traceback
 from logging import getLogger
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import torch
 from diffusers import (
@@ -1395,7 +1393,6 @@ def extract_checkpoint(
     image_size = 512 if is_512 else 768
     # Needed for V2 models so we can create the right text encoder.
     upcast_attention = False
-    msg = None
 
     # Create empty config
     db_config = TrainingConfig(
@@ -1413,6 +1410,9 @@ def extract_checkpoint(
         # Try to determine if v1 or v2 model if we have a ckpt
         logger.info("loading model from checkpoint")
         checkpoint = load_tensor(checkpoint_file, map_location=map_location)
+        if checkpoint is None:
+            logger.warning("unable to load tensor")
+            return
 
         rev_keys = ["db_global_step", "global_step"]
         epoch_keys = ["db_epoch", "epoch"]
@@ -1607,15 +1607,13 @@ def extract_checkpoint(
                 scheduler=scheduler,
             )
     except Exception:
-        logger.error(
-            "exception setting up output: %s",
-            traceback.format_exception(*sys.exc_info()),
+        logger.exception(
+            "error setting up output",
         )
         pipe = None
 
     if pipe is None or db_config is None:
-        msg = "pipeline or config is not set, unable to continue."
-        logger.error(msg)
+        logger.error("pipeline or config is not set, unable to continue")
         return
     else:
         logger.info("saving diffusion model")
@@ -1663,7 +1661,7 @@ def convert_diffusion_original(
     ctx: ConversionContext,
     model: ModelDict,
     source: str,
-):
+) -> Tuple[bool, str]:
     name = model["name"]
     source = source or model["source"]
 
@@ -1675,7 +1673,7 @@ def convert_diffusion_original(
 
     if os.path.exists(dest_path) and os.path.exists(dest_index):
         logger.info("ONNX pipeline already exists, skipping")
-        return
+        return (False, dest_path)
 
     torch_name = name + "-torch"
     torch_path = os.path.join(ctx.cache_path, torch_name)
@@ -1703,10 +1701,11 @@ def convert_diffusion_original(
     if "vae" in model:
         del model["vae"]
 
-    convert_diffusion_diffusers(ctx, model, working_name)
+    result = convert_diffusion_diffusers(ctx, model, working_name)
 
     if "torch" in ctx.prune:
         logger.info("removing intermediate Torch models: %s", torch_path)
         shutil.rmtree(torch_path)
 
     logger.info("ONNX pipeline saved to %s", name)
+    return result

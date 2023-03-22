@@ -44,7 +44,6 @@ def source_txt2img(
         params.scheduler,
         job.get_device(),
         params.lpw,
-        params.inversion,
     )
 
     if params.lpw:

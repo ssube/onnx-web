@@ -1,16 +1,20 @@
 from logging import getLogger
 from math import ceil
-from re import compile
-from typing import List, Optional
+from re import Pattern, compile
+from typing import List, Optional, Tuple
 
 import numpy as np
+import torch
 from diffusers import OnnxStableDiffusionPipeline
 
 logger = getLogger(__name__)
 
 
+CLIP_TOKEN = compile(r"\<clip:([-\w]+):(\d+)\>")
+INVERSION_TOKEN = compile(r"\<inversion:([-\w]+):(-?[\.|\d]+)\>")
+LORA_TOKEN = compile(r"\<lora:([-\w]+):(-?[\.|\d]+)\>")
 MAX_TOKENS_PER_GROUP = 77
-PATTERN_RANGE = compile("(\\w+)-{(\\d+),(\\d+)(?:,(\\d+))?}")
+PATTERN_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
 
 
 def expand_prompt_ranges(prompt: str) -> str:
@@ -24,16 +28,23 @@ def expand_prompt_ranges(prompt: str) -> str:
     return PATTERN_RANGE.sub(expand_range, prompt)
 
 
+@torch.no_grad()
 def expand_prompt(
     self: OnnxStableDiffusionPipeline,
     prompt: str,
     num_images_per_prompt: int,
     do_classifier_free_guidance: bool,
     negative_prompt: Optional[str] = None,
+    skip_clip_states: Optional[int] = 0,
 ) -> "np.NDArray":
     # self provides:
     #   tokenizer: CLIPTokenizer
     #   encoder: OnnxRuntimeModel
+
+    prompt, clip_tokens = get_tokens_from_prompt(prompt, CLIP_TOKEN)
+    if len(clip_tokens) > 0:
+        skip_clip_states = int(clip_tokens[0][1])
+        logger.info("skipping %s CLIP layers", skip_clip_states)
 
     batch_size = len(prompt) if isinstance(prompt, list) else 1
     prompt = expand_prompt_ranges(prompt)
@@ -48,7 +59,7 @@ def expand_prompt(
     )
 
     groups_count = ceil(tokens.input_ids.shape[1] / MAX_TOKENS_PER_GROUP)
-    logger.debug("splitting %s into %s groups", tokens.input_ids.shape, groups_count)
+    logger.trace("splitting %s into %s groups", tokens.input_ids.shape, groups_count)
 
     groups = []
     # np.array_split(tokens.input_ids, groups_count, axis=1)
@@ -57,19 +68,37 @@ def expand_prompt(
         group_end = min(
             group_start + MAX_TOKENS_PER_GROUP, tokens.input_ids.shape[1]
         )  # or should this be 1?
-        logger.debug("building group for token slice [%s : %s]", group_start, group_end)
+        logger.trace("building group for token slice [%s : %s]", group_start, group_end)
         groups.append(tokens.input_ids[:, group_start:group_end])
 
     # encode each chunk
-    logger.debug("group token shapes: %s", [t.shape for t in groups])
+    logger.trace("group token shapes: %s", [t.shape for t in groups])
     group_embeds = []
     for group in groups:
-        logger.debug("encoding group: %s", group.shape)
-        embeds = self.text_encoder(input_ids=group.astype(np.int32))[0]
-        group_embeds.append(embeds)
+        logger.trace("encoding group: %s", group.shape)
+
+        text_result = self.text_encoder(input_ids=group.astype(np.int32))
+        logger.trace(
+            "text encoder produced %s outputs: %s", len(text_result), text_result
+        )
+
+        last_state, _pooled_output, *hidden_states = text_result
+        if skip_clip_states > 0:
+            layer_norm = torch.nn.LayerNorm(last_state.shape[2])
+            norm_state = layer_norm(
+                torch.from_numpy(hidden_states[-skip_clip_states]).detach()
+            )
+            logger.trace(
+                "normalized results after skipping %s layers: %s",
+                skip_clip_states,
+                norm_state.shape,
+            )
+            group_embeds.append(norm_state)
+        else:
+            group_embeds.append(last_state)
 
     # concat those embeds
-    logger.debug("group embeds shape: %s", [t.shape for t in group_embeds])
+    logger.trace("group embeds shape: %s", [t.shape for t in group_embeds])
     prompt_embeds = np.concatenate(group_embeds, axis=1)
     prompt_embeds = np.repeat(prompt_embeds, num_images_per_prompt, axis=0)
 
@@ -105,7 +134,7 @@ def expand_prompt(
             input_ids=uncond_input.input_ids.astype(np.int32)
         )[0]
         negative_padding = tokens.input_ids.shape[1] - negative_prompt_embeds.shape[1]
-        logger.debug(
+        logger.trace(
             "padding negative prompt to match input: %s, %s, %s extra tokens",
             tokens.input_ids.shape,
             negative_prompt_embeds.shape,
@@ -126,5 +155,37 @@ def expand_prompt(
         # to avoid doing two forward passes
         prompt_embeds = np.concatenate([negative_prompt_embeds, prompt_embeds])
 
-    logger.debug("expanded prompt shape: %s", prompt_embeds.shape)
+    logger.trace("expanded prompt shape: %s", prompt_embeds.shape)
     return prompt_embeds
+
+
+def get_tokens_from_prompt(
+    prompt: str, pattern: Pattern
+) -> Tuple[str, List[Tuple[str, float]]]:
+    """
+    TODO: replace with Arpeggio
+    """
+    remaining_prompt = prompt
+
+    tokens = []
+    next_match = pattern.search(remaining_prompt)
+    while next_match is not None:
+        logger.debug("found token in prompt: %s", next_match)
+        name, weight = next_match.groups()
+        tokens.append((name, float(weight)))
+        # remove this match and look for another
+        remaining_prompt = (
+            remaining_prompt[: next_match.start()]
+            + remaining_prompt[next_match.end() :]
+        )
+        next_match = pattern.search(remaining_prompt)
+
+    return (remaining_prompt, tokens)
+
+
+def get_loras_from_prompt(prompt: str) -> Tuple[str, List[Tuple[str, float]]]:
+    return get_tokens_from_prompt(prompt, LORA_TOKEN)
+
+
+def get_inversions_from_prompt(prompt: str) -> Tuple[str, List[Tuple[str, float]]]:
+    return get_tokens_from_prompt(prompt, INVERSION_TOKEN)

@@ -62,11 +62,13 @@ export const I18N_STRINGS_FR = {
       maskFilter: {
         'gaussian-multiply': '',
         'gaussian-screen': '',
+        'none': '',
       },
       modelType: {
         correction: 'modèle de correction',
         diffusion: 'modèle de diffusion',
         inversion: '',
+        lora: '',
         upscaling: 'modèle de grossissement',
       },
       noiseSource: {
@@ -153,6 +155,7 @@ export const I18N_STRINGS_FR = {
         delete: '',
         next: '',
         previous: '',
+        retry: '',
         save: '',
       },
       upscaleOrder: {

@@ -39,8 +39,8 @@ from .load import (
     get_correction_models,
     get_diffusion_models,
     get_extra_strings,
-    get_inversion_models,
     get_mask_filters,
+    get_network_models,
     get_noise_sources,
     get_upscaling_models,
 )
@@ -50,9 +50,18 @@ from .utils import wrap_route
 logger = getLogger(__name__)
 
 
-def ready_reply(ready: bool, progress: int = 0):
+def ready_reply(
+    ready: bool = False,
+    cancelled: bool = False,
+    failed: bool = False,
+    pending: bool = False,
+    progress: int = 0,
+):
     return jsonify(
         {
+            "cancelled": cancelled,
+            "failed": failed,
+            "pending": pending,
             "progress": progress,
             "ready": ready,
         }
@@ -102,7 +111,7 @@ def list_models(context: ServerContext):
         {
             "correction": get_correction_models(),
             "diffusion": get_diffusion_models(),
-            "inversion": get_inversion_models(),
+            "networks": [model.tojson() for model in get_network_models()],
             "upscaling": get_upscaling_models(),
         }
     )
@@ -435,9 +444,9 @@ def cancel(context: ServerContext, pool: DevicePoolExecutor):
         return error_reply("output name is required")
 
     output_file = sanitize_name(output_file)
-    cancel = pool.cancel(output_file)
+    cancelled = pool.cancel(output_file)
 
-    return ready_reply(cancel)
+    return ready_reply(cancelled=cancelled)
 
 
 def ready(context: ServerContext, pool: DevicePoolExecutor):
@@ -446,14 +455,27 @@ def ready(context: ServerContext, pool: DevicePoolExecutor):
         return error_reply("output name is required")
 
     output_file = sanitize_name(output_file)
-    done, progress = pool.done(output_file)
+    pending, progress = pool.done(output_file)
 
-    if done is None:
+    if pending:
+        return ready_reply(pending=True)
+
+    if progress is None:
         output = base_join(context.output_path, output_file)
         if path.exists(output):
-            return ready_reply(True)
+            return ready_reply(ready=True)
+        else:
+            return ready_reply(
+                ready=True,
+                failed=True,
+            )  # is a missing image really an error? yes will display the retry button
 
-    return ready_reply(done or False, progress=progress)
+    return ready_reply(
+        ready=progress.finished,
+        progress=progress.progress,
+        failed=progress.failed,
+        cancelled=progress.cancelled,
+    )
 
 
 def status(context: ServerContext, pool: DevicePoolExecutor):

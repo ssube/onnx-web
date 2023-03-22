@@ -32,22 +32,22 @@ export function Inpaint() {
     const { model, inpaint, outpaint, upscale } = state.getState();
 
     if (outpaint.enabled) {
-      const output = await client.outpaint(model, {
+      const { image, retry } = await client.outpaint(model, {
         ...inpaint,
         ...outpaint,
         mask: mustExist(mask),
         source: mustExist(source),
       }, upscale);
 
-      setLoading(output);
+      pushHistory(image, retry);
     } else {
-      const output = await client.inpaint(model, {
+      const { image, retry } = await client.inpaint(model, {
         ...inpaint,
         mask: mustExist(mask),
         source: mustExist(source),
       }, upscale);
 
-      setLoading(output);
+      pushHistory(image, retry);
     }
   }
 
@@ -72,7 +72,7 @@ export function Inpaint() {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setInpaint = useStore(state, (s) => s.setInpaint);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setLoading = useStore(state, (s) => s.pushLoading);
+  const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
 
   const query = useQueryClient();
@@ -144,7 +144,6 @@ export function Inpaint() {
         <QueryList
           id='masks'
           labelKey={'maskFilter'}
-          showEmpty={true}
           name={t('parameter.maskFilter')}
           query={{
             result: masks,
@@ -182,8 +181,8 @@ export function Inpaint() {
               });
             }}
           >
-            {Object.entries(params.tileOrder.keys).map(([key, name]) =>
-              <MenuItem key={key} value={key}>{t(`tileOrder.${name}`)}</MenuItem>)
+            {Object.entries(params.tileOrder.keys).map(([_key, name]) =>
+              <MenuItem key={name} value={name}>{t(`tileOrder.${name}`)}</MenuItem>)
             }
           </Select>
         </FormControl>

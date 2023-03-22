@@ -10,7 +10,20 @@ $defs:
         - type: number
         - type: string
 
-  textual_inversion:
+  lora_network:
+    type: object
+    required: [name, source]
+    properties:
+      name:
+        type: string
+      source:
+        type: string
+      label:
+        type: string
+      weight:
+        type: number
+
+  textual_inversion_network:
     type: object
     required: [name, source]
     properties:
@@ -25,6 +38,8 @@ $defs:
         type: string
       token:
         type: string
+      weight:
+        type: number
 
   base_model:
     type: object
@@ -58,7 +73,11 @@ $defs:
           inversions:
             type: array
             items:
-              $ref: "#/$defs/textual_inversion"
+              $ref: "#/$defs/textual_inversion_network"
+          loras:
+            type: array
+            items:
+              $ref: "#/$defs/lora_network"
           vae:
             type: string
 
@@ -81,6 +100,31 @@ $defs:
         type: string
       source:
         type: string
+
+  source_network:
+    type: object
+    required: [name, source, type]
+    properties:
+      format:
+        type: string
+        enum: [ckpt, safetensors]
+      model:
+        type: string
+        enum: [
+          # inversion
+          concept,
+          embeddings,
+          # lora
+          cloneofsimo,
+          sd-scripts
+        ]
+      name:
+        type: string
+      source:
+        type: string
+      type:
+        type: string
+        enum: [inversion, lora]
 
   translation:
     type: object
@@ -106,12 +150,10 @@ properties:
       oneOf:
         - $ref: "#/$defs/legacy_tuple"
         - $ref: "#/$defs/correction_model"
-  upscaling:
+  networks:
     type: array
     items:
-      oneOf:
-        - $ref: "#/$defs/legacy_tuple"
-        - $ref: "#/$defs/upscaling_model"
+      $ref: "#/$defs/source_network"
   sources:
     type: array
     items:
@@ -124,3 +166,9 @@ properties:
     patternProperties:
       "^\\w\\w$":
         $ref: "#/$defs/translation"
+  upscaling:
+    type: array
+    items:
+      oneOf:
+        - $ref: "#/$defs/legacy_tuple"
+        - $ref: "#/$defs/upscaling_model"

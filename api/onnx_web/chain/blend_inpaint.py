@@ -76,7 +76,6 @@ def blend_inpaint(
             params.scheduler,
             job.get_device(),
             params.lpw,
-            params.inversion,
         )
 
         if params.lpw:

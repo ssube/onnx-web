@@ -373,7 +373,7 @@ have added your own.
 ### Test the models
 
 You should verify that all of the steps up to this point have worked correctly by attempting to run the
-`api/test-diffusers.py` script, which is a slight variation on the original txt2img script.
+`api/scripts/test-diffusers.py` script, which is a slight variation on the original txt2img script.
 
 If the script works, there will be an image of an astronaut in `outputs/test.png`.
 
@@ -451,7 +451,7 @@ To update the server, make sure you are on the `main` branch and pull the latest
 > git pull
 ```
 
-If you want to run a specific tag of the server, run `git checkout v0.7.1` with the desired tag.
+If you want to run a specific tag of the server, run `git checkout v0.8.1` with the desired tag.
 
 ### Building the client
 

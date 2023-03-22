@@ -1,4 +1,4 @@
 --extra-index-url https://download.pytorch.org/whl/cu117
-torch
-torchvision
-onnxruntime-gpu
+torch>=1.12,<2
+torchvision>=0.13,<0.15
+onnxruntime-gpu>=1.13
