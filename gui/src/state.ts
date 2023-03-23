@@ -309,12 +309,7 @@ export function createStateSlices(server: ServerParams) {
         history: [
           {
             image,
-            ready: {
-              cancelled: false,
-              failed: false,
-              progress: 0,
-              ready: false,
-            },
+            ready: undefined,
             retry,
           },
           ...prev.history,
