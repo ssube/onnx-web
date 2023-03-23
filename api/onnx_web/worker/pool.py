@@ -333,6 +333,14 @@ class DevicePoolExecutor:
                 self.create_device_worker(device)
                 self.total_jobs[device.device] = 0
 
+        if not self.threads["logger"].is_alive():
+            logger.warning("restarting crashed logger worker")
+            self.create_logger_worker()
+
+        if not self.threads["progress"].is_alive():
+            logger.warning("restarting crashed progress worker")
+            self.create_progress_worker()
+
         logger.debug("worker pool recycled")
 
     def submit(
