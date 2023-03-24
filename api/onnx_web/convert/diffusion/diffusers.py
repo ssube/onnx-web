@@ -27,6 +27,7 @@ from onnx.shape_inference import infer_shapes_path
 from onnxruntime.transformers.float16 import convert_float_to_float16
 from torch.onnx import export
 
+from ...constants import ONNX_MODEL, ONNX_WEIGHTS
 from ...diffusers.load import optimize_pipeline
 from ...diffusers.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
@@ -79,7 +80,7 @@ def onnx_export(
             f"{output_file}",
             save_as_external_data=external_data,
             all_tensors_to_one_file=True,
-            location="weights.pb",
+            location=ONNX_WEIGHTS,
         )
 
 
@@ -144,7 +145,7 @@ def convert_diffusion_diffusers(
             None,  # output attentions
             torch.tensor(True).to(device=ctx.training_device, dtype=torch.bool),
         ),
-        output_path=output_path / "text_encoder" / "model.onnx",
+        output_path=output_path / "text_encoder" / ONNX_MODEL,
         ordered_input_names=["input_ids"],
         output_names=["last_hidden_state", "pooler_output", "hidden_states"],
         dynamic_axes={
@@ -169,7 +170,7 @@ def convert_diffusion_diffusers(
 
     unet_in_channels = pipeline.unet.config.in_channels
     unet_sample_size = pipeline.unet.config.sample_size
-    unet_path = output_path / "unet" / "model.onnx"
+    unet_path = output_path / "unet" / ONNX_MODEL
     onnx_export(
         pipeline.unet,
         model_args=(
@@ -207,7 +208,7 @@ def convert_diffusion_diffusers(
         unet_model_path,
         save_as_external_data=True,
         all_tensors_to_one_file=True,
-        location="weights.pb",
+        location=ONNX_WEIGHTS,
         convert_attribute=False,
     )
     del pipeline.unet
@@ -233,7 +234,7 @@ def convert_diffusion_diffusers(
                 ).to(device=ctx.training_device, dtype=dtype),
                 False,
             ),
-            output_path=output_path / "vae" / "model.onnx",
+            output_path=output_path / "vae" / ONNX_MODEL,
             ordered_input_names=["latent_sample", "return_dict"],
             output_names=["sample"],
             dynamic_axes={
@@ -259,7 +260,7 @@ def convert_diffusion_diffusers(
                 ),
                 False,
             ),
-            output_path=output_path / "vae_encoder" / "model.onnx",
+            output_path=output_path / "vae_encoder" / ONNX_MODEL,
             ordered_input_names=["sample", "return_dict"],
             output_names=["latent_sample"],
             dynamic_axes={
@@ -282,7 +283,7 @@ def convert_diffusion_diffusers(
                 ).to(device=ctx.training_device, dtype=dtype),
                 False,
             ),
-            output_path=output_path / "vae_decoder" / "model.onnx",
+            output_path=output_path / "vae_decoder" / ONNX_MODEL,
             ordered_input_names=["latent_sample", "return_dict"],
             output_names=["sample"],
             dynamic_axes={

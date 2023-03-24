@@ -12,6 +12,7 @@ from onnx import load_model, save_model
 from transformers import CLIPTokenizer
 from yaml import safe_load
 
+from ..constants import ONNX_MODEL, ONNX_WEIGHTS
 from .correction_gfpgan import convert_correction_gfpgan
 from .diffusion.diffusers import convert_diffusion_diffusers
 from .diffusion.lora import blend_loras
@@ -297,7 +298,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                                     path.join(
                                         dest,
                                         "text_encoder",
-                                        "model.onnx",
+                                        ONNX_MODEL,
                                     )
                                 )
 
@@ -341,13 +342,13 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                                     path.join(
                                         dest,
                                         "text_encoder",
-                                        "model.onnx",
+                                        ONNX_MODEL,
                                     )
                                 )
 
                             if "unet" not in blend_models:
                                 blend_models["text_encoder"] = load_model(
-                                    path.join(dest, "unet", "model.onnx")
+                                    path.join(dest, "unet", ONNX_MODEL)
                                 )
 
                             # load models if not loaded yet
@@ -377,7 +378,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
 
                         for name in ["text_encoder", "unet"]:
                             if name in blend_models:
-                                dest_path = path.join(dest, name, "model.onnx")
+                                dest_path = path.join(dest, name, ONNX_MODEL)
                                 logger.debug(
                                     "saving blended %s model to %s", name, dest_path
                                 )
@@ -386,7 +387,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                                     dest_path,
                                     save_as_external_data=True,
                                     all_tensors_to_one_file=True,
-                                    location="weights.pb",
+                                    location=ONNX_WEIGHTS,
                                 )
 
                 except Exception:

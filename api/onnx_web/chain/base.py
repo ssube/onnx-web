@@ -16,6 +16,10 @@ logger = getLogger(__name__)
 
 
 class StageCallback(Protocol):
+    """
+    Definition for a stage job function.
+    """
+
     def __call__(
         self,
         job: WorkerContext,
@@ -25,6 +29,9 @@ class StageCallback(Protocol):
         source: Image.Image,
         **kwargs: Any
     ) -> Image.Image:
+        """
+        Run this stage against a source image.
+        """
         pass
 
 

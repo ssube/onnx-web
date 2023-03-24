@@ -7,6 +7,7 @@ import torch
 from onnx import ModelProto, load_model, numpy_helper, save_model
 from transformers import CLIPTokenizer
 
+from ...constants import ONNX_MODEL
 from ...server.context import ServerContext
 from ..utils import ConversionContext, load_tensor
 
@@ -174,7 +175,7 @@ def convert_diffusion_textual_inversion(
     )
 
     encoder_path = path.join(dest_path, "text_encoder")
-    encoder_model = path.join(encoder_path, "model.onnx")
+    encoder_model = path.join(encoder_path, ONNX_MODEL)
     tokenizer_path = path.join(dest_path, "tokenizer")
 
     if (
@@ -187,7 +188,7 @@ def convert_diffusion_textual_inversion(
 
     makedirs(encoder_path, exist_ok=True)
 
-    text_encoder = load_model(path.join(base_model, "text_encoder", "model.onnx"))
+    text_encoder = load_model(path.join(base_model, "text_encoder", ONNX_MODEL))
     tokenizer = CLIPTokenizer.from_pretrained(
         base_model,
         subfolder="tokenizer",

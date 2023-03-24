@@ -25,7 +25,8 @@ from diffusers import (
 from onnx import load_model
 from transformers import CLIPTokenizer
 
-from onnx_web.diffusers.utils import expand_prompt
+from ..constants import ONNX_MODEL
+from ..diffusers.utils import expand_prompt
 
 try:
     from diffusers import DEISMultistepScheduler
@@ -191,7 +192,7 @@ def load_pipeline(
                 path.join(server.model_path, "inversion", name)
                 for name in inversion_names
             ]
-            text_encoder = load_model(path.join(model, "text_encoder", "model.onnx"))
+            text_encoder = load_model(path.join(model, "text_encoder", ONNX_MODEL))
             tokenizer = CLIPTokenizer.from_pretrained(
                 model,
                 subfolder="tokenizer",
@@ -233,9 +234,7 @@ def load_pipeline(
             )
 
             # blend and load text encoder
-            text_encoder = text_encoder or path.join(
-                model, "text_encoder", "model.onnx"
-            )
+            text_encoder = text_encoder or path.join(model, "text_encoder", ONNX_MODEL)
             text_encoder = blend_loras(
                 server,
                 text_encoder,
@@ -261,7 +260,7 @@ def load_pipeline(
             # blend and load unet
             blended_unet = blend_loras(
                 server,
-                path.join(model, "unet", "model.onnx"),
+                path.join(model, "unet", ONNX_MODEL),
                 list(zip(lora_models, lora_weights)),
                 "unet",
             )

@@ -9,7 +9,14 @@ logger = getLogger(__name__)
 
 
 class TileCallback(Protocol):
+    """
+    Definition for a tile job function.
+    """
+
     def __call__(self, image: Image.Image, dims: Tuple[int, int, int]) -> Image.Image:
+        """
+        Run this stage against a single tile.
+        """
         pass
 
 
