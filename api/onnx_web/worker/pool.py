@@ -320,12 +320,20 @@ class DevicePoolExecutor:
 
             if self.threads["logger"].is_alive():
                 logger.debug("logger worker is running")
+                if self.logs.full():
+                    logger.warning("logger queue is full, restarting worker")
+                    self.threads["logger"].join(self.join_timeout)
+                    self.create_logger_worker()
             else:
                 logger.warning("restarting logger worker")
                 self.create_logger_worker()
 
             if self.threads["progress"].is_alive():
                 logger.debug("progress worker is running")
+                if self.progress.full():
+                    logger.warning("progress queue is full, restarting worker")
+                    self.threads["progress"].join(self.join_timeout)
+                    self.create_progress_worker()
             else:
                 logger.warning("restarting progress worker")
                 self.create_progress_worker()
