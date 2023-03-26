@@ -5,9 +5,11 @@
 - [Development and Testing](#development-and-testing)
   - [Contents](#contents)
   - [API Development](#api-development)
-    - [Style](#style)
+    - [Debugging](#debugging)
     - [Models and Pipelines](#models-and-pipelines)
     - [Memory Profiling](#memory-profiling)
+    - [Style](#style)
+      - [Log Levels](#log-levels)
   - [GUI Development](#gui-development)
     - [Updating Github Pages](#updating-github-pages)
     - [Watch mode](#watch-mode)
@@ -19,18 +21,22 @@
 
 Run `make ci` to run lint and the tests.
 
-### Style
+### Debugging
 
-- all logs must use `logger` from top of file
-  - every file should have a `logger = getLogger(__name__)` or equivalent before any real code
+Launching the API with `debugpy` and `DEBUG=TRUE` may fail, because Flask creates a second process to watch for code
+changes and they both try to bind the debug port: https://github.com/Microsoft/ptvsd/issues/1131
+
+- https://code.visualstudio.com/docs/python/debugging#_debugging-by-attaching-over-a-network-connection
+- https://github.com/microsoft/debugpy#debugging-a-script-file
 
 ### Models and Pipelines
 
 Loading models and pipelines can be expensive. They should be converted and exported once, then cached per-process
 whenever reasonably possible.
 
-Most pipeline stages will have a corresponding load function somewhere, like `upscale_stable_diffusion` and `load_stable_diffusion`. The load function should compare its parameters and reuse the existing pipeline when
-that is possible without causing memory access errors. Most logging from the load function should be `debug` level.
+Most pipeline stages will have a corresponding load function somewhere, like `upscale_stable_diffusion` and
+`load_stable_diffusion`. The load function should compare its parameters and reuse the existing pipeline when that is
+possible without causing memory access errors. Most logging from the load function should be `debug` level.
 
 ### Memory Profiling
 
@@ -44,6 +50,34 @@ To track memory usage and leaks, run the API under `fil`:
 
 Using `memray` will break the CUDA bridge or driver somehow, and prevents hardware acceleration from working. That
 makes it extremely time consuming to test any kind of memory leak.
+
+### Style
+
+- all logs must use `logger` from top of file
+  - every file should have a `logger = getLogger(__name__)` or equivalent before any real code
+
+#### Log Levels
+
+`onnx-web` uses the Python `logging` library and five base log levels, with an additional `TRACE` log level.
+
+- `trace`
+  - values needed to debug errors with a specific model
+  - tensor shapes, list sizes, dict keys
+  - only level that should log _expected_ values, especially empty values
+  - may emit logs at idle, can produce MB/s under load
+- `debug`
+  - detailed debugging messages
+- `info`
+  - standard informative logs
+- `warning`
+  - error-ish messages that the code was able to handle without failing
+- `error`
+  - error messages that caused a request to fail, the app to crash, etc
+- `exception`
+  - not really a level, logs an error with a stacktrace, which can be helpful
+
+When choosing log levels, consider what you will need to debug an issue from a remote server using the default
+settings (`info`). The `trace`
 
 ## GUI Development
 
