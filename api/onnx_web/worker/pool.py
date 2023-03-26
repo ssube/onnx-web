@@ -195,9 +195,7 @@ class DevicePoolExecutor:
 
         for job in self.pending_jobs:
             if job.name == key:
-                self.pending_jobs[:] = [
-                    job for job in self.pending_jobs if job.name != key
-                ]
+                self.pending_jobs.remove(job)
                 logger.info("cancelled pending job: %s", key)
                 return True
 
@@ -414,7 +412,7 @@ class DevicePoolExecutor:
             if job.device == device:
                 logger.debug("enqueuing job %s on device %s", job.name, device)
                 self.pending[device].put(job, block=False)
-                self.pending_jobs.remove(job)
+                # job will be removed from pending queue when progress is updated
                 return
 
         logger.trace("no pending jobs for device %s", device)
