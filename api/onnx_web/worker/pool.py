@@ -372,33 +372,10 @@ class DevicePoolExecutor:
         job = JobCommand(key, device, fn, args, kwargs)
         self.pending_jobs.append(job)
 
-    def status(self) -> List[Tuple[str, int, bool, bool, bool, bool]]:
-        history = [
-            (
-                name,
-                job.progress,
-                False,
-                job.finished,
-                job.cancelled,
-                job.failed,
-            )
-            for name, job in self.running_jobs.items()
-        ]
-        history.extend(
-            [
-                (
-                    job.name,
-                    0,
-                    True,
-                    False,
-                    False,
-                    False,
-                )
-                for job in self.pending_jobs
-            ]
-        )
-        history.extend(
-            [
+    def status(self) -> Dict[str, List[Tuple[str, int, bool, bool, bool, bool]]]:
+        return {
+            "cancelled": [],
+            "finished": [
                 (
                     job.job,
                     job.progress,
@@ -408,9 +385,30 @@ class DevicePoolExecutor:
                     job.failed,
                 )
                 for job in self.finished_jobs
-            ]
-        )
-        return history
+            ],
+            "pending": [
+                (
+                    job.name,
+                    0,
+                    True,
+                    False,
+                    False,
+                    False,
+                )
+                for job in self.pending_jobs
+            ],
+            "running": [
+                (
+                    name,
+                    job.progress,
+                    False,
+                    job.finished,
+                    job.cancelled,
+                    job.failed,
+                )
+                for name, job in self.running_jobs.items()
+            ],
+        }
 
     def next_job(self, device: str):
         for job in self.pending_jobs:
