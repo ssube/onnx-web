@@ -80,12 +80,12 @@ class DevicePoolExecutor:
         self.logs = Queue(self.max_pending_per_worker)
         self.rlock = Lock()
 
-        # TODO: these should be part of a start method
+    def start(self) -> None:
         self.create_health_worker()
         self.create_logger_worker()
         self.create_progress_worker()
 
-        for device in devices:
+        for device in self.devices:
             self.create_device_worker(device)
 
     def create_device_worker(self, device: DeviceParams) -> None:
@@ -439,7 +439,11 @@ class DevicePoolExecutor:
                 else:
                     self.total_jobs[progress.device] = 1
 
-                logger.debug("updating job count for device %s: %s", progress.device, self.total_jobs[progress.device])
+                logger.debug(
+                    "updating job count for device %s: %s",
+                    progress.device,
+                    self.total_jobs[progress.device],
+                )
 
             # check if the job has been cancelled
             if progress.job in self.cancelled_jobs:

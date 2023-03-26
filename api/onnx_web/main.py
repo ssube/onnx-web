@@ -46,13 +46,15 @@ def main():
         disable_progress_bar()
         disable_progress_bars()
 
-    app = Flask(__name__)
-    CORS(app, origins=context.cors_origin)
-
-    # any is a fake device, should not be in the pool
+    # create workers
+    # any is a fake device and should not be in the pool
     pool = DevicePoolExecutor(
         context, [p for p in get_available_platforms() if p.device != "any"]
     )
+
+    # create server
+    app = Flask(__name__)
+    CORS(app, origins=context.cors_origin)
 
     # register routes
     register_static_routes(app, context, pool)
@@ -63,6 +65,7 @@ def main():
 
 def run():
     app, pool = main()
+    pool.start()
 
     def quit():
         logger.info("shutting down workers")
@@ -74,6 +77,7 @@ def run():
 
 if __name__ == "__main__":
     app, pool = main()
+    pool.start()
     app.run("0.0.0.0", 5000, debug=is_debug())
     logger.info("shutting down app")
     pool.join()
