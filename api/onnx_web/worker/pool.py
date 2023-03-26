@@ -297,12 +297,12 @@ class DevicePoolExecutor:
                 except Empty:
                     logger.trace("empty queue in leaking worker for device %s", device)
                 except ValueError as e:
-                    logger.debug("value error in leaking worker for device %s: %s", device, e)
+                    logger.debug(
+                        "value error in leaking worker for device %s: %s", device, e
+                    )
                     break
                 except Exception:
                     logger.exception("error in leaking worker for device %s", device)
-
-
 
             self.leaking[:] = [dw for dw in self.leaking if dw[1].is_alive()]
 
