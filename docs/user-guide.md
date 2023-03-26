@@ -25,13 +25,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Modes and tabs](#modes-and-tabs)
     - [Image history](#image-history)
     - [Scheduler comparison](#scheduler-comparison)
-  - [Models](#models)
-    - [Adding your own models](#adding-your-own-models)
-    - [Model names](#model-names)
-    - [Model sources](#model-sources)
-      - [Downloading models from Civitai](#downloading-models-from-civitai)
-      - [Downloading models from HuggingFace](#downloading-models-from-huggingface)
-    - [Using a custom VAE](#using-a-custom-vae)
+    - [Model and network types](#model-and-network-types)
   - [Prompts](#prompts)
     - [General structure](#general-structure)
     - [Useful keywords](#useful-keywords)
@@ -67,6 +61,14 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Image history setting](#image-history-setting)
       - [API server setting](#api-server-setting)
       - [Reset tab buttons](#reset-tab-buttons)
+  - [Adding your own models](#adding-your-own-models)
+    - [Model names](#model-names)
+    - [Model sources](#model-sources)
+      - [Downloading models from Civitai](#downloading-models-from-civitai)
+      - [Downloading models from HuggingFace](#downloading-models-from-huggingface)
+    - [Using a custom VAE](#using-a-custom-vae)
+    - [Permanently blending additional networks](#permanently-blending-additional-networks)
+    - [Extras file format](#extras-file-format)
   - [Known errors](#known-errors)
     - [Check scripts](#check-scripts)
       - [Check environment script](#check-environment-script)
@@ -151,7 +153,7 @@ DEIS multistep and Euler Ancestral schedulers.
 
 ![tilt shift photographs of excavators over a pile of loose dirt](output/excavator-pipe.png)
 
-## Models
+### Model and network types
 
 The [ONNX runtime](https://onnxruntime.ai/) is a library for accelerating neural networks and machine learning models,
 using [the ONNX file format](https://onnx.ai/) to share them across different platforms. ONNX web is a server to run
@@ -161,7 +163,8 @@ The models used by ONNX web are split up into four groups:
 
 1. Diffusion
    1. general models like [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5)
-   2. specialized models like [Knollingcase](https://huggingface.co/Aybeeceedee/knollingcase) or [OpenJourney](https://huggingface.co/prompthero/openjourney)
+   2. specialized models like [Knollingcase](https://huggingface.co/Aybeeceedee/knollingcase) or
+      [OpenJourney](https://huggingface.co/prompthero/openjourney)
 2. Upscaling
    1. [Real ESRGAN](https://github.com/xinntao/Real-ESRGAN)
    2. [Stable Diffusion](https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler)
@@ -172,189 +175,9 @@ The models used by ONNX web are split up into four groups:
    1. [LoRA](https://arxiv.org/abs/2106.09685)
    2. [Textual Inversion](https://textual-inversion.github.io/)
 
-There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles.
-
-### Adding your own models
-
-You can convert and use your own models without making any code changes by copying
-[the `api/extras.json` file](../api/extras.json) and adding the models you would like to use:
-
-```json
-{
-  "diffusion": [
-    {
-      "name": "diffusion-knollingcase",
-      "source": "Aybeeceedee/knollingcase"
-    },
-    {
-      "name": "diffusion-openjourney",
-      "source": "prompthero/openjourney"
-    },
-    {
-      "name": "diffusion-stablydiffused-aesthetic-v2-6",
-      "source": "civitai://6266?type=Pruned%20Model&format=SafeTensor",
-      "format": "safetensors"
-    },
-    {
-      "name": "diffusion-unstable-ink-dream-onnx-v6",
-      "source": "civitai://5796",
-      "format": "safetensors"
-    }
-  ],
-  "correction": [],
-  "upscaling": [
-    {
-      "name": "upscaling-real-esrgan-x4-anime",
-      "source": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth",
-      "scale": 4
-    }
-  ],
-  "networks": [
-    {
-      "name": "cubex",
-      "source": "sd-concepts-library/cubex",
-      "format": "ckpt",
-      "label": "Cubex",
-      "type": "inversion"
-    },
-    {
-      "name": "minecraft",
-      "source": "sd-concepts-library/minecraft-concept-art",
-      "format": "ckpt",
-      "label": "Minecraft Concept",
-      "type": "inversion"
-    },
-  ],
-  "sources": [
-    {
-      "name": "vae-ft-mse-840000-ema-pruned",
-      "source": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors",
-      "format": "safetensors"
-    }
-  ]
-}
-```
-
-Models can be added from the directories used by `diffusers` as well as SafeTensor and pickle tensor checkpoints. See
-[the converting models guide](converting-models.md) for more details.
-
-Be careful loading pickle tensors, as they may contain unsafe code which will be executed on your machine. Use
-SafeTensors instead whenever possible.
-
-Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file and make sure to use the `launch-extras`
-script. For example:
-
-```shell
-# on Linux:
-> export ONNX_WEB_EXTRA_MODELS=~/onnx-web-extras.json
-> ./launch-extras.sh
-
-# on Windows:
-> set ONNX_WEB_EXTRA_MODELS=C:\Users\ssube\onnx-web-extras.json
-> launch-extras.bat
-```
-
-Extras using the older file format with nested arrays (`"diffusion": [[]]`) can be mixed with the newer format. You
-only need to convert them into the newer format if you need to use keys other than `name`, `source`, and `scale`.
-
-### Model names
-
-The `name` of each model dictates which category it will appear in on the client.
-
-- `diffusion-*` or `stable-diffusion-*` for diffusion models
-- `upscaling-*` for upscaling models
-- `correction-*` for correction models
-
-Models that do not match one of the prefixes will not be shown, so if you cannot find a model that you have converted,
-make sure it is named correctly. This applies to models in the `extras.json` file as well as models you have created,
-converted, or copied outside of the conversion script.
-
-### Model sources
-
-You can either provide the path to a local model that you have already downloaded or provide a URL to be
-automatically downloaded, using HTTPS or one of the pre-defined sources:
-
-- `huggingface://`
-  - https://huggingface.co/models?other=stable-diffusion
-  - mostly SFW
-  - requires an account to download some models
-- `civitai://`
-  - https://civitai.com/
-  - some NSFW
-  - does not require an account
-- `https://`
-  - any other HTTPS source
-- `../models/.cache/your-model.safetensors`
-  - relative paths
-- `/home/ssube/onnx-web/models/.cache` or `C:\Users\ssube\onnx-web\models\.cache`
-  - absolute paths
-
-If the model is a single file and the `source` does not include a file extension like `.safetensors` or `.ckpt`, make
-sure to indicate the file format using the `format` key. You do not need to provide the `format` for directories and
-models from the HuggingFace hub.
-
-#### Downloading models from Civitai
-
-Use the `civitai://` protocol to download models from [the Civitai catalog](https://civitai.com/).
-
-When downloading models from Civitai, the ID shown in the browser URL bar _may not be_ the ID of the model itself.
-Since models can have multiple versions, make sure you use the correct ID. Use the model ID from the download link,
-which you can see and copy from the right-click menu:
-
-![Chrome context menu with Copy link address highlighted](guide-civitai.png)
-
-You want the Pruned SafeTensor, if one is available. Be careful downloading PickleTensors, they may contain unsafe
-code. The original, non-pruned models are much larger but are better for training.
-
-#### Downloading models from HuggingFace
-
-Use the `huggingface://` protocol to download models from [the HuggingFace hub](https://huggingface.co/models?other=stable-diffusion).
-Most models will detect and download all of the necessary files, while Textual Inversions with `"model": "concept"`
-will only download the `trained_embeds.bin` file.
-
-When downloading models from HuggingFace, you can use the copy button next to the repository name:
-
-![Stable Diffusion v1.5 model card with Copy model name option highlighted](guide-huggingface.png)
-
-### Using a custom VAE
-
-You can use a custom VAE when converting models. Some models require a specific VAE, so if you get weird results,
-check the model card for a specific VAE. This works for both diffusers directories and original SD checkpoints. You
-can use the `sources` field in the extras file to download the VAE file or provide a HuggingFace model name.
-
-```json
-{
-  "diffusion": [
-    {
-      "name": "diffusion-stablydiffused-aesthetic-v2-6-ema",
-      "source": "civitai://6266?type=Pruned%20Model&format=SafeTensor",
-      "format": "safetensors",
-      "vae": ".cache/vae-ft-mse-840000-ema-pruned.safetensors"
-    },
-    {
-      "name": "stable-diffusion-onnx-v1-4",
-      "source": "CompVis/stable-diffusion-v1-4",
-      "vae": "stabilityai/sd-vae-ft-ema"
-    }
-  ],
-  "correction": [],
-  "upscaling": [],
-  "sources": [
-    {
-      "name": "vae-ft-mse-840000-ema-pruned",
-      "source": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors",
-      "format": "safetensors"
-    }
-  ]
-}
-```
-
-Some common VAE models include:
-
-- https://huggingface.co/stabilityai/sd-vae-ft-ema
-- https://huggingface.co/stabilityai/sd-vae-ft-ema-original
-- https://huggingface.co/stabilityai/sd-vae-ft-mse
-- https://huggingface.co/stabilityai/sd-vae-ft-mse-original
+There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles. You
+can [add your own models](#adding-your-own-models) from many sources, including [the HuggingFace hub
+](#downloading-models-from-huggingface) and [Civitai](#downloading-models-from-civitai).
 
 ## Prompts
 
@@ -435,7 +258,8 @@ or omit them entirely.
 
 The range syntax currently does not work when the Long Prompt Weighting pipeline is enabled.
 
-Some Textual Inversions have their own token, especially ones trained using [the Stable Conceptualizer notebook](https://colab.research.google.com/github/huggingface/notebooks/blob/main/diffusers/stable_conceptualizer_inference.ipynb)
+Some Textual Inversions have their own token, especially ones trained using [the Stable Conceptualizer notebook
+](https://colab.research.google.com/github/huggingface/notebooks/blob/main/diffusers/stable_conceptualizer_inference.ipynb)
 and [the sd-concepts-library](https://huggingface.co/spaces/sd-concepts-library/stable-diffusion-conceptualizer) on
 HuggingFace hub. The model card should list the token, which will usually be wrapped in `<angle-brackets>`. This token
 will be available along with the name token, but these concepts only have a single layer, so the numbered tokens are
@@ -695,6 +519,290 @@ Changing the API server will reload the client.
 
 Resets the state of each tab to the default, if some controls become glitchy.
 
+## Adding your own models
+
+You can convert and use your own models without making any code changes. Models are stored in
+[the `api/extras.json` file](../api/extras.json) - you can make a copy to avoid any updates replacing your models in
+the future. Add an entry for each of the models that you would like to use:
+
+```json
+{
+  "diffusion": [
+    {
+      "name": "diffusion-knollingcase",
+      "source": "Aybeeceedee/knollingcase"
+    },
+    {
+      "name": "diffusion-openjourney",
+      "source": "prompthero/openjourney"
+    },
+    {
+      "name": "diffusion-stablydiffused-aesthetic-v2-6",
+      "source": "civitai://6266?type=Pruned%20Model&format=SafeTensor",
+      "format": "safetensors"
+    },
+    {
+      "name": "diffusion-unstable-ink-dream-onnx-v6",
+      "source": "civitai://5796",
+      "format": "safetensors"
+    }
+  ],
+  "correction": [],
+  "upscaling": [
+    {
+      "name": "upscaling-real-esrgan-x4-anime",
+      "source": "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth",
+      "scale": 4
+    }
+  ],
+  "networks": [
+    {
+      "name": "cubex",
+      "source": "sd-concepts-library/cubex",
+      "format": "ckpt",
+      "label": "Cubex",
+      "type": "inversion"
+    },
+    {
+      "name": "minecraft",
+      "source": "sd-concepts-library/minecraft-concept-art",
+      "format": "ckpt",
+      "label": "Minecraft Concept",
+      "type": "inversion"
+    },
+  ],
+  "sources": [
+    {
+      "name": "vae-ft-mse-840000-ema-pruned",
+      "source": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors",
+      "format": "safetensors"
+    }
+  ]
+}
+```
+
+The complete file format and available keys are listed in [the file format section](#extras-file-format). If you are
+familiar with JSON schemas, [the extras schema](../api/schemas/extras.yaml) is the canonical format.
+
+Models can be added using the directory format used by `diffusers` as well as safetensor and pickle tensor checkpoints.
+See [the converting models guide](converting-models.md) for more details.
+
+Be careful loading pickle tensors, as they may contain unsafe code which will be executed on your machine. Use
+safetensors instead whenever possible.
+
+Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file and make sure to use the `launch-extras`
+script. For example:
+
+```shell
+# on Linux:
+> export ONNX_WEB_EXTRA_MODELS=~/onnx-web-extras.json
+> ./launch-extras.sh
+
+# on Windows:
+> set ONNX_WEB_EXTRA_MODELS=C:\Users\ssube\onnx-web-extras.json
+> launch-extras.bat
+```
+
+Extras using the older file format with nested arrays (`"diffusion": [[]]`) can be mixed with the newer format. You
+only need to convert them into the newer format if you need to use keys other than `name`, `source`, and `scale`.
+
+### Model names
+
+The `name` of each model dictates which category it will appear in on the client.
+
+- `diffusion-*` or `stable-diffusion-*` for diffusion models
+- `upscaling-*` for upscaling models
+- `correction-*` for correction models
+
+Models that do not match one of the prefixes will not be shown, so if you cannot find a model that you have converted,
+make sure it is named correctly. This applies to models in the `extras.json` file as well as models you have created,
+converted, or copied outside of the conversion script.
+
+### Model sources
+
+You can either provide the path to a local model that you have already downloaded or provide a URL to be
+automatically downloaded, using HTTPS or one of the pre-defined sources:
+
+- `huggingface://`
+  - https://huggingface.co/models?other=stable-diffusion
+  - mostly SFW
+  - requires an account to download some models
+- `civitai://`
+  - https://civitai.com/
+  - some NSFW
+  - does not require an account
+- `https://`
+  - any other HTTPS source
+- `../models/.cache/your-model.safetensors`
+  - relative paths
+- `/home/ssube/onnx-web/models/.cache` or `C:\Users\ssube\onnx-web\models\.cache`
+  - absolute paths
+
+If the model is a single file and the `source` does not include a file extension like `.safetensors` or `.ckpt`, make
+sure to indicate the file format using the `format` key. You do not need to provide the `format` for directories and
+models from the HuggingFace hub.
+
+#### Downloading models from Civitai
+
+Use the `civitai://` protocol to download models from [the Civitai catalog](https://civitai.com/).
+
+When downloading models from Civitai, the ID shown in the browser URL bar _may not be_ the ID of the model itself.
+Since models can have multiple versions, make sure you use the correct ID. Use the model ID from the download link,
+which you can see and copy from the right-click menu:
+
+![Chrome context menu with Copy link address highlighted](guide-civitai.png)
+
+You can use the `Pruned SafeTensor`, if one is available. Be careful downloading pickle tensors, they may contain unsafe
+code. The original, non-pruned models are much larger but are better for training.
+
+#### Downloading models from HuggingFace
+
+Use the `huggingface://` protocol to download models from [the HuggingFace hub](https://huggingface.co/models?other=stable-diffusion).
+Most models will detect and download all of the necessary files, while Textual Inversions with `"model": "concept"`
+will only download the `trained_embeds.bin` file.
+
+When downloading models from HuggingFace, you can use the copy button next to the repository name:
+
+![Stable Diffusion v1.5 model card with Copy model name option highlighted](guide-huggingface.png)
+
+### Using a custom VAE
+
+You can use a custom VAE when converting models. Some models require a specific VAE, so if you get weird results,
+check the model card for a specific VAE. This works for both diffusers directories and original SD checkpoints. You
+can use the `sources` field in the extras file to download the VAE file or provide a HuggingFace model name.
+
+```json
+{
+  "diffusion": [
+    {
+      "name": "diffusion-stablydiffused-aesthetic-v2-6-ema",
+      "source": "civitai://6266?type=Pruned%20Model&format=SafeTensor",
+      "format": "safetensors",
+      "vae": ".cache/vae-ft-mse-840000-ema-pruned.safetensors"
+    },
+    {
+      "name": "stable-diffusion-onnx-v1-4",
+      "source": "CompVis/stable-diffusion-v1-4",
+      "vae": "stabilityai/sd-vae-ft-ema"
+    }
+  ],
+  "correction": [],
+  "upscaling": [],
+  "sources": [
+    {
+      "name": "vae-ft-mse-840000-ema-pruned",
+      "source": "https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors",
+      "format": "safetensors"
+    }
+  ]
+}
+```
+
+Some common VAE models include:
+
+- https://huggingface.co/stabilityai/sd-vae-ft-ema
+- https://huggingface.co/stabilityai/sd-vae-ft-ema-original
+- https://huggingface.co/stabilityai/sd-vae-ft-mse
+- https://huggingface.co/stabilityai/sd-vae-ft-mse-original
+
+### Permanently blending additional networks
+
+TODO
+
+### Extras file format
+
+- diffusion
+  - array of diffusion models
+  - each one has:
+    - format
+      - one of:
+        - bin
+        - ckpt
+        - onnx
+        - pt
+        - pth
+        - safetensors
+    - label
+      - string
+    - name
+      - string
+    - source
+      - string
+    - config
+      - string
+    - vae
+      - string
+    - inversions
+      - array of inversion networks
+      - permanently blended with the base model
+      - each one has:
+        - name
+        - source
+        - format
+        - label
+        - token
+        - weight
+    - loras
+      - array of lora networks
+      - permanently blended with the base model
+      - each one has:
+        - name
+        - source
+        - label
+        - weight
+- correction
+  - array of correction models
+  - each one has:
+    - format
+      - same formats as diffusion models
+    - label
+      - string
+    - name
+      - string
+    - source
+      - string
+- upscaling
+  - array of upscaling models
+  - each one has:
+    - format
+      - same formats as diffusion models
+    - label
+      - string
+    - name
+      - string
+    - source
+      - string
+    - scale
+      - number
+- networks
+  - array of additional networks
+  - each one has:
+    - format
+      - one of:
+        - ckpt
+        - safetensors
+    - model
+      - one of:
+        - concept
+        - embeddings
+        - cloneofsimo
+        - sd-scripts
+    - name
+    - source
+    - type
+      - one of:
+        - inversion
+        - lora
+- sources
+  - array of additional sources to fetch
+  - each one has:
+    - format
+    - name
+    - source
+  - array of sources
+- strings
+  - additional translation strings
+
 ## Known errors
 
 This section attempts to cover all of the known errors and their solutions.
@@ -737,7 +845,7 @@ To run the `check-env.py` script using your `onnx-web` virtual environment:
 #### Check model script
 
 The `check-model.py` script will check the format and contents of a model file. The models can be ONNX models,
-Safetensors, or pickle tensors.
+safetensors, pickle tensors, protocol buffers, or binary files.
 
 The script will attempt to load the file, which can import libraries and execute code in the case of pickle tensors.
 Only run the script on files that you trust enough to load.
