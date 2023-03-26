@@ -322,9 +322,10 @@ class DevicePoolExecutor:
                     needs_restart.append(device)
                 else:
                     logger.debug(
-                        "worker %s for device %s does not need to be recycled",
+                        "worker %s for device %s has run %s jobs and is still alive",
                         worker.pid,
                         device,
+                        jobs,
                     )
 
             if len(needs_restart) > 0:
