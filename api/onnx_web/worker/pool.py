@@ -235,16 +235,6 @@ class DevicePoolExecutor:
         logger.info("stopping worker pool")
 
         with self.rlock:
-            logger.debug("closing queues")
-            self.logs.close()
-            for queue in self.progress.values():
-                queue.close()
-            for queue in self.pending.values():
-                queue.close()
-
-            self.pending.clear()
-            self.join_leaking()
-
             logger.debug("stopping device workers")
             for device, worker in self.workers.items():
                 if worker.is_alive():
@@ -268,6 +258,20 @@ class DevicePoolExecutor:
 
             logger.debug("stopping health worker")
             self.health_worker.join(self.join_timeout)
+
+            logger.debug("closing worker queues")
+            self.logs.close()
+
+            for queue in self.pending.values():
+                queue.close()
+            for queue in self.progress.values():
+                queue.close()
+
+            self.pending.clear()
+            self.progress.clear()
+
+            logger.debug("stopping leaking workers")
+            self.join_leaking()
 
             logger.debug("worker pool stopped")
 
