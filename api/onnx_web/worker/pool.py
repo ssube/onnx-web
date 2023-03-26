@@ -369,6 +369,9 @@ class DevicePoolExecutor:
         self.pending_jobs.append(job)
 
     def status(self) -> Dict[str, List[Tuple[str, int, bool, bool, bool, bool]]]:
+        """
+        Returns a tuple of: job/device, progress, progress, finished, cancelled, failed
+        """
         return {
             "cancelled": [],
             "finished": [
@@ -403,6 +406,17 @@ class DevicePoolExecutor:
                     job.failed,
                 )
                 for name, job in self.running_jobs.items()
+            ],
+            "total": [
+                (
+                    device,
+                    total,
+                    self.workers[device].is_alive(),
+                    False,
+                    False,
+                    False,
+                )
+                for device, total in self.total_jobs.items()
             ],
         }
 
