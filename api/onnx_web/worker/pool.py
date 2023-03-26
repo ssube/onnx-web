@@ -505,6 +505,7 @@ def logger_main(pool: DevicePoolExecutor, logs: "Queue[str]"):
             msg = logs.get(pool.join_timeout / 2)
             logger.debug("received logs from worker: %s", msg)
         except Empty:
+            # logger worker should not generate more logs if it doesn't have any logs
             pass
         except ValueError:
             break
@@ -524,7 +525,6 @@ def progress_main(pool: DevicePoolExecutor):
                 progress = context.progress.get_nowait()
         except Empty:
             logger.trace("empty queue in leaking worker for device %s", device)
-            pass
         except ValueError as e:
             logger.debug("value error in leaking worker for device %s: %s", device, e)
             break
@@ -539,7 +539,6 @@ def progress_main(pool: DevicePoolExecutor):
                 progress = queue.get_nowait()
         except Empty:
             logger.trace("empty queue in progress worker for device %s", device)
-            pass
         except ValueError as e:
             logger.debug("value error in progress worker for device %s: %s", device, e)
             break
