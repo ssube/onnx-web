@@ -94,7 +94,9 @@ class DevicePoolExecutor:
         # always recreate queues
         self.progress[name] = Queue(self.max_pending_per_worker)
         self.pending[name] = Queue(self.max_pending_per_worker)
+        self.total_jobs[device.device] = 0
 
+        # reuse pid sentinel
         if name in self.current:
             logger.debug("using existing current worker value")
             current = self.current[name]
@@ -103,6 +105,7 @@ class DevicePoolExecutor:
             current = Value("L", 0)
             self.current[name] = current
 
+        # create a new context and worker
         context = WorkerContext(
             name,
             device,
@@ -113,15 +116,16 @@ class DevicePoolExecutor:
             active_pid=current,
         )
         self.context[name] = context
+
         worker = Process(
             name=f"onnx-web worker: {name}",
             target=worker_main,
             args=(context, self.server),
         )
+        self.workers[name] = worker
 
         logger.debug("starting worker for device %s", device)
         worker.start()
-        self.workers[name] = worker
         current.value = worker.pid
 
     def create_health_worker(self) -> None:
@@ -329,7 +333,6 @@ class DevicePoolExecutor:
             for device in self.devices:
                 if device.device in needs_restart:
                     self.create_device_worker(device)
-                    self.total_jobs[device.device] = 0
 
             if self.logger_worker.is_alive():
                 logger.debug("logger worker is running")
