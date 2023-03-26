@@ -1,7 +1,7 @@
 from collections import Counter
 from logging import getLogger
 from queue import Empty
-from threading import Thread, Lock
+from threading import Lock, Thread
 from typing import Callable, Dict, List, Optional, Tuple
 
 from torch.multiprocessing import Process, Queue, Value
@@ -37,7 +37,7 @@ class DevicePoolExecutor:
 
     logs: "Queue[str]"
     progress: "Queue[ProgressCommand]"
-    rlock: Lock
+    recycle: Lock
 
     def __init__(
         self,
@@ -67,7 +67,7 @@ class DevicePoolExecutor:
 
         self.logs = Queue(self.max_pending_per_worker)
         self.progress = Queue(self.max_pending_per_worker)
-        self.rlock = Lock()
+        self.recycle = Lock()
 
         # TODO: these should be part of a start method
         self.create_logger_worker()
@@ -225,7 +225,7 @@ class DevicePoolExecutor:
     def join(self):
         logger.info("stopping worker pool")
 
-        with self.rlock:
+        with self.recycle:
             logger.debug("closing queues")
             self.logs.close()
             self.progress.close()
@@ -276,7 +276,7 @@ class DevicePoolExecutor:
     def recycle(self):
         logger.debug("recycling worker pool")
 
-        with self.rlock:
+        with self.recycle:
             self.join_leaking()
 
             needs_restart = []
