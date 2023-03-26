@@ -355,23 +355,13 @@ class DevicePoolExecutor:
         **kwargs,
     ) -> None:
         device_idx = self.get_next_device(needs_device=needs_device)
+        device = self.devices[device_idx].device
         logger.info(
             "assigning job %s to device %s: %s",
             key,
             device_idx,
-            self.devices[device_idx],
+            device,
         )
-
-        # increment job count before recycling (why tho?)
-        device = self.devices[device_idx].device
-        if device in self.total_jobs:
-            self.total_jobs[device] += 1
-        else:
-            self.total_jobs[device] = 1
-
-        # recycle before attempting to run
-        logger.debug("job count for device %s: %s", device, self.total_jobs[device])
-        self.rlock()
 
         # build and queue job
         job = JobCommand(key, device, fn, args, kwargs)
@@ -439,6 +429,16 @@ class DevicePoolExecutor:
                 job for job in self.pending_jobs if job.name != progress.job
             ]
 
+            # increment job counter if this is the start of a new job
+            if progress.progress == 0:
+                if progress.device in self.total_jobs:
+                    self.total_jobs[progress.device] += 1
+                else:
+                    self.total_jobs[progress.device] = 1
+
+                logger.debug("updating job count for device %s: %s", progress.device, self.total_jobs[progress.device])
+
+            # check if the job has been cancelled
             if progress.job in self.cancelled_jobs:
                 logger.debug(
                     "setting flag for cancelled job: %s on %s",
