@@ -47,7 +47,7 @@ $defs:
     properties:
       format:
         type: string
-        enum: [onnx, pth, ckpt, safetensors]
+        enum: [bin, ckpt, onnx, pt, pth, safetensors]
       half:
         type: boolean
       label:
@@ -107,7 +107,7 @@ $defs:
     properties:
       format:
         type: string
-        enum: [ckpt, safetensors]
+        enum: [bin, ckpt, onnx, pt, pth, safetensors]
       model:
         type: string
         enum: [
