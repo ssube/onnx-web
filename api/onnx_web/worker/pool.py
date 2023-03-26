@@ -277,7 +277,7 @@ class DevicePoolExecutor:
 
     def join_leaking(self):
         if len(self.leaking) > 0:
-            for device, worker, _context in self.leaking:
+            for device, worker, context in self.leaking:
                 logger.warning(
                     "shutting down leaking worker %s for device %s", worker.pid, device
                 )
@@ -288,6 +288,21 @@ class DevicePoolExecutor:
                         worker.pid,
                         device,
                     )
+
+                try:
+                    progress = context.progress.get_nowait()
+                    while progress is not None:
+                        self.update_job(progress)
+                        progress = context.progress.get_nowait()
+                except Empty:
+                    logger.trace("empty queue in leaking worker for device %s", device)
+                except ValueError as e:
+                    logger.debug("value error in leaking worker for device %s: %s", device, e)
+                    break
+                except Exception:
+                    logger.exception("error in leaking worker for device %s", device)
+
+
 
             self.leaking[:] = [dw for dw in self.leaking if dw[1].is_alive()]
 
