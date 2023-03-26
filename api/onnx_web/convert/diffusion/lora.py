@@ -27,7 +27,7 @@ def buffer_external_data_tensors(
     for tensor in model.graph.initializer:
         name = tensor.name
 
-        logger.debug("externalizing tensor: %s", name)
+        logger.trace("externalizing tensor: %s", name)
         if tensor.HasField("raw_data"):
             npt = numpy_helper.to_array(tensor)
             orv = OrtValue.ortvalue_from_numpy(npt)
@@ -74,7 +74,7 @@ def blend_loras(
 
     blended: Dict[str, np.ndarray] = {}
     for (lora_name, lora_weight), lora_model in zip(loras, lora_models):
-        logger.info("blending LoRA from %s with weight of %s", lora_name, lora_weight)
+        logger.debug("blending LoRA from %s with weight of %s", lora_name, lora_weight)
         if lora_model is None:
             logger.warning("unable to load tensor for LoRA")
             continue
