@@ -57,10 +57,9 @@ Please [see the User Guide](https://github.com/ssube/onnx-web/blob/main/docs/use
     - [Note about setup paths](#note-about-setup-paths)
     - [Create a virtual environment](#create-a-virtual-environment)
     - [Install pip packages](#install-pip-packages)
-      - [For AMD on Linux: Install PyTorch and ONNX ROCm](#for-amd-on-linux-install-pytorch-and-onnx-rocm)
-      - [For AMD on Windows: Install ONNX DirectML](#for-amd-on-windows-install-onnx-directml)
-      - [For CPU on Linux: Install PyTorch CPU](#for-cpu-on-linux-install-pytorch-cpu)
-      - [For CPU on Windows: Install PyTorch CPU](#for-cpu-on-windows-install-pytorch-cpu)
+      - [For AMD on Linux: PyTorch ROCm and ONNX runtime ROCm](#for-amd-on-linux-pytorch-rocm-and-onnx-runtime-rocm)
+      - [For AMD on Windows: PyTorch CPU and ONNX runtime DirectML](#for-amd-on-windows-pytorch-cpu-and-onnx-runtime-directml)
+      - [For CPU everywhere: PyTorch CPU and ONNX runtime CPU](#for-cpu-everywhere-pytorch-cpu-and-onnx-runtime-cpu)
       - [For Nvidia everywhere: Install PyTorch GPU and ONNX GPU](#for-nvidia-everywhere-install-pytorch-gpu-and-onnx-gpu)
     - [Download and convert models](#download-and-convert-models)
       - [Converting your own models](#converting-your-own-models)
@@ -96,19 +95,19 @@ Install Git and Python 3.10 for your environment:
 - https://gitforwindows.org/
 - https://www.python.org/downloads/
 
-The latest version of git should be fine. Python must be 3.10 or earlier, 3.10 seems to work well. If you already have
-Python installed for another form of Stable Diffusion, that should work, but make sure to verify the version in the next
-step.
+The latest version of git should be fine. Python should be 3.9 or 3.10, although 3.8 and 3.11 may work if the correct
+packages are available for your platform. If you already have Python installed for another form of Stable Diffusion,
+that should work, but make sure to verify the version in the next step.
 
-Make sure you have Python 3.10 or earlier:
+Make sure you have Python 3.9 or 3.10:
 
 ```shell
 > python --version
 Python 3.10
 ```
 
-If your system differentiates between Python 2 and 3, and uses `python3` and `pip3` for the Python 3.x tools, make sure
-to adjust the commands shown here. They should otherwise be the same: `python3 --version`.
+If your system differentiates between Python 2 and 3 and uses the `python3` and `pip3` commands for the Python 3.x
+tools, make sure to adjust the commands shown here. They should otherwise be the same: `python3 --version`.
 
 Once you have those basic packages installed, clone this git repository:
 
@@ -125,7 +124,6 @@ Most of these setup commands should be run in the Python environment and the `ap
 
 ```shell
 > cd api
-
 > pwd
 /home/ssube/code/github/ssube/onnx-web/api
 ```
@@ -140,7 +138,6 @@ Change into the `api/` directory, then create a virtual environment:
 
 ```shell
 > pip install virtualenv
-
 > python -m venv onnx_env
 ```
 
@@ -173,101 +170,88 @@ Update pip itself:
 ### Install pip packages
 
 You can install all of the necessary packages at once using [the `requirements/base.txt` file](./api/requirements/base.txt)
-and the `requirements/` file for your platform:
+and the `requirements/` file for your platform. Install them in separate commands and make sure to install the
+platform-specific packages first:
 
 ```shell
-> pip install -r requirements/base.txt -r requirements/amd-linux.txt
+> pip install -r requirements/amd-linux.txt
+> pip install -r requirements/base.txt
 # or
-> pip install -r requirements/base.txt -r requirements/amd-windows.txt
+> pip install -r requirements/amd-windows.txt
+> pip install -r requirements/base.txt
 # or
-> pip install -r requirements/base.txt -r requirements/amd-windows-nightly.txt
+> pip install -r requirements/cpu.txt
+> pip install -r requirements/base.txt
 # or
-> pip install -r requirements/base.txt -r requirements/cpu.txt
-# or
-> pip install -r requirements/base.txt -r requirements/nvidia.txt
+> pip install -r requirements/nvidia.txt
+> pip install -r requirements/base.txt
 ```
 
 Only install one of the platform-specific requirements files, otherwise you may end up with the wrong version of
-PyTorch or the ONNX runtime. The ONNX runtime nightly packages used by `amd-windows-nightly.txt` can be substantially
-faster than the latest release, but may not always be stable.
+PyTorch or the ONNX runtime. The full list of available ONNX runtime packages [can be found here
+](https://download.onnxruntime.ai/).
 
-If you prefer, you can install all of the packages manually using pip:
+If you have successfully installed both of the requirements files for your platform, you do not need to install
+any of the packages shown in the following platform-specific sections.
 
-```shell
-> pip install "numpy>=1.20,<1.24"
+The ONNX runtime nightly packages used by the `requirements/*-nightly.txt` files can be substantially faster than the
+last release, but may not always be stable. Many of the nightly packages are specific to one version of Python and
+some are only available for Python 3.8 and 3.9, so you may need to find the correct package for your environment. If
+you are using Python 3.10, download the `cp310` package. For Python 3.9, download the `cp39` package, and so on.
+Installing with pip will figure out the correct package for you.
 
-> pip install "protobuf<4,>=3.20.2"
+#### For AMD on Linux: PyTorch ROCm and ONNX runtime ROCm
 
-# stable diffusion and friends
-> pip install accelerate diffusers ftfy onnx onnxruntime spacy scipy transformers
-
-# upscaling and face correction
-> pip install basicsr facexlib gfpgan realesrgan
-
-# API server
-> pip install flask flask-cors flask_executor
-```
-
-At the moment, only `numpy` and `protobuf` seem to need a specific version. If you see an error about `np.float`, make
-sure you are not using `numpy>=1.24`.
-[This SO question](https://stackoverflow.com/questions/74844262/how-to-solve-error-numpy-has-no-attribute-float-in-python)
-has more details.
-
-#### For AMD on Linux: Install PyTorch and ONNX ROCm
-
-If you are running on Linux with an AMD GPU, download and install the ROCm version of `onnxruntime` and the ROCm
-version of PyTorch:
+If you are running on Linux with an AMD GPU, install the ROCm versions of PyTorch and `onnxruntime`:
 
 ```shell
-> pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/rocm5.2
-
-> wget https://download.onnxruntime.ai/onnxruntime_training-1.13.0.dev20221021001%2Brocm523-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-
-> pip install ./onnxruntime_training-1.13.0.dev20221021001%2Brocm523-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+> pip install "torch==1.13.1" "torchvision==0.14.1" --extra-index-url https://download.pytorch.org/whl/rocm5.2
+# and one of
+> pip install https://download.onnxruntime.ai/onnxruntime_training-1.14.1%2Brocm54-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+# or
+> pip install https://download.onnxruntime.ai/onnxruntime_training-1.15.0.dev20230326001%2Brocm542-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 ```
 
-Make sure you have installed ROCm 5.x ([see their documentation](https://docs.amd.com/bundle/ROCm-Installation-Guide-v5.2.3/page/How_to_Install_ROCm.html#_How_to_Install) for more details) and that the version of
-`onnxruntime` matches your ROCm drivers. See [the full list of available packages](https://download.onnxruntime.ai/)
-for more. Ubuntu 20.04 supports ROCm 5.2 and Ubuntu 22.04 supports ROCm 5.4, unless you want to build custom packages.
+Make sure you have installed ROCm 5.x ([see their documentation
+](https://docs.amd.com/bundle/ROCm-Installation-Guide-v5.2.3/page/How_to_Install_ROCm.html#_How_to_Install) for more
+details) and that the version of `onnxruntime` matches your ROCm drivers. The version of PyTorch does not need to match
+exactly, and they only have limited versions available.
 
-#### For AMD on Windows: Install ONNX DirectML
+Ubuntu 20.04 supports ROCm 5.2 and Ubuntu 22.04 supports ROCm 5.4, unless you want to build custom packages. The ROCm
+5.x series supports many discrete AMD cards since the Vega 20 architecture, with [a partial list of supported cards
+shown here](https://docs.amd.com/bundle/ROCm-Installation-Guide-v5.4.3/page/Prerequisites.html#d5434e465).
+
+#### For AMD on Windows: PyTorch CPU and ONNX runtime DirectML
 
 If you are running on Windows with an AMD GPU, install the DirectML ONNX runtime as well:
 
 ```shell
-> pip install onnxruntime-directml --force-reinstall
-
-> pip install "numpy>=1.20,<1.24"   # the DirectML package will upgrade numpy to 1.24, which will not work
+> pip install "torch==1.13.1" "torchvision==0.14.1" --extra-index-url https://download.pytorch.org/whl/cpu
+# and one of
+> pip install onnxruntime-directml
+# or
+> pip install ort-nightly-directml --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/ORT-Nightly/pypi/simple/ --force-reinstall
 ```
 
-You can optionally install the latest DirectML ORT nightly package, which may provide a substantial performance increase
-(on my machine, the stable version takes about 30sec/image vs 9sec/image for the nightly).
-
-Downloads can be found at https://aiinfra.visualstudio.com/PublicPackages/_artifacts/feed/ORT-Nightly. You can install
-through pip or download the package file. If you are using Python 3.10, download the `cp310` package. For Python 3.9,
-download the `cp39` package, and so on. Installing with pip will figure out the correct version:
+If you DirectML package upgrades numpy to an incompatible version >= 1.24, downgrade it:
 
 ```shell
-> pip install --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/ORT-Nightly/pypi/simple/ ort-nightly-directml --force-reinstall
+> pip install "numpy>=1.20,<1.24" --force-reinstall  # the DirectML package will upgrade numpy to 1.24, which will not work
 ```
 
-Make sure to include the `--force-reinstall` flag, since it requires some older versions of other packages, and will
-overwrite the versions you currently have installed.
+You can optionally install the latest DirectML ORT nightly package, which may provide a substantial performance
+increase.
 
-#### For CPU on Linux: Install PyTorch CPU
+#### For CPU everywhere: PyTorch CPU and ONNX runtime CPU
 
 If you are running with a CPU and no hardware acceleration, install `onnxruntime` and the CPU version of PyTorch:
 
 ```shell
-> pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
-```
-
-#### For CPU on Windows: Install PyTorch CPU
-
-If you are running with a CPU and no hardware acceleration, install `onnxruntime` and the CPU version of PyTorch:
-
-```shell
-> pip install torch
+> pip install "torch==1.13.1" "torchvision==0.14.1" --extra-index-url https://download.pytorch.org/whl/cpu
+# and
+> pip install onnxruntime
+# or
+> pip install ort-nightly --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/ORT-Nightly/pypi/simple/ --force-reinstall
 ```
 
 #### For Nvidia everywhere: Install PyTorch GPU and ONNX GPU
@@ -276,9 +260,11 @@ If you are running with an Nvidia GPU on any operating system, install `onnxrunt
 PyTorch:
 
 ```shell
-> pip install torch torchvision --extra-index-url https://download.pytorch.org/whl/cu117
-
+> pip install "torch==1.13.1" "torchvision==0.14.1" --extra-index-url https://download.pytorch.org/whl/cu117
+# and
 > pip install onnxruntime-gpu
+# or
+> pip install ort-nightly-gpu --extra-index-url https://aiinfra.pkgs.visualstudio.com/PublicPackages/_packaging/ORT-Nightly/pypi/simple/ --force-reinstall
 ```
 
 Make sure you have installed CUDA 11.x and that the version of PyTorch matches the version of CUDA

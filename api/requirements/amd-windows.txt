@@ -1,4 +1,4 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch>=1.12,<2
-torchvision>=0.13,<0.15
-onnxruntime-directml
+torch==1.13.1
+torchvision==0.14.1
+onnxruntime-directml>=1.13
