@@ -41,6 +41,7 @@ class JobCommand:
         args: Any,
         kwargs: dict[str, Any],
     ):
+        self.device = device
         self.name = name
         self.fn = fn
         self.args = args
