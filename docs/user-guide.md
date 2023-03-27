@@ -258,7 +258,7 @@ You can provide a step as the third parameter, which will skip layers: `even-lay
 single layer and some have 75 or more. You can use the layer tokens individually, out of order, and repeat some layers
 or omit them entirely.
 
-The range syntax currently does not work when the Long Prompt Weighting pipeline is enabled.
+_Note:_ The token range syntax currently does not work when [long prompt weighting](#long-prompt-weighting) is enabled.
 
 Some Textual Inversions have their own token, especially ones trained using [the Stable Conceptualizer notebook
 ](https://colab.research.google.com/github/huggingface/notebooks/blob/main/diffusers/stable_conceptualizer_inference.ipynb)
@@ -283,7 +283,18 @@ This makes your prompt less specific and some models have been trained to work b
 
 ### Long prompt weighting
 
-TODO
+You can emphasize or deemphasize certain parts of the prompt by using the long prompt weighting option. This adds
+some additional tokens:
+
+- `(word)` increases attention by 10%
+- `((word))` increases attention by 21% (10% * 10%)
+- `[word]` decreases attention by 10%
+- `[[word]]` decreases attention by 21% (10% * 10%)
+- `(word:1.5)` increases attention by 50%
+- `\(word\)` inserts literal parentheses
+
+_Note:_ The [token range syntax](#textual-inversion-tokens) currently does not work when long prompt weighting is
+enabled.
 
 ## Tabs
 
@@ -713,11 +724,52 @@ Some common VAE models include:
 
 ### Optimizing models for lower memory usage
 
-TODO
+Running Stable Diffusion with ONNX acceleration uses more memory by default than some other methods, but there are a
+number of optimizations that you can apply to reduce the memory usage.
+
+At least 12GB of VRAM is recommended for running all of the models in the extras file, but `onnx-web` should work on
+most 8GB cards and may work on some 6GB cards. 4GB is not supported yet, but [it should be
+possible](https://github.com/ssube/onnx-web/issues/241#issuecomment-1475341043).
+
+- `diffusers-attention-slicing`
+- `onnx-fp16`
+- `onnx-internal-fp16`
+- `onnx-graph-all`
+- `onnx-low-memory`
+- `torch-fp16`
+
+TODO: memory at different optimization levels
 
 ### Permanently blending additional networks
 
-TODO
+You can permanently blend and include additional networks in an ONNX model by including the `inversions` and `loras`
+keys in the `diffusion` model.
+
+Even when permanently blended, tokens work normally and the LoRA or Textual Inversion weights must be activated using
+their built-in tokens and the ones provided when blending the model.
+
+This can be used to embed additional networks at your favorites weights and share the resulting models or to pre-blend
+some common configurations in a server context.
+
+```json
+{
+  "diffusion": [
+    {
+      "name": "diffusion-blend-many",
+      "source": "runwayml/stable-diffusion-v1-5",
+      "inversions": [
+        {
+          "name": "cubex",
+          "source": "sd-concepts-library/cubex",
+          "format": "concept",
+          "label": "Cubex"
+        }
+      ],
+      "loras": []
+    }
+  ]
+}
+```
 
 ### Extras file format
 
