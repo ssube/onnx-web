@@ -725,20 +725,29 @@ Some common VAE models include:
 ### Optimizing models for lower memory usage
 
 Running Stable Diffusion with ONNX acceleration uses more memory by default than some other methods, but there are a
-number of optimizations that you can apply to reduce the memory usage.
+number of [server optimizations](server-admin.md#pipeline-optimizations) that you can apply to reduce the memory usage:
+
+- `diffusers-attention-slicing`
+- `onnx-fp16`
+- `onnx-graph-all`
+- `onnx-low-memory`
+- `torch-fp16`
 
 At least 12GB of VRAM is recommended for running all of the models in the extras file, but `onnx-web` should work on
 most 8GB cards and may work on some 6GB cards. 4GB is not supported yet, but [it should be
 possible](https://github.com/ssube/onnx-web/issues/241#issuecomment-1475341043).
 
-- `diffusers-attention-slicing`
-- `onnx-fp16`
-- `onnx-internal-fp16`
-- `onnx-graph-all`
-- `onnx-low-memory`
-- `torch-fp16`
+Based on somewhat limited testing, the model size memory usage for each optimization level is approximately:
 
-TODO: memory at different optimization levels
+| Optimizations               | Disk Size | Memory Usage - 1 @ 512x512 | Supported Platforms |
+| --------------------------- | --------- | -------------------------- | ------------------- |
+| none                        | 4.0G      | 11.5G                      | all                 |
+| `onnx-fp16`                 | 2.2G      | 9.9G                       | all                 |
+| ORT script                  | 4.0G      | 6.6G                       | CUDA only           |
+| ORT script with `--float16` | 2.1G      | 5.8G                       | CUDA only           |
+| `torch-fp16`                | 2.0G      | 5.9G                       | CUDA only           |
+
+- https://github.com/microsoft/onnxruntime/tree/main/onnxruntime/python/tools/transformers/models/stable_diffusion#cuda-optimizations-for-stable-diffusion
 
 ### Permanently blending additional networks
 

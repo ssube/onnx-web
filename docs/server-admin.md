@@ -102,9 +102,7 @@ Others:
   - `onnx-deterministic-compute`
     - enable ONNX deterministic compute
   - `onnx-fp16`
-    - force 16-bit floating point values when running pipelines
-    - use with https://github.com/microsoft/onnxruntime/tree/main/onnxruntime/python/tools/transformers/models/stable_diffusion#optimize-onnx-pipeline
-      and the `--float16` flag
+    - convert model nodes to 16-bit floating point values internally while leaving 32-bit inputs
   - `onnx-graph-*`
     - `onnx-graph-disable`
       - disable all ONNX graph optimizations
@@ -112,9 +110,6 @@ Others:
       - enable basic ONNX graph optimizations
     - `onnx-graph-all`
       - enable all ONNX graph optimizations
-  - `onnx-internal-fp16`
-    - convert internal model nodes to 16-bit floating point values
-    - does not reduce disk space as much as `onnx-fp16` or `torch-fp16`, but does not incur as many extra conversions
   - `onnx-low-memory`
     - disable ONNX features that allocate more memory than is strictly required or keep memory after use
 - `torch-*`

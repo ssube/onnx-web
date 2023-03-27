@@ -478,7 +478,7 @@ def main() -> int:
     logger.info("CLI arguments: %s", args)
 
     ctx = ConversionContext.from_environ()
-    ctx.half = args.half or "onnx-internal-fp16" in ctx.optimizations
+    ctx.half = args.half or "onnx-fp16" in ctx.optimizations
     ctx.opset = args.opset
     ctx.token = args.token
     logger.info("converting models in %s using %s", ctx.model_path, ctx.training_device)
