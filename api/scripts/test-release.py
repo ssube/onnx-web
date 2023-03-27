@@ -196,6 +196,11 @@ TEST_DATA = [
 ]
 
 
+class TestError(Exception):
+    def __str__(self) -> str:
+        return super().__str__()
+
+
 def generate_images(root: str, test: TestCase) -> Optional[str]:
     files = {}
     if test.source is not None:
@@ -234,18 +239,24 @@ def generate_images(root: str, test: TestCase) -> Optional[str]:
         json = resp.json()
         return json.get("outputs")
     else:
-        logger.warning("request failed: %s: %s", resp.status_code, resp.text)
-        return None
+        logger.warning("generate request failed: %s: %s", resp.status_code, resp.text)
+        raise TestError("error generating image")
 
 
 def check_ready(root: str, key: str) -> bool:
     resp = requests.get(f"{root}/api/ready?output={key}")
     if resp.status_code == 200:
         json = resp.json()
-        return json.get("ready", False)
+        ready = json.get("ready", False)
+        if ready:
+            cancelled = json.get("cancelled", False)
+            failed = json.get("failed", False)
+            return not cancelled and not failed
+        else:
+            return False
     else:
-        logger.warning("request failed: %s", resp.status_code)
-        return False
+        logger.warning("ready request failed: %s", resp.status_code)
+        raise TestError("error getting image status")
 
 
 def download_images(root: str, keys: List[str]) -> List[Image.Image]:
@@ -256,7 +267,8 @@ def download_images(root: str, keys: List[str]) -> List[Image.Image]:
             logger.debug("downloading image: %s", key)
             images.append(Image.open(BytesIO(resp.content)))
         else:
-            logger.warning("request failed: %s", resp.status_code)
+            logger.warning("download request failed: %s", resp.status_code)
+            raise TestError("error downloading image")
 
     return images
 
@@ -290,7 +302,7 @@ def run_test(
 
     keys = generate_images(root, test)
     if keys is None:
-        raise ValueError("could not generate")
+        raise ValueError("could not generate image")
 
     attempts = 0
     while attempts < test.max_attempts:
@@ -306,6 +318,8 @@ def run_test(
         raise ValueError("image was not ready in time")
 
     results = download_images(root, keys)
+    if results is None:
+        raise ValueError("could not download image")
 
     passed = True
     for i in range(len(results)):
