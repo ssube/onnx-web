@@ -267,7 +267,7 @@ def convert_diffusion_diffusers(
                 "sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
             },
             opset=ctx.opset,
-            half=ctx.half,
+            half=False, # https://github.com/ssube/onnx-web/issues/290
         )
 
         # VAE DECODER
