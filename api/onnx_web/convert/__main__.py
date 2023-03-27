@@ -478,15 +478,10 @@ def main() -> int:
     logger.info("CLI arguments: %s", args)
 
     ctx = ConversionContext.from_environ()
-    ctx.half = args.half
+    ctx.half = args.half or "onnx-internal-fp16" in ctx.optimizations
     ctx.opset = args.opset
     ctx.token = args.token
     logger.info("converting models in %s using %s", ctx.model_path, ctx.training_device)
-
-    if ctx.half and ctx.training_device != "cuda":
-        raise ValueError(
-            "half precision model export is only supported on GPUs with CUDA"
-        )
 
     if not path.exists(ctx.model_path):
         logger.info("model path does not existing, creating: %s", ctx.model_path)

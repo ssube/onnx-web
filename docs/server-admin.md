@@ -112,6 +112,9 @@ Others:
       - enable basic ONNX graph optimizations
     - `onnx-graph-all`
       - enable all ONNX graph optimizations
+  - `onnx-internal-fp16`
+    - convert internal model nodes to 16-bit floating point values
+    - does not reduce disk space as much as `onnx-fp16` or `torch-fp16`, but does not incur as many extra conversions
   - `onnx-low-memory`
     - disable ONNX features that allocate more memory than is strictly required or keep memory after use
 - `torch-*`
