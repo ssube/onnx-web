@@ -1,5 +1,6 @@
 import atexit
 import gc
+from functools import partial
 from logging import getLogger
 
 from diffusers.utils.logging import disable_progress_bar
@@ -67,11 +68,11 @@ def run():
     app, pool = main()
     pool.start()
 
-    def quit():
+    def quit(p: DevicePoolExecutor):
         logger.info("shutting down workers")
-        pool.join()
+        p.join()
 
-    atexit.register(quit)
+    atexit.register(partial(quit, pool))
     return app
 
 
