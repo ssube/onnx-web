@@ -733,19 +733,33 @@ number of [server optimizations](server-admin.md#pipeline-optimizations) that yo
 - `onnx-low-memory`
 - `torch-fp16`
 
+You can enable optimizations using the `ONNX_WEB_OPTIMIZATIONS` environment variable:
+
+```shell
+# on linux:
+> export ONNX_WEB_OPTIMIZATIONS=diffusers-attention-slicing,onnx-fp16,onnx-low-memory
+
+# on windows:
+> set ONNX_WEB_OPTIMIZATIONS=diffusers-attention-slicing,onnx-fp16,onnx-low-memory
+```
+
 At least 12GB of VRAM is recommended for running all of the models in the extras file, but `onnx-web` should work on
 most 8GB cards and may work on some 6GB cards. 4GB is not supported yet, but [it should be
 possible](https://github.com/ssube/onnx-web/issues/241#issuecomment-1475341043).
 
 Based on somewhat limited testing, the model size memory usage for each optimization level is approximately:
 
-| Optimizations               | Disk Size | Memory Usage - 1 @ 512x512 | Supported Platforms |
-| --------------------------- | --------- | -------------------------- | ------------------- |
-| none                        | 4.0G      | 11.5G                      | all                 |
-| `onnx-fp16`                 | 2.2G      | 9.9G                       | all                 |
-| ORT script                  | 4.0G      | 6.6G                       | CUDA only           |
-| ORT script with `--float16` | 2.1G      | 5.8G                       | CUDA only           |
-| `torch-fp16`                | 2.0G      | 5.9G                       | CUDA only           |
+| Optimizations               | Disk Size | CUDA Memory Usage | DirectML Memory Usage | ROCm Memory Usage | Supported Platforms |
+| --------------------------- | --------- | ----------------- | --------------------- | ----------------- | ------------------- |
+| none                        | 4.0G      | 11.5G             | TODO                  | 8.5G              | all                 |
+| `onnx-fp16`                 | 2.2G      | 9.9G              | TODO                  | 4.5G              | all                 |
+| ORT script                  | 4.0G      | 6.6G              | -                     | -                 | CUDA only           |
+| ORT script with `--float16` | 2.1G      | 5.8G              | -                     | -                 | CUDA only           |
+| `torch-fp16`                | 2.0G      | 5.9G              | -                     | -                 | CUDA only           |
+
+All rows shown using a resolution of 512x512 and batch size of 1, measured on consecutive runs after the first load.
+The exact memory usage will depend on the model(s) you are using, the ONNX runtime version, and the CUDA/ROCm drivers
+on your system. These are approximate values, measured during testing and rounded up to the nearest 100MB.
 
 - https://github.com/microsoft/onnxruntime/tree/main/onnxruntime/python/tools/transformers/models/stable_diffusion#cuda-optimizations-for-stable-diffusion
 
