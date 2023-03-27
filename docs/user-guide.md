@@ -33,6 +33,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [LoRA tokens](#lora-tokens)
       - [Textual Inversion tokens](#textual-inversion-tokens)
       - [CLIP skip tokens](#clip-skip-tokens)
+    - [Long prompt weighting](#long-prompt-weighting)
   - [Tabs](#tabs)
     - [Txt2img tab](#txt2img-tab)
       - [Scheduler parameter](#scheduler-parameter)
@@ -67,6 +68,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Downloading models from Civitai](#downloading-models-from-civitai)
       - [Downloading models from HuggingFace](#downloading-models-from-huggingface)
     - [Using a custom VAE](#using-a-custom-vae)
+    - [Optimizing models for lower memory usage](#optimizing-models-for-lower-memory-usage)
     - [Permanently blending additional networks](#permanently-blending-additional-networks)
     - [Extras file format](#extras-file-format)
   - [Known errors](#known-errors)
@@ -278,6 +280,10 @@ You can skip the last layers of the CLIP text encoder using the `clip` token:
 ```
 
 This makes your prompt less specific and some models have been trained to work better with some amount of skipping.
+
+### Long prompt weighting
+
+TODO
 
 ## Tabs
 
@@ -704,6 +710,10 @@ Some common VAE models include:
 - https://huggingface.co/stabilityai/sd-vae-ft-ema-original
 - https://huggingface.co/stabilityai/sd-vae-ft-mse
 - https://huggingface.co/stabilityai/sd-vae-ft-mse-original
+
+### Optimizing models for lower memory usage
+
+TODO
 
 ### Permanently blending additional networks
 

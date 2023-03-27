@@ -20,25 +20,37 @@ Please [see the User Guide](https://github.com/ssube/onnx-web/blob/main/docs/use
 
 ## Features
 
-- AMD and Nvidia hardware acceleration using CUDA, DirectML, or ROCm
+This is an incomplete list of new and interesting features, with links to the user guide:
+
+- hardware acceleration on both AMD and Nvidia
+  - [tested on CUDA, DirectML, and ROCm](#install-pip-packages)
+  - [half-precision support for low-memory GPUs](docs/user-guide.md#optimizing-models-for-lower-memory-usage)
+  - fallback for CPU-only systems
 - web app to generate and view images
   - [hosted on Github Pages](https://ssube.github.io/onnx-web), from your CDN, or locally
-  - keeps your recent images  and progress as you change tabs
-  - queue up multiple images
-- convert and load your own models
-  - directly supports HuggingFace Hub and Civitai
-  - supports LoRA with [an extra conversion step](./docs/converting-models.md)
+  - [persists your recent images and progress as you change tabs](docs/user-guide.md#image-history)
+  - queue up multiple images and retry errors
 - supports many `diffusers` pipelines
-  - txt2img
-  - img2img
-  - inpainting
-  - upscale (with ONNX acceleration)
-  - long prompt weighting
-- blending mode for combining images
+  - [txt2img](docs/user-guide.md#txt2img-tab)
+  - [img2img](docs/user-guide.md#img2img-tab)
+  - [inpainting](docs/user-guide.md#inpaint-tab), with mask drawing and upload
+  - [upscaling](docs/user-guide.md#upscale-tab), with ONNX acceleration
+- [add and use your own models](docs/user-guide.md#adding-your-own-models)
+  - [convert models from diffusers and SD checkpoints](docs/converting-models.md)
+  - [download models from HuggingFace hub, Civitai, and HTTPS sources](docs/user-guide.md#model-sources)
+- blend in additional networks
+  - [permanent and prompt-based blending](docs/user-guide.md#permanently-blending-additional-networks)
+  - [supports LoRA weights](docs/user-guide.md#lora-tokens)
+  - [supports Textual Inversion concepts and embeddings](docs/user-guide.md#textual-inversion-tokens)
+- infinite prompt length
+  - [with long prompt weighting](docs/user-guide.md#long-prompt-weighting)
+  - expand and control Textual Inversions per-layer
+- [image blending mode](docs/user-guide.md#blend-tab)
+  - combine images from history
 - upscaling and face correction
   - upscaling with Real ESRGAN or Stable Diffusion
   - face correction with CodeFormer or GFPGAN
-- API server can run models on a remote GPU
+- [API server can be run remotely](docs/server-admin.md)
   - REST API can be served over HTTPS or HTTP
   - background processing for all image pipelines
   - polling for image status, plays nice with load balancers
@@ -322,23 +334,76 @@ Diffusion v2 models.
 
 #### Converting your own models
 
-You can include your own models in the conversion script without making any code changes.
+You can include your own models in the conversion script without making any code changes and download additional
+networks to blend during conversion or by using prompt tokens. For more details, please [see the user guide
+](./docs/user-guide.md#adding-your-own-models).
 
 Make a copy of the `api/extras.json` file and edit it to include the models you want to download and convert:
 
 ```json
 {
   "diffusion": [
-    ["diffusion-knollingcase", "Aybeeceedee/knollingcase"],
-    ["diffusion-openjourney", "prompthero/openjourney"]
+    {
+      "name": "diffusion-knollingcase",
+      "label": "Knollingcase",
+      "source": "Aybeeceedee/knollingcase"
+    },
+    {
+      "name": "diffusion-openjourney",
+      "source": "prompthero/openjourney"
+    },
+    {
+      "name": "diffusion-stablydiffused-aesthetic-v2-6",
+      "label": "Stably Diffused Aesthetic Mix v2.6",
+      "source": "civitai://6266?type=Pruned%20Model&format=SafeTensor",
+      "format": "safetensors"
+    },
+    {
+      "name": "diffusion-unstable-ink-dream-v6",
+      "label": "Unstable Ink Dream v6",
+      "source": "civitai://5796",
+      "format": "safetensors"
+    },
+    {
+      "name": "sonic-diffusion-v1-5",
+      "source": "runwayml/stable-diffusion-v1-5",
+      "inversions": [
+        {
+          "name": "ugly-sonic",
+          "source": "huggingface://sd-concepts-library/ugly-sonic",
+          "model": "concept"
+        }
+      ]
+    }
   ],
   "correction": [],
-  "upscaling": []
+  "upscaling": [],
+  "networks": [
+    {
+      "name": "cubex",
+      "source": "huggingface://sd-concepts-library/cubex",
+      "label": "Cubex",
+      "model": "concept",
+      "type": "inversion"
+    },
+    {
+      "name": "birb",
+      "source": "huggingface://sd-concepts-library/birb-style",
+      "label": "Birb",
+      "model": "concept",
+      "type": "inversion"
+    },
+    {
+      "name": "minecraft",
+      "source": "huggingface://sd-concepts-library/minecraft-concept-art",
+      "label": "Minecraft Concept",
+      "model": "concept",
+      "type": "inversion"
+    },
+  ],
+  "sources": []
 }
 ```
-
-Models based on Stable Diffusion typically need to be in the `diffusion` category, including the Stable Diffusion
-upscaling model. For more details, please [see the user guide](./docs/user-guide.md#adding-your-own-models).
 
 Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your new `extras.json` file before running the
 launch script:
@@ -538,5 +603,6 @@ Getting this set up and running on AMD would not have been possible without guid
 There are many other good options for using Stable Diffusion with hardware acceleration, including:
 
 - https://github.com/azuritecoin/OnnxDiffusersUI
+- https://github.com/ForserX/StableDiffusionUI
 - https://github.com/pingzing/stable-diffusion-playground
 - https://github.com/quickwick/stable-diffusion-win-amd-ui
