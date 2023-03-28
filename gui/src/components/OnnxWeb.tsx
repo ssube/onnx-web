@@ -13,31 +13,10 @@ import { Inpaint } from './tab/Inpaint.js';
 import { Settings } from './tab/Settings.js';
 import { Txt2Img } from './tab/Txt2Img.js';
 import { Upscale } from './tab/Upscale.js';
-
-const REMOVE_HASH = /^#?(.*)$/;
-const TAB_LABELS = [
-  'txt2img',
-  'img2img',
-  'inpaint',
-  'upscale',
-  'blend',
-  'settings',
-];
+import { getTab, TAB_LABELS } from './utils.js';
 
 export function OnnxWeb() {
   const [hash, setHash] = useHash();
-
-  function tab(): string {
-    const match = hash.match(REMOVE_HASH);
-    if (doesExist(match)) {
-      const [_full, route] = Array.from(match);
-      if (route.length > 0) {
-        return route;
-      }
-    }
-
-    return TAB_LABELS[0];
-  }
 
   return (
     <Container>
@@ -47,7 +26,7 @@ export function OnnxWeb() {
       <Box sx={{ mx: 4, my: 4 }}>
         <ModelControl />
       </Box>
-      <TabContext value={tab()}>
+      <TabContext value={getTab(hash)}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={(_e, idx) => {
             setHash(idx);

@@ -4,12 +4,14 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
+import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, StateContext } from '../../state.js';
 import { QueryList } from '../input/QueryList.js';
 import { QueryMenu } from '../input/QueryMenu.js';
+import { getTab } from '../utils.js';
 
 export function ModelControl() {
   const client = mustExist(useContext(ClientContext));
@@ -25,6 +27,33 @@ export function ModelControl() {
   const platforms = useQuery('platforms', async () => client.platforms(), {
     staleTime: STALE_TIME,
   });
+
+  const [hash, _setHash] = useHash();
+
+  function addToken(type: string, name: string, weight = 1.0) {
+    const tab = getTab(hash);
+    const current = state.getState();
+
+
+    switch (tab) {
+      case 'txt2img': {
+        const { prompt } = current.txt2img;
+        current.setTxt2Img({
+          prompt: `<${type}:${name}:1.0> ${prompt}`,
+        });
+        break;
+      }
+      case 'img2img': {
+        const { prompt } = current.img2img;
+        current.setImg2Img({
+          prompt: `<${type}:${name}:1.0> ${prompt}`,
+        });
+        break;
+      }
+      default:
+        // not supported yet
+    }
+  }
 
   return <Stack direction='column' spacing={2}>
     <Stack direction='row' spacing={2}>
@@ -110,12 +139,7 @@ export function ModelControl() {
           selector: (result) => result.networks.filter((network) => network.type === 'inversion').map((network) => network.name),
         }}
         onSelect={(name) => {
-          const current = state.getState();
-          const { prompt } = current.txt2img;
-
-          current.setTxt2Img({
-            prompt: `<inversion:${name}:1.0> ${prompt}`,
-          });
+          addToken('inversion', name);
         }}
       />
       <QueryMenu
@@ -127,12 +151,7 @@ export function ModelControl() {
           selector: (result) => result.networks.filter((network) => network.type === 'lora').map((network) => network.name),
         }}
         onSelect={(name) => {
-          const current = state.getState();
-          const { prompt } = current.txt2img;
-
-          current.setTxt2Img({
-            prompt: `<lora:${name}:1.0> ${prompt}`,
-          });
+          addToken('lora', name);
         }}
       />
     </Stack>

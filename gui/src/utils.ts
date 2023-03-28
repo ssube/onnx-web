@@ -18,3 +18,11 @@ export function range(max: number): Array<number> {
 export function visibleIndex(idx: number): string {
   return (idx + 1).toFixed(0);
 }
+
+export function trimHash(val: string): string {
+  if (val[0] === '#') {
+    return val.slice(1);
+  }
+
+  return val;
+}
