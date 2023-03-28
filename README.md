@@ -30,6 +30,7 @@ This is an incomplete list of new and interesting features, with links to the us
   - [hosted on Github Pages](https://ssube.github.io/onnx-web), from your CDN, or locally
   - [persists your recent images and progress as you change tabs](docs/user-guide.md#image-history)
   - queue up multiple images and retry errors
+  - translations available for English, French, German, and Spanish (please open an issue for more)
 - supports many `diffusers` pipelines
   - [txt2img](docs/user-guide.md#txt2img-tab)
   - [img2img](docs/user-guide.md#img2img-tab)
