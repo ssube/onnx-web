@@ -90,16 +90,9 @@ This is an incomplete list of new and interesting features, with links to the us
 
 ## Setup
 
-This is a very similar process to what [harishanand95](https://gist.github.com/harishanand95/75f4515e6187a6aa3261af6ac6f61269)
-and [averad](https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674) recommend in their gists, split up into a
-few steps:
-
-1. [Install Git and Python](#install-git-and-python), if you have not already
-2. [Create a virtual environment](#create-a-virtual-environment)
-3. [Install pip packages](#install-pip-packages)
-   1. Install common packages used by the server
-   2. Install platform-specific packages for your GPU (or CPU)
-4. [Download and convert models](#download-and-convert-models)
+To run the server and generate images, you need to [install Git and Python](#install-git-and-python) along with [a few
+pip libraries](#install-pip-packages), then [run the conversion script](#converting-your-own-models) to download and
+convert [the models you want to use](#download-and-convert-models).
 
 ### Install Git and Python
 
