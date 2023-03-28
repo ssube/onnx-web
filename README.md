@@ -16,7 +16,7 @@ an image from earlier.
 
 Please [see the User Guide](https://github.com/ssube/onnx-web/blob/main/docs/user-guide.md) for more details.
 
-![txt2img with detailed knollingcase renders of a soldier in an alien jungle](./docs/readme-knolling.png)
+![txt2img with detailed knollingcase renders of a soldier in a cloudy alien jungle](./docs/readme-preview.png)
 
 ## Features
 
