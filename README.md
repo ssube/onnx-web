@@ -24,8 +24,9 @@ This is an incomplete list of new and interesting features, with links to the us
 
 - hardware acceleration on both AMD and Nvidia
   - [tested on CUDA, DirectML, and ROCm](#install-pip-packages)
-  - [half-precision support for low-memory GPUs](docs/user-guide.md#optimizing-models-for-lower-memory-usage)
-  - fallback for CPU-only systems
+  - [half-precision support for low-memory GPUs](docs/user-guide.md#optimizing-models-for-lower-memory-usage) on both
+    AMD and Nvidia
+  - software fallback for CPU-only systems
 - web app to generate and view images
   - [hosted on Github Pages](https://ssube.github.io/onnx-web), from your CDN, or locally
   - [persists your recent images and progress as you change tabs](docs/user-guide.md#image-history)
