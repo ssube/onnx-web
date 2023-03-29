@@ -593,10 +593,10 @@ Getting this set up and running on AMD would not have been possible without guid
 - https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674
 - https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs
 - https://www.travelneil.com/stable-diffusion-updates.html
-- https://github.com/Amblyopius/AMD-Stable-Diffusion-ONNX-FP16
 
 There are many other good options for using Stable Diffusion with hardware acceleration, including:
 
+- https://github.com/Amblyopius/AMD-Stable-Diffusion-ONNX-FP16
 - https://github.com/azuritecoin/OnnxDiffusersUI
 - https://github.com/ForserX/StableDiffusionUI
 - https://github.com/pingzing/stable-diffusion-playground
