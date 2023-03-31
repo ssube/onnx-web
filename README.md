@@ -3,16 +3,16 @@
 onnx-web is a tool for running Stable Diffusion and other [ONNX models](https://onnx.ai/) with hardware acceleration,
 on both AMD and Nvidia GPUs and with a CPU software fallback.
 
-The API runs on both Linux and Windows and provides a REST API to run many of the pipelines from [`diffusers`
-](https://huggingface.co/docs/diffusers/main/en/index), along with metadata about the available models and accelerators,
-and the output of previous runs. Hardware acceleration is supported on both AMD and Nvidia for both Linux and Windows,
-with a CPU fallback capable of running on laptop-class machines.
-
 The GUI is [hosted on Github Pages](https://ssube.github.io/onnx-web/) and runs in all major browsers, including on
 mobile devices. It allows you to select the model and accelerator being used for each image pipeline. Image parameters
 are shown for each of the major modes, and you can either upload or paint the mask for inpainting and outpainting. The
 last few output images are shown below the image controls, making it easy to refer back to previous parameters or save
 an image from earlier.
+
+The API runs on both Linux and Windows and provides a REST API to run many of the pipelines from [`diffusers`
+](https://huggingface.co/docs/diffusers/main/en/index), along with metadata about the available models and accelerators,
+and the output of previous runs. Hardware acceleration is supported on both AMD and Nvidia for both Linux and Windows,
+with a CPU fallback capable of running on laptop-class machines.
 
 Please check out [the setup guide to get started](docs/setup-guide.md) and [the user guide for more
 details](https://github.com/ssube/onnx-web/blob/main/docs/user-guide.md).
@@ -92,10 +92,10 @@ The extended setup docs have been [moved to the setup guide](docs/setup-guide.md
 
 ### Adding your own models
 
-You can include your own models or download and convert models from the HuggingFace Hub or Civitai without making any
-code changes, by including them in the `extras.json` file. You can also download and blend in additional networks, such
-as LoRAs and Textual Inversions. For more details, please [see the user guide
-](./docs/user-guide.md#adding-your-own-models).
+You can [add your own models](./docs/user-guide.md#adding-your-own-models) by downloading them from the HuggingFace Hub
+or Civitai or by converting them from local files, without making any code changes. You can also download and blend in
+additional networks, such as LoRAs and Textual Inversions, using [tokens in the
+prompt](docs/user-guide.md#prompt-tokens).
 
 ## Usage
 
