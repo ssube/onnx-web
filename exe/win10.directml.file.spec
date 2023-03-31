@@ -31,6 +31,17 @@ datas = [
         "models/**",
         "utils/**",
     ]),
+    collect_data_files("realesrgan", include_py_files=True, includes=[
+        "archs/**",
+        "data/**",
+        "losses/**",
+        "models/**",
+        "utils/**",
+    ]),
+    collect_data_files("onnxruntime", include_py_files=True, includes=[
+        "transformers/**",
+        "tools/**",
+    ]),
     collect_data_files("transformers", include_py_files=True, includes=[
         "**",
     ]),
@@ -45,7 +56,7 @@ a = Analysis(
         *metadatas,
         *datas,
     ],
-    hiddenimports=['onnxruntime', 'onnxruntime-directml', 'tqdm'],
+    hiddenimports=['coloredlogs', 'onnxruntime', 'onnxruntime-directml', 'tqdm'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
