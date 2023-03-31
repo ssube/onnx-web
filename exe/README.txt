@@ -1,9 +1,10 @@
 # onnx-web Windows bundle
 
-This is the Windows all-in-one bundle for onnx-web, a tool for running Stable Diffusion using ONNX hardware
-acceleration: https://github.com/ssube/onnx-web.
+This is the Windows all-in-one bundle for onnx-web, a tool for running Stable Diffusion and
+other models using ONNX hardware acceleration: https://github.com/ssube/onnx-web
 
-Please check the setup guide for the latest instructions, this may be an older version: https://github.com/ssube/onnx-web/blob/main/docs/setup-guide.md#windows-all-in-one-bundle
+Please check the setup guide for the latest instructions, this may be an older version:
+https://github.com/ssube/onnx-web/blob/main/docs/setup-guide.md#windows-all-in-one-bundle
 
 ## Running onnx-web
 
