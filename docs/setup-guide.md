@@ -236,6 +236,7 @@ setup experience.
    3. On the `General` tab, click `Unblock` next to the message `This file came from another computer and might be
       blocked to help protect this computer.`
    4. Go back to the folder where you extracted the files
+   5. Repeat step 3 for the `onnx-web-*.bat` files
 6. Run the local server using one of the `onnx-web-*.bat` scripts
    1. Run `onnx-web-half.bat` if you are using a GPU and you have < 12GB of VRAM
       - `-half` mode is compatible with both AMD and Nvidia GPUs
@@ -269,6 +270,6 @@ setup experience.
    1. Run `setup-amd.bat` if you are using an AMD GPU and DirectML
    2. Run `setup-nvidia.bat` if you are using an Nvidia GPU and CUDA
    3. Run `setup-cpu.bat` if you are planning on only using CPU mode
-7. In the future, run `launch.bat`
+7. After the first run, you can run `launch.bat` instead of the setup script
    1. You should only need to run the setup script once
    2. If you encounter any errors with Python imports, run the setup script again
