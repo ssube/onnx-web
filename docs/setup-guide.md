@@ -213,7 +213,7 @@ You should verify that all of the steps up to this point have worked correctly b
 
 If the script works, there will be an image of an astronaut in `outputs/test.png`.
 
-If you get any errors, check [the known errors section](#known-errors-and-solutions).
+If you get any errors, check [the known errors section of the user guide](user-guide.md#known-errors).
 
 ## Windows-specific methods
 
@@ -222,21 +222,30 @@ setup experience.
 
 ### Windows all-in-one bundle
 
-1. Download the latest ZIP file from [the apextoaster Nexus server](https://artifacts.apextoaster.com/#browse/browse:onnx-web-dist)
-2. Find the ZIP file and `Extract All` to a memorable folder
-3. Open the folder where you extracted the files
-   1. Your models will be converted into the `models` folder, and you can [add your own models](https://github.com/ssube/onnx-web/blob/main/docs/user-guide.md#adding-your-own-models)
+1. Install the latest Visual C++ 2019 redistributable
+   1. https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170
+   2. https://aka.ms/vs/17/release/vc_redist.x64.exe
+2. Download the latest ZIP file from [the apextoaster Nexus server](https://artifacts.apextoaster.com/#browse/browse:onnx-web-dist)
+3. Find the ZIP file and `Extract All` to a memorable folder
+4. Open the folder where you extracted the files
+   1. Your models will be converted into the `models` folder, and you can [add your own models](user-guide.md#adding-your-own-models)
    2. Your images will be in the `outputs` folder, along with files containing the parameters used to generate them
-4. Run the local server using one of the `onnx-web-*.bat` scripts
+5. Make sure the server is allowed to run
+   1. Open the `server` folder
+   2. Right-click the `onnx-web.exe` file and click `Properties`
+   3. On the `General` tab, click `Unblock` next to the message `This file came from another computer and might be
+      blocked to help protect this computer.`
+   4. Go back to the folder where you extracted the files
+6. Run the local server using one of the `onnx-web-*.bat` scripts
    1. Run `onnx-web-half.bat` if you are using a GPU and you have < 12GB of VRAM
       - `-half` mode is compatible with both AMD and Nvidia GPUs
       - `-half` mode is not compatible with CPU mode
    2. Run `onnx-web-full.bat` if you are using CPU mode or if you have >= 16GB of VRAM
       - Try the `onnx-web-half.bat` script if you encounter out-of-memory errors or generating images is very slow
-5. Wait for the models to be downloaded and converted
+7. Wait for the models to be downloaded and converted
    1. Most models are distributed in PyTorch format and need to be converted into ONNX format
    2. This only happens once for each model and takes a few minutes
-6. Open one of the URLs shown in the logs in your browser
+8. Open one of the URLs shown in the logs in your browser
    1. This will typically be http://127.0.0.1:5000?api=http://127.0.0.1:5000
    2. If you running the server on a different PC and not accessing it from a browser on the same system, use that PC's
       IP address instead of 127.0.0.1
@@ -245,18 +254,21 @@ setup experience.
 
 ### Windows Python installer
 
-1. Install Git
+1. Install the latest Visual C++ 2019 redistributable
+   1. https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170
+   2. https://aka.ms/vs/17/release/vc_redist.x64.exe
+2. Install Git
    - https://gitforwindows.org/
-2. Install Python 3.10
+3. Install Python 3.10
    - https://www.python.org/downloads/
-3. Clone or download the onnx-web repository
+4. Clone or download the onnx-web repository
    - `git clone https://github.com/ssube/onnx-web.git`
    - https://github.com/ssube/onnx-web/archive/refs/heads/main.zip
-4. Open a command prompt window
-5. Run one of the `setup-*.bat` scripts
+5. Open a command prompt window
+6. Run one of the `setup-*.bat` scripts
    1. Run `setup-amd.bat` if you are using an AMD GPU and DirectML
    2. Run `setup-nvidia.bat` if you are using an Nvidia GPU and CUDA
    3. Run `setup-cpu.bat` if you are planning on only using CPU mode
-6. In the future, run `launch.bat`
+7. In the future, run `launch.bat`
    1. You should only need to run the setup script once
    2. If you encounter any errors with Python imports, run the setup script again
