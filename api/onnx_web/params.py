@@ -312,8 +312,8 @@ class UpscaleParams:
             kwargs.get("format", self.format),
             kwargs.get("half", self.half),
             kwargs.get("outscale", self.outscale),
-            kwargs.get("pre_pad", self.pre_pad),
             kwargs.get("scale", self.scale),
+            kwargs.get("pre_pad", self.pre_pad),
             kwargs.get("tile_pad", self.tile_pad),
             kwargs.get("upscale_order", self.upscale_order),
         )
