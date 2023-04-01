@@ -143,6 +143,8 @@ def run_txt2img_pipeline(
                         tile,
                         upscale=upscale.with_args(
                             faces=False,
+                            scale=highres.scale,
+                            outscale=highres.scale,
                         ),
                         callback=highres_progress,
                     )
