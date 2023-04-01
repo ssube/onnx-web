@@ -518,6 +518,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
           model,
           params,
           upscale,
+          highres,
         },
       };
     },
@@ -688,7 +689,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
         case 'outpaint':
           return this.outpaint(retry.model, retry.params, retry.upscale);
         case 'txt2img':
-          return this.txt2img(retry.model, retry.params, retry.upscale);
+          return this.txt2img(retry.model, retry.params, retry.upscale, retry.highres);
         case 'upscale':
           return this.upscale(retry.model, retry.params, retry.upscale);
         default:
