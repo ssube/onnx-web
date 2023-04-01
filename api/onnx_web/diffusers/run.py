@@ -87,18 +87,20 @@ def run_txt2img_pipeline(
 
     for image, output in zip(result.images, outputs):
         if highres_scale > 1:
+            # load img2img pipeline once
+            highpipe = load_pipeline(
+                server,
+                OnnxStableDiffusionImg2ImgPipeline,
+                params.model,
+                params.scheduler,
+                job.get_device(),
+                params.lpw,
+                inversions,
+                loras,
+            )
+
             def highres(tile: Image.Image, dims):
-                highpipe = load_pipeline(
-                    server,
-                    OnnxStableDiffusionImg2ImgPipeline,
-                    params.model,
-                    params.scheduler,
-                    job.get_device(),
-                    params.lpw,
-                    inversions,
-                    loras,
-                )
-                progress = job.get_progress_callback()
+                tile = tile.resize((size.height, size.width))
                 if params.lpw:
                     logger.debug("using LPW pipeline for img2img")
                     rng = torch.manual_seed(params.seed)
