@@ -139,30 +139,76 @@ def pipeline_from_request(
 
 def border_from_request() -> Border:
     left = get_and_clamp_int(
-        request.args, "left", 0, get_config_value("width", "max"), 0
+        request.args,
+        "left",
+        get_config_value("width"),
+        get_config_value("width", "max"),
+        get_config_value("width", "min"),
     )
     right = get_and_clamp_int(
-        request.args, "right", 0, get_config_value("width", "max"), 0
+        request.args,
+        "right",
+        get_config_value("width"),
+        get_config_value("width", "max"),
+        get_config_value("width", "min"),
     )
     top = get_and_clamp_int(
-        request.args, "top", 0, get_config_value("height", "max"), 0
+        request.args,
+        "top",
+        get_config_value("width"),
+        get_config_value("height", "max"),
+        get_config_value("height", "min"),
     )
     bottom = get_and_clamp_int(
-        request.args, "bottom", 0, get_config_value("height", "max"), 0
+        request.args,
+        "bottom",
+        get_config_value("width"),
+        get_config_value("height", "max"),
+        get_config_value("height", "min"),
     )
 
     return Border(left, right, top, bottom)
 
 
 def upscale_from_request() -> UpscaleParams:
-    denoise = get_and_clamp_float(request.args, "denoise", 0.5, 1.0, 0.0)
-    scale = get_and_clamp_int(request.args, "scale", 1, 4, 1)
-    outscale = get_and_clamp_int(request.args, "outscale", 1, 4, 1)
+    denoise = get_and_clamp_float(
+        request.args,
+        "denoise",
+        get_config_value("denoise"),
+        get_config_value("denoise", "max"),
+        get_config_value("denoise", "min"),
+    )
+    scale = get_and_clamp_int(
+        request.args,
+        "scale",
+        get_config_value("scale"),
+        get_config_value("scale", "max"),
+        get_config_value("scale", "min"),
+    )
+    outscale = get_and_clamp_int(
+        request.args,
+        "outscale",
+        get_config_value("outscale"),
+        get_config_value("outscale", "max"),
+        get_config_value("outscale", "min"),
+    )
     upscaling = get_from_list(request.args, "upscaling", get_upscaling_models())
     correction = get_from_list(request.args, "correction", get_correction_models())
     faces = get_not_empty(request.args, "faces", "false") == "true"
-    face_outscale = get_and_clamp_int(request.args, "faceOutscale", 1, 4, 1)
-    face_strength = get_and_clamp_float(request.args, "faceStrength", 0.5, 1.0, 0.0)
+    face_outscale = get_and_clamp_int(
+        request.args,
+        "faceOutscale",
+        get_config_value("faceOutscale"),
+        get_config_value("faceOutscale", "max"),
+        get_config_value("faceOutscale", "min"),
+    )
+    face_strength = get_and_clamp_float(
+        request.args,
+        "faceStrength",
+        get_config_value("faceStrength"),
+        get_config_value("faceStrength", "max"),
+        get_config_value("faceStrength", "min"),
+    )
     upscale_order = request.args.get("upscaleOrder", "correction-first")
 
     return UpscaleParams(
@@ -181,9 +227,27 @@ def upscale_from_request() -> UpscaleParams:
 
 def highres_from_request() -> HighresParams:
     method = get_from_list(request.args, "highresMethod", get_highres_methods())
-    scale = get_and_clamp_int(request.args, "highresScale", 1, 4, 1)
-    steps = get_and_clamp_int(request.args, "highresSteps", 1, 200, 1)
-    strength = get_and_clamp_float(request.args, "highresStrength", 0.5, 1.0, 0.0)
+    scale = get_and_clamp_int(
+        request.args,
+        "highresScale",
+        get_config_value("highresScale"),
+        get_config_value("highresScale", "max"),
+        get_config_value("highresScale", "min"),
+    )
+    steps = get_and_clamp_int(
+        request.args,
+        "highresSteps",
+        get_config_value("highresSteps"),
+        get_config_value("highresSteps", "max"),
+        get_config_value("highresSteps", "min"),
+    )
+    strength = get_and_clamp_float(
+        request.args,
+        "highresStrength",
+        get_config_value("highresStrength"),
+        get_config_value("highresStrength"),
+        get_config_value("highresStrength", "min"),
+    )
 
     return HighresParams(
         scale,
