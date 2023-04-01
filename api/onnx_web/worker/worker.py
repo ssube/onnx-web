@@ -19,8 +19,9 @@ EXIT_SUCCESS = 0
 
 MEMORY_ERRORS = [
     "Failed to allocate memory",
-    "out of memory",
+    "hipErrorOutOfMemory",
     "MIOPEN failure 7",
+    "out of memory",
 ]
 
 
