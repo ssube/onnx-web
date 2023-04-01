@@ -51,11 +51,11 @@ mask_filters = {
     "gaussian-multiply": mask_filter_gaussian_multiply,
     "gaussian-screen": mask_filter_gaussian_screen,
 }
-highres_methods = {
-    "bilinear": highres_method_bilinear,
-    "lanczos": highres_method_lanczos,
-    "upscale": highres_method_upscale,
-}
+highres_methods = [
+    "bilinear",
+    "lanczos",
+    "upscale",
+]
 
 
 # Available ORT providers

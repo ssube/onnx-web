@@ -31,7 +31,7 @@ def run_upscale_correction(
     This is a convenience method for a chain pipeline that will run upscaling and
     correction, based on the `upscale` params.
     """
-    logger.info("running upscaling and correction pipeline")
+    logger.info("running upscaling and correction pipeline at %s:%s", upscale.scale, upscale.outscale)
 
     chain = ChainPipeline()
 

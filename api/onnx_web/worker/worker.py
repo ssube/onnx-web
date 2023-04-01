@@ -20,7 +20,7 @@ EXIT_SUCCESS = 0
 MEMORY_ERRORS = [
     "Failed to allocate memory",
     "hipErrorOutOfMemory",
-    "MIOPEN failure 7",
+    "MIOPEN failure",
     "out of memory",
     "rocblas_status_memory_error",
 ]

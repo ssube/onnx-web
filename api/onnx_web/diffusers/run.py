@@ -98,8 +98,8 @@ def run_txt2img_pipeline(
             highres_progress = ChainProgress.from_progress(progress)
 
             if upscale.faces and (
-                upscale.upscale_order == "correction-both" or
-                upscale.upscale_order == "correction-first"
+                upscale.upscale_order == "correction-both"
+                or upscale.upscale_order == "correction-first"
             ):
                 image = run_upscale_correction(
                     job,
@@ -129,10 +129,14 @@ def run_txt2img_pipeline(
             def highres_tile(tile: Image.Image, dims):
                 if highres.method == "bilinear":
                     logger.debug("using bilinear interpolation for highres")
-                    tile = tile.resize((size.height, size.width), resample=Image.Resampling.BILINEAR)
+                    tile = tile.resize(
+                        (size.height, size.width), resample=Image.Resampling.BILINEAR
+                    )
                 elif highres.method == "lanczos":
                     logger.debug("using Lanczos interpolation for highres")
-                    tile = tile.resize((size.height, size.width), resample=Image.Resampling.LANCZOS)
+                    tile = tile.resize(
+                        (size.height, size.width), resample=Image.Resampling.LANCZOS
+                    )
                 else:
                     logger.debug("using upscaling pipeline for highres")
                     tile = run_upscale_correction(
