@@ -97,6 +97,7 @@ export const I18N_STRINGS_ES = {
         height: 'Altura',
         highres: {
           label: '',
+          method: '',
           scale: '',
           steps: '',
           strength: '',

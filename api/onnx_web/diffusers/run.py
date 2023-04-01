@@ -140,7 +140,7 @@ def run_txt2img_pipeline(
                         server,
                         StageParams(),
                         params,
-                        image,
+                        tile,
                         upscale=upscale.with_args(
                             faces=False,
                         ),

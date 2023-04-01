@@ -97,6 +97,7 @@ export const I18N_STRINGS_DE = {
         height: 'Höhe',
         highres: {
           label: '',
+          method: '',
           scale: '',
           steps: '',
           strength: '',
