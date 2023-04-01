@@ -84,8 +84,6 @@ export function ImageControl(props: ImageControlProps) {
           }
         }}
       />
-    </Stack>
-    <Stack direction='row' spacing={4}>
       <NumericField
         decimal
         label={t('parameter.cfg')}
