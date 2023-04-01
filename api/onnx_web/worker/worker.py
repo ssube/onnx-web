@@ -17,6 +17,12 @@ EXIT_MEMORY = 2
 EXIT_REPLACED = 3
 EXIT_SUCCESS = 0
 
+MEMORY_ERRORS = [
+    "Failed to allocate memory",
+    "out of memory",
+    "MIOPEN failure 7",
+]
+
 
 def worker_main(context: WorkerContext, server: ServerContext):
     apply_patches(server)
@@ -66,10 +72,11 @@ def worker_main(context: WorkerContext, server: ServerContext):
             exit(EXIT_ERROR)
         except Exception as e:
             e_str = str(e)
-            if "Failed to allocate memory" in e_str or "out of memory" in e_str:
-                logger.error("detected out-of-memory error, exiting: %s", e)
-                context.fail()
-                exit(EXIT_MEMORY)
+            for e_mem in MEMORY_ERRORS:
+                if e_mem in e_str:
+                    logger.error("detected out-of-memory error, exiting: %s", e)
+                    context.fail()
+                    exit(EXIT_MEMORY)
             else:
                 logger.exception(
                     "error while running job",
