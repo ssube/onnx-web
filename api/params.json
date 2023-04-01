@@ -60,7 +60,7 @@
     "max": 1024,
     "step": 8
   },
-  "highresMethods": {
+  "highresMethod": {
     "default": "lanczos",
     "keys": [
       "bilinear",

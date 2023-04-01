@@ -130,6 +130,7 @@ export const I18N_STRINGS_EN = {
         height: 'Height',
         highres: {
           label: 'Highres',
+          method: 'Upscaler',
           scale: 'Scale',
           steps: 'Steps',
           strength: 'Strength',

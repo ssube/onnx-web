@@ -97,18 +97,22 @@ def run_txt2img_pipeline(
         if highres.scale > 1:
             highres_progress = ChainProgress.from_progress(progress)
 
-            image = run_upscale_correction(
-                job,
-                server,
-                StageParams(),
-                params,
-                image,
-                upscale=upscale.with_args(
-                    scale=1,
-                    outscale=1,
-                ),
-                callback=highres_progress,
-            )
+            if upscale.faces and (
+                upscale.upscale_order == "correction-both" or
+                upscale.upscale_order == "correction-first"
+            ):
+                image = run_upscale_correction(
+                    job,
+                    server,
+                    StageParams(),
+                    params,
+                    image,
+                    upscale=upscale.with_args(
+                        scale=1,
+                        outscale=1,
+                    ),
+                    callback=highres_progress,
+                )
 
             # load img2img pipeline once
             highres_pipe = load_pipeline(
