@@ -10,6 +10,7 @@ import {
   BaseImgParams,
   BlendParams,
   BrushParams,
+  HighresParams,
   ImageResponse,
   Img2ImgParams,
   InpaintParams,
@@ -90,6 +91,13 @@ interface OutpaintSlice {
   setOutpaint(pixels: Partial<OutpaintPixels>): void;
 }
 
+interface HighresSlice {
+  highres: HighresParams;
+
+  setHighres(params: Partial<HighresParams>): void;
+  resetHighres(): void;
+}
+
 interface UpscaleSlice {
   upscale: UpscaleParams;
   upscaleTab: TabState<UpscaleReqParams>;
@@ -123,6 +131,7 @@ export type OnnxState
   & ModelSlice
   & OutpaintSlice
   & Txt2ImgSlice
+  & HighresSlice
   & UpscaleSlice
   & BlendSlice
   & ResetSlice;
@@ -421,6 +430,33 @@ export function createStateSlices(server: ServerParams) {
     },
   });
 
+  const createHighresSlice: Slice<HighresSlice> = (set) => ({
+    highres: {
+      enabled: false,
+      highresSteps: server.highresSteps.default,
+      highresScale: server.highresScale.default,
+      highresStrength: server.highresStrength.default,
+    },
+    setHighres(params) {
+      set((prev) => ({
+        highres: {
+          ...prev.highres,
+          ...params,
+        },
+      }));
+    },
+    resetHighres() {
+      set({
+        highres: {
+          enabled: false,
+          highresSteps: server.highresSteps.default,
+          highresScale: server.highresScale.default,
+          highresStrength: server.highresStrength.default,
+        },
+      });
+    },
+  });
+
   const createBlendSlice: Slice<BlendSlice> = (set) => ({
     blend: {
       mask: null,
@@ -501,6 +537,7 @@ export function createStateSlices(server: ServerParams) {
     createOutpaintSlice,
     createTxt2ImgSlice,
     createUpscaleSlice,
+    createHighresSlice,
     createBlendSlice,
     createResetSlice,
   };

@@ -144,6 +144,14 @@ export interface BlendParams {
   mask: Blob;
 }
 
+export interface HighresParams {
+  enabled: boolean;
+
+  highresScale: number;
+  highresSteps: number;
+  highresStrength: number;
+}
+
 /**
  * Output image data within the response.
  */
@@ -201,6 +209,7 @@ export type RetryParams = {
   model: ModelParams;
   params: Txt2ImgParams;
   upscale?: UpscaleParams;
+  highres?: HighresParams;
 } | {
   type: 'img2img';
   model: ModelParams;
@@ -274,7 +283,7 @@ export interface ApiClient {
   /**
    * Start a txt2img pipeline.
    */
-  txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
+  txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry>;
 
   /**
    * Start an im2img pipeline.
@@ -477,7 +486,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
         },
       };
     },
-    async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry> {
+    async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry> {
       const url = makeImageURL(root, 'txt2img', params);
       appendModelToURL(url, model);
 
@@ -491,6 +500,12 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       if (doesExist(upscale)) {
         appendUpscaleToURL(url, upscale);
+      }
+
+      if (doesExist(highres) && highres.enabled) {
+        url.searchParams.append('highresScale', highres.highresScale.toFixed(FIXED_INTEGER));
+        url.searchParams.append('highresSteps', highres.highresSteps.toFixed(FIXED_INTEGER));
+        url.searchParams.append('highresStrength', highres.highresStrength.toFixed(FIXED_FLOAT));
       }
 
       const image = await parseRequest(url, {

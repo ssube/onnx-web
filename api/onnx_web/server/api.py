@@ -44,7 +44,7 @@ from .load import (
     get_noise_sources,
     get_upscaling_models,
 )
-from .params import border_from_request, pipeline_from_request, upscale_from_request
+from .params import border_from_request, highres_from_request, pipeline_from_request, upscale_from_request
 from .utils import wrap_route
 
 logger = getLogger(__name__)
@@ -174,6 +174,7 @@ def img2img(context: ServerContext, pool: DevicePoolExecutor):
 def txt2img(context: ServerContext, pool: DevicePoolExecutor):
     device, params, size = pipeline_from_request(context)
     upscale = upscale_from_request()
+    highres = highres_from_request()
 
     output = make_output_name(context, "txt2img", params, size)
     job_name = output[0]
@@ -187,10 +188,11 @@ def txt2img(context: ServerContext, pool: DevicePoolExecutor):
         size,
         output,
         upscale,
+        highres,
         needs_device=device,
     )
 
-    return jsonify(json_params(output, params, size, upscale=upscale))
+    return jsonify(json_params(output, params, size, upscale=upscale, highres=highres))
 
 
 def inpaint(context: ServerContext, pool: DevicePoolExecutor):

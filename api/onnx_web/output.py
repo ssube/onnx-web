@@ -8,7 +8,7 @@ from typing import Any, List, Optional
 
 from PIL import Image
 
-from .params import Border, ImageParams, Param, Size, UpscaleParams
+from .params import Border, HighresParams, ImageParams, Param, Size, UpscaleParams
 from .server import ServerContext
 from .utils import base_join
 
@@ -36,6 +36,7 @@ def json_params(
     size: Size,
     upscale: Optional[UpscaleParams] = None,
     border: Optional[Border] = None,
+    highres: Optional[HighresParams] = None,
 ) -> Any:
     json = {
         "outputs": outputs,
@@ -48,6 +49,10 @@ def json_params(
     if border is not None:
         json["border"] = border.tojson()
         size = size.add_border(border)
+
+    if highres is not None:
+        json["highres"] = highres.tojson()
+        size = highres.resize(size)
 
     if upscale is not None:
         json["upscale"] = upscale.tojson()
@@ -106,9 +111,10 @@ def save_params(
     size: Size,
     upscale: Optional[UpscaleParams] = None,
     border: Optional[Border] = None,
+    highres: Optional[HighresParams] = None,
 ) -> str:
     path = base_join(ctx.output_path, f"{output}.json")
-    json = json_params(output, params, size, upscale=upscale, border=border)
+    json = json_params(output, params, size, upscale=upscale, border=border, highres=highres)
     with open(path, "w") as f:
         f.write(dumps(json))
         logger.debug("saved image params to: %s", path)

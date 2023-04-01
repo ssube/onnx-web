@@ -5,7 +5,7 @@ import numpy as np
 from flask import request
 
 from ..diffusers.load import pipeline_schedulers
-from ..params import Border, DeviceParams, ImageParams, Size, UpscaleParams
+from ..params import Border, DeviceParams, ImageParams, HighresParams, Size, UpscaleParams
 from ..utils import get_and_clamp_float, get_and_clamp_int, get_from_list, get_not_empty
 from .context import ServerContext
 from .load import (
@@ -168,4 +168,16 @@ def upscale_from_request() -> UpscaleParams:
         outscale=outscale,
         scale=scale,
         upscale_order=upscale_order,
+    )
+
+
+def highres_from_request() -> HighresParams:
+    scale = get_and_clamp_int(request.args, "highresScale", 1, 4, 1)
+    steps = get_and_clamp_int(request.args, "highresSteps", 1, 4, 1)
+    strength = get_and_clamp_float(request.args, "highresStrength", 0.5, 1.0, 0.0)
+
+    return HighresParams(
+        scale,
+        steps,
+        strength,
     )

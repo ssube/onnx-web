@@ -16,6 +16,7 @@ from .diffusers.run import (
     run_upscale_pipeline,
 )
 from .diffusers.stub_scheduler import StubScheduler
+from .diffusers.upscale import run_upscale_correction
 from .image import (
     expand_image,
     mask_filter_gaussian_multiply,
@@ -48,7 +49,6 @@ from .server import (
     apply_patch_facexlib,
     apply_patches,
 )
-from .upscale import run_upscale_correction
 from .utils import (
     base_join,
     get_and_clamp_float,

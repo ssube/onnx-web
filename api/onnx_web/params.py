@@ -317,3 +317,25 @@ class UpscaleParams:
             kwargs.get("tile_pad", self.tile_pad),
             kwargs.get("upscale_order", self.upscale_order),
         )
+
+
+class HighresParams:
+    def __init__(
+        self,
+        scale: int,
+        steps: int,
+        strength: float,
+    ):
+        self.scale = scale
+        self.steps = steps
+        self.strength = strength
+
+    def resize(self, size: Size) -> Size:
+        return Size(size.width * self.scale, size.height * self.scale)
+
+    def tojson(self):
+        return {
+            "scale": self.scale,
+            "steps": self.steps,
+            "strength": self.strength,
+        }

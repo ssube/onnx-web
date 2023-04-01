@@ -1,6 +1,6 @@
 import { doesExist, Maybe } from '@apextoaster/js-utils';
 import { merge } from 'lodash';
-import { Img2ImgParams, InpaintParams, ModelParams, OutpaintParams, STATUS_SUCCESS, Txt2ImgParams, UpscaleParams } from './client/api.js';
+import { HighresParams, Img2ImgParams, InpaintParams, ModelParams, OutpaintParams, STATUS_SUCCESS, Txt2ImgParams, UpscaleParams } from './client/api.js';
 
 export interface ConfigNumber {
   default: number;
@@ -54,7 +54,8 @@ export type ServerParams = ConfigRanges<Required<
   InpaintParams &
   ModelParams &
   OutpaintParams &
-  UpscaleParams
+  UpscaleParams &
+  HighresParams
 >> & {
   version: string;
 };

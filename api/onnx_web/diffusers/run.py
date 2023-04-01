@@ -11,12 +11,12 @@ from onnx_web.chain.utils import process_tile_order
 from ..chain import blend_mask, upscale_outpaint
 from ..chain.base import ChainProgress
 from ..output import save_image, save_params
-from ..params import Border, ImageParams, Size, StageParams, TileOrder, UpscaleParams
+from ..params import Border, HighresParams, ImageParams, Size, StageParams, TileOrder, UpscaleParams
 from ..server import ServerContext
-from ..upscale import run_upscale_correction
 from ..utils import run_gc
 from ..worker import WorkerContext
 from .load import get_latents_from_seed, load_pipeline
+from .upscale import run_upscale_correction
 from .utils import get_inversions_from_prompt, get_loras_from_prompt
 
 logger = getLogger(__name__)
@@ -29,13 +29,8 @@ def run_txt2img_pipeline(
     size: Size,
     outputs: List[str],
     upscale: UpscaleParams,
+    highres: HighresParams,
 ) -> None:
-    # TODO: add to params
-    highres_scale = 4
-    highres_steps = 25
-    highres_strength = 0.2
-    highres_steps_post = int((params.steps - highres_steps) / highres_strength)
-
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
 
     (prompt, loras) = get_loras_from_prompt(params.prompt)
@@ -66,7 +61,7 @@ def run_txt2img_pipeline(
             latents=latents,
             negative_prompt=params.negative_prompt,
             num_images_per_prompt=params.batch,
-            num_inference_steps=highres_steps,
+            num_inference_steps=params.steps,
             eta=params.eta,
             callback=progress,
         )
@@ -81,13 +76,13 @@ def run_txt2img_pipeline(
             latents=latents,
             negative_prompt=params.negative_prompt,
             num_images_per_prompt=params.batch,
-            num_inference_steps=highres_steps,
+            num_inference_steps=params.steps,
             eta=params.eta,
             callback=progress,
         )
 
     for image, output in zip(result.images, outputs):
-        if highres_scale > 1:
+        if highres.scale > 1:
             highres_progress = ChainProgress.from_progress(progress)
 
             image = run_upscale_correction(
@@ -115,7 +110,7 @@ def run_txt2img_pipeline(
             def highres(tile: Image.Image, dims):
                 tile = tile.resize((size.height, size.width))
                 if params.lpw:
-                    logger.debug("using LPW pipeline for img2img")
+                    logger.debug("using LPW pipeline for highres")
                     rng = torch.manual_seed(params.seed)
                     result = highres_pipe.img2img(
                         tile,
@@ -124,8 +119,8 @@ def run_txt2img_pipeline(
                         guidance_scale=params.cfg,
                         negative_prompt=params.negative_prompt,
                         num_images_per_prompt=1,
-                        num_inference_steps=highres_steps_post,
-                        strength=highres_strength,
+                        num_inference_steps=highres.steps,
+                        strength=highres.strength,
                         eta=params.eta,
                         callback=highres_progress,
                     )
@@ -139,19 +134,19 @@ def run_txt2img_pipeline(
                         guidance_scale=params.cfg,
                         negative_prompt=params.negative_prompt,
                         num_images_per_prompt=1,
-                        num_inference_steps=highres_steps_post,
-                        strength=highres_strength,
+                        num_inference_steps=highres.steps,
+                        strength=highres.strength,
                         eta=params.eta,
                         callback=highres_progress,
                     )
                     return result.images[0]
 
-            logger.info("running highres fix for %s tiles", highres_scale)
+            logger.info("running highres fix for %s tiles", highres.scale)
             image = process_tile_order(
                 TileOrder.grid,
                 image,
-                size.height // highres_scale,
-                highres_scale,
+                size.height // highres.scale,
+                highres.scale,
                 [highres],
             )
 
@@ -166,7 +161,7 @@ def run_txt2img_pipeline(
         )
 
         dest = save_image(server, output, image)
-        save_params(server, output, params, size, upscale=upscale)
+        save_params(server, output, params, size, upscale=upscale, highres=highres)
 
     run_gc([job.get_device()])
 

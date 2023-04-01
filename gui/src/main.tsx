@@ -55,6 +55,7 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
     createOutpaintSlice,
     createTxt2ImgSlice,
     createUpscaleSlice,
+    createHighresSlice,
     createBlendSlice,
     createResetSlice,
   } = createStateSlices(params);
@@ -68,6 +69,7 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
     ...createTxt2ImgSlice(...slice),
     ...createOutpaintSlice(...slice),
     ...createUpscaleSlice(...slice),
+    ...createHighresSlice(...slice),
     ...createBlendSlice(...slice),
     ...createResetSlice(...slice),
   }), {
