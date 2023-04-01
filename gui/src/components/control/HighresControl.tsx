@@ -8,7 +8,7 @@ import { useStore } from 'zustand';
 import { ConfigContext, StateContext } from '../../state.js';
 import { NumericField } from '../input/NumericField.js';
 
-export function UpscaleControl() {
+export function HighresControl() {
   const { params } = mustExist(useContext(ConfigContext));
   const state = mustExist(useContext(StateContext));
   const highres = useStore(state, (s) => s.highres);
@@ -31,11 +31,10 @@ export function UpscaleControl() {
     />
     <NumericField
       label={t('parameter.highres.steps')}
-      decimal
       disabled={highres.enabled === false}
-      min={params.denoise.min}
-      max={params.denoise.max}
-      step={params.denoise.step}
+      min={params.highresSteps.min}
+      max={params.highresSteps.max}
+      step={params.highresSteps.step}
       value={highres.highresSteps}
       onChange={(steps) => {
         setHighres({
@@ -46,9 +45,9 @@ export function UpscaleControl() {
     <NumericField
       label={t('parameter.highres.scale')}
       disabled={highres.enabled === false}
-      min={params.scale.min}
-      max={params.scale.max}
-      step={params.scale.step}
+      min={params.highresScale.min}
+      max={params.highresScale.max}
+      step={params.highresScale.step}
       value={highres.highresScale}
       onChange={(scale) => {
         setHighres({
@@ -58,10 +57,11 @@ export function UpscaleControl() {
     />
     <NumericField
       label={t('parameter.highres.strength')}
+      decimal
       disabled={highres.enabled === false}
-      min={params.strength.min}
-      max={params.strength.max}
-      step={params.outscale.step}
+      min={params.highresStrength.min}
+      max={params.highresStrength.max}
+      step={params.highresStrength.step}
       value={highres.highresStrength}
       onChange={(strength) => {
         setHighres({

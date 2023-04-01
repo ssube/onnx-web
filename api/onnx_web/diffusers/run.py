@@ -107,7 +107,7 @@ def run_txt2img_pipeline(
                 loras,
             )
 
-            def highres(tile: Image.Image, dims):
+            def highres_tile(tile: Image.Image, dims):
                 tile = tile.resize((size.height, size.width))
                 if params.lpw:
                     logger.debug("using LPW pipeline for highres")
@@ -147,7 +147,7 @@ def run_txt2img_pipeline(
                 image,
                 size.height // highres.scale,
                 highres.scale,
-                [highres],
+                [highres_tile],
             )
 
         image = run_upscale_correction(

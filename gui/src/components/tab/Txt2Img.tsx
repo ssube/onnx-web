@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useStore } from 'zustand';
 
 import { ClientContext, ConfigContext, StateContext } from '../../state.js';
+import { HighresControl } from '../control/HighresControl.js';
 import { ImageControl } from '../control/ImageControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { NumericField } from '../input/NumericField.js';
@@ -15,8 +16,8 @@ export function Txt2Img() {
   const { params } = mustExist(useContext(ConfigContext));
 
   async function generateImage() {
-    const { model, txt2img, upscale } = state.getState();
-    const { image, retry } = await client.txt2img(model, txt2img, upscale);
+    const { model, txt2img, upscale, highres } = state.getState();
+    const { image, retry } = await client.txt2img(model, txt2img, upscale, highres);
 
     pushHistory(image, retry);
   }
@@ -65,6 +66,7 @@ export function Txt2Img() {
           }}
         />
       </Stack>
+      <HighresControl />
       <UpscaleControl />
       <Button
         variant='contained'
