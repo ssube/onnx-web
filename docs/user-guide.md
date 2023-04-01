@@ -92,6 +92,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [The expanded size of the tensor must match the existing size](#the-expanded-size-of-the-tensor-must-match-the-existing-size)
       - [Shape mismatch attempting to re-use buffer](#shape-mismatch-attempting-to-re-use-buffer)
       - [Cannot read properties of undefined (reading 'default')](#cannot-read-properties-of-undefined-reading-default)
+  - [Output Image Sizes](#output-image-sizes)
 
 ## Outline
 
@@ -1167,3 +1168,37 @@ Could not fetch parameters from the ONNX web API server at http://10.2.2.34:5000
 
 Cannot read properties of undefined (reading 'default')
 ```
+
+## Output Image Sizes
+
+You can use this table to figure out the final size for each image, based on the combination of parameters that you are
+using:
+
+| Input Width/Height | Highres | Scale | Upscaling | Scale | Outscale | Correction | Outscale | Upscale Order | Output Width/Height | Formula               |
+| ------------------ | ------- | ----- | --------- | ----- | -------- | ---------- | -------- | ------------- | ------------------- | --------------------- |
+| 512                | no      | n/a   | no        | n/a   | n/a      | no         | n/a      | n/a           | 512                 | `512 * 1 * 1 * 1`     |
+| 512                | yes     | 2     | no        | n/a   | n/a      | no         | n/a      | n/a           | 1024                | `512 * 2 * 1 * 1`     |
+| 512                | yes     | 4     | no        | n/a   | n/a      | no         | n/a      | n/a           | 2048                | `512 * 4 * 1 * 1`     |
+| 512                | no      | n/a   | yes       | 2     | 1        | no         | n/a      | n/a           | 512                 | `512 * 1 * 1 * 1`     |
+| 512                | no      | n/a   | yes       | 2     | 2        | no         | n/a      | n/a           | 1024                | `512 * 1 * 2 * 1`     |
+| 512                | no      | n/a   | yes       | 4     | 1        | no         | n/a      | n/a           | 512                 | `512 * 1 * 1 * 1`     |
+| 512                | no      | n/a   | yes       | 4     | 2        | no         | n/a      | n/a           | 1024                | `512 * 1 * 2 * 1`     |
+| 512                | no      | n/a   | yes       | 4     | 4        | no         | n/a      | n/a           | 2048                | `512 * 1 * 4 * 1`     |
+| 512                | no      | n/a   | no        | n/a   | n/a      | yes        | 1        | first         | 512                 | `512 * 1 * 1 * 1`     |
+| 512                | no      | n/a   | no        | n/a   | n/a      | yes        | 2        | first         | 1024                | `512 * 1 * 1 * 2`     |
+| 512                | no      | n/a   | no        | n/a   | n/a      | yes        | 1        | last          | 512                 | `512 * 1 * 1 * 1`     |
+| 512                | no      | n/a   | no        | n/a   | n/a      | yes        | 2        | last          | 1024                | `512 * 1 * 1 * 2`     |
+| 512                | no      | n/a   | no        | n/a   | n/a      | yes        | 1        | both          | 512                 | `512 * 1 * 1 * 1`     |
+| 512                | no      | n/a   | no        | n/a   | n/a      | yes        | 2        | both          | 2048                | `512 * 1 * 1 * 2 * 2` |
+| 512                | yes     | 2     | yes       | 2     | 2        | no         | n/a      | n/a           | 2048                | `512 * 2 * 2 * 1`     |
+| 512                | yes     | 4     | yes       | 2     | 2        | no         | n/a      | n/a           | 4096                | `512 * 4 * 2 * 1`     |
+| 512                | yes     | 2     | yes       | 4     | 4        | no         | n/a      | n/a           | 4096                | `512 * 2 * 4 * 1`     |
+| 512                | yes     | 4     | yes       | 4     | 4        | no         | n/a      | n/a           | 8192                | `512 * 4 * 4 * 1`     |
+| 512                | yes     | 2     | yes       | 2     | 2        | yes        | 2        | first or last | 4096                | `512 * 2 * 2 * 2`     |
+| 512                | yes     | 4     | yes       | 2     | 2        | yes        | 2        | first or last | 8192                | `512 * 4 * 2 * 2`     |
+| 512                | yes     | 2     | yes       | 4     | 4        | yes        | 2        | first or last | 8192                | `512 * 2 * 4 * 2`     |
+| 512                | yes     | 4     | yes       | 4     | 4        | yes        | 2        | first or last | 16k                 | `512 * 4 * 4 * 2`     |
+| 512                | yes     | 2     | yes       | 2     | 2        | yes        | 2        | both          | 8192                | `512 * 2 * 2 * 2 * 2` |
+| 512                | yes     | 4     | yes       | 2     | 2        | yes        | 2        | both          | 16k                 | `512 * 4 * 2 * 2 * 2` |
+| 512                | yes     | 2     | yes       | 4     | 4        | yes        | 2        | both          | 16k                 | `512 * 2 * 4 * 2 * 2` |
+| 512                | yes     | 4     | yes       | 4     | 4        | yes        | 2        | both          | 32k                 | `512 * 4 * 4 * 2 * 2` |
