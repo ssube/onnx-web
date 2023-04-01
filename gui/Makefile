@@ -35,6 +35,7 @@ bundle: build
 COVER_OPTS := --all \
 		--exclude ".eslintrc.js" \
 		--exclude "docs/**" \
+    --exclude "out/bundle/**" \
 		--exclude "out/coverage/**" \
 		--exclude "vendor/**" \
 		--reporter=text-summary \

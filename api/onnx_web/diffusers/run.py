@@ -30,6 +30,11 @@ def run_txt2img_pipeline(
     outputs: List[str],
     upscale: UpscaleParams,
 ) -> None:
+    # TODO: add to params
+    highres_scale = 4
+    highres_steps = 15
+    highres_strength = 0.5
+
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
 
     (prompt, loras) = get_loras_from_prompt(params.prompt)
@@ -60,7 +65,7 @@ def run_txt2img_pipeline(
             latents=latents,
             negative_prompt=params.negative_prompt,
             num_images_per_prompt=params.batch,
-            num_inference_steps=params.steps,
+            num_inference_steps=highres_steps,
             eta=params.eta,
             callback=progress,
         )
@@ -75,17 +80,13 @@ def run_txt2img_pipeline(
             latents=latents,
             negative_prompt=params.negative_prompt,
             num_images_per_prompt=params.batch,
-            num_inference_steps=params.steps,
+            num_inference_steps=highres_steps,
             eta=params.eta,
             callback=progress,
         )
 
     for image, output in zip(result.images, outputs):
-        highres_scale = 4
-        highres_strength = 0.5
-
-        if params.highres > 1:
-
+        if highres_scale > 1:
             def highres(tile: Image.Image, dims):
                 highpipe = load_pipeline(
                     server,
@@ -108,7 +109,7 @@ def run_txt2img_pipeline(
                         guidance_scale=params.cfg,
                         negative_prompt=params.negative_prompt,
                         num_images_per_prompt=1,
-                        num_inference_steps=params.steps,
+                        num_inference_steps=params.steps - highres_steps,
                         strength=highres_strength,
                         eta=params.eta,
                         callback=progress,
@@ -123,7 +124,7 @@ def run_txt2img_pipeline(
                         guidance_scale=params.cfg,
                         negative_prompt=params.negative_prompt,
                         num_images_per_prompt=1,
-                        num_inference_steps=params.steps,
+                        num_inference_steps=params.steps - highres_steps,
                         strength=highres_strength,
                         eta=params.eta,
                         callback=progress,
