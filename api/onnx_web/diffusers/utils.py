@@ -86,7 +86,7 @@ def expand_prompt(
         if skip_clip_states > 0:
             layer_norm = torch.nn.LayerNorm(last_state.shape[2])
             norm_state = layer_norm(
-                torch.from_numpy(hidden_states[-skip_clip_states]).detach()
+                torch.from_numpy(hidden_states[-skip_clip_states].astype(np.float32)).detach()
             )
             logger.trace(
                 "normalized results after skipping %s layers: %s",
