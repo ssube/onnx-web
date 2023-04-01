@@ -89,6 +89,17 @@ def run_txt2img_pipeline(
     for image, output in zip(result.images, outputs):
         if highres_scale > 1:
             highres_progress = ChainProgress.from_progress(progress)
+
+            image = run_upscale_correction(
+                job,
+                server,
+                StageParams(),
+                params,
+                image,
+                upscale=upscale,
+                callback=highres_progress,
+            )
+
             # load img2img pipeline once
             highres_pipe = load_pipeline(
                 server,
