@@ -3,7 +3,7 @@
     "root": "http://127.0.0.1:5000"
   },
   "params": {
-    "version": "0.9.0",
+    "version": "0.10.0",
     "batch": {
       "default": 1,
       "min": 1,

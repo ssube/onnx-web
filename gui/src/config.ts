@@ -79,7 +79,7 @@ export interface Config<T = ClientParams> {
 }
 
 export const IMAGE_FILTER = '.bmp, .jpg, .jpeg, .png';
-export const PARAM_VERSION = '>=0.9.0';
+export const PARAM_VERSION = '>=0.10.0';
 
 export const STALE_TIME = 300_000; // 5 minutes
 export const POLL_TIME = 5_000; // 5 seconds
