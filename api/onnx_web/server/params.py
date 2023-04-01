@@ -5,7 +5,14 @@ import numpy as np
 from flask import request
 
 from ..diffusers.load import pipeline_schedulers
-from ..params import Border, DeviceParams, ImageParams, HighresParams, Size, UpscaleParams
+from ..params import (
+    Border,
+    DeviceParams,
+    HighresParams,
+    ImageParams,
+    Size,
+    UpscaleParams,
+)
 from ..utils import get_and_clamp_float, get_and_clamp_int, get_from_list, get_not_empty
 from .context import ServerContext
 from .load import (

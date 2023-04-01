@@ -11,7 +11,15 @@ from onnx_web.chain.utils import process_tile_order
 from ..chain import blend_mask, upscale_outpaint
 from ..chain.base import ChainProgress
 from ..output import save_image, save_params
-from ..params import Border, HighresParams, ImageParams, Size, StageParams, TileOrder, UpscaleParams
+from ..params import (
+    Border,
+    HighresParams,
+    ImageParams,
+    Size,
+    StageParams,
+    TileOrder,
+    UpscaleParams,
+)
 from ..server import ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext

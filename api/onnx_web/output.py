@@ -114,7 +114,9 @@ def save_params(
     highres: Optional[HighresParams] = None,
 ) -> str:
     path = base_join(ctx.output_path, f"{output}.json")
-    json = json_params(output, params, size, upscale=upscale, border=border, highres=highres)
+    json = json_params(
+        output, params, size, upscale=upscale, border=border, highres=highres
+    )
     with open(path, "w") as f:
         f.write(dumps(json))
         logger.debug("saved image params to: %s", path)

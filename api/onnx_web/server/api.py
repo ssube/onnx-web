@@ -44,7 +44,12 @@ from .load import (
     get_noise_sources,
     get_upscaling_models,
 )
-from .params import border_from_request, highres_from_request, pipeline_from_request, upscale_from_request
+from .params import (
+    border_from_request,
+    highres_from_request,
+    pipeline_from_request,
+    upscale_from_request,
+)
 from .utils import wrap_route
 
 logger = getLogger(__name__)
