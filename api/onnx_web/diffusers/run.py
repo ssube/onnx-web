@@ -89,7 +89,11 @@ def run_txt2img_pipeline(
             callback=progress,
         )
 
-    for image, output in zip(result.images, outputs):
+    image_outputs = list(zip(result.images, outputs))
+    del result
+    del pipe
+
+    for image, output in image_outputs:
         if highres.scale > 1:
             highres_progress = ChainProgress.from_progress(progress)
 
@@ -99,7 +103,10 @@ def run_txt2img_pipeline(
                 StageParams(),
                 params,
                 image,
-                upscale=upscale,
+                upscale=upscale.with_args(
+                    scale=1,
+                    outscale=1,
+                ),
                 callback=highres_progress,
             )
 
@@ -116,7 +123,26 @@ def run_txt2img_pipeline(
             )
 
             def highres_tile(tile: Image.Image, dims):
-                tile = tile.resize((size.height, size.width))
+                if highres.method == "bilinear":
+                    logger.debug("using bilinear interpolation for highres")
+                    tile = tile.resize((size.height, size.width), resample=Image.Resampling.BILINEAR)
+                elif highres.method == "lanczos":
+                    logger.debug("using Lanczos interpolation for highres")
+                    tile = tile.resize((size.height, size.width), resample=Image.Resampling.LANCZOS)
+                else:
+                    logger.debug("using upscaling pipeline for highres")
+                    tile = run_upscale_correction(
+                        job,
+                        server,
+                        StageParams(),
+                        params,
+                        image,
+                        upscale=upscale.with_args(
+                            faces=False,
+                        ),
+                        callback=highres_progress,
+                    )
+
                 if params.lpw:
                     logger.debug("using LPW pipeline for highres")
                     rng = torch.manual_seed(params.seed)

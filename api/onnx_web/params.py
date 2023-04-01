@@ -325,16 +325,19 @@ class HighresParams:
         scale: int,
         steps: int,
         strength: float,
+        method: Literal["bilinear", "lanczos", "upscale"] = "lanczos",
     ):
         self.scale = scale
         self.steps = steps
         self.strength = strength
+        self.method = method
 
     def resize(self, size: Size) -> Size:
         return Size(size.width * self.scale, size.height * self.scale)
 
     def tojson(self):
         return {
+            "method": self.method,
             "scale": self.scale,
             "steps": self.steps,
             "strength": self.strength,

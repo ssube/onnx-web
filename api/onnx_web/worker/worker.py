@@ -22,6 +22,7 @@ MEMORY_ERRORS = [
     "hipErrorOutOfMemory",
     "MIOPEN failure 7",
     "out of memory",
+    "rocblas_status_memory_error",
 ]
 
 

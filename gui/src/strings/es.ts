@@ -15,6 +15,11 @@ export const I18N_STRINGS_ES = {
       history: {
         empty: 'Sin antecedentes recientes. Presiona generar para crear una nueva imagen.',
       },
+      highresMethod: {
+        bilinear: '',
+        lanczos: '',
+        upscale: '',
+      },
       input: {
         image: {
           empty: 'Por favor, seleccione una imagen.',

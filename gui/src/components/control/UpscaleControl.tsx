@@ -109,7 +109,7 @@ export function UpscaleControl() {
       }}
     />
     <FormControl>
-      <InputLabel id={'upscale-order'}>Upscale Order</InputLabel>
+      <InputLabel id={'upscale-order'}>{t('parameter.upscale.order')}</InputLabel>
       <Select
         labelId={'upscale-order'}
         label={t('parameter.upscale.order')}

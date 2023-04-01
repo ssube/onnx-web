@@ -7,6 +7,11 @@ export const I18N_STRINGS_EN = {
         },
       },
       generate: 'Generate',
+      highresMethod: {
+        bilinear: 'Bilinear',
+        lanczos: 'Lanczos',
+        upscale: 'Upscaling',
+      },
       history: {
         empty: 'No recent history. Press Generate to create an image.',
       },

@@ -19,6 +19,7 @@ from .load import (
     get_available_platforms,
     get_config_value,
     get_correction_models,
+    get_highres_methods,
     get_upscaling_models,
 )
 from .utils import get_model_path
@@ -179,6 +180,7 @@ def upscale_from_request() -> UpscaleParams:
 
 
 def highres_from_request() -> HighresParams:
+    method = get_from_list(request.args, "highresMethod", get_highres_methods())
     scale = get_and_clamp_int(request.args, "highresScale", 1, 4, 1)
     steps = get_and_clamp_int(request.args, "highresSteps", 1, 200, 1)
     strength = get_and_clamp_float(request.args, "highresStrength", 0.5, 1.0, 0.0)
@@ -187,4 +189,5 @@ def highres_from_request() -> HighresParams:
         scale,
         steps,
         strength,
+        method=method,
     )

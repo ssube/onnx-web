@@ -69,5 +69,22 @@ export function HighresControl() {
         });
       }}
     />
+    <FormControl>
+      <InputLabel id={'highres-method'}>{t('parameter.highres.method')}</InputLabel>
+      <Select
+        labelId={'highres-method'}
+        label={t('parameter.highres.method')}
+        value={highres.highresMethod}
+        onChange={(e) => {
+          setHighres({
+            highresMethod: e.target.value,
+          });
+        }}
+      >
+        {Object.entries(params.highresMethod.keys).map(([key, name]) =>
+          <MenuItem key={key} value={name}>{t(`highresMethod.${name}`)}</MenuItem>)
+        }
+      </Select>
+    </FormControl>
   </Stack>;
 }

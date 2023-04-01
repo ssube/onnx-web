@@ -12,6 +12,11 @@ export const I18N_STRINGS_DE = {
         },
       },
       generate: 'Erzeugen',
+      highresMethod: {
+        bilinear: '',
+        lanczos: '',
+        upscale: '',
+      },
       history: {
         empty: 'Keine neuere Geschichte. Drücken Sie Generieren, um ein Bild zu erstellen.',
       },

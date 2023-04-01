@@ -147,6 +147,7 @@ export interface BlendParams {
 export interface HighresParams {
   enabled: boolean;
 
+  highresMethod: string;
   highresScale: number;
   highresSteps: number;
   highresStrength: number;
@@ -503,6 +504,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
       }
 
       if (doesExist(highres) && highres.enabled) {
+        url.searchParams.append('highresMethod', highres.highresMethod);
         url.searchParams.append('highresScale', highres.highresScale.toFixed(FIXED_INTEGER));
         url.searchParams.append('highresSteps', highres.highresSteps.toFixed(FIXED_INTEGER));
         url.searchParams.append('highresStrength', highres.highresStrength.toFixed(FIXED_FLOAT));

@@ -51,6 +51,11 @@ mask_filters = {
     "gaussian-multiply": mask_filter_gaussian_multiply,
     "gaussian-screen": mask_filter_gaussian_screen,
 }
+highres_methods = {
+    "bilinear": highres_method_bilinear,
+    "lanczos": highres_method_lanczos,
+    "upscale": highres_method_upscale,
+}
 
 
 # Available ORT providers
@@ -92,6 +97,10 @@ def get_upscaling_models():
 
 def get_extra_strings():
     return extra_strings
+
+
+def get_highres_methods():
+    return highres_methods
 
 
 def get_mask_filters():
