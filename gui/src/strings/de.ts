@@ -90,6 +90,12 @@ export const I18N_STRINGS_DE = {
         eta: '',
         fillColor: 'Füllfarbe',
         height: 'Höhe',
+        highres: {
+          label: '',
+          scale: '',
+          steps: '',
+          strength: '',
+        },
         lpw: '',
         maskFilter: 'Maskenfilter',
         noiseSource: 'Lärmquelle',

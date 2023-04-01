@@ -90,6 +90,12 @@ export const I18N_STRINGS_FR = {
         eta: '',
         fillColor: '',
         height: '',
+        highres: {
+          label: '',
+          scale: '',
+          steps: '',
+          strength: '',
+        },
         lpw: '',
         maskFilter: '',
         noiseSource: '',

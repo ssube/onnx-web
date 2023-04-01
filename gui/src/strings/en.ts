@@ -123,6 +123,12 @@ export const I18N_STRINGS_EN = {
         eta: 'Eta',
         fillColor: 'Fill Color',
         height: 'Height',
+        highres: {
+          label: 'Highres',
+          scale: 'Scale',
+          steps: 'Steps',
+          strength: 'Strength',
+        },
         lpw: 'Long Prompt Weighting',
         maskFilter: 'Mask Filter',
         noiseSource: 'Noise Source',
