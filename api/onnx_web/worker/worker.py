@@ -74,14 +74,15 @@ def worker_main(context: WorkerContext, server: ServerContext):
             exit(EXIT_ERROR)
         except Exception as e:
             e_str = str(e)
+            # restart the worker on memory errors
             for e_mem in MEMORY_ERRORS:
                 if e_mem in e_str:
                     logger.error("detected out-of-memory error, exiting: %s", e)
                     context.fail()
                     exit(EXIT_MEMORY)
-            else:
-                logger.exception(
-                    "error while running job",
-                )
-                context.fail()
-                # carry on
+
+            # carry on for other errors
+            logger.exception(
+                "unrecognized error while running job",
+            )
+            context.fail()
