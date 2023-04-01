@@ -85,7 +85,7 @@ def blend_loras(
 
                 up_key = key.replace("lora_down", "lora_up")
                 alpha_key = key[: key.index("lora_down")] + "alpha"
-                logger.debug(
+                logger.trace(
                     "blending weights for keys: %s, %s, %s", key, up_key, alpha_key
                 )
 
@@ -152,7 +152,7 @@ def blend_loras(
                 except Exception:
                     logger.exception("error blending weights for key %s", base_key)
 
-    logger.debug(
+    logger.trace(
         "updating %s of %s initializers: %s",
         len(blended.keys()),
         len(base_model.graph.initializer),

@@ -566,5 +566,5 @@ def progress_main(pool: DevicePoolExecutor):
 
     for device, queue in pool.pending.items():
         if queue.empty():
-            logger.debug("enqueueing next job for idle worker")
+            logger.trace("enqueueing next job for idle worker")
             pool.next_job(device)
