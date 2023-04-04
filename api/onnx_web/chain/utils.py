@@ -1,4 +1,5 @@
 from logging import getLogger
+from math import ceil
 from typing import List, Protocol, Tuple
 
 from PIL import Image
@@ -120,3 +121,82 @@ def process_tile_order(
     else:
         logger.warn("unknown tile order: %s", order)
         raise ValueError()
+
+
+def generate_tile_spiral(
+    width: int,
+    height: int,
+    tile: int,
+    rounds: int,
+) -> List[Tuple[int, int]]:
+    # round dims up to nearest tiles
+    tile_width = ceil(width / tile)
+    tile_height = ceil(height / tile)
+
+    # start walking from the north-west corner, heading east
+    dir_height = 0
+    dir_width = 1
+
+    walk_height = tile_height
+    walk_width = tile_width
+
+    accum_height = 0
+    accum_width = 0
+
+    tile_top = 0
+    tile_left = 0
+
+    tile_coords = []
+    while walk_width > 0 and walk_height > 0:
+        # exhaust the current direction, then turn
+        while accum_width < walk_width and accum_height < walk_height:
+            # add a tile
+            logger.trace(
+                "adding tile at %s:%s, %s:%s, %s:%s",
+                tile_left,
+                tile_top,
+                accum_width,
+                accum_height,
+                walk_width,
+                walk_height,
+            )
+            tile_coords.append((tile_left, tile_top))
+
+            # move to the next
+            tile_top += dir_height  # * tile
+            tile_left += dir_width  # * tile
+
+            accum_height += abs(dir_height)
+            accum_width += abs(dir_width)
+
+        # reset for the next direction
+        accum_height = 0
+        accum_width = 0
+
+        # why tho
+        tile_top -= dir_height
+        tile_left -= dir_width
+
+        # turn right
+        if dir_width == 1 and dir_height == 0:
+            dir_width = 0
+            dir_height = 1
+        elif dir_width == 0 and dir_height == 1:
+            dir_width = -1
+            dir_height = 0
+        elif dir_width == -1 and dir_height == 0:
+            dir_width = 0
+            dir_height = -1
+        elif dir_width == 0 and dir_height == -1:
+            dir_width = 1
+            dir_height = 0
+
+        # step to the next tile as part of the turn
+        tile_top += dir_height
+        tile_left += dir_width
+
+        # shrink the last direction
+        walk_height -= abs(dir_height)
+        walk_width -= abs(dir_width)
+
+    return tile_coords
