@@ -66,31 +66,13 @@ def process_tile_spiral(
     image = Image.new("RGB", (width * scale, height * scale))
     image.paste(source, (0, 0, width, height))
 
-    center_x = (width // 2) - (tile // 2)
-    center_y = (height // 2) - (tile // 2)
-
-    # TODO: should add/remove tiles when overlap != 0.5
-    tiles = [
-        (0, tile * -overlap),
-        (tile * overlap, tile * -overlap),
-        (tile * overlap, 0),
-        (tile * overlap, tile * overlap),
-        (0, tile * overlap),
-        (tile * -overlap, tile * overlap),
-        (tile * -overlap, 0),
-        (tile * -overlap, tile * -overlap),
-    ]
-
     # tile tuples is source, multiply by scale for dest
     counter = 0
+    tiles = generate_tile_spiral(width, height, tile, overlap=overlap)
     for left, top in tiles:
-        left = center_x + int(left)
-        top = center_y + int(top)
-
         counter += 1
         logger.debug("processing tile %s of %s, %sx%s", counter, len(tiles), left, top)
 
-        # TODO: only valid for scale == 1, resize source for others
         tile_image = image.crop((left, top, left + tile, top + tile))
 
         for filter in filters:
@@ -127,8 +109,10 @@ def generate_tile_spiral(
     width: int,
     height: int,
     tile: int,
-    rounds: int,
+    overlap: float = 0.0,
 ) -> List[Tuple[int, int]]:
+    spacing = 1.0 - overlap
+
     # round dims up to nearest tiles
     tile_width = ceil(width / tile)
     tile_height = ceil(height / tile)
@@ -151,7 +135,8 @@ def generate_tile_spiral(
         # exhaust the current direction, then turn
         while accum_width < walk_width and accum_height < walk_height:
             # add a tile
-            logger.trace(
+            # logger.trace(
+            print(
                 "adding tile at %s:%s, %s:%s, %s:%s",
                 tile_left,
                 tile_top,
@@ -159,15 +144,16 @@ def generate_tile_spiral(
                 accum_height,
                 walk_width,
                 walk_height,
+                spacing,
             )
             tile_coords.append((tile_left, tile_top))
 
             # move to the next
-            tile_top += dir_height  # * tile
-            tile_left += dir_width  # * tile
+            tile_top += dir_height * spacing * tile
+            tile_left += dir_width * spacing * tile
 
-            accum_height += abs(dir_height)
-            accum_width += abs(dir_width)
+            accum_height += abs(dir_height * spacing)
+            accum_width += abs(dir_width * spacing)
 
         # reset for the next direction
         accum_height = 0

@@ -460,7 +460,7 @@ def main() -> int:
         "--half",
         action="store_true",
         default=False,
-        help="Export models for half precision, faster on some Nvidia cards.",
+        help="Export models for half precision, smaller and faster on most GPUs.",
     )
     parser.add_argument(
         "--opset",
