@@ -17,3 +17,13 @@ export function getTab(hash: string): string {
 
   return TAB_LABELS[0];
 }
+
+export function getTheme(currentTheme: string, preferDark: boolean): string {
+  if (currentTheme === '') {
+    if (preferDark) {
+      return 'dark';
+    }
+    return 'light';
+  }
+  return currentTheme;
+}

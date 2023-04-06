@@ -151,6 +151,7 @@ export const I18N_STRINGS_DE = {
         scheduler: 'Standardplaner',
         server: 'API-Server',
         state: 'Kundenstatus',
+        darkMode: 'Dunkelmodus',
       },
       tab: {
         blend: 'Mischung',
