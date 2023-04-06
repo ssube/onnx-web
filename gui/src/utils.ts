@@ -26,3 +26,13 @@ export function trimHash(val: string): string {
 
   return val;
 }
+
+export function getTheme(currentTheme: string, preferDark: boolean): string {
+  if (currentTheme === '') {
+    if (preferDark) {
+      return 'dark';
+    }
+    return 'light';
+  }
+  return currentTheme;
+}

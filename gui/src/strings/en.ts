@@ -193,6 +193,7 @@ export const I18N_STRINGS_EN = {
         scheduler: 'Default Scheduler',
         server: 'API Server',
         state: 'Client State',
+        darkMode: 'Dark Mode',
       },
       scheduler: {
         'ddim': 'DDIM',

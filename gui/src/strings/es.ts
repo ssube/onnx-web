@@ -150,6 +150,7 @@ export const I18N_STRINGS_ES = {
         scheduler: 'Programador predeterminado',
         server: 'Servidor API',
         state: 'Estado del cliente',
+        darkMode: 'Modo Oscuro',
       },
       tab: {
         blend: 'Mezclar',
