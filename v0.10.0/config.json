@@ -1,0 +1,195 @@
+{
+  "api": {
+    "root": "http://127.0.0.1:5000"
+  },
+  "params": {
+    "version": "0.10.0",
+    "batch": {
+      "default": 1,
+      "min": 1,
+      "max": 5,
+      "step": 1
+    },
+    "bottom": {
+      "default": 0,
+      "min": 0,
+      "max": 512,
+      "step": 8
+    },
+    "cfg": {
+      "default": 6,
+      "min": 1,
+      "max": 30,
+      "step": 0.1
+    },
+    "correction": {
+      "default": "",
+      "keys": []
+    },
+    "denoise": {
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.1
+    },
+    "eta": {
+      "default": 0.0,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    "faceOutscale": {
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    "faceStrength": {
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.1
+    },
+    "fillColor": {
+      "default": "#000000",
+      "keys": []
+    },
+    "filter": {
+      "default": "none",
+      "keys": []
+    },
+    "height": {
+      "default": 512,
+      "min": 256,
+      "max": 1024,
+      "step": 8
+    },
+    "highresMethod": {
+      "default": "lanczos",
+      "keys": [
+        "bilinear",
+        "lanczos",
+        "upscale"
+      ]
+    },
+    "highresScale": {
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    "highresSteps": {
+      "default": 0,
+      "min": 1,
+      "max": 200,
+      "step": 1
+    },
+    "highresStrength": {
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    "inversion": {
+      "default": "",
+      "keys": []
+    },
+    "left": {
+      "default": 0,
+      "min": 0,
+      "max": 512,
+      "step": 8
+    },
+    "model": {
+      "default": "stable-diffusion-onnx-v1-5",
+      "keys": []
+    },
+    "negativePrompt": {
+      "default": "",
+      "keys": []
+    },
+    "noise": {
+      "default": "histogram",
+      "keys": []
+    },
+    "outscale": {
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    "platform": {
+      "default": "amd",
+      "keys": []
+    },
+    "prompt": {
+      "default": "an astronaut eating a hamburger",
+      "keys": []
+    },
+    "right": {
+      "default": 0,
+      "min": 0,
+      "max": 512,
+      "step": 8
+    },
+    "scale": {
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    "scheduler": {
+      "default": "euler-a",
+      "keys": []
+    },
+    "seed": {
+      "default": -1,
+      "min": -1,
+      "max": 4294967295,
+      "step": 1
+    },
+    "steps": {
+      "default": 25,
+      "min": 1,
+      "max": 200,
+      "step": 1
+    },
+    "strength": {
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    "tileOrder": {
+      "default": "spiral",
+      "keys": [
+        "grid",
+        "spiral"
+      ]
+    },
+    "top": {
+      "default": 0,
+      "min": 0,
+      "max": 512,
+      "step": 8
+    },
+    "upscaleOrder": {
+      "default": "correction-first",
+      "keys": [
+        "correction-both",
+        "correction-first",
+        "correction-last"
+      ]
+    },
+    "upscaling": {
+      "default": "",
+      "keys": []
+    },
+    "width": {
+      "default": 512,
+      "min": 256,
+      "max": 1024,
+      "step": 8
+    }
+  }
+}
