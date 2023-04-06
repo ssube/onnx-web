@@ -135,8 +135,7 @@ def generate_tile_spiral(
         # exhaust the current direction, then turn
         while accum_width < walk_width and accum_height < walk_height:
             # add a tile
-            # logger.trace(
-            print(
+            logger.trace(
                 "adding tile at %s:%s, %s:%s, %s:%s",
                 tile_left,
                 tile_top,
@@ -146,7 +145,7 @@ def generate_tile_spiral(
                 walk_height,
                 spacing,
             )
-            tile_coords.append((tile_left, tile_top))
+            tile_coords.append((int(tile_left), int(tile_top)))
 
             # move to the next
             tile_top += dir_height * spacing * tile
