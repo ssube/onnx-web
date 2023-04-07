@@ -347,7 +347,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                                 )
 
                             if "unet" not in blend_models:
-                                blend_models["text_encoder"] = load_model(
+                                blend_models["unet"] = load_model(
                                     path.join(dest, "unet", ONNX_MODEL)
                                 )
 
@@ -365,10 +365,15 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             blend_loras(
                                 ctx,
                                 blend_models["text_encoder"],
-                                [lora_name],
-                                [lora_source],
+                                [(lora_source, lora_weight)],
                                 "text_encoder",
-                                lora_weights=[lora_weight],
+                            )
+
+                            blend_loras(
+                                ctx,
+                                blend_models["unet"],
+                                [(lora_source, lora_weight)],
+                                "unet",
                             )
 
                         if "tokenizer" in blend_models:
