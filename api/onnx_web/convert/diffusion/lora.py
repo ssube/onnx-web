@@ -267,8 +267,8 @@ def blend_loras(
             else:
                 if base_weights.shape != weights.shape:
                     blended = base_weights + weights.reshape(base_weights.shape)
-
-                blended = base_weights + weights
+                else:
+                    blended = base_weights + weights
 
             logger.trace("blended weight shape: %s", blended.shape)
 
