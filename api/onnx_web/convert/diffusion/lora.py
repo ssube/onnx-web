@@ -258,9 +258,16 @@ def blend_loras(
             )
 
             if base_weights.shape[-2:] == (1, 1):
-                blended = base_weights.squeeze((3, 2)) + weights.squeeze((3, 2))
+                if weights.shape[-2:] == (1, 1):
+                    blended = base_weights.squeeze((3, 2)) + weights.squeeze((3, 2))
+                else:
+                    blended = base_weights.squeeze((3, 2)) + weights
+
                 blended = np.expand_dims(blended, (2, 3))
             else:
+                if base_weights.shape != weights.shape:
+                    blended = base_weights + weights.reshape(base_weights.shape)
+
                 blended = base_weights + weights
 
             logger.trace("blended weight shape: %s", blended.shape)
