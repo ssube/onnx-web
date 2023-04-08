@@ -113,7 +113,7 @@ def blend_loras(
                         w2a_weight,
                         w2b_weight,
                     )
-                    weights = (w1a_weight @ w2a_weight) * (w2a_weight @ w2b_weight)
+                    weights = (w1a_weight @ w1b_weight) * (w2a_weight @ w2b_weight)
                     np_weights = weights.numpy() * (alpha / dim)
 
                     np_weights *= lora_weight
