@@ -5,6 +5,7 @@ from typing import Dict, List, Literal, Tuple, Union
 
 import numpy as np
 import torch
+from torch.nn.functional import conv2d
 from onnx import ModelProto, load, numpy_helper
 from onnx.checker import check_model
 from onnx.external_data_helper import (
@@ -102,7 +103,7 @@ def blend_loras(
                 w2a_weight = lora_model[w2a_key].to(dtype=dtype)
                 w2b_weight = lora_model[w2b_key].to(dtype=dtype)
 
-                dim = w1a_weight.size()[0]
+                dim = w1b_weight.size()[0]
                 alpha = lora_model.get(alpha_key, dim).to(dtype).numpy()
 
                 try:
@@ -121,8 +122,10 @@ def blend_loras(
                         blended[base_key] += np_weights
                     else:
                         blended[base_key] = np_weights
+
                 except Exception:
                     logger.exception("error blending weights for LoHA key %s", base_key)
+
             elif ".lora_down" in key and lora_prefix in key:
                 # LoRA or LoCON
                 base_key = key[: key.index(".lora_down")].replace(lora_prefix, "")
@@ -144,8 +147,17 @@ def blend_loras(
                 dim = down_weight.size()[0]
                 alpha = lora_model.get(alpha_key, dim).to(dtype).numpy()
 
+                down_shape = down_weight.shape
+                down_kernel = down_shape[-2:]
+
                 try:
-                    if len(down_weight.size()) == 2:
+                    if mid_weight is not None and mid_weight.shape[-2:] == (3, 3):
+                        # blend for CP decomposition
+                        logger.trace("recomposing weights: (((1, %s), %s), %s) * %s", down_weight.shape, mid_weight.shape, up_weight.shape, alpha)
+                        ones = torch.ones((up_weight.shape[0], down_weight.shape[1], mid_weight.shape[2:3]))
+                        weights = conv2d(conv2d(conv2d(ones, down_weight), mid_weight), up_weight)
+                        np_weights = weights.numpy() * (alpha / dim)
+                    elif len(down_shape) == 2:
                         # blend for nn.Linear
                         logger.trace(
                             "blending weights for Linear node: (%s @ %s) * %s",
@@ -153,10 +165,9 @@ def blend_loras(
                             up_weight.shape,
                             alpha,
                         )
-                        # TODO: include mids
                         weights = up_weight @ down_weight
                         np_weights = weights.numpy() * (alpha / dim)
-                    elif len(down_weight.size()) == 4 and down_weight.shape[-2:] == (
+                    elif len(down_shape) == 4 and down_kernel == (
                         1,
                         1,
                     ):
@@ -167,7 +178,6 @@ def blend_loras(
                             up_weight.shape,
                             alpha,
                         )
-                        # TODO: include mids
                         weights = (
                             (
                                 up_weight.squeeze(3).squeeze(2)
@@ -177,7 +187,7 @@ def blend_loras(
                             .unsqueeze(3)
                         )
                         np_weights = weights.numpy() * (alpha / dim)
-                    elif len(down_weight.size()) == 4 and down_weight.shape[-2:] == (
+                    elif len(down_shape) == 4 and down_kernel == (
                         3,
                         3,
                     ):
@@ -188,7 +198,6 @@ def blend_loras(
                             up_weight.shape,
                             alpha,
                         )
-                        # TODO: include mids
                         weights = torch.nn.functional.conv2d(
                             down_weight.permute(1, 0, 2, 3), up_weight
                         ).permute(1, 0, 2, 3)
@@ -257,8 +266,11 @@ def blend_loras(
                 base_weights.shape,
             )
 
-            if base_weights.shape[-2:] == (1, 1):
-                if weights.shape[-2:] == (1, 1):
+            base_kernel = base_weights.shape[-2:]
+            weight_kernel = weights.shape[-2:]
+
+            if base_kernel == (1, 1):
+                if weight_kernel == (1, 1):
                     blended = base_weights.squeeze((3, 2)) + weights.squeeze((3, 2))
                 else:
                     blended = base_weights.squeeze((3, 2)) + weights
