@@ -15,6 +15,10 @@ import multiprocessing
 if __name__ == '__main__':
     multiprocessing.freeze_support()
     try:
+        from onnx_web.convert.__main__ import main as convert
+        print("converting models")
+        convert()
+
         from onnx_web.main import main
         app, pool = main()
         print("starting workers")
