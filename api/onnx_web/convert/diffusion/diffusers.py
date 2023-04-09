@@ -11,6 +11,7 @@
 
 from logging import getLogger
 from os import mkdir, path
+from packaging import version
 from pathlib import Path
 from shutil import rmtree
 from typing import Dict, Tuple
@@ -22,6 +23,7 @@ from diffusers import (
     OnnxStableDiffusionPipeline,
     StableDiffusionPipeline,
 )
+from diffusers.models.cross_attention import CrossAttnProcessor
 from onnx import load_model, save_model
 from onnx.shape_inference import infer_shapes_path
 from onnxruntime.transformers.float16 import convert_float_to_float16
@@ -35,6 +37,8 @@ from ...diffusers.pipeline_onnx_stable_diffusion_upscale import (
 from ..utils import ConversionContext
 
 logger = getLogger(__name__)
+
+is_torch_2_0 = version.parse(version.parse(torch.__version__).base_version) >= version.parse("2.0")
 
 
 def onnx_export(
@@ -167,6 +171,9 @@ def convert_diffusion_diffusers(
         unet_scale = torch.tensor(False).to(
             device=ctx.training_device, dtype=torch.bool
         )
+
+    if is_torch_2_0:
+        pipeline.unet.set_attn_processor(CrossAttnProcessor())
 
     unet_in_channels = pipeline.unet.config.in_channels
     unet_sample_size = pipeline.unet.config.sample_size
