@@ -1412,7 +1412,7 @@ def extract_checkpoint(
         checkpoint = load_tensor(checkpoint_file, map_location=map_location)
         if checkpoint is None:
             logger.warning("unable to load tensor")
-            return
+            return False
 
         rev_keys = ["db_global_step", "global_step"]
         epoch_keys = ["db_epoch", "epoch"]
@@ -1469,7 +1469,7 @@ def extract_checkpoint(
             logger.warning(
                 "unable to select a config file: %s" % (original_config_file)
             )
-            return
+            return False
 
         logger.debug("trying to load: %s", original_config_file)
         original_config = load_yaml(original_config_file)
@@ -1614,7 +1614,7 @@ def extract_checkpoint(
 
     if pipe is None or db_config is None:
         logger.error("pipeline or config is not set, unable to continue")
-        return
+        return False
     else:
         logger.info("saving diffusion model")
         pipe.save_pretrained(db_config.pretrained_model_name_or_path)
@@ -1681,21 +1681,24 @@ def convert_diffusion_original(
     model_index = os.path.join(working_name, "model_index.json")
 
     if os.path.exists(torch_path) and os.path.exists(model_index):
-        logger.info("torch pipeline already exists, reusing: %s", torch_path)
+        logger.info("Torch model already exists, reusing: %s", torch_path)
     else:
         logger.info(
-            "converting original Diffusers check to Torch model: %s -> %s",
+            "converting checkpoint to Torch model: %s -> %s",
             source,
             torch_path,
         )
-        extract_checkpoint(
+        if extract_checkpoint(
             ctx,
             torch_name,
             source,
             config_file=model.get("config"),
             vae_file=model.get("vae"),
-        )
-        logger.info("converted original Diffusers checkpoint to Torch model")
+        ):
+            logger.info("converted checkpoint to Torch model")
+        else:
+            logger.error("unable to convert checkpoint to Torch model")
+            raise ValueError("unable to convert checkpoint to Torch model")
 
     # VAE has already been converted and will confuse HF repo lookup
     if "vae" in model:
