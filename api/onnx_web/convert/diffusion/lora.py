@@ -151,6 +151,10 @@ def blend_loras(
                 else:
                     alpha = alpha_key_value.to(dtype).numpy()
 
+                kernel = down_weight.shape[-2:]
+                if mid_weight is not None:
+                    kernel = mid_weight.shape[-2:]
+
                 try:
                     if len(down_weight.size()) == 2:
                         # blend for nn.Linear
@@ -163,7 +167,7 @@ def blend_loras(
                         # TODO: include mids
                         weights = up_weight @ down_weight
                         np_weights = weights.numpy() * (alpha / dim)
-                    elif len(down_weight.size()) == 4 and down_weight.shape[-2:] == (
+                    elif len(down_weight.size()) == 4 and kernel == (
                         1,
                         1,
                     ):
@@ -184,22 +188,47 @@ def blend_loras(
                             .unsqueeze(3)
                         )
                         np_weights = weights.numpy() * (alpha / dim)
-                    elif len(down_weight.size()) == 4 and down_weight.shape[-2:] == (
+                    elif len(down_weight.size()) == 4 and kernel == (
                         3,
                         3,
                     ):
-                        # blend for nn.Conv2d 3x3
-                        logger.trace(
-                            "blending weights for Conv 3x3 node: %s, %s, %s",
-                            down_weight.shape,
-                            up_weight.shape,
-                            alpha,
-                        )
-                        # TODO: include mids
-                        weights = torch.nn.functional.conv2d(
-                            down_weight.permute(1, 0, 2, 3), up_weight
-                        ).permute(1, 0, 2, 3)
-                        np_weights = weights.numpy() * (alpha / dim)
+                        if mid_weight is not None:
+                            # blend for nn.Conv2d 3x3 with CP decomp
+                            logger.trace(
+                                "composing weights for Conv 3x3 node: %s, %s, %s, %s",
+                                down_weight.shape,
+                                up_weight.shape,
+                                mid_weight.shape,
+                                alpha,
+                            )
+                            weights = torch.zeros(
+                                (down_weight.shape[0], up_weight.shape[1], *kernel)
+                            )
+                            for w in range(kernel[0]):
+                                for h in range(kernel[1]):
+                                    weights[:, :, w, h] = (
+                                        down_weight.squeeze(3).squeeze(2)
+                                        @ mid_weight[:, :, w, h]
+                                    ) @ (
+                                        up_weight.squeeze(3).squeeze(2).permute((1, 0))
+                                        @ mid_weight[:, :, w, h]
+                                    ).permute(
+                                        (1, 0)
+                                    )
+
+                            np_weights = weights.numpy() * (alpha / dim)
+                        else:
+                            # blend for nn.Conv2d 3x3
+                            logger.trace(
+                                "blending weights for Conv 3x3 node: %s, %s, %s",
+                                down_weight.shape,
+                                up_weight.shape,
+                                alpha,
+                            )
+                            weights = torch.nn.functional.conv2d(
+                                down_weight.permute(1, 0, 2, 3), up_weight
+                            ).permute(1, 0, 2, 3)
+                            np_weights = weights.numpy() * (alpha / dim)
                     else:
                         logger.warning(
                             "unknown LoRA node type at %s: %s",
