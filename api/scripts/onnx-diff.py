@@ -26,7 +26,9 @@ def diff_models(ref_model: ModelProto, cmp_model: ModelProto):
         logger.info("different data types: %s vs %s", ref_init.data_type, cmp_init.data_type)
         diffs += 1
       elif len(ref_init.raw_data) != len(cmp_init.raw_data):
-        logger.info("different raw data size: %s vs %s", len(ref_init.raw_data), len(cmp_init.raw_data))
+        ref_data = to_array(ref_init)
+        cmp_data = to_array(cmp_init)
+        logger.info("different raw data shapes: %s vs %s", ref_data.shape, cmp_data.shape)
         diffs += 1
       elif len(ref_init.raw_data) > 0 and len(cmp_init.raw_data) > 0:
         ref_data = to_array(ref_init)
