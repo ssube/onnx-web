@@ -2,60 +2,45 @@ from logging import getLogger
 from os import path
 
 import torch
+from basicsr.archs.rrdbnet_arch import RRDBNet
 from torch.onnx import export
 
-from .utils import ConversionContext, ModelDict
+from ..utils import ConversionContext, ModelDict
 
 logger = getLogger(__name__)
 
-TAG_X4_V3 = "real-esrgan-x4-v3"
-
 
 @torch.no_grad()
-def convert_upscale_resrgan(
+def convert_correction_gfpgan(
     conversion: ConversionContext,
     model: ModelDict,
     source: str,
 ):
-    from basicsr.archs.rrdbnet_arch import RRDBNet
-    from realesrgan.archs.srvgg_arch import SRVGGNetCompact
-
     name = model.get("name")
     source = source or model.get("source")
-    scale = model.get("scale")
+    scale = model.get("scale", 1)
 
     dest = path.join(conversion.model_path, name + ".onnx")
-    logger.info("converting Real ESRGAN model: %s -> %s", name, dest)
+    logger.info("converting GFPGAN model: %s -> %s", name, dest)
 
     if path.isfile(dest):
         logger.info("ONNX model already exists, skipping")
         return
 
     logger.info("loading and training model")
-
-    if TAG_X4_V3 in name:
-        # the x4-v3 model needs a different network
-        model = SRVGGNetCompact(
-            num_in_ch=3,
-            num_out_ch=3,
-            num_feat=64,
-            num_conv=32,
-            upscale=scale,
-            act_type="prelu",
-        )
-    else:
-        model = RRDBNet(
-            num_in_ch=3,
-            num_out_ch=3,
-            num_feat=64,
-            num_block=23,
-            num_grow_ch=32,
-            scale=scale,
-        )
+    model = RRDBNet(
+        num_in_ch=3,
+        num_out_ch=3,
+        num_feat=64,
+        num_block=23,
+        num_grow_ch=32,
+        scale=scale,
+    )
 
     torch_model = torch.load(source, map_location=conversion.map_location)
+    # TODO: make sure strict=False is safe here
     if "params_ema" in torch_model:
-        model.load_state_dict(torch_model["params_ema"])
+        model.load_state_dict(torch_model["params_ema"], strict=False)
     else:
         model.load_state_dict(torch_model["params"], strict=False)
 
@@ -81,4 +66,4 @@ def convert_upscale_resrgan(
         opset_version=conversion.opset,
         export_params=True,
     )
-    logger.info("real ESRGAN exported to ONNX successfully")
+    logger.info("GFPGAN exported to ONNX successfully")

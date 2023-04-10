@@ -81,10 +81,18 @@ export const I18N_STRINGS_EN = {
         'inversion-minecraft': 'Minecraft Concept',
         'inversion-ugly-sonic': 'Ugly Sonic',
         // upscaling
+        'upscaling-bsrgan-x2': 'BSRGAN x2',
+        'upscaling-bsrgan-x4': 'BSRGAN x4',
         'upscaling-real-esrgan-x2-plus': 'Real ESRGAN x2 Plus',
         'upscaling-real-esrgan-x4-plus': 'Real ESRGAN x4 Plus',
         'upscaling-real-esrgan-x4-v3': 'Real ESRGAN x4 v3',
         'upscaling-stable-diffusion-x4': 'Stable Diffusion x4',
+        'upscaling-swinir-classical-x2': 'SwinIR Classical x2',
+        'upscaling-swinir-classical-x3': 'SwinIR Classical x3',
+        'upscaling-swinir-classical-x4': 'SwinIR Classical x4',
+        'upscaling-swinir-classical-x8': 'SwinIR Classical x8',
+        'upscaling-swinir-real-x2': 'SwinIR Real x2',
+        'upscaling-swinir-real-x4': 'SwinIR Real x4',
         // extras
         'diffusion-stablydiffused-aesthetic-v2-6': 'Aesthetic Mix v2.6',
         'diffusion-anything': 'Anything',

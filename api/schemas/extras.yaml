@@ -62,6 +62,14 @@ $defs:
   correction_model:
     allOf:
       - $ref: "#/$defs/base_model"
+      - type: object
+        properties:
+          model:
+            type: enum
+            enum: [
+              codeformer,
+              gfpgan
+            ]
 
   diffusion_model:
     allOf:
@@ -87,6 +95,13 @@ $defs:
       - type: object
         required: [scale]
         properties:
+          model:
+            type: enum
+            enum: [
+              bsrgan,
+              resrgan,
+              swinir
+            ]
           scale:
             type: number
 

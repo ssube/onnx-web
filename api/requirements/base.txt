@@ -17,6 +17,7 @@ codeformer-perceptor
 facexlib
 gfpgan
 realesrgan
+timm
 
 ### Server packages ###
 boto3

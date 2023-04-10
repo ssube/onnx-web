@@ -13,12 +13,14 @@ from transformers import CLIPTokenizer
 from yaml import safe_load
 
 from ..constants import ONNX_MODEL, ONNX_WEIGHTS
-from .correction_gfpgan import convert_correction_gfpgan
+from .correction.gfpgan import convert_correction_gfpgan
 from .diffusion.diffusers import convert_diffusion_diffusers
 from .diffusion.lora import blend_loras
 from .diffusion.original import convert_diffusion_original
 from .diffusion.textual_inversion import blend_textual_inversions
-from .upscale_resrgan import convert_upscale_resrgan
+from .upscaling.bsrgan import convert_upscaling_bsrgan
+from .upscaling.resrgan import convert_upscale_resrgan
+from .upscaling.swinir import convert_upscaling_swinir
 from .utils import (
     ConversionContext,
     download_progress,
@@ -108,6 +110,18 @@ base_models: Models = {
             "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth",
             4,
         ),
+        {
+            "model": "swinir",
+            "name": "upscaling-swinir-classical-x4",
+            "source": "https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/001_classicalSR_DF2K_s64w8_SwinIR-M_x4.pth",
+            "scale": 4,
+        },
+        {
+            "model": "bsrgan",
+            "name": "upscaling-bsrgan-x4",
+            "source": "https://github.com/cszn/KAIR/releases/download/v1.0/BSRGAN.pth",
+            "scale": 4,
+        },
     ],
     # download only
     "sources": [
@@ -415,7 +429,17 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                     source = fetch_model(
                         conversion, name, model["source"], format=model_format
                     )
-                    convert_upscale_resrgan(conversion, model, source)
+                    model_type = model.get("model", "resrgan")
+                    if model_type == "bsrgan":
+                        convert_upscaling_bsrgan(conversion, model, source)
+                    elif model_type == "resrgan":
+                        convert_upscale_resrgan(conversion, model, source)
+                    elif model_type == "swinir":
+                        convert_upscaling_swinir(conversion, model, source)
+                    else:
+                        logger.error(
+                            "unknown upscaling model type %s for %s", model_type, name
+                        )
                 except Exception:
                     logger.exception(
                         "error converting upscaling model %s",
@@ -435,7 +459,13 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                     source = fetch_model(
                         conversion, name, model["source"], format=model_format
                     )
-                    convert_correction_gfpgan(conversion, model, source)
+                    model_type = model.get("model", "gfpgan")
+                    if model_type == "gfpgan":
+                        convert_correction_gfpgan(conversion, model, source)
+                    else:
+                        logger.error(
+                            "unknown correction model type %s for %s", model_type, name
+                        )
                 except Exception:
                     logger.exception(
                         "error converting correction model %s",

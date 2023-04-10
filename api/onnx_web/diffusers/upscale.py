@@ -7,8 +7,10 @@ from ..chain import (
     ChainPipeline,
     correct_codeformer,
     correct_gfpgan,
+    upscale_bsrgan,
     upscale_resrgan,
     upscale_stable_diffusion,
+    upscale_swinir,
 )
 from ..params import ImageParams, SizeChart, StageParams, UpscaleParams
 from ..server import ServerContext
@@ -41,15 +43,28 @@ def run_upscale_correction(
 
     upscale_stage = None
     if upscale.scale > 1:
-        if "esrgan" in upscale.upscale_model:
+        if "bsrgan" in upscale.upscale_model:
+            bsrgan_params = StageParams(
+                tile_size=stage.tile_size,
+                outscale=upscale.outscale,
+            )
+            upscale_stage = (upscale_bsrgan, bsrgan_params, None)
+        elif "esrgan" in upscale.upscale_model:
             esrgan_params = StageParams(
-                tile_size=stage.tile_size, outscale=upscale.outscale
+                tile_size=stage.tile_size,
+                outscale=upscale.outscale,
             )
             upscale_stage = (upscale_resrgan, esrgan_params, None)
         elif "stable-diffusion" in upscale.upscale_model:
             mini_tile = min(SizeChart.mini, stage.tile_size)
             sd_params = StageParams(tile_size=mini_tile, outscale=upscale.outscale)
             upscale_stage = (upscale_stable_diffusion, sd_params, None)
+        elif "swinir" in upscale.correction_model:
+            swinir_params = StageParams(
+                tile_size=stage.tile_size,
+                outscale=upscale.outscale,
+            )
+            upscale_stage = (upscale_swinir, swinir_params, None)
         else:
             logger.warn("unknown upscaling model: %s", upscale.upscale_model)
 

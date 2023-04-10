@@ -277,6 +277,7 @@ def blend_loras(
     fixed_node_names = [fix_node_name(node.name) for node in base_model.graph.node]
     logger.trace("fixed node names: %s", fixed_node_names)
 
+    unmatched_keys = []
     for base_key, weights in blended.items():
         conv_key = base_key + "_Conv"
         gemm_key = base_key + "_Gemm"
@@ -377,7 +378,7 @@ def blend_loras(
             del base_model.graph.initializer[matmul_idx]
             base_model.graph.initializer.insert(matmul_idx, updated_node)
         else:
-            logger.warning("could not find any nodes for %s", base_key)
+            unmatched_keys.append(base_key)
 
     logger.debug(
         "node counts: %s -> %s, %s -> %s",
@@ -386,6 +387,9 @@ def blend_loras(
         len(fixed_node_names),
         len(base_model.graph.node),
     )
+
+    if len(unmatched_keys) > 0:
+        logger.warning("could not find nodes for some keys: %s", unmatched_keys)
 
     return base_model
 

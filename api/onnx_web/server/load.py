@@ -20,7 +20,7 @@ from ..image import (  # mask filters; noise sources
     noise_source_normal,
     noise_source_uniform,
 )
-from ..models import NetworkModel
+from ..models.meta import NetworkModel
 from ..params import DeviceParams
 from ..torch_before_ort import get_available_providers
 from ..utils import merge

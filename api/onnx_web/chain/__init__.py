@@ -10,9 +10,11 @@ from .reduce_crop import reduce_crop
 from .reduce_thumbnail import reduce_thumbnail
 from .source_noise import source_noise
 from .source_txt2img import source_txt2img
+from .upscale_bsrgan import upscale_bsrgan
 from .upscale_outpaint import upscale_outpaint
 from .upscale_resrgan import upscale_resrgan
 from .upscale_stable_diffusion import upscale_stable_diffusion
+from .upscale_swinir import upscale_swinir
 
 CHAIN_STAGES = {
     "blend-img2img": blend_img2img,
@@ -26,7 +28,9 @@ CHAIN_STAGES = {
     "reduce-thumbnail": reduce_thumbnail,
     "source-noise": source_noise,
     "source-txt2img": source_txt2img,
+    "upscale-bsrgan": upscale_bsrgan,
     "upscale-outpaint": upscale_outpaint,
     "upscale-resrgan": upscale_resrgan,
     "upscale-stable-diffusion": upscale_stable_diffusion,
+    "upscale-swinir": upscale_swinir,
 }
