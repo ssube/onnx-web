@@ -1,4 +1,6 @@
+import multiprocessing
 import os
+import webbrowser
 
 def script_method(fn, _rcb=None):
     return fn
@@ -10,22 +12,25 @@ import torch.jit
 torch.jit.script_method = script_method
 torch.jit.script = script
 
-import multiprocessing
-
 if __name__ == '__main__':
     multiprocessing.freeze_support()
     try:
         from onnx_web.convert.__main__ import main as convert
-        print("converting models")
+        print("converting models to ONNX")
         convert()
 
         from onnx_web.main import main
         app, pool = main()
-        print("starting workers")
+        print("starting image workers")
         pool.start()
-        print("starting flask")
+
+        print("starting API server")
         app.run("0.0.0.0", 5000, debug=False)
-        input("press the any key")
+
+        url = "http://127.0.0.1:5000"
+        webbrowser.open_new_tab(f"{url}?api={url}")
+
+        input("press enter to quit")
         pool.join()
     except Exception as e:
         print(e)
