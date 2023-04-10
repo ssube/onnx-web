@@ -59,7 +59,7 @@ def run_upscale_correction(
             mini_tile = min(SizeChart.mini, stage.tile_size)
             sd_params = StageParams(tile_size=mini_tile, outscale=upscale.outscale)
             upscale_stage = (upscale_stable_diffusion, sd_params, None)
-        elif "swinir" in upscale.correction_model:
+        elif "swinir" in upscale.upscale_model:
             swinir_params = StageParams(
                 tile_size=stage.tile_size,
                 outscale=upscale.outscale,
