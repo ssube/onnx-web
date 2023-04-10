@@ -6,7 +6,7 @@ import torch
 from diffusers import StableDiffusionUpscalePipeline
 from PIL import Image
 
-from ..diffusers.load import optimize_pipeline
+from ..diffusers.load import optimize_pipeline, patch_pipeline
 from ..diffusers.pipeline_onnx_stable_diffusion_upscale import (
     OnnxStableDiffusionUpscalePipeline,
 )
@@ -36,6 +36,7 @@ def load_stable_diffusion(
             model_path,
             device.provider,
         )
+        pipeline = OnnxStableDiffusionUpscalePipeline
         pipe = OnnxStableDiffusionUpscalePipeline.from_pretrained(
             model_path,
             provider=device.ort_provider(),
@@ -47,6 +48,7 @@ def load_stable_diffusion(
             model_path,
             device.provider,
         )
+        pipeline = StableDiffusionUpscalePipeline
         pipe = StableDiffusionUpscalePipeline.from_pretrained(
             model_path,
             provider=device.provider,
@@ -56,6 +58,7 @@ def load_stable_diffusion(
         pipe.set_progress_bar_config(disable=True)
 
     optimize_pipeline(server, pipe)
+    patch_pipeline(server, pipe, pipeline)
 
     server.cache.set("diffusion", cache_key, pipe)
     run_gc([device])
