@@ -43537,6 +43537,7 @@
           appendUpscaleToURL(url, upscale);
         }
         if (doesExist2(highres) && highres.enabled) {
+          url.searchParams.append("highresIterations", highres.highresIterations.toFixed(FIXED_INTEGER));
           url.searchParams.append("highresMethod", highres.highresMethod);
           url.searchParams.append("highresScale", highres.highresScale.toFixed(FIXED_INTEGER));
           url.searchParams.append("highresSteps", highres.highresSteps.toFixed(FIXED_INTEGER));
@@ -69031,6 +69032,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const createHighresSlice = /* @__PURE__ */ __name((set) => ({
       highres: {
         enabled: false,
+        highresIterations: server.highresIterations.default,
         highresMethod: "",
         highresSteps: server.highresSteps.default,
         highresScale: server.highresScale.default,
@@ -69045,6 +69047,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         set({
           highres: {
             enabled: false,
+            highresIterations: server.highresIterations.default,
             highresMethod: "",
             highresSteps: server.highresSteps.default,
             highresScale: server.highresScale.default,
@@ -71249,7 +71252,12 @@ Please use another name.` : formatMuiErrorMessage(18));
             highresMethod: e2.target.value
           });
         } }, Object.entries(params.highresMethod.keys).map(([key, name]) => React125.createElement(MenuItem_default, { key, value: name }, t2(`highresMethod.${name}`))))
-      )
+      ),
+      React125.createElement(NumericField, { label: t2("parameter.highres.iterations"), disabled: highres.enabled === false, min: params.highresIterations.min, max: params.highresIterations.max, step: params.highresIterations.step, value: highres.highresIterations, onChange: (iterations) => {
+        setHighres({
+          highresIterations: iterations
+        });
+      } })
     );
   }
   __name(HighresControl, "HighresControl");
@@ -71505,6 +71513,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           fillColor: "F\xFCllfarbe",
           height: "H\xF6he",
           highres: {
+            iterations: "",
             label: "",
             method: "",
             scale: "",
@@ -71720,6 +71729,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           fillColor: "Fill Color",
           height: "Height",
           highres: {
+            iterations: "Iterations",
             label: "Highres",
             method: "Upscaler",
             scale: "Scale",
@@ -71924,6 +71934,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           fillColor: "Color de relleno",
           height: "Altura",
           highres: {
+            iterations: "",
             label: "",
             method: "",
             scale: "",
@@ -72101,6 +72112,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           fillColor: "",
           height: "",
           highres: {
+            iterations: "",
             label: "",
             method: "",
             scale: "",
