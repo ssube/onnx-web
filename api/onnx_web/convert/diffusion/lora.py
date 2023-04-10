@@ -249,6 +249,7 @@ def blend_loras(
 
     for base_key, weights in blended.items():
         conv_key = base_key + "_Conv"
+        gemm_key = base_key + "_Gemm"
         matmul_key = base_key + "_MatMul"
 
         logger.trace(
@@ -258,10 +259,15 @@ def blend_loras(
             matmul_key in fixed_node_names,
         )
 
-        if conv_key in fixed_node_names:
-            conv_idx = fixed_node_names.index(conv_key)
-            conv_node = base_model.graph.node[conv_idx]
-            logger.trace("found conv node %s using %s", conv_node.name, conv_node.input)
+        if conv_key in fixed_node_names or gemm_key in fixed_node_names:
+            if conv_key in fixed_node_names:
+                conv_idx = fixed_node_names.index(conv_key)
+                conv_node = base_model.graph.node[conv_idx]
+                logger.trace("found conv node %s using %s", conv_node.name, conv_node.input)
+            else:
+                conv_idx = fixed_node_names.index(gemm_key)
+                conv_node = base_model.graph.node[conv_idx]
+                logger.trace("found gemm node %s using %s", conv_node.name, conv_node.input)
 
             # find weight initializer
             weight_name = [n for n in conv_node.input if ".weight" in n][0]
