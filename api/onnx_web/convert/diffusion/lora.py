@@ -123,8 +123,18 @@ def blend_loras(
                         w2a_weight.shape,
                         w2b_weight.shape,
                     )
-                    weights_1 = torch.einsum('i j k l, j r, i p -> p r k l', t1_weight, w1b_weight, w1a_weight)
-                    weights_2 = torch.einsum('i j k l, j r, i p -> p r k l', t2_weight, w2b_weight, w2a_weight)
+                    weights_1 = torch.einsum(
+                        "i j k l, j r, i p -> p r k l",
+                        t1_weight,
+                        w1b_weight,
+                        w1a_weight,
+                    )
+                    weights_2 = torch.einsum(
+                        "i j k l, j r, i p -> p r k l",
+                        t2_weight,
+                        w2b_weight,
+                        w2a_weight,
+                    )
                     weights = weights_1 * weights_2
                     np_weights = weights.numpy() * (alpha / dim)
                 else:
@@ -283,11 +293,15 @@ def blend_loras(
             if conv_key in fixed_node_names:
                 conv_idx = fixed_node_names.index(conv_key)
                 conv_node = base_model.graph.node[conv_idx]
-                logger.trace("found conv node %s using %s", conv_node.name, conv_node.input)
+                logger.trace(
+                    "found conv node %s using %s", conv_node.name, conv_node.input
+                )
             else:
                 conv_idx = fixed_node_names.index(gemm_key)
                 conv_node = base_model.graph.node[conv_idx]
-                logger.trace("found gemm node %s using %s", conv_node.name, conv_node.input)
+                logger.trace(
+                    "found gemm node %s using %s", conv_node.name, conv_node.input
+                )
 
             # find weight initializer
             weight_name = [n for n in conv_node.input if ".weight" in n][0]
