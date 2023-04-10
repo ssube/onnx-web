@@ -226,6 +226,13 @@ def upscale_from_request() -> UpscaleParams:
 
 
 def highres_from_request() -> HighresParams:
+    iterations = get_and_clamp_int(
+        request.args,
+        "highresIterations",
+        get_config_value("highresIterations"),
+        get_config_value("highresIterations", "max"),
+        get_config_value("highresIterations", "min"),
+    )
     method = get_from_list(request.args, "highresMethod", get_highres_methods())
     scale = get_and_clamp_int(
         request.args,
@@ -254,4 +261,5 @@ def highres_from_request() -> HighresParams:
         steps,
         strength,
         method=method,
+        iterations=iterations,
     )

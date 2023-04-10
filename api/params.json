@@ -60,6 +60,12 @@
     "max": 1024,
     "step": 8
   },
+  "highresIterations": {
+    "default": 1,
+    "min": 1,
+    "max": 4,
+    "step": 1
+  },
   "highresMethod": {
     "default": "lanczos",
     "keys": [

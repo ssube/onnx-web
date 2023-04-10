@@ -433,6 +433,7 @@ export function createStateSlices(server: ServerParams) {
   const createHighresSlice: Slice<HighresSlice> = (set) => ({
     highres: {
       enabled: false,
+      highresIterations: server.highresIterations.default,
       highresMethod: '',
       highresSteps: server.highresSteps.default,
       highresScale: server.highresScale.default,
@@ -450,6 +451,7 @@ export function createStateSlices(server: ServerParams) {
       set({
         highres: {
           enabled: false,
+          highresIterations: server.highresIterations.default,
           highresMethod: '',
           highresSteps: server.highresSteps.default,
           highresScale: server.highresScale.default,

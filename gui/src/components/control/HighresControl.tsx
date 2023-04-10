@@ -86,5 +86,18 @@ export function HighresControl() {
         }
       </Select>
     </FormControl>
+    <NumericField
+      label={t('parameter.highres.iterations')}
+      disabled={highres.enabled === false}
+      min={params.highresIterations.min}
+      max={params.highresIterations.max}
+      step={params.highresIterations.step}
+      value={highres.highresIterations}
+      onChange={(iterations) => {
+        setHighres({
+          highresIterations: iterations,
+        });
+      }}
+    />
   </Stack>;
 }
