@@ -84,6 +84,8 @@ def blend_loras(
                 # LoHA
                 base_key = key[: key.index(".hada_w1_a")].replace(lora_prefix, "")
 
+                t1_key = key.replace("hada_w1_a", "hada_t1")
+                t2_key = key.replace("hada_w1_a", "hada_t2")
                 w1b_key = key.replace("hada_w1_a", "hada_w1_b")
                 w2a_key = key.replace("hada_w1_a", "hada_w2_a")
                 w2b_key = key.replace("hada_w1_a", "hada_w2_b")
@@ -102,18 +104,36 @@ def blend_loras(
                 w2a_weight = lora_model[w2a_key].to(dtype=dtype)
                 w2b_weight = lora_model[w2b_key].to(dtype=dtype)
 
+                t1_weight = lora_model.get(t1_key, None)
+                t2_weight = lora_model.get(t2_key, None)
+
                 dim = w1b_weight.size()[0]
                 alpha = lora_model.get(alpha_key, dim).to(dtype).numpy()
 
-                logger.trace(
-                    "blending weights for LoHA node: (%s @ %s) * (%s @ %s)",
-                    w1a_weight,
-                    w1b_weight,
-                    w2a_weight,
-                    w2b_weight,
-                )
-                weights = (w1a_weight @ w1b_weight) * (w2a_weight @ w2b_weight)
-                np_weights = weights.numpy() * (alpha / dim)
+                if t1_weight is not None and t2_weight is not None:
+                    logger.trace(
+                        "composing weights for LoHA node: (%s, %s, %s) * (%s, %s, %s)",
+                        t1_weight,
+                        w1a_weight,
+                        w1b_weight,
+                        t2_weight,
+                        w2a_weight,
+                        w2b_weight,
+                    )
+                    weights_1 = torch.einsum('i j k l, j r, i p -> p r k l', t1_weight, w1b_weight, w1a_weight)
+                    weights_2 = torch.einsum('i j k l, j r, i p -> p r k l', t2_weight, w2b_weight, w2a_weight)
+                    weights = weights_1 * weights_2
+                    np_weights = weights.numpy() * (alpha / dim)
+                else:
+                    logger.trace(
+                        "blending weights for LoHA node: (%s @ %s) * (%s @ %s)",
+                        w1a_weight,
+                        w1b_weight,
+                        w2a_weight,
+                        w2b_weight,
+                    )
+                    weights = (w1a_weight @ w1b_weight) * (w2a_weight @ w2b_weight)
+                    np_weights = weights.numpy() * (alpha / dim)
 
                 np_weights *= lora_weight
                 if base_key in blended:
@@ -124,7 +144,7 @@ def blend_loras(
                 # LoRA or LoCON
                 base_key = key[: key.index(".lora_down")].replace(lora_prefix, "")
 
-                # mid_key = key.replace("lora_down", "lora_mid")
+                mid_key = key.replace("lora_down", "lora_mid")
                 up_key = key.replace("lora_down", "lora_up")
                 alpha_key = key[: key.index("lora_down")] + "alpha"
                 logger.trace(
@@ -134,19 +154,15 @@ def blend_loras(
                 down_weight = lora_model[key].to(dtype=dtype)
                 up_weight = lora_model[up_key].to(dtype=dtype)
 
-                # mid_weight = None
-                # if mid_key in lora_model:
-                #     mid_weight = lora_model[mid_key].to(dtype=dtype)
+                mid_weight = None
+                if mid_key in lora_model:
+                    mid_weight = lora_model[mid_key].to(dtype=dtype)
 
                 dim = down_weight.size()[0]
-                alpha = None
-                
-                alpha_key_value = lora_model.get(alpha_key, dim)
+                alpha = lora_model.get(alpha_key, dim)
 
-                if isinstance(alpha_key_value, int):
-                    alpha = alpha_key_value
-                else:
-                    alpha = alpha_key_value.to(dtype).numpy()
+                if not isinstance(alpha, int):
+                    alpha = alpha.to(dtype).numpy()
 
                 kernel = down_weight.shape[-2:]
                 if mid_weight is not None:
@@ -208,6 +224,7 @@ def blend_loras(
                         np_weights = weights.numpy() * (alpha / dim)
                     else:
                         # blend for nn.Conv2d 3x3
+                        # TODO: I don't think this one is right
                         logger.trace(
                             "blending weights for Conv 3x3 node: %s, %s, %s",
                             down_weight.shape,
