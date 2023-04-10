@@ -514,12 +514,8 @@ def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecu
         app.route("/api/upscale", methods=["POST"])(
             wrap_route(upscale, server, pool=pool)
         ),
-        app.route("/api/chain", methods=["POST"])(
-            wrap_route(chain, server, pool=pool)
-        ),
-        app.route("/api/blend", methods=["POST"])(
-            wrap_route(blend, server, pool=pool)
-        ),
+        app.route("/api/chain", methods=["POST"])(wrap_route(chain, server, pool=pool)),
+        app.route("/api/blend", methods=["POST"])(wrap_route(blend, server, pool=pool)),
         app.route("/api/cancel", methods=["PUT"])(
             wrap_route(cancel, server, pool=pool)
         ),

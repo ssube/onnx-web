@@ -11,7 +11,6 @@
 
 from logging import getLogger
 from os import mkdir, path
-from packaging import version
 from pathlib import Path
 from shutil import rmtree
 from typing import Dict, Tuple
@@ -27,6 +26,7 @@ from diffusers.models.cross_attention import CrossAttnProcessor
 from onnx import load_model, save_model
 from onnx.shape_inference import infer_shapes_path
 from onnxruntime.transformers.float16 import convert_float_to_float16
+from packaging import version
 from torch.onnx import export
 
 from ...constants import ONNX_MODEL, ONNX_WEIGHTS
@@ -38,7 +38,9 @@ from ..utils import ConversionContext
 
 logger = getLogger(__name__)
 
-is_torch_2_0 = version.parse(version.parse(torch.__version__).base_version) >= version.parse("2.0")
+is_torch_2_0 = version.parse(
+    version.parse(torch.__version__).base_version
+) >= version.parse("2.0")
 
 
 def onnx_export(
@@ -143,7 +145,9 @@ def convert_diffusion_diffusers(
         pipeline.text_encoder,
         # casting to torch.int32 until the CLIP fix is released: https://github.com/huggingface/transformers/pull/18515/files
         model_args=(
-            text_input.input_ids.to(device=conversion.training_device, dtype=torch.int32),
+            text_input.input_ids.to(
+                device=conversion.training_device, dtype=torch.int32
+            ),
             None,  # attention mask
             None,  # position ids
             None,  # output attentions
@@ -165,7 +169,9 @@ def convert_diffusion_diffusers(
     # UNET
     if single_vae:
         unet_inputs = ["sample", "timestep", "encoder_hidden_states", "class_labels"]
-        unet_scale = torch.tensor(4).to(device=conversion.training_device, dtype=torch.long)
+        unet_scale = torch.tensor(4).to(
+            device=conversion.training_device, dtype=torch.long
+        )
     else:
         unet_inputs = ["sample", "timestep", "encoder_hidden_states", "return_dict"]
         unet_scale = torch.tensor(False).to(

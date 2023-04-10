@@ -185,7 +185,11 @@ def run_txt2img_pipeline(
                     )
                     return result.images[0]
 
-            logger.info("running highres fix for %s iterations at %s scale", highres.iterations, highres.scale)
+            logger.info(
+                "running highres fix for %s iterations at %s scale",
+                highres.iterations,
+                highres.scale,
+            )
             for _i in range(highres.iterations):
                 image = process_tile_order(
                     TileOrder.grid,

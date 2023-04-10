@@ -127,7 +127,7 @@ def blend_loras(
                 # LoRA or LoCON
                 base_key = key[: key.index(".lora_down")].replace(lora_prefix, "")
 
-                mid_key = key.replace("lora_down", "lora_mid")
+                # mid_key = key.replace("lora_down", "lora_mid")
                 up_key = key.replace("lora_down", "lora_up")
                 alpha_key = key[: key.index("lora_down")] + "alpha"
                 logger.trace(
@@ -137,9 +137,9 @@ def blend_loras(
                 down_weight = lora_model[key].to(dtype=dtype)
                 up_weight = lora_model[up_key].to(dtype=dtype)
 
-                mid_weight = None
-                if mid_key in lora_model:
-                    mid_weight = lora_model[mid_key].to(dtype=dtype)
+                # mid_weight = None
+                # if mid_key in lora_model:
+                #     mid_weight = lora_model[mid_key].to(dtype=dtype)
 
                 dim = down_weight.size()[0]
                 alpha = lora_model.get(alpha_key, dim).to(dtype).numpy()

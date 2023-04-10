@@ -245,7 +245,8 @@ def load_tensor(name: str, map_location=None) -> Optional[Dict]:
             logger.warning("error loading pickle tensor: %s", e)
     elif extension in ["onnx", "pt"]:
         logger.warning(
-            "tensor has ONNX extension, attempting to use PyTorch anyways: %s", extension
+            "tensor has ONNX extension, attempting to use PyTorch anyways: %s",
+            extension,
         )
         try:
             checkpoint = load_torch(name, map_location=map_location)

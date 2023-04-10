@@ -336,7 +336,10 @@ class HighresParams:
         self.iterations = iterations
 
     def resize(self, size: Size) -> Size:
-        return Size(size.width * (self.scale ** self.iterations), size.height * (self.scale ** self.iterations))
+        return Size(
+            size.width * (self.scale**self.iterations),
+            size.height * (self.scale**self.iterations),
+        )
 
     def tojson(self):
         return {

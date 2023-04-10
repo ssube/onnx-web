@@ -486,7 +486,9 @@ def main() -> int:
     server.half = args.half or "onnx-fp16" in server.optimizations
     server.opset = args.opset
     server.token = args.token
-    logger.info("converting models in %s using %s", server.model_path, server.training_device)
+    logger.info(
+        "converting models in %s using %s", server.model_path, server.training_device
+    )
 
     if not path.exists(server.model_path):
         logger.info("model path does not existing, creating: %s", server.model_path)
