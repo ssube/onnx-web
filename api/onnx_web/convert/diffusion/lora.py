@@ -201,13 +201,13 @@ def blend_loras(
                         for w in range(kernel[0]):
                             for h in range(kernel[1]):
                                 weights[:, :, w, h] = (
+                                    up_weight.squeeze(3).squeeze(2)
+                                    @ mid_weight[:, :, w, h]
+                                ) @ (
                                     down_weight.squeeze(3).squeeze(2).permute((1, 0))
                                     @ mid_weight[:, :, w, h]
                                 ).permute(
                                     (1, 0)
-                                ) @ (
-                                    up_weight.squeeze(3).squeeze(2)
-                                    @ mid_weight[:, :, w, h]
                                 )
 
                         np_weights = weights.numpy() * (alpha / dim)
