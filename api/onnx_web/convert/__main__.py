@@ -140,7 +140,7 @@ base_models: Models = {
 
 
 def fetch_model(
-    ctx: ConversionContext,
+    conversion: ConversionContext,
     name: str,
     source: str,
     dest: Optional[str] = None,
@@ -148,7 +148,7 @@ def fetch_model(
     hf_hub_fetch: bool = False,
     hf_hub_filename: Optional[str] = None,
 ) -> str:
-    cache_path = dest or ctx.cache_path
+    cache_path = dest or conversion.cache_path
     cache_name = path.join(cache_path, name)
 
     # add an extension if possible, some of the conversion code checks for it
@@ -201,7 +201,7 @@ def fetch_model(
         return source
 
 
-def convert_models(ctx: ConversionContext, args, models: Models):
+def convert_models(conversion: ConversionContext, args, models: Models):
     if args.sources and "sources" in models:
         for model in models.get("sources"):
             model = tuple_to_source(model)
@@ -214,7 +214,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 source = model["source"]
 
                 try:
-                    dest = fetch_model(ctx, name, source, format=model_format)
+                    dest = fetch_model(conversion, name, source, format=model_format)
                     logger.info("finished downloading source: %s -> %s", source, dest)
                 except Exception:
                     logger.exception("error fetching source %s", name)
@@ -234,20 +234,20 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 try:
                     if network_type == "inversion" and network_model == "concept":
                         dest = fetch_model(
-                            ctx,
+                            conversion,
                             name,
                             source,
-                            dest=path.join(ctx.model_path, network_type),
+                            dest=path.join(conversion.model_path, network_type),
                             format=network_format,
                             hf_hub_fetch=True,
                             hf_hub_filename="learned_embeds.bin",
                         )
                     else:
                         dest = fetch_model(
-                            ctx,
+                            conversion,
                             name,
                             source,
-                            dest=path.join(ctx.model_path, network_type),
+                            dest=path.join(conversion.model_path, network_type),
                             format=network_format,
                         )
 
@@ -267,19 +267,19 @@ def convert_models(ctx: ConversionContext, args, models: Models):
 
                 try:
                     source = fetch_model(
-                        ctx, name, model["source"], format=model_format
+                        conversion, name, model["source"], format=model_format
                     )
 
                     converted = False
                     if model_format in model_formats_original:
                         converted, dest = convert_diffusion_original(
-                            ctx,
+                            conversion,
                             model,
                             source,
                         )
                     else:
                         converted, dest = convert_diffusion_diffusers(
-                            ctx,
+                            conversion,
                             model,
                             source,
                         )
@@ -289,8 +289,8 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                         # keep track of which models have been blended
                         blend_models = {}
 
-                        inversion_dest = path.join(ctx.model_path, "inversion")
-                        lora_dest = path.join(ctx.model_path, "lora")
+                        inversion_dest = path.join(conversion.model_path, "inversion")
+                        lora_dest = path.join(conversion.model_path, "lora")
 
                         for inversion in model.get("inversions", []):
                             if "text_encoder" not in blend_models:
@@ -314,7 +314,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             inversion_source = inversion["source"]
                             inversion_format = inversion.get("format", None)
                             inversion_source = fetch_model(
-                                ctx,
+                                conversion,
                                 inversion_name,
                                 inversion_source,
                                 dest=inversion_dest,
@@ -323,7 +323,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             inversion_weight = inversion.get("weight", 1.0)
 
                             blend_textual_inversions(
-                                ctx,
+                                conversion,
                                 blend_models["text_encoder"],
                                 blend_models["tokenizer"],
                                 [
@@ -355,7 +355,7 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             lora_name = lora["name"]
                             lora_source = lora["source"]
                             lora_source = fetch_model(
-                                ctx,
+                                conversion,
                                 f"{name}-lora-{lora_name}",
                                 lora_source,
                                 dest=lora_dest,
@@ -363,14 +363,14 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                             lora_weight = lora.get("weight", 1.0)
 
                             blend_loras(
-                                ctx,
+                                conversion,
                                 blend_models["text_encoder"],
                                 [(lora_source, lora_weight)],
                                 "text_encoder",
                             )
 
                             blend_loras(
-                                ctx,
+                                conversion,
                                 blend_models["unet"],
                                 [(lora_source, lora_weight)],
                                 "unet",
@@ -413,9 +413,9 @@ def convert_models(ctx: ConversionContext, args, models: Models):
 
                 try:
                     source = fetch_model(
-                        ctx, name, model["source"], format=model_format
+                        conversion, name, model["source"], format=model_format
                     )
-                    convert_upscale_resrgan(ctx, model, source)
+                    convert_upscale_resrgan(conversion, model, source)
                 except Exception:
                     logger.exception(
                         "error converting upscaling model %s",
@@ -433,9 +433,9 @@ def convert_models(ctx: ConversionContext, args, models: Models):
                 model_format = source_format(model)
                 try:
                     source = fetch_model(
-                        ctx, name, model["source"], format=model_format
+                        conversion, name, model["source"], format=model_format
                     )
-                    convert_correction_gfpgan(ctx, model, source)
+                    convert_correction_gfpgan(conversion, model, source)
                 except Exception:
                     logger.exception(
                         "error converting correction model %s",
@@ -482,21 +482,21 @@ def main() -> int:
     args = parser.parse_args()
     logger.info("CLI arguments: %s", args)
 
-    ctx = ConversionContext.from_environ()
-    ctx.half = args.half or "onnx-fp16" in ctx.optimizations
-    ctx.opset = args.opset
-    ctx.token = args.token
-    logger.info("converting models in %s using %s", ctx.model_path, ctx.training_device)
+    server = ConversionContext.from_environ()
+    server.half = args.half or "onnx-fp16" in server.optimizations
+    server.opset = args.opset
+    server.token = args.token
+    logger.info("converting models in %s using %s", server.model_path, server.training_device)
 
-    if not path.exists(ctx.model_path):
-        logger.info("model path does not existing, creating: %s", ctx.model_path)
-        makedirs(ctx.model_path)
+    if not path.exists(server.model_path):
+        logger.info("model path does not existing, creating: %s", server.model_path)
+        makedirs(server.model_path)
 
     logger.info("converting base models")
-    convert_models(ctx, args, base_models)
+    convert_models(server, args, base_models)
 
     extras = []
-    extras.extend(ctx.extra_models)
+    extras.extend(server.extra_models)
     extras.extend(args.extras)
     extras = list(set(extras))
     extras.sort()
@@ -516,7 +516,7 @@ def main() -> int:
                 try:
                     validate(data, extra_schema)
                     logger.info("converting extra models")
-                    convert_models(ctx, args, data)
+                    convert_models(server, args, data)
                 except ValidationError:
                     logger.exception("invalid data in extras file")
             except Exception:

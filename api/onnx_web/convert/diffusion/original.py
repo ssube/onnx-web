@@ -146,7 +146,7 @@ class TrainingConfig:
 
     def __init__(
         self,
-        ctx: ConversionContext,
+        conversion: ConversionContext,
         model_name: str = "",
         scheduler: str = "ddim",
         v2: bool = False,
@@ -155,7 +155,7 @@ class TrainingConfig:
         **kwargs,
     ):
         model_name = sanitize_name(model_name)
-        model_dir = os.path.join(ctx.cache_path, model_name)
+        model_dir = os.path.join(conversion.cache_path, model_name)
         working_dir = os.path.join(model_dir, "working")
 
         if not os.path.exists(working_dir):
@@ -1298,7 +1298,7 @@ def download_model(db_config: TrainingConfig, token):
 
 
 def get_config_path(
-    context: ConversionContext,
+    conversion: ConversionContext,
     model_version: str = "v1",
     train_type: str = "default",
     config_base_name: str = "training",
@@ -1309,7 +1309,7 @@ def get_config_path(
     )
 
     parts = os.path.join(
-        context.model_path,
+        conversion.model_path,
         "configs",
         f"{model_version}-{config_base_name}-{train_type}.yaml",
     )
@@ -1317,7 +1317,7 @@ def get_config_path(
 
 
 def get_config_file(
-    context: ConversionContext,
+    conversion: ConversionContext,
     train_unfrozen=False,
     v2=False,
     prediction_type="epsilon",
@@ -1343,7 +1343,7 @@ def get_config_file(
         model_train_type = train_types["default"]
 
     return get_config_path(
-        context,
+        conversion,
         model_version_name,
         model_train_type,
         config_base_name,
@@ -1352,7 +1352,7 @@ def get_config_file(
 
 
 def extract_checkpoint(
-    context: ConversionContext,
+    conversion: ConversionContext,
     new_model_name: str,
     checkpoint_file: str,
     scheduler_type="ddim",
@@ -1396,7 +1396,7 @@ def extract_checkpoint(
 
     # Create empty config
     db_config = TrainingConfig(
-        context,
+        conversion,
         model_name=new_model_name,
         scheduler=scheduler_type,
         src=checkpoint_file,
@@ -1442,7 +1442,7 @@ def extract_checkpoint(
             prediction_type = "epsilon"
 
         original_config_file = get_config_file(
-            context, train_unfrozen, v2, prediction_type, config_file=config_file
+            conversion, train_unfrozen, v2, prediction_type, config_file=config_file
         )
 
         logger.info(
@@ -1533,7 +1533,7 @@ def extract_checkpoint(
                 checkpoint, vae_config
             )
         else:
-            vae_file = os.path.join(context.model_path, vae_file)
+            vae_file = os.path.join(conversion.model_path, vae_file)
             logger.debug("loading custom VAE: %s", vae_file)
             vae_checkpoint = load_tensor(vae_file, map_location=map_location)
             converted_vae_checkpoint = convert_ldm_vae_checkpoint(
@@ -1658,14 +1658,14 @@ def extract_checkpoint(
 
 @torch.no_grad()
 def convert_diffusion_original(
-    ctx: ConversionContext,
+    conversion: ConversionContext,
     model: ModelDict,
     source: str,
 ) -> Tuple[bool, str]:
     name = model["name"]
     source = source or model["source"]
 
-    dest_path = os.path.join(ctx.model_path, name)
+    dest_path = os.path.join(conversion.model_path, name)
     dest_index = os.path.join(dest_path, "model_index.json")
     logger.info(
         "converting original Diffusers checkpoint %s: %s -> %s", name, source, dest_path
@@ -1676,8 +1676,8 @@ def convert_diffusion_original(
         return (False, dest_path)
 
     torch_name = name + "-torch"
-    torch_path = os.path.join(ctx.cache_path, torch_name)
-    working_name = os.path.join(ctx.cache_path, torch_name, "working")
+    torch_path = os.path.join(conversion.cache_path, torch_name)
+    working_name = os.path.join(conversion.cache_path, torch_name, "working")
     model_index = os.path.join(working_name, "model_index.json")
 
     if os.path.exists(torch_path) and os.path.exists(model_index):
@@ -1689,7 +1689,7 @@ def convert_diffusion_original(
             torch_path,
         )
         if extract_checkpoint(
-            ctx,
+            conversion,
             torch_name,
             source,
             config_file=model.get("config"),
@@ -1704,9 +1704,9 @@ def convert_diffusion_original(
     if "vae" in model:
         del model["vae"]
 
-    result = convert_diffusion_diffusers(ctx, model, working_name)
+    result = convert_diffusion_diffusers(conversion, model, working_name)
 
-    if "torch" in ctx.prune:
+    if "torch" in conversion.prune:
         logger.info("removing intermediate Torch models: %s", torch_path)
         shutil.rmtree(torch_path)
 

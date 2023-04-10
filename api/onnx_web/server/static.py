@@ -7,30 +7,30 @@ from .context import ServerContext
 from .utils import wrap_route
 
 
-def serve_bundle_file(context: ServerContext, filename="index.html"):
-    return send_from_directory(path.join("..", context.bundle_path), filename)
+def serve_bundle_file(server: ServerContext, filename="index.html"):
+    return send_from_directory(path.join("..", server.bundle_path), filename)
 
 
 # non-API routes
-def index(context: ServerContext):
-    return serve_bundle_file(context)
+def index(server: ServerContext):
+    return serve_bundle_file(server)
 
 
-def index_path(context: ServerContext, filename: str):
-    return serve_bundle_file(context, filename)
+def index_path(server: ServerContext, filename: str):
+    return serve_bundle_file(server, filename)
 
 
-def output(context: ServerContext, filename: str):
+def output(server: ServerContext, filename: str):
     return send_from_directory(
-        path.join("..", context.output_path), filename, as_attachment=False
+        path.join("..", server.output_path), filename, as_attachment=False
     )
 
 
 def register_static_routes(
-    app: Flask, context: ServerContext, _pool: DevicePoolExecutor
+    app: Flask, server: ServerContext, _pool: DevicePoolExecutor
 ):
     return [
-        app.route("/")(wrap_route(index, context)),
-        app.route("/<path:filename>")(wrap_route(index_path, context)),
-        app.route("/output/<path:filename>")(wrap_route(output, context)),
+        app.route("/")(wrap_route(index, server)),
+        app.route("/<path:filename>")(wrap_route(index_path, server)),
+        app.route("/output/<path:filename>")(wrap_route(output, server)),
     ]

@@ -64,7 +64,7 @@ def json_params(
 
 
 def make_output_name(
-    ctx: ServerContext,
+    server: ServerContext,
     mode: str,
     params: ImageParams,
     size: Size,
@@ -92,20 +92,20 @@ def make_output_name(
             hash_value(sha, param)
 
     return [
-        f"{mode}_{params.seed}_{sha.hexdigest()}_{now}_{i}.{ctx.image_format}"
+        f"{mode}_{params.seed}_{sha.hexdigest()}_{now}_{i}.{server.image_format}"
         for i in range(params.batch)
     ]
 
 
-def save_image(ctx: ServerContext, output: str, image: Image.Image) -> str:
-    path = base_join(ctx.output_path, output)
-    image.save(path, format=ctx.image_format)
+def save_image(server: ServerContext, output: str, image: Image.Image) -> str:
+    path = base_join(server.output_path, output)
+    image.save(path, format=server.image_format)
     logger.debug("saved output image to: %s", path)
     return path
 
 
 def save_params(
-    ctx: ServerContext,
+    server: ServerContext,
     output: str,
     params: ImageParams,
     size: Size,
@@ -113,7 +113,7 @@ def save_params(
     border: Optional[Border] = None,
     highres: Optional[HighresParams] = None,
 ) -> str:
-    path = base_join(ctx.output_path, f"{output}.json")
+    path = base_join(server.output_path, f"{output}.json")
     json = json_params(
         output, params, size, upscale=upscale, border=border, highres=highres
     )

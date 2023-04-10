@@ -118,13 +118,13 @@ def patch_not_impl():
     raise NotImplementedError()
 
 
-def patch_cache_path(ctx: ServerContext, url: str, **kwargs) -> str:
+def patch_cache_path(server: ServerContext, url: str, **kwargs) -> str:
     cache_path = cache_path_map.get(url, None)
     if cache_path is None:
         parsed = urlparse(url)
         cache_path = path.basename(parsed.path)
 
-    cache_path = path.join(ctx.cache_path, cache_path)
+    cache_path = path.join(server.cache_path, cache_path)
     logger.debug("patching download path: %s -> %s", url, cache_path)
 
     if path.exists(cache_path):
@@ -133,27 +133,27 @@ def patch_cache_path(ctx: ServerContext, url: str, **kwargs) -> str:
         raise FileNotFoundError("missing cache file: %s" % (cache_path))
 
 
-def apply_patch_basicsr(ctx: ServerContext):
+def apply_patch_basicsr(server: ServerContext):
     logger.debug("patching BasicSR module")
     basicsr.utils.download_util.download_file_from_google_drive = patch_not_impl
-    basicsr.utils.download_util.load_file_from_url = partial(patch_cache_path, ctx)
+    basicsr.utils.download_util.load_file_from_url = partial(patch_cache_path, server)
 
 
-def apply_patch_codeformer(ctx: ServerContext):
+def apply_patch_codeformer(server: ServerContext):
     logger.debug("patching CodeFormer module")
     codeformer.facelib.utils.misc.download_pretrained_models = patch_not_impl
-    codeformer.facelib.utils.misc.load_file_from_url = partial(patch_cache_path, ctx)
+    codeformer.facelib.utils.misc.load_file_from_url = partial(patch_cache_path, server)
 
 
-def apply_patch_facexlib(ctx: ServerContext):
+def apply_patch_facexlib(server: ServerContext):
     logger.debug("patching Facexlib module")
-    facexlib.utils.load_file_from_url = partial(patch_cache_path, ctx)
+    facexlib.utils.load_file_from_url = partial(patch_cache_path, server)
 
 
-def apply_patches(ctx: ServerContext):
-    apply_patch_basicsr(ctx)
-    apply_patch_codeformer(ctx)
-    apply_patch_facexlib(ctx)
+def apply_patches(server: ServerContext):
+    apply_patch_basicsr(server)
+    apply_patch_codeformer(server)
+    apply_patch_facexlib(server)
     unload(
         [
             "basicsr.utils.download_util",

@@ -9,26 +9,26 @@ from ..worker.pool import DevicePoolExecutor
 from .context import ServerContext
 
 
-def check_paths(context: ServerContext) -> None:
-    if not path.exists(context.model_path):
+def check_paths(server: ServerContext) -> None:
+    if not path.exists(server.model_path):
         raise RuntimeError("model path must exist")
 
-    if not path.exists(context.output_path):
-        makedirs(context.output_path)
+    if not path.exists(server.output_path):
+        makedirs(server.output_path)
 
 
-def get_model_path(context: ServerContext, model: str):
-    return base_join(context.model_path, model)
+def get_model_path(server: ServerContext, model: str):
+    return base_join(server.model_path, model)
 
 
 def register_routes(
     app: Flask,
-    context: ServerContext,
+    server: ServerContext,
     pool: DevicePoolExecutor,
     routes: List[Tuple[str, Dict, Callable]],
 ):
     for route, kwargs, method in routes:
-        app.route(route, **kwargs)(wrap_route(method, context, pool=pool))
+        app.route(route, **kwargs)(wrap_route(method, server, pool=pool))
 
 
 def wrap_route(func, *args, **kwargs):

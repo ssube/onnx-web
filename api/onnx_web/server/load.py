@@ -115,7 +115,7 @@ def get_config_value(key: str, subkey: str = "default", default=None):
     return config_params.get(key, {}).get(subkey, default)
 
 
-def load_extras(context: ServerContext):
+def load_extras(server: ServerContext):
     """
     Load the extras file(s) and collect the relevant parts for the server: labels and strings
     """
@@ -127,7 +127,7 @@ def load_extras(context: ServerContext):
     with open("./schemas/extras.yaml", "r") as f:
         extra_schema = safe_load(f.read())
 
-    for file in context.extra_models:
+    for file in server.extra_models:
         if file is not None and file != "":
             logger.info("loading extra models from %s", file)
             try:
@@ -209,11 +209,11 @@ IGNORE_EXTENSIONS = [".crdownload", ".lock", ".tmp"]
 
 
 def list_model_globs(
-    context: ServerContext, globs: List[str], base_path: Optional[str] = None
+    server: ServerContext, globs: List[str], base_path: Optional[str] = None
 ) -> List[str]:
     models = []
     for pattern in globs:
-        pattern_path = path.join(base_path or context.model_path, pattern)
+        pattern_path = path.join(base_path or server.model_path, pattern)
         logger.debug("loading models from %s", pattern_path)
         for name in glob(pattern_path):
             base = path.basename(name)
@@ -226,7 +226,7 @@ def list_model_globs(
     return unique_models
 
 
-def load_models(context: ServerContext) -> None:
+def load_models(server: ServerContext) -> None:
     global correction_models
     global diffusion_models
     global network_models
@@ -234,7 +234,7 @@ def load_models(context: ServerContext) -> None:
 
     # main categories
     diffusion_models = list_model_globs(
-        context,
+        server,
         [
             "diffusion-*",
             "stable-diffusion-*",
@@ -243,7 +243,7 @@ def load_models(context: ServerContext) -> None:
     logger.debug("loaded diffusion models from disk: %s", diffusion_models)
 
     correction_models = list_model_globs(
-        context,
+        server,
         [
             "correction-*",
         ],
@@ -251,7 +251,7 @@ def load_models(context: ServerContext) -> None:
     logger.debug("loaded correction models from disk: %s", correction_models)
 
     upscaling_models = list_model_globs(
-        context,
+        server,
         [
             "upscaling-*",
         ],
@@ -260,11 +260,11 @@ def load_models(context: ServerContext) -> None:
 
     # additional networks
     inversion_models = list_model_globs(
-        context,
+        server,
         [
             "*",
         ],
-        base_path=path.join(context.model_path, "inversion"),
+        base_path=path.join(server.model_path, "inversion"),
     )
     logger.debug("loaded Textual Inversion models from disk: %s", inversion_models)
     network_models.extend(
@@ -272,35 +272,35 @@ def load_models(context: ServerContext) -> None:
     )
 
     lora_models = list_model_globs(
-        context,
+        server,
         [
             "*",
         ],
-        base_path=path.join(context.model_path, "lora"),
+        base_path=path.join(server.model_path, "lora"),
     )
     logger.debug("loaded LoRA models from disk: %s", lora_models)
     network_models.extend([NetworkModel(model, "lora") for model in lora_models])
 
 
-def load_params(context: ServerContext) -> None:
+def load_params(server: ServerContext) -> None:
     global config_params
 
-    params_file = path.join(context.params_path, "params.json")
+    params_file = path.join(server.params_path, "params.json")
     logger.debug("loading server parameters from file: %s", params_file)
 
     with open(params_file, "r") as f:
         config_params = yaml.safe_load(f)
 
-        if "platform" in config_params and context.default_platform is not None:
+        if "platform" in config_params and server.default_platform is not None:
             logger.info(
                 "overriding default platform from environment: %s",
-                context.default_platform,
+                server.default_platform,
             )
             config_platform = config_params.get("platform", {})
-            config_platform["default"] = context.default_platform
+            config_platform["default"] = server.default_platform
 
 
-def load_platforms(context: ServerContext) -> None:
+def load_platforms(server: ServerContext) -> None:
     global available_platforms
 
     providers = list(get_available_providers())
@@ -309,7 +309,7 @@ def load_platforms(context: ServerContext) -> None:
     for potential in platform_providers:
         if (
             platform_providers[potential] in providers
-            and potential not in context.block_platforms
+            and potential not in server.block_platforms
         ):
             if potential == "cuda":
                 for i in range(torch.cuda.device_count()):
@@ -317,16 +317,16 @@ def load_platforms(context: ServerContext) -> None:
                         "device_id": i,
                     }
 
-                    if context.memory_limit is not None:
+                    if server.memory_limit is not None:
                         options["arena_extend_strategy"] = "kSameAsRequested"
-                        options["gpu_mem_limit"] = context.memory_limit
+                        options["gpu_mem_limit"] = server.memory_limit
 
                     available_platforms.append(
                         DeviceParams(
                             potential,
                             platform_providers[potential],
                             options,
-                            context.optimizations,
+                            server.optimizations,
                         )
                     )
             else:
@@ -335,18 +335,18 @@ def load_platforms(context: ServerContext) -> None:
                         potential,
                         platform_providers[potential],
                         None,
-                        context.optimizations,
+                        server.optimizations,
                     )
                 )
 
-    if context.any_platform:
+    if server.any_platform:
         # the platform should be ignored when the job is scheduled, but set to CPU just in case
         available_platforms.append(
             DeviceParams(
                 "any",
                 platform_providers["cpu"],
                 None,
-                context.optimizations,
+                server.optimizations,
             )
         )
 

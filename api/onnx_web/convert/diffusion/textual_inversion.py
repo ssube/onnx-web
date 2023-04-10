@@ -16,7 +16,7 @@ logger = getLogger(__name__)
 
 @torch.no_grad()
 def blend_textual_inversions(
-    context: ServerContext,
+    server: ServerContext,
     text_encoder: ModelProto,
     tokenizer: CLIPTokenizer,
     inversions: List[Tuple[str, float, Optional[str], Optional[str]]],
@@ -161,7 +161,7 @@ def blend_textual_inversions(
 
 @torch.no_grad()
 def convert_diffusion_textual_inversion(
-    context: ConversionContext,
+    conversion: ConversionContext,
     name: str,
     base_model: str,
     inversion: str,
@@ -169,7 +169,7 @@ def convert_diffusion_textual_inversion(
     base_token: Optional[str] = None,
     inversion_weight: Optional[float] = 1.0,
 ):
-    dest_path = path.join(context.model_path, f"inversion-{name}")
+    dest_path = path.join(conversion.model_path, f"inversion-{name}")
     logger.info(
         "converting Textual Inversion: %s + %s -> %s", base_model, inversion, dest_path
     )
@@ -194,7 +194,7 @@ def convert_diffusion_textual_inversion(
         subfolder="tokenizer",
     )
     text_encoder, tokenizer = blend_textual_inversions(
-        context,
+        conversion,
         text_encoder,
         tokenizer,
         [(inversion, inversion_weight, base_token, inversion_format)],

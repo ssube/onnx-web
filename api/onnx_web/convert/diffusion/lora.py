@@ -55,7 +55,7 @@ def fix_node_name(key: str):
 
 
 def blend_loras(
-    _context: ServerContext,
+    _conversion: ServerContext,
     base_name: Union[str, ModelProto],
     loras: List[Tuple[str, float]],
     model_type: Literal["text_encoder", "unet"],

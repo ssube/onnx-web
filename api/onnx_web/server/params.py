@@ -28,7 +28,7 @@ logger = getLogger(__name__)
 
 
 def pipeline_from_request(
-    context: ServerContext,
+    server: ServerContext,
 ) -> Tuple[DeviceParams, ImageParams, Size]:
     user = request.remote_addr
 
@@ -44,7 +44,7 @@ def pipeline_from_request(
     # pipeline stuff
     lpw = get_not_empty(request.args, "lpw", "false") == "true"
     model = get_not_empty(request.args, "model", get_config_value("model"))
-    model_path = get_model_path(context, model)
+    model_path = get_model_path(server, model)
     scheduler = get_from_list(
         request.args, "scheduler", list(pipeline_schedulers.keys())
     )

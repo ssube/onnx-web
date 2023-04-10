@@ -93,7 +93,7 @@ def url_from_rule(rule) -> str:
     return url_for(rule.endpoint, **options)
 
 
-def introspect(context: ServerContext, app: Flask):
+def introspect(server: ServerContext, app: Flask):
     return {
         "name": "onnx-web",
         "routes": [
@@ -103,15 +103,15 @@ def introspect(context: ServerContext, app: Flask):
     }
 
 
-def list_extra_strings(context: ServerContext):
+def list_extra_strings(server: ServerContext):
     return jsonify(get_extra_strings())
 
 
-def list_mask_filters(context: ServerContext):
+def list_mask_filters(server: ServerContext):
     return jsonify(list(get_mask_filters().keys()))
 
 
-def list_models(context: ServerContext):
+def list_models(server: ServerContext):
     return jsonify(
         {
             "correction": get_correction_models(),
@@ -122,30 +122,30 @@ def list_models(context: ServerContext):
     )
 
 
-def list_noise_sources(context: ServerContext):
+def list_noise_sources(server: ServerContext):
     return jsonify(list(get_noise_sources().keys()))
 
 
-def list_params(context: ServerContext):
+def list_params(server: ServerContext):
     return jsonify(get_config_params())
 
 
-def list_platforms(context: ServerContext):
+def list_platforms(server: ServerContext):
     return jsonify([p.device for p in get_available_platforms()])
 
 
-def list_schedulers(context: ServerContext):
+def list_schedulers(server: ServerContext):
     return jsonify(list(get_pipeline_schedulers().keys()))
 
 
-def img2img(context: ServerContext, pool: DevicePoolExecutor):
+def img2img(server: ServerContext, pool: DevicePoolExecutor):
     source_file = request.files.get("source")
     if source_file is None:
         return error_reply("source image is required")
 
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
-    device, params, size = pipeline_from_request(context)
+    device, params, size = pipeline_from_request(server)
     upscale = upscale_from_request()
 
     strength = get_and_clamp_float(
@@ -156,7 +156,7 @@ def img2img(context: ServerContext, pool: DevicePoolExecutor):
         get_config_value("strength", "min"),
     )
 
-    output = make_output_name(context, "img2img", params, size, extras=[strength])
+    output = make_output_name(server, "img2img", params, size, extras=[strength])
     job_name = output[0]
     logger.info("img2img job queued for: %s", job_name)
 
@@ -164,7 +164,7 @@ def img2img(context: ServerContext, pool: DevicePoolExecutor):
     pool.submit(
         job_name,
         run_img2img_pipeline,
-        context,
+        server,
         params,
         output,
         upscale,
@@ -176,19 +176,19 @@ def img2img(context: ServerContext, pool: DevicePoolExecutor):
     return jsonify(json_params(output, params, size, upscale=upscale))
 
 
-def txt2img(context: ServerContext, pool: DevicePoolExecutor):
-    device, params, size = pipeline_from_request(context)
+def txt2img(server: ServerContext, pool: DevicePoolExecutor):
+    device, params, size = pipeline_from_request(server)
     upscale = upscale_from_request()
     highres = highres_from_request()
 
-    output = make_output_name(context, "txt2img", params, size)
+    output = make_output_name(server, "txt2img", params, size)
     job_name = output[0]
     logger.info("txt2img job queued for: %s", job_name)
 
     pool.submit(
         job_name,
         run_txt2img_pipeline,
-        context,
+        server,
         params,
         size,
         output,
@@ -200,7 +200,7 @@ def txt2img(context: ServerContext, pool: DevicePoolExecutor):
     return jsonify(json_params(output, params, size, upscale=upscale, highres=highres))
 
 
-def inpaint(context: ServerContext, pool: DevicePoolExecutor):
+def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     source_file = request.files.get("source")
     if source_file is None:
         return error_reply("source image is required")
@@ -212,7 +212,7 @@ def inpaint(context: ServerContext, pool: DevicePoolExecutor):
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
     mask = Image.open(BytesIO(mask_file.read())).convert("RGB")
 
-    device, params, size = pipeline_from_request(context)
+    device, params, size = pipeline_from_request(server)
     expand = border_from_request()
     upscale = upscale_from_request()
 
@@ -224,7 +224,7 @@ def inpaint(context: ServerContext, pool: DevicePoolExecutor):
     )
 
     output = make_output_name(
-        context,
+        server,
         "inpaint",
         params,
         size,
@@ -247,7 +247,7 @@ def inpaint(context: ServerContext, pool: DevicePoolExecutor):
     pool.submit(
         job_name,
         run_inpaint_pipeline,
-        context,
+        server,
         params,
         size,
         output,
@@ -265,17 +265,17 @@ def inpaint(context: ServerContext, pool: DevicePoolExecutor):
     return jsonify(json_params(output, params, size, upscale=upscale, border=expand))
 
 
-def upscale(context: ServerContext, pool: DevicePoolExecutor):
+def upscale(server: ServerContext, pool: DevicePoolExecutor):
     source_file = request.files.get("source")
     if source_file is None:
         return error_reply("source image is required")
 
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
-    device, params, size = pipeline_from_request(context)
+    device, params, size = pipeline_from_request(server)
     upscale = upscale_from_request()
 
-    output = make_output_name(context, "upscale", params, size)
+    output = make_output_name(server, "upscale", params, size)
     job_name = output[0]
     logger.info("upscale job queued for: %s", job_name)
 
@@ -283,7 +283,7 @@ def upscale(context: ServerContext, pool: DevicePoolExecutor):
     pool.submit(
         job_name,
         run_upscale_pipeline,
-        context,
+        server,
         params,
         size,
         output,
@@ -295,7 +295,7 @@ def upscale(context: ServerContext, pool: DevicePoolExecutor):
     return jsonify(json_params(output, params, size, upscale=upscale))
 
 
-def chain(context: ServerContext, pool: DevicePoolExecutor):
+def chain(server: ServerContext, pool: DevicePoolExecutor):
     logger.debug(
         "chain pipeline request: %s, %s", request.form.keys(), request.files.keys()
     )
@@ -311,8 +311,8 @@ def chain(context: ServerContext, pool: DevicePoolExecutor):
     validate(data, schema)
 
     # get defaults from the regular parameters
-    device, params, size = pipeline_from_request(context)
-    output = make_output_name(context, "chain", params, size)
+    device, params, size = pipeline_from_request(server)
+    output = make_output_name(server, "chain", params, size)
     job_name = output[0]
 
     pipeline = ChainPipeline()
@@ -371,7 +371,7 @@ def chain(context: ServerContext, pool: DevicePoolExecutor):
     pool.submit(
         job_name,
         pipeline,
-        context,
+        server,
         params,
         empty_source,
         output=output[0],
@@ -382,7 +382,7 @@ def chain(context: ServerContext, pool: DevicePoolExecutor):
     return jsonify(json_params(output, params, size))
 
 
-def blend(context: ServerContext, pool: DevicePoolExecutor):
+def blend(server: ServerContext, pool: DevicePoolExecutor):
     mask_file = request.files.get("mask")
     if mask_file is None:
         return error_reply("mask image is required")
@@ -402,17 +402,17 @@ def blend(context: ServerContext, pool: DevicePoolExecutor):
             source = valid_image(source, mask.size, mask.size)
             sources.append(source)
 
-    device, params, size = pipeline_from_request(context)
+    device, params, size = pipeline_from_request(server)
     upscale = upscale_from_request()
 
-    output = make_output_name(context, "upscale", params, size)
+    output = make_output_name(server, "upscale", params, size)
     job_name = output[0]
     logger.info("upscale job queued for: %s", job_name)
 
     pool.submit(
         job_name,
         run_blend_pipeline,
-        context,
+        server,
         params,
         size,
         output,
@@ -425,17 +425,17 @@ def blend(context: ServerContext, pool: DevicePoolExecutor):
     return jsonify(json_params(output, params, size, upscale=upscale))
 
 
-def txt2txt(context: ServerContext, pool: DevicePoolExecutor):
-    device, params, size = pipeline_from_request(context)
+def txt2txt(server: ServerContext, pool: DevicePoolExecutor):
+    device, params, size = pipeline_from_request(server)
 
-    output = make_output_name(context, "txt2txt", params, size)
+    output = make_output_name(server, "txt2txt", params, size)
     job_name = output[0]
     logger.info("upscale job queued for: %s", job_name)
 
     pool.submit(
         job_name,
         run_txt2txt_pipeline,
-        context,
+        server,
         params,
         size,
         output,
@@ -445,7 +445,7 @@ def txt2txt(context: ServerContext, pool: DevicePoolExecutor):
     return jsonify(json_params(output, params, size))
 
 
-def cancel(context: ServerContext, pool: DevicePoolExecutor):
+def cancel(server: ServerContext, pool: DevicePoolExecutor):
     output_file = request.args.get("output", None)
     if output_file is None:
         return error_reply("output name is required")
@@ -456,7 +456,7 @@ def cancel(context: ServerContext, pool: DevicePoolExecutor):
     return ready_reply(cancelled=cancelled)
 
 
-def ready(context: ServerContext, pool: DevicePoolExecutor):
+def ready(server: ServerContext, pool: DevicePoolExecutor):
     output_file = request.args.get("output", None)
     if output_file is None:
         return error_reply("output name is required")
@@ -468,7 +468,7 @@ def ready(context: ServerContext, pool: DevicePoolExecutor):
         return ready_reply(pending=True)
 
     if progress is None:
-        output = base_join(context.output_path, output_file)
+        output = base_join(server.output_path, output_file)
         if path.exists(output):
             return ready_reply(ready=True)
         else:
@@ -485,44 +485,44 @@ def ready(context: ServerContext, pool: DevicePoolExecutor):
     )
 
 
-def status(context: ServerContext, pool: DevicePoolExecutor):
+def status(server: ServerContext, pool: DevicePoolExecutor):
     return jsonify(pool.status())
 
 
-def register_api_routes(app: Flask, context: ServerContext, pool: DevicePoolExecutor):
+def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecutor):
     return [
-        app.route("/api")(wrap_route(introspect, context, app=app)),
-        app.route("/api/settings/masks")(wrap_route(list_mask_filters, context)),
-        app.route("/api/settings/models")(wrap_route(list_models, context)),
-        app.route("/api/settings/noises")(wrap_route(list_noise_sources, context)),
-        app.route("/api/settings/params")(wrap_route(list_params, context)),
-        app.route("/api/settings/platforms")(wrap_route(list_platforms, context)),
-        app.route("/api/settings/schedulers")(wrap_route(list_schedulers, context)),
-        app.route("/api/settings/strings")(wrap_route(list_extra_strings, context)),
+        app.route("/api")(wrap_route(introspect, server, app=app)),
+        app.route("/api/settings/masks")(wrap_route(list_mask_filters, server)),
+        app.route("/api/settings/models")(wrap_route(list_models, server)),
+        app.route("/api/settings/noises")(wrap_route(list_noise_sources, server)),
+        app.route("/api/settings/params")(wrap_route(list_params, server)),
+        app.route("/api/settings/platforms")(wrap_route(list_platforms, server)),
+        app.route("/api/settings/schedulers")(wrap_route(list_schedulers, server)),
+        app.route("/api/settings/strings")(wrap_route(list_extra_strings, server)),
         app.route("/api/img2img", methods=["POST"])(
-            wrap_route(img2img, context, pool=pool)
+            wrap_route(img2img, server, pool=pool)
         ),
         app.route("/api/txt2img", methods=["POST"])(
-            wrap_route(txt2img, context, pool=pool)
+            wrap_route(txt2img, server, pool=pool)
         ),
         app.route("/api/txt2txt", methods=["POST"])(
-            wrap_route(txt2txt, context, pool=pool)
+            wrap_route(txt2txt, server, pool=pool)
         ),
         app.route("/api/inpaint", methods=["POST"])(
-            wrap_route(inpaint, context, pool=pool)
+            wrap_route(inpaint, server, pool=pool)
         ),
         app.route("/api/upscale", methods=["POST"])(
-            wrap_route(upscale, context, pool=pool)
+            wrap_route(upscale, server, pool=pool)
         ),
         app.route("/api/chain", methods=["POST"])(
-            wrap_route(chain, context, pool=pool)
+            wrap_route(chain, server, pool=pool)
         ),
         app.route("/api/blend", methods=["POST"])(
-            wrap_route(blend, context, pool=pool)
+            wrap_route(blend, server, pool=pool)
         ),
         app.route("/api/cancel", methods=["PUT"])(
-            wrap_route(cancel, context, pool=pool)
+            wrap_route(cancel, server, pool=pool)
         ),
-        app.route("/api/ready")(wrap_route(ready, context, pool=pool)),
-        app.route("/api/status")(wrap_route(status, context, pool=pool)),
+        app.route("/api/ready")(wrap_route(ready, server, pool=pool)),
+        app.route("/api/status")(wrap_route(status, server, pool=pool)),
     ]

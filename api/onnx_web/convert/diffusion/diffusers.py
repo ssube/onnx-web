@@ -90,7 +90,7 @@ def onnx_export(
 
 @torch.no_grad()
 def convert_diffusion_diffusers(
-    ctx: ConversionContext,
+    conversion: ConversionContext,
     model: Dict,
     source: str,
 ) -> Tuple[bool, str]:
@@ -102,10 +102,10 @@ def convert_diffusion_diffusers(
     single_vae = model.get("single_vae")
     replace_vae = model.get("vae")
 
-    dtype = ctx.torch_dtype()
+    dtype = conversion.torch_dtype()
     logger.debug("using Torch dtype %s for pipeline", dtype)
 
-    dest_path = path.join(ctx.model_path, name)
+    dest_path = path.join(conversion.model_path, name)
     model_index = path.join(dest_path, "model_index.json")
 
     # diffusers go into a directory rather than .onnx file
@@ -123,11 +123,11 @@ def convert_diffusion_diffusers(
     pipeline = StableDiffusionPipeline.from_pretrained(
         source,
         torch_dtype=dtype,
-        use_auth_token=ctx.token,
-    ).to(ctx.training_device)
+        use_auth_token=conversion.token,
+    ).to(conversion.training_device)
     output_path = Path(dest_path)
 
-    optimize_pipeline(ctx, pipeline)
+    optimize_pipeline(conversion, pipeline)
 
     # TEXT ENCODER
     num_tokens = pipeline.text_encoder.config.max_position_embeddings
@@ -143,11 +143,11 @@ def convert_diffusion_diffusers(
         pipeline.text_encoder,
         # casting to torch.int32 until the CLIP fix is released: https://github.com/huggingface/transformers/pull/18515/files
         model_args=(
-            text_input.input_ids.to(device=ctx.training_device, dtype=torch.int32),
+            text_input.input_ids.to(device=conversion.training_device, dtype=torch.int32),
             None,  # attention mask
             None,  # position ids
             None,  # output attentions
-            torch.tensor(True).to(device=ctx.training_device, dtype=torch.bool),
+            torch.tensor(True).to(device=conversion.training_device, dtype=torch.bool),
         ),
         output_path=output_path / "text_encoder" / ONNX_MODEL,
         ordered_input_names=["input_ids"],
@@ -155,8 +155,8 @@ def convert_diffusion_diffusers(
         dynamic_axes={
             "input_ids": {0: "batch", 1: "sequence"},
         },
-        opset=ctx.opset,
-        half=ctx.half,
+        opset=conversion.opset,
+        half=conversion.half,
     )
     del pipeline.text_encoder
 
@@ -165,11 +165,11 @@ def convert_diffusion_diffusers(
     # UNET
     if single_vae:
         unet_inputs = ["sample", "timestep", "encoder_hidden_states", "class_labels"]
-        unet_scale = torch.tensor(4).to(device=ctx.training_device, dtype=torch.long)
+        unet_scale = torch.tensor(4).to(device=conversion.training_device, dtype=torch.long)
     else:
         unet_inputs = ["sample", "timestep", "encoder_hidden_states", "return_dict"]
         unet_scale = torch.tensor(False).to(
-            device=ctx.training_device, dtype=torch.bool
+            device=conversion.training_device, dtype=torch.bool
         )
 
     if is_torch_2_0:
@@ -182,11 +182,11 @@ def convert_diffusion_diffusers(
         pipeline.unet,
         model_args=(
             torch.randn(2, unet_in_channels, unet_sample_size, unet_sample_size).to(
-                device=ctx.training_device, dtype=dtype
+                device=conversion.training_device, dtype=dtype
             ),
-            torch.randn(2).to(device=ctx.training_device, dtype=dtype),
+            torch.randn(2).to(device=conversion.training_device, dtype=dtype),
             torch.randn(2, num_tokens, text_hidden_size).to(
-                device=ctx.training_device, dtype=dtype
+                device=conversion.training_device, dtype=dtype
             ),
             unet_scale,
         ),
@@ -199,8 +199,8 @@ def convert_diffusion_diffusers(
             "timestep": {0: "batch"},
             "encoder_hidden_states": {0: "batch", 1: "sequence"},
         },
-        opset=ctx.opset,
-        half=ctx.half,
+        opset=conversion.opset,
+        half=conversion.half,
         external_data=True,
     )
     unet_model_path = str(unet_path.absolute().as_posix())
@@ -238,7 +238,7 @@ def convert_diffusion_diffusers(
             model_args=(
                 torch.randn(
                     1, vae_latent_channels, unet_sample_size, unet_sample_size
-                ).to(device=ctx.training_device, dtype=dtype),
+                ).to(device=conversion.training_device, dtype=dtype),
                 False,
             ),
             output_path=output_path / "vae" / ONNX_MODEL,
@@ -247,8 +247,8 @@ def convert_diffusion_diffusers(
             dynamic_axes={
                 "latent_sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
             },
-            opset=ctx.opset,
-            half=ctx.half,
+            opset=conversion.opset,
+            half=conversion.half,
         )
     else:
         # VAE ENCODER
@@ -263,7 +263,7 @@ def convert_diffusion_diffusers(
             vae_encoder,
             model_args=(
                 torch.randn(1, vae_in_channels, vae_sample_size, vae_sample_size).to(
-                    device=ctx.training_device, dtype=dtype
+                    device=conversion.training_device, dtype=dtype
                 ),
                 False,
             ),
@@ -273,7 +273,7 @@ def convert_diffusion_diffusers(
             dynamic_axes={
                 "sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
             },
-            opset=ctx.opset,
+            opset=conversion.opset,
             half=False,  # https://github.com/ssube/onnx-web/issues/290
         )
 
@@ -287,7 +287,7 @@ def convert_diffusion_diffusers(
             model_args=(
                 torch.randn(
                     1, vae_latent_channels, unet_sample_size, unet_sample_size
-                ).to(device=ctx.training_device, dtype=dtype),
+                ).to(device=conversion.training_device, dtype=dtype),
                 False,
             ),
             output_path=output_path / "vae_decoder" / ONNX_MODEL,
@@ -296,8 +296,8 @@ def convert_diffusion_diffusers(
             dynamic_axes={
                 "latent_sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
             },
-            opset=ctx.opset,
-            half=ctx.half,
+            opset=conversion.opset,
+            half=conversion.half,
         )
 
     del pipeline.vae

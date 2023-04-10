@@ -12,7 +12,7 @@ logger = getLogger(__name__)
 
 @torch.no_grad()
 def convert_correction_gfpgan(
-    ctx: ConversionContext,
+    conversion: ConversionContext,
     model: ModelDict,
     source: str,
 ):
@@ -20,7 +20,7 @@ def convert_correction_gfpgan(
     source = source or model.get("source")
     scale = model.get("scale")
 
-    dest = path.join(ctx.model_path, name + ".onnx")
+    dest = path.join(conversion.model_path, name + ".onnx")
     logger.info("converting GFPGAN model: %s -> %s", name, dest)
 
     if path.isfile(dest):
@@ -37,17 +37,17 @@ def convert_correction_gfpgan(
         scale=scale,
     )
 
-    torch_model = torch.load(source, map_location=ctx.map_location)
+    torch_model = torch.load(source, map_location=conversion.map_location)
     # TODO: make sure strict=False is safe here
     if "params_ema" in torch_model:
         model.load_state_dict(torch_model["params_ema"], strict=False)
     else:
         model.load_state_dict(torch_model["params"], strict=False)
 
-    model.to(ctx.training_device).train(False)
+    model.to(conversion.training_device).train(False)
     model.eval()
 
-    rng = torch.rand(1, 3, 64, 64, device=ctx.map_location)
+    rng = torch.rand(1, 3, 64, 64, device=conversion.map_location)
     input_names = ["data"]
     output_names = ["output"]
     dynamic_axes = {
@@ -63,7 +63,7 @@ def convert_correction_gfpgan(
         input_names=input_names,
         output_names=output_names,
         dynamic_axes=dynamic_axes,
-        opset_version=ctx.opset,
+        opset_version=conversion.opset,
         export_params=True,
     )
     logger.info("GFPGAN exported to ONNX successfully")

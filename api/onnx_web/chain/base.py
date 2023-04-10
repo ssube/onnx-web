@@ -23,7 +23,7 @@ class StageCallback(Protocol):
     def __call__(
         self,
         job: WorkerContext,
-        ctx: ServerContext,
+        server: ServerContext,
         stage: StageParams,
         params: ImageParams,
         source: Image.Image,

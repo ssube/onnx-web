@@ -7,6 +7,10 @@ from .torch_before_ort import GraphOptimizationLevel, SessionOptions
 logger = getLogger(__name__)
 
 
+Param = Union[str, int, float]
+Point = Tuple[int, int]
+
+
 class SizeChart(IntEnum):
     mini = 128  # small tile for very expensive models
     half = 256  # half tile for outpainting
@@ -25,10 +29,6 @@ class TileOrder:
     spiral = "spiral"
 
 
-Param = Union[str, int, float]
-Point = Tuple[int, int]
-
-
 class Border:
     def __init__(self, left: int, right: int, top: int, bottom: int) -> None:
         self.left = left
@@ -37,7 +37,7 @@ class Border:
         self.bottom = bottom
 
     def __str__(self) -> str:
-        return "%s %s %s %s" % (self.left, self.top, self.right, self.bottom)
+        return "(%s, %s, %s, %s)" % (self.left, self.top, self.right, self.bottom)
 
     def tojson(self):
         return {
@@ -145,6 +145,7 @@ class DeviceParams:
         return sess
 
     def torch_str(self) -> str:
+        # TODO: return cuda devices for ROCm as well
         if self.device.startswith("cuda"):
             return self.device
         else:
