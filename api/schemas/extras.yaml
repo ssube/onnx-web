@@ -65,7 +65,7 @@ $defs:
       - type: object
         properties:
           model:
-            type: enum
+            type: string
             enum: [
               codeformer,
               gfpgan
@@ -96,7 +96,7 @@ $defs:
         required: [scale]
         properties:
           model:
-            type: enum
+            type: string
             enum: [
               bsrgan,
               resrgan,
