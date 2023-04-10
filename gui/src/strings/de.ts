@@ -96,6 +96,7 @@ export const I18N_STRINGS_DE = {
         fillColor: 'Füllfarbe',
         height: 'Höhe',
         highres: {
+          iterations: '',
           label: '',
           method: '',
           scale: '',

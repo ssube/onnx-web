@@ -96,6 +96,7 @@ export const I18N_STRINGS_FR = {
         fillColor: '',
         height: '',
         highres: {
+          iterations: '',
           label: '',
           method: '',
           scale: '',

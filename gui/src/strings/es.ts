@@ -96,6 +96,7 @@ export const I18N_STRINGS_ES = {
         fillColor: 'Color de relleno',
         height: 'Altura',
         highres: {
+          iterations: '',
           label: '',
           method: '',
           scale: '',

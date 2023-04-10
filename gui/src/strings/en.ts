@@ -129,6 +129,7 @@ export const I18N_STRINGS_EN = {
         fillColor: 'Fill Color',
         height: 'Height',
         highres: {
+          iterations: 'Iterations',
           label: 'Highres',
           method: 'Upscaler',
           scale: 'Scale',
