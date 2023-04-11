@@ -122,6 +122,7 @@ class DevicePoolExecutor:
             target=worker_main,
             args=(context, self.server),
         )
+        worker.daemon = True
         self.workers[name] = worker
 
         logger.debug("starting worker for device %s", device)
@@ -250,20 +251,23 @@ class DevicePoolExecutor:
                 else:
                     logger.debug("worker for device %s has died", device)
 
+            logger.debug("stopping health worker")
+            self.health_worker.cancel()
+            self.health_worker.join(self.recycle_interval)
+
             logger.debug("stopping progress worker")
-            self.progress_worker.join(self.join_timeout)
+            self.progress_worker.cancel()
+            self.progress_worker.join(self.progress_interval)
 
             logger.debug("stopping logger worker")
             self.logger_worker.join(self.join_timeout)
-
-            logger.debug("stopping health worker")
-            self.health_worker.join(self.join_timeout)
 
             logger.debug("closing worker queues")
             self.logs.close()
 
             for queue in self.pending.values():
                 queue.close()
+
             for queue in self.progress.values():
                 queue.close()
 
@@ -300,7 +304,6 @@ class DevicePoolExecutor:
                     logger.debug(
                         "value error in leaking worker for device %s: %s", device, e
                     )
-                    break
                 except Exception:
                     logger.exception("error in leaking worker for device %s", device)
 
