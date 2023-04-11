@@ -30,12 +30,12 @@ def convert_upscaling_swinir(
     logger.info("loading and training model")
     # values based on https://github.com/JingyunLiang/SwinIR/blob/main/main_test_swinir.py#L128
     params = {
-        "depths": [6, 6, 6, 6, 6, 6],
+        "depths": [6] * 6,
         "embed_dim": 180,
         "img_range": 1.0,
         "img_size": (64, 64),
         "in_chans": 3,
-        "num_heads": [6, 6, 6, 6, 6, 6],
+        "num_heads": [6] * 6,
         "resi_connection": "1conv",
         "upsampler": "pixelshuffle",
         "window_size": 8,
@@ -43,9 +43,9 @@ def convert_upscaling_swinir(
 
     if "lightweight" in name:
         logger.debug("using SwinIR lightweight params")
-        params["depths"] = [6, 6, 6, 6]
+        params["depths"] = [6] * 4
         params["embed_dim"] = 60
-        params["num_heads"] = [6, 6, 6, 6]
+        params["num_heads"] = [6] * 4
         params["upsampler"] = "pixelshuffledirect"
     elif "real" in name:
         if "large" in name:
