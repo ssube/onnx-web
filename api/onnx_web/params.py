@@ -145,9 +145,16 @@ class DeviceParams:
         return sess
 
     def torch_str(self) -> str:
-        # TODO: return cuda devices for ROCm as well
         if self.device.startswith("cuda"):
+            if self.options is not None and "device_id" in self.options:
+                return f"{self.device}:{self.options['device_id']}"
+
             return self.device
+        elif self.device.startswith("rocm"):
+            if self.options is not None and "device_id" in self.options:
+                return f"cuda:{self.options['device_id']}"
+
+            return "cuda"
         else:
             return "cpu"
 

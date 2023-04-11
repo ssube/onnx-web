@@ -38,6 +38,7 @@ def load_gfpgan(
         arch="clean",
         bg_upsampler=None,
         channel_multiplier=2,
+        device=device.torch_str(),
         model_path=face_path,
         upscale=upscale.face_outscale,
     )

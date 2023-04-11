@@ -9,6 +9,7 @@ diffusers
 onnx
 # onnxruntime has many platform-specific packages
 safetensors
+timm
 transformers
 
 #### Upscaling and face correction
@@ -17,7 +18,6 @@ codeformer-perceptor
 facexlib
 gfpgan
 realesrgan
-timm
 
 ### Server packages ###
 boto3

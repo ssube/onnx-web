@@ -311,13 +311,13 @@ def load_platforms(server: ServerContext) -> None:
             platform_providers[potential] in providers
             and potential not in server.block_platforms
         ):
-            if potential == "cuda":
+            if potential == "cuda" or potential == "rocm":
                 for i in range(torch.cuda.device_count()):
                     options = {
                         "device_id": i,
                     }
 
-                    if server.memory_limit is not None:
+                    if potential == "cuda" and server.memory_limit is not None:
                         options["arena_extend_strategy"] = "kSameAsRequested"
                         options["gpu_mem_limit"] = server.memory_limit
 
