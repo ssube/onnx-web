@@ -78,7 +78,9 @@ def run():
 
 if __name__ == "__main__":
     app, pool = main()
+    logger.info("starting image workers")
     pool.start()
+    logger.info("starting API server")
     app.run("0.0.0.0", 5000, debug=is_debug())
-    logger.info("shutting down app")
+    logger.info("shutting down workers")
     pool.join()

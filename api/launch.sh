@@ -25,4 +25,8 @@ python3 -m onnx_web.convert \
   ${ONNX_WEB_EXTRA_ARGS:-}
 
 echo "Launching API server..."
-flask --app='onnx_web.main:run' run --host=0.0.0.0
+waitress-serve \
+  --host=0.0.0.0 \
+  --port=5000 \
+  --call \
+  onnx_web.main:run
