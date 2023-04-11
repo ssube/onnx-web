@@ -26,10 +26,10 @@ def load_bsrgan(
     cache_pipe = server.cache.get("bsrgan", cache_key)
 
     if cache_pipe is not None:
-        logger.info("reusing existing BSRGAN pipeline")
+        logger.debug("reusing existing BSRGAN pipeline")
         return cache_pipe
 
-    logger.debug("loading BSRGAN model from %s", model_path)
+    logger.info("loading BSRGAN model from %s", model_path)
 
     pipe = OnnxModel(
         server,
@@ -62,7 +62,7 @@ def upscale_bsrgan(
         logger.warn("no upscaling model given, skipping")
         return source
 
-    logger.info("correcting faces with BSRGAN model: %s", upscale.upscale_model)
+    logger.info("upscaling with BSRGAN model: %s", upscale.upscale_model)
     device = job.get_device()
     bsrgan = load_bsrgan(server, stage, upscale, device)
 
@@ -73,13 +73,13 @@ def upscale_bsrgan(
     image = np.array(source) / 255.0
     image = image[:, :, [2, 1, 0]].astype(np.float32).transpose((2, 0, 1))
     image = np.expand_dims(image, axis=0)
-    logger.info("BSRGAN input shape: %s", image.shape)
+    logger.trace("BSRGAN input shape: %s", image.shape)
 
     scale = upscale.outscale
     dest = np.zeros(
         (image.shape[0], image.shape[1], image.shape[2] * scale, image.shape[3] * scale)
     )
-    logger.info("BSRGAN output shape: %s", dest.shape)
+    logger.trace("BSRGAN output shape: %s", dest.shape)
 
     for x in range(tile_x):
         for y in range(tile_y):
@@ -90,7 +90,7 @@ def upscale_bsrgan(
             ix2 = xt + tile_size[0]
             iy1 = yt
             iy2 = yt + tile_size[1]
-            logger.info(
+            logger.debug(
                 "running BSRGAN on tile: (%s, %s, %s, %s) -> (%s, %s, %s, %s)",
                 ix1,
                 ix2,
@@ -114,5 +114,5 @@ def upscale_bsrgan(
     dest = (dest * 255.0).round().astype(np.uint8)
 
     output = Image.fromarray(dest, "RGB")
-    logger.info("output image size: %s x %s", output.width, output.height)
+    logger.debug("output image size: %s x %s", output.width, output.height)
     return output

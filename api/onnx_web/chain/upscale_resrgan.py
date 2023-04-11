@@ -5,7 +5,8 @@ from typing import Optional
 import numpy as np
 from PIL import Image
 
-from ..onnx import OnnxNet
+from ..models.rrdb import RRDBNet
+from ..onnx import OnnxRRDBNet
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..utils import run_gc
@@ -20,7 +21,6 @@ def load_resrgan(
     server: ServerContext, params: UpscaleParams, device: DeviceParams, tile=0
 ):
     # must be within load function for patches to take effect
-    from basicsr.archs.rrdbnet_arch import RRDBNet
     from realesrgan import RealESRGANer
     from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 
@@ -38,7 +38,7 @@ def load_resrgan(
 
     if params.format == "onnx":
         # use ONNX acceleration, if available
-        model = OnnxNet(
+        model = OnnxRRDBNet(
             server,
             model_file,
             provider=device.ort_provider(),

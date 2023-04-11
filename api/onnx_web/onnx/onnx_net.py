@@ -37,9 +37,9 @@ class OnnxTensor:
         return np.shape(self.source)
 
 
-class OnnxNet:
+class OnnxRRDBNet:
     """
-    Provides the RRDBNet interface using an ONNX session for DirectML acceleration.
+    Provides the RRDBNet interface using an ONNX session.
     """
 
     def __init__(

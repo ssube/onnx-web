@@ -2,9 +2,9 @@ from logging import getLogger
 from os import path
 
 import torch
-from basicsr.archs.rrdbnet_arch import RRDBNet
 from torch.onnx import export
 
+from ...models.rrdb import RRDBNet
 from ..utils import ConversionContext, ModelDict
 
 logger = getLogger(__name__)

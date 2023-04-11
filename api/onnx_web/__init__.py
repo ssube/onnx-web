@@ -30,7 +30,7 @@ from .image import (
     noise_source_uniform,
     valid_image,
 )
-from .onnx import OnnxNet, OnnxTensor
+from .onnx import OnnxRRDBNet, OnnxTensor
 from .params import (
     Border,
     DeviceParams,

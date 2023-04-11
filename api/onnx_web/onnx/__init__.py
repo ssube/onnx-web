@@ -1,1 +1,1 @@
-from .onnx_net import OnnxTensor, OnnxNet
+from .onnx_net import OnnxTensor, OnnxRRDBNet

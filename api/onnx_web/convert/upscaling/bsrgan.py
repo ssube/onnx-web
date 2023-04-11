@@ -28,6 +28,7 @@ def convert_upscaling_bsrgan(
         return
 
     logger.info("loading and training model")
+    # values based on https://github.com/cszn/BSRGAN/blob/main/main_test_bsrgan.py#L69
     model = RRDBNet(
         in_nc=3,
         out_nc=3,

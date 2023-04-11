@@ -28,19 +28,50 @@ def convert_upscaling_swinir(
         return
 
     logger.info("loading and training model")
-    img_size = (64, 64)  # TODO: does this need to be a fixed value?
+    # values based on https://github.com/JingyunLiang/SwinIR/blob/main/main_test_swinir.py#L128
+    params = {
+        "depths": [6, 6, 6, 6, 6, 6],
+        "embed_dim": 180,
+        "img_range": 1.0,
+        "img_size": (64, 64),
+        "in_chans": 3,
+        "num_heads": [6, 6, 6, 6, 6, 6],
+        "resi_connection": "1conv",
+        "upsampler": "pixelshuffle",
+        "window_size": 8,
+    }
+
+    if "lightweight" in name:
+        logger.debug("using SwinIR lightweight params")
+        params["depths"] = [6, 6, 6, 6]
+        params["embed_dim"] = 60
+        params["num_heads"] = [6, 6, 6, 6]
+        params["upsampler"] = "pixelshuffledirect"
+    elif "real" in name:
+        # TODO: add params for large model
+        logger.debug("using SwinIR real params")
+        params["upsampler"] = "nearest+conv"
+    elif "gray_dn" in name:
+        params["img_size"] = (128, 128)
+        params["in_chans"] = 1
+        params["upsampler"] = ""
+    elif "color_dn" in name:
+        params["img_size"] = (128, 128)
+        params["upsampler"] = ""
+    elif "gray_jpeg" in name:
+        params["img_size"] = (126, 126)
+        params["in_chans"] = 1
+        params["upsampler"] = ""
+        params["window_size"] = 7
+    elif "color_jpeg" in name:
+        params["img_size"] = (126, 126)
+        params["upsampler"] = ""
+        params["window_size"] = 7
+
     model = SwinIR(
-        depths=[6, 6, 6, 6, 6, 6],
-        embed_dim=180,
-        img_range=1.0,
-        img_size=img_size,
-        in_chans=3,
         mlp_ratio=2,
-        num_heads=[6, 6, 6, 6, 6, 6],
-        resi_connection="1conv",
         upscale=scale,
-        upsampler="pixelshuffle",
-        window_size=8,
+        **params,
     )
 
     torch_model = torch.load(source, map_location=conversion.map_location)

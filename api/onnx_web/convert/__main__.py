@@ -122,6 +122,12 @@ base_models: Models = {
             "source": "https://github.com/cszn/KAIR/releases/download/v1.0/BSRGAN.pth",
             "scale": 4,
         },
+        {
+            "model": "bsrgan",
+            "name": "upscaling-bsrgan-x2",
+            "source": "https://github.com/cszn/KAIR/releases/download/v1.0/BSRGANx2.pth",
+            "scale": 2,
+        },
     ],
     # download only
     "sources": [

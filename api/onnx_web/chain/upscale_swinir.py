@@ -66,10 +66,12 @@ def upscale_swinir(
     device = job.get_device()
     swinir = load_swinir(server, stage, upscale, device)
 
+    # TODO: add support for other sizes
     tile_size = (64, 64)
     tile_x = source.width // tile_size[0]
     tile_y = source.height // tile_size[1]
 
+    # TODO: add support for grayscale (1-channel) images
     image = np.array(source) / 255.0
     image = image[:, :, [2, 1, 0]].astype(np.float32).transpose((2, 0, 1))
     image = np.expand_dims(image, axis=0)
