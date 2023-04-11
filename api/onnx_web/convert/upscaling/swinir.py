@@ -48,9 +48,16 @@ def convert_upscaling_swinir(
         params["num_heads"] = [6, 6, 6, 6]
         params["upsampler"] = "pixelshuffledirect"
     elif "real" in name:
-        # TODO: add params for large model
-        logger.debug("using SwinIR real params")
-        params["upsampler"] = "nearest+conv"
+        if "large" in name:
+            logger.debug("using SwinIR real large params")
+            params["depths"] = [6] * 9
+            params["embed_dim"] = 240
+            params["num_heads"] = [8] * 9
+            params["upsampler"] = "nearest+conv"
+            params["resi_connection"] = "3conv"
+        else:
+            logger.debug("using SwinIR real params")
+            params["upsampler"] = "nearest+conv"
     elif "gray_dn" in name:
         params["img_size"] = (128, 128)
         params["in_chans"] = 1
@@ -59,11 +66,13 @@ def convert_upscaling_swinir(
         params["img_size"] = (128, 128)
         params["upsampler"] = ""
     elif "gray_jpeg" in name:
+        params["img_range"] = 255.0
         params["img_size"] = (126, 126)
         params["in_chans"] = 1
         params["upsampler"] = ""
         params["window_size"] = 7
     elif "color_jpeg" in name:
+        params["img_range"] = 255.0
         params["img_size"] = (126, 126)
         params["upsampler"] = ""
         params["window_size"] = 7
