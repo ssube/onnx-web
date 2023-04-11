@@ -5,7 +5,6 @@ from typing import Optional
 import numpy as np
 from PIL import Image
 
-from ..models.rrdb import RRDBNet
 from ..onnx import OnnxRRDBNet
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
@@ -21,8 +20,8 @@ def load_resrgan(
     server: ServerContext, params: UpscaleParams, device: DeviceParams, tile=0
 ):
     # must be within load function for patches to take effect
+    # TODO: rewrite and remove
     from realesrgan import RealESRGANer
-    from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 
     model_file = "%s.%s" % (params.upscale_model, params.format)
     model_path = path.join(server.model_path, model_file)
@@ -36,36 +35,13 @@ def load_resrgan(
     if not path.isfile(model_path):
         raise FileNotFoundError("Real ESRGAN model not found at %s" % model_path)
 
-    if params.format == "onnx":
-        # use ONNX acceleration, if available
-        model = OnnxRRDBNet(
-            server,
-            model_file,
-            provider=device.ort_provider(),
-            sess_options=device.sess_options(),
-        )
-    elif params.format == "pth":
-        if TAG_X4_V3 in model_file:
-            # the x4-v3 model needs a different network
-            model = SRVGGNetCompact(
-                num_in_ch=3,
-                num_out_ch=3,
-                num_feat=64,
-                num_conv=32,
-                upscale=4,
-                act_type="prelu",
-            )
-        else:
-            model = RRDBNet(
-                num_in_ch=3,
-                num_out_ch=3,
-                num_feat=64,
-                num_block=23,
-                num_grow_ch=32,
-                scale=params.scale,
-            )
-    else:
-        raise ValueError("unknown platform %s" % params.format)
+    # TODO: swap for regular RRDBNet after rewriting wrapper
+    model = OnnxRRDBNet(
+        server,
+        model_file,
+        provider=device.ort_provider(),
+        sess_options=device.sess_options(),
+    )
 
     dni_weight = None
     if params.upscale_model == TAG_X4_V3 and params.denoise != 1:
@@ -85,7 +61,7 @@ def load_resrgan(
         tile=tile,
         tile_pad=params.tile_pad,
         pre_pad=params.pre_pad,
-        half=params.half,
+        half=False,  # TODO: use server optimizations
     )
 
     server.cache.set("resrgan", cache_key, upsampler)

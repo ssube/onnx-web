@@ -20,6 +20,7 @@ def load_gfpgan(
     device: DeviceParams,
 ):
     # must be within the load function for patch to take effect
+    # TODO: rewrite and remove
     from gfpgan import GFPGANer
 
     face_path = path.join(server.cache_path, "%s.pth" % (upscale.correction_model))

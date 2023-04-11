@@ -24,6 +24,7 @@ def correct_codeformer(
     **kwargs,
 ) -> Image.Image:
     # must be within the load function for patch to take effect
+    # TODO: rewrite and remove
     from codeformer import CodeFormer
 
     source = stage_source or source

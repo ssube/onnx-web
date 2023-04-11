@@ -234,8 +234,7 @@ class UpscaleParams:
         faces=True,
         face_outscale: int = 1,
         face_strength: float = 0.5,
-        format: Literal["onnx", "pth"] = "onnx",
-        half=False,
+        format: Literal["onnx", "pth"] = "onnx",  # TODO: deprecated, remove
         outscale: int = 1,
         scale: int = 4,
         pre_pad: int = 0,
@@ -251,7 +250,6 @@ class UpscaleParams:
         self.face_outscale = face_outscale
         self.face_strength = face_strength
         self.format = format
-        self.half = half
         self.outscale = outscale
         self.pre_pad = pre_pad
         self.scale = scale
@@ -267,7 +265,6 @@ class UpscaleParams:
             face_outscale=self.face_outscale,
             face_strength=self.face_strength,
             format=self.format,
-            half=self.half,
             outscale=scale,
             scale=scale,
             pre_pad=self.pre_pad,
@@ -294,7 +291,6 @@ class UpscaleParams:
             "face_outscale": self.face_outscale,
             "face_strength": self.face_strength,
             "format": self.format,
-            "half": self.half,
             "outscale": self.outscale,
             "pre_pad": self.pre_pad,
             "scale": self.scale,
@@ -311,7 +307,6 @@ class UpscaleParams:
             kwargs.get("face_outscale", self.face_outscale),
             kwargs.get("face_strength", self.face_strength),
             kwargs.get("format", self.format),
-            kwargs.get("half", self.half),
             kwargs.get("outscale", self.outscale),
             kwargs.get("scale", self.scale),
             kwargs.get("pre_pad", self.pre_pad),

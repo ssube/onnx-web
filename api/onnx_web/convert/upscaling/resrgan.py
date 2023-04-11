@@ -5,6 +5,7 @@ import torch
 from torch.onnx import export
 
 from ...models.rrdb import RRDBNet
+from ...models.srvgg import SRVGGNetCompact
 from ..utils import ConversionContext, ModelDict
 
 logger = getLogger(__name__)
@@ -18,8 +19,6 @@ def convert_upscale_resrgan(
     model: ModelDict,
     source: str,
 ):
-    from realesrgan.archs.srvgg_arch import SRVGGNetCompact
-
     name = model.get("name")
     source = source or model.get("source")
     scale = model.get("scale")
