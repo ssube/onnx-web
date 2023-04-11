@@ -33,7 +33,7 @@ def source_txt2img(
 
     if "stage_source" in kwargs:
         logger.warn(
-            "a source image was passed to a txt2img stage, but will be discarded"
+            "a source image was passed to a txt2img stage, and will be discarded"
         )
 
     latents = get_latents_from_seed(params.seed, size)

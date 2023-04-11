@@ -9,7 +9,9 @@ from .persist_s3 import persist_s3
 from .reduce_crop import reduce_crop
 from .reduce_thumbnail import reduce_thumbnail
 from .source_noise import source_noise
+from .source_s3 import source_s3
 from .source_txt2img import source_txt2img
+from .source_url import source_url
 from .upscale_bsrgan import upscale_bsrgan
 from .upscale_outpaint import upscale_outpaint
 from .upscale_resrgan import upscale_resrgan
@@ -27,7 +29,9 @@ CHAIN_STAGES = {
     "reduce-crop": reduce_crop,
     "reduce-thumbnail": reduce_thumbnail,
     "source-noise": source_noise,
+    "source-s3": source_s3,
     "source-txt2img": source_txt2img,
+    "source-url": source_url,
     "upscale-bsrgan": upscale_bsrgan,
     "upscale-outpaint": upscale_outpaint,
     "upscale-resrgan": upscale_resrgan,
