@@ -16,7 +16,7 @@
     "@types/lodash": "^4.14.192",
     "@types/node": "^18.15.11",
     "browser-bunyan": "^1.8.0",
-    "i18next": "^22.4.12",
+    "i18next": "^22.4.14",
     "i18next-browser-languagedetector": "^7.0.1",
     "lodash": "^4.17.21",
     "noicejs": "^5.0.0-3",
@@ -25,9 +25,9 @@
     "react-i18next": "^12.2.0",
     "react-query": "^3.39.2",
     "react-use": "^17.4.0",
-    "semver": "^7.3.8",
+    "semver": "^7.4.0",
     "tslib": "^2.5.0",
-    "zustand": "^4.3.6"
+    "zustand": "^4.3.7"
   },
   "devDependencies": {
     "@mochajs/multi-reporter": "^1.1.0",
