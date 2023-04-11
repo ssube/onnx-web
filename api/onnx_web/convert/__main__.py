@@ -117,6 +117,12 @@ base_models: Models = {
             "scale": 4,
         },
         {
+            "model": "swinir",
+            "name": "upscaling-swinir-real-x4",
+            "source": "https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/003_realSR_BSRGAN_DFOWMFC_s64w8_SwinIR-L_x4_GAN.pth",
+            "scale": 4,
+        },
+        {
             "model": "bsrgan",
             "name": "upscaling-bsrgan-x4",
             "source": "https://github.com/cszn/KAIR/releases/download/v1.0/BSRGAN.pth",
