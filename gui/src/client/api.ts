@@ -32,6 +32,11 @@ export interface ModelParams {
    * Use the long prompt weighting pipeline.
    */
   lpw: boolean;
+
+  /**
+   * ControlNet to be used.
+   */
+  control: string;
 }
 
 /**
@@ -191,7 +196,7 @@ export interface ReadyResponse {
 
 export interface NetworkModel {
   name: string;
-  type: 'inversion' | 'lora';
+  type: 'control' | 'inversion' | 'lora';
   // TODO: add token
   // TODO: add layer/token count
 }
@@ -392,6 +397,7 @@ export function appendModelToURL(url: URL, params: ModelParams) {
   url.searchParams.append('upscaling', params.upscaling);
   url.searchParams.append('correction', params.correction);
   url.searchParams.append('lpw', String(params.lpw));
+  url.searchParams.append('control', params.control);
 }
 
 /**

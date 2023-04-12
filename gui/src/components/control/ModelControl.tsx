@@ -116,6 +116,20 @@ export function ModelControl() {
           });
         }}
       />
+      <QueryMenu
+        id='control'
+        labelKey='model'
+        name={t('modelType.control')}
+        query={{
+          result: models,
+          selector: (result) => result.networks.filter((network) => network.type === 'control').map((network) => network.name),
+        }}
+        onSelect={(control) => {
+          setModel({
+            control,
+          });
+        }}
+      />
     </Stack>
     <Stack direction='row' spacing={2}>
       <FormControlLabel

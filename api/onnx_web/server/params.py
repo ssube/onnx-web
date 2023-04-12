@@ -42,6 +42,7 @@ def pipeline_from_request(
                 device = platform
 
     # pipeline stuff
+    control = get_not_empty(request.args, "control", get_config_value("control"))
     lpw = get_not_empty(request.args, "lpw", "false") == "true"
     model = get_not_empty(request.args, "model", get_config_value("model"))
     model_path = get_model_path(server, model)
@@ -132,6 +133,7 @@ def pipeline_from_request(
         lpw=lpw,
         negative_prompt=negative_prompt,
         batch=batch,
+        control=control,
     )
     size = Size(width, height)
     return (device, params, size)

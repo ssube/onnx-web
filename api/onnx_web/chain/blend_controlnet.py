@@ -28,7 +28,7 @@ def blend_controlnet(
     params = params.with_args(**kwargs)
     source = stage_source or source
     logger.info(
-        "blending image using controlnet, %s steps: %s", params.steps, params.prompt
+        "blending image using ControlNet, %s steps: %s", params.steps, params.prompt
     )
 
     pipe = load_pipeline(

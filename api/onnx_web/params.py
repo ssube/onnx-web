@@ -160,6 +160,18 @@ class DeviceParams:
 
 
 class ImageParams:
+    model: str
+    scheduler: str
+    prompt: str
+    cfg: float
+    steps: int
+    seed: int
+    negative_prompt: Optional[str]
+    lpw: bool
+    eta: float
+    batch: int
+    control: Optional[str]
+
     def __init__(
         self,
         model: str,
@@ -172,6 +184,7 @@ class ImageParams:
         lpw: bool = False,
         eta: float = 0.0,
         batch: int = 1,
+        control: Optional[str] = None,
     ) -> None:
         self.model = model
         self.scheduler = scheduler
@@ -183,6 +196,7 @@ class ImageParams:
         self.lpw = lpw or False
         self.eta = eta
         self.batch = batch
+        self.control = control
 
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
@@ -196,6 +210,7 @@ class ImageParams:
             "lpw": self.lpw,
             "eta": self.eta,
             "batch": self.batch,
+            "control": self.control,
         }
 
     def with_args(self, **kwargs):
@@ -210,6 +225,7 @@ class ImageParams:
             kwargs.get("lpw", self.lpw),
             kwargs.get("eta", self.eta),
             kwargs.get("batch", self.batch),
+            kwargs.get("control", self.control),
         )
 
 

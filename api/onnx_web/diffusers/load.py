@@ -116,13 +116,12 @@ def load_pipeline(
     scheduler_name: str,
     device: DeviceParams,
     lpw: bool,
+    control: Optional[str] = None,
     inversions: Optional[List[Tuple[str, float]]] = None,
     loras: Optional[List[Tuple[str, float]]] = None,
 ):
     inversions = inversions or []
     loras = loras or []
-
-    controlnet = "canny"  # TODO; from params
 
     torch_dtype = (
         torch.float16 if "torch-fp16" in server.optimizations else torch.float32
@@ -186,6 +185,8 @@ def load_pipeline(
         }
 
         text_encoder = None
+
+        # Textual Inversion blending
         if inversions is not None and len(inversions) > 0:
             logger.debug("blending Textual Inversions from %s", inversions)
             inversion_names, inversion_weights = zip(*inversions)
@@ -225,7 +226,7 @@ def load_pipeline(
                     )
                 )
 
-        # test LoRA blending
+        # LoRA blending
         if loras is not None and len(loras) > 0:
             lora_names, lora_weights = zip(*loras)
             lora_models = [
@@ -278,8 +279,12 @@ def load_pipeline(
                 )
             )
 
-        if controlnet is not None:
-            components["controlnet"] = OnnxRuntimeModel.from_pretrained(controlnet)
+        if control is not None:
+            components["controlnet"] = OnnxRuntimeModel(OnnxRuntimeModel.load_model(
+                control,
+                provider=device.ort_provider(),
+                sess_options=device.sess_options(),
+            ))
 
         pipe = pipeline.from_pretrained(
             model,
@@ -360,7 +365,7 @@ class UNetWrapper(object):
         self.server = server
         self.wrapped = wrapped
 
-    def __call__(self, sample=None, timestep=None, encoder_hidden_states=None):
+    def __call__(self, sample=None, timestep=None, encoder_hidden_states=None, **kwargs):
         global timestep_dtype
         timestep_dtype = timestep.dtype
 
@@ -382,6 +387,7 @@ class UNetWrapper(object):
             sample=sample,
             timestep=timestep,
             encoder_hidden_states=encoder_hidden_states,
+            **kwargs,
         )
 
     def __getattr__(self, attr):
@@ -393,7 +399,7 @@ class VAEWrapper(object):
         self.server = server
         self.wrapped = wrapped
 
-    def __call__(self, latent_sample=None):
+    def __call__(self, latent_sample=None, **kwargs):
         global timestep_dtype
 
         logger.trace("VAE parameter types: %s", latent_sample.dtype)
@@ -401,7 +407,7 @@ class VAEWrapper(object):
             logger.info("converting VAE sample dtype")
             latent_sample = latent_sample.astype(timestep_dtype)
 
-        return self.wrapped(latent_sample=latent_sample)
+        return self.wrapped(latent_sample=latent_sample, **kwargs)
 
     def __getattr__(self, attr):
         return getattr(self.wrapped, attr)

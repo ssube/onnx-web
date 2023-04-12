@@ -500,11 +500,12 @@ export function createStateSlices(server: ServerParams) {
 
   const createModelSlice: Slice<ModelSlice> = (set) => ({
     model: {
+      control: server.control.default,
+      correction: server.correction.default,
+      lpw: false,
       model: server.model.default,
       platform: server.platform.default,
       upscaling: server.upscaling.default,
-      correction: server.correction.default,
-      lpw: false,
     },
     setModel(params) {
       set((prev) => ({

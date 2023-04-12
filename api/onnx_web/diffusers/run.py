@@ -239,8 +239,9 @@ def run_img2img_pipeline(
         params.scheduler,
         job.get_device(),
         params.lpw,
-        inversions,
-        loras,
+        control=params.control,
+        inversions=inversions,
+        loras=loras,
     )
     progress = job.get_progress_callback()
     if params.lpw:
