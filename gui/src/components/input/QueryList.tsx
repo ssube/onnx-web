@@ -3,7 +3,7 @@ import { Alert, FormControl, FormLabel, InputLabel, LinearProgress, MenuItem, Se
 import * as React from 'react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseQueryResult } from 'react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 
 export interface QueryListComplete {
   result: UseQueryResult<Array<string>>;
@@ -91,10 +91,6 @@ export function QueryList<T>(props: QueryListProps<T>) {
       <FormLabel id={labelID}>{props.name}</FormLabel>
       <LinearProgress />
     </FormControl>;
-  }
-
-  if (result.status === 'idle') {
-    return <Typography>{t('input.list.idle')}</Typography>;
   }
 
   // else: success

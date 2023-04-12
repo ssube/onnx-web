@@ -3,7 +3,7 @@ import { Checkbox, FormControlLabel, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
@@ -21,10 +21,10 @@ export function ModelControl() {
   const setModel = useStore(state, (s) => s.setModel);
   const { t } = useTranslation();
 
-  const models = useQuery('models', async () => client.models(), {
+  const models = useQuery(['models'], async () => client.models(), {
     staleTime: STALE_TIME,
   });
-  const platforms = useQuery('platforms', async () => client.platforms(), {
+  const platforms = useQuery(['platforms'], async () => client.platforms(), {
     staleTime: STALE_TIME,
   });
 

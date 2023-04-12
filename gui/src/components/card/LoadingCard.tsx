@@ -4,7 +4,7 @@ import { Stack } from '@mui/system';
 import * as React from 'react';
 import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
 import { ImageResponse } from '../../client/api.js';
@@ -34,7 +34,7 @@ export function LoadingCard(props: LoadingCardProps) {
   const { t } = useTranslation();
 
   const cancel = useMutation(() => client.cancel(image.outputs[index].key));
-  const ready = useQuery(`ready-${image.outputs[index].key}`, () => client.ready(image.outputs[index].key), {
+  const ready = useQuery([`ready-${image.outputs[index].key}`], () => client.ready(image.outputs[index].key), {
     // data will always be ready without this, even if the API says its not
     cacheTime: 0,
     refetchInterval: POLL_TIME,

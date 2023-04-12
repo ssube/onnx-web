@@ -3,7 +3,7 @@ import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
 import { ClientContext, ConfigContext, StateContext } from '../../state.js';
@@ -25,7 +25,7 @@ export function Txt2Img() {
   const client = mustExist(useContext(ClientContext));
   const query = useQueryClient();
   const generate = useMutation(generateImage, {
-    onSuccess: () => query.invalidateQueries({ queryKey: 'ready' }),
+    onSuccess: () => query.invalidateQueries([ 'ready' ]),
   });
 
   const state = mustExist(useContext(StateContext));

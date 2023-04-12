@@ -3,7 +3,7 @@ import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
 import { IMAGE_FILTER } from '../../config.js';
@@ -28,7 +28,7 @@ export function Blend() {
   const client = mustExist(useContext(ClientContext));
   const query = useQueryClient();
   const upload = useMutation(uploadSource, {
-    onSuccess: () => query.invalidateQueries({ queryKey: 'ready' }),
+    onSuccess: () => query.invalidateQueries(['ready']),
   });
 
   const state = mustExist(useContext(StateContext));

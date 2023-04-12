@@ -5,7 +5,7 @@ import { Stack } from '@mui/system';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
 import { ImageResponse, ReadyResponse, RetryParams } from '../../client/api.js';

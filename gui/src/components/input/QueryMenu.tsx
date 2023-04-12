@@ -3,7 +3,7 @@ import { KeyboardArrowDown } from '@mui/icons-material';
 import { Alert, Box, Button, FormControl, FormLabel, LinearProgress, Menu, MenuItem, Typography } from '@mui/material';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseQueryResult } from 'react-query';
+import { UseQueryResult } from '@tanstack/react-query';
 
 export interface QueryMenuComplete {
   result: UseQueryResult<Array<string>>;
@@ -89,10 +89,6 @@ export function QueryMenu<T>(props: QueryMenuProps<T>) {
       <FormLabel id={labelID}>{props.name}</FormLabel>
       <LinearProgress />
     </FormControl>;
-  }
-
-  if (result.status === 'idle') {
-    return <Typography>{t('input.list.idle')}</Typography>;
   }
 
   // else: success

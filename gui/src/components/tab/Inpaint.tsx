@@ -3,7 +3,7 @@ import { Alert, Box, Button, FormControl, FormControlLabel, InputLabel, MenuItem
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
 import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
@@ -20,10 +20,10 @@ export function Inpaint() {
   const { params } = mustExist(useContext(ConfigContext));
   const client = mustExist(useContext(ClientContext));
 
-  const masks = useQuery('masks', async () => client.masks(), {
+  const masks = useQuery(['masks'], async () => client.masks(), {
     staleTime: STALE_TIME,
   });
-  const noises = useQuery('noises', async () => client.noises(), {
+  const noises = useQuery(['noises'], async () => client.noises(), {
     staleTime: STALE_TIME,
   });
 
@@ -77,7 +77,7 @@ export function Inpaint() {
 
   const query = useQueryClient();
   const upload = useMutation(uploadSource, {
-    onSuccess: () => query.invalidateQueries({ queryKey: 'ready' }),
+    onSuccess: () => query.invalidateQueries([ 'ready' ]),
   });
 
   function renderBanner() {

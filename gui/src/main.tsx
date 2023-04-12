@@ -5,7 +5,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { satisfies } from 'semver';
 import { createStore } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';

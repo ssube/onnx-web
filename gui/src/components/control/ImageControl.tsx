@@ -4,7 +4,7 @@ import { Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
 import { BaseImgParams } from '../../client/api.js';
@@ -30,7 +30,7 @@ export function ImageControl(props: ImageControlProps) {
   const { t } = useTranslation();
 
   const client = mustExist(useContext(ClientContext));
-  const schedulers = useQuery('schedulers', async () => client.schedulers(), {
+  const schedulers = useQuery(['schedulers'], async () => client.schedulers(), {
     staleTime: STALE_TIME,
   });
 
