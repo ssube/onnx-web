@@ -167,7 +167,9 @@ def convert_diffusion_diffusers(
     del pipeline.unet
 
     # CNet
-    pipe_cnet = UNet2DConditionModel_CNet.from_pretrained(source, subfolder="unet")
+    pipe_cnet = UNet2DConditionModel_CNet.from_pretrained(source, subfolder="unet").to(
+        device=device, dtype=dtype
+    )
 
     cnet_path = output_path / "cnet" / ONNX_MODEL
     onnx_export(

@@ -86,7 +86,6 @@ class OnnxStableDiffusionControlNetPipeline(DiffusionPipeline):
             controlnet=controlnet,
             scheduler=scheduler,
         )
-        self.register_to_config(requires_safety_checker=False)
 
     def _default_height_width(self, height, width, image):
         if isinstance(image, list):
@@ -486,6 +485,4 @@ class OnnxStableDiffusionControlNetPipeline(DiffusionPipeline):
         if not return_dict:
             return (image, None)
 
-        return StableDiffusionPipelineOutput(
-            images=image, nsfw_content_detected=None
-        )
+        return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=None)

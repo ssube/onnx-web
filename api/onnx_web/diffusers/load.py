@@ -122,6 +122,8 @@ def load_pipeline(
     inversions = inversions or []
     loras = loras or []
 
+    controlnet = "canny"  # TODO; from params
+
     torch_dtype = (
         torch.float16 if "torch-fp16" in server.optimizations else torch.float32
     )
@@ -275,6 +277,9 @@ def load_pipeline(
                     sess_options=unet_opts,
                 )
             )
+
+        if controlnet is not None:
+            components["controlnet"] = OnnxRuntimeModel.from_pretrained(controlnet)
 
         pipe = pipeline.from_pretrained(
             model,
