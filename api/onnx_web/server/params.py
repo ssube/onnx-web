@@ -20,6 +20,7 @@ from .load import (
     get_config_value,
     get_correction_models,
     get_highres_methods,
+    get_network_models,
     get_upscaling_models,
 )
 from .utils import get_model_path
@@ -42,13 +43,13 @@ def pipeline_from_request(
                 device = platform
 
     # pipeline stuff
-    control = get_not_empty(request.args, "control", get_config_value("control"))
     lpw = get_not_empty(request.args, "lpw", "false") == "true"
     model = get_not_empty(request.args, "model", get_config_value("model"))
     model_path = get_model_path(server, model)
     scheduler = get_from_list(
         request.args, "scheduler", list(pipeline_schedulers.keys())
     )
+    control = get_from_list(request.args, "control", get_network_models())
 
     if scheduler is None:
         scheduler = get_config_value("scheduler")

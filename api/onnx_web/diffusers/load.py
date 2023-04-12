@@ -280,11 +280,13 @@ def load_pipeline(
             )
 
         if control is not None:
-            components["controlnet"] = OnnxRuntimeModel(OnnxRuntimeModel.load_model(
-                control,
-                provider=device.ort_provider(),
-                sess_options=device.sess_options(),
-            ))
+            components["controlnet"] = OnnxRuntimeModel(
+                OnnxRuntimeModel.load_model(
+                    path.join(server.model_path, "control", f"{control}.onnx"),
+                    provider=device.ort_provider(),
+                    sess_options=device.sess_options(),
+                )
+            )
 
         pipe = pipeline.from_pretrained(
             model,
