@@ -171,6 +171,10 @@ def convert_diffusion_diffusers(
         device=device, dtype=dtype
     )
 
+    if is_torch_2_0:
+        pipe_cnet.set_attn_processor(CrossAttnProcessor())
+
+
     cnet_path = output_path / "cnet" / ONNX_MODEL
     onnx_export(
         pipe_cnet,
