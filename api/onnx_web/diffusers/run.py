@@ -329,7 +329,13 @@ def run_inpaint_pipeline(
     )
 
     image = run_upscale_correction(
-        job, server, stage, params, image, upscale=upscale, callback=progress
+        job,
+        server,
+        stage,
+        params,
+        image,
+        upscale=upscale,
+        callback=progress,
     )
 
     dest = save_image(server, outputs[0], image)

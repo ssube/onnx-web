@@ -240,6 +240,13 @@ def load_models(server: ServerContext) -> None:
             "stable-diffusion-*",
         ],
     )
+    diffusion_models.extend(
+        list_model_globs(
+            server,
+            ["*"],
+            base_path=path.join(server.model_path, "diffusion"),
+        )
+    )
     logger.debug("loaded diffusion models from disk: %s", diffusion_models)
 
     correction_models = list_model_globs(
@@ -247,6 +254,13 @@ def load_models(server: ServerContext) -> None:
         [
             "correction-*",
         ],
+    )
+    correction_models.extend(
+        list_model_globs(
+            server,
+            ["*"],
+            base_path=path.join(server.model_path, "correction"),
+        )
     )
     logger.debug("loaded correction models from disk: %s", correction_models)
 
@@ -256,9 +270,26 @@ def load_models(server: ServerContext) -> None:
             "upscaling-*",
         ],
     )
+    upscaling_models.extend(
+        list_model_globs(
+            server,
+            ["*"],
+            base_path=path.join(server.model_path, "upscaling"),
+        )
+    )
     logger.debug("loaded upscaling models from disk: %s", upscaling_models)
 
     # additional networks
+    control_models = list_model_globs(
+        server,
+        [
+            "*",
+        ],
+        base_path=path.join(server.model_path, "control"),
+    )
+    logger.debug("loaded ControlNet models from disk: %s", control_models)
+    network_models.extend([NetworkModel(model, "control") for model in control_models])
+
     inversion_models = list_model_globs(
         server,
         [

@@ -1,10 +1,11 @@
 from logging import getLogger
-from typing import Optional
+from typing import List, Optional
 
 from PIL import Image
 
 from ..chain import (
     ChainPipeline,
+    PipelineStage,
     correct_codeformer,
     correct_gfpgan,
     upscale_bsrgan,
@@ -28,6 +29,8 @@ def run_upscale_correction(
     *,
     upscale: UpscaleParams,
     callback: Optional[ProgressCallback] = None,
+    pre_stages: List[PipelineStage] = None,
+    post_stages: List[PipelineStage] = None,
 ) -> Image.Image:
     """
     This is a convenience method for a chain pipeline that will run upscaling and
@@ -40,6 +43,9 @@ def run_upscale_correction(
     )
 
     chain = ChainPipeline()
+    if pre_stages is not None:
+        for stage, params in pre_stages:
+            chain.append((stage, params))
 
     upscale_stage = None
     if upscale.scale > 1:
@@ -92,6 +98,10 @@ def run_upscale_correction(
         chain.append(correct_stage)
     else:
         logger.warn("unknown upscaling order: %s", upscale.upscale_order)
+
+    if post_stages is not None:
+        for stage, params in post_stages:
+            chain.append((stage, params))
 
     return chain(
         job,

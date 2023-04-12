@@ -9,11 +9,21 @@ import requests
 import safetensors
 import torch
 from huggingface_hub.utils.tqdm import tqdm
+from onnx import load_model, save_model
+from onnx.shape_inference import infer_shapes_path
+from onnxruntime.transformers.float16 import convert_float_to_float16
+from packaging import version
+from torch.onnx import export
 from yaml import safe_load
 
+from ..constants import ONNX_WEIGHTS
 from ..server import ServerContext
 
 logger = getLogger(__name__)
+
+is_torch_2_0 = version.parse(
+    version.parse(torch.__version__).base_version
+) >= version.parse("2.0")
 
 
 ModelDict = Dict[str, Union[str, int]]
@@ -263,3 +273,50 @@ def load_tensor(name: str, map_location=None) -> Optional[Dict]:
         checkpoint = checkpoint["state_dict"]
 
     return checkpoint
+
+
+def onnx_export(
+    model,
+    model_args: tuple,
+    output_path: Path,
+    ordered_input_names,
+    output_names,
+    dynamic_axes,
+    opset,
+    half=False,
+    external_data=False,
+):
+    """
+    From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
+    """
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_file = output_path.absolute().as_posix()
+
+    export(
+        model,
+        model_args,
+        f=output_file,
+        input_names=ordered_input_names,
+        output_names=output_names,
+        dynamic_axes=dynamic_axes,
+        do_constant_folding=True,
+        opset_version=opset,
+    )
+
+    if half:
+        logger.info("converting model to fp16 internally: %s", output_file)
+        infer_shapes_path(output_file)
+        base_model = load_model(output_file)
+        opt_model = convert_float_to_float16(
+            base_model,
+            disable_shape_infer=True,
+            keep_io_types=True,
+            force_fp16_initializers=True,
+        )
+        save_model(
+            opt_model,
+            f"{output_file}",
+            save_as_external_data=external_data,
+            all_tensors_to_one_file=True,
+            location=ONNX_WEIGHTS,
+        )

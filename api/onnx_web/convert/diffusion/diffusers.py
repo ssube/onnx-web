@@ -4,7 +4,7 @@
 #
 # Originally by https://github.com/huggingface
 # Those portions *are not* covered by the MIT licensed used for the rest of the onnx-web project.
-#
+# ...diffusers.pipelines.pipeline_onnx_stable_diffusion_upscale
 # HuggingFace code used under the Apache License, Version 2.0
 #   https://github.com/huggingface/diffusers/blob/main/LICENSE
 ###
@@ -24,70 +24,14 @@ from diffusers import (
 )
 from diffusers.models.cross_attention import CrossAttnProcessor
 from onnx import load_model, save_model
-from onnx.shape_inference import infer_shapes_path
-from onnxruntime.transformers.float16 import convert_float_to_float16
-from packaging import version
-from torch.onnx import export
 
 from ...constants import ONNX_MODEL, ONNX_WEIGHTS
 from ...diffusers.load import optimize_pipeline
-from ...diffusers.pipeline_onnx_stable_diffusion_upscale import (
-    OnnxStableDiffusionUpscalePipeline,
-)
-from ..utils import ConversionContext
+from ...diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
+from ...models.cnet import UNet2DConditionModel_CNet
+from ..utils import ConversionContext, is_torch_2_0, onnx_export
 
 logger = getLogger(__name__)
-
-is_torch_2_0 = version.parse(
-    version.parse(torch.__version__).base_version
-) >= version.parse("2.0")
-
-
-def onnx_export(
-    model,
-    model_args: tuple,
-    output_path: Path,
-    ordered_input_names,
-    output_names,
-    dynamic_axes,
-    opset,
-    half=False,
-    external_data=False,
-):
-    """
-    From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
-    """
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_file = output_path.absolute().as_posix()
-
-    export(
-        model,
-        model_args,
-        f=output_file,
-        input_names=ordered_input_names,
-        output_names=output_names,
-        dynamic_axes=dynamic_axes,
-        do_constant_folding=True,
-        opset_version=opset,
-    )
-
-    if half:
-        logger.info("converting model to fp16 internally: %s", output_file)
-        infer_shapes_path(output_file)
-        base_model = load_model(output_file)
-        opt_model = convert_float_to_float16(
-            base_model,
-            disable_shape_infer=True,
-            keep_io_types=True,
-            force_fp16_initializers=True,
-        )
-        save_model(
-            opt_model,
-            f"{output_file}",
-            save_as_external_data=external_data,
-            all_tensors_to_one_file=True,
-            location=ONNX_WEIGHTS,
-        )
 
 
 @torch.no_grad()
@@ -104,6 +48,7 @@ def convert_diffusion_diffusers(
     single_vae = model.get("single_vae")
     replace_vae = model.get("vae")
 
+    device = conversion.training_device
     dtype = conversion.torch_dtype()
     logger.debug("using Torch dtype %s for pipeline", dtype)
 
@@ -119,6 +64,7 @@ def convert_diffusion_diffusers(
         logger.info("converting model with single VAE")
 
     if path.exists(dest_path) and path.exists(model_index):
+        # TODO: check if CNet has been converted
         logger.info("ONNX model already exists, skipping")
         return (False, dest_path)
 
@@ -126,7 +72,7 @@ def convert_diffusion_diffusers(
         source,
         torch_dtype=dtype,
         use_auth_token=conversion.token,
-    ).to(conversion.training_device)
+    ).to(device)
     output_path = Path(dest_path)
 
     optimize_pipeline(conversion, pipeline)
@@ -145,13 +91,11 @@ def convert_diffusion_diffusers(
         pipeline.text_encoder,
         # casting to torch.int32 until the CLIP fix is released: https://github.com/huggingface/transformers/pull/18515/files
         model_args=(
-            text_input.input_ids.to(
-                device=conversion.training_device, dtype=torch.int32
-            ),
+            text_input.input_ids.to(device=device, dtype=torch.int32),
             None,  # attention mask
             None,  # position ids
             None,  # output attentions
-            torch.tensor(True).to(device=conversion.training_device, dtype=torch.bool),
+            torch.tensor(True).to(device=device, dtype=torch.bool),
         ),
         output_path=output_path / "text_encoder" / ONNX_MODEL,
         ordered_input_names=["input_ids"],
@@ -169,14 +113,10 @@ def convert_diffusion_diffusers(
     # UNET
     if single_vae:
         unet_inputs = ["sample", "timestep", "encoder_hidden_states", "class_labels"]
-        unet_scale = torch.tensor(4).to(
-            device=conversion.training_device, dtype=torch.long
-        )
+        unet_scale = torch.tensor(4).to(device=device, dtype=torch.long)
     else:
         unet_inputs = ["sample", "timestep", "encoder_hidden_states", "return_dict"]
-        unet_scale = torch.tensor(False).to(
-            device=conversion.training_device, dtype=torch.bool
-        )
+        unet_scale = torch.tensor(False).to(device=device, dtype=torch.bool)
 
     if is_torch_2_0:
         pipeline.unet.set_attn_processor(CrossAttnProcessor())
@@ -188,12 +128,10 @@ def convert_diffusion_diffusers(
         pipeline.unet,
         model_args=(
             torch.randn(2, unet_in_channels, unet_sample_size, unet_sample_size).to(
-                device=conversion.training_device, dtype=dtype
+                device=device, dtype=dtype
             ),
-            torch.randn(2).to(device=conversion.training_device, dtype=dtype),
-            torch.randn(2, num_tokens, text_hidden_size).to(
-                device=conversion.training_device, dtype=dtype
-            ),
+            torch.randn(2).to(device=device, dtype=dtype),
+            torch.randn(2, num_tokens, text_hidden_size).to(device=device, dtype=dtype),
             unet_scale,
         ),
         output_path=unet_path,
@@ -212,9 +150,11 @@ def convert_diffusion_diffusers(
     unet_model_path = str(unet_path.absolute().as_posix())
     unet_dir = path.dirname(unet_model_path)
     unet = load_model(unet_model_path)
+
     # clean up existing tensor files
     rmtree(unet_dir)
     mkdir(unet_dir)
+
     # collate external tensor files into one
     save_model(
         unet,
@@ -226,6 +166,124 @@ def convert_diffusion_diffusers(
     )
     del pipeline.unet
 
+    # CNet
+    pipe_cnet = UNet2DConditionModel_CNet.from_pretrained(source, subfolder="unet")
+
+    cnet_path = output_path / "cnet" / ONNX_MODEL
+    onnx_export(
+        pipe_cnet,
+        model_args=(
+            torch.randn(2, unet_in_channels, unet_sample_size, unet_sample_size).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2).to(device=device, dtype=dtype),
+            torch.randn(2, num_tokens, text_hidden_size).to(device=device, dtype=dtype),
+            torch.randn(2, 320, unet_sample_size, unet_sample_size).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2, 320, unet_sample_size, unet_sample_size).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2, 320, unet_sample_size, unet_sample_size).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2, 320, unet_sample_size // 2, unet_sample_size // 2).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2, 640, unet_sample_size // 2, unet_sample_size // 2).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2, 640, unet_sample_size // 2, unet_sample_size // 2).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2, 640, unet_sample_size // 4, unet_sample_size // 4).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2, 1280, unet_sample_size // 4, unet_sample_size // 4).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2, 1280, unet_sample_size // 4, unet_sample_size // 4).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2, 1280, unet_sample_size // 8, unet_sample_size // 8).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2, 1280, unet_sample_size // 8, unet_sample_size // 8).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2, 1280, unet_sample_size // 8, unet_sample_size // 8).to(
+                device=device, dtype=dtype
+            ),
+            torch.randn(2, 1280, unet_sample_size // 8, unet_sample_size // 8).to(
+                device=device, dtype=dtype
+            ),
+            False,
+        ),
+        output_path=cnet_path,
+        ordered_input_names=[
+            "sample",
+            "timestep",
+            "encoder_hidden_states",
+            "down_block_0",
+            "down_block_1",
+            "down_block_2",
+            "down_block_3",
+            "down_block_4",
+            "down_block_5",
+            "down_block_6",
+            "down_block_7",
+            "down_block_8",
+            "down_block_9",
+            "down_block_10",
+            "down_block_11",
+            "mid_block_additional_residual",
+            "return_dict",
+        ],
+        output_names=[
+            "out_sample"
+        ],  # has to be different from "sample" for correct tracing
+        dynamic_axes={
+            "sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
+            "timestep": {0: "batch"},
+            "encoder_hidden_states": {0: "batch", 1: "sequence"},
+            "down_block_0": {0: "batch", 2: "height", 3: "width"},
+            "down_block_1": {0: "batch", 2: "height", 3: "width"},
+            "down_block_2": {0: "batch", 2: "height", 3: "width"},
+            "down_block_3": {0: "batch", 2: "height2", 3: "width2"},
+            "down_block_4": {0: "batch", 2: "height2", 3: "width2"},
+            "down_block_5": {0: "batch", 2: "height2", 3: "width2"},
+            "down_block_6": {0: "batch", 2: "height4", 3: "width4"},
+            "down_block_7": {0: "batch", 2: "height4", 3: "width4"},
+            "down_block_8": {0: "batch", 2: "height4", 3: "width4"},
+            "down_block_9": {0: "batch", 2: "height8", 3: "width8"},
+            "down_block_10": {0: "batch", 2: "height8", 3: "width8"},
+            "down_block_11": {0: "batch", 2: "height8", 3: "width8"},
+            "mid_block_additional_residual": {0: "batch", 2: "height8", 3: "width8"},
+        },
+        opset=conversion.opset,
+        half=conversion.half,
+        external_data=True,  # UNet is > 2GB, so the weights need to be split
+    )
+    cnet_model_path = str(cnet_path.absolute().as_posix())
+    cnet_dir = path.dirname(cnet_model_path)
+    cnet = load_model(cnet_model_path)
+
+    # clean up existing tensor files
+    rmtree(cnet_dir)
+    mkdir(cnet_dir)
+
+    # collate external tensor files into one
+    save_model(
+        cnet,
+        cnet_model_path,
+        save_as_external_data=True,
+        all_tensors_to_one_file=True,
+        location=ONNX_WEIGHTS,
+        convert_attribute=False,
+    )
+    del pipe_cnet
+
+    # VAE
     if replace_vae is not None:
         logger.debug("loading custom VAE: %s", replace_vae)
         vae = AutoencoderKL.from_pretrained(replace_vae)
@@ -244,7 +302,7 @@ def convert_diffusion_diffusers(
             model_args=(
                 torch.randn(
                     1, vae_latent_channels, unet_sample_size, unet_sample_size
-                ).to(device=conversion.training_device, dtype=dtype),
+                ).to(device=device, dtype=dtype),
                 False,
             ),
             output_path=output_path / "vae" / ONNX_MODEL,
@@ -269,7 +327,7 @@ def convert_diffusion_diffusers(
             vae_encoder,
             model_args=(
                 torch.randn(1, vae_in_channels, vae_sample_size, vae_sample_size).to(
-                    device=conversion.training_device, dtype=dtype
+                    device=device, dtype=dtype
                 ),
                 False,
             ),
@@ -293,7 +351,7 @@ def convert_diffusion_diffusers(
             model_args=(
                 torch.randn(
                     1, vae_latent_channels, unet_sample_size, unet_sample_size
-                ).to(device=conversion.training_device, dtype=dtype),
+                ).to(device=device, dtype=dtype),
                 False,
             ),
             output_path=output_path / "vae_decoder" / ONNX_MODEL,

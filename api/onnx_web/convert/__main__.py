@@ -12,6 +12,8 @@ from onnx import load_model, save_model
 from transformers import CLIPTokenizer
 from yaml import safe_load
 
+from onnx_web.convert.diffusion.control import convert_diffusion_control
+
 from ..constants import ONNX_MODEL, ONNX_WEIGHTS
 from .correction.gfpgan import convert_correction_gfpgan
 from .diffusion.diffusers import convert_diffusion_diffusers
@@ -258,6 +260,19 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                 source = network["source"]
 
                 try:
+                    if network_type == "control":
+                        dest = fetch_model(
+                            conversion,
+                            name,
+                            source,
+                            format=network_format,
+                        )
+
+                        convert_diffusion_control(
+                            conversion,
+                            network,
+                            dest,
+                        )
                     if network_type == "inversion" and network_model == "concept":
                         dest = fetch_model(
                             conversion,

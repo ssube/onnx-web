@@ -9,34 +9,18 @@ from logging import getLogger
 from typing import Any, Callable, List, Optional, Union
 
 import numpy as np
-import torch
-
 import PIL
-
-from diffusers import DDPMScheduler, OnnxRuntimeModel, StableDiffusionUpscalePipeline
+import torch
 from diffusers.pipeline_utils import ImagePipelineOutput
-
+from diffusers.pipelines.onnx_utils import ORT_TO_NP_TYPE, OnnxRuntimeModel
+from diffusers.pipelines.stable_diffusion import StableDiffusionUpscalePipeline
+from diffusers.schedulers import DDPMScheduler
 
 logger = getLogger(__name__)
 
 
 NUM_LATENT_CHANNELS = 4
 NUM_UNET_INPUT_CHANNELS = 7
-
-ORT_TO_NP_TYPE = {
-    "tensor(bool)": np.bool_,
-    "tensor(int8)": np.int8,
-    "tensor(uint8)": np.uint8,
-    "tensor(int16)": np.int16,
-    "tensor(uint16)": np.uint16,
-    "tensor(int32)": np.int32,
-    "tensor(uint32)": np.uint32,
-    "tensor(int64)": np.int64,
-    "tensor(uint64)": np.uint64,
-    "tensor(float16)": np.float16,
-    "tensor(float)": np.float32,
-    "tensor(double)": np.float64,
-}
 
 ORT_TO_PT_TYPE = {
     "float16": torch.float16,
@@ -65,7 +49,8 @@ def preprocess(image):
 
     return image
 
-class FakeConfig():
+
+class FakeConfig:
     scaling_factor: float
 
     def __init__(self) -> None:
@@ -83,10 +68,18 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         scheduler: Any,
         max_noise_level: int = 350,
     ):
-        if hasattr(vae, "config") == False:
+        if not hasattr(vae, "config"):
             setattr(vae, "config", FakeConfig())
 
-        super().__init__(vae, text_encoder, tokenizer, unet, low_res_scheduler, scheduler, max_noise_level)
+        super().__init__(
+            vae,
+            text_encoder,
+            tokenizer,
+            unet,
+            low_res_scheduler,
+            scheduler,
+            max_noise_level,
+        )
 
     def __call__(
         self,
@@ -118,7 +111,11 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
 
         # 3. Encode input prompt
         text_embeddings = self._encode_prompt(
-            prompt, device, num_images_per_prompt, do_classifier_free_guidance, negative_prompt
+            prompt,
+            device,
+            num_images_per_prompt,
+            do_classifier_free_guidance,
+            negative_prompt,
         )
 
         latents_dtype = ORT_TO_PT_TYPE[str(text_embeddings.dtype)]
@@ -133,7 +130,9 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
 
         # 5. Add noise to image
         noise_level = torch.tensor([noise_level], dtype=torch.long, device=device)
-        noise = torch.randn(image.shape, generator=generator, device=device, dtype=latents_dtype)
+        noise = torch.randn(
+            image.shape, generator=generator, device=device, dtype=latents_dtype
+        )
         image = self.low_res_scheduler.add_noise(image, noise, noise_level)
 
         batch_multiplier = 2 if do_classifier_free_guidance else 1
@@ -168,7 +167,12 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         extra_step_kwargs = self.prepare_extra_step_kwargs(generator, eta)
 
         timestep_dtype = next(
-            (input.type for input in self.unet.model.get_inputs() if input.name == "timestep"), "tensor(float)"
+            (
+                input.type
+                for input in self.unet.model.get_inputs()
+                if input.name == "timestep"
+            ),
+            "tensor(float)",
         )
         timestep_dtype = ORT_TO_NP_TYPE[timestep_dtype]
 
@@ -177,10 +181,16 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             for i, t in enumerate(timesteps):
                 # expand the latents if we are doing classifier free guidance
-                latent_model_input = np.concatenate([latents] * 2) if do_classifier_free_guidance else latents
+                latent_model_input = (
+                    np.concatenate([latents] * 2)
+                    if do_classifier_free_guidance
+                    else latents
+                )
 
                 # concat latents, mask, masked_image_latents in the channel dimension
-                latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
+                latent_model_input = self.scheduler.scale_model_input(
+                    latent_model_input, t
+                )
                 latent_model_input = np.concatenate([latent_model_input, image], axis=1)
 
                 # timestep to tensor
@@ -197,7 +207,9 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
                 # perform guidance
                 if do_classifier_free_guidance:
                     noise_pred_uncond, noise_pred_text = np.split(noise_pred, 2)
-                noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
+                noise_pred = noise_pred_uncond + guidance_scale * (
+                    noise_pred_text - noise_pred_uncond
+                )
 
                 # compute the previous noisy sample x_t -> x_t-1
                 latents = self.scheduler.step(
@@ -205,7 +217,9 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
                 ).prev_sample
 
                 # call the callback, if provided
-                if i == len(timesteps) - 1 or ((i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0):
+                if i == len(timesteps) - 1 or (
+                    (i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0
+                ):
                     progress_bar.update()
                     if callback is not None and i % callback_steps == 0:
                         callback(i, t, latents)
@@ -229,7 +243,14 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         image = image.transpose((0, 2, 3, 1))
         return image
 
-    def _encode_prompt(self, prompt, device, num_images_per_prompt, do_classifier_free_guidance, negative_prompt):
+    def _encode_prompt(
+        self,
+        prompt,
+        device,
+        num_images_per_prompt,
+        do_classifier_free_guidance,
+        negative_prompt,
+    ):
         batch_size = len(prompt) if isinstance(prompt, list) else 1
 
         text_inputs = self.tokenizer(
@@ -240,10 +261,16 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
             return_tensors="pt",
         )
         text_input_ids = text_inputs.input_ids
-        untruncated_ids = self.tokenizer(prompt, padding="longest", return_tensors="pt").input_ids
+        untruncated_ids = self.tokenizer(
+            prompt, padding="longest", return_tensors="pt"
+        ).input_ids
 
-        if untruncated_ids.shape[-1] >= text_input_ids.shape[-1] and not torch.equal(text_input_ids, untruncated_ids):
-            removed_text = self.tokenizer.batch_decode(untruncated_ids[:, self.tokenizer.model_max_length - 1 : -1])
+        if untruncated_ids.shape[-1] >= text_input_ids.shape[-1] and not torch.equal(
+            text_input_ids, untruncated_ids
+        ):
+            removed_text = self.tokenizer.batch_decode(
+                untruncated_ids[:, self.tokenizer.model_max_length - 1 : -1]
+            )
             logger.warning(
                 "The following part of your input was truncated because CLIP can only handle sequences up to"
                 f" {self.tokenizer.model_max_length} tokens: {removed_text}"
@@ -258,7 +285,9 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         bs_embed, seq_len, _ = text_embeddings.shape
         # duplicate text embeddings for each generation per prompt, using mps friendly method
         text_embeddings = text_embeddings.repeat(1, num_images_per_prompt)
-        text_embeddings = text_embeddings.reshape(bs_embed * num_images_per_prompt, seq_len, -1)
+        text_embeddings = text_embeddings.reshape(
+            bs_embed * num_images_per_prompt, seq_len, -1
+        )
 
         # get unconditional embeddings for classifier free guidance
         if do_classifier_free_guidance:
@@ -298,7 +327,9 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
             seq_len = uncond_embeddings.shape[1]
             # duplicate unconditional embeddings for each generation per prompt, using mps friendly method
             uncond_embeddings = uncond_embeddings.repeat(1, num_images_per_prompt)
-            uncond_embeddings = uncond_embeddings.reshape(batch_size * num_images_per_prompt, seq_len, -1)
+            uncond_embeddings = uncond_embeddings.reshape(
+                batch_size * num_images_per_prompt, seq_len, -1
+            )
 
             # For classifier free guidance, we need to do two forward passes.
             # Here we concatenate the unconditional and text embeddings into a single batch

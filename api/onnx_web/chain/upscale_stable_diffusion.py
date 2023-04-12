@@ -7,9 +7,7 @@ from diffusers import StableDiffusionUpscalePipeline
 from PIL import Image
 
 from ..diffusers.load import optimize_pipeline, patch_pipeline
-from ..diffusers.pipeline_onnx_stable_diffusion_upscale import (
-    OnnxStableDiffusionUpscalePipeline,
-)
+from ..diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..utils import run_gc
