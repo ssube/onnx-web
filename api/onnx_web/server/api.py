@@ -8,7 +8,7 @@ from jsonschema import validate
 from PIL import Image
 
 from ..chain import CHAIN_STAGES, ChainPipeline
-from ..diffusers.load import get_pipeline_schedulers
+from ..diffusers.load import get_available_pipelines, get_pipeline_schedulers
 from ..diffusers.run import (
     run_blend_pipeline,
     run_img2img_pipeline,
@@ -130,12 +130,16 @@ def list_params(server: ServerContext):
     return jsonify(get_config_params())
 
 
+def list_pipelines(server: ServerContext):
+    return jsonify(get_available_pipelines())
+
+
 def list_platforms(server: ServerContext):
     return jsonify([p.device for p in get_available_platforms()])
 
 
 def list_schedulers(server: ServerContext):
-    return jsonify(list(get_pipeline_schedulers().keys()))
+    return jsonify(get_pipeline_schedulers())
 
 
 def img2img(server: ServerContext, pool: DevicePoolExecutor):
@@ -496,6 +500,7 @@ def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecu
         app.route("/api/settings/models")(wrap_route(list_models, server)),
         app.route("/api/settings/noises")(wrap_route(list_noise_sources, server)),
         app.route("/api/settings/params")(wrap_route(list_params, server)),
+        app.route("/api/settings/pipelines")(wrap_route(list_pipelines, server)),
         app.route("/api/settings/platforms")(wrap_route(list_platforms, server)),
         app.route("/api/settings/schedulers")(wrap_route(list_schedulers, server)),
         app.route("/api/settings/strings")(wrap_route(list_extra_strings, server)),
