@@ -120,7 +120,7 @@ export function ModelControl() {
       />
       <QueryList
         id='control'
-        labelKey='model'
+        labelKey='model.control'
         name={t('modelType.control')}
         query={{
           result: models,

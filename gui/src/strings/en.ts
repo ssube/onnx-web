@@ -109,6 +109,15 @@ export const I18N_STRINGS_EN = {
         'diffusion-openjourney-v2': 'OpenJourney v2',
         'diffusion-pastel-mix': 'Pastel Mix',
         'diffusion-unstable-ink-dream-v6': 'Unstable Ink Dream v6',
+        // controlnets
+        'control': {
+          canny: 'Canny Edges',
+          depth: 'Depth Map',
+          hed: 'HED Edges',
+          normal: 'Surface Normals',
+          openpose: 'OpenPose',
+          scribble: 'Scribble',
+        },
       },
       modelType: {
         control: 'ControlNet',
@@ -157,6 +166,7 @@ export const I18N_STRINGS_EN = {
           top: 'Top',
           bottom: 'Bottom',
         },
+        pipeline: 'Pipeline',
         platform: 'Platform',
         prompt: 'Prompt',
         scheduler: 'Scheduler',
@@ -178,6 +188,16 @@ export const I18N_STRINGS_EN = {
           strength: 'Strength',
           outscale: 'Outscale',
         },
+      },
+      pipeline: {
+        '': 'Stable Diffusion',
+        'controlnet': 'ControlNet',
+        'img2img': 'Img2Img',
+        'inpaint': 'Inpaint',
+        'lpw': 'Long Prompt Weighting',
+        'pix2pix': 'Instruct Pix2Pix',
+        'txt2img': 'Txt2Img',
+        'txt2txt': 'Txt2Txt',
       },
       platform: {
         amd: 'AMD GPU',
