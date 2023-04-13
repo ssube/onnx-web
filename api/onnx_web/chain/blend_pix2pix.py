@@ -35,13 +35,12 @@ def blend_pix2pix(
 
     pipe = load_pipeline(
         server,
-        OnnxStableDiffusionInstructPix2PixPipeline,
+        "pix2pix",
         params.model,
         params.scheduler,
         job.get_device(),
-        params.lpw,
     )
-    if params.lpw:
+    if params.lpw():
         logger.debug("using LPW pipeline for img2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.img2img(

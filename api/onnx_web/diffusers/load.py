@@ -19,14 +19,14 @@ from diffusers import (
     KDPM2DiscreteScheduler,
     LMSDiscreteScheduler,
     OnnxRuntimeModel,
+    OnnxStableDiffusionImg2ImgPipeline,
+    OnnxStableDiffusionInpaintPipeline,
+    OnnxStableDiffusionPipeline,
     PNDMScheduler,
     StableDiffusionPipeline,
 )
 from onnx import load_model
 from transformers import CLIPTokenizer
-
-from ..constants import ONNX_MODEL
-from ..diffusers.utils import expand_prompt
 
 try:
     from diffusers import DEISMultistepScheduler
@@ -38,8 +38,13 @@ try:
 except ImportError:
     from ..diffusers.stub_scheduler import StubScheduler as UniPCMultistepScheduler
 
+from ..constants import ONNX_MODEL
 from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
 from ..convert.diffusion.textual_inversion import blend_textual_inversions
+from ..diffusers.pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
+from ..diffusers.pipelines.pix2pix import OnnxStableDiffusionInstructPix2PixPipeline
+from ..diffusers.lpw_stable_diffusion_onnx import OnnxStableDiffusionLongPromptWeightingPipeline
+from ..diffusers.utils import expand_prompt
 from ..params import DeviceParams, Size
 from ..server import ServerContext
 from ..utils import run_gc
@@ -48,6 +53,15 @@ logger = getLogger(__name__)
 
 latent_channels = 4
 latent_factor = 8
+
+available_pipelines = {
+    "controlnet": OnnxStableDiffusionControlNetPipeline,
+    "img2img": OnnxStableDiffusionImg2ImgPipeline,
+    "inpaint": OnnxStableDiffusionInpaintPipeline,
+    "lpw": OnnxStableDiffusionLongPromptWeightingPipeline,
+    "pix2pix": OnnxStableDiffusionInstructPix2PixPipeline,
+    "txt2img": OnnxStableDiffusionPipeline,
+}
 
 pipeline_schedulers = {
     "ddim": DDIMScheduler,
@@ -68,8 +82,12 @@ pipeline_schedulers = {
 }
 
 
-def get_pipeline_schedulers():
-    return pipeline_schedulers
+def get_available_pipelines() -> List[str]:
+    return list(available_pipelines.keys())
+
+
+def get_pipeline_schedulers() -> List[str]:
+    return list(pipeline_schedulers.keys())
 
 
 def get_scheduler_name(scheduler: Any) -> Optional[str]:
@@ -111,11 +129,10 @@ def get_tile_latents(
 
 def load_pipeline(
     server: ServerContext,
-    pipeline: DiffusionPipeline,
+    pipeline: str,
     model: str,
     scheduler_name: str,
     device: DeviceParams,
-    lpw: bool,
     control: Optional[str] = None,
     inversions: Optional[List[Tuple[str, float]]] = None,
     loras: Optional[List[Tuple[str, float]]] = None,
@@ -129,7 +146,7 @@ def load_pipeline(
     )
     logger.debug("using Torch dtype %s for pipeline", torch_dtype)
     pipe_key = (
-        pipeline.__name__,
+        pipeline,
         model,
         device.device,
         device.provider,
@@ -169,11 +186,6 @@ def load_pipeline(
         if server.cache.drop("diffusion", pipe_key) > 0:
             logger.debug("unloading previous diffusion pipeline")
             run_gc([device])
-
-        if lpw:
-            custom_pipeline = "./onnx_web/diffusers/lpw_stable_diffusion_onnx.py"
-        else:
-            custom_pipeline = None
 
         logger.debug("loading new diffusion pipeline from %s", model)
         components = {
@@ -281,6 +293,7 @@ def load_pipeline(
                 )
             )
 
+        # ControlNet component
         if control is not None:
             components["controlnet"] = OnnxRuntimeModel(
                 OnnxRuntimeModel.load_model(
@@ -290,9 +303,10 @@ def load_pipeline(
                 )
             )
 
-        pipe = pipeline.from_pretrained(
+        pipeline_class = available_pipelines.get(pipeline, OnnxStableDiffusionPipeline)
+        logger.debug("loading pretrained SD pipeline for %s", pipeline_class.__name__)
+        pipe = pipeline_class.from_pretrained(
             model,
-            custom_pipeline=custom_pipeline,
             provider=device.ort_provider(),
             sess_options=device.sess_options(),
             revision="onnx",
@@ -306,12 +320,12 @@ def load_pipeline(
 
         optimize_pipeline(server, pipe)
 
+        # TODO: CPU VAE, etc
         if device is not None and hasattr(pipe, "to"):
             pipe = pipe.to(device.torch_str())
 
         # monkey-patch pipeline
-        if not lpw:
-            patch_pipeline(server, pipe, pipeline)
+        patch_pipeline(server, pipe, pipeline)
 
         server.cache.set("diffusion", pipe_key, pipe)
         server.cache.set("scheduler", scheduler_key, components["scheduler"])

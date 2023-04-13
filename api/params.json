@@ -124,6 +124,14 @@
     "max": 4,
     "step": 1
   },
+  "pipeline": {
+    "default": "",
+    "keys": [
+      "controlnet",
+      "lpw",
+      "pix2pix"
+    ]
+  },
   "platform": {
     "default": "amd",
     "keys": []

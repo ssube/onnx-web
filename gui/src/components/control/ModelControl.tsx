@@ -1,9 +1,9 @@
 import { mustExist } from '@apextoaster/js-utils';
-import { Checkbox, FormControlLabel, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
@@ -24,6 +24,9 @@ export function ModelControl() {
   const models = useQuery(['models'], async () => client.models(), {
     staleTime: STALE_TIME,
   });
+  const pipelines = useQuery(['pipelines'], async () => client.pipelines(), {
+    staleTime: STALE_TIME,
+  });
   const platforms = useQuery(['platforms'], async () => client.platforms(), {
     staleTime: STALE_TIME,
   });
@@ -33,7 +36,6 @@ export function ModelControl() {
   function addToken(type: string, name: string, weight = 1.0) {
     const tab = getTab(hash);
     const current = state.getState();
-
 
     switch (tab) {
       case 'txt2img': {
@@ -133,17 +135,20 @@ export function ModelControl() {
       />
     </Stack>
     <Stack direction='row' spacing={2}>
-      <FormControlLabel
-        label={t('parameter.lpw')}
-        control={<Checkbox
-          checked={params.lpw}
-          value='check'
-          onChange={(event) => {
-            setModel({
-              lpw: params.lpw === false,
-            });
-          }}
-        />}
+      <QueryList
+        id='pipeline'
+        labelKey='pipeline'
+        name={t('parameter.pipeline')}
+        query={{
+          result: pipelines,
+        }}
+        showEmpty
+        value={params.pipeline}
+        onChange={(pipeline) => {
+          setModel({
+            pipeline,
+          });
+        }}
       />
       <QueryMenu
         id='inversion'

@@ -161,6 +161,7 @@ class DeviceParams:
 
 class ImageParams:
     model: str
+    pipeline: str
     scheduler: str
     prompt: str
     cfg: float
@@ -175,39 +176,42 @@ class ImageParams:
     def __init__(
         self,
         model: str,
+        pipeline: str,
         scheduler: str,
         prompt: str,
         cfg: float,
         steps: int,
         seed: int,
         negative_prompt: Optional[str] = None,
-        lpw: bool = False,
         eta: float = 0.0,
         batch: int = 1,
         control: Optional[str] = None,
     ) -> None:
         self.model = model
+        self.pipeline = pipeline
         self.scheduler = scheduler
         self.prompt = prompt
         self.negative_prompt = negative_prompt
         self.cfg = cfg
         self.seed = seed
         self.steps = steps
-        self.lpw = lpw or False
         self.eta = eta
         self.batch = batch
         self.control = control
 
+    def lpw(self):
+        return self.pipeline == "lpw"
+
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
             "model": self.model,
+            "pipeline": self.pipeline,
             "scheduler": self.scheduler,
             "prompt": self.prompt,
             "negative_prompt": self.negative_prompt,
             "cfg": self.cfg,
             "seed": self.seed,
             "steps": self.steps,
-            "lpw": self.lpw,
             "eta": self.eta,
             "batch": self.batch,
             "control": self.control.name,
@@ -216,13 +220,13 @@ class ImageParams:
     def with_args(self, **kwargs):
         return ImageParams(
             kwargs.get("model", self.model),
+            kwargs.get("pipeline", self.pipeline),
             kwargs.get("scheduler", self.scheduler),
             kwargs.get("prompt", self.prompt),
+            kwargs.get("negative_prompt", self.negative_prompt),
             kwargs.get("cfg", self.cfg),
             kwargs.get("steps", self.steps),
             kwargs.get("seed", self.seed),
-            kwargs.get("negative_prompt", self.negative_prompt),
-            kwargs.get("lpw", self.lpw),
             kwargs.get("eta", self.eta),
             kwargs.get("batch", self.batch),
             kwargs.get("control", self.control),

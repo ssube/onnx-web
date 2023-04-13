@@ -47,17 +47,16 @@ def run_txt2img_pipeline(
 
     pipe = load_pipeline(
         server,
-        OnnxStableDiffusionPipeline,
+        "txt2img",
         params.model,
         params.scheduler,
         job.get_device(),
-        params.lpw,
         inversions,
         loras,
     )
     progress = job.get_progress_callback()
 
-    if params.lpw:
+    if params.lpw():
         logger.debug("using LPW pipeline for txt2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.text2img(
@@ -117,11 +116,10 @@ def run_txt2img_pipeline(
             # load img2img pipeline once
             highres_pipe = load_pipeline(
                 server,
-                OnnxStableDiffusionImg2ImgPipeline,
+                "img2img",
                 params.model,
                 params.scheduler,
                 job.get_device(),
-                params.lpw,
                 inversions,
                 loras,
             )
@@ -153,7 +151,7 @@ def run_txt2img_pipeline(
                         callback=highres_progress,
                     )
 
-                if params.lpw:
+                if params.lpw():
                     logger.debug("using LPW pipeline for highres")
                     rng = torch.manual_seed(params.seed)
                     result = highres_pipe.img2img(
@@ -233,18 +231,16 @@ def run_img2img_pipeline(
 
     pipe = load_pipeline(
         server,
-        # OnnxStableDiffusionImg2ImgPipeline,
-        OnnxStableDiffusionControlNetPipeline,
+        "img2img",
         params.model,
         params.scheduler,
         job.get_device(),
-        params.lpw,
         control=params.control,
         inversions=inversions,
         loras=loras,
     )
     progress = job.get_progress_callback()
-    if params.lpw:
+    if params.lpw():
         logger.debug("using LPW pipeline for img2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.img2img(

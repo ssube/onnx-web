@@ -14,6 +14,11 @@ export interface ModelParams {
   model: string;
 
   /**
+   * Specialized pipeline to use.
+   */
+  pipeline: string;
+
+  /**
    * The hardware acceleration platform to use.
    */
   platform: string;
@@ -27,11 +32,6 @@ export interface ModelParams {
    * The correction model to use.
    */
   correction: string;
-
-  /**
-   * Use the long prompt weighting pipeline.
-   */
-  lpw: boolean;
 
   /**
    * ControlNet to be used.
@@ -271,6 +271,11 @@ export interface ApiClient {
   params(): Promise<ServerParams>;
 
   /**
+   * Get the available pipelines.
+   */
+  pipelines(): Promise<Array<string>>;
+
+  /**
    * Get the available hardware acceleration platforms.
    */
   platforms(): Promise<Array<string>>;
@@ -393,10 +398,10 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
  */
 export function appendModelToURL(url: URL, params: ModelParams) {
   url.searchParams.append('model', params.model);
+  url.searchParams.append('pipeline', params.pipeline);
   url.searchParams.append('platform', params.platform);
   url.searchParams.append('upscaling', params.upscaling);
   url.searchParams.append('correction', params.correction);
-  url.searchParams.append('lpw', String(params.lpw));
   url.searchParams.append('control', params.control);
 }
 
@@ -450,6 +455,11 @@ export function makeClient(root: string, f = fetch): ApiClient {
     },
     async schedulers(): Promise<Array<string>> {
       const path = makeApiUrl(root, 'settings', 'schedulers');
+      const res = await f(path);
+      return await res.json() as Array<string>;
+    },
+    async pipelines(): Promise<Array<string>> {
+      const path = makeApiUrl(root, 'settings', 'pipelines');
       const res = await f(path);
       return await res.json() as Array<string>;
     },

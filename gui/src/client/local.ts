@@ -50,6 +50,9 @@ export const LOCAL_CLIENT = {
   async models() {
     throw new NoServerError();
   },
+  async pipelines() {
+    throw new NoServerError();
+  },
   async platforms() {
     throw new NoServerError();
   },

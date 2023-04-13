@@ -75,13 +75,12 @@ def upscale_outpaint(
         latents = get_tile_latents(full_latents, dims)
         pipe = load_pipeline(
             server,
-            OnnxStableDiffusionInpaintPipeline,
+            "inpaint",
             params.model,
             params.scheduler,
             job.get_device(),
-            params.lpw,
         )
-        if params.lpw:
+        if params.lpw():
             logger.debug("using LPW pipeline for inpaint")
             rng = torch.manual_seed(params.seed)
             result = pipe.inpaint(

@@ -39,14 +39,13 @@ def source_txt2img(
     latents = get_latents_from_seed(params.seed, size)
     pipe = load_pipeline(
         server,
-        OnnxStableDiffusionPipeline,
+        "txt2img",
         params.model,
         params.scheduler,
         job.get_device(),
-        params.lpw,
     )
 
-    if params.lpw:
+    if params.lpw():
         logger.debug("using LPW pipeline for txt2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.text2img(

@@ -502,8 +502,8 @@ export function createStateSlices(server: ServerParams) {
     model: {
       control: server.control.default,
       correction: server.correction.default,
-      lpw: false,
       model: server.model.default,
+      pipeline: server.pipeline.default,
       platform: server.platform.default,
       upscaling: server.upscaling.default,
     },
