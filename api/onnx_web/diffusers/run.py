@@ -49,8 +49,8 @@ def run_txt2img_pipeline(
         params.model,
         params.scheduler,
         job.get_device(),
-        inversions,
-        loras,
+        inversions=inversions,
+        loras=loras,
     )
     progress = job.get_progress_callback()
 
@@ -118,8 +118,8 @@ def run_txt2img_pipeline(
                 params.model,
                 params.scheduler,
                 job.get_device(),
-                inversions,
-                loras,
+                inversions=inversions,
+                loras=loras,
             )
 
             def highres_tile(tile: Image.Image, dims):

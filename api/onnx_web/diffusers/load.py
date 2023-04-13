@@ -46,6 +46,7 @@ from ..diffusers.lpw_stable_diffusion_onnx import (
 from ..diffusers.pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
 from ..diffusers.pipelines.pix2pix import OnnxStableDiffusionInstructPix2PixPipeline
 from ..diffusers.utils import expand_prompt
+from ..models.meta import NetworkModel
 from ..params import DeviceParams, Size
 from ..server import ServerContext
 from ..utils import run_gc
@@ -134,7 +135,7 @@ def load_pipeline(
     model: str,
     scheduler_name: str,
     device: DeviceParams,
-    control: Optional[str] = None,
+    control: Optional[NetworkModel] = None,
     inversions: Optional[List[Tuple[str, float]]] = None,
     loras: Optional[List[Tuple[str, float]]] = None,
 ):
