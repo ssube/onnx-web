@@ -70,6 +70,7 @@ export const I18N_STRINGS_FR = {
         'none': '',
       },
       modelType: {
+        control: '',
         correction: 'modèle de correction',
         diffusion: 'modèle de diffusion',
         inversion: '',

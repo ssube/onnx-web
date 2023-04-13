@@ -19,6 +19,7 @@
 			"ckpt",
 			"codebook",
 			"codeformer",
+			"controlnet",
 			"CUDA",
 			"ddim",
 			"ddpm",

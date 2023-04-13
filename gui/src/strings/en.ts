@@ -111,6 +111,7 @@ export const I18N_STRINGS_EN = {
         'diffusion-unstable-ink-dream-v6': 'Unstable Ink Dream v6',
       },
       modelType: {
+        control: 'ControlNet',
         correction: 'Correction Model',
         diffusion: 'Diffusion Model',
         inversion: 'Textual Inversion',

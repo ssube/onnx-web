@@ -210,7 +210,7 @@ class ImageParams:
             "lpw": self.lpw,
             "eta": self.eta,
             "batch": self.batch,
-            "control": self.control,
+            "control": self.control.name,
         }
 
     def with_args(self, **kwargs):

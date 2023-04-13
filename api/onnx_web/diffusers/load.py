@@ -122,6 +122,7 @@ def load_pipeline(
 ):
     inversions = inversions or []
     loras = loras or []
+    control_key = control.name if control is not None else None
 
     torch_dtype = (
         torch.float16 if "torch-fp16" in server.optimizations else torch.float32
@@ -133,6 +134,7 @@ def load_pipeline(
         device.device,
         device.provider,
         lpw,
+        control_key,
         inversions,
         loras,
     )
@@ -282,7 +284,7 @@ def load_pipeline(
         if control is not None:
             components["controlnet"] = OnnxRuntimeModel(
                 OnnxRuntimeModel.load_model(
-                    path.join(server.model_path, "control", f"{control}.onnx"),
+                    path.join(server.model_path, "control", f"{control.name}.onnx"),
                     provider=device.ort_provider(),
                     sess_options=device.sess_options(),
                 )

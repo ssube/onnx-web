@@ -116,7 +116,7 @@ export function ModelControl() {
           });
         }}
       />
-      <QueryMenu
+      <QueryList
         id='control'
         labelKey='model'
         name={t('modelType.control')}
@@ -124,7 +124,8 @@ export function ModelControl() {
           result: models,
           selector: (result) => result.networks.filter((network) => network.type === 'control').map((network) => network.name),
         }}
-        onSelect={(control) => {
+        value={params.control}
+        onChange={(control) => {
           setModel({
             control,
           });

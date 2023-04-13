@@ -70,6 +70,7 @@ export const I18N_STRINGS_ES = {
         'none': 'Ninguno',
       },
       modelType: {
+        control: '',
         correction: 'Modelo de corrección',
         diffusion: 'Modelo de difusión',
         inversion: '',
