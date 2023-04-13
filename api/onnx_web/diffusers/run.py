@@ -237,6 +237,13 @@ def run_img2img_pipeline(
         inversions=inversions,
         loras=loras,
     )
+
+    pipe_params = {}
+    if params.pipeline == "controlnet":
+        pipe_params["controlnet_conditioning_scale"] = params.strength
+    elif params.pipeline == "img2img":
+        pipe_params["strength"] = params.strength
+
     progress = job.get_progress_callback()
     if params.lpw():
         logger.debug("using LPW pipeline for img2img")
@@ -249,9 +256,9 @@ def run_img2img_pipeline(
             negative_prompt=params.negative_prompt,
             num_images_per_prompt=params.batch,
             num_inference_steps=params.steps,
-            strength=strength,
             eta=params.eta,
             callback=progress,
+            **pipe_params,
         )
     else:
         rng = np.random.RandomState(params.seed)
@@ -263,9 +270,9 @@ def run_img2img_pipeline(
             negative_prompt=params.negative_prompt,
             num_images_per_prompt=params.batch,
             num_inference_steps=params.steps,
-            strength=strength,
             eta=params.eta,
             callback=progress,
+            **pipe_params,
         )
 
     for image, output in zip(result.images, outputs):
