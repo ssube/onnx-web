@@ -240,9 +240,9 @@ def run_img2img_pipeline(
 
     pipe_params = {}
     if params.pipeline == "controlnet":
-        pipe_params["controlnet_conditioning_scale"] = params.strength
+        pipe_params["controlnet_conditioning_scale"] = strength
     elif params.pipeline == "img2img":
-        pipe_params["strength"] = params.strength
+        pipe_params["strength"] = strength
 
     progress = job.get_progress_callback()
     if params.lpw():
