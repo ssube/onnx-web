@@ -156,7 +156,7 @@ def load_pipeline(
         loras,
     )
     scheduler_key = (scheduler_name, model)
-    scheduler_type = get_pipeline_schedulers()[scheduler_name]
+    scheduler_type = pipeline_schedulers[scheduler_name]
 
     cache_pipe = server.cache.get("diffusion", pipe_key)
 

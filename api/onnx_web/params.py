@@ -2,6 +2,7 @@ from enum import IntEnum
 from logging import getLogger
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
+from .models.meta import NetworkModel
 from .torch_before_ort import GraphOptimizationLevel, SessionOptions
 
 logger = getLogger(__name__)
@@ -171,7 +172,7 @@ class ImageParams:
     lpw: bool
     eta: float
     batch: int
-    control: Optional[str]
+    control: Optional[NetworkModel]
 
     def __init__(
         self,
@@ -185,7 +186,7 @@ class ImageParams:
         negative_prompt: Optional[str] = None,
         eta: float = 0.0,
         batch: int = 1,
-        control: Optional[str] = None,
+        control: Optional[NetworkModel] = None,
     ) -> None:
         self.model = model
         self.pipeline = pipeline
@@ -214,7 +215,7 @@ class ImageParams:
             "steps": self.steps,
             "eta": self.eta,
             "batch": self.batch,
-            "control": self.control.name,
+            "control": self.control.name if self.control is not None else "",
         }
 
     def with_args(self, **kwargs):

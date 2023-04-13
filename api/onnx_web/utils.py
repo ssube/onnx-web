@@ -38,8 +38,8 @@ def get_and_clamp_int(
     return min(max(int(args.get(key, default_value)), min_value), max_value)
 
 
-def get_from_list(args: Any, key: str, values: Sequence[Any]) -> Optional[Any]:
-    selected = args.get(key, None)
+def get_from_list(args: Any, key: str, values: Sequence[Any], default_value: Optional[Any] = None) -> Optional[Any]:
+    selected = args.get(key, default_value)
     if selected in values:
         return selected
 
