@@ -323,7 +323,12 @@ class OnnxStableDiffusionInstructPix2PixPipeline(DiffusionPipeline):
             raise ValueError(
                 f"Unexpected latents shape, got {latents.shape}, expected {latents_shape}"
             )
-        latents = latents * self.scheduler.init_noise_sigma.numpy()
+
+        init_noise_sigma = self.scheduler.init_noise_sigma
+        if torch.is_tensor(init_noise_sigma):
+            init_noise_sigma = init_noise_sigma.numpy()
+
+        latents = latents * init_noise_sigma
 
         # 7. Check that shapes of latents and image match the UNet channels
         num_channels_image = image_latents.shape[1]
