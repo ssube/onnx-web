@@ -425,7 +425,7 @@ class OnnxStableDiffusionInstructPix2PixPipeline(DiffusionPipeline):
                 ):
                     progress_bar.update()
                     if callback is not None and i % callback_steps == 0:
-                        callback(i, t, latents.numpy())
+                        callback(i, t, latents)
 
         # 10. Post-processing
         image = self.decode_latents(latents)

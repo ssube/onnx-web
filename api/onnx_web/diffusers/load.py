@@ -310,7 +310,6 @@ def load_pipeline(
             model,
             provider=device.ort_provider(),
             sess_options=device.sess_options(),
-            revision="onnx",
             safety_checker=None,
             torch_dtype=torch_dtype,
             **components,
