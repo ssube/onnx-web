@@ -3,7 +3,6 @@ from typing import Optional
 
 import numpy as np
 import torch
-from diffusers import OnnxStableDiffusionPipeline
 from PIL import Image
 
 from ..diffusers.load import get_latents_from_seed, load_pipeline

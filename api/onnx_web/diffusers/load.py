@@ -7,7 +7,6 @@ import torch
 from diffusers import (
     DDIMScheduler,
     DDPMScheduler,
-    DiffusionPipeline,
     DPMSolverMultistepScheduler,
     DPMSolverSinglestepScheduler,
     EulerAncestralDiscreteScheduler,
@@ -41,9 +40,11 @@ except ImportError:
 from ..constants import ONNX_MODEL
 from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
 from ..convert.diffusion.textual_inversion import blend_textual_inversions
+from ..diffusers.lpw_stable_diffusion_onnx import (
+    OnnxStableDiffusionLongPromptWeightingPipeline,
+)
 from ..diffusers.pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
 from ..diffusers.pipelines.pix2pix import OnnxStableDiffusionInstructPix2PixPipeline
-from ..diffusers.lpw_stable_diffusion_onnx import OnnxStableDiffusionLongPromptWeightingPipeline
 from ..diffusers.utils import expand_prompt
 from ..params import DeviceParams, Size
 from ..server import ServerContext
@@ -150,7 +151,6 @@ def load_pipeline(
         model,
         device.device,
         device.provider,
-        lpw,
         control_key,
         inversions,
         loras,
@@ -294,7 +294,7 @@ def load_pipeline(
             )
 
         # ControlNet component
-        if control is not None:
+        if pipeline == "controlnet" and control is not None:
             components["controlnet"] = OnnxRuntimeModel(
                 OnnxRuntimeModel.load_model(
                     path.join(server.model_path, "control", f"{control.name}.onnx"),

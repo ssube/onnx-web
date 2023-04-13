@@ -3,7 +3,6 @@ from typing import Callable, Optional, Tuple
 
 import numpy as np
 import torch
-from diffusers import OnnxStableDiffusionInpaintPipeline
 from PIL import Image, ImageDraw
 
 from ..diffusers.load import get_latents_from_seed, get_tile_latents, load_pipeline

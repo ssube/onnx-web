@@ -3,7 +3,6 @@ from typing import Callable, Optional, Tuple
 
 import numpy as np
 import torch
-from diffusers import OnnxStableDiffusionInpaintPipeline
 from PIL import Image
 
 from ..diffusers.load import get_latents_from_seed, load_pipeline
@@ -59,6 +58,14 @@ def blend_inpaint(
         save_image(server, "last-mask.png", stage_mask)
         save_image(server, "last-noise.png", noise)
 
+    pipe = load_pipeline(
+        server,
+        "inpaint",
+        params.model,
+        params.scheduler,
+        job.get_device(),
+    )
+
     def outpaint(tile_source: Image.Image, dims: Tuple[int, int, int]):
         left, top, tile = dims
         size = Size(*tile_source.size)
@@ -69,14 +76,6 @@ def blend_inpaint(
             save_image(server, "tile-mask.png", tile_mask)
 
         latents = get_latents_from_seed(params.seed, size)
-        pipe = load_pipeline(
-            server,
-            OnnxStableDiffusionInpaintPipeline,
-            params.model,
-            params.scheduler,
-            job.get_device(),
-        )
-
         if params.lpw():
             logger.debug("using LPW pipeline for inpaint")
             rng = torch.manual_seed(params.seed)

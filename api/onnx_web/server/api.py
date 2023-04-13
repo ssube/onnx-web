@@ -145,7 +145,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
-    device, params, size = pipeline_from_request(server)
+    device, params, size = pipeline_from_request(server, "img2img")
     upscale = upscale_from_request()
 
     strength = get_and_clamp_float(
@@ -177,7 +177,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
 
 def txt2img(server: ServerContext, pool: DevicePoolExecutor):
-    device, params, size = pipeline_from_request(server)
+    device, params, size = pipeline_from_request(server, "txt2img")
     upscale = upscale_from_request()
     highres = highres_from_request()
 
@@ -212,7 +212,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
     mask = Image.open(BytesIO(mask_file.read())).convert("RGB")
 
-    device, params, size = pipeline_from_request(server)
+    device, params, size = pipeline_from_request(server, "inpaint")
     expand = border_from_request()
     upscale = upscale_from_request()
 

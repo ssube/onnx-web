@@ -4,7 +4,7 @@ from typing import Tuple
 import numpy as np
 from flask import request
 
-from ..diffusers.load import get_available_pipelines, get_pipeline_schedulers, pipeline_schedulers
+from ..diffusers.load import get_available_pipelines, get_pipeline_schedulers
 from ..params import (
     Border,
     DeviceParams,
@@ -30,7 +30,7 @@ logger = getLogger(__name__)
 
 def pipeline_from_request(
     server: ServerContext,
-    default_pipeline: str,
+    default_pipeline: str = "txt2img",
 ) -> Tuple[DeviceParams, ImageParams, Size]:
     user = request.remote_addr
 
@@ -49,9 +49,10 @@ def pipeline_from_request(
     control = get_from_list(request.args, "control", get_network_models())
 
     # pipeline stuff
-    pipeline = get_from_list(request.args, "pipeline", get_available_pipelines(), default_pipeline)
-    scheduler = get_from_list(
-        request.args, "scheduler", get_pipeline_schedulers())
+    pipeline = get_from_list(
+        request.args, "pipeline", get_available_pipelines(), default_pipeline
+    )
+    scheduler = get_from_list(request.args, "scheduler", get_pipeline_schedulers())
 
     if scheduler is None:
         scheduler = get_config_value("scheduler")
@@ -135,7 +136,6 @@ def pipeline_from_request(
         steps,
         seed,
         eta=eta,
-        lpw=lpw,
         negative_prompt=negative_prompt,
         batch=batch,
         control=control,

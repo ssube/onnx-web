@@ -2,11 +2,9 @@ from logging import getLogger
 from typing import Optional
 
 import numpy as np
-import torch
 from PIL import Image
 
 from ..diffusers.load import load_pipeline
-from ..diffusers.pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
@@ -47,7 +45,7 @@ def blend_controlnet(
         image=source,
         negative_prompt=params.negative_prompt,
         num_inference_steps=params.steps,
-        strength=params.strength, # TODO: ControlNet strength
+        strength=params.strength,  # TODO: ControlNet strength
         callback=callback,
     )
 

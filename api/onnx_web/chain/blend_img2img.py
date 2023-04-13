@@ -3,7 +3,6 @@ from typing import Optional
 
 import numpy as np
 import torch
-from diffusers import OnnxStableDiffusionImg2ImgPipeline
 from PIL import Image
 
 from ..diffusers.load import load_pipeline
@@ -33,7 +32,7 @@ def blend_img2img(
 
     pipe = load_pipeline(
         server,
-        params.pipeline,
+        "img2img",
         params.model,
         params.scheduler,
         job.get_device(),

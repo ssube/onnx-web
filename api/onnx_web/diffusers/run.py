@@ -3,13 +3,11 @@ from typing import Any, List
 
 import numpy as np
 import torch
-from diffusers import OnnxStableDiffusionImg2ImgPipeline, OnnxStableDiffusionPipeline
 from PIL import Image
 
 from ..chain import blend_mask, upscale_outpaint
 from ..chain.base import ChainProgress
 from ..chain.utils import process_tile_order
-from ..diffusers.pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
 from ..output import save_image, save_params
 from ..params import (
     Border,
@@ -231,7 +229,7 @@ def run_img2img_pipeline(
 
     pipe = load_pipeline(
         server,
-        "img2img",
+        params.pipeline,  # this is one of the only places this can actually vary between different pipelines
         params.model,
         params.scheduler,
         job.get_device(),

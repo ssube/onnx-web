@@ -6,7 +6,6 @@ import torch
 from PIL import Image
 
 from ..diffusers.load import load_pipeline
-from ..diffusers.pipelines.pix2pix import OnnxStableDiffusionInstructPix2PixPipeline
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
