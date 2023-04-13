@@ -162,26 +162,30 @@ class UNet2DConditionModel_CNet(ModelMixin, ConfigMixin, UNet2DConditionLoadersM
         # Check inputs
         if len(down_block_types) != len(up_block_types):
             raise ValueError(
-                f"Must provide the same number of `down_block_types` as `up_block_types`. `down_block_types`: {down_block_types}. `up_block_types`: {up_block_types}."
+                f"Must provide the same number of `down_block_types` as `up_block_types`."
+                f"`down_block_types`: {down_block_types}. `up_block_types`: {up_block_types}."
             )
 
         if len(block_out_channels) != len(down_block_types):
             raise ValueError(
-                f"Must provide the same number of `block_out_channels` as `down_block_types`. `block_out_channels`: {block_out_channels}. `down_block_types`: {down_block_types}."
+                f"Must provide the same number of `block_out_channels` as `down_block_types`."
+                f"`block_out_channels`: {block_out_channels}. `down_block_types`: {down_block_types}."
             )
 
         if not isinstance(only_cross_attention, bool) and len(
             only_cross_attention
         ) != len(down_block_types):
             raise ValueError(
-                f"Must provide the same number of `only_cross_attention` as `down_block_types`. `only_cross_attention`: {only_cross_attention}. `down_block_types`: {down_block_types}."
+                f"Must provide the same number of `only_cross_attention` as `down_block_types`."
+                f"`only_cross_attention`: {only_cross_attention}. `down_block_types`: {down_block_types}."
             )
 
         if not isinstance(attention_head_dim, int) and len(attention_head_dim) != len(
             down_block_types
         ):
             raise ValueError(
-                f"Must provide the same number of `attention_head_dim` as `down_block_types`. `attention_head_dim`: {attention_head_dim}. `down_block_types`: {down_block_types}."
+                f"Must provide the same number of `attention_head_dim` as `down_block_types`."
+                f"`attention_head_dim`: {attention_head_dim}. `down_block_types`: {down_block_types}."
             )
 
         # input
@@ -423,7 +427,8 @@ class UNet2DConditionModel_CNet(ModelMixin, ConfigMixin, UNet2DConditionLoadersM
             `processor (`dict` of `AttnProcessor` or `AttnProcessor`):
                 The instantiated processor class or a dictionary of processor classes that will be set as the processor
                 of **all** `CrossAttention` layers.
-            In case `processor` is a dict, the key needs to define the path to the corresponding cross attention processor. This is strongly recommended when setting trainablae attention processors.:
+            In case `processor` is a dict, the key needs to define the path to the corresponding cross attention processor.
+            This is strongly recommended when setting trainable attention processors.
         """
         count = len(self.attn_processors.keys())
 

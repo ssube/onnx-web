@@ -369,7 +369,9 @@ class UNetWrapper(object):
         self.server = server
         self.wrapped = wrapped
 
-    def __call__(self, sample=None, timestep=None, encoder_hidden_states=None, **kwargs):
+    def __call__(
+        self, sample=None, timestep=None, encoder_hidden_states=None, **kwargs
+    ):
         global timestep_dtype
         timestep_dtype = timestep.dtype
 
