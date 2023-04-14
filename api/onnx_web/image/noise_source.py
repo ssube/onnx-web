@@ -1,55 +1,12 @@
-from typing import Tuple, Union
-
 import numpy as np
 from numpy import random
-from PIL import Image, ImageChops, ImageFilter, ImageOps
+from PIL import Image, ImageFilter
 
-from .params import Border, Point, Size
+from .params import Point
 
 
 def get_pixel_index(x: int, y: int, width: int) -> int:
     return (y * width) + x
-
-
-def mask_filter_none(
-    mask: Image.Image, dims: Point, origin: Point, fill="white", **kw
-) -> Image.Image:
-    width, height = dims
-
-    noise = Image.new("RGB", (width, height), fill)
-    noise.paste(mask, origin)
-
-    return noise
-
-
-def mask_filter_gaussian_multiply(
-    mask: Image.Image, dims: Point, origin: Point, rounds=3, **kw
-) -> Image.Image:
-    """
-    Gaussian blur with multiply, source image centered on white canvas.
-    """
-    noise = mask_filter_none(mask, dims, origin)
-
-    for _i in range(rounds):
-        blur = noise.filter(ImageFilter.GaussianBlur(5))
-        noise = ImageChops.multiply(noise, blur)
-
-    return noise
-
-
-def mask_filter_gaussian_screen(
-    mask: Image.Image, dims: Point, origin: Point, rounds=3, **kw
-) -> Image.Image:
-    """
-    Gaussian blur, source image centered on white canvas.
-    """
-    noise = mask_filter_none(mask, dims, origin)
-
-    for _i in range(rounds):
-        blur = noise.filter(ImageFilter.GaussianBlur(5))
-        noise = ImageChops.screen(noise, blur)
-
-    return noise
 
 
 def noise_source_fill_edge(
@@ -163,52 +120,3 @@ def noise_source_histogram(
             noise.putpixel((x, y), (noise_r[i], noise_g[i], noise_b[i]))
 
     return noise
-
-
-# very loosely based on https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/scripts/outpainting_mk_2.py#L175-L232
-def expand_image(
-    source: Image.Image,
-    mask: Image.Image,
-    expand: Border,
-    fill="white",
-    noise_source=noise_source_histogram,
-    mask_filter=mask_filter_none,
-):
-    full_width = expand.left + source.width + expand.right
-    full_height = expand.top + source.height + expand.bottom
-
-    dims = (full_width, full_height)
-    origin = (expand.left, expand.top)
-
-    full_source = Image.new("RGB", dims, fill)
-    full_source.paste(source, origin)
-
-    # new mask pixels need to be filled with white so they will be replaced
-    full_mask = mask_filter(mask, dims, origin, fill="white")
-    full_noise = noise_source(source, dims, origin, fill=fill)
-    full_noise = ImageChops.multiply(full_noise, full_mask)
-
-    full_source = Image.composite(full_noise, full_source, full_mask.convert("L"))
-
-    return (full_source, full_mask, full_noise, (full_width, full_height))
-
-
-def valid_image(
-    image: Image.Image,
-    min_dims: Union[Size, Tuple[int, int]] = [512, 512],
-    max_dims: Union[Size, Tuple[int, int]] = [512, 512],
-) -> Image.Image:
-    min_x, min_y = min_dims
-    max_x, max_y = max_dims
-
-    if image.width > max_x or image.height > max_y:
-        image = ImageOps.contain(image, (max_x, max_y))
-
-    if image.width < min_x or image.height < min_y:
-        blank = Image.new(image.mode, (min_x, min_y), "black")
-        blank.paste(image)
-        image = blank
-
-    # check for square
-
-    return image

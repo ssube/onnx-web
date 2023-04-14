@@ -42,6 +42,7 @@ from .load import (
     get_mask_filters,
     get_network_models,
     get_noise_sources,
+    get_source_filters,
     get_upscaling_models,
 )
 from .params import (
@@ -151,6 +152,9 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
     device, params, size = pipeline_from_request(server, "img2img")
     upscale = upscale_from_request()
+    source_filter = get_from_list(
+        request.args, "sourceFilter", list(get_source_filters().keys())
+    )
 
     strength = get_and_clamp_float(
         request.args,
@@ -160,6 +164,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         get_config_value("strength", "min"),
     )
 
+    # TODO: add filtered source to outputs
     output = make_output_name(server, "img2img", params, size, extras=[strength])
     job_name = output[0]
     logger.info("img2img job queued for: %s", job_name)
@@ -175,6 +180,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         source,
         strength,
         needs_device=device,
+        source_filter=source_filter,
     )
 
     return jsonify(json_params(output, params, size, upscale=upscale))

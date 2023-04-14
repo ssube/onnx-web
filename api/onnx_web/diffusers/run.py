@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Any, List
+from typing import Any, List, Optional
 
 import numpy as np
 import torch
@@ -19,6 +19,7 @@ from ..params import (
     UpscaleParams,
 )
 from ..server import ServerContext
+from ..server.load import get_source_filters
 from ..utils import run_gc
 from ..worker import WorkerContext
 from .load import get_latents_from_seed, load_pipeline
@@ -222,10 +223,15 @@ def run_img2img_pipeline(
     upscale: UpscaleParams,
     source: Image.Image,
     strength: float,
+    source_filter: Optional[str] = None,
 ) -> None:
     (prompt, loras) = get_loras_from_prompt(params.prompt)
     (prompt, inversions) = get_inversions_from_prompt(prompt)
     params.prompt = prompt
+
+    # filter the source image
+    if source_filter is not None:
+        source = get_source_filters(source_filter)(source)
 
     pipe = load_pipeline(
         server,
@@ -243,6 +249,8 @@ def run_img2img_pipeline(
         pipe_params["controlnet_conditioning_scale"] = strength
     elif params.pipeline == "img2img":
         pipe_params["strength"] = strength
+    elif params.pipeline == "pix2pix":
+        pipe_params["image_guidance_scale"] = strength
 
     progress = job.get_progress_callback()
     if params.lpw():

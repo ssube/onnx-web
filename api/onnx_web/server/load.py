@@ -19,6 +19,17 @@ from ..image import (  # mask filters; noise sources
     noise_source_histogram,
     noise_source_normal,
     noise_source_uniform,
+    source_filter_canny,
+    source_filter_depth,
+    source_filter_face,
+    source_filter_gaussian,
+    source_filter_hed,
+    source_filter_mlsd,
+    source_filter_noise,
+    source_filter_normal,
+    source_filter_openpose,
+    source_filter_scribble,
+    source_filter_segment,
 )
 from ..models.meta import NetworkModel
 from ..params import DeviceParams
@@ -32,11 +43,15 @@ logger = getLogger(__name__)
 config_params: Dict[str, Dict[str, Union[float, int, str]]] = {}
 
 # pipeline params
-platform_providers = {
-    "cpu": "CPUExecutionProvider",
-    "cuda": "CUDAExecutionProvider",
-    "directml": "DmlExecutionProvider",
-    "rocm": "ROCMExecutionProvider",
+highres_methods = [
+    "bilinear",
+    "lanczos",
+    "upscale",
+]
+mask_filters = {
+    "none": mask_filter_none,
+    "gaussian-multiply": mask_filter_gaussian_multiply,
+    "gaussian-screen": mask_filter_gaussian_screen,
 }
 noise_sources = {
     "fill-edge": noise_source_fill_edge,
@@ -46,17 +61,25 @@ noise_sources = {
     "normal": noise_source_normal,
     "uniform": noise_source_uniform,
 }
-mask_filters = {
-    "none": mask_filter_none,
-    "gaussian-multiply": mask_filter_gaussian_multiply,
-    "gaussian-screen": mask_filter_gaussian_screen,
+platform_providers = {
+    "cpu": "CPUExecutionProvider",
+    "cuda": "CUDAExecutionProvider",
+    "directml": "DmlExecutionProvider",
+    "rocm": "ROCMExecutionProvider",
 }
-highres_methods = [
-    "bilinear",
-    "lanczos",
-    "upscale",
-]
-
+source_filters = {
+    "gaussian": source_filter_gaussian,
+    "noise": source_filter_noise,
+    "face": source_filter_face,
+    "segment": source_filter_segment,
+    "mlsd": source_filter_mlsd,
+    "normal": source_filter_normal,
+    "hed": source_filter_hed,
+    "scribble": source_filter_scribble,
+    "depth": source_filter_depth,
+    "canny": source_filter_canny,
+    "openpose": source_filter_openpose,
+}
 
 # Available ORT providers
 available_platforms: List[DeviceParams] = []
@@ -109,6 +132,10 @@ def get_mask_filters():
 
 def get_noise_sources():
     return noise_sources
+
+
+def get_source_filters():
+    return source_filters
 
 
 def get_config_value(key: str, subkey: str = "default", default=None):

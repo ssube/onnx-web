@@ -5,6 +5,7 @@ protobuf<4,>=3.20.2
 ### AI packages ###
 accelerate
 coloredlogs
+controlnet_aux
 diffusers
 onnx
 # onnxruntime has many platform-specific packages
