@@ -111,10 +111,12 @@ def list_extra_strings(server: ServerContext):
 def list_filters(server: ServerContext):
     mask_filters = list(get_mask_filters().keys())
     source_filters = list(get_source_filters().keys())
-    return jsonify({
-        "mask": mask_filters,
-        "source": source_filters,
-    })
+    return jsonify(
+        {
+            "mask": mask_filters,
+            "source": source_filters,
+        }
+    )
 
 
 def list_mask_filters(server: ServerContext):

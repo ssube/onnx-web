@@ -8,7 +8,7 @@ import numpy as np
 import torch
 import transformers
 from controlnet_aux import HEDdetector, MLSDdetector, OpenposeDetector
-from huggingface_hub import snapshot_download
+from huggingface_hub import hf_hub_download, snapshot_download
 from PIL import Image
 
 from ..server.context import ServerContext
@@ -92,8 +92,13 @@ def source_filter_segment(server: ServerContext, source: Image.Image) -> Image.I
 def source_filter_mlsd(server: ServerContext, source: Image.Image) -> Image.Image:
     logger.debug("running MLSD on source image")
 
-    # TODO: get model name
-    mlsd = MLSDdetector.from_pretrained(filter_model_path(server, "mlsd"))
+    mlsd = MLSDdetector.from_pretrained(
+        hf_hub_download(
+            "lllyasviel/ControlNet",
+            "annotator/ckpts/mlsd_large_512_fp32.pth",
+            cache_dir=filter_model_path(server, "mlsd"),
+        )
+    )
     image = mlsd(source)
 
     return image
@@ -140,8 +145,13 @@ def source_filter_normal(server: ServerContext, source: Image.Image) -> Image.Im
 def source_filter_hed(server: ServerContext, source: Image.Image) -> Image.Image:
     logger.debug("running HED detection on source image")
 
-    # TODO: get model name
-    hed = HEDdetector.from_pretrained(filter_model_path(server, "hed"))
+    hed = HEDdetector.from_pretrained(
+        hf_hub_download(
+            "lllyasviel/ControlNet",
+            "annotator/ckpts/network-bsds500.pth",
+            cache_dir=filter_model_path(server, "hed"),
+        )
+    )
     image = hed(source)
 
     return image
@@ -150,8 +160,13 @@ def source_filter_hed(server: ServerContext, source: Image.Image) -> Image.Image
 def source_filter_scribble(server: ServerContext, source: Image.Image) -> Image.Image:
     logger.debug("running scribble detection on source image")
 
-    # TODO: get model name
-    hed = HEDdetector.from_pretrained(filter_model_path(server, "hed"))
+    hed = HEDdetector.from_pretrained(
+        hf_hub_download(
+            "lllyasviel/ControlNet",
+            "annotator/ckpts/network-bsds500.pth",
+            cache_dir=filter_model_path(server, "hed"),
+        )
+    )
     image = hed(source, scribble=True)
 
     return image
@@ -184,8 +199,13 @@ def source_filter_canny(
 def source_filter_openpose(server: ServerContext, source: Image.Image) -> Image.Image:
     logger.debug("running OpenPose detection on source image")
 
-    # TODO: get model name
-    model = OpenposeDetector.from_pretrained(filter_model_path(server, "openpose"))
+    model = OpenposeDetector.from_pretrained(
+        hf_hub_download(
+            "lllyasviel/ControlNet",
+            "annotator/ckpts/body_pose_model.pth",
+            cache_dir=filter_model_path(server, "openpose"),
+        )
+    )
     image = model(source)
 
     return image
