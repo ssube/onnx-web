@@ -1,6 +1,6 @@
 from PIL import Image, ImageChops, ImageFilter
 
-from .params import Point
+from ..params import Point
 
 
 def mask_filter_none(

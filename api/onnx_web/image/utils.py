@@ -4,7 +4,7 @@ from PIL import Image, ImageChops, ImageOps
 
 from .mask_filter import mask_filter_none
 from .noise_source import noise_source_histogram
-from .params import Border, Size
+from ..params import Border, Size
 
 
 # very loosely based on https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/scripts/outpainting_mk_2.py#L175-L232

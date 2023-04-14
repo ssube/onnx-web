@@ -2,7 +2,7 @@ import numpy as np
 from numpy import random
 from PIL import Image, ImageFilter
 
-from .params import Point
+from ..params import Point
 
 
 def get_pixel_index(x: int, y: int, width: int) -> int:
