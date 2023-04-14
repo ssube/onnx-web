@@ -285,7 +285,11 @@ def run_img2img_pipeline(
             **pipe_params,
         )
 
-    for image, output in zip(result.images, outputs):
+    images = result.images
+    if source_filter is not None:
+        images.append(source)
+
+    for image, output in zip(images, outputs):
         image = run_upscale_correction(
             job,
             server,

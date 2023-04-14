@@ -183,6 +183,7 @@ def source_filter_canny(
 
     image = cv2.Canny(pil_to_cv2(source), low_threshold, high_threshold)
     image = Image.fromarray(image)
+    image = image.convert("RGB")
 
     return image
 
@@ -192,7 +193,7 @@ def source_filter_openpose(server: ServerContext, source: Image.Image) -> Image.
 
     model = OpenposeDetector.from_pretrained(
         "lllyasviel/ControlNet",
-        cache_dir=server.cache_dir,
+        cache_dir=server.cache_path,
     )
     image = model(source)
 

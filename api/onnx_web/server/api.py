@@ -176,8 +176,12 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         get_config_value("strength", "min"),
     )
 
-    # TODO: add filtered source to outputs
-    output = make_output_name(server, "img2img", params, size, extras=[strength])
+    output_count = params.batch
+    if source_filter is not None:
+        output_count += 1
+
+    output = make_output_name(server, "img2img", params, size, extras=[strength], count=output_count)
+
     job_name = output[0]
     logger.info("img2img job queued for: %s", job_name)
 

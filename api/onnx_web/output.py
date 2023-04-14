@@ -69,7 +69,9 @@ def make_output_name(
     params: ImageParams,
     size: Size,
     extras: Optional[List[Optional[Param]]] = None,
+    count: Optional[int] = None,
 ) -> List[str]:
+    count = count or params.batch
     now = int(time())
     sha = sha256()
 
@@ -93,7 +95,7 @@ def make_output_name(
 
     return [
         f"{mode}_{params.seed}_{sha.hexdigest()}_{now}_{i}.{server.image_format}"
-        for i in range(params.batch)
+        for i in range(count)
     ]
 
 
