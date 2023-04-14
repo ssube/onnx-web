@@ -20,7 +20,7 @@ export function Inpaint() {
   const { params } = mustExist(useContext(ConfigContext));
   const client = mustExist(useContext(ClientContext));
 
-  const masks = useQuery(['masks'], async () => client.masks(), {
+  const filters = useQuery(['filters'], async () => client.filters(), {
     staleTime: STALE_TIME,
   });
   const noises = useQuery(['noises'], async () => client.noises(), {
@@ -146,7 +146,8 @@ export function Inpaint() {
           labelKey={'maskFilter'}
           name={t('parameter.maskFilter')}
           query={{
-            result: masks,
+            result: filters,
+            selector: (f) => f.mask,
           }}
           value={filter}
           onChange={(newFilter) => {

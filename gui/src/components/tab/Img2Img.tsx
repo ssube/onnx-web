@@ -3,15 +3,16 @@ import { Box, Button, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
-import { IMAGE_FILTER } from '../../config.js';
+import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, StateContext } from '../../state.js';
 import { ImageControl } from '../control/ImageControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { NumericField } from '../input/NumericField.js';
+import { QueryList } from '../input/QueryList.js';
 
 export function Img2Img() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -32,8 +33,14 @@ export function Img2Img() {
     onSuccess: () => query.invalidateQueries(['ready']),
   });
 
+  const filters = useQuery(['filters'], async () => client.filters(), {
+    staleTime: STALE_TIME,
+  });
+
+
   const state = mustExist(useContext(StateContext));
   const source = useStore(state, (s) => s.img2img.source);
+  const sourceFilter = useStore(state, (s) => s.img2img.sourceFilter);
   const strength = useStore(state, (s) => s.img2img.strength);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
@@ -49,19 +56,36 @@ export function Img2Img() {
         });
       }} />
       <ImageControl selector={(s) => s.img2img} onChange={setImg2Img} />
-      <NumericField
-        decimal
-        label={t('parameter.strength')}
-        min={params.strength.min}
-        max={params.strength.max}
-        step={params.strength.step}
-        value={strength}
-        onChange={(value) => {
-          setImg2Img({
-            strength: value,
-          });
-        }}
-      />
+      <Stack direction='row' spacing={2}>
+        <QueryList
+          id='sources'
+          labelKey={'sourceFilter'}
+          name={t('parameter.sourceFilter')}
+          query={{
+            result: filters,
+            selector: (f) => f.source,
+          }}
+          value={sourceFilter}
+          onChange={(newFilter) => {
+            setImg2Img({
+              sourceFilter: newFilter,
+            });
+          }}
+        />
+        <NumericField
+          decimal
+          label={t('parameter.strength')}
+          min={params.strength.min}
+          max={params.strength.max}
+          step={params.strength.step}
+          value={strength}
+          onChange={(value) => {
+            setImg2Img({
+              strength: value,
+            });
+          }}
+        />
+      </Stack>
       <UpscaleControl />
       <Button
         disabled={doesExist(source) === false}

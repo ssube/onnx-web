@@ -11,7 +11,7 @@ export class NoServerError extends BaseError {
  * @TODO client-side inference with https://www.npmjs.com/package/onnxruntime-web
  */
 export const LOCAL_CLIENT = {
-  async masks() {
+  async filters() {
     throw new NoServerError();
   },
   async blend(model, params, upscale) {

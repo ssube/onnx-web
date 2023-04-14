@@ -108,7 +108,17 @@ def list_extra_strings(server: ServerContext):
     return jsonify(get_extra_strings())
 
 
+def list_filters(server: ServerContext):
+    mask_filters = list(get_mask_filters().keys())
+    source_filters = list(get_source_filters().keys())
+    return jsonify({
+        "mask": mask_filters,
+        "source": source_filters,
+    })
+
+
 def list_mask_filters(server: ServerContext):
+    logger.info("dedicated list endpoint for mask filters is deprecated")
     return jsonify(list(get_mask_filters().keys()))
 
 
@@ -502,6 +512,7 @@ def status(server: ServerContext, pool: DevicePoolExecutor):
 def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecutor):
     return [
         app.route("/api")(wrap_route(introspect, server, app=app)),
+        app.route("/api/settings/filters")(wrap_route(list_filters, server)),
         app.route("/api/settings/masks")(wrap_route(list_mask_filters, server)),
         app.route("/api/settings/models")(wrap_route(list_models, server)),
         app.route("/api/settings/noises")(wrap_route(list_noise_sources, server)),

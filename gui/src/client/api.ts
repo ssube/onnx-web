@@ -67,6 +67,8 @@ export interface Txt2ImgParams extends BaseImgParams {
  */
 export interface Img2ImgParams extends BaseImgParams {
   source: Blob;
+
+  sourceFilter?: string;
   strength: number;
 }
 
@@ -201,10 +203,15 @@ export interface NetworkModel {
   // TODO: add layer/token count
 }
 
+export interface FilterResponse {
+  mask: Array<string>;
+  source: Array<string>;
+}
+
 /**
  * List of available models.
  */
-export interface ModelsResponse {
+export interface ModelResponse {
   correction: Array<string>;
   diffusion: Array<string>;
   networks: Array<NetworkModel>;
@@ -253,12 +260,12 @@ export interface ApiClient {
   /**
    * List the available filter masks for inpaint.
    */
-  masks(): Promise<Array<string>>;
+  filters(): Promise<FilterResponse>;
 
   /**
    * List the available models.
    */
-  models(): Promise<ModelsResponse>;
+  models(): Promise<ModelResponse>;
 
   /**
    * List the available noise sources for inpaint.
@@ -433,15 +440,15 @@ export function makeClient(root: string, f = fetch): ApiClient {
   }
 
   return {
-    async masks(): Promise<Array<string>> {
-      const path = makeApiUrl(root, 'settings', 'masks');
+    async filters(): Promise<FilterResponse> {
+      const path = makeApiUrl(root, 'settings', 'filters');
       const res = await f(path);
-      return await res.json() as Array<string>;
+      return await res.json() as FilterResponse;
     },
-    async models(): Promise<ModelsResponse> {
+    async models(): Promise<ModelResponse> {
       const path = makeApiUrl(root, 'settings', 'models');
       const res = await f(path);
-      return await res.json() as ModelsResponse;
+      return await res.json() as ModelResponse;
     },
     async noises(): Promise<Array<string>> {
       const path = makeApiUrl(root, 'settings', 'noises');
@@ -482,6 +489,10 @@ export function makeClient(root: string, f = fetch): ApiClient {
       appendModelToURL(url, model);
 
       url.searchParams.append('strength', params.strength.toFixed(FIXED_FLOAT));
+
+      if (doesExist(params.sourceFilter)) {
+        url.searchParams.append('sourceFilter', params.sourceFilter);
+      }
 
       if (doesExist(upscale)) {
         appendUpscaleToURL(url, upscale);

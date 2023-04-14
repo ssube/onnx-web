@@ -253,6 +253,7 @@ export function createStateSlices(server: ServerParams) {
     img2img: {
       ...base,
       source: null,
+      sourceFilter: '',
       strength: server.strength.default,
     },
     setImg2Img(params) {
@@ -268,6 +269,7 @@ export function createStateSlices(server: ServerParams) {
         img2img: {
           ...base,
           source: null,
+          sourceFilter: '',
           strength: server.strength.default,
         },
       });
