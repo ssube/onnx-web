@@ -180,7 +180,9 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
     if source_filter is not None:
         output_count += 1
 
-    output = make_output_name(server, "img2img", params, size, extras=[strength], count=output_count)
+    output = make_output_name(
+        server, "img2img", params, size, extras=[strength], count=output_count
+    )
 
     job_name = output[0]
     logger.info("img2img job queued for: %s", job_name)
