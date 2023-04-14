@@ -8,7 +8,7 @@ import numpy as np
 import torch
 import transformers
 from controlnet_aux import HEDdetector, MLSDdetector, OpenposeDetector
-from huggingface_hub import hf_hub_download, snapshot_download
+from huggingface_hub import snapshot_download
 from PIL import Image
 
 from ..server.context import ServerContext
@@ -93,11 +93,8 @@ def source_filter_mlsd(server: ServerContext, source: Image.Image) -> Image.Imag
     logger.debug("running MLSD on source image")
 
     mlsd = MLSDdetector.from_pretrained(
-        hf_hub_download(
-            "lllyasviel/ControlNet",
-            "annotator/ckpts/mlsd_large_512_fp32.pth",
-            cache_dir=filter_model_path(server, "mlsd"),
-        )
+        "lllyasviel/ControlNet",
+        cache_dir=server.cache_path,
     )
     image = mlsd(source)
 
@@ -146,11 +143,8 @@ def source_filter_hed(server: ServerContext, source: Image.Image) -> Image.Image
     logger.debug("running HED detection on source image")
 
     hed = HEDdetector.from_pretrained(
-        hf_hub_download(
-            "lllyasviel/ControlNet",
-            "annotator/ckpts/network-bsds500.pth",
-            cache_dir=filter_model_path(server, "hed"),
-        )
+        "lllyasviel/ControlNet",
+        cache_dir=server.cache_path,
     )
     image = hed(source)
 
@@ -161,11 +155,8 @@ def source_filter_scribble(server: ServerContext, source: Image.Image) -> Image.
     logger.debug("running scribble detection on source image")
 
     hed = HEDdetector.from_pretrained(
-        hf_hub_download(
-            "lllyasviel/ControlNet",
-            "annotator/ckpts/network-bsds500.pth",
-            cache_dir=filter_model_path(server, "hed"),
-        )
+        "lllyasviel/ControlNet",
+        cache_dir=server.cache_path,
     )
     image = hed(source, scribble=True)
 
@@ -200,11 +191,8 @@ def source_filter_openpose(server: ServerContext, source: Image.Image) -> Image.
     logger.debug("running OpenPose detection on source image")
 
     model = OpenposeDetector.from_pretrained(
-        hf_hub_download(
-            "lllyasviel/ControlNet",
-            "annotator/ckpts/body_pose_model.pth",
-            cache_dir=filter_model_path(server, "openpose"),
-        )
+        "lllyasviel/ControlNet",
+        cache_dir=server.cache_dir,
     )
     image = model(source)
 
