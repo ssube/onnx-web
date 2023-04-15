@@ -77,21 +77,21 @@ class RRDB(nn.Module):
 
 
 class RRDBNet(nn.Module):
-    def __init__(self, in_nc=3, out_nc=3, nf=64, nb=23, gc=32, sf=4):
+    def __init__(self, num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4):
         super(RRDBNet, self).__init__()
-        RRDB_block_f = functools.partial(RRDB, nf=nf, gc=gc)
-        self.sf = sf
-        print([in_nc, out_nc, nf, nb, gc, sf])
+        RRDB_block_f = functools.partial(RRDB, nf=num_feat, gc=num_grow_ch)
+        self.sf = scale
+        print([num_in_ch, num_out_ch, num_feat, num_block, num_grow_ch, scale])
 
-        self.conv_first = nn.Conv2d(in_nc, nf, 3, 1, 1, bias=True)
-        self.RRDB_trunk = make_layer(RRDB_block_f, nb)
-        self.trunk_conv = nn.Conv2d(nf, nf, 3, 1, 1, bias=True)
+        self.conv_first = nn.Conv2d(num_in_ch, num_feat, 3, 1, 1, bias=True)
+        self.RRDB_trunk = make_layer(RRDB_block_f, num_block)
+        self.trunk_conv = nn.Conv2d(num_feat, num_feat, 3, 1, 1, bias=True)
         # upsampling
-        self.upconv1 = nn.Conv2d(nf, nf, 3, 1, 1, bias=True)
+        self.upconv1 = nn.Conv2d(num_feat, num_feat, 3, 1, 1, bias=True)
         if self.sf == 4:
-            self.upconv2 = nn.Conv2d(nf, nf, 3, 1, 1, bias=True)
-        self.HRconv = nn.Conv2d(nf, nf, 3, 1, 1, bias=True)
-        self.conv_last = nn.Conv2d(nf, out_nc, 3, 1, 1, bias=True)
+            self.upconv2 = nn.Conv2d(num_feat, num_feat, 3, 1, 1, bias=True)
+        self.HRconv = nn.Conv2d(num_feat, num_feat, 3, 1, 1, bias=True)
+        self.conv_last = nn.Conv2d(num_feat, num_out_ch, 3, 1, 1, bias=True)
 
         self.lrelu = nn.LeakyReLU(negative_slope=0.2, inplace=True)
 

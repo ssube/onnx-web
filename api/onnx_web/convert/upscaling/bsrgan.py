@@ -30,12 +30,12 @@ def convert_upscaling_bsrgan(
     logger.info("loading and training model")
     # values based on https://github.com/cszn/BSRGAN/blob/main/main_test_bsrgan.py#L69
     model = RRDBNet(
-        in_nc=3,
-        out_nc=3,
-        nf=64,
-        nb=23,
-        gc=32,
-        sf=scale,
+        num_in_ch=3,
+        num_out_ch=3,
+        num_feat=64,
+        num_block=23,
+        num_grow_ch=32,
+        scale=scale,
     )
 
     torch_model = torch.load(source, map_location=conversion.map_location)
