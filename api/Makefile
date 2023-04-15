@@ -10,6 +10,7 @@ check-venv:
 	if [ -z $${VIRTUAL_ENV+x} ]; then echo "Are you sure you want to install dependencies outside of a virtual environment?"; sleep 30; fi
 
 pip: check-venv
+	pip install -r requirements/cpu.txt
 	pip install -r requirements/base.txt
 
 pip-dev: check-venv

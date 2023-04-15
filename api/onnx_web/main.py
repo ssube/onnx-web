@@ -1,5 +1,6 @@
 import atexit
 import gc
+import mimetypes
 from functools import partial
 from logging import getLogger
 
@@ -31,6 +32,10 @@ logger = getLogger(__name__)
 def main():
     setproctitle("onnx-web server")
     set_start_method("spawn", force=True)
+
+    # set up missing mimetypes
+    mimetypes.add_type("application/javascript", ".js")
+    mimetypes.add_type("text/css", ".css")
 
     context = ServerContext.from_environ()
     apply_patches(context)
