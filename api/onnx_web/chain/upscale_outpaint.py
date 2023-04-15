@@ -72,9 +72,10 @@ def upscale_outpaint(
             save_image(server, "tile-mask.png", tile_mask)
 
         latents = get_tile_latents(full_latents, dims)
+        pipe_type = "lpw" if params.lpw() else "inpaint"
         pipe = load_pipeline(
             server,
-            "inpaint",
+            pipe_type,
             params.model,
             params.scheduler,
             job.get_device(),
@@ -100,14 +101,14 @@ def upscale_outpaint(
             result = pipe(
                 params.prompt,
                 tile_source,
-                generator=rng,
-                guidance_scale=params.cfg,
+                tile_mask,
                 height=size.height,
-                latents=latents,
-                mask_image=tile_mask,
-                negative_prompt=params.negative_prompt,
-                num_inference_steps=params.steps,
                 width=size.width,
+                num_inference_steps=params.steps,
+                guidance_scale=params.cfg,
+                negative_prompt=params.negative_prompt,
+                generator=rng,
+                latents=latents,
                 callback=callback,
             )
 

@@ -65,9 +65,10 @@ def run_highres(
         )
 
     # load img2img pipeline once
+    pipe_type = "lpw" if params.lpw() else "img2img"
     highres_pipe = load_pipeline(
         server,
-        "img2img",
+        pipe_type,
         params.model,
         params.scheduler,
         job.get_device(),
@@ -168,9 +169,10 @@ def run_txt2img_pipeline(
     (prompt, inversions) = get_inversions_from_prompt(prompt)
     params.prompt = prompt
 
+    pipe_type = "lpw" if params.lpw() else "txt2img"
     pipe = load_pipeline(
         server,
-        "txt2img",
+        pipe_type,
         params.model,
         params.scheduler,
         job.get_device(),

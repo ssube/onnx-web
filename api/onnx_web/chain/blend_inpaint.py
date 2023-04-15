@@ -58,9 +58,10 @@ def blend_inpaint(
         save_image(server, "last-mask.png", stage_mask)
         save_image(server, "last-noise.png", noise)
 
+    pipe_type = "lpw" if params.lpw() else "inpaint"
     pipe = load_pipeline(
         server,
-        "inpaint",
+        pipe_type,
         params.model,
         params.scheduler,
         job.get_device(),

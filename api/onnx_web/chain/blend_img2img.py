@@ -30,9 +30,10 @@ def blend_img2img(
         "blending image using img2img, %s steps: %s", params.steps, params.prompt
     )
 
+    pipe_type = "lpw" if params.lpw() else "img2img"
     pipe = load_pipeline(
         server,
-        "img2img",
+        pipe_type,
         params.model,
         params.scheduler,
         job.get_device(),

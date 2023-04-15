@@ -36,9 +36,10 @@ def source_txt2img(
         )
 
     latents = get_latents_from_seed(params.seed, size)
+    pipe_type = "lpw" if params.lpw() else "txt2img"
     pipe = load_pipeline(
         server,
-        "txt2img",
+        pipe_type,
         params.model,
         params.scheduler,
         job.get_device(),
