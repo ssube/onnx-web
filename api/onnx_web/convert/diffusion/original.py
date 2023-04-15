@@ -1667,13 +1667,17 @@ def convert_diffusion_original(
 
     dest_path = os.path.join(conversion.model_path, name)
     dest_index = os.path.join(dest_path, "model_index.json")
+    cnet_path = os.path.join(dest_path, "cnet", ONNX_MODEL)
     logger.info(
         "converting original Diffusers checkpoint %s: %s -> %s", name, source, dest_path
     )
 
     if os.path.exists(dest_path) and os.path.exists(dest_index):
-        logger.info("ONNX pipeline already exists, skipping")
-        return (False, dest_path)
+        if not os.path.exists(cnet_path):
+            logger.info("SD checkpoint was converted without a ControlNet UNet, converting one")
+        else:
+            logger.info("ONNX pipeline already exists, skipping")
+            return (False, dest_path)
 
     torch_name = name + "-torch"
     torch_path = os.path.join(conversion.cache_path, torch_name)
