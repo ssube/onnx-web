@@ -71953,9 +71953,11 @@ Please use another name.` : formatMuiErrorMessage(18));
             canny: "Canny Edges",
             depth: "Depth Map",
             hed: "HED Edges",
+            mlsd: "M-LSD Segmentation",
             normal: "Normal Map",
             openpose: "OpenPose",
-            scribble: "Scribble"
+            scribble: "Scribble",
+            segment: "Image Segmentation"
           }
         },
         modelType: {
@@ -72083,17 +72085,17 @@ Please use another name.` : formatMuiErrorMessage(18));
         },
         sourceFilter: {
           none: "None",
-          gaussian: "Gaussian Blur",
-          noise: "Histogram Noise",
+          canny: "Canny Edges",
+          depth: "Depth Map",
           face: "Face Detection",
-          segment: "Image Segmentation",
+          gaussian: "Gaussian Blur",
+          hed: "HED Edges",
           mlsd: "M-LSD Segmentation",
           normal: "Normal Map",
-          hed: "HED Edges",
+          noise: "Histogram Noise",
+          openpose: "OpenPose",
           scribble: "Scribble",
-          depth: "Depth Map",
-          canny: "Canny Edges",
-          openpose: "OpenPose"
+          segment: "Image Segmentation"
         },
         tab: {
           blend: "Blend",
