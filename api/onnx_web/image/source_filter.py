@@ -14,6 +14,7 @@ from PIL import Image, ImageChops, ImageFilter
 from ..server.context import ServerContext
 from .ade_palette import ade_palette
 from .laion_face import generate_annotation
+from .noise_source import noise_source_histogram
 
 logger = getLogger(__name__)
 
@@ -29,8 +30,9 @@ def filter_model_path(server: ServerContext, filter_name: str) -> str:
 def source_filter_gaussian(
     server: ServerContext,
     source: Image.Image,
+    kernel: int = 3,
 ):
-    return source.filter(ImageFilter.GaussianBlur(3))
+    return source.filter(ImageFilter.GaussianBlur(kernel))
 
 
 def source_filter_noise(

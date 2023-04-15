@@ -1,10 +1,10 @@
 [tool.black]
-force-exclude = '''/(diffusion_original|lpw_stable_diffusion_onnx|pipeline_onnx_stable_diffusion_upscale).py'''
+force-exclude = '''/(diffusion_original|lpw).py'''
 
 [tool.isort]
 profile = "black"
 force_to_top = ".logging"
-skip_glob = ["*/lpw_stable_diffusion_onnx.py", "*/pipeline_onnx_stable_diffusion_upscale.py"]
+skip_glob = ["*/lpw.py"]
 
 [tool.mypy]
 # ignore_missing_imports = true

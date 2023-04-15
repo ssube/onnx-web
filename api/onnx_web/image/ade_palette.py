@@ -1,6 +1,7 @@
-# same palette found in https://github.com/huggingface/diffusers/blob/53377ef83c6446033f3ee506e3ef718db817b293/examples/community/stable_diffusion_controlnet_inpaint_img2img.py#L38
-# and https://github.com/ForserX/StableDiffusionUI/blob/main/data/repo/diffusion_scripts/modules/controlnet/palette.py
-# and https://github.com/azuritecoin/OnnxDiffusersUI/blob/main/modules/controlnet_utils.py
+# same palette found in:
+# - https://github.com/huggingface/diffusers/blob/main/examples/community/stable_diffusion_controlnet_inpaint_img2img.py#L38
+# - https://github.com/ForserX/StableDiffusionUI/blob/main/data/repo/diffusion_scripts/modules/controlnet/palette.py
+# - https://github.com/azuritecoin/OnnxDiffusersUI/blob/main/modules/controlnet_utils.py
 # and others
 
 
