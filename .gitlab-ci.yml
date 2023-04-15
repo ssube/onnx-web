@@ -60,7 +60,6 @@ stages:
       files:
         - api/requirements/base.txt
         - api/requirements/cpu.txt
-        - api/requirements/dev.txt
     paths:
       - .cache/pip
     policy: pull-push
