@@ -18,7 +18,6 @@ from diffusers import (
     KDPM2DiscreteScheduler,
     LMSDiscreteScheduler,
     OnnxRuntimeModel,
-    OnnxStableDiffusionImg2ImgPipeline,
     OnnxStableDiffusionPipeline,
     PNDMScheduler,
     StableDiffusionPipeline,
