@@ -168,7 +168,6 @@ def convert_diffusion_diffusers_cnet(
     del pipe_cnet
 
 
-
 @torch.no_grad()
 def convert_diffusion_diffusers(
     conversion: ConversionContext,
@@ -199,11 +198,13 @@ def convert_diffusion_diffusers(
     if single_vae:
         logger.info("converting model with single VAE")
 
+    cnet_only = False
     if path.exists(dest_path) and path.exists(model_index):
         if not path.exists(model_cnet):
-            logger.info("ONNX model was converted without a ControlNet UNet, converting one")
-            convert_diffusion_diffusers_cnet(conversion, source, device, output_path, dtype, unet_in_channels, unet_sample_size, num_tokens, text_hidden_size)
-            return (True, dest_path)
+            logger.info(
+                "ONNX model was converted without a ControlNet UNet, converting one"
+            )
+            cnet_only = True
         else:
             logger.info("ONNX model already exists, skipping")
             return (False, dest_path)
@@ -227,30 +228,32 @@ def convert_diffusion_diffusers(
         truncation=True,
         return_tensors="pt",
     )
-    onnx_export(
-        pipeline.text_encoder,
-        # casting to torch.int32 until the CLIP fix is released: https://github.com/huggingface/transformers/pull/18515/files
-        model_args=(
-            text_input.input_ids.to(device=device, dtype=torch.int32),
-            None,  # attention mask
-            None,  # position ids
-            None,  # output attentions
-            torch.tensor(True).to(device=device, dtype=torch.bool),
-        ),
-        output_path=output_path / "text_encoder" / ONNX_MODEL,
-        ordered_input_names=["input_ids"],
-        output_names=["last_hidden_state", "pooler_output", "hidden_states"],
-        dynamic_axes={
-            "input_ids": {0: "batch", 1: "sequence"},
-        },
-        opset=conversion.opset,
-        half=conversion.half,
-    )
+
+    if not cnet_only:
+        onnx_export(
+            pipeline.text_encoder,
+            # casting to torch.int32 until the CLIP fix is released: https://github.com/huggingface/transformers/pull/18515/files
+            model_args=(
+                text_input.input_ids.to(device=device, dtype=torch.int32),
+                None,  # attention mask
+                None,  # position ids
+                None,  # output attentions
+                torch.tensor(True).to(device=device, dtype=torch.bool),
+            ),
+            output_path=output_path / "text_encoder" / ONNX_MODEL,
+            ordered_input_names=["input_ids"],
+            output_names=["last_hidden_state", "pooler_output", "hidden_states"],
+            dynamic_axes={
+                "input_ids": {0: "batch", 1: "sequence"},
+            },
+            opset=conversion.opset,
+            half=conversion.half,
+        )
+
     del pipeline.text_encoder
 
-    logger.debug("UNET config: %s", pipeline.unet.config)
-
     # UNET
+    logger.debug("UNET config: %s", pipeline.unet.config)
     if single_vae:
         unet_inputs = ["sample", "timestep", "encoder_hidden_states", "class_labels"]
         unet_scale = torch.tensor(4).to(device=device, dtype=torch.long)
@@ -264,49 +267,68 @@ def convert_diffusion_diffusers(
     unet_in_channels = pipeline.unet.config.in_channels
     unet_sample_size = pipeline.unet.config.sample_size
     unet_path = output_path / "unet" / ONNX_MODEL
-    onnx_export(
-        pipeline.unet,
-        model_args=(
-            torch.randn(2, unet_in_channels, unet_sample_size, unet_sample_size).to(
-                device=device, dtype=dtype
+
+    if not cnet_only:
+        onnx_export(
+            pipeline.unet,
+            model_args=(
+                torch.randn(2, unet_in_channels, unet_sample_size, unet_sample_size).to(
+                    device=device, dtype=dtype
+                ),
+                torch.randn(2).to(device=device, dtype=dtype),
+                torch.randn(2, num_tokens, text_hidden_size).to(
+                    device=device, dtype=dtype
+                ),
+                unet_scale,
             ),
-            torch.randn(2).to(device=device, dtype=dtype),
-            torch.randn(2, num_tokens, text_hidden_size).to(device=device, dtype=dtype),
-            unet_scale,
-        ),
-        output_path=unet_path,
-        ordered_input_names=unet_inputs,
-        # has to be different from "sample" for correct tracing
-        output_names=["out_sample"],
-        dynamic_axes={
-            "sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
-            "timestep": {0: "batch"},
-            "encoder_hidden_states": {0: "batch", 1: "sequence"},
-        },
-        opset=conversion.opset,
-        half=conversion.half,
-        external_data=True,
-    )
-    unet_model_path = str(unet_path.absolute().as_posix())
-    unet_dir = path.dirname(unet_model_path)
-    unet = load_model(unet_model_path)
+            output_path=unet_path,
+            ordered_input_names=unet_inputs,
+            # has to be different from "sample" for correct tracing
+            output_names=["out_sample"],
+            dynamic_axes={
+                "sample": {0: "batch", 1: "channels", 2: "height", 3: "width"},
+                "timestep": {0: "batch"},
+                "encoder_hidden_states": {0: "batch", 1: "sequence"},
+            },
+            opset=conversion.opset,
+            half=conversion.half,
+            external_data=True,
+        )
+        unet_model_path = str(unet_path.absolute().as_posix())
+        unet_dir = path.dirname(unet_model_path)
+        unet = load_model(unet_model_path)
 
-    # clean up existing tensor files
-    rmtree(unet_dir)
-    mkdir(unet_dir)
+        # clean up existing tensor files
+        rmtree(unet_dir)
+        mkdir(unet_dir)
 
-    # collate external tensor files into one
-    save_model(
-        unet,
-        unet_model_path,
-        save_as_external_data=True,
-        all_tensors_to_one_file=True,
-        location=ONNX_WEIGHTS,
-        convert_attribute=False,
-    )
+        # collate external tensor files into one
+        save_model(
+            unet,
+            unet_model_path,
+            save_as_external_data=True,
+            all_tensors_to_one_file=True,
+            location=ONNX_WEIGHTS,
+            convert_attribute=False,
+        )
+
     del pipeline.unet
 
-    convert_diffusion_diffusers_cnet(conversion, source, device, output_path, dtype, unet_in_channels, unet_sample_size, num_tokens, text_hidden_size)
+    convert_diffusion_diffusers_cnet(
+        conversion,
+        source,
+        device,
+        output_path,
+        dtype,
+        unet_in_channels,
+        unet_sample_size,
+        num_tokens,
+        text_hidden_size,
+    )
+
+    if cnet_only:
+        logger.info("done converting CNet")
+        return (True, dest_path)
 
     # VAE
     if replace_vae is not None:

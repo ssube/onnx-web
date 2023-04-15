@@ -19,7 +19,6 @@ from diffusers import (
     LMSDiscreteScheduler,
     OnnxRuntimeModel,
     OnnxStableDiffusionImg2ImgPipeline,
-    OnnxStableDiffusionInpaintPipeline,
     OnnxStableDiffusionPipeline,
     PNDMScheduler,
     StableDiffusionPipeline,
@@ -59,10 +58,10 @@ latent_factor = 8
 available_pipelines = {
     "controlnet": OnnxStableDiffusionControlNetPipeline,
     "img2img": OnnxStableDiffusionImg2ImgPipeline,
-    #"inpaint": OnnxStableDiffusionInpaintPipeline,
+    # "inpaint": OnnxStableDiffusionInpaintPipeline,
     "lpw": OnnxStableDiffusionLongPromptWeightingPipeline,
     "pix2pix": OnnxStableDiffusionInstructPix2PixPipeline,
-    #"txt2img": OnnxStableDiffusionPipeline,
+    # "txt2img": OnnxStableDiffusionPipeline,
 }
 
 pipeline_schedulers = {
