@@ -74,6 +74,21 @@ export function ModelControl() {
         }}
       />
       <QueryList
+        id='pipeline'
+        labelKey='pipeline'
+        name={t('parameter.pipeline')}
+        query={{
+          result: pipelines,
+        }}
+        showEmpty
+        value={params.pipeline}
+        onChange={(pipeline) => {
+          setModel({
+            pipeline,
+          });
+        }}
+      />
+      <QueryList
         id='diffusion'
         labelKey='model'
         name={t('modelType.diffusion')}
@@ -118,6 +133,8 @@ export function ModelControl() {
           });
         }}
       />
+    </Stack>
+    <Stack direction='row' spacing={2}>
       <QueryList
         id='control'
         labelKey='model.control'
@@ -130,23 +147,6 @@ export function ModelControl() {
         onChange={(control) => {
           setModel({
             control,
-          });
-        }}
-      />
-    </Stack>
-    <Stack direction='row' spacing={2}>
-      <QueryList
-        id='pipeline'
-        labelKey='pipeline'
-        name={t('parameter.pipeline')}
-        query={{
-          result: pipelines,
-        }}
-        showEmpty
-        value={params.pipeline}
-        onChange={(pipeline) => {
-          setModel({
-            pipeline,
           });
         }}
       />

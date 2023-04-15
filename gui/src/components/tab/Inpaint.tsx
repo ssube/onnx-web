@@ -15,6 +15,7 @@ import { ImageInput } from '../input/ImageInput.js';
 import { MaskCanvas } from '../input/MaskCanvas.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
+import { HighresControl } from '../control/HighresControl.js';
 
 export function Inpaint() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -29,7 +30,7 @@ export function Inpaint() {
 
   async function uploadSource(): Promise<void> {
     // these are not watched by the component, only sent by the mutation
-    const { model, inpaint, outpaint, upscale } = state.getState();
+    const { model, inpaint, outpaint, upscale, highres } = state.getState();
 
     if (outpaint.enabled) {
       const { image, retry } = await client.outpaint(model, {
@@ -37,7 +38,7 @@ export function Inpaint() {
         ...outpaint,
         mask: mustExist(mask),
         source: mustExist(source),
-      }, upscale);
+      }, upscale, highres);
 
       pushHistory(image, retry);
     } else {
@@ -45,7 +46,7 @@ export function Inpaint() {
         ...inpaint,
         mask: mustExist(mask),
         source: mustExist(source),
-      }, upscale);
+      }, upscale, highres);
 
       pushHistory(image, retry);
     }
@@ -207,6 +208,7 @@ export function Inpaint() {
         </Stack>
       </Stack>
       <OutpaintControl />
+      <HighresControl />
       <UpscaleControl />
       <Button
         disabled={preventInpaint()}

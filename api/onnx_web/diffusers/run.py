@@ -42,6 +42,9 @@ def run_highres(
     inversions: List[Tuple[str, float]],
     loras: List[Tuple[str, float]],
 ) -> None:
+    if highres.scale <= 1:
+        return image
+
     highres_progress = ChainProgress.from_progress(progress)
 
     if upscale.faces and (
@@ -213,19 +216,18 @@ def run_txt2img_pipeline(
     del pipe
 
     for image, output in image_outputs:
-        if highres.scale > 1:
-            image = run_highres(
-                job,
-                server,
-                params,
-                size,
-                upscale,
-                highres,
-                image,
-                progress,
-                inversions,
-                loras,
-            )
+        image = run_highres(
+            job,
+            server,
+            params,
+            size,
+            upscale,
+            highres,
+            image,
+            progress,
+            inversions,
+            loras,
+        )
 
         image = run_upscale_correction(
             job,
@@ -321,19 +323,18 @@ def run_img2img_pipeline(
         images.append(source)
 
     for image, output in zip(images, outputs):
-        if highres.scale > 1:
-            image = run_highres(
-                job,
-                server,
-                params,
-                Size(source.width, source.height),
-                upscale,
-                highres,
-                image,
-                progress,
-                inversions,
-                loras,
-            )
+        image = run_highres(
+            job,
+            server,
+            params,
+            Size(source.width, source.height),
+            upscale,
+            highres,
+            image,
+            progress,
+            inversions,
+            loras,
+        )
 
         image = run_upscale_correction(
             job,
@@ -373,6 +374,10 @@ def run_inpaint_pipeline(
     progress = job.get_progress_callback()
     stage = StageParams(tile_order=tile_order)
 
+    (prompt, loras) = get_loras_from_prompt(params.prompt)
+    (prompt, inversions) = get_inversions_from_prompt(prompt)
+    params.prompt = prompt
+
     # calling the upscale_outpaint stage directly needs accumulating progress
     progress = ChainProgress.from_progress(progress)
 
@@ -389,6 +394,19 @@ def run_inpaint_pipeline(
         mask_filter=mask_filter,
         noise_source=noise_source,
         callback=progress,
+    )
+
+    image = run_highres(
+        job,
+        server,
+        params,
+        size,
+        upscale,
+        highres,
+        image,
+        progress,
+        inversions,
+        loras,
     )
 
     image = run_upscale_correction(
@@ -424,8 +442,26 @@ def run_upscale_pipeline(
     progress = job.get_progress_callback()
     stage = StageParams()
 
+    (prompt, loras) = get_loras_from_prompt(params.prompt)
+    (prompt, inversions) = get_inversions_from_prompt(prompt)
+    params.prompt = prompt
+
     image = run_upscale_correction(
         job, server, stage, params, source, upscale=upscale, callback=progress
+    )
+
+    # TODO: should this come first?
+    image = run_highres(
+        job,
+        server,
+        params,
+        size,
+        upscale,
+        highres,
+        image,
+        progress,
+        inversions,
+        loras,
     )
 
     dest = save_image(server, outputs[0], image)
@@ -462,6 +498,20 @@ def run_blend_pipeline(
         callback=progress,
     )
     image = image.convert("RGB")
+
+    # TODO: blend tab doesn't have a prompt
+    image = run_highres(
+        job,
+        server,
+        params,
+        size,
+        upscale,
+        highres,
+        image,
+        progress,
+        [],
+        [],
+    )
 
     image = run_upscale_correction(
         job, server, stage, params, image, upscale=upscale, callback=progress

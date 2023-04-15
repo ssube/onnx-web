@@ -13,16 +13,17 @@ import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
+import { HighresControl } from '../control/HighresControl.js';
 
 export function Img2Img() {
   const { params } = mustExist(useContext(ConfigContext));
 
   async function uploadSource() {
-    const { model, img2img, upscale } = state.getState();
+    const { model, img2img, upscale, highres } = state.getState();
     const { image, retry } = await client.img2img(model, {
       ...img2img,
       source: mustExist(img2img.source), // TODO: show an error if this doesn't exist
-    }, upscale);
+    }, upscale, highres);
 
     pushHistory(image, retry);
   }
@@ -50,11 +51,16 @@ export function Img2Img() {
 
   return <Box>
     <Stack spacing={2}>
-      <ImageInput filter={IMAGE_FILTER} image={source} label={t('input.image.source')} onChange={(file) => {
-        setImg2Img({
-          source: file,
-        });
-      }} />
+      <ImageInput
+        filter={IMAGE_FILTER}
+        image={source}
+        label={t('input.image.source')}
+        onChange={(file) => {
+          setImg2Img({
+            source: file,
+          });
+        }}
+      />
       <ImageControl selector={(s) => s.img2img} onChange={setImg2Img} />
       <Stack direction='row' spacing={2}>
         <QueryList
@@ -86,6 +92,7 @@ export function Img2Img() {
           }}
         />
       </Stack>
+      <HighresControl />
       <UpscaleControl />
       <Button
         disabled={doesExist(source) === false}

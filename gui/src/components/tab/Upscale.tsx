@@ -11,6 +11,7 @@ import { ClientContext, StateContext } from '../../state.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { PromptInput } from '../input/PromptInput.js';
+import { HighresControl } from '../control/HighresControl.js';
 
 export function Upscale() {
   async function uploadSource() {
@@ -56,6 +57,7 @@ export function Upscale() {
           setSource(value);
         }}
       />
+      <HighresControl />
       <UpscaleControl />
       <Button
         disabled={doesExist(params.source) === false}

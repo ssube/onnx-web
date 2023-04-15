@@ -229,21 +229,25 @@ export type RetryParams = {
   model: ModelParams;
   params: Img2ImgParams;
   upscale?: UpscaleParams;
+  highres?: HighresParams;
 } | {
   type: 'inpaint';
   model: ModelParams;
   params: InpaintParams;
   upscale?: UpscaleParams;
+  highres?: HighresParams;
 } | {
   type: 'outpaint';
   model: ModelParams;
   params: OutpaintParams;
   upscale?: UpscaleParams;
+  highres?: HighresParams;
 } | {
   type: 'upscale';
   model: ModelParams;
   params: UpscaleReqParams;
   upscale?: UpscaleParams;
+  highres?: HighresParams;
 } | {
   type: 'blend';
   model: ModelParams;
@@ -307,22 +311,22 @@ export interface ApiClient {
   /**
    * Start an im2img pipeline.
    */
-  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
+  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry>;
 
   /**
    * Start an inpaint pipeline.
    */
-  inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
+  inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry>;
 
   /**
    * Start an outpaint pipeline.
    */
-  outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
+  outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry>;
 
   /**
    * Start an upscale pipeline.
    */
-  upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
+  upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry>;
 
   /**
    * Start a blending pipeline.
@@ -431,6 +435,16 @@ export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
   }
 }
 
+export function appendHighresToURL(url: URL, highres: HighresParams) {
+  if (highres.enabled) {
+    url.searchParams.append('highresIterations', highres.highresIterations.toFixed(FIXED_INTEGER));
+    url.searchParams.append('highresMethod', highres.highresMethod);
+    url.searchParams.append('highresScale', highres.highresScale.toFixed(FIXED_INTEGER));
+    url.searchParams.append('highresSteps', highres.highresSteps.toFixed(FIXED_INTEGER));
+    url.searchParams.append('highresStrength', highres.highresStrength.toFixed(FIXED_FLOAT));
+  }
+}
+
 /**
  * Make an API client using the given API root and fetch client.
  */
@@ -484,7 +498,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
         translation: Record<string, string>;
       }>;
     },
-    async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry> {
+    async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry> {
       const url = makeImageURL(root, 'img2img', params);
       appendModelToURL(url, model);
 
@@ -496,6 +510,10 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       if (doesExist(upscale)) {
         appendUpscaleToURL(url, upscale);
+      }
+
+      if (doesExist(highres)) {
+        appendHighresToURL(url, highres);
       }
 
       const body = new FormData();
@@ -531,12 +549,8 @@ export function makeClient(root: string, f = fetch): ApiClient {
         appendUpscaleToURL(url, upscale);
       }
 
-      if (doesExist(highres) && highres.enabled) {
-        url.searchParams.append('highresIterations', highres.highresIterations.toFixed(FIXED_INTEGER));
-        url.searchParams.append('highresMethod', highres.highresMethod);
-        url.searchParams.append('highresScale', highres.highresScale.toFixed(FIXED_INTEGER));
-        url.searchParams.append('highresSteps', highres.highresSteps.toFixed(FIXED_INTEGER));
-        url.searchParams.append('highresStrength', highres.highresStrength.toFixed(FIXED_FLOAT));
+      if (doesExist(highres)) {
+        appendHighresToURL(url, highres);
       }
 
       const image = await parseRequest(url, {
@@ -553,7 +567,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
         },
       };
     },
-    async inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry> {
+    async inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry> {
       const url = makeImageURL(root, 'inpaint', params);
       appendModelToURL(url, model);
 
@@ -564,6 +578,10 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       if (doesExist(upscale)) {
         appendUpscaleToURL(url, upscale);
+      }
+
+      if (doesExist(highres)) {
+        appendHighresToURL(url, highres);
       }
 
       const body = new FormData();
@@ -584,7 +602,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
         },
       };
     },
-    async outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry> {
+    async outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry> {
       const url = makeImageURL(root, 'inpaint', params);
       appendModelToURL(url, model);
 
@@ -596,6 +614,10 @@ export function makeClient(root: string, f = fetch): ApiClient {
 
       if (doesExist(upscale)) {
         appendUpscaleToURL(url, upscale);
+      }
+
+      if (doesExist(highres)) {
+        appendHighresToURL(url, highres);
       }
 
       if (doesExist(params.left)) {
@@ -632,12 +654,16 @@ export function makeClient(root: string, f = fetch): ApiClient {
         },
       };
     },
-    async upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry> {
+    async upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry> {
       const url = makeApiUrl(root, 'upscale');
       appendModelToURL(url, model);
 
       if (doesExist(upscale)) {
         appendUpscaleToURL(url, upscale);
+      }
+
+      if (doesExist(highres)) {
+        appendHighresToURL(url, highres);
       }
 
       url.searchParams.append('prompt', params.prompt);
@@ -714,15 +740,15 @@ export function makeClient(root: string, f = fetch): ApiClient {
         case 'blend':
           return this.blend(retry.model, retry.params, retry.upscale);
         case 'img2img':
-          return this.img2img(retry.model, retry.params, retry.upscale);
+          return this.img2img(retry.model, retry.params, retry.upscale, retry.highres);
         case 'inpaint':
-          return this.inpaint(retry.model, retry.params, retry.upscale);
+          return this.inpaint(retry.model, retry.params, retry.upscale, retry.highres);
         case 'outpaint':
-          return this.outpaint(retry.model, retry.params, retry.upscale);
+          return this.outpaint(retry.model, retry.params, retry.upscale, retry.highres);
         case 'txt2img':
           return this.txt2img(retry.model, retry.params, retry.upscale, retry.highres);
         case 'upscale':
-          return this.upscale(retry.model, retry.params, retry.upscale);
+          return this.upscale(retry.model, retry.params, retry.upscale, retry.highres);
         default:
           throw new InvalidArgumentError('unknown request type');
       }

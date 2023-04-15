@@ -164,6 +164,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
     device, params, size = pipeline_from_request(server, "img2img")
     upscale = upscale_from_request()
+    highres = highres_from_request()
     source_filter = get_from_list(
         request.args, "sourceFilter", list(get_source_filters().keys())
     )
@@ -195,13 +196,14 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         params,
         output,
         upscale,
+        highres,
         source,
         strength,
         needs_device=device,
         source_filter=source_filter,
     )
 
-    return jsonify(json_params(output, params, size, upscale=upscale))
+    return jsonify(json_params(output, params, size, upscale=upscale, highres=highres))
 
 
 def txt2img(server: ServerContext, pool: DevicePoolExecutor):
@@ -243,6 +245,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     device, params, size = pipeline_from_request(server, "inpaint")
     expand = border_from_request()
     upscale = upscale_from_request()
+    highres = highres_from_request()
 
     fill_color = get_not_empty(request.args, "fillColor", "white")
     mask_filter = get_from_map(request.args, "filter", get_mask_filters(), "none")
@@ -280,6 +283,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
         size,
         output,
         upscale,
+        highres,
         source,
         mask,
         expand,
@@ -290,7 +294,11 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
         needs_device=device,
     )
 
-    return jsonify(json_params(output, params, size, upscale=upscale, border=expand))
+    return jsonify(
+        json_params(
+            output, params, size, upscale=upscale, border=expand, highres=highres
+        )
+    )
 
 
 def upscale(server: ServerContext, pool: DevicePoolExecutor):
@@ -302,6 +310,7 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
 
     device, params, size = pipeline_from_request(server)
     upscale = upscale_from_request()
+    highres = highres_from_request()
 
     output = make_output_name(server, "upscale", params, size)
     job_name = output[0]
@@ -316,11 +325,12 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
         size,
         output,
         upscale,
+        highres,
         source,
         needs_device=device,
     )
 
-    return jsonify(json_params(output, params, size, upscale=upscale))
+    return jsonify(json_params(output, params, size, upscale=upscale, highres=highres))
 
 
 def chain(server: ServerContext, pool: DevicePoolExecutor):
