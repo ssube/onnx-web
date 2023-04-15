@@ -38,9 +38,6 @@ except ImportError:
 from ..constants import ONNX_MODEL
 from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
 from ..convert.diffusion.textual_inversion import blend_textual_inversions
-from ..diffusers.lpw_stable_diffusion_onnx import (
-    OnnxStableDiffusionLongPromptWeightingPipeline,
-)
 from ..diffusers.pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
 from ..diffusers.pipelines.pix2pix import OnnxStableDiffusionInstructPix2PixPipeline
 from ..diffusers.utils import expand_prompt
@@ -48,6 +45,7 @@ from ..models.meta import NetworkModel
 from ..params import DeviceParams, Size
 from ..server import ServerContext
 from ..utils import run_gc
+from .pipelines.lpw import OnnxStableDiffusionLongPromptWeightingPipeline
 
 logger = getLogger(__name__)
 

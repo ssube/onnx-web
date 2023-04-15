@@ -9,11 +9,11 @@ import torch
 import transformers
 from controlnet_aux import HEDdetector, MLSDdetector, OpenposeDetector
 from huggingface_hub import snapshot_download
-from PIL import Image
+from PIL import Image, ImageChops, ImageFilter
 
 from ..server.context import ServerContext
+from .ade_palette import ade_palette
 from .laion_face import generate_annotation
-from .utils import ade_palette
 
 logger = getLogger(__name__)
 
@@ -26,12 +26,20 @@ def filter_model_path(server: ServerContext, filter_name: str) -> str:
     return path.join(server.model_path, "filter", filter_name)
 
 
-def source_filter_gaussian():
-    pass
+def source_filter_gaussian(
+    server: ServerContext,
+    source: Image.Image,
+):
+    return source.filter(ImageFilter.GaussianBlur(3))
 
 
-def source_filter_noise():
-    pass
+def source_filter_noise(
+    server: ServerContext,
+    source: Image.Image,
+    strength: float = 0.5,
+):
+    noise = noise_source_histogram(source, source.size)
+    return ImageChops.blend(source, noise, strength)
 
 
 def source_filter_face(
