@@ -250,6 +250,7 @@ def load_pipeline(
                     OnnxRuntimeModel.load_model(
                         text_encoder.SerializeToString(),
                         provider=device.ort_provider(),
+                        sess_options=device.sess_options(),
                     )
                 )
 
@@ -315,7 +316,7 @@ def load_pipeline(
                 OnnxRuntimeModel.load_model(
                     unet,
                     provider=device.ort_provider(),
-                    sess_options=unet_opts,
+                    sess_options=device.sess_options(),
                 )
             )
 
