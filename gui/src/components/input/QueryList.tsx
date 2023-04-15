@@ -1,4 +1,4 @@
-import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
+import { doesExist, Maybe, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Alert, FormControl, FormLabel, InputLabel, LinearProgress, MenuItem, Select, Typography } from '@mui/material';
 import * as React from 'react';
 import { useEffect } from 'react';
@@ -21,7 +21,7 @@ export interface QueryListProps<T> {
   value: string;
 
   query: QueryListComplete | QueryListFilter<T>;
-  showEmpty?: boolean;
+  showNone?: boolean;
 
   onChange?: (value: string) => void;
 }
@@ -30,25 +30,25 @@ export function hasFilter<T>(query: QueryListComplete | QueryListFilter<T>): que
   return Reflect.has(query, 'selector');
 }
 
-export function filterQuery<T>(query: QueryListComplete | QueryListFilter<T>, showEmpty: boolean): Array<string> {
+export function filterQuery<T>(query: QueryListComplete | QueryListFilter<T>, showEmpty: Maybe<string>): Array<string> {
   if (hasFilter(query)) {
     const data = mustExist(query.result.data);
     const selected = (query as QueryListFilter<unknown>).selector(data);
-    if (showEmpty) {
-      return ['', ...selected];
+    if (doesExist(showEmpty)) {
+      return [showEmpty, ...selected];
     }
     return selected;
   } else {
     const data = Array.from(mustExist(query.result.data));
-    if (showEmpty) {
-      return ['', ...data];
+    if (doesExist(showEmpty)) {
+      return [showEmpty, ...data];
     }
     return data;
   }
 }
 
 export function QueryList<T>(props: QueryListProps<T>) {
-  const { labelKey, query, showEmpty = false, value } = props;
+  const { labelKey, query, showNone = false, value } = props;
   const { result } = query;
   const labelID = `query-list-${props.id}-labels`;
 
@@ -62,6 +62,14 @@ export function QueryList<T>(props: QueryListProps<T>) {
     }
   }
 
+  function noneLabel(): Maybe<string> {
+    if (showNone) {
+      return t(`${labelKey}.none`);
+    }
+
+    return undefined;
+  }
+
   function getLabel(name: string) {
     return mustDefault(t(`${labelKey}.${name}`), name);
   }
@@ -69,7 +77,7 @@ export function QueryList<T>(props: QueryListProps<T>) {
   // update state when previous selection was invalid: https://github.com/ssube/onnx-web/issues/120
   useEffect(() => {
     if (result.status === 'success' && doesExist(result.data) && doesExist(props.onChange)) {
-      const data = filterQuery(query, showEmpty);
+      const data = filterQuery(query, noneLabel());
       if (data.includes(value) === false) {
         props.onChange(data[0]);
       }
@@ -94,7 +102,7 @@ export function QueryList<T>(props: QueryListProps<T>) {
   }
 
   // else: success
-  const data = filterQuery(query, showEmpty);
+  const data = filterQuery(query, noneLabel());
 
   return <FormControl>
     <InputLabel id={labelID}>{props.name}</InputLabel>

@@ -37,14 +37,19 @@ export function Img2Img() {
   const filters = useQuery(['filters'], async () => client.filters(), {
     staleTime: STALE_TIME,
   });
-
+  const models = useQuery(['models'], async () => client.models(), {
+    staleTime: STALE_TIME,
+  });
 
   const state = mustExist(useContext(StateContext));
+  const control = useStore(state, (s) => s.model.control);
   const source = useStore(state, (s) => s.img2img.source);
   const sourceFilter = useStore(state, (s) => s.img2img.sourceFilter);
   const strength = useStore(state, (s) => s.img2img.strength);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setModel = useStore(state, (s) => s.setModel);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
@@ -64,6 +69,21 @@ export function Img2Img() {
       <ImageControl selector={(s) => s.img2img} onChange={setImg2Img} />
       <Stack direction='row' spacing={2}>
         <QueryList
+          id='control'
+          labelKey='model.control'
+          name={t('modelType.control')}
+          query={{
+            result: models,
+            selector: (result) => result.networks.filter((network) => network.type === 'control').map((network) => network.name),
+          }}
+          value={control}
+          onChange={(newControl) => {
+            setModel({
+              control: newControl,
+            });
+          }}
+        />
+        <QueryList
           id='sources'
           labelKey={'sourceFilter'}
           name={t('parameter.sourceFilter')}
@@ -71,6 +91,7 @@ export function Img2Img() {
             result: filters,
             selector: (f) => f.source,
           }}
+          showNone
           value={sourceFilter}
           onChange={(newFilter) => {
             setImg2Img({

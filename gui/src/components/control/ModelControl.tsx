@@ -80,7 +80,7 @@ export function ModelControl() {
         query={{
           result: pipelines,
         }}
-        showEmpty
+        showNone
         value={params.pipeline}
         onChange={(pipeline) => {
           setModel({
@@ -135,21 +135,6 @@ export function ModelControl() {
       />
     </Stack>
     <Stack direction='row' spacing={2}>
-      <QueryList
-        id='control'
-        labelKey='model.control'
-        name={t('modelType.control')}
-        query={{
-          result: models,
-          selector: (result) => result.networks.filter((network) => network.type === 'control').map((network) => network.name),
-        }}
-        value={params.control}
-        onChange={(control) => {
-          setModel({
-            control,
-          });
-        }}
-      />
       <QueryMenu
         id='inversion'
         labelKey='model.inversion'
