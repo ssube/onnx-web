@@ -1052,7 +1052,7 @@ differentiate between them.
 Using `python3` and `pip3` _instead of_ `python` and `pip` in the commands should resolve this issue:
 
 ```shell
-> pip3 install -r requirements.txt    # for example, you may be running a different command
+> pip3 install -r requirements/base.txt    # for example, you may be running a different command
 ```
 
 #### AttributeError: module 'numpy' has no attribute 'float'

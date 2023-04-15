@@ -58,7 +58,7 @@ stages:
   cache:
     key:
       files:
-        - api/requirements.txt
+        - api/requirements/base.txt
     paths:
       - .cache/pip
     policy: pull-push
