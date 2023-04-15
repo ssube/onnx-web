@@ -4,9 +4,9 @@ from pathlib import Path
 from typing import Dict
 
 import torch
-from ...diffusers.version_safe_diffusers import AttnProcessor, ControlNetModel
 
 from ...constants import ONNX_MODEL
+from ...diffusers.version_safe_diffusers import AttnProcessor, ControlNetModel
 from ..utils import ConversionContext, is_torch_2_0, onnx_export
 
 logger = getLogger(__name__)
