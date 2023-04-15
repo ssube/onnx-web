@@ -22,12 +22,12 @@ from diffusers import (
     OnnxStableDiffusionPipeline,
     StableDiffusionPipeline,
 )
-from diffusers.models.cross_attention import CrossAttnProcessor
 from onnx import load_model, save_model
 
 from ...constants import ONNX_MODEL, ONNX_WEIGHTS
 from ...diffusers.load import optimize_pipeline
 from ...diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
+from ...diffusers.version_safe_diffusers import AttnProcessor
 from ...models.cnet import UNet2DConditionModel_CNet
 from ..utils import ConversionContext, is_torch_2_0, onnx_export
 
@@ -51,7 +51,7 @@ def convert_diffusion_diffusers_cnet(
     )
 
     if is_torch_2_0:
-        pipe_cnet.set_attn_processor(CrossAttnProcessor())
+        pipe_cnet.set_attn_processor(AttnProcessor())
 
     cnet_path = output_path / "cnet" / ONNX_MODEL
     onnx_export(
@@ -262,7 +262,7 @@ def convert_diffusion_diffusers(
         unet_scale = torch.tensor(False).to(device=device, dtype=torch.bool)
 
     if is_torch_2_0:
-        pipeline.unet.set_attn_processor(CrossAttnProcessor())
+        pipeline.unet.set_attn_processor(AttnProcessor())
 
     unet_in_channels = pipeline.unet.config.in_channels
     unet_sample_size = pipeline.unet.config.sample_size

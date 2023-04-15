@@ -4,8 +4,7 @@ from pathlib import Path
 from typing import Dict
 
 import torch
-from diffusers.models.controlnet import ControlNetModel
-from diffusers.models.cross_attention import CrossAttnProcessor
+from ...diffusers.version_safe_diffusers import AttnProcessor, ControlNetModel
 
 from ...constants import ONNX_MODEL
 from ..utils import ConversionContext, is_torch_2_0, onnx_export
@@ -43,7 +42,7 @@ def convert_diffusion_control(
 
     # UNET
     if is_torch_2_0:
-        controlnet.set_attn_processor(CrossAttnProcessor())
+        controlnet.set_attn_processor(AttnProcessor())
 
     cnet_path = output_path / "cnet" / ONNX_MODEL
     onnx_export(

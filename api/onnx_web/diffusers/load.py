@@ -4,9 +4,24 @@ from typing import Any, List, Optional, Tuple
 
 import numpy as np
 import torch
-from diffusers import (
+from onnx import load_model
+from transformers import CLIPTokenizer
+
+from ..constants import ONNX_MODEL
+from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
+from ..convert.diffusion.textual_inversion import blend_textual_inversions
+from ..diffusers.utils import expand_prompt
+from ..models.meta import NetworkModel
+from ..params import DeviceParams, Size
+from ..server import ServerContext
+from ..utils import run_gc
+from .pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
+from .pipelines.lpw import OnnxStableDiffusionLongPromptWeightingPipeline
+from .pipelines.pix2pix import OnnxStableDiffusionInstructPix2PixPipeline
+from .version_safe_diffusers import (
     DDIMScheduler,
     DDPMScheduler,
+    DEISMultistepScheduler,
     DPMSolverMultistepScheduler,
     DPMSolverSinglestepScheduler,
     EulerAncestralDiscreteScheduler,
@@ -21,31 +36,8 @@ from diffusers import (
     OnnxStableDiffusionPipeline,
     PNDMScheduler,
     StableDiffusionPipeline,
+    UniPCMultistepScheduler,
 )
-from onnx import load_model
-from transformers import CLIPTokenizer
-
-try:
-    from diffusers import DEISMultistepScheduler
-except ImportError:
-    from ..diffusers.stub_scheduler import StubScheduler as DEISMultistepScheduler
-
-try:
-    from diffusers import UniPCMultistepScheduler
-except ImportError:
-    from ..diffusers.stub_scheduler import StubScheduler as UniPCMultistepScheduler
-
-from ..constants import ONNX_MODEL
-from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
-from ..convert.diffusion.textual_inversion import blend_textual_inversions
-from ..diffusers.pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
-from ..diffusers.pipelines.pix2pix import OnnxStableDiffusionInstructPix2PixPipeline
-from ..diffusers.utils import expand_prompt
-from ..models.meta import NetworkModel
-from ..params import DeviceParams, Size
-from ..server import ServerContext
-from ..utils import run_gc
-from .pipelines.lpw import OnnxStableDiffusionLongPromptWeightingPipeline
 
 logger = getLogger(__name__)
 

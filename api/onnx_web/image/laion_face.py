@@ -1,4 +1,5 @@
-# from https://github.com/ForserX/StableDiffusionUI/blob/main/data/repo/diffusion_scripts/modules/controlnet/laion_face_common.py
+# from https://huggingface.co/CrucibleAI/ControlNetMediaPipeFace/blob/main/laion_face_common.py
+# and https://github.com/ForserX/StableDiffusionUI/blob/main/data/repo/diffusion_scripts/modules/controlnet/laion_face_common.py
 
 from typing import Mapping
 
