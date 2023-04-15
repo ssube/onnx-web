@@ -57,7 +57,7 @@ latent_factor = 8
 
 available_pipelines = {
     "controlnet": OnnxStableDiffusionControlNetPipeline,
-    "img2img": OnnxStableDiffusionImg2ImgPipeline,
+    # "img2img": OnnxStableDiffusionImg2ImgPipeline,
     # "inpaint": OnnxStableDiffusionInpaintPipeline,
     "lpw": OnnxStableDiffusionLongPromptWeightingPipeline,
     "pix2pix": OnnxStableDiffusionInstructPix2PixPipeline,
