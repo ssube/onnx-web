@@ -64,7 +64,7 @@ export function QueryList<T>(props: QueryListProps<T>) {
 
   function noneLabel(): Maybe<string> {
     if (showNone) {
-      return t(`${labelKey}.none`);
+      return 'none';
     }
 
     return undefined;
