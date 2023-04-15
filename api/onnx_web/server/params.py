@@ -46,7 +46,12 @@ def pipeline_from_request(
     # diffusion model
     model = get_not_empty(request.args, "model", get_config_value("model"))
     model_path = get_model_path(server, model)
-    control = get_from_list(request.args, "control", [m.name for m in get_network_models()])
+
+    control = None
+    control_name = request.args.get("control")
+    for network in get_network_models():
+        if network.name == control_name:
+            control = network
 
     # pipeline stuff
     pipeline = get_from_list(
