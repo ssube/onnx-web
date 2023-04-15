@@ -1,3 +1,7 @@
+# This file contains a mix of Apache and GPL code and should be treated as a GPL resource
+#
+# Original attribution:
+#
 # Copyright 2023 The InstructPix2Pix Authors and The HuggingFace Team.
 # Converted for use with ONNX as part of https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16
 

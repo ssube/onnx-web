@@ -1,3 +1,7 @@
+# This file contains a mix of Apache and GPL code and should be treated as a GPL resource
+#
+# Original attribution:
+#
 # Copyright 2023 The HuggingFace Team. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

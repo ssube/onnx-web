@@ -1,3 +1,7 @@
+# This file contains a mix of Apache and GPL code and should be treated as a GPL resource
+#
+# Original attribution:
+#
 # Copyright 2023 The HuggingFace Team.
 # Converted for use with ONNX as part of https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16
 # Special thanks to https://github.com/uchuusen for the initial conversion effort

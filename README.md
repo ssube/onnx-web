@@ -109,21 +109,25 @@ This has [been moved to the server admin guide](docs/server-admin.md#running-the
 
 ## Credits
 
-Some of the conversion code was copied or derived from code in:
+Some of the conversion and pipeline code was copied or derived from code in:
 
-- https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
-  - https://github.com/huggingface/diffusers/blob/main/LICENSE
-- https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/dreambooth/sd_to_diff.py
-  - https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/license.md
+- [`Amblyopius/Stable-Diffusion-ONNX-FP16`](https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16)
+  - GPL v3: https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16/blob/main/LICENSE
+  - https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16/blob/main/pipeline_onnx_stable_diffusion_controlnet.py
+  - https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16/blob/main/pipeline_onnx_stable_diffusion_instruct_pix2pix.py
+- [`d8ahazard/sd_dreambooth_extension`](https://github.com/d8ahazard/sd_dreambooth_extension)
+  - Non-commercial license: https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/license.md
+  - https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/dreambooth/sd_to_diff.py
+- [`huggingface/diffusers`](https://github.com/huggingface/diffusers)
+  - Apache v2: https://github.com/huggingface/diffusers/blob/main/LICENSE
+  - https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
+- [`uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix`](https://github.com/uchuusen/onnx_stable_diffusion_controlnet)
+  - GPL v3: https://github.com/uchuusen/onnx_stable_diffusion_controlnet/blob/main/LICENSE
+- [`uchuusen/onnx_stable_diffusion_controlnet](https://github.com/uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix)
+  - Apache v2: https://github.com/uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix/blob/main/LICENSE
 
-Those parts have their own license with additional restrictions and may need permission for commercial usage.
-
-Getting this set up and running on AMD would not have been possible without guides by:
-
-- https://gist.github.com/harishanand95/75f4515e6187a6aa3261af6ac6f61269
-- https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674
-- https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs
-- https://www.travelneil.com/stable-diffusion-updates.html
+Those parts have their own licenses with additional restrictions on commercial usage, modification, and redistribution.
+The rest of the project is provided under the MIT license, and I am working to isolate these components into a library.
 
 There are many other good options for using Stable Diffusion with hardware acceleration, including:
 
@@ -132,3 +136,10 @@ There are many other good options for using Stable Diffusion with hardware accel
 - https://github.com/ForserX/StableDiffusionUI
 - https://github.com/pingzing/stable-diffusion-playground
 - https://github.com/quickwick/stable-diffusion-win-amd-ui
+
+Getting this set up and running on AMD would not have been possible without guides by:
+
+- https://gist.github.com/harishanand95/75f4515e6187a6aa3261af6ac6f61269
+- https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674
+- https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs
+- https://www.travelneil.com/stable-diffusion-updates.html
