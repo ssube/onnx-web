@@ -51,6 +51,7 @@ from transformers import (
     CLIPVisionConfig,
 )
 
+from ...constants import ONNX_MODEL
 from ...utils import sanitize_name
 from ..utils import ConversionContext, ModelDict, load_tensor, load_yaml
 from .diffusers import convert_diffusion_diffusers
@@ -1674,7 +1675,9 @@ def convert_diffusion_original(
 
     if os.path.exists(dest_path) and os.path.exists(dest_index):
         if not os.path.exists(cnet_path):
-            logger.info("SD checkpoint was converted without a ControlNet UNet, converting one")
+            logger.info(
+                "SD checkpoint was converted without a ControlNet UNet, converting one"
+            )
         else:
             logger.info("ONNX pipeline already exists, skipping")
             return (False, dest_path)
