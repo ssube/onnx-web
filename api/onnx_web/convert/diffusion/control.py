@@ -44,7 +44,7 @@ def convert_diffusion_control(
     if is_torch_2_0:
         controlnet.set_attn_processor(AttnProcessor())
 
-    cnet_path = output_path / "cnet" / ONNX_MODEL
+    cnet_path = output_path / ONNX_MODEL
     onnx_export(
         controlnet,
         model_args=(

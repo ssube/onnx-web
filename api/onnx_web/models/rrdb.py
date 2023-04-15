@@ -77,7 +77,15 @@ class RRDB(nn.Module):
 
 
 class RRDBNet(nn.Module):
-    def __init__(self, num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4):
+    def __init__(
+        self,
+        num_in_ch=3,
+        num_out_ch=3,
+        num_feat=64,
+        num_block=23,
+        num_grow_ch=32,
+        scale=4,
+    ):
         super(RRDBNet, self).__init__()
         RRDB_block_f = functools.partial(RRDB, nf=num_feat, gc=num_grow_ch)
         self.sf = scale

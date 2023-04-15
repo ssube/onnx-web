@@ -109,6 +109,8 @@ $defs:
     type: object
     required: [name, source]
     properties:
+      dest:
+        type: string
       format:
         type: string
       name:

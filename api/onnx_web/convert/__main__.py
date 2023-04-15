@@ -139,6 +139,7 @@ base_models: Models = {
     ],
     # download only
     "sources": [
+        # CodeFormer: no ONNX yet
         (
             "detection-resnet50-final",
             "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/detection_Resnet50_Final.pth",
@@ -163,6 +164,49 @@ base_models: Models = {
             "parsing-parsenet",
             "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth",
         ),
+        # ControlNets: already converted
+        {
+            "dest": "control",
+            "format": "onnx",
+            "name": "canny",
+            "source": "https://huggingface.co/ForserX/sd-controlnet-canny-onnx/resolve/main/model.onnx",
+        },
+        {
+            "dest": "control",
+            "format": "onnx",
+            "name": "depth",
+            "source": "https://huggingface.co/ForserX/sd-controlnet-depth-onnx/resolve/main/model.onnx",
+        },
+        {
+            "dest": "control",
+            "format": "onnx",
+            "name": "hed",
+            "source": "https://huggingface.co/ForserX/sd-controlnet-hed-onnx/resolve/main/model.onnx",
+        },
+        {
+            "dest": "control",
+            "format": "onnx",
+            "name": "mlsd",
+            "source": "https://huggingface.co/ForserX/sd-controlnet-mlsd-onnx/resolve/main/model.onnx",
+        },
+        {
+            "dest": "control",
+            "format": "onnx",
+            "name": "normal",
+            "source": "https://huggingface.co/ForserX/sd-controlnet-normal-onnx/resolve/main/model.onnx",
+        },
+        {
+            "dest": "control",
+            "format": "onnx",
+            "name": "openpose",
+            "source": "https://huggingface.co/ForserX/sd-controlnet-openpose-onnx/resolve/main/model.onnx",
+        },
+        {
+            "dest": "control",
+            "format": "onnx",
+            "name": "seg",
+            "source": "https://huggingface.co/ForserX/sd-controlnet-seg-onnx/resolve/main/model.onnx",
+        },
     ],
 }
 
@@ -242,7 +286,13 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                 source = model["source"]
 
                 try:
-                    dest = fetch_model(conversion, name, source, format=model_format)
+                    dest_path = None
+                    if "dest" in model:
+                        dest_path = path.join(conversion.model_path, model["dest"])
+
+                    dest = fetch_model(
+                        conversion, name, source, format=model_format, dest=dest_path
+                    )
                     logger.info("finished downloading source: %s -> %s", source, dest)
                 except Exception:
                     logger.exception("error fetching source %s", name)

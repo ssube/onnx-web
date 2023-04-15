@@ -314,17 +314,20 @@ def convert_diffusion_diffusers(
 
     del pipeline.unet
 
-    convert_diffusion_diffusers_cnet(
-        conversion,
-        source,
-        device,
-        output_path,
-        dtype,
-        unet_in_channels,
-        unet_sample_size,
-        num_tokens,
-        text_hidden_size,
-    )
+    if not single_vae:
+        convert_diffusion_diffusers_cnet(
+            conversion,
+            source,
+            device,
+            output_path,
+            dtype,
+            unet_in_channels,
+            unet_sample_size,
+            num_tokens,
+            text_hidden_size,
+        )
+    else:
+        logger.debug("skipping CNet for single-VAE model")
 
     if cnet_only:
         logger.info("done converting CNet")
