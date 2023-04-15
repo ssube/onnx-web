@@ -38,7 +38,7 @@ class Border:
         self.bottom = bottom
 
     def __str__(self) -> str:
-        return "(%s, %s, %s, %s)" % (self.left, self.top, self.right, self.bottom)
+        return "(%s, %s, %s, %s)" % (self.left, self.right, self.top, self.bottom)
 
     def tojson(self):
         return {
