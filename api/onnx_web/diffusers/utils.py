@@ -35,6 +35,8 @@ def expand_prompt(
     num_images_per_prompt: int,
     do_classifier_free_guidance: bool,
     negative_prompt: Optional[str] = None,
+    prompt_embeds: Optional[np.ndarray] = None,
+    negative_prompt_embeds: Optional[np.ndarray] = None,
     skip_clip_states: Optional[int] = 0,
 ) -> "np.NDArray":
     # self provides:
