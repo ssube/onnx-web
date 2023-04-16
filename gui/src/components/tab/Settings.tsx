@@ -8,7 +8,7 @@ import { useStore } from 'zustand';
 
 import { getApiRoot } from '../../config.js';
 import { ConfigContext, StateContext, STATE_KEY } from '../../state.js';
-import { getTheme } from '../../utils.js';
+import { getTheme } from '../utils.js';
 import { NumericField } from '../input/NumericField.js';
 
 function removeBlobs(key: string, value: unknown): unknown {
