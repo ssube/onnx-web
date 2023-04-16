@@ -1,6 +1,6 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Refresh } from '@mui/icons-material';
-import { Alert, Button, Stack, TextField } from '@mui/material';
+import { Alert, Button, FormControlLabel, Stack, Switch, TextField, useMediaQuery } from '@mui/material';
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,7 @@ import { useStore } from 'zustand';
 
 import { getApiRoot } from '../../config.js';
 import { ConfigContext, StateContext, STATE_KEY } from '../../state.js';
+import { getTheme } from '../utils.js';
 import { NumericField } from '../input/NumericField.js';
 
 function removeBlobs(key: string, value: unknown): unknown {
@@ -28,8 +29,10 @@ function removeBlobs(key: string, value: unknown): unknown {
 }
 
 export function Settings() {
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const config = mustExist(useContext(ConfigContext));
   const state = useStore(mustExist(useContext(StateContext)));
+  const theme = getTheme(state.theme, prefersDarkMode);
 
   const [json, setJson] = useState(JSON.stringify(state, removeBlobs));
   const [root, setRoot] = useState(getApiRoot(config));
@@ -80,6 +83,17 @@ export function Settings() {
         {t('setting.loadState')}
       </Button>
     </Stack>
+    <FormControlLabel control={
+      <Switch checked={theme === 'dark'}
+        onClick={() => {
+          if (theme === 'light') {
+            state.setTheme('dark');
+          } else {
+            state.setTheme('light');
+          }
+        }}
+      />
+    } label={t('setting.darkMode')} />
     <Stack direction='row' spacing={2}>
       <Button onClick={() => state.resetTxt2Img()} color='warning'>{t('setting.reset.txt2img')}</Button>
       <Button onClick={() => state.resetImg2Img()} color='warning'>{t('setting.reset.img2img')}</Button>

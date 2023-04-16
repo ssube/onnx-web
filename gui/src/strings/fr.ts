@@ -164,6 +164,7 @@ export const I18N_STRINGS_FR = {
         scheduler: '',
         server: '',
         state: '',
+        darkMode: 'Mode Sombre',
       },
       sourceFilter: {
         none: '',
