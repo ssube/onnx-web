@@ -1,4 +1,5 @@
 # from https://github.com/sczhou/CodeFormer/blob/master/basicsr/utils/realesrgan_utils.py
+# and https://github.com/xinntao/Real-ESRGAN/blob/master/realesrgan/utils.py
 
 import math
 
@@ -10,7 +11,6 @@ from torch.nn import functional as F
 
 class RealESRGANer:
     """A helper class for upsampling images with RealESRGAN.
-
     Args:
         scale (int): Upsampling scale factor used in the networks. It is usually 2 or 4.
         model_path (str): The path to the pretrained model. It can be urls (will first download it automatically).
@@ -27,12 +27,14 @@ class RealESRGANer:
         self,
         scale,
         model_path,
+        dni_weight=None,
         model=None,
         tile=0,
         tile_pad=10,
         pre_pad=10,
         half=False,
         device=None,
+        gpu_id=None,
     ):
         self.scale = scale
         self.tile_size = tile
@@ -40,19 +42,52 @@ class RealESRGANer:
         self.pre_pad = pre_pad
         self.mod_scale = None
         self.half = half
-        self.device = device
 
-        loadnet = torch.load(model_path, map_location=torch.device("cpu"))
+        # initialize model
+        if gpu_id:
+            self.device = (
+                torch.device(f"cuda:{gpu_id}" if torch.cuda.is_available() else "cpu")
+                if device is None
+                else device
+            )
+        else:
+            self.device = (
+                torch.device("cuda" if torch.cuda.is_available() else "cpu")
+                if device is None
+                else device
+            )
+
+        if isinstance(model_path, list):
+            # dni
+            assert len(model_path) == len(
+                dni_weight
+            ), "model_path and dni_weight should have the save length."
+            loadnet = self.dni(model_path[0], model_path[1], dni_weight)
+        else:
+            # if the model_path starts with https, it will first download models to the folder: weights
+            loadnet = torch.load(model_path, map_location=torch.device("cpu"))
+
         # prefer to use params_ema
         if "params_ema" in loadnet:
             keyname = "params_ema"
         else:
             keyname = "params"
         model.load_state_dict(loadnet[keyname], strict=True)
+
         model.eval()
         self.model = model.to(self.device)
         if self.half:
             self.model = self.model.half()
+
+    def dni(self, net_a, net_b, dni_weight, key="params", loc="cpu"):
+        """Deep network interpolation.
+        ``Paper: Deep Network Interpolation for Continuous Imagery Effect Transition``
+        """
+        net_a = torch.load(net_a, map_location=torch.device(loc))
+        net_b = torch.load(net_b, map_location=torch.device(loc))
+        for k, v_a in net_a[key].items():
+            net_a[key][k] = dni_weight[0] * v_a + dni_weight[1] * net_b[key][k]
+        return net_a
 
     def pre_process(self, img):
         """Pre-process, such as pre-pad and mod pad, so that the images can be divisible"""
@@ -87,7 +122,6 @@ class RealESRGANer:
     def tile_process(self):
         """It will first crop input images to tiles, and then process each tile.
         Finally, all the processed tiles are merged into one images.
-
         Modified from: https://github.com/ata4/esrgan-launcher
         """
         batch, channel, height, width = self.img.shape
@@ -121,7 +155,7 @@ class RealESRGANer:
                 # input tile dimensions
                 input_tile_width = input_end_x - input_start_x
                 input_tile_height = input_end_y - input_start_y
-                # tile_idx = y * tiles_x + x + 1
+                tile_idx = y * tiles_x + x + 1
                 input_tile = self.img[
                     :,
                     :,
@@ -135,7 +169,7 @@ class RealESRGANer:
                         output_tile = self.model(input_tile)
                 except RuntimeError as error:
                     print("Error", error)
-                # print(f'\tTile {tile_idx}/{tiles_x * tiles_y}')
+                print(f"\tTile {tile_idx}/{tiles_x * tiles_y}")
 
                 # output tile area on total image
                 output_start_x = input_start_x * self.scale
@@ -206,24 +240,16 @@ class RealESRGANer:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         # ------------------- process image (without the alpha channel) ------------------- #
-        try:
-            with torch.no_grad():
-                self.pre_process(img)
-                if self.tile_size > 0:
-                    self.tile_process()
-                else:
-                    self.process()
-                output_img_t = self.post_process()
-                output_img = (
-                    output_img_t.data.squeeze().float().cpu().clamp_(0, 1).numpy()
-                )
-                output_img = np.transpose(output_img[[2, 1, 0], :, :], (1, 2, 0))
-                if img_mode == "L":
-                    output_img = cv2.cvtColor(output_img, cv2.COLOR_BGR2GRAY)
-            del output_img_t
-            torch.cuda.empty_cache()
-        except RuntimeError as error:
-            print(f"Failed inference for RealESRGAN: {error}")
+        self.pre_process(img)
+        if self.tile_size > 0:
+            self.tile_process()
+        else:
+            self.process()
+        output_img = self.post_process()
+        output_img = output_img.data.squeeze().float().cpu().clamp_(0, 1).numpy()
+        output_img = np.transpose(output_img[[2, 1, 0], :, :], (1, 2, 0))
+        if img_mode == "L":
+            output_img = cv2.cvtColor(output_img, cv2.COLOR_BGR2GRAY)
 
         # ------------------- process the alpha channel if necessary ------------------- #
         if img_mode == "RGBA":
