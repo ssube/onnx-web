@@ -3,13 +3,12 @@ from typing import Optional
 
 from PIL import Image
 
+from ..models.codeformer import CodeFormer
 from ..params import ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 
 logger = getLogger(__name__)
-
-device = "cpu"
 
 
 def correct_codeformer(
@@ -23,10 +22,6 @@ def correct_codeformer(
     upscale: UpscaleParams,
     **kwargs,
 ) -> Image.Image:
-    # must be within the load function for patch to take effect
-    # TODO: rewrite and remove
-    from codeformer import CodeFormer
-
     source = stage_source or source
 
     upscale = upscale.with_args(**kwargs)

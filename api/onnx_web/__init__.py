@@ -59,7 +59,6 @@ from .server import (
     ModelCache,
     ServerContext,
     apply_patch_basicsr,
-    apply_patch_codeformer,
     apply_patch_facexlib,
     apply_patches,
 )

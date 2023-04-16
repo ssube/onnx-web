@@ -5,7 +5,6 @@ from os import path
 from urllib.parse import urlparse
 
 import basicsr.utils.download_util
-import codeformer.facelib.utils.misc
 import facexlib.utils
 
 from .context import ServerContext
@@ -78,38 +77,8 @@ cache_path_map = {
     "https://github.com/xinntao/facexlib/releases/download/v0.1.0/recognition_arcface_ir_se50.pth": (
         "recognition-arcface-ir-se50.pth"
     ),
-    "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth": (
-        "correction-codeformer.pth"
-    ),
-    "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/detection_Resnet50_Final.pth": (
-        "detection-resnet50-final.pth"
-    ),
-    "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/detection_mobilenet0.25_Final.pth": (
-        "detection-mobilenet025-final.pth"
-    ),
-    "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_bisenet.pth": (
-        "parsing-bisenet.pth"
-    ),
-    "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth": (
-        "parsing-parsenet.pth"
-    ),
-    "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/RealESRGAN_x2plus.pth": (
-        "upscaling-real-esrgan-x2-plus"
-    ),
-    "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/yolov5l-face.pth": (
-        "detection-yolo-v5-l.pth"
-    ),
-    "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/yolov5n-face.pth": (
-        "detection-yolo-v5-n.pth"
-    ),
     "https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth": (
         "correct-gfpgan-v1-3.pth"
-    ),
-    "https://s3.eu-central-1.wasabisys.com/nextml-model-data/codeformer/weights/facelib/detection_Resnet50_Final.pth": (
-        "detection-resnet50-final.pth"
-    ),
-    "https://s3.eu-central-1.wasabisys.com/nextml-model-data/codeformer/weights/facelib/parsing_parsenet.pth": (
-        "parsing-parsenet.pth"
     ),
 }
 
@@ -139,12 +108,6 @@ def apply_patch_basicsr(server: ServerContext):
     basicsr.utils.download_util.load_file_from_url = partial(patch_cache_path, server)
 
 
-def apply_patch_codeformer(server: ServerContext):
-    logger.debug("patching CodeFormer module")
-    codeformer.facelib.utils.misc.download_pretrained_models = patch_not_impl
-    codeformer.facelib.utils.misc.load_file_from_url = partial(patch_cache_path, server)
-
-
 def apply_patch_facexlib(server: ServerContext):
     logger.debug("patching Facexlib module")
     facexlib.utils.load_file_from_url = partial(patch_cache_path, server)
@@ -152,12 +115,10 @@ def apply_patch_facexlib(server: ServerContext):
 
 def apply_patches(server: ServerContext):
     apply_patch_basicsr(server)
-    apply_patch_codeformer(server)
     apply_patch_facexlib(server)
     unload(
         [
             "basicsr.utils.download_util",
-            "codeformer.facelib.utils.misc",
             "facexlib.utils",
         ]
     )

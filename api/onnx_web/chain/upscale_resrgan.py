@@ -5,6 +5,7 @@ from typing import Optional
 import numpy as np
 from PIL import Image
 
+from ..models.utils.realesrgan import RealESRGANer
 from ..onnx import OnnxRRDBNet
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
@@ -19,10 +20,6 @@ TAG_X4_V3 = "real-esrgan-x4-v3"
 def load_resrgan(
     server: ServerContext, params: UpscaleParams, device: DeviceParams, tile=0
 ):
-    # must be within load function for patches to take effect
-    # TODO: rewrite and remove
-    from realesrgan import RealESRGANer
-
     model_file = "%s.%s" % (params.upscale_model, params.format)
     model_path = path.join(server.model_path, model_file)
 

@@ -16,10 +16,8 @@ transformers
 
 #### Upscaling and face correction
 basicsr
-codeformer-perceptor
 facexlib
 gfpgan
-realesrgan
 
 ### Server packages ###
 boto3

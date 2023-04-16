@@ -1,6 +1,5 @@
 from .hacks import (
     apply_patch_basicsr,
-    apply_patch_codeformer,
     apply_patch_facexlib,
     apply_patches,
 )
