@@ -3,7 +3,7 @@ from typing import Optional
 
 from PIL import Image
 
-from ..models.codeformer import CodeFormer
+from ..models.utils.codeformer import CodeFormer
 from ..params import ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
