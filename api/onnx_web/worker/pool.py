@@ -114,6 +114,7 @@ class DevicePoolExecutor:
             logs=self.logs,
             pending=self.pending[name],
             active_pid=current,
+            idle=Value("B", False),
         )
         self.context[name] = context
 
@@ -567,7 +568,7 @@ def progress_main(pool: DevicePoolExecutor):
         except Exception:
             logger.exception("error in progress worker for device %s", device)
 
-    for device, queue in pool.pending.items():
-        if queue.empty():
+    for device, context in pool.context.items():
+        if context.is_idle():
             logger.trace("enqueueing next job for idle worker")
             pool.next_job(device)

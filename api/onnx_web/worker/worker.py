@@ -63,7 +63,8 @@ def worker_main(worker: WorkerContext, server: ServerContext):
             logger.info("job succeeded: %s", job.name)
             worker.finish()
         except Empty:
-            pass
+            logger.trace("worker reached end of queue, setting idle flag")
+            worker.set_idle()
         except KeyboardInterrupt:
             logger.info("worker got keyboard interrupt")
             worker.fail()

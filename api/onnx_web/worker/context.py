@@ -20,6 +20,7 @@ class WorkerContext:
     active_pid: "Value[int]"
     progress: "Queue[ProgressCommand]"
     last_progress: Optional[ProgressCommand]
+    idle: "Value[bool]"
 
     def __init__(
         self,
@@ -30,6 +31,7 @@ class WorkerContext:
         pending: "Queue[JobCommand]",
         progress: "Queue[ProgressCommand]",
         active_pid: "Value[int]",
+        idle: "Value[bool]",
     ):
         self.job = job
         self.device = device
@@ -39,16 +41,21 @@ class WorkerContext:
         self.pending = pending
         self.active_pid = active_pid
         self.last_progress = None
+        self.idle = idle
 
     def start(self, job: str) -> None:
         self.job = job
         self.set_cancel(cancel=False)
+        self.set_idle(idle=False)
+
+    def is_active(self) -> bool:
+        return self.get_active() == getpid()
 
     def is_cancelled(self) -> bool:
         return self.cancel.value
 
-    def is_active(self) -> bool:
-        return self.get_active() == getpid()
+    def is_idle(self) -> bool:
+        return self.idle.value
 
     def get_active(self) -> int:
         with self.active_pid.get_lock():
@@ -76,6 +83,10 @@ class WorkerContext:
     def set_cancel(self, cancel: bool = True) -> None:
         with self.cancel.get_lock():
             self.cancel.value = cancel
+
+    def set_idle(self, idle: bool = True) -> None:
+        with self.idle.get_lock():
+            self.idle.value = idle
 
     def set_progress(self, progress: int) -> None:
         if self.is_cancelled():
