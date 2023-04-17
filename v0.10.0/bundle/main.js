@@ -72277,12 +72277,12 @@ Please use another name.` : formatMuiErrorMessage(18));
   // out/src/components/OnnxWeb.js
   function OnnxWeb() {
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-    const state = useStore(mustExist((0, import_react40.useContext)(StateContext)));
+    const stateTheme = useStore(mustExist((0, import_react40.useContext)(StateContext)), (s) => s.theme);
     const theme = (0, import_react40.useMemo)(() => createTheme_default2({
       palette: {
-        mode: getTheme(state.theme, prefersDarkMode)
+        mode: getTheme(stateTheme, prefersDarkMode)
       }
-    }), [prefersDarkMode, state.theme]);
+    }), [prefersDarkMode, stateTheme]);
     const [hash4, setHash] = (0, import_useHash3.useHash)();
     return React138.createElement(
       ThemeProvider4,
