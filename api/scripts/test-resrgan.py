@@ -11,9 +11,9 @@ steps = 22
 height = 512
 width = 512
 
-esrgan = path.join('..', '..', 'models', 'RealESRGAN_x4plus.onnx')
-output = path.join('..', '..', 'outputs', 'test.png')
-upscale = path.join('..', '..', 'outputs', 'test-large.png')
+esrgan = path.join('..', 'models', 'RealESRGAN_x4plus.onnx')
+output = path.join('..', 'outputs', 'test.png')
+upscale = path.join('..', 'outputs', 'test-large.png')
 
 print('upscaling test image...')
 session = ort.InferenceSession(esrgan, providers=['DmlExecutionProvider'])
