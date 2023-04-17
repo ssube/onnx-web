@@ -1,6 +1,6 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, Divider, PaletteMode, Tab, useMediaQuery, CssBaseline } from '@mui/material';
+import { Box, Container, CssBaseline, Divider, PaletteMode, Tab, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import { useContext, useMemo } from 'react';
@@ -17,7 +17,7 @@ import { Inpaint } from './tab/Inpaint.js';
 import { Settings } from './tab/Settings.js';
 import { Txt2Img } from './tab/Txt2Img.js';
 import { Upscale } from './tab/Upscale.js';
-import { getTheme, getTab, TAB_LABELS } from './utils.js';
+import { getTab, getTheme, TAB_LABELS } from './utils.js';
 
 export function OnnxWeb() {
   /* checks for system light/dark mode preference */
@@ -27,8 +27,8 @@ export function OnnxWeb() {
   const theme = useMemo(
     () => createTheme({
       palette: {
-        mode: getTheme(state.theme, prefersDarkMode) as PaletteMode
-      }
+        mode: getTheme(state.theme, prefersDarkMode),
+      },
     }),
     [prefersDarkMode, state.theme],
   );
@@ -45,7 +45,6 @@ export function OnnxWeb() {
         <Box sx={{ mx: 4, my: 4 }}>
           <ModelControl />
         </Box>
-
         <TabContext value={getTab(hash)}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={(_e, idx) => {
@@ -73,7 +72,6 @@ export function OnnxWeb() {
             </TabPanel>
           </Box>
         </TabContext>
-
         <Divider variant='middle' />
         <Box sx={{ mx: 4, my: 4 }}>
           <ImageHistory />

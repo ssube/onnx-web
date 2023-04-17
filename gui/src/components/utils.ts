@@ -1,3 +1,6 @@
+import { PaletteMode } from '@mui/material';
+
+import { Theme } from '../state.js';
 import { trimHash } from '../utils.js';
 
 export const TAB_LABELS = [
@@ -18,12 +21,12 @@ export function getTab(hash: string): string {
   return TAB_LABELS[0];
 }
 
-export function getTheme(currentTheme: string, preferDark: boolean): string {
+export function getTheme(currentTheme: Theme, preferDark: boolean): PaletteMode {
   if (currentTheme === '') {
     if (preferDark) {
       return 'dark';
     }
     return 'light';
   }
-  return currentTheme;
+  return currentTheme as PaletteMode;
 }

@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable no-null/no-null */
 import { Maybe } from '@apextoaster/js-utils';
+import { PaletteMode } from '@mui/material';
 import { Logger } from 'noicejs';
 import { createContext } from 'react';
 import { StateCreator, StoreApi } from 'zustand';
@@ -24,10 +25,12 @@ import {
 } from './client/api.js';
 import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
 
+export type Theme = PaletteMode | ''; // tri-state, '' is unset
+
 /**
  * Combine optional files and required ranges.
  */
-type TabState<TabParams> = ConfigFiles<Required<TabParams>> & ConfigState<Required<TabParams>>;
+export type TabState<TabParams> = ConfigFiles<Required<TabParams>> & ConfigState<Required<TabParams>>;
 
 interface HistoryItem {
   image: ImageResponse;
@@ -43,10 +46,10 @@ interface BrushSlice {
 
 interface DefaultSlice {
   defaults: TabState<BaseImgParams>;
-  theme: string;
+  theme: Theme;
 
   setDefaults(param: Partial<BaseImgParams>): void;
-  setTheme(theme: string): void;
+  setTheme(theme: Theme): void;
 }
 
 interface HistorySlice {
