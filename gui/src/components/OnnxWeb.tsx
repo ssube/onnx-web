@@ -22,15 +22,15 @@ import { getTab, getTheme, TAB_LABELS } from './utils.js';
 export function OnnxWeb() {
   /* checks for system light/dark mode preference */
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const state = useStore(mustExist(useContext(StateContext)));
+  const stateTheme = useStore(mustExist(useContext(StateContext)), (s) => s.theme);
 
   const theme = useMemo(
     () => createTheme({
       palette: {
-        mode: getTheme(state.theme, prefersDarkMode),
+        mode: getTheme(stateTheme, prefersDarkMode),
       },
     }),
-    [prefersDarkMode, state.theme],
+    [prefersDarkMode, stateTheme],
   );
 
   const [hash, setHash] = useHash();
