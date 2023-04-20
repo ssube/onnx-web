@@ -18,9 +18,10 @@ def restart_workers(server: ServerContext, pool: DevicePoolExecutor):
         return make_response(jsonify({})), 401
 
     logger.info("restarting worker pool")
-    pool.join()
-    pool.start()
+    pool.recycle(recycle_all=True)
     logger.info("restarted worker pool")
+
+    return jsonify(pool.status())
 
 
 def worker_status(server: ServerContext, pool: DevicePoolExecutor):

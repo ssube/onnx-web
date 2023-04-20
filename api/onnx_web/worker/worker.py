@@ -48,7 +48,7 @@ def worker_main(worker: WorkerContext, server: ServerContext):
                 exit(EXIT_REPLACED)
 
             # wait briefly for the next job
-            job = worker.pending.get(timeout=1.0)
+            job = worker.pending.get(timeout=worker.timeout)
             logger.info("worker %s got job: %s", worker.device.device, job.name)
 
             # clear flags and save the job name

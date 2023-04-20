@@ -21,6 +21,7 @@ class WorkerContext:
     progress: "Queue[ProgressCommand]"
     last_progress: Optional[ProgressCommand]
     idle: "Value[bool]"
+    timeout: float
 
     def __init__(
         self,
@@ -42,6 +43,7 @@ class WorkerContext:
         self.active_pid = active_pid
         self.last_progress = None
         self.idle = idle
+        self.timeout = 1.0
 
     def start(self, job: str) -> None:
         self.job = job

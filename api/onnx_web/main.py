@@ -73,14 +73,14 @@ def main():
 
 
 def run():
-    _server, app, pool = main()
+    server, app, pool = main()
     pool.start()
 
     def quit(p: DevicePoolExecutor):
         logger.info("shutting down workers")
         p.join()
 
-    # TODO: print admin token
+    logger.info("starting API server with admin token: %s", server.admin_token)
     atexit.register(partial(quit, pool))
     return app
 

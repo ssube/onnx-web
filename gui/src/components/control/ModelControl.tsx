@@ -21,9 +21,12 @@ export function ModelControl() {
   const setModel = useStore(state, (s) => s.setModel);
   const { t } = useTranslation();
 
-  const token = '';
+  // get token from query string
+  const query = new URLSearchParams(window.location.search);
+  const token = query.get('token');
+  const [hash, _setHash] = useHash();
 
-  const restart = useMutation(['restart'], async () => client.restart(token));
+  const restart = useMutation(['restart'], async () => client.restart(mustExist(token)));
   const models = useQuery(['models'], async () => client.models(), {
     staleTime: STALE_TIME,
   });
@@ -33,8 +36,6 @@ export function ModelControl() {
   const platforms = useQuery(['platforms'], async () => client.platforms(), {
     staleTime: STALE_TIME,
   });
-
-  const [hash, _setHash] = useHash();
 
   function addToken(type: string, name: string, weight = 1.0) {
     const tab = getTab(hash);
