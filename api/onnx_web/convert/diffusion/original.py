@@ -1645,7 +1645,8 @@ def extract_checkpoint(
             if not os.path.exists(full_path):
                 result_status = f"Missing model directory, removing model: {full_path}"
                 shutil.rmtree(db_config.model_dir, ignore_errors=False, onerror=None)
-                break
+                return False
+
         remove_dirs = ["logging", "samples"]
         for rd in remove_dirs:
             rem_dir = os.path.join(db_config.model_dir, rd)
@@ -1655,6 +1656,7 @@ def extract_checkpoint(
                     os.makedirs(rem_dir)
 
     logger.info(result_status)
+    return True
 
 
 @torch.no_grad()
