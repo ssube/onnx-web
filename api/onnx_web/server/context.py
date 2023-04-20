@@ -1,5 +1,6 @@
 from logging import getLogger
 from os import environ, path
+from secrets import token_urlsafe
 from typing import List, Optional
 
 import torch
@@ -33,6 +34,7 @@ class ServerContext:
         extra_models: Optional[List[str]] = None,
         job_limit: int = DEFAULT_JOB_LIMIT,
         memory_limit: Optional[int] = None,
+        admin_token: Optional[str] = None,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -50,6 +52,7 @@ class ServerContext:
         self.extra_models = extra_models or []
         self.job_limit = job_limit
         self.memory_limit = memory_limit
+        self.admin_token = admin_token or token_urlsafe()
 
         self.cache = ModelCache(self.cache_limit)
 

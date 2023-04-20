@@ -1,6 +1,6 @@
 import { mustExist } from '@apextoaster/js-utils';
-import { Stack } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { Button, Stack } from '@mui/material';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +21,9 @@ export function ModelControl() {
   const setModel = useStore(state, (s) => s.setModel);
   const { t } = useTranslation();
 
+  const token = '';
+
+  const restart = useMutation(['restart'], async () => client.restart(token));
   const models = useQuery(['models'], async () => client.models(), {
     staleTime: STALE_TIME,
   });
@@ -159,6 +162,7 @@ export function ModelControl() {
           addToken('lora', name);
         }}
       />
+      <Button onClick={() => restart.mutate()}>Restart</Button>
     </Stack>
   </Stack>;
 }

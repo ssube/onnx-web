@@ -334,13 +334,29 @@ export interface ApiClient {
   blend(model: ModelParams, params: BlendParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
 
   /**
-   * Check whether some pipeline's output is ready yet.
+   * Check whether job has finished and its output is ready.
    */
   ready(key: string): Promise<ReadyResponse>;
 
+  /**
+   * Cancel an existing job.
+   */
   cancel(key: string): Promise<boolean>;
 
+  /**
+   * Retry a previous job using the same parameters.
+   */
   retry(params: RetryParams): Promise<ImageResponseWithRetry>;
+
+  /**
+   * Restart the image job workers.
+   */
+  restart(token: string): Promise<boolean>;
+
+  /**
+   * Check the status of the image job workers.
+   */
+  status(token: string): Promise<Array<unknown>>;
 }
 
 /**
@@ -752,7 +768,23 @@ export function makeClient(root: string, f = fetch): ApiClient {
         default:
           throw new InvalidArgumentError('unknown request type');
       }
-    }
+    },
+    async restart(token: string): Promise<boolean> {
+      const path = makeApiUrl(root, 'restart');
+      path.searchParams.append('token', token);
+
+      const res = await f(path, {
+        method: 'POST',
+      });
+      return res.status === STATUS_SUCCESS;
+    },
+    async status(token: string): Promise<Array<unknown>> {
+      const path = makeApiUrl(root, 'status');
+      path.searchParams.append('token', token);
+
+      const res = await f(path);
+      return res.json();
+    },
   };
 }
 

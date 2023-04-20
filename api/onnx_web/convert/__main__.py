@@ -12,10 +12,9 @@ from onnx import load_model, save_model
 from transformers import CLIPTokenizer
 from yaml import safe_load
 
-from onnx_web.convert.diffusion.control import convert_diffusion_control
-
 from ..constants import ONNX_MODEL, ONNX_WEIGHTS
 from .correction.gfpgan import convert_correction_gfpgan
+from .diffusion.control import convert_diffusion_control
 from .diffusion.diffusers import convert_diffusion_diffusers
 from .diffusion.lora import blend_loras
 from .diffusion.original import convert_diffusion_original

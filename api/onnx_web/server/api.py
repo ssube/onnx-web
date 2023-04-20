@@ -523,10 +523,6 @@ def ready(server: ServerContext, pool: DevicePoolExecutor):
     )
 
 
-def status(server: ServerContext, pool: DevicePoolExecutor):
-    return jsonify(pool.status())
-
-
 def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecutor):
     return [
         app.route("/api")(wrap_route(introspect, server, app=app)),
@@ -560,5 +556,4 @@ def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecu
             wrap_route(cancel, server, pool=pool)
         ),
         app.route("/api/ready")(wrap_route(ready, server, pool=pool)),
-        app.route("/api/status")(wrap_route(status, server, pool=pool)),
     ]
