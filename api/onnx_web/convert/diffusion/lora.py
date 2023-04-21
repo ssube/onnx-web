@@ -173,7 +173,11 @@ def blend_loras(
 
                 np_weights *= lora_weight
                 if base_key in blended:
-                    logger.trace("summing LoHA weights: %s + %s", blended[base_key].shape, np_weights.shape)
+                    logger.trace(
+                        "summing LoHA weights: %s + %s",
+                        blended[base_key].shape,
+                        np_weights.shape,
+                    )
                     blended[base_key] += sum_weights(blended[base_key], np_weights)
                 else:
                     blended[base_key] = np_weights
@@ -282,7 +286,11 @@ def blend_loras(
 
                 np_weights *= lora_weight
                 if base_key in blended:
-                    logger.trace("summing weights: %s + %s", blended[base_key].shape, np_weights.shape)
+                    logger.trace(
+                        "summing weights: %s + %s",
+                        blended[base_key].shape,
+                        np_weights.shape,
+                    )
                     blended[base_key] = sum_weights(blended[base_key], np_weights)
                 else:
                     blended[base_key] = np_weights
