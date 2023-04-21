@@ -150,6 +150,13 @@ def blend_loras(
 
                 np_weights *= lora_weight
                 if base_key in blended:
+                    blended_weights = blended[base_key]
+                    logger.trace("summing LoHA weights: %s + %s", blended_weights.shape, np_weights.shape)
+
+                    if blended_weights.shape != np_weights.shape and kernel == (1, 1):
+                        logger.debug("expanding mismatched weights for 1x1 kernel")
+                        blended[base_key] = np.expand_dims(blended_weights, axis=(2, 3))
+
                     blended[base_key] += np_weights
                 else:
                     blended[base_key] = np_weights
@@ -258,6 +265,13 @@ def blend_loras(
 
                 np_weights *= lora_weight
                 if base_key in blended:
+                    blended_weights = blended[base_key]
+                    logger.trace("summing weights: %s + %s", blended_weights.shape, np_weights.shape)
+
+                    if blended_weights.shape != np_weights.shape and kernel == (1, 1):
+                        logger.debug("expanding mismatched weights for 1x1 kernel")
+                        blended[base_key] = np.expand_dims(blended_weights, axis=(2, 3))
+
                     blended[base_key] += np_weights
                 else:
                     blended[base_key] = np_weights
