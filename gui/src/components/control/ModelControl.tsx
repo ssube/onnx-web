@@ -163,7 +163,10 @@ export function ModelControl() {
           addToken('lora', name);
         }}
       />
-      <Button onClick={() => restart.mutate()}>{t('admin.restart')}</Button>
+      <Button
+        variant='outlined'
+        onClick={() => restart.mutate()}
+      >{t('admin.restart')}</Button>
     </Stack>
   </Stack>;
 }

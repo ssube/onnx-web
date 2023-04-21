@@ -52,25 +52,25 @@ export function OnnxWeb() {
             }}>
               {TAB_LABELS.map((name) => <Tab key={name} label={name} value={name} />)}
             </TabList>
-            <TabPanel value='txt2img'>
-              <Txt2Img />
-            </TabPanel>
-            <TabPanel value='img2img'>
-              <Img2Img />
-            </TabPanel>
-            <TabPanel value='inpaint'>
-              <Inpaint />
-            </TabPanel>
-            <TabPanel value='upscale'>
-              <Upscale />
-            </TabPanel>
-            <TabPanel value='blend'>
-              <Blend />
-            </TabPanel>
-            <TabPanel value='settings'>
-              <Settings />
-            </TabPanel>
           </Box>
+          <TabPanel value='txt2img'>
+            <Txt2Img />
+          </TabPanel>
+          <TabPanel value='img2img'>
+            <Img2Img />
+          </TabPanel>
+          <TabPanel value='inpaint'>
+            <Inpaint />
+          </TabPanel>
+          <TabPanel value='upscale'>
+            <Upscale />
+          </TabPanel>
+          <TabPanel value='blend'>
+            <Blend />
+          </TabPanel>
+          <TabPanel value='settings'>
+            <Settings />
+          </TabPanel>
         </TabContext>
         <Divider variant='middle' />
         <Box sx={{ mx: 4, my: 4 }}>
