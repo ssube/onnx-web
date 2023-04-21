@@ -43,8 +43,14 @@ This is an incomplete list of new and interesting features, with links to the us
   - [download models from HuggingFace hub, Civitai, and HTTPS sources](docs/user-guide.md#model-sources)
 - blend in additional networks
   - [permanent and prompt-based blending](docs/user-guide.md#permanently-blending-additional-networks)
-  - [supports LoRA weights](docs/user-guide.md#lora-tokens)
+  - [supports LoRA and LyCORIS weights](docs/user-guide.md#lora-tokens)
   - [supports Textual Inversion concepts and embeddings](docs/user-guide.md#textual-inversion-tokens)
+- ControlNet
+  - image filters for edge detection and other methods
+  - with ONNX acceleration
+- highres mode
+  - runs img2img on the results of the other pipelines
+  - multiple iterations can produce 8k images and larger
 - infinite prompt length
   - [with long prompt weighting](docs/user-guide.md#long-prompt-weighting)
   - expand and control Textual Inversions per-layer
