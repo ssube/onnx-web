@@ -1,0 +1,31 @@
+FROM docker.io/python:3.10-buster
+
+WORKDIR /onnx-web/api
+
+RUN pip3 install virtualenv --upgrade
+
+RUN python3 -m venv onnx_env
+
+ENV PATH="/onnx-web/api/onnx_env/bin:$PATH"
+
+RUN pip3 install pip --upgrade
+
+COPY requirements/ /onnx-web/api/requirements/
+
+RUN pip3 install -r requirements/amd-windows-nightly.txt --no-cache-dir
+
+RUN pip3 install -r requirements/base.txt --no-cache-dir
+
+COPY onnx_web/ /onnx-web/api/onnx_web/
+
+COPY extras.json logging.yaml params.json /onnx-web/api/
+
+COPY launch.sh /onnx-web/launch.sh
+
+ENV ONNX_WEB_BUNDLE_PATH="/onnx-web/gui"
+
+COPY gui/ /onnx-web/gui/
+
+ENV ONNX_WEB_DEFAULT_PLATFORM="directml"
+
+CMD [ "sh", "-c", "/onnx-web/launch.sh" ]

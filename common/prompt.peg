@@ -1,0 +1,14 @@
+// PEGjs grammar
+
+Prompt = head:Token tokens:(Split _ token:Token { return token; })+ { return [head, ...tokens]; }
+
+Token = IncreaseToken / SmallIncreaseToken / DecreaseToken / PlainToken;
+
+IncreaseToken = '(' _ token:Token _ ')' { return [token[0], token[1] * 1.1]; }
+SmallIncreaseToken = '{' _ token:Token _ '}' { return [token[0], token[1] * 1.05]; }
+DecreaseToken = '[' _ token:Token _ ']' { return [token[0], token[1] * 0.9]; }
+
+PlainToken = [a-zA-Z0-9 ]+ { return [text(), 1.0]; }
+
+Split = [, \t\n\r]+
+_ = [ \t\n\r]*

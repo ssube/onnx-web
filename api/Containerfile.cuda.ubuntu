@@ -1,0 +1,37 @@
+FROM docker.io/nvidia/cuda:11.7.1-runtime-ubuntu20.04
+
+WORKDIR /onnx-web/api
+
+RUN apt-get -y update \
+ && apt-get install -y ffmpeg libsm6 libxext6 \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get -y update \
+ && apt-get -y install python3 python3-pip python3-venv \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN python3 -m venv onnx_env
+
+ENV PATH="/onnx-web/api/onnx_env/bin:$PATH"
+
+RUN pip3 install pip --upgrade
+
+COPY requirements/ /onnx-web/api/requirements/
+
+RUN pip3 install -r requirements/nvidia.txt --no-cache-dir
+
+RUN pip3 install -r requirements/base.txt --no-cache-dir
+
+COPY onnx_web/ /onnx-web/api/onnx_web/
+
+COPY extras.json logging.yaml params.json /onnx-web/api/
+
+COPY launch.sh /onnx-web/launch.sh
+
+ENV ONNX_WEB_BUNDLE_PATH="/onnx-web/gui"
+
+COPY gui/ /onnx-web/gui/
+
+ENV ONNX_WEB_DEFAULT_PLATFORM="cuda"
+
+CMD [ "sh", "-c", "/onnx-web/launch.sh" ]

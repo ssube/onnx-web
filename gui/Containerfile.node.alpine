@@ -1,0 +1,22 @@
+FROM docker.io/node:18-alpine
+
+ENV PATH="${PATH}:$(yarn global bin)"
+
+ENV ONNX_WEB_DEV_HOST="0.0.0.0"
+
+WORKDIR /onnx-web
+
+# copy package first, to invalidate other layers when version changes
+COPY package.json /onnx-web/package.json
+COPY yarn.lock /onnx-web/yarn.lock
+RUN yarn install --production
+
+# copy chunks, largest to smallest (entrypoint)
+COPY serve.js /onnx-web/serve.js
+COPY out/src/ /onnx-web/out/src/
+COPY out/bundle/ /onnx-web/out/bundle/
+
+# set up as global cli tool
+RUN yarn global add file:$(pwd)
+
+ENTRYPOINT [ "node", "/onnx-web/serve.js" ]

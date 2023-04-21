@@ -1,0 +1,5 @@
+{
+  "reporter": "@mochajs/multi-reporter",
+  "ui": ["bdd"]
+}
+

@@ -1,0 +1,24 @@
+services:
+  onnx-web-api:
+    image: docker.io/ssube/onnx-web-api:main-rocm-ubuntu
+    command: sh -c "python -m onnx_web.convert --diffusion --upscaling --correction && flask --app=onnx_web.serve run --host=0.0.0.0"
+    environment:
+      - ONNX_WEB_MODEL_PATH=/data/models
+      - ONNX_WEB_OUTPUT_PATH=/data/outputs
+    ports:
+      - "5000:5000"
+    volumes:
+      - type: volume
+        source: onnx-web-models
+        target: /data/models
+        volume:
+          nocopy: true
+      - type: volume
+        source: onnx-web-outputs
+        target: /data/outputs
+        volume:
+          nocopy: true
+
+volumes:
+  onnx-web-models: {}
+  onnx-web-outputs: {}

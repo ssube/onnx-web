@@ -1,0 +1,41 @@
+[tool.black]
+force-exclude = '''/(diffusion_original|lpw).py'''
+
+[tool.isort]
+profile = "black"
+force_to_top = ".logging"
+skip_glob = ["*/lpw.py"]
+
+[tool.mypy]
+# ignore_missing_imports = true
+exclude = [
+    "onnx_web.diffusers.lpw_stable_diffusion_onnx"
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "basicsr.archs.rrdbnet_arch",
+    "basicsr.utils.download_util",
+    "basicsr.utils",
+    "basicsr",
+    "boto3",
+    "codeformer",
+    "codeformer.facelib.utils.misc",
+    "codeformer.facelib.utils",
+    "codeformer.facelib",
+    "diffusers",
+    "diffusers.pipelines.latent_diffusion.pipeline_latent_diffusion",
+    "diffusers.pipelines.paint_by_example",
+    "diffusers.pipelines.stable_diffusion",
+    "diffusers.pipeline_utils",
+    "diffusers.utils.logging",
+    "facexlib.utils",
+    "facexlib",
+    "gfpgan",
+    "onnxruntime",
+    "realesrgan",
+    "realesrgan.archs.srvgg_arch",
+    "safetensors",
+    "transformers"
+]
+ignore_missing_imports = true

@@ -1,0 +1,62 @@
+$id: https://github.com/ssube/onnx-web/blob/main/api/schemas/chain.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+
+$defs:
+  border_params:
+    type: object
+    properties:
+      bottom:
+        type: number
+      left:
+        type: number
+      right:
+        type: number
+      top:
+        type: number
+
+  image_params:
+    type: object
+    properties:
+      prompt:
+        type: string
+
+  upscale_params:
+    type: object
+    properties:
+      outscale:
+        type: number
+      scale:
+        type: number
+
+  request_stage:
+    type: object
+    required: [name, type, params]
+    properties:
+      name:
+        type: string
+      type:
+        type: string
+      params:
+        allOf:
+        - $ref: "#/$defs/border_params"
+        - $ref: "#/$defs/image_params"
+        - $ref: "#/$defs/upscale_params"
+        - type: object
+          additionalProperties: False
+          patternProperties:
+            "^[-_A-Za-z]+$":
+              oneOf:
+                - type: number
+                - type: string
+
+  request_chain:
+    type: array
+    items:
+      $ref: "#/$defs/request_stage"
+
+type: object
+additionalProperties: False
+required: [stages]
+properties:
+  stages:
+    $ref: "#/$defs/request_chain"

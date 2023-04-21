@@ -1,0 +1,191 @@
+$id: https://github.com/ssube/onnx-web/blob/main/api/schemas/extras.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+
+$defs:
+  legacy_tuple:
+    type: array
+    items:
+      oneOf:
+        - type: boolean
+        - type: number
+        - type: string
+
+  lora_network:
+    type: object
+    required: [name, source]
+    properties:
+      name:
+        type: string
+      source:
+        type: string
+      label:
+        type: string
+      weight:
+        type: number
+
+  textual_inversion_network:
+    type: object
+    required: [name, source]
+    properties:
+      name:
+        type: string
+      source:
+        type: string
+      format:
+        type: string
+        enum: [concept, embeddings]
+      label:
+        type: string
+      token:
+        type: string
+      weight:
+        type: number
+
+  base_model:
+    type: object
+    required: [name, source]
+    properties:
+      format:
+        type: string
+        enum: [bin, ckpt, onnx, pt, pth, safetensors]
+      half:
+        type: boolean
+      label:
+        type: string
+      name:
+        type: string
+      opset:
+        type: number
+      source:
+        type: string
+
+  correction_model:
+    allOf:
+      - $ref: "#/$defs/base_model"
+      - type: object
+        properties:
+          model:
+            type: string
+            enum: [
+              codeformer,
+              gfpgan
+            ]
+
+  diffusion_model:
+    allOf:
+      - $ref: "#/$defs/base_model"
+      - type: object
+        properties:
+          config:
+            type: string
+          inversions:
+            type: array
+            items:
+              $ref: "#/$defs/textual_inversion_network"
+          loras:
+            type: array
+            items:
+              $ref: "#/$defs/lora_network"
+          vae:
+            type: string
+
+  upscaling_model:
+    allOf:
+      - $ref: "#/$defs/base_model"
+      - type: object
+        required: [scale]
+        properties:
+          model:
+            type: string
+            enum: [
+              bsrgan,
+              resrgan,
+              swinir
+            ]
+          scale:
+            type: number
+
+  source_model:
+    type: object
+    required: [name, source]
+    properties:
+      dest:
+        type: string
+      format:
+        type: string
+      name:
+        type: string
+      source:
+        type: string
+
+  source_network:
+    type: object
+    required: [name, source, type]
+    properties:
+      format:
+        type: string
+        enum: [bin, ckpt, onnx, pt, pth, safetensors]
+      model:
+        type: string
+        enum: [
+          # inversion
+          concept,
+          embeddings,
+          # lora
+          cloneofsimo,
+          sd-scripts
+        ]
+      name:
+        type: string
+      source:
+        type: string
+      type:
+        type: string
+        enum: [inversion, lora]
+
+  translation:
+    type: object
+    additionalProperties: False
+    patternProperties:
+      "(\\w|\\.|-)+":
+        oneOf:
+          - type: string
+          - $ref: "#/$defs/translation"
+
+type: object
+additionalProperties: False
+properties:
+  diffusion:
+    type: array
+    items:
+      oneOf:
+        - $ref: "#/$defs/legacy_tuple"
+        - $ref: "#/$defs/diffusion_model"
+  correction:
+    type: array
+    items:
+      oneOf:
+        - $ref: "#/$defs/legacy_tuple"
+        - $ref: "#/$defs/correction_model"
+  networks:
+    type: array
+    items:
+      $ref: "#/$defs/source_network"
+  sources:
+    type: array
+    items:
+      oneOf:
+        - $ref: "#/$defs/legacy_tuple"
+        - $ref: "#/$defs/source_model"
+  strings:
+    type: object
+    additionalProperties: False
+    patternProperties:
+      "^\\w\\w$":
+        $ref: "#/$defs/translation"
+  upscaling:
+    type: array
+    items:
+      oneOf:
+        - $ref: "#/$defs/legacy_tuple"
+        - $ref: "#/$defs/upscaling_model"
