@@ -6,6 +6,9 @@
 export const I18N_STRINGS_FR = {
   fr: {
     translation: {
+      admin: {
+        restart: '',
+      },
       error: {
         inpaint: {
           support: '',
