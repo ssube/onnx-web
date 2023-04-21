@@ -23,6 +23,10 @@ logger = getLogger(__name__)
 def sum_weights(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     logger.trace("summing weights with shapes: %s + %s", a.shape, b.shape)
 
+    # if they are the same, simply add them
+    if len(a.shape) == len(b.shape):
+        return a + b
+
     # get the kernel size from the tensor with the higher rank
     if len(a.shape) > len(b.shape):
         kernel = a.shape[-2:]
