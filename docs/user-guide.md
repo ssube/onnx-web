@@ -71,6 +71,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Optimizing models for lower memory usage](#optimizing-models-for-lower-memory-usage)
     - [Permanently blending additional networks](#permanently-blending-additional-networks)
     - [Extras file format](#extras-file-format)
+  - [Environment variables](#environment-variables)
   - [Known errors](#known-errors)
     - [Check scripts](#check-scripts)
       - [Check environment script](#check-environment-script)
@@ -540,7 +541,7 @@ Resets the state of each tab to the default, if some controls become glitchy.
 ## Adding your own models
 
 You can convert and use your own models without making any code changes. Models are stored in
-[the `api/extras.json` file](../api/extras.json) - you can make a copy to avoid any updates replacing your models in
+[the `models/extras.json` file](../models/extras.json) - you can make a copy to avoid any updates replacing your models in
 the future. Add an entry for each of the models that you would like to use:
 
 ```json
@@ -608,8 +609,7 @@ See [the converting models guide](converting-models.md) for more details.
 Be careful loading pickle tensors, as they may contain unsafe code which will be executed on your machine. Use
 safetensors instead whenever possible.
 
-Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file and make sure to use the `launch-extras`
-script. For example:
+Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file if not using [the `models/extras.json` file](../models/extras.json). For example:
 
 ```shell
 # on Linux:
@@ -888,6 +888,104 @@ some common configurations in a server context.
   - array of sources
 - strings
   - additional translation strings
+  
+## Environment variables
+
+This section catalogs the environment variables that can be set in the launch script. These variables can be set in the server launch scripts as
+
+```shell
+# on linux:
+> export [ENVIRONMENT VARIABLE NAME]=[VALUE]
+
+# on windows:
+> set [ENVIRONMENT VARIABLE NAME]=[VALUE]
+```
+
+The available environment variables are as follows:
+
+```shell
+ONNX_WEB_MODEL_PATH
+```
+
+The path to the models folder. Defaults to /models
+
+```shell
+ONNX_WEB_EXTRA_MODELS
+```
+
+The path to the extra models json file. See [the Adding your own models section](#Adding your own models) for more information. Defaults to nothing.
+
+```shell
+ONNX_WEB_OUTPUT_PATH
+```
+
+The path to the model output folder (for generated images). Defaults to /outputs
+
+```shell
+ONNX_WEB_PARAMS_PATH
+```
+
+The path to the params.json file that holds the model parameters currently in use. Defaults to /api. Not accessible by default in the Windows bundle; use the web interface or set another path.
+
+```shell
+ONNX_WEB_CORS_ORIGIN
+```
+
+TODO
+
+```shell
+ONNX_WEB_ANY_PLATFORM
+```
+
+TODO
+
+```shell
+ONNX_WEB_BLOCK_PLATFORMS
+```
+
+TODO
+
+```shell
+ONNX_WEB_DEFAULT_PLATFORM
+```
+
+TODO
+
+```shell
+ONNX_WEB_IMAGE_FORMAT
+```
+
+The image format for the output. Defaults to .png.
+
+```shell
+ONNX_WEB_CACHE_MODELS
+```
+
+The number of models to cache. Decreasing this value may decrease VRAM usage and increase stability when switching models, but may also increase startup time. Defaults to 5.
+
+```shell
+ONNX_WEB_SHOW_PROGRESS
+```
+
+Whether to show progress in the Web UI. Defaults to True.
+
+```shell
+ONNX_WEB_OPTIMIZATIONS
+```
+
+See [the Optimizing models for lower memory usage section](#Optimizing models for lower memory usage) for more information.
+
+```shell
+ONNX_WEB_JOB_LIMIT
+```
+
+Job limit. Defaults to 10.
+
+```shell
+ONNX_WEB_MEMORY_LIMIT
+```
+
+Memory usage limit. Defaults to none.
 
 ## Known errors
 
