@@ -153,30 +153,30 @@ def border_from_request() -> Border:
     left = get_and_clamp_int(
         request.args,
         "left",
-        get_config_value("width"),
-        get_config_value("width", "max"),
-        get_config_value("width", "min"),
+        get_config_value("left"),
+        get_config_value("left", "max"),
+        get_config_value("left", "min"),
     )
     right = get_and_clamp_int(
         request.args,
         "right",
-        get_config_value("width"),
-        get_config_value("width", "max"),
-        get_config_value("width", "min"),
+        get_config_value("right"),
+        get_config_value("right", "max"),
+        get_config_value("right", "min"),
     )
     top = get_and_clamp_int(
         request.args,
         "top",
-        get_config_value("width"),
-        get_config_value("height", "max"),
-        get_config_value("height", "min"),
+        get_config_value("top"),
+        get_config_value("top", "max"),
+        get_config_value("top", "min"),
     )
     bottom = get_and_clamp_int(
         request.args,
         "bottom",
-        get_config_value("width"),
-        get_config_value("height", "max"),
-        get_config_value("height", "min"),
+        get_config_value("bottom"),
+        get_config_value("bottom", "max"),
+        get_config_value("bottom", "min"),
     )
 
     return Border(left, right, top, bottom)
