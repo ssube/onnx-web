@@ -3,7 +3,6 @@ from os import path
 from typing import Any, List, Optional, Tuple
 
 import numpy as np
-import torch
 from onnx import load_model
 from transformers import CLIPTokenizer
 

@@ -30,7 +30,9 @@ from .utils import get_inversions_from_prompt, get_loras_from_prompt
 logger = getLogger(__name__)
 
 
-def parse_prompt(params: ImageParams) -> Tuple[List[Tuple[str, float]], List[Tuple[str, float]]]:
+def parse_prompt(
+    params: ImageParams,
+) -> Tuple[List[Tuple[str, float]], List[Tuple[str, float]]]:
     prompt, loras = get_loras_from_prompt(params.input_prompt)
     prompt, inversions = get_inversions_from_prompt(prompt)
     params.prompt = prompt
