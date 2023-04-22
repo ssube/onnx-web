@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
         # create the server and load the config
         from onnx_web.main import main
-        server, app, pool = main()
+        context, app, pool = main()
 
         # launch the image workers
         print("starting image workers")
@@ -39,7 +39,7 @@ if __name__ == '__main__':
         # launch the user's web browser
         print("opening web browser")
         url = "http://127.0.0.1:5000"
-        webbrowser.open_new_tab(f"{url}?api={url}&token={server.admin_token}")
+        webbrowser.open_new_tab(f"{url}?api={url}&token={context.admin_token}")
 
         # wait for enter and exit
         input("press enter to quit")
