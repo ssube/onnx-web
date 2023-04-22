@@ -49,7 +49,9 @@ def blend_textual_inversions(
                 logger.debug("detected Textual Inversion concept: %s", keys)
                 inversion_format = "concept"
             elif "emb_params" in keys:
-                logger.debug("detected Textual Inversion parameter embeddings: %s", keys)
+                logger.debug(
+                    "detected Textual Inversion parameter embeddings: %s", keys
+                )
                 inversion_format = "parameters"
             elif "string_to_token" in keys and "string_to_param" in keys:
                 logger.debug("detected Textual Inversion token embeddings: %s", keys)
