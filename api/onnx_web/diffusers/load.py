@@ -382,7 +382,8 @@ def optimize_pipeline(
             logger.warning("error while enabling memory efficient attention: %s", e)
 
 
-timestep_dtype = None
+# TODO: does this need to change for fp16 modes?
+timestep_dtype = np.float32
 
 
 class UNetWrapper(object):
