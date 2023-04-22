@@ -159,6 +159,7 @@ export const I18N_STRINGS_EN = {
           steps: 'Steps',
           strength: 'Strength',
         },
+        loopback: 'Loopback',
         lpw: 'Long Prompt Weighting',
         maskFilter: 'Mask Filter',
         noiseSource: 'Noise Source',

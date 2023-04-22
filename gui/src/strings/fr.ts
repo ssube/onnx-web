@@ -107,6 +107,7 @@ export const I18N_STRINGS_FR = {
           steps: '',
           strength: '',
         },
+        loopback: '',
         lpw: '',
         maskFilter: '',
         noiseSource: '',
