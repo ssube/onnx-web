@@ -43579,6 +43579,7 @@
       async img2img(model, params, upscale, highres) {
         const url = makeImageURL(root, "img2img", params);
         appendModelToURL(url, model);
+        url.searchParams.append("loopback", params.loopback.toFixed(FIXED_INTEGER));
         url.searchParams.append("strength", params.strength.toFixed(FIXED_FLOAT));
         if (doesExist2(params.sourceFilter)) {
           url.searchParams.append("sourceFilter", params.sourceFilter);
@@ -69793,7 +69794,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }), "createTxt2ImgSlice");
     const createImg2ImgSlice = /* @__PURE__ */ __name((set) => ({
-      img2img: Object.assign(Object.assign({}, base), { source: null, sourceFilter: "", strength: server.strength.default }),
+      img2img: Object.assign(Object.assign({}, base), { loopback: server.loopback.default, source: null, sourceFilter: "", strength: server.strength.default }),
       setImg2Img(params) {
         set((prev2) => ({
           img2img: Object.assign(Object.assign({}, prev2.img2img), params)
@@ -69801,7 +69802,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       },
       resetImg2Img() {
         set({
-          img2img: Object.assign(Object.assign({}, base), { source: null, sourceFilter: "", strength: server.strength.default })
+          img2img: Object.assign(Object.assign({}, base), { loopback: server.loopback.default, source: null, sourceFilter: "", strength: server.strength.default })
         });
       }
     }), "createImg2ImgSlice");
@@ -71900,6 +71901,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const source = useStore(state, (s) => s.img2img.source);
     const sourceFilter = useStore(state, (s) => s.img2img.sourceFilter);
     const strength = useStore(state, (s) => s.img2img.strength);
+    const loopback = useStore(state, (s) => s.img2img.loopback);
     const setImg2Img = useStore(state, (s) => s.setImg2Img);
     const setModel = useStore(state, (s) => s.setModel);
     const pushHistory = useStore(state, (s) => s.pushHistory);
@@ -71938,6 +71940,11 @@ Please use another name.` : formatMuiErrorMessage(18));
           React132.createElement(NumericField, { decimal: true, label: t2("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
             setImg2Img({
               strength: value
+            });
+          } }),
+          React132.createElement(NumericField, { label: t2("parameter.loopback"), min: params.loopback.min, max: params.loopback.max, step: params.loopback.step, value: loopback, onChange: (value) => {
+            setImg2Img({
+              loopback: value
             });
           } })
         ),
@@ -72482,6 +72489,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             steps: "",
             strength: ""
           },
+          loopback: "",
           lpw: "",
           maskFilter: "Maskenfilter",
           noiseSource: "L\xE4rmquelle",
@@ -72710,7 +72718,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             normal: "Normal Map",
             openpose: "OpenPose",
             scribble: "Scribble",
-            segment: "Image Segmentation"
+            seg: "Image Segmentation"
           }
         },
         modelType: {
@@ -72748,6 +72756,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             steps: "Steps",
             strength: "Strength"
           },
+          loopback: "Loopback",
           lpw: "Long Prompt Weighting",
           maskFilter: "Mask Filter",
           noiseSource: "Noise Source",
@@ -72984,6 +72993,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             steps: "",
             strength: ""
           },
+          loopback: "",
           lpw: "",
           maskFilter: "Filtro de m\xE1scara",
           noiseSource: "Fuente de ruido",
@@ -73193,6 +73203,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             steps: "",
             strength: ""
           },
+          loopback: "",
           lpw: "",
           maskFilter: "",
           noiseSource: "",
