@@ -43793,6 +43793,20 @@
           default:
             throw new InvalidArgumentError("unknown request type");
         }
+      },
+      async restart(token2) {
+        const path2 = makeApiUrl(root, "restart");
+        path2.searchParams.append("token", token2);
+        const res = await f2(path2, {
+          method: "POST"
+        });
+        return res.status === STATUS_SUCCESS;
+      },
+      async status(token2) {
+        const path2 = makeApiUrl(root, "status");
+        path2.searchParams.append("token", token2);
+        const res = await f2(path2);
+        return res.json();
       }
     };
   }
@@ -43872,6 +43886,12 @@
     },
     async strings() {
       return {};
+    },
+    async restart(token2) {
+      throw new NoServerError();
+    },
+    async status(token2) {
+      throw new NoServerError();
     }
   };
 
@@ -70611,6 +70631,10 @@ Please use another name.` : formatMuiErrorMessage(18));
     const params = useStore(state, (s) => s.model);
     const setModel = useStore(state, (s) => s.setModel);
     const { t: t2 } = useTranslation();
+    const query = new URLSearchParams(window.location.search);
+    const token2 = query.get("token");
+    const [hash4, _setHash] = (0, import_useHash.useHash)();
+    const restart = useMutation(["restart"], async () => client.restart(mustExist(token2)));
     const models = useQuery(["models"], async () => client.models(), {
       staleTime: STALE_TIME
     });
@@ -70620,7 +70644,6 @@ Please use another name.` : formatMuiErrorMessage(18));
     const platforms = useQuery(["platforms"], async () => client.platforms(), {
       staleTime: STALE_TIME
     });
-    const [hash4, _setHash] = (0, import_useHash.useHash)();
     function addToken(type, name, weight = 1) {
       const tab = getTab(hash4);
       const current = state.getState();
@@ -70702,7 +70725,8 @@ Please use another name.` : formatMuiErrorMessage(18));
           selector: (result) => result.networks.filter((network) => network.type === "lora").map((network) => network.name)
         }, onSelect: (name) => {
           addToken("lora", name);
-        } })
+        } }),
+        React119.createElement(Button_default, { variant: "outlined", onClick: () => restart.mutate() }, t2("admin.restart"))
       )
     );
   }
@@ -72309,37 +72333,37 @@ Please use another name.` : formatMuiErrorMessage(18));
             { sx: { borderBottom: 1, borderColor: "divider" } },
             React138.createElement(TabList_default, { onChange: (_e, idx) => {
               setHash(idx);
-            } }, TAB_LABELS.map((name) => React138.createElement(Tab_default, { key: name, label: name, value: name }))),
-            React138.createElement(
-              TabPanel_default,
-              { value: "txt2img" },
-              React138.createElement(Txt2Img, null)
-            ),
-            React138.createElement(
-              TabPanel_default,
-              { value: "img2img" },
-              React138.createElement(Img2Img, null)
-            ),
-            React138.createElement(
-              TabPanel_default,
-              { value: "inpaint" },
-              React138.createElement(Inpaint, null)
-            ),
-            React138.createElement(
-              TabPanel_default,
-              { value: "upscale" },
-              React138.createElement(Upscale, null)
-            ),
-            React138.createElement(
-              TabPanel_default,
-              { value: "blend" },
-              React138.createElement(Blend, null)
-            ),
-            React138.createElement(
-              TabPanel_default,
-              { value: "settings" },
-              React138.createElement(Settings, null)
-            )
+            } }, TAB_LABELS.map((name) => React138.createElement(Tab_default, { key: name, label: name, value: name })))
+          ),
+          React138.createElement(
+            TabPanel_default,
+            { value: "txt2img" },
+            React138.createElement(Txt2Img, null)
+          ),
+          React138.createElement(
+            TabPanel_default,
+            { value: "img2img" },
+            React138.createElement(Img2Img, null)
+          ),
+          React138.createElement(
+            TabPanel_default,
+            { value: "inpaint" },
+            React138.createElement(Inpaint, null)
+          ),
+          React138.createElement(
+            TabPanel_default,
+            { value: "upscale" },
+            React138.createElement(Upscale, null)
+          ),
+          React138.createElement(
+            TabPanel_default,
+            { value: "blend" },
+            React138.createElement(Blend, null)
+          ),
+          React138.createElement(
+            TabPanel_default,
+            { value: "settings" },
+            React138.createElement(Settings, null)
           )
         ),
         React138.createElement(Divider_default, { variant: "middle" }),
@@ -72357,6 +72381,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var I18N_STRINGS_DE = {
     de: {
       translation: {
+        admin: {
+          restart: ""
+        },
         error: {
           inpaint: {
             support: ""
@@ -72563,6 +72590,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var I18N_STRINGS_EN = {
     en: {
       translation: {
+        admin: {
+          restart: "Restart Workers"
+        },
         error: {
           inpaint: {
             support: "This diffusion model may not support inpainting."
@@ -72853,6 +72883,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var I18N_STRINGS_ES = {
     es: {
       translation: {
+        admin: {
+          restart: ""
+        },
         error: {
           inpaint: {
             support: ""
@@ -73059,6 +73092,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var I18N_STRINGS_FR = {
     fr: {
       translation: {
+        admin: {
+          restart: ""
+        },
         error: {
           inpaint: {
             support: ""
