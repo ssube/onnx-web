@@ -299,15 +299,6 @@ def run_txt2img_pipeline(
     del pipe
 
     for image, output in image_outputs:
-        image = run_loopback(
-            job,
-            server,
-            params,
-            progress,
-            inversions,
-            loras,
-        )
-
         image = run_highres(
             job,
             server,
@@ -413,6 +404,16 @@ def run_img2img_pipeline(
         images.append(source)
 
     for image, output in zip(images, outputs):
+        image = run_loopback(
+            job,
+            server,
+            params,
+            image,
+            progress,
+            inversions,
+            loras,
+        )
+
         image = run_highres(
             job,
             server,
