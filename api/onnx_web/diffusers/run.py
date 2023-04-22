@@ -402,7 +402,7 @@ def run_img2img_pipeline(
         )
 
     images = result.images
-    if source_filter is not None:
+    if source_filter is not None and source_filter != "none":
         images.append(source)
 
     for image, output in zip(images, outputs):
