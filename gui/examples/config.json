@@ -104,6 +104,12 @@
       "max": 512,
       "step": 8
     },
+    "loopback": {
+      "default": 0,
+      "min": 0,
+      "max": 10,
+      "step": 1
+    },
     "model": {
       "default": "stable-diffusion-onnx-v1-5",
       "keys": []

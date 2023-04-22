@@ -47,6 +47,70 @@ def parse_prompt(params: ImageParams) -> Tuple[List[Tuple[str, float]], List[Tup
     return loras, inversions
 
 
+def run_loopback(
+    job: WorkerContext,
+    server: ServerContext,
+    params: ImageParams,
+    image: Image.Image,
+    progress: ProgressCallback,
+    inversions: List[Tuple[str, float]],
+    loras: List[Tuple[str, float]],
+) -> Image.Image:
+    if params.loopback == 0:
+        return image
+
+    # load img2img pipeline once
+    pipe_type = "lpw" if params.lpw() else "img2img"
+    pipe = load_pipeline(
+        server,
+        pipe_type,
+        params.model,
+        params.scheduler,
+        job.get_device(),
+        inversions=inversions,
+        loras=loras,
+    )
+
+    def loopback_iteration(source: Image.Image):
+        if params.lpw():
+            logger.debug("using LPW pipeline for loopback")
+            rng = torch.manual_seed(params.seed)
+            result = pipe.img2img(
+                source,
+                params.prompt,
+                generator=rng,
+                guidance_scale=params.cfg,
+                negative_prompt=params.negative_prompt,
+                num_images_per_prompt=1,
+                num_inference_steps=params.steps,
+                strength=params.strength,
+                eta=params.eta,
+                callback=progress,
+            )
+            return result.images[0]
+        else:
+            logger.debug("using img2img pipeline for loopback")
+            rng = np.random.RandomState(params.seed)
+            result = pipe(
+                params.prompt,
+                source,
+                generator=rng,
+                guidance_scale=params.cfg,
+                negative_prompt=params.negative_prompt,
+                num_images_per_prompt=1,
+                num_inference_steps=params.steps,
+                strength=params.strength,
+                eta=params.eta,
+                callback=progress,
+            )
+            return result.images[0]
+
+    for _i in range(params.loopback):
+        image = loopback_iteration(image)
+
+    return image
+
+
 def run_highres(
     job: WorkerContext,
     server: ServerContext,
@@ -58,7 +122,7 @@ def run_highres(
     progress: ProgressCallback,
     inversions: List[Tuple[str, float]],
     loras: List[Tuple[str, float]],
-) -> None:
+) -> Image.Image:
     if highres.scale <= 1:
         return image
 
@@ -137,6 +201,7 @@ def run_highres(
             )
             return result.images[0]
         else:
+            logger.debug("using img2img pipeline for highres")
             rng = np.random.RandomState(params.seed)
             result = highres_pipe(
                 params.prompt,
@@ -232,6 +297,15 @@ def run_txt2img_pipeline(
     del pipe
 
     for image, output in image_outputs:
+        image = run_loopback(
+            job,
+            server,
+            params,
+            progress,
+            inversions,
+            loras,
+        )
+
         image = run_highres(
             job,
             server,

@@ -175,6 +175,7 @@ class ImageParams:
     control: Optional[NetworkModel]
     input_prompt: str
     input_negative_prompt: str
+    loopback: int
 
     def __init__(
         self,
@@ -191,6 +192,7 @@ class ImageParams:
         control: Optional[NetworkModel] = None,
         input_prompt: Optional[str] = None,
         input_negative_prompt: Optional[str] = None,
+        loopback: int = 0,
     ) -> None:
         self.model = model
         self.pipeline = pipeline
@@ -205,6 +207,7 @@ class ImageParams:
         self.control = control
         self.input_prompt = input_prompt or prompt
         self.input_negative_prompt = input_negative_prompt or negative_prompt
+        self.loopback = loopback
 
     def lpw(self):
         return self.pipeline == "lpw"
@@ -224,6 +227,7 @@ class ImageParams:
             "control": self.control.name if self.control is not None else "",
             "input_prompt": self.input_prompt,
             "input_negative_prompt": self.input_negative_prompt,
+            "loopback": self.loopback,
         }
 
     def with_args(self, **kwargs):
@@ -241,6 +245,7 @@ class ImageParams:
             kwargs.get("control", self.control),
             kwargs.get("input_prompt", self.input_prompt),
             kwargs.get("input_negative_prompt", self.input_negative_prompt),
+            kwargs.get("loopback", self.loopback),
         )
 
 

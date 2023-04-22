@@ -68,6 +68,7 @@ export interface Txt2ImgParams extends BaseImgParams {
 export interface Img2ImgParams extends BaseImgParams {
   source: Blob;
 
+  loopback: number;
   sourceFilter?: string;
   strength: number;
 }
@@ -518,6 +519,7 @@ export function makeClient(root: string, f = fetch): ApiClient {
       const url = makeImageURL(root, 'img2img', params);
       appendModelToURL(url, model);
 
+      url.searchParams.append('loopback', params.loopback.toFixed(FIXED_INTEGER));
       url.searchParams.append('strength', params.strength.toFixed(FIXED_FLOAT));
 
       if (doesExist(params.sourceFilter)) {

@@ -46,6 +46,7 @@ export function Img2Img() {
   const source = useStore(state, (s) => s.img2img.source);
   const sourceFilter = useStore(state, (s) => s.img2img.sourceFilter);
   const strength = useStore(state, (s) => s.img2img.strength);
+  const loopback = useStore(state, (s) => s.img2img.loopback);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -109,6 +110,18 @@ export function Img2Img() {
           onChange={(value) => {
             setImg2Img({
               strength: value,
+            });
+          }}
+        />
+        <NumericField
+          label={t('parameter.loopback')}
+          min={params.loopback.min}
+          max={params.loopback.max}
+          step={params.loopback.step}
+          value={loopback}
+          onChange={(value) => {
+            setImg2Img({
+              loopback: value,
             });
           }}
         />

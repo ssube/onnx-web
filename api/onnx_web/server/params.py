@@ -91,6 +91,13 @@ def pipeline_from_request(
         get_config_value("eta", "max"),
         get_config_value("eta", "min"),
     )
+    loopback = get_and_clamp_int(
+        request.args,
+        "loopback",
+        get_config_value("loopback"),
+        get_config_value("loopback", "max"),
+        get_config_value("loopback", "min"),
+    )
     steps = get_and_clamp_int(
         request.args,
         "steps",
@@ -145,6 +152,7 @@ def pipeline_from_request(
         negative_prompt=negative_prompt,
         batch=batch,
         control=control,
+        loopback=loopback,
     )
     size = Size(width, height)
     return (device, params, size)

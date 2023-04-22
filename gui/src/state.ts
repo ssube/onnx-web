@@ -257,6 +257,7 @@ export function createStateSlices(server: ServerParams) {
   const createImg2ImgSlice: Slice<Img2ImgSlice> = (set) => ({
     img2img: {
       ...base,
+      loopback: server.loopback.default,
       source: null,
       sourceFilter: '',
       strength: server.strength.default,
@@ -273,6 +274,7 @@ export function createStateSlices(server: ServerParams) {
       set({
         img2img: {
           ...base,
+          loopback: server.loopback.default,
           source: null,
           sourceFilter: '',
           strength: server.strength.default,
