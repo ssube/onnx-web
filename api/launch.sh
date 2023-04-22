@@ -21,7 +21,7 @@ python3 -m onnx_web.convert \
   --diffusion \
   --upscaling \
   --correction \
-  --extras=${ONNX_WEB_EXTRA_MODELS:-..\models\extras.json} \
+  --extras=${ONNX_WEB_EXTRA_MODELS:-../models/extras.json} \
   --token=${HF_TOKEN:-} \
   ${ONNX_WEB_EXTRA_ARGS:-}
 
