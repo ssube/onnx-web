@@ -88,6 +88,7 @@
 			"upscaling",
 			"venv",
 			"virtualenv",
+			"VRAM",
 			"zustand"
 		]
 	}

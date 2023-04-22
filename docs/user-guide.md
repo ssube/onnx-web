@@ -888,7 +888,7 @@ some common configurations in a server context.
   - array of sources
 - strings
   - additional translation strings
-  
+
 ## Environment variables
 
 This section catalogs the environment variables that can be set in the launch script. These variables can be set in the server launch scripts as
@@ -901,91 +901,36 @@ This section catalogs the environment variables that can be set in the launch sc
 > set [ENVIRONMENT VARIABLE NAME]=[VALUE]
 ```
 
-The available environment variables are as follows:
+The following environment variables are available:
 
-```shell
-ONNX_WEB_MODEL_PATH
-```
-
-The path to the models folder. Defaults to /models
-
-```shell
-ONNX_WEB_EXTRA_MODELS
-```
-
-The path to the extra models json file. See [the Adding your own models section](#Adding your own models) for more information. Defaults to nothing.
-
-```shell
-ONNX_WEB_OUTPUT_PATH
-```
-
-The path to the model output folder (for generated images). Defaults to /outputs
-
-```shell
-ONNX_WEB_PARAMS_PATH
-```
-
-The path to the params.json file that holds the model parameters currently in use. Defaults to /api. Not accessible by default in the Windows bundle; use the web interface or set another path.
-
-```shell
-ONNX_WEB_CORS_ORIGIN
-```
-
-TODO
-
-```shell
-ONNX_WEB_ANY_PLATFORM
-```
-
-TODO
-
-```shell
-ONNX_WEB_BLOCK_PLATFORMS
-```
-
-TODO
-
-```shell
-ONNX_WEB_DEFAULT_PLATFORM
-```
-
-TODO
-
-```shell
-ONNX_WEB_IMAGE_FORMAT
-```
-
-The image format for the output. Defaults to .png.
-
-```shell
-ONNX_WEB_CACHE_MODELS
-```
-
-The number of models to cache. Decreasing this value may decrease VRAM usage and increase stability when switching models, but may also increase startup time. Defaults to 5.
-
-```shell
-ONNX_WEB_SHOW_PROGRESS
-```
-
-Whether to show progress in the Web UI. Defaults to True.
-
-```shell
-ONNX_WEB_OPTIMIZATIONS
-```
-
-See [the Optimizing models for lower memory usage section](#Optimizing models for lower memory usage) for more information.
-
-```shell
-ONNX_WEB_JOB_LIMIT
-```
-
-Job limit. Defaults to 10.
-
-```shell
-ONNX_WEB_MEMORY_LIMIT
-```
-
-Memory usage limit. Defaults to none.
+- `ONNX_WEB_MODEL_PATH`
+  - The path to the models folder. Defaults to /models
+- `ONNX_WEB_EXTRA_MODELS`
+  - The path to the extra models json file. See [the Adding your own models section](#adding-your-own-models) for more information. Defaults to nothing.
+- `ONNX_WEB_OUTPUT_PATH`
+  - The path to the model output folder (for generated images). Defaults to /outputs
+- `ONNX_WEB_PARAMS_PATH`
+  - The path to the params.json file that holds the model parameters currently in use. Defaults to /api. Not accessible by default in the Windows bundle; use the web interface or set another path.
+- `ONNX_WEB_CORS_ORIGIN`
+  - The allowed origins for [cross-origin resource sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) headers. Allows access from other websites or clients.
+- `ONNX_WEB_ANY_PLATFORM`
+  - The platform that will be used when selecting any platform in the client.
+- `ONNX_WEB_BLOCK_PLATFORMS`
+  - Platforms that should not be shown in the client. Can be used to disable CPU mode and only run on your GPU.
+- `ONNX_WEB_DEFAULT_PLATFORM`
+  - The default platform that will be selected in the client, if you have more than one GPU or have CPU mode enabled.
+- `ONNX_WEB_IMAGE_FORMAT`
+  - The image format for the output. Defaults to .png.
+- `ONNX_WEB_CACHE_MODELS`
+  - The number of models to cache. Decreasing this value may decrease VRAM usage and increase stability when switching models, but may also increase startup time. Defaults to 5.
+- `ONNX_WEB_SHOW_PROGRESS`
+  - Whether to show progress in the command prompt window. Defaults to True.
+- `ONNX_WEB_OPTIMIZATIONS`
+  - See [the Optimizing models for lower memory usage section](#optimizing-models-for-lower-memory-usage) for more information.
+- `ONNX_WEB_JOB_LIMIT`
+  - Job limit before workers will be automatically restarted. Defaults to 10.
+- `ONNX_WEB_MEMORY_LIMIT`
+  - VRAM usage limit for CUDA devices. Defaults to none.
 
 ## Known errors
 
