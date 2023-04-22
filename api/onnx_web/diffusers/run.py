@@ -577,7 +577,7 @@ def run_blend_pipeline(
     size: Size,
     outputs: List[str],
     upscale: UpscaleParams,
-    highres: HighresParams,
+    # highres: HighresParams,
     sources: List[Image.Image],
     mask: Image.Image,
 ) -> None:
@@ -594,20 +594,6 @@ def run_blend_pipeline(
         callback=progress,
     )
     image = image.convert("RGB")
-
-    # TODO: blend tab doesn't have a prompt
-    image = run_highres(
-        job,
-        server,
-        params,
-        size,
-        upscale,
-        highres,
-        image,
-        progress,
-        [],
-        [],
-    )
 
     image = run_upscale_correction(
         job, server, stage, params, image, upscale=upscale, callback=progress

@@ -458,6 +458,7 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
         size,
         output,
         upscale,
+        # TODO: highres
         sources,
         mask,
         needs_device=device,
