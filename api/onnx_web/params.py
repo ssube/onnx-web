@@ -174,6 +174,7 @@ class ImageParams:
     batch: int
     control: Optional[NetworkModel]
     input_prompt: str
+    input_negative_prompt: str
 
     def __init__(
         self,
@@ -189,6 +190,7 @@ class ImageParams:
         batch: int = 1,
         control: Optional[NetworkModel] = None,
         input_prompt: Optional[str] = None,
+        input_negative_prompt: Optional[str] = None,
     ) -> None:
         self.model = model
         self.pipeline = pipeline
@@ -202,6 +204,7 @@ class ImageParams:
         self.batch = batch
         self.control = control
         self.input_prompt = input_prompt or prompt
+        self.input_negative_prompt = input_negative_prompt or negative_prompt
 
     def lpw(self):
         return self.pipeline == "lpw"
@@ -220,6 +223,7 @@ class ImageParams:
             "batch": self.batch,
             "control": self.control.name if self.control is not None else "",
             "input_prompt": self.input_prompt,
+            "input_negative_prompt": self.input_negative_prompt,
         }
 
     def with_args(self, **kwargs):
@@ -236,6 +240,7 @@ class ImageParams:
             kwargs.get("batch", self.batch),
             kwargs.get("control", self.control),
             kwargs.get("input_prompt", self.input_prompt),
+            kwargs.get("input_negative_prompt", self.input_negative_prompt),
         )
 
 

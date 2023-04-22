@@ -35,6 +35,15 @@ def parse_prompt(params: ImageParams) -> Tuple[List[Tuple[str, float]], List[Tup
     prompt, inversions = get_inversions_from_prompt(prompt)
     params.prompt = prompt
 
+    if params.input_negative_prompt is not None:
+        neg_prompt, neg_loras = get_loras_from_prompt(params.input_negative_prompt)
+        neg_prompt, neg_inversions = get_inversions_from_prompt(neg_prompt)
+        params.negative_prompt = neg_prompt
+
+        # TODO: check whether these need to be * -1
+        loras.extend(neg_loras)
+        inversions.extend(neg_inversions)
+
     return loras, inversions
 
 
