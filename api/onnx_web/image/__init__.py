@@ -23,6 +23,7 @@ from .source_filter import (
     source_filter_hed,
     source_filter_mlsd,
     source_filter_noise,
+    source_filter_none,
     source_filter_normal,
     source_filter_openpose,
     source_filter_scribble,

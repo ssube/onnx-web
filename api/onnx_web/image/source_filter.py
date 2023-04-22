@@ -27,6 +27,13 @@ def filter_model_path(server: ServerContext, filter_name: str) -> str:
     return path.join(server.model_path, "filter", filter_name)
 
 
+def source_filter_none(
+    server: ServerContext,
+    source: Image.Image,
+):
+    return source
+
+
 def source_filter_gaussian(
     server: ServerContext,
     source: Image.Image,

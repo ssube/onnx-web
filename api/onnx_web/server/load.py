@@ -26,6 +26,7 @@ from ..image import (  # mask filters; noise sources
     source_filter_hed,
     source_filter_mlsd,
     source_filter_noise,
+    source_filter_none,
     source_filter_normal,
     source_filter_openpose,
     source_filter_scribble,
@@ -68,17 +69,18 @@ platform_providers = {
     "rocm": "ROCMExecutionProvider",
 }
 source_filters = {
-    "gaussian": source_filter_gaussian,
-    "noise": source_filter_noise,
-    "face": source_filter_face,
-    "segment": source_filter_segment,
-    "mlsd": source_filter_mlsd,
-    "normal": source_filter_normal,
-    "hed": source_filter_hed,
-    "scribble": source_filter_scribble,
-    "depth": source_filter_depth,
     "canny": source_filter_canny,
+    "depth": source_filter_depth,
+    "face": source_filter_face,
+    "gaussian": source_filter_gaussian,
+    "hed": source_filter_hed,
+    "mlsd": source_filter_mlsd,
+    "noise": source_filter_noise,
+    "none": source_filter_none,
+    "normal": source_filter_normal,
     "openpose": source_filter_openpose,
+    "segment": source_filter_segment,
+    "scribble": source_filter_scribble,
 }
 
 # Available ORT providers
