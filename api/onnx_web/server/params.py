@@ -62,13 +62,14 @@ def pipeline_from_request(
     if scheduler is None:
         scheduler = get_config_value("scheduler")
 
-    # image params
-    prompt = get_not_empty(request.args, "prompt", get_config_value("prompt"))
+    # prompt does not come from config
+    prompt = request.args.get("prompt", "")
     negative_prompt = request.args.get("negativePrompt", None)
 
     if negative_prompt is not None and negative_prompt.strip() == "":
         negative_prompt = None
 
+    # image params
     batch = get_and_clamp_int(
         request.args,
         "batch",
