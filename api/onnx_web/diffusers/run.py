@@ -58,13 +58,16 @@ def run_loopback(
     progress: ProgressCallback,
     inversions: List[Tuple[str, float]],
     loras: List[Tuple[str, float]],
+    pipeline: Optional[Any] = None,
 ) -> Image.Image:
     if params.loopback == 0:
         return image
 
+    loopback_progress = ChainProgress.from_progress(progress)
+
     # load img2img pipeline once
     pipe_type = "lpw" if params.lpw() else "img2img"
-    pipe = load_pipeline(
+    pipe = pipeline or load_pipeline(
         server,
         pipe_type,
         params.model,
@@ -88,7 +91,7 @@ def run_loopback(
                 num_inference_steps=params.steps,
                 strength=strength,
                 eta=params.eta,
-                callback=progress,
+                callback=loopback_progress,
             )
             return result.images[0]
         else:
@@ -104,7 +107,7 @@ def run_loopback(
                 num_inference_steps=params.steps,
                 strength=strength,
                 eta=params.eta,
-                callback=progress,
+                callback=loopback_progress,
             )
             return result.images[0]
 
@@ -125,6 +128,7 @@ def run_highres(
     progress: ProgressCallback,
     inversions: List[Tuple[str, float]],
     loras: List[Tuple[str, float]],
+    pipeline: Optional[Any] = None,
 ) -> Image.Image:
     if highres.scale <= 1:
         return image
@@ -150,7 +154,7 @@ def run_highres(
 
     # load img2img pipeline once
     pipe_type = "lpw" if params.lpw() else "img2img"
-    highres_pipe = load_pipeline(
+    highres_pipe = pipeline or load_pipeline(
         server,
         pipe_type,
         params.model,
@@ -415,6 +419,7 @@ def run_img2img_pipeline(
             progress,
             inversions,
             loras,
+            pipeline=pipe,
         )
 
         image = run_highres(
@@ -428,6 +433,7 @@ def run_img2img_pipeline(
             progress,
             inversions,
             loras,
+            pipeline=pipe,
         )
 
         image = run_upscale_correction(
