@@ -53,6 +53,7 @@ def run_loopback(
     job: WorkerContext,
     server: ServerContext,
     params: ImageParams,
+    strength: float,
     image: Image.Image,
     progress: ProgressCallback,
     inversions: List[Tuple[str, float]],
@@ -85,7 +86,7 @@ def run_loopback(
                 negative_prompt=params.negative_prompt,
                 num_images_per_prompt=1,
                 num_inference_steps=params.steps,
-                strength=params.strength,
+                strength=strength,
                 eta=params.eta,
                 callback=progress,
             )
@@ -101,7 +102,7 @@ def run_loopback(
                 negative_prompt=params.negative_prompt,
                 num_images_per_prompt=1,
                 num_inference_steps=params.steps,
-                strength=params.strength,
+                strength=strength,
                 eta=params.eta,
                 callback=progress,
             )
@@ -408,6 +409,7 @@ def run_img2img_pipeline(
             job,
             server,
             params,
+            strength,
             image,
             progress,
             inversions,
