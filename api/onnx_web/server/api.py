@@ -179,6 +179,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
     output_count = params.batch
     if source_filter is not None:
+        logger.debug("including filtered source with outputs, filter: %s", source_filter)
         output_count += 1
 
     output = make_output_name(

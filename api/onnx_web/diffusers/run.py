@@ -348,6 +348,7 @@ def run_img2img_pipeline(
     if source_filter is not None:
         f = get_source_filters().get(source_filter, None)
         if f is not None:
+            logger.debug("running source filter: %s", f.__name__)
             source = f(server, source)
 
     pipe = load_pipeline(

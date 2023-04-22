@@ -121,7 +121,7 @@ export const I18N_STRINGS_EN = {
           normal: 'Normal Map',
           openpose: 'OpenPose',
           scribble: 'Scribble',
-          segment: 'Image Segmentation',
+          seg: 'Image Segmentation',
         },
       },
       modelType: {
