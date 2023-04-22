@@ -133,9 +133,7 @@ def load_pipeline(
     loras = loras or []
     control_key = control.name if control is not None else None
 
-    torch_dtype = (
-        torch.float16 if "torch-fp16" in server.optimizations else torch.float32
-    )
+    torch_dtype = server.torch_dtype()
     logger.debug("using Torch dtype %s for pipeline", torch_dtype)
     pipe_key = (
         pipeline,
