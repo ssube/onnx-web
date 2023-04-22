@@ -103,12 +103,12 @@ TEST_DATA = [
     ),
     TestCase(
         "img2img-sd-v1-5-512-pumpkin",
-        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
+        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none",
         source="txt2img-sd-v1-5-512-muffin-0",
     ),
     TestCase(
         "img2img-sd-v1-5-256-pumpkin",
-        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
+        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none",
         source="txt2img-sd-v1-5-256-muffin-0",
     ),
     TestCase(
