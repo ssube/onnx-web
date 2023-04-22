@@ -30,6 +30,14 @@ from .utils import get_inversions_from_prompt, get_loras_from_prompt
 logger = getLogger(__name__)
 
 
+def parse_prompt(params: ImageParams) -> Tuple[List[Tuple[str, float]], List[Tuple[str, float]]]:
+    prompt, loras = get_loras_from_prompt(params.input_prompt)
+    prompt, inversions = get_inversions_from_prompt(prompt)
+    params.prompt = prompt
+
+    return loras, inversions
+
+
 def run_highres(
     job: WorkerContext,
     server: ServerContext,
@@ -164,10 +172,7 @@ def run_txt2img_pipeline(
     highres: HighresParams,
 ) -> None:
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
-
-    (prompt, loras) = get_loras_from_prompt(params.prompt)
-    (prompt, inversions) = get_inversions_from_prompt(prompt)
-    params.prompt = prompt
+    loras, inversions = parse_prompt(params)
 
     pipe_type = "lpw" if params.lpw() else "txt2img"
     pipe = load_pipeline(
@@ -260,9 +265,7 @@ def run_img2img_pipeline(
     strength: float,
     source_filter: Optional[str] = None,
 ) -> None:
-    (prompt, loras) = get_loras_from_prompt(params.prompt)
-    (prompt, inversions) = get_inversions_from_prompt(prompt)
-    params.prompt = prompt
+    loras, inversions = parse_prompt(params)
 
     # filter the source image
     if source_filter is not None:
@@ -376,9 +379,7 @@ def run_inpaint_pipeline(
     progress = job.get_progress_callback()
     stage = StageParams(tile_order=tile_order)
 
-    (prompt, loras) = get_loras_from_prompt(params.prompt)
-    (prompt, inversions) = get_inversions_from_prompt(prompt)
-    params.prompt = prompt
+    loras, inversions = parse_prompt(params)
 
     # calling the upscale_outpaint stage directly needs accumulating progress
     progress = ChainProgress.from_progress(progress)
@@ -444,9 +445,7 @@ def run_upscale_pipeline(
     progress = job.get_progress_callback()
     stage = StageParams()
 
-    (prompt, loras) = get_loras_from_prompt(params.prompt)
-    (prompt, inversions) = get_inversions_from_prompt(prompt)
-    params.prompt = prompt
+    loras, inversions = parse_prompt(params)
 
     image = run_upscale_correction(
         job, server, stage, params, source, upscale=upscale, callback=progress

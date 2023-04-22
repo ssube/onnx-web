@@ -173,6 +173,7 @@ class ImageParams:
     eta: float
     batch: int
     control: Optional[NetworkModel]
+    input_prompt: str
 
     def __init__(
         self,
@@ -187,6 +188,7 @@ class ImageParams:
         eta: float = 0.0,
         batch: int = 1,
         control: Optional[NetworkModel] = None,
+        input_prompt: Optional[str] = None,
     ) -> None:
         self.model = model
         self.pipeline = pipeline
@@ -199,6 +201,7 @@ class ImageParams:
         self.eta = eta
         self.batch = batch
         self.control = control
+        self.input_prompt = input_prompt or prompt
 
     def lpw(self):
         return self.pipeline == "lpw"
@@ -216,6 +219,7 @@ class ImageParams:
             "eta": self.eta,
             "batch": self.batch,
             "control": self.control.name if self.control is not None else "",
+            "input_prompt": self.input_prompt,
         }
 
     def with_args(self, **kwargs):
@@ -231,6 +235,7 @@ class ImageParams:
             kwargs.get("eta", self.eta),
             kwargs.get("batch", self.batch),
             kwargs.get("control", self.control),
+            kwargs.get("input_prompt", self.input_prompt),
         )
 
 
