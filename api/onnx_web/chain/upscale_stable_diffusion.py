@@ -32,7 +32,7 @@ def upscale_stable_diffusion(
         "upscaling with Stable Diffusion, %s steps: %s", params.steps, params.prompt
     )
 
-    prompt_pairs, loras, inversions = parse_prompt(params)
+    prompt_pairs, _loras, _inversions = parse_prompt(params)
 
     pipeline = load_pipeline(
         server,
@@ -40,8 +40,6 @@ def upscale_stable_diffusion(
         upscale.upscale_model,
         params.scheduler,
         job.get_device(),
-        inversions=inversions,
-        loras=loras,
     )
     generator = torch.manual_seed(params.seed)
 

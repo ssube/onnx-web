@@ -129,7 +129,7 @@ def expand_prompt(
 
         text_result = self.text_encoder(input_ids=group.astype(np.int32))
         logger.trace(
-            "text encoder produced %s outputs: %s", len(text_result), text_result
+            "text encoder produced %s outputs: %s", len(text_result), [t.shape for t in text_result]
         )
 
         last_state, _pooled_output, *hidden_states = text_result
