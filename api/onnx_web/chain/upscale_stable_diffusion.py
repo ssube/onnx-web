@@ -6,6 +6,8 @@ import torch
 from diffusers import StableDiffusionUpscalePipeline
 from PIL import Image
 
+from ..diffusers.utils import encode_prompt, parse_prompt
+
 from ..diffusers.load import optimize_pipeline, patch_pipeline
 from ..diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
@@ -85,6 +87,15 @@ def upscale_stable_diffusion(
 
     pipeline = load_stable_diffusion(server, upscale, job.get_device())
     generator = torch.manual_seed(params.seed)
+
+    prompt_pairs, _loras, _inversions = parse_prompt(params)
+    prompt_embeds = encode_prompt(
+        pipeline,
+        prompt_pairs,
+        num_images_per_prompt=params.batch,
+        do_classifier_free_guidance=params.do_cfg(),
+    )
+    pipeline.unet.set_prompts(prompt_embeds)
 
     return pipeline(
         params.prompt,

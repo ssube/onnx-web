@@ -66,7 +66,7 @@ def expand_alternative_ranges(prompt: str) -> List[str]:
             group_i = i % len(group)
             options.append(group[group_i])
 
-        prompts.append(" ".join(options))
+        prompts.append("".join(options))
 
     return prompts
 
@@ -114,6 +114,11 @@ def expand_prompt(
             group_start + MAX_TOKENS_PER_GROUP, tokens.input_ids.shape[1]
         )  # or should this be 1?
         logger.trace("building group for token slice [%s : %s]", group_start, group_end)
+
+        group_size = group_end - group_start
+        if group_size < MAX_TOKENS_PER_GROUP:
+            pass # TODO: pad short groups
+
         groups.append(tokens.input_ids[:, group_start:group_end])
 
     # encode each chunk
