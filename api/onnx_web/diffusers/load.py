@@ -404,7 +404,8 @@ class UNetWrapper(object):
     def __getattr__(self, attr):
         return getattr(self.wrapped, attr)
 
-    def set_prompts(self, prompt_embeds: Optional[List[np.ndarray]] = None):
+    def set_prompts(self, prompt_embeds: List[np.ndarray]):
+        logger.debug("setting prompt embeds for UNet: %s", [p.shape for p in prompt_embeds])
         self.prompt_embeds = prompt_embeds
         self.prompt_index = 0
 

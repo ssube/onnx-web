@@ -3,7 +3,6 @@ from typing import Any, List, Optional, Tuple
 
 import numpy as np
 import torch
-from diffusers import OnnxStableDiffusionPipeline
 from PIL import Image
 
 from ..chain import blend_mask, upscale_outpaint
@@ -26,11 +25,7 @@ from ..worker import WorkerContext
 from ..worker.context import ProgressCallback
 from .load import load_pipeline
 from .upscale import run_upscale_correction
-from .utils import (
-    get_latents_from_seed,
-    encode_prompt,
-    parse_prompt,
-)
+from .utils import encode_prompt, get_latents_from_seed, parse_prompt
 
 logger = getLogger(__name__)
 

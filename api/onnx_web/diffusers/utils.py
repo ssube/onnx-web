@@ -34,14 +34,27 @@ def expand_interval_ranges(prompt: str) -> str:
 
 
 def expand_alternative_ranges(prompt: str) -> List[str]:
-    remaining_prompt = prompt
     prompt_groups = []
 
-    next_group = ALTERNATIVE_RANGE.search(remaining_prompt)
+    last_end = 0
+    next_group = ALTERNATIVE_RANGE.search(prompt)
     while next_group is not None:
         logger.debug("found alternative group in prompt: %s", next_group)
         options = next_group.group().split("|")
         prompt_groups.append(options)
+
+        if next_group.start() > (last_end + 1):
+            skipped_prompt = prompt[last_end:next_group.start()]
+            logger.trace("appending skipped section of prompt: %s", skipped_prompt)
+            prompt_groups.append([skipped_prompt])
+
+        last_end = next_group.end()
+        next_group = ALTERNATIVE_RANGE.search(prompt, last_end)
+
+    if last_end < len(prompt):
+        remaining_prompt = prompt[last_end:]
+        logger.trace("appending remainder of prompt: %s", remaining_prompt)
+        prompt_groups.append([remaining_prompt])
 
     prompt_count = max([len(group) for group in prompt_groups])
     prompts = []
