@@ -41,8 +41,8 @@ def expand_alternative_ranges(prompt: str) -> List[str]:
     while next_group is not None:
         logger.debug("found alternative group in prompt: %s", next_group)
 
-        if next_group.start() > (last_end + 1):
-            skipped_prompt = prompt[last_end + 1 : next_group.start()]
+        if next_group.start() > last_end:
+            skipped_prompt = prompt[last_end : next_group.start()]
             logger.trace("appending skipped section of prompt: %s", skipped_prompt)
             prompt_groups.append([skipped_prompt])
 

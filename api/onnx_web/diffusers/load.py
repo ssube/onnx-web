@@ -448,7 +448,6 @@ def patch_pipeline(
         original_vae = pipe.vae_decoder
         pipe.vae_decoder = VAEWrapper(server, original_vae)
     elif hasattr(pipe, "vae"):
-        original_vae = pipe.vae
-        pipe.vae = VAEWrapper(server, original_vae)
+        pass # TODO: current wrapper does not work with upscaling VAE
     else:
-        logger.debug("no found VAE to patch")
+        logger.debug("no VAE found to patch")

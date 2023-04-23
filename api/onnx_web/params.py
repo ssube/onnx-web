@@ -198,10 +198,10 @@ class ImageParams:
         self.pipeline = pipeline
         self.scheduler = scheduler
         self.prompt = prompt
-        self.negative_prompt = negative_prompt
         self.cfg = cfg
-        self.seed = seed
         self.steps = steps
+        self.seed = seed
+        self.negative_prompt = negative_prompt
         self.eta = eta
         self.batch = batch
         self.control = control
@@ -239,10 +239,10 @@ class ImageParams:
             kwargs.get("pipeline", self.pipeline),
             kwargs.get("scheduler", self.scheduler),
             kwargs.get("prompt", self.prompt),
-            kwargs.get("negative_prompt", self.negative_prompt),
             kwargs.get("cfg", self.cfg),
             kwargs.get("steps", self.steps),
             kwargs.get("seed", self.seed),
+            kwargs.get("negative_prompt", self.negative_prompt),
             kwargs.get("eta", self.eta),
             kwargs.get("batch", self.batch),
             kwargs.get("control", self.control),
