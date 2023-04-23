@@ -1,69 +1,16 @@
 from logging import getLogger
-from os import path
 from typing import Optional
 
 import torch
-from diffusers import StableDiffusionUpscalePipeline
 from PIL import Image
 
+from ..diffusers.load import load_pipeline
 from ..diffusers.utils import encode_prompt, parse_prompt
-
-from ..diffusers.load import optimize_pipeline, patch_pipeline
-from ..diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
-from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
+from ..params import ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
-from ..utils import run_gc
 from ..worker import ProgressCallback, WorkerContext
 
 logger = getLogger(__name__)
-
-
-def load_stable_diffusion(
-    server: ServerContext, upscale: UpscaleParams, device: DeviceParams
-):
-    model_path = path.join(server.model_path, upscale.upscale_model)
-
-    cache_key = (model_path, upscale.format)
-    cache_pipe = server.cache.get("diffusion", cache_key)
-
-    if cache_pipe is not None:
-        logger.debug("reusing existing Stable Diffusion upscale pipeline")
-        return cache_pipe
-
-    if upscale.format == "onnx":
-        logger.debug(
-            "loading Stable Diffusion upscale ONNX model from %s, using provider %s",
-            model_path,
-            device.provider,
-        )
-        pipeline = OnnxStableDiffusionUpscalePipeline
-        pipe = OnnxStableDiffusionUpscalePipeline.from_pretrained(
-            model_path,
-            provider=device.ort_provider(),
-            sess_options=device.sess_options(),
-        )
-    else:
-        logger.debug(
-            "loading Stable Diffusion upscale model from %s, using provider %s",
-            model_path,
-            device.provider,
-        )
-        pipeline = StableDiffusionUpscalePipeline
-        pipe = StableDiffusionUpscalePipeline.from_pretrained(
-            model_path,
-            provider=device.provider,
-        )
-
-    if not server.show_progress:
-        pipe.set_progress_bar_config(disable=True)
-
-    optimize_pipeline(server, pipe)
-    patch_pipeline(server, pipe, pipeline)
-
-    server.cache.set("diffusion", cache_key, pipe)
-    run_gc([device])
-
-    return pipe
 
 
 def upscale_stable_diffusion(
@@ -85,10 +32,19 @@ def upscale_stable_diffusion(
         "upscaling with Stable Diffusion, %s steps: %s", params.steps, params.prompt
     )
 
-    pipeline = load_stable_diffusion(server, upscale, job.get_device())
+    prompt_pairs, loras, inversions = parse_prompt(params)
+
+    pipeline = load_pipeline(
+        server,
+        "upscale",
+        upscale.upscale_model,
+        params.scheduler,
+        job.get_device(),
+        inversions=inversions,
+        loras=loras,
+    )
     generator = torch.manual_seed(params.seed)
 
-    prompt_pairs, _loras, _inversions = parse_prompt(params)
     prompt_embeds = encode_prompt(
         pipeline,
         prompt_pairs,

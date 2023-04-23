@@ -42,7 +42,7 @@ def expand_alternative_ranges(prompt: str) -> List[str]:
         logger.debug("found alternative group in prompt: %s", next_group)
 
         if next_group.start() > (last_end + 1):
-            skipped_prompt = prompt[last_end + 1:next_group.start()]
+            skipped_prompt = prompt[last_end + 1 : next_group.start()]
             logger.trace("appending skipped section of prompt: %s", skipped_prompt)
             prompt_groups.append([skipped_prompt])
 
@@ -117,7 +117,7 @@ def expand_prompt(
 
         group_size = group_end - group_start
         if group_size < MAX_TOKENS_PER_GROUP:
-            pass # TODO: pad short groups
+            pass  # TODO: pad short groups
 
         groups.append(tokens.input_ids[:, group_start:group_end])
 

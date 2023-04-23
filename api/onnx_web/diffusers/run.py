@@ -248,14 +248,6 @@ def run_txt2img_pipeline(
     )
     progress = job.get_progress_callback()
 
-    prompt_embeds = encode_prompt(
-        pipe,
-        prompt_pairs,
-        num_images_per_prompt=params.batch,
-        do_classifier_free_guidance=params.do_cfg(),
-    )
-    pipe.unet.set_prompts(prompt_embeds)
-
     if params.lpw():
         logger.debug("using LPW pipeline for txt2img")
         rng = torch.manual_seed(params.seed)
@@ -273,6 +265,15 @@ def run_txt2img_pipeline(
             callback=progress,
         )
     else:
+        # encode and record alternative prompts outside of LPW
+        prompt_embeds = encode_prompt(
+            pipe,
+            prompt_pairs,
+            num_images_per_prompt=params.batch,
+            do_classifier_free_guidance=params.do_cfg(),
+        )
+        pipe.unet.set_prompts(prompt_embeds)
+
         rng = np.random.RandomState(params.seed)
         result = pipe(
             params.prompt,
@@ -355,9 +356,6 @@ def run_img2img_pipeline(
         loras=loras,
     )
 
-    prompt_embeds = encode_prompt(pipe, prompt_pairs, params.batch, params.do_cfg())
-    pipe.unet.set_prompts(prompt_embeds)
-
     pipe_params = {}
     if params.pipeline == "controlnet":
         pipe_params["controlnet_conditioning_scale"] = strength
@@ -383,6 +381,10 @@ def run_img2img_pipeline(
             **pipe_params,
         )
     else:
+        # encode and record alternative prompts outside of LPW
+        prompt_embeds = encode_prompt(pipe, prompt_pairs, params.batch, params.do_cfg())
+        pipe.unet.set_prompts(prompt_embeds)
+
         rng = np.random.RandomState(params.seed)
         result = pipe(
             params.prompt,

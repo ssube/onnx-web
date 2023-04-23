@@ -9,6 +9,7 @@ from transformers import CLIPTokenizer
 from ..constants import ONNX_MODEL
 from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
 from ..convert.diffusion.textual_inversion import blend_textual_inversions
+from ..diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
 from ..diffusers.utils import expand_prompt
 from ..models.meta import NetworkModel
 from ..params import DeviceParams
@@ -49,6 +50,7 @@ available_pipelines = {
     "lpw": OnnxStableDiffusionLongPromptWeightingPipeline,
     "pix2pix": OnnxStableDiffusionInstructPix2PixPipeline,
     "txt2img": OnnxStableDiffusionPipeline,
+    "upscale": OnnxStableDiffusionUpscalePipeline,
 }
 
 pipeline_schedulers = {
@@ -405,7 +407,9 @@ class UNetWrapper(object):
         return getattr(self.wrapped, attr)
 
     def set_prompts(self, prompt_embeds: List[np.ndarray]):
-        logger.debug("setting prompt embeds for UNet: %s", [p.shape for p in prompt_embeds])
+        logger.debug(
+            "setting prompt embeds for UNet: %s", [p.shape for p in prompt_embeds]
+        )
         self.prompt_embeds = prompt_embeds
         self.prompt_index = 0
 
