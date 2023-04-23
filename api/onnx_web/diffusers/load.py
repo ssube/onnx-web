@@ -442,7 +442,13 @@ def patch_pipeline(
     pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
 
     original_unet = pipe.unet
-    original_vae = pipe.vae_decoder
-
     pipe.unet = UNetWrapper(server, original_unet)
-    pipe.vae_decoder = VAEWrapper(server, original_vae)
+
+    if hasattr(pipe, "vae_decoder"):
+        original_vae = pipe.vae_decoder
+        pipe.vae_decoder = VAEWrapper(server, original_vae)
+    elif hasattr(pipe, "vae"):
+        original_vae = pipe.vae
+        pipe.vae = VAEWrapper(server, original_vae)
+    else:
+        logger.debug("no found VAE to patch")
