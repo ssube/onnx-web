@@ -5,7 +5,8 @@ import numpy as np
 import torch
 from PIL import Image
 
-from ..diffusers.load import get_latents_from_seed, load_pipeline
+from ..diffusers.load import load_pipeline
+from ..diffusers.utils import get_latents_from_seed
 from ..params import ImageParams, Size, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext

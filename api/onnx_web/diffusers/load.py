@@ -11,7 +11,7 @@ from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
 from ..convert.diffusion.textual_inversion import blend_textual_inversions
 from ..diffusers.utils import expand_prompt
 from ..models.meta import NetworkModel
-from ..params import DeviceParams, Size
+from ..params import DeviceParams
 from ..server import ServerContext
 from ..utils import run_gc
 from .pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
@@ -41,9 +41,6 @@ from .version_safe_diffusers import (
 )
 
 logger = getLogger(__name__)
-
-latent_channels = 4
-latent_factor = 8
 
 available_pipelines = {
     "controlnet": OnnxStableDiffusionControlNetPipeline,
@@ -87,35 +84,6 @@ def get_scheduler_name(scheduler: Any) -> Optional[str]:
             return k
 
     return None
-
-
-def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
-    """
-    From https://www.travelneil.com/stable-diffusion-updates.html.
-    This one needs to use np.random because of the return type.
-    """
-    latents_shape = (
-        batch,
-        latent_channels,
-        size.height // latent_factor,
-        size.width // latent_factor,
-    )
-    rng = np.random.default_rng(seed)
-    image_latents = rng.standard_normal(latents_shape).astype(np.float32)
-    return image_latents
-
-
-def get_tile_latents(
-    full_latents: np.ndarray, dims: Tuple[int, int, int]
-) -> np.ndarray:
-    x, y, tile = dims
-    t = tile // latent_factor
-    x = x // latent_factor
-    y = y // latent_factor
-    xt = x + t
-    yt = y + t
-
-    return full_latents[:, :, y:yt, x:xt]
 
 
 def load_pipeline(
@@ -387,12 +355,20 @@ timestep_dtype = np.float32
 
 
 class UNetWrapper(object):
-    def __init__(self, server, wrapped):
+    def __init__(
+        self,
+        server: ServerContext,
+        wrapped: OnnxRuntimeModel,
+    ):
         self.server = server
         self.wrapped = wrapped
 
     def __call__(
-        self, sample=None, timestep=None, encoder_hidden_states=None, **kwargs
+        self,
+        sample: np.ndarray = None,
+        timestep: np.ndarray = None,
+        encoder_hidden_states: np.ndarray = None,
+        **kwargs,
     ):
         global timestep_dtype
         timestep_dtype = timestep.dtype
@@ -403,6 +379,13 @@ class UNetWrapper(object):
             timestep.dtype,
             encoder_hidden_states.dtype,
         )
+
+        if self.prompt_embeds is not None:
+            step_index = self.prompt_index % len(self.prompt_embeds)
+            logger.trace("multiple prompt embeds found, using step: %s", step_index)
+            encoder_hidden_states = self.prompt_embeds[step_index]
+            self.prompt_index += 1
+
         if sample.dtype != timestep.dtype:
             logger.trace("converting UNet sample to timestep dtype")
             sample = sample.astype(timestep.dtype)
@@ -420,6 +403,10 @@ class UNetWrapper(object):
 
     def __getattr__(self, attr):
         return getattr(self.wrapped, attr)
+
+    def set_prompts(self, prompt_embeds: Optional[List[np.ndarray]] = None):
+        self.prompt_embeds = prompt_embeds
+        self.prompt_index = 0
 
 
 class VAEWrapper(object):

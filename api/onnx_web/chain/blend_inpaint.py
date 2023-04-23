@@ -5,7 +5,8 @@ import numpy as np
 import torch
 from PIL import Image
 
-from ..diffusers.load import get_latents_from_seed, load_pipeline
+from ..diffusers.load import load_pipeline
+from ..diffusers.utils import get_latents_from_seed
 from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
 from ..params import Border, ImageParams, Size, SizeChart, StageParams

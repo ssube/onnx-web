@@ -7,7 +7,8 @@ from .chain import (
 )
 from .convert.diffusion.lora import blend_loras
 from .convert.diffusion.textual_inversion import blend_textual_inversions
-from .diffusers.load import get_latents_from_seed, load_pipeline, optimize_pipeline
+from .diffusers.load import load_pipeline, optimize_pipeline
+from .diffusers.utils import get_tile_latents, get_latents_from_seed
 from .diffusers.run import (
     run_blend_pipeline,
     run_img2img_pipeline,

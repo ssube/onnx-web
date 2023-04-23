@@ -3,6 +3,7 @@ from typing import Any, List, Optional, Tuple
 
 import numpy as np
 import torch
+from diffusers import OnnxStableDiffusionPipeline
 from PIL import Image
 
 from ..chain import blend_mask, upscale_outpaint
@@ -23,30 +24,15 @@ from ..server.load import get_source_filters
 from ..utils import run_gc
 from ..worker import WorkerContext
 from ..worker.context import ProgressCallback
-from .load import get_latents_from_seed, load_pipeline
+from .load import load_pipeline
 from .upscale import run_upscale_correction
-from .utils import get_inversions_from_prompt, get_loras_from_prompt
+from .utils import (
+    get_latents_from_seed,
+    encode_prompt,
+    parse_prompt,
+)
 
 logger = getLogger(__name__)
-
-
-def parse_prompt(
-    params: ImageParams,
-) -> Tuple[List[Tuple[str, float]], List[Tuple[str, float]]]:
-    prompt, loras = get_loras_from_prompt(params.input_prompt)
-    prompt, inversions = get_inversions_from_prompt(prompt)
-    params.prompt = prompt
-
-    if params.input_negative_prompt is not None:
-        neg_prompt, neg_loras = get_loras_from_prompt(params.input_negative_prompt)
-        neg_prompt, neg_inversions = get_inversions_from_prompt(neg_prompt)
-        params.negative_prompt = neg_prompt
-
-        # TODO: check whether these need to be * -1
-        loras.extend(neg_loras)
-        inversions.extend(neg_inversions)
-
-    return loras, inversions
 
 
 def run_loopback(
@@ -253,7 +239,7 @@ def run_txt2img_pipeline(
     highres: HighresParams,
 ) -> None:
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
-    loras, inversions = parse_prompt(params)
+    prompt_pairs, loras, inversions = parse_prompt(params)
 
     pipe_type = "lpw" if params.lpw() else "txt2img"
     pipe = load_pipeline(
@@ -266,6 +252,14 @@ def run_txt2img_pipeline(
         loras=loras,
     )
     progress = job.get_progress_callback()
+
+    prompt_embeds = encode_prompt(
+        pipe,
+        prompt_pairs,
+        num_images_per_prompt=params.batch,
+        do_classifier_free_guidance=params.do_cfg(),
+    )
+    pipe.unet.set_prompts(prompt_embeds)
 
     if params.lpw():
         logger.debug("using LPW pipeline for txt2img")
@@ -346,7 +340,7 @@ def run_img2img_pipeline(
     strength: float,
     source_filter: Optional[str] = None,
 ) -> None:
-    loras, inversions = parse_prompt(params)
+    prompt_pairs, loras, inversions = parse_prompt(params)
 
     # filter the source image
     if source_filter is not None:
@@ -365,6 +359,9 @@ def run_img2img_pipeline(
         inversions=inversions,
         loras=loras,
     )
+
+    prompt_embeds = encode_prompt(pipe, prompt_pairs, params.batch, params.do_cfg())
+    pipe.unet.set_prompts(prompt_embeds)
 
     pipe_params = {}
     if params.pipeline == "controlnet":
@@ -474,7 +471,7 @@ def run_inpaint_pipeline(
     progress = job.get_progress_callback()
     stage = StageParams(tile_order=tile_order)
 
-    loras, inversions = parse_prompt(params)
+    _prompt_pairs, loras, inversions = parse_prompt(params)
 
     # calling the upscale_outpaint stage directly needs accumulating progress
     progress = ChainProgress.from_progress(progress)
@@ -540,7 +537,7 @@ def run_upscale_pipeline(
     progress = job.get_progress_callback()
     stage = StageParams()
 
-    loras, inversions = parse_prompt(params)
+    _prompt_pairs, loras, inversions = parse_prompt(params)
 
     image = run_upscale_correction(
         job, server, stage, params, source, upscale=upscale, callback=progress

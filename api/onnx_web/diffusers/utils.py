@@ -7,17 +7,22 @@ import numpy as np
 import torch
 from diffusers import OnnxStableDiffusionPipeline
 
+from ..params import ImageParams, Size
+
 logger = getLogger(__name__)
 
+latent_channels = 4
+latent_factor = 8
+MAX_TOKENS_PER_GROUP = 77
 
 CLIP_TOKEN = compile(r"\<clip:([-\w]+):(\d+)\>")
 INVERSION_TOKEN = compile(r"\<inversion:([-\w]+):(-?[\.|\d]+)\>")
 LORA_TOKEN = compile(r"\<lora:([-\w]+):(-?[\.|\d]+)\>")
-MAX_TOKENS_PER_GROUP = 77
-PATTERN_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
+INTERVAL_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
+ALTERNATIVE_RANGE = compile(r"\(([\w\|]+)\)")
 
 
-def expand_prompt_ranges(prompt: str) -> str:
+def expand_interval_ranges(prompt: str) -> str:
     def expand_range(match):
         (base_token, start, end, step) = match.groups(default=1)
         num_tokens = [
@@ -25,7 +30,30 @@ def expand_prompt_ranges(prompt: str) -> str:
         ]
         return " ".join(num_tokens)
 
-    return PATTERN_RANGE.sub(expand_range, prompt)
+    return INTERVAL_RANGE.sub(expand_range, prompt)
+
+
+def expand_alternative_ranges(prompt: str) -> List[str]:
+    remaining_prompt = prompt
+    prompt_groups = []
+
+    next_group = ALTERNATIVE_RANGE.search(remaining_prompt)
+    while next_group is not None:
+        logger.debug("found alternative group in prompt: %s", next_group)
+        options = next_group.group().split("|")
+        prompt_groups.append(options)
+
+    prompt_count = max([len(group) for group in prompt_groups])
+    prompts = []
+    for i in range(prompt_count):
+        options = []
+        for group in prompt_groups:
+            group_i = i % len(group)
+            options.append(group[group_i])
+
+        prompts.append(" ".join(options))
+
+    return prompts
 
 
 @torch.no_grad()
@@ -49,7 +77,7 @@ def expand_prompt(
         logger.info("skipping %s CLIP layers", skip_clip_states)
 
     batch_size = len(prompt) if isinstance(prompt, list) else 1
-    prompt = expand_prompt_ranges(prompt)
+    prompt = expand_interval_ranges(prompt)
 
     # split prompt into 75 token chunks
     tokens = self.tokenizer(
@@ -195,3 +223,100 @@ def get_loras_from_prompt(prompt: str) -> Tuple[str, List[Tuple[str, float]]]:
 
 def get_inversions_from_prompt(prompt: str) -> Tuple[str, List[Tuple[str, float]]]:
     return get_tokens_from_prompt(prompt, INVERSION_TOKEN)
+
+
+def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
+    """
+    From https://www.travelneil.com/stable-diffusion-updates.html.
+    """
+    latents_shape = (
+        batch,
+        latent_channels,
+        size.height // latent_factor,
+        size.width // latent_factor,
+    )
+    rng = np.random.default_rng(seed)
+    image_latents = rng.standard_normal(latents_shape).astype(np.float32)
+    return image_latents
+
+
+def get_tile_latents(
+    full_latents: np.ndarray, dims: Tuple[int, int, int]
+) -> np.ndarray:
+    x, y, tile = dims
+    t = tile // latent_factor
+    x = x // latent_factor
+    y = y // latent_factor
+    xt = x + t
+    yt = y + t
+
+    return full_latents[:, :, y:yt, x:xt]
+
+
+def get_scaled_latents(
+    seed: int,
+    size: Size,
+    batch: int = 1,
+    scale: int = 1,
+) -> np.ndarray:
+    latents = get_latents_from_seed(seed, size, batch=batch)
+    latents = torch.from_numpy(latents)
+
+    scaled = torch.nn.functional.interpolate(
+        latents, scale_factor=(scale, scale), mode="bilinear"
+    )
+    return scaled.numpy()
+
+
+def parse_prompt(
+    params: ImageParams,
+) -> Tuple[List[Tuple[str, str]], List[Tuple[str, float]], List[Tuple[str, float]]]:
+    prompt, loras = get_loras_from_prompt(params.input_prompt)
+    prompt, inversions = get_inversions_from_prompt(prompt)
+    params.prompt = prompt
+
+    neg_prompt = None
+    if params.input_negative_prompt is not None:
+        neg_prompt, neg_loras = get_loras_from_prompt(params.input_negative_prompt)
+        neg_prompt, neg_inversions = get_inversions_from_prompt(neg_prompt)
+        params.negative_prompt = neg_prompt
+
+        # TODO: check whether these need to be * -1
+        loras.extend(neg_loras)
+        inversions.extend(neg_inversions)
+
+    prompts = expand_alternative_ranges(prompt)
+    neg_prompts = expand_alternative_ranges(neg_prompt)
+    logger.trace("generated prompts: %s, %s", prompts, neg_prompts)
+
+    # count these ahead of time, because they will change
+    prompt_count = len(prompts)
+    neg_prompt_count = len(neg_prompts)
+
+    if prompt_count < neg_prompt_count:
+        # extend prompts
+        for i in range(prompt_count, neg_prompt_count):
+            prompts.append(prompts[i % prompt_count])
+    elif prompt_count > neg_prompt_count:
+        # extend neg_prompts
+        for i in range(neg_prompt_count, prompt_count):
+            neg_prompts.append(neg_prompts[i % neg_prompt_count])
+
+    return list(zip(prompts, neg_prompts)), loras, inversions
+
+
+def encode_prompt(
+    pipe: OnnxStableDiffusionPipeline,
+    prompt_pairs: List[Tuple[str, str]],
+    num_images_per_prompt: int = 1,
+    do_classifier_free_guidance: bool = True,
+) -> List[np.ndarray]:
+    return [
+        pipe._encode_prompt(
+            prompt,
+            num_images_per_prompt=num_images_per_prompt,
+            do_classifier_free_guidance=do_classifier_free_guidance,
+            negative_prompt=neg_prompt,
+        )
+        for prompt, neg_prompt in prompt_pairs
+    ]

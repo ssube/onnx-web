@@ -209,6 +209,9 @@ class ImageParams:
         self.input_negative_prompt = input_negative_prompt or negative_prompt
         self.loopback = loopback
 
+    def do_cfg(self):
+        return self.cfg > 1.0
+
     def lpw(self):
         return self.pipeline == "lpw"
 
