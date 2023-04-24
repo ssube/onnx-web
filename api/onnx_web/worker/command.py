@@ -1,4 +1,4 @@
-from typing import Any, Callable
+from typing import Any, Callable, Dict
 
 
 class ProgressCommand:
@@ -31,7 +31,7 @@ class JobCommand:
     name: str
     fn: Callable[..., None]
     args: Any
-    kwargs: dict[str, Any]
+    kwargs: Dict[str, Any]
 
     def __init__(
         self,
@@ -39,7 +39,7 @@ class JobCommand:
         device: str,
         fn: Callable[..., None],
         args: Any,
-        kwargs: dict[str, Any],
+        kwargs: Dict[str, Any],
     ):
         self.device = device
         self.name = name
