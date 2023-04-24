@@ -20,7 +20,7 @@ from ..params import (
 )
 from ..server import ServerContext
 from ..server.load import get_source_filters
-from ..utils import run_gc
+from ..utils import run_gc, show_system_toast
 from ..worker import WorkerContext
 from ..worker.context import ProgressCallback
 from .load import load_pipeline
@@ -321,7 +321,7 @@ def run_txt2img_pipeline(
         save_params(server, output, params, size, upscale=upscale, highres=highres)
 
     run_gc([job.get_device()])
-
+    show_system_toast(f"finished txt2img job: {dest}")
     logger.info("finished txt2img job: %s", dest)
 
 
@@ -445,7 +445,7 @@ def run_img2img_pipeline(
         save_params(server, output, params, size, upscale=upscale)
 
     run_gc([job.get_device()])
-
+    show_system_toast(f"finished img2img job: {dest}")
     logger.info("finished img2img job: %s", dest)
 
 
@@ -517,7 +517,7 @@ def run_inpaint_pipeline(
     del image
 
     run_gc([job.get_device()])
-
+    show_system_toast(f"finished inpaint job: {dest}")
     logger.info("finished inpaint job: %s", dest)
 
 
@@ -560,7 +560,7 @@ def run_upscale_pipeline(
     del image
 
     run_gc([job.get_device()])
-
+    show_system_toast(f"finished upscale job: {dest}")
     logger.info("finished upscale job: %s", dest)
 
 
@@ -599,5 +599,5 @@ def run_blend_pipeline(
     del image
 
     run_gc([job.get_device()])
-
+    show_system_toast(f"finished blend job: {dest}")
     logger.info("finished blend job: %s", dest)

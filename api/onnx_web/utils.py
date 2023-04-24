@@ -1,8 +1,10 @@
 import gc
 import threading
+import importlib
 from logging import getLogger
 from os import environ, path
 from typing import Any, Dict, List, Optional, Sequence, Union
+from platform import system
 
 import torch
 
@@ -127,3 +129,31 @@ def merge(a, b, path=None):
         else:
             a[key] = b[key]
     return a
+
+
+toaster = None
+
+def show_system_toast(msg: str) -> None:
+    global toaster
+
+    sys_name = system()
+    if sys_name == "Linux":
+        if importlib.util.find_spec("gi.repository") is not None:
+            from gi.repository import Notify
+            if toaster is None:
+                Notify.init("onnx-web")
+
+            Notify.Notification.new(msg).show()
+        else:
+            logger.info("please install the PyGObject module to enable toast notifications on Linux")
+    elif sys_name == "Windows":
+        if importlib.util.find_spec("win10toast") is not None:
+            from win10toast import ToastNotifier
+            if toaster is None:
+                toaster = ToastNotifier()
+
+            toaster.show_toast(msg, duration=15)
+        else:
+            logger.info("please install the win10toast module to enable toast notifications on Windows")
+    else:
+        logger.info("system notifications not yet available for %s", sys_name)
