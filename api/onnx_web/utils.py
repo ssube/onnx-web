@@ -139,7 +139,10 @@ def show_system_toast(msg: str) -> None:
 
     sys_name = system()
     if sys_name == "Linux":
-        if importlib.util.find_spec("gi.repository") is not None:
+        if (
+            importlib.util.find_spec("gi") is not None
+            and importlib.util.find_spec("gi.repository") is not None
+        ):
             from gi.repository import Notify
 
             if toaster is None:
