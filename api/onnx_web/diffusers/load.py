@@ -314,7 +314,6 @@ def load_pipeline(
                 )
             )
 
-
         pipeline_class = available_pipelines.get(pipeline, OnnxStableDiffusionPipeline)
         logger.debug("loading pretrained SD pipeline for %s", pipeline_class.__name__)
         pipe = pipeline_class.from_pretrained(
