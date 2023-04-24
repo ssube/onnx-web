@@ -210,7 +210,7 @@ def load_pipeline(
                 components["text_encoder"] = OnnxRuntimeModel(
                     OnnxRuntimeModel.load_model(
                         text_encoder.SerializeToString(),
-                        provider=device.ort_provider(),
+                        provider=device.ort_provider("text-encoder"),
                         sess_options=device.sess_options(),
                     )
                 )
@@ -244,7 +244,7 @@ def load_pipeline(
             components["text_encoder"] = OnnxRuntimeModel(
                 OnnxRuntimeModel.load_model(
                     text_encoder.SerializeToString(),
-                    provider=device.ort_provider(),
+                    provider=device.ort_provider("text-encoder"),
                     sess_options=text_encoder_opts,
                 )
             )
@@ -264,7 +264,7 @@ def load_pipeline(
             components["unet"] = OnnxRuntimeModel(
                 OnnxRuntimeModel.load_model(
                     unet_model.SerializeToString(),
-                    provider=device.ort_provider(),
+                    provider=device.ort_provider("unet"),
                     sess_options=unet_opts,
                 )
             )
@@ -276,10 +276,44 @@ def load_pipeline(
             components["unet"] = OnnxRuntimeModel(
                 OnnxRuntimeModel.load_model(
                     unet,
-                    provider=device.ort_provider(),
+                    provider=device.ort_provider("unet"),
                     sess_options=device.sess_options(),
                 )
             )
+
+        # one or more VAE models need to be loaded
+        vae = path.join(model, "vae", ONNX_MODEL)
+        vae_decoder = path.join(model, "vae_decoder", ONNX_MODEL)
+        vae_encoder = path.join(model, "vae_encoder", ONNX_MODEL)
+
+        if path.exists(vae):
+            logger.debug("loading VAE from %s", vae)
+            components["vae"] = OnnxRuntimeModel(
+                OnnxRuntimeModel.load_model(
+                    vae,
+                    provider=device.ort_provider("vae"),
+                    sess_options=device.sess_options(),
+                )
+            )
+        elif path.exists(vae_decoder) and path.exists(vae_encoder):
+            logger.debug("loading VAE decoder from %s", vae_decoder)
+            components["vae_decoder"] = OnnxRuntimeModel(
+                OnnxRuntimeModel.load_model(
+                    vae_decoder,
+                    provider=device.ort_provider("vae"),
+                    sess_options=device.sess_options(),
+                )
+            )
+
+            logger.debug("loading VAE encoder from %s", vae_encoder)
+            components["vae_encoder"] = OnnxRuntimeModel(
+                OnnxRuntimeModel.load_model(
+                    vae_encoder,
+                    provider=device.ort_provider("vae"),
+                    sess_options=device.sess_options(),
+                )
+            )
+
 
         pipeline_class = available_pipelines.get(pipeline, OnnxStableDiffusionPipeline)
         logger.debug("loading pretrained SD pipeline for %s", pipeline_class.__name__)
