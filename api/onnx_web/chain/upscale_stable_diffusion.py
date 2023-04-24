@@ -1,4 +1,5 @@
 from logging import getLogger
+from os import path
 from typing import Optional
 
 import torch
@@ -37,7 +38,7 @@ def upscale_stable_diffusion(
     pipeline = load_pipeline(
         server,
         "upscale",
-        upscale.upscale_model,
+        path.join(server.model_path, upscale.upscale_model),
         params.scheduler,
         job.get_device(),
     )
