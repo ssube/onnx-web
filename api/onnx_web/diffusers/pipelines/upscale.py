@@ -112,7 +112,7 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
         # 3. Encode input prompt
         text_embeddings = self._encode_prompt(
             prompt,
-            device,
+            # device, device only needed for Torch pipelines
             num_images_per_prompt,
             do_classifier_free_guidance,
             negative_prompt,
