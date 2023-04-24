@@ -306,7 +306,11 @@ def parse_prompt(
         inversions.extend(neg_inversions)
 
     prompts = expand_alternative_ranges(prompt)
-    neg_prompts = expand_alternative_ranges(neg_prompt)
+    if neg_prompt is not None:
+        neg_prompts = expand_alternative_ranges(neg_prompt)
+    else:
+        neg_prompts = [None] * len(prompts)
+
     logger.trace("generated prompts: %s, %s", prompts, neg_prompts)
 
     # count these ahead of time, because they will change
