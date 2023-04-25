@@ -24,6 +24,8 @@ COPY onnx_web/ /onnx-web/api/onnx_web/
 
 COPY extras.json logging.yaml params.json /onnx-web/api/
 
+COPY schemas/ /onnx-web/api/schemas/
+
 COPY launch.sh /onnx-web/launch.sh
 
 ENV ONNX_WEB_BUNDLE_PATH="/onnx-web/gui"
