@@ -200,7 +200,7 @@ def expand_prompt(
             negative_prompt_embeds,
             [(0, 0), (0, negative_padding), (0, 0)],
             mode="constant",
-            constant_values=self.tokenizer.pad_token_id,
+            constant_values=0,
         )
         negative_prompt_embeds = np.repeat(
             negative_prompt_embeds, num_images_per_prompt, axis=0
