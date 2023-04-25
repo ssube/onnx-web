@@ -347,12 +347,19 @@ def optimize_pipeline(
     server: ServerContext,
     pipe: StableDiffusionPipeline,
 ) -> None:
-    if "diffusers-attention-slicing" in server.optimizations:
-        logger.debug("enabling attention slicing on SD pipeline")
+    if "diffusers-attention-slicing" in server.optimizations or "diffusers-attention-slicing-auto" in server.optimizations:
+        logger.debug("enabling auto attention slicing on SD pipeline")
         try:
-            pipe.enable_attention_slicing()
+            pipe.enable_attention_slicing(slice_size="auto")
         except Exception as e:
-            logger.warning("error while enabling attention slicing: %s", e)
+            logger.warning("error while enabling auto attention slicing: %s", e)
+
+    if "diffusers-attention-slicing-max" in server.optimizations:
+        logger.debug("enabling max attention slicing on SD pipeline")
+        try:
+            pipe.enable_attention_slicing(slice_size="max")
+        except Exception as e:
+            logger.warning("error while enabling max attention slicing: %s", e)
 
     if "diffusers-vae-slicing" in server.optimizations:
         logger.debug("enabling VAE slicing on SD pipeline")

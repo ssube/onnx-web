@@ -53,6 +53,8 @@ def convert_diffusion_diffusers_cnet(
     if is_torch_2_0:
         pipe_cnet.set_attn_processor(AttnProcessor())
 
+    optimize_pipeline(conversion, pipe_cnet)
+
     cnet_path = output_path / "cnet" / ONNX_MODEL
     onnx_export(
         pipe_cnet,
