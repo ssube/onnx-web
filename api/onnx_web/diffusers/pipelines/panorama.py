@@ -24,7 +24,7 @@ from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMSchedu
 from diffusers.utils import deprecate, logging
 from diffusers.pipelines.onnx_utils import ORT_TO_NP_TYPE, OnnxRuntimeModel
 from diffusers.pipeline_utils import DiffusionPipeline
-from diffusers import StableDiffusionPipelineOutput
+from diffusers.pipelines.stable_diffusion import StableDiffusionPipelineOutput
 
 
 logger = logging.get_logger(__name__)
@@ -420,18 +420,16 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         value = np.zeros_like(latents.shape)
 
         for i, t in enumerate(self.progress_bar(self.scheduler.timesteps)):
-            count.zero_()
-            value.zero_()
+            count.fill(0)
+            value.fill(0)
 
             for h_start, h_end, w_start, w_end in views:
                 # get the latents corresponding to the current view coordinates
                 latents_for_view = latents[:, :, h_start:h_end, w_start:w_end]
 
                 # expand the latents if we are doing classifier free guidance
-                latent_model_input = (
-                    torch.cat([latents_for_view] * 2) if do_classifier_free_guidance else latents_for_view
-                )
-                latent_model_input = self.scheduler.scale_model_input(latent_model_input, t)
+                latent_model_input = np.concatenate([latents_for_view] * 2) if do_classifier_free_guidance else latents_for_view
+                latent_model_input = self.scheduler.scale_model_input(torch.from_numpy(latent_model_input), t)
                 latent_model_input = latent_model_input.cpu().numpy()
 
                 # predict the noise residual
