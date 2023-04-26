@@ -17,6 +17,7 @@ from ..server import ServerContext
 from ..utils import run_gc
 from .pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
 from .pipelines.lpw import OnnxStableDiffusionLongPromptWeightingPipeline
+from .pipelines.panorama import OnnxStableDiffusionPanoramaPipeline
 from .pipelines.pix2pix import OnnxStableDiffusionInstructPix2PixPipeline
 from .version_safe_diffusers import (
     DDIMScheduler,
@@ -48,6 +49,7 @@ available_pipelines = {
     "img2img": OnnxStableDiffusionImg2ImgPipeline,
     "inpaint": OnnxStableDiffusionInpaintPipeline,
     "lpw": OnnxStableDiffusionLongPromptWeightingPipeline,
+    "panorama": OnnxStableDiffusionPanoramaPipeline,
     "pix2pix": OnnxStableDiffusionInstructPix2PixPipeline,
     "txt2img": OnnxStableDiffusionPipeline,
     "upscale": OnnxStableDiffusionUpscalePipeline,
