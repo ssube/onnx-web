@@ -516,8 +516,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
     def img2img(
         self,
-        prompt: Union[str, List[str]] = None,
         image: Union[np.ndarray, PIL.Image.Image] = None,
+        prompt: Union[str, List[str]] = None,
         strength: float = 0.8,
         num_inference_steps: Optional[int] = 50,
         guidance_scale: Optional[float] = 7.5,
