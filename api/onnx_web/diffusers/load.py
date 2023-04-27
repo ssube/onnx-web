@@ -402,6 +402,11 @@ timestep_dtype = np.float32
 
 
 class UNetWrapper(object):
+    prompt_embeds: Optional[List[np.ndarray]] = None
+    prompt_index: int = 0
+    server: ServerContext
+    wrapped: OnnxRuntimeModel
+
     def __init__(
         self,
         server: ServerContext,
