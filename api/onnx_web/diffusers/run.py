@@ -236,7 +236,7 @@ def run_txt2img_pipeline(
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     prompt_pairs, loras, inversions = parse_prompt(params)
 
-    pipe_type = "lpw" if params.lpw() else "txt2img"
+    pipe_type = params.pipeline # TODO: allow txt2img, panorama, etc, but filter out the others
     pipe = load_pipeline(
         server,
         pipe_type,

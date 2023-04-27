@@ -416,8 +416,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # panorama additions
         views = self.get_views(height, width)
-        count = np.zeros_like(latents.shape)
-        value = np.zeros_like(latents.shape)
+        count = np.zeros_like(latents)
+        value = np.zeros_like(latents)
 
         for i, t in enumerate(self.progress_bar(self.scheduler.timesteps)):
             count.fill(0)
@@ -444,7 +444,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
                 # compute the previous noisy sample x_t -> x_t-1
                 scheduler_output = self.scheduler.step(
-                    torch.from_numpy(noise_pred), t, torch.from_numpy(latents), **extra_step_kwargs
+                    torch.from_numpy(noise_pred), t, torch.from_numpy(latents_for_view), **extra_step_kwargs
                 )
                 latents_view_denoised = scheduler_output.prev_sample.numpy()
 
@@ -452,7 +452,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 count[:, :, h_start:h_end, w_start:w_end] += 1
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
-            latents = torch.where(count > 0, value / count, value)
+            latents = np.where(count > 0, value / count, value)
 
             # call the callback, if provided
             if callback is not None and i % callback_steps == 0:
