@@ -47,7 +47,9 @@ def run_loopback(
     loopback_progress = ChainProgress.from_progress(progress)
 
     # load img2img pipeline once
-    pipe_type = "lpw" if params.lpw() else "img2img"
+    pipe_type = params.get_valid_pipeline("img2img")
+    logger.debug("using %s pipeline for loopback", pipe_type)
+
     pipe = pipeline or load_pipeline(
         server,
         pipe_type,
@@ -59,8 +61,7 @@ def run_loopback(
     )
 
     def loopback_iteration(source: Image.Image):
-        if params.lpw():
-            logger.debug("using LPW pipeline for loopback")
+        if pipe_type in ["lpw", "panorama"]:
             rng = torch.manual_seed(params.seed)
             result = pipe.img2img(
                 source,
@@ -76,7 +77,6 @@ def run_loopback(
             )
             return result.images[0]
         else:
-            logger.debug("using img2img pipeline for loopback")
             rng = np.random.RandomState(params.seed)
             result = pipe(
                 params.prompt,
@@ -134,7 +134,9 @@ def run_highres(
         )
 
     # load img2img pipeline once
-    pipe_type = "lpw" if params.lpw() else "img2img"
+    pipe_type = params.get_valid_pipeline("img2img")
+    logger.debug("using %s pipeline for highres", pipe_type)
+
     highres_pipe = pipeline or load_pipeline(
         server,
         pipe_type,
@@ -172,8 +174,7 @@ def run_highres(
                 callback=highres_progress,
             )
 
-        if params.lpw():
-            logger.debug("using LPW pipeline for highres")
+        if pipe_type in ["lpw", "panorama"]:
             rng = torch.manual_seed(params.seed)
             result = highres_pipe.img2img(
                 tile,
@@ -189,7 +190,6 @@ def run_highres(
             )
             return result.images[0]
         else:
-            logger.debug("using img2img pipeline for highres")
             rng = np.random.RandomState(params.seed)
             result = highres_pipe(
                 params.prompt,
@@ -236,7 +236,9 @@ def run_txt2img_pipeline(
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     prompt_pairs, loras, inversions = parse_prompt(params)
 
-    pipe_type = params.pipeline # TODO: allow txt2img, panorama, etc, but filter out the others
+    pipe_type = params.get_valid_pipeline("txt2img")
+    logger.debug("using %s pipeline for txt2img", pipe_type)
+
     pipe = load_pipeline(
         server,
         pipe_type,
@@ -248,8 +250,7 @@ def run_txt2img_pipeline(
     )
     progress = job.get_progress_callback()
 
-    if params.lpw():
-        logger.debug("using LPW pipeline for txt2img")
+    if pipe_type in ["lpw", "panorama"]:
         rng = torch.manual_seed(params.seed)
         result = pipe.text2img(
             params.prompt,
@@ -345,9 +346,10 @@ def run_img2img_pipeline(
             logger.debug("running source filter: %s", f.__name__)
             source = f(server, source)
 
+    pipe_type = params.get_valid_pipeline("img2img")
     pipe = load_pipeline(
         server,
-        params.pipeline,  # this is one of the only places this can actually vary between different pipelines
+        pipe_type,
         params.model,
         params.scheduler,
         job.get_device(),
@@ -357,15 +359,17 @@ def run_img2img_pipeline(
     )
 
     pipe_params = {}
-    if params.pipeline == "controlnet":
+    if pipe_type == "controlnet":
         pipe_params["controlnet_conditioning_scale"] = strength
-    elif params.pipeline == "img2img":
+    elif pipe_type == "img2img":
         pipe_params["strength"] = strength
-    elif params.pipeline == "pix2pix":
+    elif pipe_type == "panorama":
+        pipe_params["strength"] = strength
+    elif pipe_type == "pix2pix":
         pipe_params["image_guidance_scale"] = strength
 
     progress = job.get_progress_callback()
-    if params.lpw():
+    if pipe_type in ["lpw", "panorama"]:
         logger.debug("using LPW pipeline for img2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.img2img(

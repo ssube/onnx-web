@@ -220,6 +220,27 @@ class ImageParams:
     def do_cfg(self):
         return self.cfg > 1.0
 
+    def get_valid_pipeline(self, group: str, pipeline: str = None) -> str:
+        pipeline = pipeline or self.pipeline
+
+        # if the correct pipeline was already requested, simply use that
+        if group == pipeline:
+            return pipeline
+
+        # otherwise, check for additional allowed pipelines
+        if group == "img2img":
+            if pipeline in ["controlnet", "lpw", "panorama", "pix2pix"]:
+                return pipeline
+        elif group == "inpaint":
+            if pipeline in ["controlnet"]:
+                return pipeline
+        elif group == "txt2img":
+            if pipeline in ["panorama"]:
+                return pipeline
+
+        logger.debug("pipeline %s is not valid for %s", pipeline, group)
+        return group
+
     def lpw(self):
         return self.pipeline == "lpw"
 
