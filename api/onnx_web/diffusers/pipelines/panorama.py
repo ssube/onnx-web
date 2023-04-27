@@ -651,7 +651,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         noise = generator.randn(*latents.shape).astype(latents_dtype)
         latents = self.scheduler.add_noise(
-            torch.from_numpy(init_latents), torch.from_numpy(noise), torch.from_numpy(timesteps)
+            torch.from_numpy(latents), torch.from_numpy(noise), torch.from_numpy(timesteps)
         )
         latents = latents.numpy()
 
