@@ -61,7 +61,7 @@ def run_loopback(
     )
 
     def loopback_iteration(source: Image.Image):
-        if pipe_type in ["lpw", "panorama"]:
+        if pipe_type == "lpw":
             rng = torch.manual_seed(params.seed)
             result = pipe.img2img(
                 source,
@@ -174,7 +174,7 @@ def run_highres(
                 callback=highres_progress,
             )
 
-        if pipe_type in ["lpw", "panorama"]:
+        if pipe_type == "lpw":
             rng = torch.manual_seed(params.seed)
             result = highres_pipe.img2img(
                 tile,
@@ -250,7 +250,7 @@ def run_txt2img_pipeline(
     )
     progress = job.get_progress_callback()
 
-    if pipe_type in ["lpw", "panorama"]:
+    if pipe_type == "lpw":
         rng = torch.manual_seed(params.seed)
         result = pipe.text2img(
             params.prompt,
@@ -369,7 +369,7 @@ def run_img2img_pipeline(
         pipe_params["image_guidance_scale"] = strength
 
     progress = job.get_progress_callback()
-    if pipe_type in ["lpw", "panorama"]:
+    if pipe_type == "lpw":
         logger.debug("using LPW pipeline for img2img")
         rng = torch.manual_seed(params.seed)
         result = pipe.img2img(

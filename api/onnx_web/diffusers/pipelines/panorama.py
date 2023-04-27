@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import inspect
+from logging import getLogger
 from typing import Callable, List, Optional, Union
 
 import PIL
@@ -299,7 +300,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             views.append((h_start, h_end, w_start, w_end))
         return views
 
-    def __call__(
+    def text2img(
         self,
         prompt: Union[str, List[str]] = None,
         height: Optional[int] = 512,
@@ -635,11 +636,11 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         # prep image
         image = preprocess(image).cpu().numpy()
         image = image.astype(latents_dtype)
+
         # encode the init image into latents and scale the latents
         latents = self.vae_encoder(sample=image)[0]
         latents = 0.18215 * latents
-
-        latents = latents * np.float64(self.scheduler.init_noise_sigma)
+        # latents = latents * np.float64(self.scheduler.init_noise_sigma)
 
         # get the original timestep using init_timestep
         offset = self.scheduler.config.get("steps_offset", 0)
@@ -746,3 +747,15 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             return (image, has_nsfw_concept)
 
         return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
+
+    def __call__(
+        self,
+        *args,
+        **kwargs,
+    ):
+        if len(args) > 0 and (isinstance(args[0], np.ndarray) or isinstance(args[0], PIL.Image.Image)):
+            logger.debug("running img2img panorama pipeline")
+            return self.img2img(*args, **kwargs)
+        else:
+            logger.debug("running txt2img panorama pipeline")
+            return self.text2img(*args, **kwargs)
