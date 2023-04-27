@@ -649,11 +649,11 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         timesteps = self.scheduler.timesteps.numpy()[-init_timestep]
         timesteps = np.array([timesteps] * batch_size * num_images_per_prompt)
 
-        noise = generator.randn(*init_latents.shape).astype(latents_dtype)
-        init_latents = self.scheduler.add_noise(
+        noise = generator.randn(*latents.shape).astype(latents_dtype)
+        latents = self.scheduler.add_noise(
             torch.from_numpy(init_latents), torch.from_numpy(noise), torch.from_numpy(timesteps)
         )
-        init_latents = init_latents.numpy()
+        latents = latents.numpy()
 
         # prepare extra kwargs for the scheduler step, since not all schedulers have the same signature
         # eta (η) is only used with the DDIMScheduler, it will be ignored for other schedulers.
