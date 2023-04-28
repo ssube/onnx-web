@@ -86,6 +86,12 @@ $defs:
             type: array
             items:
               $ref: "#/$defs/lora_network"
+          pipeline:
+            type: string
+            enum: [
+              image,
+              inpaint
+            ]
           vae:
             type: string
 
