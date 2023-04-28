@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import inspect
-from logging import getLogger
 from typing import Callable, List, Optional, Union
 
 import PIL
@@ -517,8 +516,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
     def img2img(
         self,
-        image: Union[np.ndarray, PIL.Image.Image] = None,
         prompt: Union[str, List[str]] = None,
+        image: Union[np.ndarray, PIL.Image.Image] = None,
         strength: float = 0.8,
         num_inference_steps: Optional[int] = 50,
         guidance_scale: Optional[float] = 7.5,
