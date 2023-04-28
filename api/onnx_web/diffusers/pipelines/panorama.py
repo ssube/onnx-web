@@ -848,8 +848,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         *args,
         **kwargs,
     ):
-        if len(args) > 0 and (
-            isinstance(args[0], np.ndarray) or isinstance(args[0], PIL.Image.Image)
+        if len(args) > 1 and (
+            isinstance(args[1], np.ndarray) or isinstance(args[1], PIL.Image.Image)
         ):
             logger.debug("running img2img panorama pipeline")
             return self.img2img(*args, **kwargs)
