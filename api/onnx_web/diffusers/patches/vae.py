@@ -34,17 +34,23 @@ class VAEWrapper(object):
         self.tile_latent_min_size = LATENT_SIZE
         self.tile_overlap_factor = 0.25
 
-    def __call__(self, latent_sample=None, **kwargs):
+    def __call__(self, latent_sample=None, sample=None, **kwargs):
         global timestep_dtype
 
         logger.trace(
-            "VAE %s parameter types: %s",
+            "VAE %s parameter types: %s, %s",
             ("decoder" if self.decoder else "encoder"),
-            latent_sample.dtype,
+            (latent_sample.dtype if latent_sample is not None else "none"),
+            (sample.dtype if sample is not None else "none"),
         )
-        if latent_sample.dtype != timestep_dtype:
-            logger.info("converting VAE sample dtype")
+
+        if latent_sample is not None and latent_sample.dtype != timestep_dtype:
+            logger.debug("converting VAE latent sample dtype")
             latent_sample = latent_sample.astype(timestep_dtype)
+
+        if sample is not None and sample.dtype != timestep_dtype:
+            logger.debug("converting VAE sample dtype")
+            sample = sample.astype(timestep_dtype)
 
         if self.decoder:
             return self.tiled_decode(latent_sample, **kwargs)

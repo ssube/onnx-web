@@ -710,6 +710,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         latents = 0.18215 * latents
         # latents = latents * np.float64(self.scheduler.init_noise_sigma)
 
+        # TODO: multiply latents by batch size
+
         # get the original timestep using init_timestep
         offset = self.scheduler.config.get("steps_offset", 0)
         init_timestep = int(num_inference_steps * strength) + offset
