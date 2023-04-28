@@ -13,7 +13,7 @@ from ..params import (
     Size,
     UpscaleParams,
 )
-from ..utils import get_and_clamp_float, get_and_clamp_int, get_from_list, get_not_empty
+from ..utils import get_and_clamp_float, get_and_clamp_int, get_boolean, get_from_list, get_not_empty
 from .context import ServerContext
 from .load import (
     get_available_platforms,
@@ -277,10 +277,13 @@ def highres_from_request() -> HighresParams:
         get_config_value("highresStrength", "min"),
     )
 
+    tiled_vae = get_boolean(request.args, "tiledVAE", get_config_value("tiledVAE"))
+
     return HighresParams(
         scale,
         steps,
         strength,
         method=method,
         iterations=iterations,
+        tiled_vae=tiled_vae,
     )

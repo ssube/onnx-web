@@ -160,6 +160,8 @@ export interface HighresParams {
   highresScale: number;
   highresSteps: number;
   highresStrength: number;
+
+  tiledVAE: boolean;
 }
 
 /**
@@ -453,6 +455,10 @@ export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
 }
 
 export function appendHighresToURL(url: URL, highres: HighresParams) {
+  if (highres.tiledVAE) {
+    url.searchParams.append('tiledVAE', String(highres.tiledVAE));
+  }
+
   if (highres.enabled) {
     url.searchParams.append('highresIterations', highres.highresIterations.toFixed(FIXED_INTEGER));
     url.searchParams.append('highresMethod', highres.highresMethod);

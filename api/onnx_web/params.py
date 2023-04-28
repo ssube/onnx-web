@@ -398,12 +398,14 @@ class HighresParams:
         strength: float,
         method: Literal["bilinear", "lanczos", "upscale"] = "lanczos",
         iterations: int = 1,
+        tiled_vae: bool = False,
     ):
         self.scale = scale
         self.steps = steps
         self.strength = strength
         self.method = method
         self.iterations = iterations
+        self.tiled_vae = tiled_vae
 
     def resize(self, size: Size) -> Size:
         return Size(
@@ -418,4 +420,5 @@ class HighresParams:
             "scale": self.scale,
             "steps": self.steps,
             "strength": self.strength,
+            "tiled_vae": self.tiled_vae,
         }

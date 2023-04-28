@@ -129,6 +129,7 @@ export const I18N_STRINGS_ES = {
         sourceFilter: '',
         steps: 'Pasos',
         strength: 'Fuerza',
+        tiledVAE: '',
         tileOrder: 'Orden de secciones',
         upscale: {
           label: 'Aumento',

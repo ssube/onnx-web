@@ -129,6 +129,7 @@ export const I18N_STRINGS_FR = {
         sourceFilter: '',
         steps: '',
         strength: '',
+        tiledVAE: '',
         tileOrder: '',
         upscale: {
           label: '',

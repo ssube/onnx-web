@@ -54,7 +54,7 @@ if (watch) {
         ],
         plugins: [
             ...plugins,
-            ...copyArray(['src/index.html', 'examples/config.json']),
+            ...copyArray(['src/index.html', 'src/config.json']),
         ],
         banner: {
             js: `new EventSource('/esbuild').addEventListener('change', () => location.reload());`,

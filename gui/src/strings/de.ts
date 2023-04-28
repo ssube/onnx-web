@@ -129,6 +129,7 @@ export const I18N_STRINGS_DE = {
         sourceFilter: '',
         steps: 'Schritte',
         strength: 'Stärke',
+        tiledVAE: '',
         tileOrder: '',
         upscale: {
           label: '',

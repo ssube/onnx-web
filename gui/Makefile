@@ -30,7 +30,7 @@ build-shebang: build
 bundle: build
 	node esbuild.js
 	cp -v src/index.html out/
-	cp -v examples/config.json out/
+	cp -v src/config.json out/
 
 COVER_OPTS := --all \
 		--exclude ".eslintrc.js" \

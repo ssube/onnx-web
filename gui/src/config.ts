@@ -2,6 +2,10 @@ import { doesExist, Maybe } from '@apextoaster/js-utils';
 import { merge } from 'lodash';
 import { HighresParams, Img2ImgParams, InpaintParams, ModelParams, OutpaintParams, STATUS_SUCCESS, Txt2ImgParams, UpscaleParams } from './client/api.js';
 
+export interface ConfigBoolean {
+  default: boolean;
+}
+
 export interface ConfigNumber {
   default: number;
   min: number;
@@ -17,7 +21,7 @@ export interface ConfigString {
 /**
  * Helper type to filter keys whose value extends `TValid`.
  */
-export type KeyFilter<T extends object, TValid = number | string> = {
+export type KeyFilter<T extends object, TValid = boolean | number | string> = {
   [K in keyof T]: T[K] extends TValid ? K : never;
 }[keyof T];
 
@@ -32,13 +36,13 @@ export type ConfigFiles<T extends object> = {
  * Map numbers and strings to their corresponding config types and drop the rest of the fields.
  */
 export type ConfigRanges<T extends object> = {
-  [K in KeyFilter<T>]: T[K] extends number ? ConfigNumber : T[K] extends string ? ConfigString : never;
+  [K in KeyFilter<T>]: T[K] extends boolean ? ConfigBoolean : T[K] extends number ? ConfigNumber : T[K] extends string ? ConfigString : never;
 };
 
 /**
  * Keep fields whose value extends `TValid` and drop the rest.
  */
-export type ConfigState<T extends object, TValid = number | string> = {
+export type ConfigState<T extends object, TValid = boolean | number | string> = {
   [K in KeyFilter<T, TValid>]: T[K] extends TValid ? T[K] : never;
 };
 

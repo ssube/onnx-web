@@ -181,6 +181,7 @@ export const I18N_STRINGS_EN = {
         sourceFilter: 'Source Filter',
         steps: 'Steps',
         strength: 'Strength',
+        tiledVAE: 'Tiled VAE',
         tileOrder: 'Tile Order',
         upscale: {
           label: 'Upscale',

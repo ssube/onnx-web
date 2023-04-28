@@ -447,6 +447,7 @@ export function createStateSlices(server: ServerParams) {
       highresSteps: server.highresSteps.default,
       highresScale: server.highresScale.default,
       highresStrength: server.highresStrength.default,
+      tiledVAE: server.tiledVAE.default,
     },
     setHighres(params) {
       set((prev) => ({
@@ -465,6 +466,7 @@ export function createStateSlices(server: ServerParams) {
           highresSteps: server.highresSteps.default,
           highresScale: server.highresScale.default,
           highresStrength: server.highresStrength.default,
+          tiledVAE: server.tiledVAE.default,
         },
       });
     },
