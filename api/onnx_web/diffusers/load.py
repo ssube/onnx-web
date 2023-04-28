@@ -410,8 +410,10 @@ def patch_pipeline(
     pipe.unet = UNetWrapper(server, original_unet)
 
     if hasattr(pipe, "vae_decoder"):
-        original_vae = pipe.vae_decoder
-        pipe.vae_decoder = VAEWrapper(server, original_vae, decoder=True)
+        original_decoder = pipe.vae_decoder
+        pipe.vae_decoder = VAEWrapper(server, original_decoder, decoder=True)
+        original_encoder = pipe.vae_encoder
+        pipe.vae_encoder = VAEWrapper(server, original_encoder, decoder=False)
     elif hasattr(pipe, "vae"):
         pass  # TODO: current wrapper does not work with upscaling VAE
     else:
