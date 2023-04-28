@@ -31,7 +31,7 @@ class VAEWrapper(object):
         self.decoder = decoder
 
         self.tile_sample_min_size = SAMPLE_SIZE
-        self.tile_latent_min_size = int(SAMPLE_SIZE / (2 ** (len(self.config.block_out_channels) - 1)))
+        self.tile_latent_min_size = SAMPLE_SIZE
         self.tile_overlap_factor = 0.25
 
         self.quant_conv = nn.Conv2d(2 * LATENT_CHANNELS, 2 * LATENT_CHANNELS, 1)
@@ -87,7 +87,7 @@ class VAEWrapper(object):
             row = []
             for j in range(0, x.shape[3], overlap_size):
                 tile = x[:, :, i : i + self.tile_sample_min_size, j : j + self.tile_sample_min_size]
-                tile = self(tile)
+                tile = torch.from_numpy(self(tile.numpy()))
                 tile = self.quant_conv(tile)
                 row.append(tile)
             rows.append(row)
@@ -140,7 +140,7 @@ class VAEWrapper(object):
             for j in range(0, z.shape[3], overlap_size):
                 tile = z[:, :, i : i + self.tile_latent_min_size, j : j + self.tile_latent_min_size]
                 tile = self.post_quant_conv(tile)
-                decoded = self(tile)
+                decoded = torch.from_numpy(self(tile.numpy()))
                 row.append(decoded)
             rows.append(row)
         result_rows = []
