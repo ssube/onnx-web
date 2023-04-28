@@ -11,15 +11,15 @@ from ..params import ImageParams, Size
 
 logger = getLogger(__name__)
 
-latent_channels = 4
-latent_factor = 8
+LATENT_CHANNELS = 4
+LATENT_FACTOR = 8
 MAX_TOKENS_PER_GROUP = 77
 
 CLIP_TOKEN = compile(r"\<clip:([-\w]+):(\d+)\>")
 INVERSION_TOKEN = compile(r"\<inversion:([-\w]+):(-?[\.|\d]+)\>")
 LORA_TOKEN = compile(r"\<lora:([-\w]+):(-?[\.|\d]+)\>")
 INTERVAL_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
-ALTERNATIVE_RANGE = compile(r"\(([\w\|]+)\)")
+ALTERNATIVE_RANGE = compile(r"\(([^\)]+)\)")
 
 
 def expand_interval_ranges(prompt: str) -> str:
@@ -253,9 +253,9 @@ def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
     """
     latents_shape = (
         batch,
-        latent_channels,
-        size.height // latent_factor,
-        size.width // latent_factor,
+        LATENT_CHANNELS,
+        size.height // LATENT_FACTOR,
+        size.width // LATENT_FACTOR,
     )
     rng = np.random.default_rng(seed)
     image_latents = rng.standard_normal(latents_shape).astype(np.float32)
@@ -266,9 +266,9 @@ def get_tile_latents(
     full_latents: np.ndarray, dims: Tuple[int, int, int]
 ) -> np.ndarray:
     x, y, tile = dims
-    t = tile // latent_factor
-    x = x // latent_factor
-    y = y // latent_factor
+    t = tile // LATENT_FACTOR
+    x = x // LATENT_FACTOR
+    y = y // LATENT_FACTOR
     xt = x + t
     yt = y + t
 

@@ -15,6 +15,8 @@ from ..models.meta import NetworkModel
 from ..params import DeviceParams
 from ..server import ServerContext
 from ..utils import run_gc
+from .patches.unet import UNetWrapper
+from .patches.vae import VAEWrapper
 from .pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
 from .pipelines.lpw import OnnxStableDiffusionLongPromptWeightingPipeline
 from .pipelines.panorama import OnnxStableDiffusionPanoramaPipeline
@@ -397,92 +399,6 @@ def optimize_pipeline(
             logger.warning("error while enabling memory efficient attention: %s", e)
 
 
-# TODO: does this need to change for fp16 modes?
-timestep_dtype = np.float32
-
-
-class UNetWrapper(object):
-    prompt_embeds: Optional[List[np.ndarray]] = None
-    prompt_index: int = 0
-    server: ServerContext
-    wrapped: OnnxRuntimeModel
-
-    def __init__(
-        self,
-        server: ServerContext,
-        wrapped: OnnxRuntimeModel,
-    ):
-        self.server = server
-        self.wrapped = wrapped
-
-    def __call__(
-        self,
-        sample: np.ndarray = None,
-        timestep: np.ndarray = None,
-        encoder_hidden_states: np.ndarray = None,
-        **kwargs,
-    ):
-        global timestep_dtype
-        timestep_dtype = timestep.dtype
-
-        logger.trace(
-            "UNet parameter types: %s, %s, %s",
-            sample.dtype,
-            timestep.dtype,
-            encoder_hidden_states.dtype,
-        )
-
-        if self.prompt_embeds is not None:
-            step_index = self.prompt_index % len(self.prompt_embeds)
-            logger.trace("multiple prompt embeds found, using step: %s", step_index)
-            encoder_hidden_states = self.prompt_embeds[step_index]
-            self.prompt_index += 1
-
-        if sample.dtype != timestep.dtype:
-            logger.trace("converting UNet sample to timestep dtype")
-            sample = sample.astype(timestep.dtype)
-
-        if encoder_hidden_states.dtype != timestep.dtype:
-            logger.trace("converting UNet hidden states to timestep dtype")
-            encoder_hidden_states = encoder_hidden_states.astype(timestep.dtype)
-
-        return self.wrapped(
-            sample=sample,
-            timestep=timestep,
-            encoder_hidden_states=encoder_hidden_states,
-            **kwargs,
-        )
-
-    def __getattr__(self, attr):
-        return getattr(self.wrapped, attr)
-
-    def set_prompts(self, prompt_embeds: List[np.ndarray]):
-        logger.debug(
-            "setting prompt embeds for UNet: %s", [p.shape for p in prompt_embeds]
-        )
-        self.prompt_embeds = prompt_embeds
-        self.prompt_index = 0
-
-
-class VAEWrapper(object):
-    def __init__(self, server, wrapped):
-        self.server = server
-        self.wrapped = wrapped
-
-    def __call__(self, latent_sample=None, **kwargs):
-        global timestep_dtype
-
-        logger.trace("VAE parameter types: %s", latent_sample.dtype)
-        if latent_sample.dtype != timestep_dtype:
-            logger.info("converting VAE sample dtype")
-            latent_sample = latent_sample.astype(timestep_dtype)
-
-        return self.wrapped(latent_sample=latent_sample, **kwargs)
-
-    def __getattr__(self, attr):
-        return getattr(self.wrapped, attr)
-
-
 def patch_pipeline(
     server: ServerContext,
     pipe: StableDiffusionPipeline,
@@ -496,7 +412,7 @@ def patch_pipeline(
 
     if hasattr(pipe, "vae_decoder"):
         original_vae = pipe.vae_decoder
-        pipe.vae_decoder = VAEWrapper(server, original_vae)
+        pipe.vae_decoder = VAEWrapper(server, original_vae, decoder=True)
     elif hasattr(pipe, "vae"):
         pass  # TODO: current wrapper does not work with upscaling VAE
     else:
