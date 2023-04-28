@@ -188,10 +188,11 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         server, "img2img", params, size, extras=[strength], count=output_count
     )
 
-    job_name = output[0]
-    logger.info("img2img job queued for: %s", job_name)
+    if params.get_valid_pipeline("img2img") != "panorama":
+        logger.info("resizing input image for limited pipeline, use panorama pipeline for full-size")
+        source = valid_image(source, min_dims=size, max_dims=size)
 
-    source = valid_image(source, min_dims=size, max_dims=size)
+    job_name = output[0]
     pool.submit(
         job_name,
         run_img2img_pipeline,
@@ -206,6 +207,8 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         source_filter=source_filter,
     )
 
+    logger.info("img2img job queued for: %s", job_name)
+
     return jsonify(json_params(output, params, size, upscale=upscale, highres=highres))
 
 
@@ -215,9 +218,8 @@ def txt2img(server: ServerContext, pool: DevicePoolExecutor):
     highres = highres_from_request()
 
     output = make_output_name(server, "txt2img", params, size)
-    job_name = output[0]
-    logger.info("txt2img job queued for: %s", job_name)
 
+    job_name = output[0]
     pool.submit(
         job_name,
         run_txt2img_pipeline,
@@ -229,6 +231,8 @@ def txt2img(server: ServerContext, pool: DevicePoolExecutor):
         highres,
         needs_device=device,
     )
+
+    logger.info("txt2img job queued for: %s", job_name)
 
     return jsonify(json_params(output, params, size, upscale=upscale, highres=highres))
 
@@ -273,11 +277,8 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
             tile_order,
         ],
     )
-    job_name = output[0]
-    logger.info("inpaint job queued for: %s", job_name)
 
-    source = valid_image(source, min_dims=size, max_dims=size)
-    mask = valid_image(mask, min_dims=size, max_dims=size)
+    job_name = output[0]
     pool.submit(
         job_name,
         run_inpaint_pipeline,
@@ -296,6 +297,8 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
         tile_order,
         needs_device=device,
     )
+
+    logger.info("inpaint job queued for: %s", job_name)
 
     return jsonify(
         json_params(
@@ -316,10 +319,11 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
     highres = highres_from_request()
 
     output = make_output_name(server, "upscale", params, size)
-    job_name = output[0]
-    logger.info("upscale job queued for: %s", job_name)
 
+    logger.info("resizing source image for limited pipeline")
     source = valid_image(source, min_dims=size, max_dims=size)
+
+    job_name = output[0]
     pool.submit(
         job_name,
         run_upscale_pipeline,
@@ -332,6 +336,8 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
         source,
         needs_device=device,
     )
+
+    logger.info("upscale job queued for: %s", job_name)
 
     return jsonify(json_params(output, params, size, upscale=upscale, highres=highres))
 
@@ -429,7 +435,6 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
         return error_reply("mask image is required")
 
     mask = Image.open(BytesIO(mask_file.read())).convert("RGBA")
-    mask = valid_image(mask)
 
     max_sources = 2
     sources = []
@@ -448,8 +453,6 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
 
     output = make_output_name(server, "upscale", params, size)
     job_name = output[0]
-    logger.info("upscale job queued for: %s", job_name)
-
     pool.submit(
         job_name,
         run_blend_pipeline,
@@ -463,6 +466,8 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
         mask,
         needs_device=device,
     )
+
+    logger.info("upscale job queued for: %s", job_name)
 
     return jsonify(json_params(output, params, size, upscale=upscale))
 
