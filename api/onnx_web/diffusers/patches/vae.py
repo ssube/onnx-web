@@ -5,7 +5,6 @@ from logging import getLogger
 
 import numpy as np
 import torch
-import torch.nn as nn
 
 from ...server import ServerContext
 from diffusers import OnnxRuntimeModel
@@ -34,9 +33,6 @@ class VAEWrapper(object):
         self.tile_sample_min_size = SAMPLE_SIZE
         self.tile_latent_min_size = LATENT_SIZE
         self.tile_overlap_factor = 0.25
-
-        self.quant_conv = nn.Conv2d(2 * LATENT_CHANNELS, 2 * LATENT_CHANNELS, 1)
-        self.post_quant_conv = nn.Conv2d(LATENT_CHANNELS, LATENT_CHANNELS, 1)
 
     def __call__(self, latent_sample=None, **kwargs):
         global timestep_dtype
@@ -90,7 +86,6 @@ class VAEWrapper(object):
             for j in range(0, x.shape[3], overlap_size):
                 tile = x[:, :, i : i + self.tile_sample_min_size, j : j + self.tile_sample_min_size]
                 tile = torch.from_numpy(self.wrapped(latent_sample=tile.numpy())[0])
-                tile = self.quant_conv(tile)
                 row.append(tile)
             rows.append(row)
         result_rows = []
@@ -142,7 +137,6 @@ class VAEWrapper(object):
             row = []
             for j in range(0, z.shape[3], overlap_size):
                 tile = z[:, :, i : i + self.tile_latent_min_size, j : j + self.tile_latent_min_size]
-                tile = self.post_quant_conv(tile)
                 decoded = torch.from_numpy(self.wrapped(latent_sample=tile.numpy())[0])
                 row.append(decoded)
             rows.append(row)
