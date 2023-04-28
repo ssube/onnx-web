@@ -13,7 +13,13 @@ from ..params import (
     Size,
     UpscaleParams,
 )
-from ..utils import get_and_clamp_float, get_and_clamp_int, get_boolean, get_from_list, get_not_empty
+from ..utils import (
+    get_and_clamp_float,
+    get_and_clamp_int,
+    get_boolean,
+    get_from_list,
+    get_not_empty,
+)
 from .context import ServerContext
 from .load import (
     get_available_platforms,

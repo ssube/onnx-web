@@ -1,13 +1,13 @@
-from typing import Union
-from diffusers.models.autoencoder_kl import AutoencoderKLOutput
-from diffusers.models.vae import DiagonalGaussianDistribution, DecoderOutput
 from logging import getLogger
+from typing import Union
 
 import numpy as np
 import torch
+from diffusers import OnnxRuntimeModel
+from diffusers.models.autoencoder_kl import AutoencoderKLOutput
+from diffusers.models.vae import DecoderOutput, DiagonalGaussianDistribution
 
 from ...server import ServerContext
-from diffusers import OnnxRuntimeModel
 
 logger = getLogger(__name__)
 
@@ -37,7 +37,11 @@ class VAEWrapper(object):
     def __call__(self, latent_sample=None, **kwargs):
         global timestep_dtype
 
-        logger.trace("VAE %s parameter types: %s", ("decoder" if self.decoder else "encoder"), latent_sample.dtype)
+        logger.trace(
+            "VAE %s parameter types: %s",
+            ("decoder" if self.decoder else "encoder"),
+            latent_sample.dtype,
+        )
         if latent_sample.dtype != timestep_dtype:
             logger.info("converting VAE sample dtype")
             latent_sample = latent_sample.astype(timestep_dtype)
@@ -52,16 +56,22 @@ class VAEWrapper(object):
 
     def blend_v(self, a, b, blend_extent):
         for y in range(min(a.shape[2], b.shape[2], blend_extent)):
-            b[:, :, y, :] = a[:, :, -blend_extent + y, :] * (1 - y / blend_extent) + b[:, :, y, :] * (y / blend_extent)
+            b[:, :, y, :] = a[:, :, -blend_extent + y, :] * (1 - y / blend_extent) + b[
+                :, :, y, :
+            ] * (y / blend_extent)
         return b
 
     def blend_h(self, a, b, blend_extent):
         for x in range(min(a.shape[3], b.shape[3], blend_extent)):
-            b[:, :, :, x] = a[:, :, :, -blend_extent + x] * (1 - x / blend_extent) + b[:, :, :, x] * (x / blend_extent)
+            b[:, :, :, x] = a[:, :, :, -blend_extent + x] * (1 - x / blend_extent) + b[
+                :, :, :, x
+            ] * (x / blend_extent)
         return b
 
     @torch.no_grad()
-    def tiled_encode(self, x: torch.FloatTensor, return_dict: bool = True) -> AutoencoderKLOutput:
+    def tiled_encode(
+        self, x: torch.FloatTensor, return_dict: bool = True
+    ) -> AutoencoderKLOutput:
         r"""Encode a batch of images using a tiled encoder.
         Args:
         When this option is enabled, the VAE will split the input tensor into tiles to compute encoding in several
@@ -84,7 +94,12 @@ class VAEWrapper(object):
         for i in range(0, x.shape[2], overlap_size):
             row = []
             for j in range(0, x.shape[3], overlap_size):
-                tile = x[:, :, i : i + self.tile_sample_min_size, j : j + self.tile_sample_min_size]
+                tile = x[
+                    :,
+                    :,
+                    i : i + self.tile_sample_min_size,
+                    j : j + self.tile_sample_min_size,
+                ]
                 tile = torch.from_numpy(self.wrapped(latent_sample=tile.numpy())[0])
                 row.append(tile)
             rows.append(row)
@@ -111,7 +126,9 @@ class VAEWrapper(object):
         return AutoencoderKLOutput(latent_dist=posterior)
 
     @torch.no_grad()
-    def tiled_decode(self, z: torch.FloatTensor, return_dict: bool = True) -> Union[DecoderOutput, torch.FloatTensor]:
+    def tiled_decode(
+        self, z: torch.FloatTensor, return_dict: bool = True
+    ) -> Union[DecoderOutput, torch.FloatTensor]:
         r"""Decode a batch of images using a tiled decoder.
         Args:
         When this option is enabled, the VAE will split the input tensor into tiles to compute decoding in several
@@ -136,7 +153,12 @@ class VAEWrapper(object):
         for i in range(0, z.shape[2], overlap_size):
             row = []
             for j in range(0, z.shape[3], overlap_size):
-                tile = z[:, :, i : i + self.tile_latent_min_size, j : j + self.tile_latent_min_size]
+                tile = z[
+                    :,
+                    :,
+                    i : i + self.tile_latent_min_size,
+                    j : j + self.tile_latent_min_size,
+                ]
                 decoded = torch.from_numpy(self.wrapped(latent_sample=tile.numpy())[0])
                 row.append(decoded)
             rows.append(row)

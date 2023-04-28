@@ -2,7 +2,6 @@ from logging import getLogger
 from os import path
 from typing import Any, List, Optional, Tuple
 
-import numpy as np
 from onnx import load_model
 from transformers import CLIPTokenizer
 

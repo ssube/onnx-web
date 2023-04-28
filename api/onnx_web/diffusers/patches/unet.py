@@ -1,11 +1,11 @@
-from diffusers import OnnxRuntimeModel
 from logging import getLogger
 from typing import List, Optional
 
+import numpy as np
+from diffusers import OnnxRuntimeModel
+
 from ...server import ServerContext
 from .vae import set_vae_dtype
-
-import numpy as np
 
 logger = getLogger(__name__)
 
@@ -69,4 +69,3 @@ class UNetWrapper(object):
         )
         self.prompt_embeds = prompt_embeds
         self.prompt_index = 0
-

@@ -15,18 +15,16 @@
 import inspect
 from typing import Callable, List, Optional, Union
 
-import PIL
 import numpy as np
+import PIL
 import torch
-from transformers import CLIPImageProcessor, CLIPTokenizer
-
 from diffusers.configuration_utils import FrozenDict
-from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMScheduler
-from diffusers.utils import deprecate, logging, PIL_INTERPOLATION
-from diffusers.pipelines.onnx_utils import ORT_TO_NP_TYPE, OnnxRuntimeModel
 from diffusers.pipeline_utils import DiffusionPipeline
+from diffusers.pipelines.onnx_utils import ORT_TO_NP_TYPE, OnnxRuntimeModel
 from diffusers.pipelines.stable_diffusion import StableDiffusionPipelineOutput
-
+from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMScheduler
+from diffusers.utils import PIL_INTERPOLATION, deprecate, logging
+from transformers import CLIPImageProcessor, CLIPTokenizer
 
 logger = logging.get_logger(__name__)
 
@@ -41,7 +39,10 @@ def preprocess(image):
         w, h = image[0].size
         w, h = (x - x % 64 for x in (w, h))  # resize to integer multiple of 64
 
-        image = [np.array(i.resize((w, h), resample=PIL_INTERPOLATION["lanczos"]))[None, :] for i in image]
+        image = [
+            np.array(i.resize((w, h), resample=PIL_INTERPOLATION["lanczos"]))[None, :]
+            for i in image
+        ]
         image = np.concatenate(image, axis=0)
         image = np.array(image).astype(np.float32) / 255.0
         image = image.transpose(0, 3, 1, 2)
@@ -78,7 +79,10 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
     ):
         super().__init__()
 
-        if hasattr(scheduler.config, "steps_offset") and scheduler.config.steps_offset != 1:
+        if (
+            hasattr(scheduler.config, "steps_offset")
+            and scheduler.config.steps_offset != 1
+        ):
             deprecation_message = (
                 f"The configuration file of this scheduler: {scheduler} is outdated. `steps_offset`"
                 f" should be set to 1 instead of {scheduler.config.steps_offset}. Please make sure "
@@ -87,12 +91,17 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 " it would be very nice if you could open a Pull request for the `scheduler/scheduler_config.json`"
                 " file"
             )
-            deprecate("steps_offset!=1", "1.0.0", deprecation_message, standard_warn=False)
+            deprecate(
+                "steps_offset!=1", "1.0.0", deprecation_message, standard_warn=False
+            )
             new_config = dict(scheduler.config)
             new_config["steps_offset"] = 1
             scheduler._internal_dict = FrozenDict(new_config)
 
-        if hasattr(scheduler.config, "clip_sample") and scheduler.config.clip_sample is True:
+        if (
+            hasattr(scheduler.config, "clip_sample")
+            and scheduler.config.clip_sample is True
+        ):
             deprecation_message = (
                 f"The configuration file of this scheduler: {scheduler} has not set the configuration `clip_sample`."
                 " `clip_sample` should be set to False in the configuration file. Please make sure to update the"
@@ -100,7 +109,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 " future versions. If you have downloaded this checkpoint from the Hugging Face Hub, it would be very"
                 " nice if you could open a Pull request for the `scheduler/scheduler_config.json` file"
             )
-            deprecate("clip_sample not set", "1.0.0", deprecation_message, standard_warn=False)
+            deprecate(
+                "clip_sample not set", "1.0.0", deprecation_message, standard_warn=False
+            )
             new_config = dict(scheduler.config)
             new_config["clip_sample"] = False
             scheduler._internal_dict = FrozenDict(new_config)
@@ -180,7 +191,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 return_tensors="np",
             )
             text_input_ids = text_inputs.input_ids
-            untruncated_ids = self.tokenizer(prompt, padding="max_length", return_tensors="np").input_ids
+            untruncated_ids = self.tokenizer(
+                prompt, padding="max_length", return_tensors="np"
+            ).input_ids
 
             if not np.array_equal(text_input_ids, untruncated_ids):
                 removed_text = self.tokenizer.batch_decode(
@@ -191,7 +204,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                     f" {self.tokenizer.model_max_length} tokens: {removed_text}"
                 )
 
-            prompt_embeds = self.text_encoder(input_ids=text_input_ids.astype(np.int32))[0]
+            prompt_embeds = self.text_encoder(
+                input_ids=text_input_ids.astype(np.int32)
+            )[0]
 
         prompt_embeds = np.repeat(prompt_embeds, num_images_per_prompt, axis=0)
 
@@ -224,10 +239,14 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 truncation=True,
                 return_tensors="np",
             )
-            negative_prompt_embeds = self.text_encoder(input_ids=uncond_input.input_ids.astype(np.int32))[0]
+            negative_prompt_embeds = self.text_encoder(
+                input_ids=uncond_input.input_ids.astype(np.int32)
+            )[0]
 
         if do_classifier_free_guidance:
-            negative_prompt_embeds = np.repeat(negative_prompt_embeds, num_images_per_prompt, axis=0)
+            negative_prompt_embeds = np.repeat(
+                negative_prompt_embeds, num_images_per_prompt, axis=0
+            )
 
             # For classifier free guidance, we need to do two forward passes.
             # Here we concatenate the unconditional and text embeddings into a single batch
@@ -247,10 +266,13 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         negative_prompt_embeds: Optional[np.ndarray] = None,
     ):
         if height % 8 != 0 or width % 8 != 0:
-            raise ValueError(f"`height` and `width` have to be divisible by 8 but are {height} and {width}.")
+            raise ValueError(
+                f"`height` and `width` have to be divisible by 8 but are {height} and {width}."
+            )
 
         if (callback_steps is None) or (
-            callback_steps is not None and (not isinstance(callback_steps, int) or callback_steps <= 0)
+            callback_steps is not None
+            and (not isinstance(callback_steps, int) or callback_steps <= 0)
         ):
             raise ValueError(
                 f"`callback_steps` has to be a positive integer but is {callback_steps} of type"
@@ -266,8 +288,12 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             raise ValueError(
                 "Provide either `prompt` or `prompt_embeds`. Cannot leave both `prompt` and `prompt_embeds` undefined."
             )
-        elif prompt is not None and (not isinstance(prompt, str) and not isinstance(prompt, list)):
-            raise ValueError(f"`prompt` has to be of type `str` or `list` but is {type(prompt)}")
+        elif prompt is not None and (
+            not isinstance(prompt, str) and not isinstance(prompt, list)
+        ):
+            raise ValueError(
+                f"`prompt` has to be of type `str` or `list` but is {type(prompt)}"
+            )
 
         if negative_prompt is not None and negative_prompt_embeds is not None:
             raise ValueError(
@@ -381,7 +407,13 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # check inputs. Raise error if not correct
         self.check_inputs(
-            prompt, height, width, callback_steps, negative_prompt, prompt_embeds, negative_prompt_embeds
+            prompt,
+            height,
+            width,
+            callback_steps,
+            negative_prompt,
+            prompt_embeds,
+            negative_prompt_embeds,
         )
 
         # define call parameters
@@ -415,7 +447,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         if latents is None:
             latents = generator.randn(*latents_shape).astype(latents_dtype)
         elif latents.shape != latents_shape:
-            raise ValueError(f"Unexpected latents shape, got {latents.shape}, expected {latents_shape}")
+            raise ValueError(
+                f"Unexpected latents shape, got {latents.shape}, expected {latents_shape}"
+            )
 
         # set timesteps
         self.scheduler.set_timesteps(num_inference_steps)
@@ -426,13 +460,20 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         # eta (η) is only used with the DDIMScheduler, it will be ignored for other schedulers.
         # eta corresponds to η in DDIM paper: https://arxiv.org/abs/2010.02502
         # and should be between [0, 1]
-        accepts_eta = "eta" in set(inspect.signature(self.scheduler.step).parameters.keys())
+        accepts_eta = "eta" in set(
+            inspect.signature(self.scheduler.step).parameters.keys()
+        )
         extra_step_kwargs = {}
         if accepts_eta:
             extra_step_kwargs["eta"] = eta
 
         timestep_dtype = next(
-            (input.type for input in self.unet.model.get_inputs() if input.name == "timestep"), "tensor(float)"
+            (
+                input.type
+                for input in self.unet.model.get_inputs()
+                if input.name == "timestep"
+            ),
+            "tensor(float)",
         )
         timestep_dtype = ORT_TO_NP_TYPE[timestep_dtype]
 
@@ -450,23 +491,38 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 latents_for_view = latents[:, :, h_start:h_end, w_start:w_end]
 
                 # expand the latents if we are doing classifier free guidance
-                latent_model_input = np.concatenate([latents_for_view] * 2) if do_classifier_free_guidance else latents_for_view
-                latent_model_input = self.scheduler.scale_model_input(torch.from_numpy(latent_model_input), t)
+                latent_model_input = (
+                    np.concatenate([latents_for_view] * 2)
+                    if do_classifier_free_guidance
+                    else latents_for_view
+                )
+                latent_model_input = self.scheduler.scale_model_input(
+                    torch.from_numpy(latent_model_input), t
+                )
                 latent_model_input = latent_model_input.cpu().numpy()
 
                 # predict the noise residual
                 timestep = np.array([t], dtype=timestep_dtype)
-                noise_pred = self.unet(sample=latent_model_input, timestep=timestep, encoder_hidden_states=prompt_embeds)
+                noise_pred = self.unet(
+                    sample=latent_model_input,
+                    timestep=timestep,
+                    encoder_hidden_states=prompt_embeds,
+                )
                 noise_pred = noise_pred[0]
 
                 # perform guidance
                 if do_classifier_free_guidance:
                     noise_pred_uncond, noise_pred_text = np.split(noise_pred, 2)
-                    noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
+                    noise_pred = noise_pred_uncond + guidance_scale * (
+                        noise_pred_text - noise_pred_uncond
+                    )
 
                 # compute the previous noisy sample x_t -> x_t-1
                 scheduler_output = self.scheduler.step(
-                    torch.from_numpy(noise_pred), t, torch.from_numpy(latents_for_view), **extra_step_kwargs
+                    torch.from_numpy(noise_pred),
+                    t,
+                    torch.from_numpy(latents_for_view),
+                    **extra_step_kwargs,
                 )
                 latents_view_denoised = scheduler_output.prev_sample.numpy()
 
@@ -484,7 +540,10 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         # image = self.vae_decoder(latent_sample=latents)[0]
         # it seems likes there is a strange result for using half-precision vae decoder if batchsize>1
         image = np.concatenate(
-            [self.vae_decoder(latent_sample=latents[i : i + 1])[0] for i in range(latents.shape[0])]
+            [
+                self.vae_decoder(latent_sample=latents[i : i + 1])[0]
+                for i in range(latents.shape[0])
+            ]
         )
 
         image = np.clip(image / 2 + 0.5, 0, 1)
@@ -512,7 +571,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         if not return_dict:
             return (image, has_nsfw_concept)
 
-        return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
+        return StableDiffusionPipelineOutput(
+            images=image, nsfw_content_detected=has_nsfw_concept
+        )
 
     def img2img(
         self,
@@ -598,7 +659,13 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # check inputs. Raise error if not correct
         self.check_inputs(
-            prompt, height, width, callback_steps, negative_prompt, prompt_embeds, negative_prompt_embeds
+            prompt,
+            height,
+            width,
+            callback_steps,
+            negative_prompt,
+            prompt_embeds,
+            negative_prompt_embeds,
         )
 
         # define call parameters
@@ -651,7 +718,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         noise = generator.randn(*latents.shape).astype(latents_dtype)
         latents = self.scheduler.add_noise(
-            torch.from_numpy(latents), torch.from_numpy(noise), torch.from_numpy(timesteps)
+            torch.from_numpy(latents),
+            torch.from_numpy(noise),
+            torch.from_numpy(timesteps),
         )
         latents = latents.numpy()
 
@@ -659,13 +728,20 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         # eta (η) is only used with the DDIMScheduler, it will be ignored for other schedulers.
         # eta corresponds to η in DDIM paper: https://arxiv.org/abs/2010.02502
         # and should be between [0, 1]
-        accepts_eta = "eta" in set(inspect.signature(self.scheduler.step).parameters.keys())
+        accepts_eta = "eta" in set(
+            inspect.signature(self.scheduler.step).parameters.keys()
+        )
         extra_step_kwargs = {}
         if accepts_eta:
             extra_step_kwargs["eta"] = eta
 
         timestep_dtype = next(
-            (input.type for input in self.unet.model.get_inputs() if input.name == "timestep"), "tensor(float)"
+            (
+                input.type
+                for input in self.unet.model.get_inputs()
+                if input.name == "timestep"
+            ),
+            "tensor(float)",
         )
         timestep_dtype = ORT_TO_NP_TYPE[timestep_dtype]
 
@@ -683,23 +759,38 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 latents_for_view = latents[:, :, h_start:h_end, w_start:w_end]
 
                 # expand the latents if we are doing classifier free guidance
-                latent_model_input = np.concatenate([latents_for_view] * 2) if do_classifier_free_guidance else latents_for_view
-                latent_model_input = self.scheduler.scale_model_input(torch.from_numpy(latent_model_input), t)
+                latent_model_input = (
+                    np.concatenate([latents_for_view] * 2)
+                    if do_classifier_free_guidance
+                    else latents_for_view
+                )
+                latent_model_input = self.scheduler.scale_model_input(
+                    torch.from_numpy(latent_model_input), t
+                )
                 latent_model_input = latent_model_input.cpu().numpy()
 
                 # predict the noise residual
                 timestep = np.array([t], dtype=timestep_dtype)
-                noise_pred = self.unet(sample=latent_model_input, timestep=timestep, encoder_hidden_states=prompt_embeds)
+                noise_pred = self.unet(
+                    sample=latent_model_input,
+                    timestep=timestep,
+                    encoder_hidden_states=prompt_embeds,
+                )
                 noise_pred = noise_pred[0]
 
                 # perform guidance
                 if do_classifier_free_guidance:
                     noise_pred_uncond, noise_pred_text = np.split(noise_pred, 2)
-                    noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
+                    noise_pred = noise_pred_uncond + guidance_scale * (
+                        noise_pred_text - noise_pred_uncond
+                    )
 
                 # compute the previous noisy sample x_t -> x_t-1
                 scheduler_output = self.scheduler.step(
-                    torch.from_numpy(noise_pred), t, torch.from_numpy(latents_for_view), **extra_step_kwargs
+                    torch.from_numpy(noise_pred),
+                    t,
+                    torch.from_numpy(latents_for_view),
+                    **extra_step_kwargs,
                 )
                 latents_view_denoised = scheduler_output.prev_sample.numpy()
 
@@ -717,7 +808,10 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         # image = self.vae_decoder(latent_sample=latents)[0]
         # it seems likes there is a strange result for using half-precision vae decoder if batchsize>1
         image = np.concatenate(
-            [self.vae_decoder(latent_sample=latents[i : i + 1])[0] for i in range(latents.shape[0])]
+            [
+                self.vae_decoder(latent_sample=latents[i : i + 1])[0]
+                for i in range(latents.shape[0])
+            ]
         )
 
         image = np.clip(image / 2 + 0.5, 0, 1)
@@ -745,14 +839,18 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         if not return_dict:
             return (image, has_nsfw_concept)
 
-        return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
+        return StableDiffusionPipelineOutput(
+            images=image, nsfw_content_detected=has_nsfw_concept
+        )
 
     def __call__(
         self,
         *args,
         **kwargs,
     ):
-        if len(args) > 0 and (isinstance(args[0], np.ndarray) or isinstance(args[0], PIL.Image.Image)):
+        if len(args) > 0 and (
+            isinstance(args[0], np.ndarray) or isinstance(args[0], PIL.Image.Image)
+        ):
             logger.debug("running img2img panorama pipeline")
             return self.img2img(*args, **kwargs)
         else:
