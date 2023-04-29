@@ -79,10 +79,10 @@ class Size:
             border.top + self.height + border.bottom,
         )
 
-    def latent_size(self):
+    def round_to_tile(self, tile = 512):
         return Size(
-            ceil(self.width / 8),
-            ceil(self.height / 8),
+            ceil(self.width / tile) * tile,
+            ceil(self.height / tile) * tile,
         )
 
     def tojson(self) -> Dict[str, int]:

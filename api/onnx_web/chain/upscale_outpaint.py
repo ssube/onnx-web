@@ -55,8 +55,8 @@ def upscale_outpaint(
     )
 
     draw_mask = ImageDraw.Draw(stage_mask)
-    full_size = Size(*full_dims)
-    full_latents = get_latents_from_seed(params.seed, full_size.latent_size())
+    full_size = Size(*full_dims).round_to_tile()
+    full_latents = get_latents_from_seed(params.seed, full_size)
 
     if is_debug():
         save_image(server, "last-source.png", source)

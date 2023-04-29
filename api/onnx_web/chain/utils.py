@@ -56,7 +56,7 @@ def process_tile_grid(
             logger.debug("processing tile %s of %s, %s.%s", idx + 1, total, y, x)
 
             tile_image = source.crop((left, top, left + tile, top + tile))
-            tile_image = complete_tile(tile_image)
+            tile_image = complete_tile(tile_image, tile)
 
             for filter in filters:
                 tile_image = filter(tile_image, (left, top, tile))
@@ -89,7 +89,7 @@ def process_tile_spiral(
         logger.debug("processing tile %s of %s, %sx%s", counter, len(tiles), left, top)
 
         tile_image = image.crop((left, top, left + tile, top + tile))
-        tile_image = complete_tile(tile_image)
+        tile_image = complete_tile(tile_image, tile)
 
         for filter in filters:
             tile_image = filter(tile_image, (left, top, tile))
