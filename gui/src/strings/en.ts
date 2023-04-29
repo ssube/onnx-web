@@ -203,9 +203,11 @@ export const I18N_STRINGS_EN = {
         img2img: 'Img2Img',
         inpaint: 'Inpaint',
         lpw: 'Long Prompt Weighting',
+        panorama: 'Panorama',
         pix2pix: 'Instruct Pix2Pix',
         txt2img: 'Txt2Img',
         txt2txt: 'Txt2Txt',
+        upscale: 'Upscale',
       },
       platform: {
         amd: 'AMD GPU',

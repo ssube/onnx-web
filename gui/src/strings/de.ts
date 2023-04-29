@@ -151,9 +151,11 @@ export const I18N_STRINGS_DE = {
         img2img: '',
         inpaint: '',
         lpw: '',
+        panorama: '',
         pix2pix: '',
         txt2img: '',
         txt2txt: '',
+        upscale: '',
       },
       setting: {
         connectServer: 'verbinden zum Server',
