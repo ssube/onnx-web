@@ -13,7 +13,7 @@
     "bottom": {
       "default": 0,
       "min": 0,
-      "max": 512,
+      "max": 1024,
       "step": 8
     },
     "cfg": {
@@ -65,7 +65,7 @@
     "height": {
       "default": 512,
       "min": 256,
-      "max": 1024,
+      "max": 8192,
       "step": 8
     },
     "highresMethod": {
@@ -101,7 +101,7 @@
     "left": {
       "default": 0,
       "min": 0,
-      "max": 512,
+      "max": 1024,
       "step": 8
     },
     "loopback": {
@@ -147,7 +147,7 @@
     "right": {
       "default": 0,
       "min": 0,
-      "max": 512,
+      "max": 1024,
       "step": 8
     },
     "scale": {
@@ -191,7 +191,7 @@
     "top": {
       "default": 0,
       "min": 0,
-      "max": 512,
+      "max": 1024,
       "step": 8
     },
     "upscaleOrder": {
@@ -209,7 +209,7 @@
     "width": {
       "default": 512,
       "min": 256,
-      "max": 1024,
+      "max": 8192,
       "step": 8
     }
   }
