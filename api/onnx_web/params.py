@@ -1,5 +1,6 @@
 from enum import IntEnum
 from logging import getLogger
+from math import ceil
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 from .models.meta import NetworkModel
@@ -76,6 +77,12 @@ class Size:
         return Size(
             border.left + self.width + border.right,
             border.top + self.height + border.bottom,
+        )
+
+    def latent_size(self):
+        return Size(
+            ceil(self.width / 8),
+            ceil(self.height / 8),
         )
 
     def tojson(self) -> Dict[str, int]:

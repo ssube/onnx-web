@@ -21,6 +21,19 @@ class TileCallback(Protocol):
         pass
 
 
+def complete_tile(
+    source: Image.Image,
+    tile: int,
+) -> Image.Image:
+    if source.width < tile or source.height < tile:
+        full_source = Image.new(source.mode, (tile, tile))
+        full_source.paste(source)
+        return full_source
+
+    return source
+
+
+
 def process_tile_grid(
     source: Image.Image,
     tile: int,
@@ -29,10 +42,10 @@ def process_tile_grid(
     **kwargs,
 ) -> Image.Image:
     width, height = source.size
-    image = Image.new("RGB", (width * scale, height * scale))
+    image = Image.new(source.mode, (width * scale, height * scale))
 
-    tiles_x = width // tile
-    tiles_y = height // tile
+    tiles_x = ceil(width / tile)
+    tiles_y = ceil(height / tile)
     total = tiles_x * tiles_y
 
     for y in range(tiles_y):
@@ -41,7 +54,9 @@ def process_tile_grid(
             left = x * tile
             top = y * tile
             logger.debug("processing tile %s of %s, %s.%s", idx + 1, total, y, x)
+
             tile_image = source.crop((left, top, left + tile, top + tile))
+            tile_image = complete_tile(tile_image)
 
             for filter in filters:
                 tile_image = filter(tile_image, (left, top, tile))
@@ -74,6 +89,7 @@ def process_tile_spiral(
         logger.debug("processing tile %s of %s, %sx%s", counter, len(tiles), left, top)
 
         tile_image = image.crop((left, top, left + tile, top + tile))
+        tile_image = complete_tile(tile_image)
 
         for filter in filters:
             tile_image = filter(tile_image, (left, top, tile))

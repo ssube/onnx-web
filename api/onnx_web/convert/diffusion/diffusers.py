@@ -22,7 +22,6 @@ from diffusers import (
     OnnxStableDiffusionPipeline,
     StableDiffusionControlNetPipeline,
     StableDiffusionInstructPix2PixPipeline,
-    StableDiffusionPanoramaPipeline,
     StableDiffusionPipeline,
     StableDiffusionUpscalePipeline,
 )
@@ -42,7 +41,7 @@ available_pipelines = {
     "img2img": StableDiffusionPipeline,
     "inpaint": StableDiffusionPipeline,
     "lpw": StableDiffusionPipeline,
-    "panorama": StableDiffusionPanoramaPipeline,
+    "panorama": StableDiffusionPipeline,
     "pix2pix": StableDiffusionInstructPix2PixPipeline,
     "txt2img": StableDiffusionPipeline,
     "upscale": StableDiffusionUpscalePipeline,
