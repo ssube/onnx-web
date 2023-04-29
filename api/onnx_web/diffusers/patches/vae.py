@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from diffusers import OnnxRuntimeModel
 from diffusers.models.autoencoder_kl import AutoencoderKLOutput
-from diffusers.models.vae import DecoderOutput, DiagonalGaussianDistribution
+from diffusers.models.vae import DecoderOutput
 
 from ...server import ServerContext
 
