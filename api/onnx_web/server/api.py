@@ -189,7 +189,9 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
     )
 
     if params.get_valid_pipeline("img2img") != "panorama":
-        logger.info("resizing input image for limited pipeline, use panorama pipeline for full-size")
+        logger.info(
+            "resizing input image for limited pipeline, use panorama pipeline for full-size"
+        )
         source = valid_image(source, min_dims=size, max_dims=size)
 
     job_name = output[0]

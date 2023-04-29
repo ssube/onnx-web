@@ -324,7 +324,12 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             w_end = w_start + window_size
             views.append((h_start, h_end, w_start, w_end))
 
-        logger.debug("panorama generated %s views, %s by %s blocks", total_num_blocks, num_blocks_height, num_blocks_width)
+        logger.debug(
+            "panorama generated %s views, %s by %s blocks",
+            total_num_blocks,
+            num_blocks_height,
+            num_blocks_width,
+        )
         return views
 
     def text2img(
