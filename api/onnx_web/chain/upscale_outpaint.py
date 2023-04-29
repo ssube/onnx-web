@@ -13,7 +13,7 @@ from ..params import Border, ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..utils import is_debug
 from ..worker import ProgressCallback, WorkerContext
-from .utils import process_tile_grid, process_tile_order
+from .utils import process_tile_grid, process_tile_order, complete_tile
 
 logger = getLogger(__name__)
 
@@ -67,6 +67,7 @@ def upscale_outpaint(
         left, top, tile = dims
         size = Size(*tile_source.size)
         tile_mask = stage_mask.crop((left, top, left + tile, top + tile))
+        tile_mask = complete_tile(tile_mask, tile)
 
         if is_debug():
             save_image(server, "tile-source.png", tile_source)
