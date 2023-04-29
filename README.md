@@ -121,9 +121,6 @@ Some of the conversion and pipeline code was copied or derived from code in:
   - GPL v3: https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16/blob/main/LICENSE
   - https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16/blob/main/pipeline_onnx_stable_diffusion_controlnet.py
   - https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16/blob/main/pipeline_onnx_stable_diffusion_instruct_pix2pix.py
-- [`d8ahazard/sd_dreambooth_extension`](https://github.com/d8ahazard/sd_dreambooth_extension)
-  - Non-commercial license: https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/license.md
-  - https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/dreambooth/sd_to_diff.py
 - [`huggingface/diffusers`](https://github.com/huggingface/diffusers)
   - Apache v2: https://github.com/huggingface/diffusers/blob/main/LICENSE
   - https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
