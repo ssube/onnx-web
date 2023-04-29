@@ -123,13 +123,10 @@ class VAEWrapper(object):
             result_rows.append(torch.cat(result_row, dim=3))
 
         moments = torch.cat(result_rows, dim=2)
-        posterior = DiagonalGaussianDistribution(moments)
-        posterior = posterior.numpy()
-
         if not return_dict:
-            return (posterior,)
+            return (moments,)
 
-        return AutoencoderKLOutput(latent_dist=posterior)
+        return AutoencoderKLOutput(latent_dist=moments)
 
     @torch.no_grad()
     def tiled_decode(
