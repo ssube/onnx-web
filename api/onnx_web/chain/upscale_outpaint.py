@@ -13,7 +13,7 @@ from ..params import Border, ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..utils import is_debug
 from ..worker import ProgressCallback, WorkerContext
-from .utils import process_tile_grid, process_tile_order, complete_tile
+from .utils import complete_tile, process_tile_grid, process_tile_order
 
 logger = getLogger(__name__)
 
@@ -35,7 +35,12 @@ def upscale_outpaint(
     **kwargs,
 ) -> Image.Image:
     source = stage_source or source
-    logger.info("upscaling image by expanding borders: %s", border)
+    logger.info(
+        "upscaling %s x %s image by expanding borders: %s",
+        source.width,
+        source.height,
+        border,
+    )
 
     margin_x = float(max(border.left, border.right))
     margin_y = float(max(border.top, border.bottom))
@@ -53,7 +58,8 @@ def upscale_outpaint(
         noise_source=noise_source,
         mask_filter=mask_filter,
     )
-    full_latents = get_latents_from_seed(params.seed, full_size)
+    stage_mask = stage_mask.resize(source.size)
+    full_latents = get_latents_from_seed(params.seed, Size(*full_size))
 
     draw_mask = ImageDraw.Draw(stage_mask)
 

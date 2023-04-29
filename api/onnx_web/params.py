@@ -79,7 +79,7 @@ class Size:
             border.top + self.height + border.bottom,
         )
 
-    def round_to_tile(self, tile = 512):
+    def round_to_tile(self, tile=512):
         return Size(
             ceil(self.width / tile) * tile,
             ceil(self.height / tile) * tile,

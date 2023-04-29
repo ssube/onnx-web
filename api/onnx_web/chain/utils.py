@@ -33,7 +33,6 @@ def complete_tile(
     return source
 
 
-
 def process_tile_grid(
     source: Image.Image,
     tile: int,
@@ -152,7 +151,7 @@ def generate_tile_spiral(
         while accum_width < walk_width and accum_height < walk_height:
             # add a tile
             logger.trace(
-                "adding tile at %s:%s, %s:%s, %s:%s",
+                "adding tile at %s:%s, %s:%s, %s:%s, %s",
                 tile_left,
                 tile_top,
                 accum_width,

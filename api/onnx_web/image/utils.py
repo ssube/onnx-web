@@ -17,6 +17,7 @@ def expand_image(
     mask_filter=mask_filter_none,
 ):
     size = Size(*source.size).add_border(expand).round_to_tile()
+    size = tuple(size)
     origin = (expand.left, expand.top)
 
     full_source = Image.new("RGB", size, fill)
@@ -29,7 +30,7 @@ def expand_image(
 
     full_source = Image.composite(full_noise, full_source, full_mask.convert("L"))
 
-    return (full_source, full_mask, full_noise, (size.width, size.height))
+    return (full_source, full_mask, full_noise, size)
 
 
 def valid_image(
