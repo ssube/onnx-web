@@ -122,7 +122,7 @@ class VAEWrapper(object):
                 result_row.append(tile[:, :, :row_limit, :row_limit])
             result_rows.append(torch.cat(result_row, dim=3))
 
-        moments = torch.cat(result_rows, dim=2)
+        moments = torch.cat(result_rows, dim=2).numpy()
         if not return_dict:
             return (moments,)
 
