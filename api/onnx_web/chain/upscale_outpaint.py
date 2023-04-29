@@ -45,7 +45,7 @@ def upscale_outpaint(
         # if no mask was provided, keep the full source image
         stage_mask = Image.new("RGB", source.size, "black")
 
-    source, stage_mask, noise, full_dims = expand_image(
+    source, stage_mask, noise, full_size = expand_image(
         source,
         stage_mask,
         border,
@@ -53,10 +53,9 @@ def upscale_outpaint(
         noise_source=noise_source,
         mask_filter=mask_filter,
     )
+    full_latents = get_latents_from_seed(params.seed, full_size)
 
     draw_mask = ImageDraw.Draw(stage_mask)
-    full_size = Size(*full_dims).round_to_tile()
-    full_latents = get_latents_from_seed(params.seed, full_size)
 
     if is_debug():
         save_image(server, "last-source.png", source)

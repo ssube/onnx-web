@@ -16,23 +16,20 @@ def expand_image(
     noise_source=noise_source_histogram,
     mask_filter=mask_filter_none,
 ):
-    full_width = expand.left + source.width + expand.right
-    full_height = expand.top + source.height + expand.bottom
-
-    dims = (full_width, full_height)
+    size = Size(*source.size).add_border(expand).round_to_tile()
     origin = (expand.left, expand.top)
 
-    full_source = Image.new("RGB", dims, fill)
+    full_source = Image.new("RGB", size, fill)
     full_source.paste(source, origin)
 
     # new mask pixels need to be filled with white so they will be replaced
-    full_mask = mask_filter(mask, dims, origin, fill="white")
-    full_noise = noise_source(source, dims, origin, fill=fill)
+    full_mask = mask_filter(mask, size, origin, fill="white")
+    full_noise = noise_source(source, size, origin, fill=fill)
     full_noise = ImageChops.multiply(full_noise, full_mask)
 
     full_source = Image.composite(full_noise, full_source, full_mask.convert("L"))
 
-    return (full_source, full_mask, full_noise, (full_width, full_height))
+    return (full_source, full_mask, full_noise, (size.width, size.height))
 
 
 def valid_image(
