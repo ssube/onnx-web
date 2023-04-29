@@ -683,8 +683,17 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         else:
             batch_size = prompt_embeds.shape[0]
 
+        if strength < 0 or strength > 1:
+            raise ValueError(f"The value of strength should in [0.0, 1.0] but is {strength}")
+
         if generator is None:
             generator = np.random
+
+        # set timesteps
+        self.scheduler.set_timesteps(num_inference_steps)
+
+        # prep image
+        image = preprocess(image).cpu().numpy()
 
         # here `guidance_scale` is defined analog to the guidance weight `w` of equation (2)
         # of the Imagen paper: https://arxiv.org/pdf/2205.11487.pdf . `guidance_scale = 1`
@@ -702,20 +711,31 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # get the initial random noise unless the user supplied it
         latents_dtype = prompt_embeds.dtype
-
-        # set timesteps
-        self.scheduler.set_timesteps(num_inference_steps)
-
-        # prep image
-        image = preprocess(image).cpu().numpy()
         image = image.astype(latents_dtype)
 
         # encode the init image into latents and scale the latents
         latents = self.vae_encoder(sample=image)[0]
         latents = 0.18215 * latents
-        # latents = latents * np.float64(self.scheduler.init_noise_sigma)
 
-        # TODO: multiply latents by batch size
+        if isinstance(prompt, str):
+            prompt = [prompt]
+        if len(prompt) > latents.shape[0] and len(prompt) % latents.shape[0] == 0:
+            # expand init_latents for batch_size
+            deprecation_message = (
+                f"You have passed {len(prompt)} text prompts (`prompt`), but only {latents.shape[0]} initial"
+                " images (`image`). Initial images are now duplicating to match the number of text prompts. Note"
+                " that this behavior is deprecated and will be removed in a version 1.0.0. Please make sure to update"
+                " your script to pass as many initial images as text prompts to suppress this warning."
+            )
+            deprecate("len(prompt) != len(image)", "1.0.0", deprecation_message, standard_warn=False)
+            additional_image_per_prompt = len(prompt) // latents.shape[0]
+            latents = np.concatenate([latents] * additional_image_per_prompt * num_images_per_prompt, axis=0)
+        elif len(prompt) > latents.shape[0] and len(prompt) % latents.shape[0] != 0:
+            raise ValueError(
+                f"Cannot duplicate `image` of batch size {latents.shape[0]} to {len(prompt)} text prompts."
+            )
+        else:
+            latents = np.concatenate([latents] * num_images_per_prompt, axis=0)
 
         # get the original timestep using init_timestep
         offset = self.scheduler.config.get("steps_offset", 0)
@@ -744,6 +764,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         if accepts_eta:
             extra_step_kwargs["eta"] = eta
 
+        t_start = max(num_inference_steps - init_timestep + offset, 0)
+        timesteps = self.scheduler.timesteps[t_start:].numpy()
+
         timestep_dtype = next(
             (
                 input.type
@@ -759,7 +782,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         count = np.zeros_like(latents)
         value = np.zeros_like(latents)
 
-        for i, t in enumerate(self.progress_bar(self.scheduler.timesteps)):
+        for i, t in enumerate(self.progress_bar(timesteps)):
             count.fill(0)
             value.fill(0)
 
