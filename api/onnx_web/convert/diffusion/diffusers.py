@@ -41,7 +41,7 @@ logger = getLogger(__name__)
 available_pipelines = {
     "controlnet": StableDiffusionControlNetPipeline,
     "img2img": StableDiffusionPipeline,
-    "inpaint": StableDiffusionInpaintPipeline,
+    "inpaint": StableDiffusionPipeline,
     "lpw": StableDiffusionPipeline,
     "panorama": StableDiffusionPanoramaPipeline,
     "pix2pix": StableDiffusionInstructPix2PixPipeline,
@@ -229,6 +229,10 @@ def convert_diffusion_diffusers(
             return (False, dest_path)
 
     pipe_class = available_pipelines.get(pipe_type)
+    pipe_args = {}
+
+    if pipe_type == "inpaint":
+        pipe_args["num_in_channels"] = 9
 
     if path.exists(source) and path.isdir(source):
         logger.debug("loading pipeline from diffusers directory: %s", source)
@@ -242,6 +246,7 @@ def convert_diffusion_diffusers(
         pipeline = pipe_class.from_ckpt(
             source,
             torch_dtype=dtype,
+            **pipe_args,
         ).to(device)
     else:
         logger.warning("pipeline source not found or not recognized: %s", source)
