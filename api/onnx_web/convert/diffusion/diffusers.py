@@ -20,8 +20,12 @@ from diffusers import (
     AutoencoderKL,
     OnnxRuntimeModel,
     OnnxStableDiffusionPipeline,
+    StableDiffusionControlNetPipeline,
     StableDiffusionInpaintPipeline,
+    StableDiffusionInstructPix2PixPipeline,
+    StableDiffusionPanoramaPipeline,
     StableDiffusionPipeline,
+    StableDiffusionUpscalePipeline,
 )
 from onnx import load_model, save_model
 
@@ -33,6 +37,17 @@ from ...models.cnet import UNet2DConditionModel_CNet
 from ..utils import ConversionContext, is_torch_2_0, onnx_export
 
 logger = getLogger(__name__)
+
+available_pipelines = {
+    "controlnet": StableDiffusionControlNetPipeline,
+    "img2img": StableDiffusionPipeline,
+    "inpaint": StableDiffusionInpaintPipeline,
+    "lpw": StableDiffusionPipeline,
+    "panorama": StableDiffusionPanoramaPipeline,
+    "pix2pix": StableDiffusionInstructPix2PixPipeline,
+    "txt2img": StableDiffusionPipeline,
+    "upscale": StableDiffusionUpscalePipeline,
+}
 
 
 def convert_diffusion_diffusers_cnet(
@@ -184,7 +199,7 @@ def convert_diffusion_diffusers(
     source = source or model.get("source")
     single_vae = model.get("single_vae")
     replace_vae = model.get("vae")
-    pipe_type = model.get("pipeline", "image")
+    pipe_type = model.get("pipeline", "txt2img")
 
     device = conversion.training_device
     dtype = conversion.torch_dtype()
@@ -213,24 +228,28 @@ def convert_diffusion_diffusers(
             logger.info("ONNX model already exists, skipping")
             return (False, dest_path)
 
-    if pipe_type == "image":
-        pipeline = StableDiffusionPipeline.from_pretrained(
+    pipe_class = available_pipelines.get(pipe_type)
+
+    if path.exists(source) and path.isdir(source):
+        logger.debug("loading pipeline from diffusers directory: %s", source)
+        pipeline = pipe_class.from_pretrained(
             source,
             torch_dtype=dtype,
             use_auth_token=conversion.token,
         ).to(device)
-    elif pipe_type == "inpaint":
-        pipeline = StableDiffusionInpaintPipeline.from_pretrained(
+    elif path.exists(source) and path.isfile(source):
+        logger.debug("loading pipeline from SD checkpoint: %s", source)
+        pipeline = pipe_class.from_ckpt(
             source,
             torch_dtype=dtype,
-            use_auth_token=conversion.token,
         ).to(device)
     else:
-        raise ValueError(f"unknown pipeline type: {pipe_type}")
-
-    output_path = Path(dest_path)
+        logger.warning("pipeline source not found or not recognized: %s", source)
+        raise ValueError(f"pipeline source not found or not recognized: {source}")
 
     optimize_pipeline(conversion, pipeline)
+
+    output_path = Path(dest_path)
 
     # TEXT ENCODER
     num_tokens = pipeline.text_encoder.config.max_position_embeddings

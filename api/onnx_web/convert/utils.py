@@ -157,7 +157,6 @@ def tuple_to_upscaling(model: Union[ModelDict, LegacyModel]):
 
 
 model_formats = ["onnx", "pth", "ckpt", "safetensors"]
-model_formats_original = ["ckpt", "safetensors"]
 
 
 def source_format(model: Dict) -> Optional[str]:

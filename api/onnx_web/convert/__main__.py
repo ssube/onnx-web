@@ -17,7 +17,6 @@ from .correction.gfpgan import convert_correction_gfpgan
 from .diffusion.control import convert_diffusion_control
 from .diffusion.diffusers import convert_diffusion_diffusers
 from .diffusion.lora import blend_loras
-from .diffusion.original import convert_diffusion_original
 from .diffusion.textual_inversion import blend_textual_inversions
 from .upscaling.bsrgan import convert_upscaling_bsrgan
 from .upscaling.resrgan import convert_upscale_resrgan
@@ -25,7 +24,6 @@ from .upscaling.swinir import convert_upscaling_swinir
 from .utils import (
     ConversionContext,
     download_progress,
-    model_formats_original,
     remove_prefix,
     source_format,
     tuple_to_correction,
@@ -351,19 +349,11 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                         conversion, name, model["source"], format=model_format
                     )
 
-                    converted = False
-                    if model_format in model_formats_original:
-                        converted, dest = convert_diffusion_original(
-                            conversion,
-                            model,
-                            source,
-                        )
-                    else:
-                        converted, dest = convert_diffusion_diffusers(
-                            conversion,
-                            model,
-                            source,
-                        )
+                    converted, dest = convert_diffusion_diffusers(
+                        conversion,
+                        model,
+                        source,
+                    )
 
                     # make sure blending only happens once, not every run
                     if converted:
