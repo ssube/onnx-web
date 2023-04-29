@@ -16,8 +16,8 @@ LATENT_FACTOR = 8
 MAX_TOKENS_PER_GROUP = 77
 
 CLIP_TOKEN = compile(r"\<clip:([-\w]+):(\d+)\>")
-INVERSION_TOKEN = compile(r"\<inversion:([-\w]+):(-?[\.|\d]+)\>")
-LORA_TOKEN = compile(r"\<lora:([-\w]+):(-?[\.|\d]+)\>")
+INVERSION_TOKEN = compile(r"\<inversion:([^:\>]+):(-?[\.|\d]+)\>")
+LORA_TOKEN = compile(r"\<lora:([^:\>]+):(-?[\.|\d]+)\>")
 INTERVAL_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
 ALTERNATIVE_RANGE = compile(r"\(([^\)]+)\)")
 
