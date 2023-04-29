@@ -684,7 +684,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             batch_size = prompt_embeds.shape[0]
 
         if strength < 0 or strength > 1:
-            raise ValueError(f"The value of strength should in [0.0, 1.0] but is {strength}")
+            raise ValueError(
+                f"The value of strength should in [0.0, 1.0] but is {strength}"
+            )
 
         if generator is None:
             generator = np.random
@@ -727,9 +729,16 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 " that this behavior is deprecated and will be removed in a version 1.0.0. Please make sure to update"
                 " your script to pass as many initial images as text prompts to suppress this warning."
             )
-            deprecate("len(prompt) != len(image)", "1.0.0", deprecation_message, standard_warn=False)
+            deprecate(
+                "len(prompt) != len(image)",
+                "1.0.0",
+                deprecation_message,
+                standard_warn=False,
+            )
             additional_image_per_prompt = len(prompt) // latents.shape[0]
-            latents = np.concatenate([latents] * additional_image_per_prompt * num_images_per_prompt, axis=0)
+            latents = np.concatenate(
+                [latents] * additional_image_per_prompt * num_images_per_prompt, axis=0
+            )
         elif len(prompt) > latents.shape[0] and len(prompt) % latents.shape[0] != 0:
             raise ValueError(
                 f"Cannot duplicate `image` of batch size {latents.shape[0]} to {len(prompt)} text prompts."
