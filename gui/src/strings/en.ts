@@ -218,6 +218,7 @@ export const I18N_STRINGS_EN = {
         directml: 'DirectML',
         nvidia: 'Nvidia GPU',
         rocm: 'ROCm',
+        tensorrt: 'TensorRT',
       },
       setting: {
         connectServer: 'Connect',

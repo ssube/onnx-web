@@ -67,6 +67,7 @@ platform_providers = {
     "cuda": "CUDAExecutionProvider",
     "directml": "DmlExecutionProvider",
     "rocm": "ROCMExecutionProvider",
+    "tensorrt": "TensorRTExecutionProvider",
 }
 source_filters = {
     "canny": source_filter_canny,
