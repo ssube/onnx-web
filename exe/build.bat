@@ -2,21 +2,28 @@ REM activate venv
 ..\api\onnx_env\Scripts\Activate.bat
 
 REM build bundle
-pyinstaller win10.directml.dir.spec
+pyinstaller win10.directml.dir.spec --noconfirm
 
-REM add additional files
-xcopy \gfpgan \dist\server\gfpgan /t /e
-xcopy ..\api\gui \dist\client /t /e
-xcopy ..\api\schemas \dist\schemas /t /e
-xcopy ..\api\logging.yaml \dist\logging.yaml
-xcopy ..\api\params.json \dist\params.json
-xcopy ..\docs \dist\docs /t /e
-xcopy ..\models \dist\models /t /e
-xcopy ..\outputs \dist\outputs /t /e
+REM copy additional dirs
+xcopy .\gfpgan .\dist\server\gfpgan /s /e /f /i /y
+xcopy ..\api\gui .\dist\client /s /e /f /i /y
+xcopy ..\api\schemas .\dist\schemas /s /e /f /i /y
+xcopy ..\docs .\dist\docs /s /e /f /i /y
+xcopy ..\models .\dist\models /s /e /f /i /y
+xcopy ..\outputs .\dist\outputs /s /e /f /i /y
+
+REM copy loose files
+copy ..\api\logging.yaml .\dist\logging.yaml /y
+copy ..\api\params.json .\dist\params.json /y
+
+REM set version number
+set BUNDLE_TYPE=rc
+set BUNDLE_VERSION=0.10.0
 
 REM get commit info
 git rev-parse HEAD > commit.txt
 set /p GIT_SHA=<commit.txt
+set GIT_HEAD=%GIT_SHA:~0,8%
 
 REM create archive
-7za a ..\dist\onnx-web-v0.10.0-rc-%GIT_SHA%.zip "\dist\*"
+"C:\Program Files\7-Zip\7z.exe" a ..\dist\onnx-web-v%BUNDLE_VERSION%-%BUNDLE_TYPE%-%GIT_HEAD%.zip ".\dist\*"
