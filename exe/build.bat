@@ -13,6 +13,8 @@ xcopy ..\models .\dist\models /s /e /f /i /y
 xcopy ..\outputs .\dist\outputs /s /e /f /i /y
 
 REM copy loose files
+copy ".\onnx-web-*" .\dist\ \y
+copy .\README.txt .\dist\README.txt
 copy ..\api\logging.yaml .\dist\logging.yaml /y
 copy ..\api\params.json .\dist\params.json /y
 
