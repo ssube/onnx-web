@@ -421,7 +421,6 @@ def run_img2img_pipeline(
             progress,
             inversions,
             loras,
-            pipeline=pipe,
         )
 
         image = run_highres(
@@ -435,7 +434,6 @@ def run_img2img_pipeline(
             progress,
             inversions,
             loras,
-            pipeline=pipe,
         )
 
         image = run_upscale_correction(
