@@ -262,6 +262,8 @@ def fetch_model(
 
 
 def convert_models(conversion: ConversionContext, args, models: Models):
+    model_errors = []
+
     if args.sources and "sources" in models:
         for model in models.get("sources"):
             model = tuple_to_source(model)
@@ -284,6 +286,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                     logger.info("finished downloading source: %s -> %s", source, dest)
                 except Exception:
                     logger.exception("error fetching source %s", name)
+                    model_errors.append(name)
 
     if args.networks and "networks" in models:
         for network in models.get("networks"):
@@ -333,6 +336,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                     logger.info("finished downloading network: %s -> %s", source, dest)
                 except Exception:
                     logger.exception("error fetching network %s", name)
+                    model_errors.append(name)
 
     if args.diffusion and "diffusion" in models:
         for model in models.get("diffusion"):
@@ -471,6 +475,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                         "error converting diffusion model %s",
                         name,
                     )
+                    model_errors.append(name)
 
     if args.upscaling and "upscaling" in models:
         for model in models.get("upscaling"):
@@ -497,11 +502,13 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                         logger.error(
                             "unknown upscaling model type %s for %s", model_type, name
                         )
+                        model_errors.append(name)
                 except Exception:
                     logger.exception(
                         "error converting upscaling model %s",
                         name,
                     )
+                    model_errors.append(name)
 
     if args.correction and "correction" in models:
         for model in models.get("correction"):
@@ -523,11 +530,16 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                         logger.error(
                             "unknown correction model type %s for %s", model_type, name
                         )
+                        model_errors.append(name)
                 except Exception:
                     logger.exception(
                         "error converting correction model %s",
                         name,
                     )
+                    model_errors.append(name)
+
+    if len(model_errors) > 0:
+        logger.error("error while converting models: %s", model_errors)
 
 
 def main() -> int:
