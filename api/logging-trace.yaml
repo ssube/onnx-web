@@ -1,0 +1,18 @@
+version: 1
+formatters:
+  simple:
+    format: '[%(asctime)s] %(levelname)s: %(process)s %(thread)s %(name)s: %(message)s'
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: TRACE
+    formatter: simple
+    stream: ext://sys.stdout
+loggers:
+  '':
+    level: TRACE
+    handlers: [console]
+    propagate: True
+root:
+  level: TRACE
+  handlers: [console]
