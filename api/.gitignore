@@ -1,5 +1,6 @@
 .coverage
 coverage.xml
+entry.py
 
 *.log
 *.swp
