@@ -309,13 +309,12 @@ def convert_diffusion_diffusers(
         ).to(device)
     elif path.exists(source) and path.isfile(source):
         logger.debug("loading pipeline from SD checkpoint: %s", source)
-        pipe_ctor = partial(pipe_class, torch_dtype=dtype)
         pipeline = download_from_original_stable_diffusion_ckpt(
             source,
             original_config_file=config_path,
-            pipeline_class=pipe_ctor,
+            pipeline_class=pipe_class,
             **pipe_args,
-        ).to(device)
+        ).to(device, torch_dtype=dtype)
     else:
         logger.warning("pipeline source not found or not recognized: %s", source)
         raise ValueError(f"pipeline source not found or not recognized: {source}")
