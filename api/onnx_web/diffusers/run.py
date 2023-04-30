@@ -49,7 +49,9 @@ def run_loopback(
     # load img2img pipeline once
     pipe_type = params.get_valid_pipeline("img2img")
     if pipe_type == "controlnet":
-        logger.debug("controlnet pipeline cannot be used for loopback, switching to img2img")
+        logger.debug(
+            "controlnet pipeline cannot be used for loopback, switching to img2img"
+        )
         pipe_type = "img2img"
 
     logger.debug("using %s pipeline for loopback", pipe_type)
