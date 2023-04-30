@@ -268,6 +268,9 @@ def load_tensor(name: str, map_location=None) -> Optional[Dict]:
         except Exception as e:
             logger.warning("error loading tensor: %s", e)
 
+    if checkpoint is None:
+        raise ValueError("error loading tensor")
+
     if checkpoint is not None and "state_dict" in checkpoint:
         checkpoint = checkpoint["state_dict"]
 
