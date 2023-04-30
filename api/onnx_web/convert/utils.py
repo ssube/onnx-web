@@ -306,9 +306,9 @@ def onnx_export(
         opset_version=opset,
     )
 
-    op_block_list=None
+    op_block_list = None
     if v2:
-        op_block_list=["Attention", "MultiHeadAttention"]
+        op_block_list = ["Attention", "MultiHeadAttention"]
 
     if half:
         logger.info("converting model to fp16 internally: %s", output_file)

@@ -6,7 +6,6 @@ import torch
 from PIL import Image
 
 from ..chain import blend_mask, upscale_outpaint
-from ..chain.base import ChainProgress
 from ..chain.utils import process_tile_order
 from ..output import save_image, save_params
 from ..params import (
@@ -77,7 +76,7 @@ def run_loopback(
                 num_inference_steps=params.steps,
                 strength=strength,
                 eta=params.eta,
-                callback=loopback_progress,
+                callback=progress,
             )
             return result.images[0]
         else:
@@ -92,7 +91,7 @@ def run_loopback(
                 num_inference_steps=params.steps,
                 strength=strength,
                 eta=params.eta,
-                callback=loopback_progress,
+                callback=progress,
             )
             return result.images[0]
 
@@ -132,7 +131,7 @@ def run_highres(
                 scale=1,
                 outscale=1,
             ),
-            callback=highres_progress,
+            callback=progress,
         )
 
     # load img2img pipeline once
@@ -173,7 +172,7 @@ def run_highres(
                     scale=highres.scale,
                     outscale=highres.scale,
                 ),
-                callback=highres_progress,
+                callback=progress,
             )
 
         if pipe_type == "lpw":
@@ -188,7 +187,7 @@ def run_highres(
                 num_inference_steps=highres.steps,
                 strength=highres.strength,
                 eta=params.eta,
-                callback=highres_progress,
+                callback=progress,
             )
             return result.images[0]
         else:
@@ -203,7 +202,7 @@ def run_highres(
                 num_inference_steps=highres.steps,
                 strength=highres.strength,
                 eta=params.eta,
-                callback=highres_progress,
+                callback=progress,
             )
             return result.images[0]
 
