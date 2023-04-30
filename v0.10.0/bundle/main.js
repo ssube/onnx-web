@@ -43521,6 +43521,9 @@
   }
   __name(appendUpscaleToURL, "appendUpscaleToURL");
   function appendHighresToURL(url, highres) {
+    if (highres.tiledVAE) {
+      url.searchParams.append("tiledVAE", String(highres.tiledVAE));
+    }
     if (highres.enabled) {
       url.searchParams.append("highresIterations", highres.highresIterations.toFixed(FIXED_INTEGER));
       url.searchParams.append("highresMethod", highres.highresMethod);
@@ -69915,7 +69918,8 @@ Please use another name.` : formatMuiErrorMessage(18));
         highresMethod: "",
         highresSteps: server.highresSteps.default,
         highresScale: server.highresScale.default,
-        highresStrength: server.highresStrength.default
+        highresStrength: server.highresStrength.default,
+        tiledVAE: server.tiledVAE.default
       },
       setHighres(params) {
         set((prev2) => ({
@@ -69930,7 +69934,8 @@ Please use another name.` : formatMuiErrorMessage(18));
             highresMethod: "",
             highresSteps: server.highresSteps.default,
             highresScale: server.highresScale.default,
-            highresStrength: server.highresStrength.default
+            highresStrength: server.highresStrength.default,
+            tiledVAE: server.tiledVAE.default
           }
         });
       }
@@ -71837,6 +71842,11 @@ Please use another name.` : formatMuiErrorMessage(18));
     return React131.createElement(
       Stack_default2,
       { direction: "row", spacing: 4 },
+      React131.createElement(FormControlLabel_default, { label: t2("parameter.tiledVAE"), control: React131.createElement(Checkbox_default, { checked: highres.tiledVAE, value: "check", onChange: (event) => {
+        setHighres({
+          tiledVAE: highres.tiledVAE === false
+        });
+      } }) }),
       React131.createElement(FormControlLabel_default, { label: t2("parameter.highres.label"), control: React131.createElement(Checkbox_default, { checked: highres.enabled, value: "check", onChange: (event) => {
         setHighres({
           enabled: highres.enabled === false
@@ -71861,7 +71871,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         FormControl_default,
         null,
         React131.createElement(InputLabel_default, { id: "highres-method" }, t2("parameter.highres.method")),
-        React131.createElement(Select_default, { labelId: "highres-method", label: t2("parameter.highres.method"), value: highres.highresMethod, onChange: (e2) => {
+        React131.createElement(Select_default, { disabled: highres.enabled === false, labelId: "highres-method", label: t2("parameter.highres.method"), value: highres.highresMethod, onChange: (e2) => {
           setHighres({
             highresMethod: e2.target.value
           });
@@ -72511,6 +72521,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           sourceFilter: "",
           steps: "Schritte",
           strength: "St\xE4rke",
+          tiledVAE: "",
           tileOrder: "",
           upscale: {
             label: "",
@@ -72532,9 +72543,11 @@ Please use another name.` : formatMuiErrorMessage(18));
           img2img: "",
           inpaint: "",
           lpw: "",
+          panorama: "",
           pix2pix: "",
           txt2img: "",
-          txt2txt: ""
+          txt2txt: "",
+          upscale: ""
         },
         setting: {
           connectServer: "verbinden zum Server",
@@ -72778,6 +72791,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           sourceFilter: "Source Filter",
           steps: "Steps",
           strength: "Strength",
+          tiledVAE: "Tiled VAE",
           tileOrder: "Tile Order",
           upscale: {
             label: "Upscale",
@@ -72799,9 +72813,11 @@ Please use another name.` : formatMuiErrorMessage(18));
           img2img: "Img2Img",
           inpaint: "Inpaint",
           lpw: "Long Prompt Weighting",
+          panorama: "Panorama",
           pix2pix: "Instruct Pix2Pix",
           txt2img: "Txt2Img",
-          txt2txt: "Txt2Txt"
+          txt2txt: "Txt2Txt",
+          upscale: "Upscale"
         },
         platform: {
           amd: "AMD GPU",
@@ -72811,7 +72827,8 @@ Please use another name.` : formatMuiErrorMessage(18));
           cuda: "CUDA",
           directml: "DirectML",
           nvidia: "Nvidia GPU",
-          rocm: "ROCm"
+          rocm: "ROCm",
+          tensorrt: "TensorRT"
         },
         setting: {
           connectServer: "Connect",
@@ -73015,6 +73032,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           sourceFilter: "",
           steps: "Pasos",
           strength: "Fuerza",
+          tiledVAE: "",
           tileOrder: "Orden de secciones",
           upscale: {
             label: "Aumento",
@@ -73036,9 +73054,11 @@ Please use another name.` : formatMuiErrorMessage(18));
           img2img: "",
           inpaint: "",
           lpw: "",
+          panorama: "",
           pix2pix: "",
           txt2img: "",
-          txt2txt: ""
+          txt2txt: "",
+          upscale: ""
         },
         setting: {
           connectServer: "Conectar al servidor",
@@ -73225,6 +73245,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           sourceFilter: "",
           steps: "",
           strength: "",
+          tiledVAE: "",
           tileOrder: "",
           upscale: {
             label: "",
@@ -73246,9 +73267,11 @@ Please use another name.` : formatMuiErrorMessage(18));
           img2img: "",
           inpaint: "",
           lpw: "",
+          panorama: "",
           pix2pix: "",
           txt2img: "",
-          txt2txt: ""
+          txt2txt: "",
+          upscale: ""
         },
         setting: {
           connectServer: "",
