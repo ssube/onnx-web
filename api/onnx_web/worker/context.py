@@ -4,7 +4,6 @@ from typing import Any, Callable, Optional
 
 from torch.multiprocessing import Queue, Value
 
-from ..chain.base import ChainProgress
 from ..params import DeviceParams
 from .command import JobCommand, ProgressCommand
 
@@ -77,6 +76,8 @@ class WorkerContext:
         return 0
 
     def get_progress_callback(self) -> ProgressCallback:
+        from ..chain.base import ChainProgress
+
         def on_progress(step: int, timestep: int, latents: Any):
             on_progress.step = step
             self.set_progress(step)
