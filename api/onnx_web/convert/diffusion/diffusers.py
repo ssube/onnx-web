@@ -208,7 +208,7 @@ def convert_diffusion_diffusers(
     dtype = conversion.torch_dtype()
     logger.debug("using Torch dtype %s for pipeline", dtype)
 
-    config_path = path.join(conversion.model_path, "config", pipe_config)
+    config_path = None if pipe_config is None else path.join(conversion.model_path, "config", pipe_config)
     dest_path = path.join(conversion.model_path, name)
     model_index = path.join(dest_path, "model_index.json")
     model_cnet = path.join(dest_path, "cnet", ONNX_MODEL)
