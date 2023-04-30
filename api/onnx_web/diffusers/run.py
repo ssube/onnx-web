@@ -44,8 +44,6 @@ def run_loopback(
     if params.loopback == 0:
         return image
 
-    loopback_progress = ChainProgress.from_progress(progress)
-
     # load img2img pipeline once
     pipe_type = params.get_valid_pipeline("img2img")
     if pipe_type == "controlnet":
@@ -119,8 +117,6 @@ def run_highres(
 ) -> Image.Image:
     if highres.scale <= 1:
         return image
-
-    highres_progress = ChainProgress.from_progress(progress)
 
     if upscale.faces and (
         upscale.upscale_order == "correction-both"
@@ -477,9 +473,6 @@ def run_inpaint_pipeline(
     stage = StageParams(tile_order=tile_order)
 
     _prompt_pairs, loras, inversions = parse_prompt(params)
-
-    # calling the upscale_outpaint stage directly needs accumulating progress
-    progress = ChainProgress.from_progress(progress)
 
     logger.debug("applying mask filter and generating noise source")
     image = upscale_outpaint(

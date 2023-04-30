@@ -4,6 +4,7 @@ from typing import Any, Callable, Optional
 
 from torch.multiprocessing import Queue, Value
 
+from ..chain.base import ChainProgress
 from ..params import DeviceParams
 from .command import JobCommand, ProgressCommand
 
@@ -80,7 +81,7 @@ class WorkerContext:
             on_progress.step = step
             self.set_progress(step)
 
-        return on_progress
+        return ChainProgress.from_progress(on_progress)
 
     def set_cancel(self, cancel: bool = True) -> None:
         with self.cancel.get_lock():
