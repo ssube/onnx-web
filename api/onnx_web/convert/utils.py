@@ -287,6 +287,7 @@ def onnx_export(
     opset,
     half=False,
     external_data=False,
+    v2=False,
 ):
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
@@ -305,6 +306,10 @@ def onnx_export(
         opset_version=opset,
     )
 
+    op_block_list=None
+    if v2:
+        op_block_list=["Attention", "MultiHeadAttention"]
+
     if half:
         logger.info("converting model to fp16 internally: %s", output_file)
         infer_shapes_path(output_file)
@@ -312,8 +317,9 @@ def onnx_export(
         opt_model = convert_float_to_float16(
             base_model,
             disable_shape_infer=True,
-            keep_io_types=True,
             force_fp16_initializers=True,
+            keep_io_types=True,
+            op_block_list=op_block_list,
         )
         save_model(
             opt_model,

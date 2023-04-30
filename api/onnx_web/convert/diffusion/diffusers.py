@@ -110,6 +110,7 @@ def convert_diffusion_diffusers_cnet(
     num_tokens,
     text_hidden_size,
     unet: Optional[Any] = None,
+    v2: Optional[bool] = False,
 ):
     # CNet
     if unet is not None:
@@ -218,6 +219,7 @@ def convert_diffusion_diffusers_cnet(
         opset=conversion.opset,
         half=conversion.half,
         external_data=True,  # UNet is > 2GB, so the weights need to be split
+        v2=v2,
     )
     cnet_model_path = str(cnet_path.absolute().as_posix())
     cnet_dir = path.dirname(cnet_model_path)
@@ -289,7 +291,7 @@ def convert_diffusion_diffusers(
             return (False, dest_path)
 
     pipe_class = available_pipelines.get(pipe_type)
-    _v2, pipe_args = get_model_version(
+    v2, pipe_args = get_model_version(
         source, conversion.map_location, size=image_size, version=version
     )
 
@@ -397,6 +399,7 @@ def convert_diffusion_diffusers(
             opset=conversion.opset,
             half=conversion.half,
             external_data=True,
+            v2=v2,
         )
         unet_model_path = str(unet_path.absolute().as_posix())
         unet_dir = path.dirname(unet_model_path)
@@ -429,6 +432,7 @@ def convert_diffusion_diffusers(
             num_tokens,
             text_hidden_size,
             unet=pipeline.unet,
+            v2=v2,
         )
     else:
         logger.debug("skipping CNet for single-VAE model")
