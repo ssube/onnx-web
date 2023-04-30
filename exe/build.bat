@@ -16,7 +16,8 @@ xcopy ..\models .\dist\models /s /e /f /i /y
 xcopy ..\outputs .\dist\outputs /s /e /f /i /y
 
 REM copy loose files
-copy ".\onnx-web-*" .\dist\ \y
+copy .\onnx-web-full.bat .\dist\onnx-web-full.bat \y
+copy .\onnx-web-half.bat .\dist\onnx-web-half.bat \y
 copy .\README.txt .\dist\README.txt
 copy ..\api\logging.yaml .\dist\logging.yaml /y
 copy ..\api\params.json .\dist\params.json /y
@@ -31,4 +32,4 @@ set /p GIT_SHA=<commit.txt
 set GIT_HEAD=%GIT_SHA:~0,8%
 
 REM create archive
-"C:\Program Files\7-Zip\7z.exe" a ..\dist\onnx-web-v%BUNDLE_VERSION%-%BUNDLE_TYPE%-%GIT_HEAD%.zip ".\dist\*"
+"C:\Program Files\7-Zip\7z.exe" a .\dist\onnx-web-v%BUNDLE_VERSION%-%BUNDLE_TYPE%-%GIT_HEAD%.zip ".\dist\*"

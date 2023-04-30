@@ -56,7 +56,13 @@ a = Analysis(
         *metadatas,
         *datas,
     ],
-    hiddenimports=['coloredlogs', 'onnxruntime', 'onnxruntime-directml', 'tqdm'],
+    hiddenimports=[
+        'coloredlogs',
+        'onnxruntime',
+        'onnxruntime-directml',
+        'pytorch_lightning',
+        'tqdm'
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
