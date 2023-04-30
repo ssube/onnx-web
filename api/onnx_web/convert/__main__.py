@@ -357,6 +357,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                         conversion,
                         model,
                         source,
+                        model_format,
                     )
 
                     # make sure blending only happens once, not every run

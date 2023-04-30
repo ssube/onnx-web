@@ -9,6 +9,7 @@
 #   https://github.com/huggingface/diffusers/blob/main/LICENSE
 ###
 
+from functools import partial
 from logging import getLogger
 from os import mkdir, path
 from pathlib import Path
@@ -54,8 +55,8 @@ available_pipelines = {
 def get_model_version(
     source,
     map_location,
-    size = None,
-    version = None,
+    size=None,
+    version=None,
 ) -> Tuple[bool, Dict[str, Union[bool, int, str]]]:
     v2 = version is not None and "v2" in version
     opts = {
@@ -78,9 +79,7 @@ def get_model_version(
 
         opts["image_size"] = size
 
-        key_name = (
-            "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.attn2.to_k.weight"
-        )
+        key_name = "model.diffusion_model.input_blocks.2.1.transformer_blocks.0.attn2.to_k.weight"
         if key_name in checkpoint and checkpoint[key_name].shape[-1] == 1024:
             v2 = True
             if size != 512:
@@ -246,6 +245,7 @@ def convert_diffusion_diffusers(
     conversion: ConversionContext,
     model: Dict,
     source: str,
+    format: str,
 ) -> Tuple[bool, str]:
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
@@ -290,10 +290,15 @@ def convert_diffusion_diffusers(
             return (False, dest_path)
 
     pipe_class = available_pipelines.get(pipe_type)
-    v2, pipe_args = get_model_version(source, conversion.map_location, size=image_size, version=version)
+    _v2, pipe_args = get_model_version(
+        source, conversion.map_location, size=image_size, version=version
+    )
 
     if pipe_type == "inpaint":
         pipe_args["num_in_channels"] = 9
+
+    if format == "safetensors":
+        pipe_args["from_safetensors"] = True
 
     if path.exists(source) and path.isdir(source):
         logger.debug("loading pipeline from diffusers directory: %s", source)
@@ -304,13 +309,13 @@ def convert_diffusion_diffusers(
         ).to(device)
     elif path.exists(source) and path.isfile(source):
         logger.debug("loading pipeline from SD checkpoint: %s", source)
+        pipe_ctor = partial(pipe_class, torch_dtype=dtype)
         pipeline = download_from_original_stable_diffusion_ckpt(
             source,
             original_config_file=config_path,
-            pipeline_class=pipe_class,
-            torch_dtype=dtype,
+            pipeline_class=pipe_ctor,
             **pipe_args,
-        ).to(device, torch_dtype=dtype)
+        ).to(device)
     else:
         logger.warning("pipeline source not found or not recognized: %s", source)
         raise ValueError(f"pipeline source not found or not recognized: {source}")
