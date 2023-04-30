@@ -9,7 +9,6 @@
 #   https://github.com/huggingface/diffusers/blob/main/LICENSE
 ###
 
-from functools import partial
 from logging import getLogger
 from os import mkdir, path
 from pathlib import Path
@@ -93,7 +92,7 @@ def get_model_version(
         else:
             opts["model_type"] = "FrozenCLIPEmbedder"
             opts["prediction_type"] = "epsilon"
-    except:
+    except Exception:
         logger.debug("unable to load tensor for version check")
         pass
 
