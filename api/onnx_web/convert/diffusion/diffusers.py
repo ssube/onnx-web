@@ -69,7 +69,7 @@ def get_model_version(
         if "global_step" in checkpoint:
             global_step = checkpoint["global_step"]
         else:
-            print("global_step key not found in model")
+            logger.trace("global_step key not found in model")
             global_step = None
 
         if size is None:
@@ -84,7 +84,7 @@ def get_model_version(
             v2 = True
             if size != 512:
                 # v2.1 needs to upcast attention
-                logger.debug("setting upcast_attention")
+                logger.trace("setting upcast_attention")
                 opts["upcast_attention"] = True
 
         if v2 and size != 512:
