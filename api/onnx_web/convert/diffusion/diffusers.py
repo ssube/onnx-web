@@ -202,11 +202,13 @@ def convert_diffusion_diffusers(
     single_vae = model.get("single_vae")
     replace_vae = model.get("vae")
     pipe_type = model.get("pipeline", "txt2img")
+    pipe_config = model.get("config", None)
 
     device = conversion.training_device
     dtype = conversion.torch_dtype()
     logger.debug("using Torch dtype %s for pipeline", dtype)
 
+    config_path = path.join(conversion.model_path, "config", pipe_config)
     dest_path = path.join(conversion.model_path, name)
     model_index = path.join(dest_path, "model_index.json")
     model_cnet = path.join(dest_path, "cnet", ONNX_MODEL)
@@ -247,6 +249,7 @@ def convert_diffusion_diffusers(
         logger.debug("loading pipeline from SD checkpoint: %s", source)
         pipeline = pipe_class.from_ckpt(
             source,
+            original_config_file=config_path,
             torch_dtype=dtype,
             **pipe_args,
         ).to(device)
