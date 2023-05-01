@@ -91,8 +91,14 @@ $defs:
           pipeline:
             type: string
             enum: [
-              image,
-              inpaint
+              controlnet,
+              img2img,
+              inpaint,
+              lpw,
+              panorama,
+              pix2pix,
+              txt2img,
+              upscale,
             ]
           vae:
             type: string
