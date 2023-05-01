@@ -79,7 +79,7 @@ def upscale_outpaint(
             save_image(server, "tile-mask.png", tile_mask)
 
         latents = get_tile_latents(full_latents, dims)
-        pipe_type = "lpw" if params.lpw() else "inpaint"
+        pipe_type = params.get_valid_pipeline("inpaint", params.pipeline)
         pipe = load_pipeline(
             server,
             pipe_type,
