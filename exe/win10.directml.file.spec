@@ -20,6 +20,7 @@ dynamic_packages = [
     "tokenizers",
     "tqdm",
     "omegaconf",
+    "win10toast",
 ]
 metadatas = [copy_metadata(pkg) for pkg in dynamic_packages]
 metadatas = sum(metadatas, [])
@@ -58,12 +59,13 @@ a = Analysis(
         *datas,
     ],
     hiddenimports=[
-        'coloredlogs',
-        'omegaconf',
-        'onnxruntime',
-        'onnxruntime-directml',
-        'pytorch_lightning',
-        'tqdm'
+        "coloredlogs",
+        "omegaconf",
+        "onnxruntime",
+        "onnxruntime-directml",
+        "pytorch_lightning",
+        "tqdm",
+        "win10toast",
     ],
     hookspath=[],
     hooksconfig={},
