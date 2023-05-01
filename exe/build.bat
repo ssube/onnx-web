@@ -1,6 +1,3 @@
-REM activate venv
-..\api\onnx_env\Scripts\Activate.bat
-
 REM copy entry script
 copy .\entry.py ..\api\entry.py
 
