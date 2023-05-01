@@ -239,7 +239,7 @@ class ImageParams:
             if pipeline in ["controlnet", "lpw", "panorama", "pix2pix"]:
                 return pipeline
         elif group == "inpaint":
-            if pipeline in ["controlnet"]:
+            if pipeline in ["controlnet", "panorama"]:
                 return pipeline
         elif group == "txt2img":
             if pipeline in ["panorama"]:
