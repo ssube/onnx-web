@@ -19,6 +19,7 @@ dynamic_packages = [
     "requests",
     "tokenizers",
     "tqdm",
+    "omegaconf",
 ]
 metadatas = [copy_metadata(pkg) for pkg in dynamic_packages]
 metadatas = sum(metadatas, [])
