@@ -58,6 +58,7 @@ a = Analysis(
     ],
     hiddenimports=[
         'coloredlogs',
+        'omegaconf',
         'onnxruntime',
         'onnxruntime-directml',
         'pytorch_lightning',
