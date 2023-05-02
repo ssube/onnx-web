@@ -64,9 +64,8 @@ def blend_inpaint(
         server,
         params,
         pipe_type,
-        params.model,
-        params.scheduler,
         job.get_device(),
+        # TODO: add LoRAs and TIs
     )
 
     def outpaint(tile_source: Image.Image, dims: Tuple[int, int, int]):

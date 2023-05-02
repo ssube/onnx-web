@@ -39,9 +39,8 @@ def upscale_stable_diffusion(
         server,
         params,
         "upscale",
-        path.join(server.model_path, upscale.upscale_model),
-        params.scheduler,
         job.get_device(),
+        model=path.join(server.model_path, upscale.upscale_model),
     )
     generator = torch.manual_seed(params.seed)
 

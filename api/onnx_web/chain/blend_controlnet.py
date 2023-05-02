@@ -33,10 +33,7 @@ def blend_controlnet(
         server,
         params,
         "controlnet",
-        params.model,
-        params.scheduler,
         job.get_device(),
-        control=None,  # TODO: needs to have a ControlNet
     )
 
     rng = np.random.RandomState(params.seed)

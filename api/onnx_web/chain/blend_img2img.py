@@ -35,9 +35,8 @@ def blend_img2img(
         server,
         params,
         pipe_type,
-        params.model,
-        params.scheduler,
         job.get_device(),
+        # TODO: add LoRAs and TIs
     )
     if params.lpw():
         logger.debug("using LPW pipeline for img2img")

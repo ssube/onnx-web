@@ -42,9 +42,8 @@ def source_txt2img(
         server,
         params,
         pipe_type,
-        params.model,
-        params.scheduler,
         job.get_device(),
+        # TODO: add LoRAs and TIs
     )
 
     if params.lpw():

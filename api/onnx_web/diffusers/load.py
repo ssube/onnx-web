@@ -97,10 +97,11 @@ def load_pipeline(
     device: DeviceParams,
     inversions: Optional[List[Tuple[str, float]]] = None,
     loras: Optional[List[Tuple[str, float]]] = None,
+    model: Optional[str] = None,
 ):
     inversions = inversions or []
     loras = loras or []
-    model = params.model
+    model = model or params.model
 
     torch_dtype = server.torch_dtype()
     logger.debug("using Torch dtype %s for pipeline", torch_dtype)

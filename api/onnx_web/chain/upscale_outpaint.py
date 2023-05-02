@@ -84,9 +84,8 @@ def upscale_outpaint(
             server,
             params,
             pipe_type,
-            params.model,
-            params.scheduler,
             job.get_device(),
+            # TODO: load LoRAs and TIs
         )
         if params.lpw():
             logger.debug("using LPW pipeline for inpaint")
