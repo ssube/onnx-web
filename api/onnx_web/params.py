@@ -261,7 +261,7 @@ class ImageParams:
         return self.pipeline == "lpw"
 
     def stride(self):
-        return int(self.tiles * self.stride)
+        return int(self.tiles * self.overlap)
 
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {

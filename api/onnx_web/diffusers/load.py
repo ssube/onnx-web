@@ -321,8 +321,8 @@ def load_pipeline(
 
         # additional options for panorama pipeline
         if pipeline == "panorama":
-            components["window"] = params.tiles
-            components["stride"] = params.stride()
+            components["window"] = params.tiles // 8
+            components["stride"] = params.stride() // 8
 
         pipeline_class = available_pipelines.get(pipeline, OnnxStableDiffusionPipeline)
         logger.debug("loading pretrained SD pipeline for %s", pipeline_class.__name__)
