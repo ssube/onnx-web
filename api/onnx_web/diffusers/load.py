@@ -125,6 +125,12 @@ def load_pipeline(
         logger.debug("reusing existing diffusion pipeline")
         pipe = cache_pipe
 
+        # update panorama params
+        if pipeline == "panorama":
+            cache_pipe.window = params.tiles // 8
+            cache_pipe.stride = params.stride() // 8
+
+        # update scheduler
         cache_scheduler = server.cache.get("scheduler", scheduler_key)
         if cache_scheduler is None:
             logger.debug("loading new diffusion scheduler")
