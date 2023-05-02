@@ -18,18 +18,6 @@ export function HighresControl() {
 
   return <Stack direction='row' spacing={4}>
     <FormControlLabel
-      label={t('parameter.tiledVAE')}
-      control={<Checkbox
-        checked={highres.tiledVAE}
-        value='check'
-        onChange={(event) => {
-          setHighres({
-            tiledVAE: highres.tiledVAE === false,
-          });
-        }}
-      />}
-    />
-    <FormControlLabel
       label={t('parameter.highres.label')}
       control={<Checkbox
         checked={highres.enabled}

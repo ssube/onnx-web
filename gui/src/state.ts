@@ -217,6 +217,9 @@ export function baseParamsFromServer(defaults: ServerParams): Required<BaseImgPa
     scheduler: defaults.scheduler.default,
     steps: defaults.steps.default,
     seed: defaults.seed.default,
+    tiledVAE: defaults.tiledVAE.default,
+    tiles: defaults.tiles.default,
+    overlap: defaults.overlap.default,
   };
 }
 
@@ -447,7 +450,6 @@ export function createStateSlices(server: ServerParams) {
       highresSteps: server.highresSteps.default,
       highresScale: server.highresScale.default,
       highresStrength: server.highresStrength.default,
-      tiledVAE: server.tiledVAE.default,
     },
     setHighres(params) {
       set((prev) => ({
@@ -466,7 +468,6 @@ export function createStateSlices(server: ServerParams) {
           highresSteps: server.highresSteps.default,
           highresScale: server.highresScale.default,
           highresStrength: server.highresStrength.default,
-          tiledVAE: server.tiledVAE.default,
         },
       });
     },
@@ -537,7 +538,7 @@ export function createStateSlices(server: ServerParams) {
   const createResetSlice: Slice<ResetSlice> = (set) => ({
     resetAll() {
       set((prev) => {
-        const next = {...prev};
+        const next = { ...prev };
         next.resetImg2Img();
         next.resetInpaint();
         next.resetTxt2Img();

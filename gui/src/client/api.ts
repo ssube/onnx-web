@@ -48,6 +48,10 @@ export interface BaseImgParams {
   negativePrompt?: string;
 
   batch: number;
+  tiledVAE: boolean;
+  tiles: number;
+  overlap: number;
+
   cfg: number;
   steps: number;
   seed: number;
@@ -160,8 +164,6 @@ export interface HighresParams {
   highresScale: number;
   highresSteps: number;
   highresStrength: number;
-
-  tiledVAE: boolean;
 }
 
 /**
@@ -404,6 +406,9 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
   url.searchParams.append('cfg', params.cfg.toFixed(FIXED_FLOAT));
   url.searchParams.append('eta', params.eta.toFixed(FIXED_FLOAT));
   url.searchParams.append('steps', params.steps.toFixed(FIXED_INTEGER));
+  url.searchParams.append('tiledVAE', String(params.tiledVAE));
+  url.searchParams.append('tiles', params.tiles.toFixed(FIXED_INTEGER));
+  url.searchParams.append('overlap', params.overlap.toFixed(FIXED_FLOAT));
 
   if (doesExist(params.scheduler)) {
     url.searchParams.append('scheduler', params.scheduler);
@@ -455,10 +460,6 @@ export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
 }
 
 export function appendHighresToURL(url: URL, highres: HighresParams) {
-  if (highres.tiledVAE) {
-    url.searchParams.append('tiledVAE', String(highres.tiledVAE));
-  }
-
   if (highres.enabled) {
     url.searchParams.append('highresIterations', highres.highresIterations.toFixed(FIXED_INTEGER));
     url.searchParams.append('highresMethod', highres.highresMethod);

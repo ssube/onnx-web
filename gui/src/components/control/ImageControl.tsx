@@ -1,6 +1,6 @@
 import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Casino } from '@mui/icons-material';
-import { Button, Stack } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, Stack } from '@mui/material';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -84,6 +84,54 @@ export function ImageControl(props: ImageControlProps) {
           }
         }}
       />
+      <FormControlLabel
+        label={t('parameter.tiledVAE')}
+        control={<Checkbox
+          checked={controlState.tiledVAE}
+          value='check'
+          onChange={(event) => {
+            if (doesExist(props.onChange)) {
+              props.onChange({
+                ...controlState,
+                tiledVAE: controlState.tiledVAE === false,
+              });
+            }
+          }}
+        />}
+      />
+      <NumericField
+        label={t('parameter.tiles')}
+        min={params.tiles.min}
+        max={params.tiles.max}
+        step={params.tiles.step}
+        value={controlState.tiles}
+        onChange={(tiles) => {
+          if (doesExist(props.onChange)) {
+            props.onChange({
+              ...controlState,
+              tiles,
+            });
+          }
+        }}
+      />
+      <NumericField
+        decimal
+        label={t('parameter.overlap')}
+        min={params.overlap.min}
+        max={params.overlap.max}
+        step={params.overlap.step}
+        value={controlState.overlap}
+        onChange={(overlap) => {
+          if (doesExist(props.onChange)) {
+            props.onChange({
+              ...controlState,
+              overlap,
+            });
+          }
+        }}
+      />
+    </Stack>
+    <Stack direction='row' spacing={4}>
       <NumericField
         decimal
         label={t('parameter.cfg')}
