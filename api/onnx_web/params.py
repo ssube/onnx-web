@@ -191,6 +191,9 @@ class ImageParams:
     input_prompt: str
     input_negative_prompt: str
     loopback: int
+    tiled_vae: bool
+    tiles: int
+    overlap: float
 
     def __init__(
         self,
@@ -208,6 +211,9 @@ class ImageParams:
         input_prompt: Optional[str] = None,
         input_negative_prompt: Optional[str] = None,
         loopback: int = 0,
+        tiled_vae: bool = False,
+        tiles: int = 512,
+        overlap: float = 0.25,
     ) -> None:
         self.model = model
         self.pipeline = pipeline
@@ -223,6 +229,9 @@ class ImageParams:
         self.input_prompt = input_prompt or prompt
         self.input_negative_prompt = input_negative_prompt or negative_prompt
         self.loopback = loopback
+        self.tiled_vae = tiled_vae
+        self.tiles = tiles
+        self.overlap = overlap
 
     def do_cfg(self):
         return self.cfg > 1.0
@@ -251,6 +260,9 @@ class ImageParams:
     def lpw(self):
         return self.pipeline == "lpw"
 
+    def stride(self):
+        return int(self.tiles * self.stride)
+
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
             "model": self.model,
@@ -267,6 +279,9 @@ class ImageParams:
             "input_prompt": self.input_prompt,
             "input_negative_prompt": self.input_negative_prompt,
             "loopback": self.loopback,
+            "tiled_vae": self.tiled_vae,
+            "tiles": self.tiles,
+            "overlap": self.overlap,
         }
 
     def with_args(self, **kwargs):
@@ -285,6 +300,9 @@ class ImageParams:
             kwargs.get("input_prompt", self.input_prompt),
             kwargs.get("input_negative_prompt", self.input_negative_prompt),
             kwargs.get("loopback", self.loopback),
+            kwargs.get("tiled_vae", self.tiled_vae),
+            kwargs.get("tiles", self.tiles),
+            kwargs.get("overlap", self.overlap),
         )
 
 
@@ -405,14 +423,12 @@ class HighresParams:
         strength: float,
         method: Literal["bilinear", "lanczos", "upscale"] = "lanczos",
         iterations: int = 1,
-        tiled_vae: bool = False,
     ):
         self.scale = scale
         self.steps = steps
         self.strength = strength
         self.method = method
         self.iterations = iterations
-        self.tiled_vae = tiled_vae
 
     def resize(self, size: Size) -> Size:
         return Size(
@@ -427,5 +443,4 @@ class HighresParams:
             "scale": self.scale,
             "steps": self.steps,
             "strength": self.strength,
-            "tiled_vae": self.tiled_vae,
         }

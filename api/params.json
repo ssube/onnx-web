@@ -130,6 +130,12 @@
     "max": 4,
     "step": 1
   },
+  "overlap": {
+    "default": 0.25,
+    "min": 0.0,
+    "max": 0.9,
+    "step": 0.01
+  },
   "pipeline": {
     "default": "",
     "keys": [
@@ -182,6 +188,12 @@
   },
   "tiledVAE": {
     "default": false
+  },
+  "tiles": {
+    "default": 512,
+    "min": 128,
+    "max": 1024,
+    "step": 128
   },
   "tileOrder": {
     "default": "spiral",

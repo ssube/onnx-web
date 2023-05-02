@@ -31,6 +31,7 @@ def blend_controlnet(
 
     pipe = load_pipeline(
         server,
+        params,
         "controlnet",
         params.model,
         params.scheduler,

@@ -40,6 +40,7 @@ def source_txt2img(
     pipe_type = "lpw" if params.lpw() else "txt2img"
     pipe = load_pipeline(
         server,
+        params,
         pipe_type,
         params.model,
         params.scheduler,

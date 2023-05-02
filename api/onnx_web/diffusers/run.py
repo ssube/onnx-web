@@ -55,9 +55,8 @@ def run_loopback(
 
     pipe = pipeline or load_pipeline(
         server,
+        params,
         pipe_type,
-        params.model,
-        params.scheduler,
         job.get_device(),
         inversions=inversions,
         loras=loras,
@@ -140,9 +139,8 @@ def run_highres(
 
     highres_pipe = pipeline or load_pipeline(
         server,
+        params,
         pipe_type,
-        params.model,
-        params.scheduler,
         job.get_device(),
         inversions=inversions,
         loras=loras,
@@ -242,9 +240,8 @@ def run_txt2img_pipeline(
 
     pipe = load_pipeline(
         server,
+        params,
         pipe_type,
-        params.model,
-        params.scheduler,
         job.get_device(),
         inversions=inversions,
         loras=loras,
@@ -350,11 +347,9 @@ def run_img2img_pipeline(
     pipe_type = params.get_valid_pipeline("img2img")
     pipe = load_pipeline(
         server,
+        params,
         pipe_type,
-        params.model,
-        params.scheduler,
         job.get_device(),
-        control=params.control,
         inversions=inversions,
         loras=loras,
     )

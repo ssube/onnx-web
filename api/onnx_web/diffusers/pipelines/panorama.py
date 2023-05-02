@@ -33,6 +33,9 @@ logger = logging.get_logger(__name__)
 NUM_UNET_INPUT_CHANNELS = 9
 NUM_LATENT_CHANNELS = 4
 
+DEFAULT_WINDOW = 32
+DEFAULT_STRIDE = 8
+
 
 def preprocess(image):
     if isinstance(image, torch.Tensor):
@@ -105,8 +108,13 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         safety_checker: OnnxRuntimeModel,
         feature_extractor: CLIPImageProcessor,
         requires_safety_checker: bool = True,
+        window: Optional[int] = None,
+        stride: Optional[int] = None,
     ):
         super().__init__()
+
+        self.window = window or DEFAULT_WINDOW
+        self.stride = stride or DEFAULT_STRIDE
 
         if (
             hasattr(scheduler.config, "steps_offset")
@@ -338,7 +346,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                     f" {negative_prompt_embeds.shape}."
                 )
 
-    def get_views(self, panorama_height, panorama_width, window_size=32, stride=8):
+    def get_views(self, panorama_height, panorama_width, window_size, stride):
         # Here, we define the mappings F_i (see Eq. 7 in the MultiDiffusion paper https://arxiv.org/abs/2302.08113)
         panorama_height /= 8
         panorama_width /= 8
@@ -514,7 +522,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         timestep_dtype = ORT_TO_NP_TYPE[timestep_dtype]
 
         # panorama additions
-        views = self.get_views(height, width)
+        views = self.get_views(height, width, self.window, self.stride)
         count = np.zeros_like(latents)
         value = np.zeros_like(latents)
 
@@ -816,7 +824,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         timestep_dtype = ORT_TO_NP_TYPE[timestep_dtype]
 
         # panorama additions
-        views = self.get_views(height, width)
+        views = self.get_views(height, width, self.window, self.stride)
         count = np.zeros_like(latents)
         value = np.zeros_like(latents)
 
@@ -1124,7 +1132,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         timestep_dtype = ORT_TO_NP_TYPE[timestep_dtype]
 
         # panorama additions
-        views = self.get_views(height, width)
+        views = self.get_views(height, width, self.window, self.stride)
         count = np.zeros_like(latents)
         value = np.zeros_like(latents)
 

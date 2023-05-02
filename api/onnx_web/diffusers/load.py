@@ -10,8 +10,7 @@ from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
 from ..convert.diffusion.textual_inversion import blend_textual_inversions
 from ..diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
 from ..diffusers.utils import expand_prompt
-from ..models.meta import NetworkModel
-from ..params import DeviceParams
+from ..params import DeviceParams, ImageParams
 from ..server import ServerContext
 from ..utils import run_gc
 from .patches.unet import UNetWrapper
@@ -93,20 +92,20 @@ def get_scheduler_name(scheduler: Any) -> Optional[str]:
 
 def load_pipeline(
     server: ServerContext,
+    params: ImageParams,
     pipeline: str,
-    model: str,
-    scheduler_name: str,
     device: DeviceParams,
-    control: Optional[NetworkModel] = None,
     inversions: Optional[List[Tuple[str, float]]] = None,
     loras: Optional[List[Tuple[str, float]]] = None,
 ):
     inversions = inversions or []
     loras = loras or []
-    control_key = control.name if control is not None else None
+    model = params.model
 
     torch_dtype = server.torch_dtype()
     logger.debug("using Torch dtype %s for pipeline", torch_dtype)
+
+    control_key = params.control.name if params.control is not None else None
     pipe_key = (
         pipeline,
         model,
@@ -116,8 +115,8 @@ def load_pipeline(
         inversions,
         loras,
     )
-    scheduler_key = (scheduler_name, model)
-    scheduler_type = pipeline_schedulers[scheduler_name]
+    scheduler_key = (params.scheduler, model)
+    scheduler_type = pipeline_schedulers[params.scheduler]
 
     cache_pipe = server.cache.get("diffusion", pipe_key)
 
@@ -164,8 +163,10 @@ def load_pipeline(
         unet_type = "unet"
 
         # ControlNet component
-        if pipeline == "controlnet" and control is not None:
-            cnet_path = path.join(server.model_path, "control", f"{control.name}.onnx")
+        if pipeline == "controlnet" and params.control is not None:
+            cnet_path = path.join(
+                server.model_path, "control", f"{params.control.name}.onnx"
+            )
             logger.debug("loading ControlNet weights from %s", cnet_path)
             components["controlnet"] = OnnxRuntimeModel(
                 OnnxRuntimeModel.load_model(
@@ -317,6 +318,11 @@ def load_pipeline(
                 )
             )
 
+        # additional options for panorama pipeline
+        if pipeline == "panorama":
+            components["window"] = params.tiles
+            components["stride"] = params.stride()
+
         pipeline_class = available_pipelines.get(pipeline, OnnxStableDiffusionPipeline)
         logger.debug("loading pretrained SD pipeline for %s", pipeline_class.__name__)
         pipe = pipeline_class.from_pretrained(
@@ -333,12 +339,12 @@ def load_pipeline(
 
         optimize_pipeline(server, pipe)
 
-        # TODO: CPU VAE, etc
+        # TODO: remove this, not relevant with ONNX
         if device is not None and hasattr(pipe, "to"):
             pipe = pipe.to(device.torch_str())
 
         # monkey-patch pipeline
-        patch_pipeline(server, pipe, pipeline)
+        patch_pipeline(server, pipe, pipeline_class, params)
 
         server.cache.set("diffusion", pipe_key, pipe)
         server.cache.set("scheduler", scheduler_key, components["scheduler"])
@@ -402,6 +408,7 @@ def patch_pipeline(
     server: ServerContext,
     pipe: StableDiffusionPipeline,
     pipeline: Any,
+    params: ImageParams,
 ) -> None:
     logger.debug("patching SD pipeline")
     pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
@@ -411,9 +418,21 @@ def patch_pipeline(
 
     if hasattr(pipe, "vae_decoder"):
         original_decoder = pipe.vae_decoder
-        pipe.vae_decoder = VAEWrapper(server, original_decoder, decoder=True)
+        pipe.vae_decoder = VAEWrapper(
+            server,
+            original_decoder,
+            decoder=True,
+            tiles=params.tiles,
+            stride=params.stride(),
+        )
         original_encoder = pipe.vae_encoder
-        pipe.vae_encoder = VAEWrapper(server, original_encoder, decoder=False)
+        pipe.vae_encoder = VAEWrapper(
+            server,
+            original_encoder,
+            decoder=False,
+            tiles=params.tiles,
+            stride=params.stride(),
+        )
     elif hasattr(pipe, "vae"):
         pass  # TODO: current wrapper does not work with upscaling VAE
     else:

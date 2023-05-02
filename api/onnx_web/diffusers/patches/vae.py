@@ -12,8 +12,6 @@ from ...server import ServerContext
 logger = getLogger(__name__)
 
 LATENT_CHANNELS = 4
-LATENT_SIZE = 32
-SAMPLE_SIZE = 256
 
 # TODO: does this need to change for fp16 modes?
 timestep_dtype = np.float32
@@ -25,14 +23,23 @@ def set_vae_dtype(dtype):
 
 
 class VAEWrapper(object):
-    def __init__(self, server: ServerContext, wrapped: OnnxRuntimeModel, decoder: bool):
+    def __init__(
+        self,
+        server: ServerContext,
+        wrapped: OnnxRuntimeModel,
+        decoder: bool,
+        tiles: int,
+        stride: int,
+    ):
         self.server = server
         self.wrapped = wrapped
         self.decoder = decoder
+        self.tiles = tiles
+        self.stride = stride
 
-        self.tile_sample_min_size = SAMPLE_SIZE
-        self.tile_latent_min_size = LATENT_SIZE
-        self.tile_overlap_factor = 0.25
+        self.tile_latent_min_size = tiles
+        self.tile_sample_min_size = tiles * 8
+        self.tile_overlap_factor = stride / tiles
 
     def __call__(self, latent_sample=None, sample=None, **kwargs):
         global timestep_dtype
@@ -52,10 +59,16 @@ class VAEWrapper(object):
             logger.debug("converting VAE sample dtype")
             sample = sample.astype(timestep_dtype)
 
-        if self.decoder:
-            return self.tiled_decode(latent_sample, **kwargs)
+        if self.tiles is not None and self.stride is not None:
+            if self.decoder:
+                return self.tiled_decode(latent_sample, **kwargs)
+            else:
+                return self.tiled_encode(sample, **kwargs)
         else:
-            return self.tiled_encode(sample, **kwargs)
+            if self.decoder:
+                return self.wrapped(latent_sample=latent_sample)
+            else:
+                return self.wrapped(sample=sample)
 
     def __getattr__(self, attr):
         return getattr(self.wrapped, attr)

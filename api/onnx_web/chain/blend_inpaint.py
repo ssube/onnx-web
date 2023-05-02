@@ -62,6 +62,7 @@ def blend_inpaint(
     pipe_type = "lpw" if params.lpw() else "inpaint"
     pipe = load_pipeline(
         server,
+        params,
         pipe_type,
         params.model,
         params.scheduler,

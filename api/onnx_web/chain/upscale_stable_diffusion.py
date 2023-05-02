@@ -37,6 +37,7 @@ def upscale_stable_diffusion(
 
     pipeline = load_pipeline(
         server,
+        params,
         "upscale",
         path.join(server.model_path, upscale.upscale_model),
         params.scheduler,

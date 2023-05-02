@@ -34,6 +34,7 @@ def blend_pix2pix(
 
     pipe = load_pipeline(
         server,
+        params,
         "pix2pix",
         params.model,
         params.scheduler,

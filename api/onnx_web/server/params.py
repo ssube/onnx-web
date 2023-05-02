@@ -125,6 +125,21 @@ def pipeline_from_request(
         get_config_value("width", "max"),
         get_config_value("width", "min"),
     )
+    tiled_vae = get_boolean(request.args, "tiledVAE", get_config_value("tiledVAE"))
+    tiles = get_and_clamp_int(
+        request.args,
+        "tiles",
+        get_config_value("tiles"),
+        get_config_value("tiles", "max"),
+        get_config_value("tiles", "min"),
+    )
+    overlap = get_and_clamp_float(
+        request.args,
+        "overlap",
+        get_config_value("overlap"),
+        get_config_value("overlap", "max"),
+        get_config_value("overlap", "min"),
+    )
 
     seed = int(request.args.get("seed", -1))
     if seed == -1:
@@ -159,6 +174,9 @@ def pipeline_from_request(
         batch=batch,
         control=control,
         loopback=loopback,
+        tiled_vae=tiled_vae,
+        tiles=tiles,
+        overlap=overlap,
     )
     size = Size(width, height)
     return (device, params, size)
@@ -279,17 +297,13 @@ def highres_from_request() -> HighresParams:
         request.args,
         "highresStrength",
         get_config_value("highresStrength"),
-        get_config_value("highresStrength"),
+        get_config_value("highresStrength", "max"),
         get_config_value("highresStrength", "min"),
     )
-
-    tiled_vae = get_boolean(request.args, "tiledVAE", get_config_value("tiledVAE"))
-
     return HighresParams(
         scale,
         steps,
         strength,
         method=method,
         iterations=iterations,
-        tiled_vae=tiled_vae,
     )
