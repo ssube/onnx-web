@@ -70,69 +70,6 @@ export function ImageControl(props: ImageControlProps) {
         }}
       />
       <NumericField
-        label={t('parameter.batch')}
-        min={params.batch.min}
-        max={params.batch.max}
-        step={params.batch.step}
-        value={controlState.batch}
-        onChange={(batch) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
-              ...controlState,
-              batch,
-            });
-          }
-        }}
-      />
-      <FormControlLabel
-        label={t('parameter.tiledVAE')}
-        control={<Checkbox
-          checked={controlState.tiledVAE}
-          value='check'
-          onChange={(event) => {
-            if (doesExist(props.onChange)) {
-              props.onChange({
-                ...controlState,
-                tiledVAE: controlState.tiledVAE === false,
-              });
-            }
-          }}
-        />}
-      />
-      <NumericField
-        label={t('parameter.tiles')}
-        min={params.tiles.min}
-        max={params.tiles.max}
-        step={params.tiles.step}
-        value={controlState.tiles}
-        onChange={(tiles) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
-              ...controlState,
-              tiles,
-            });
-          }
-        }}
-      />
-      <NumericField
-        decimal
-        label={t('parameter.overlap')}
-        min={params.overlap.min}
-        max={params.overlap.max}
-        step={params.overlap.step}
-        value={controlState.overlap}
-        onChange={(overlap) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
-              ...controlState,
-              overlap,
-            });
-          }
-        }}
-      />
-    </Stack>
-    <Stack direction='row' spacing={4}>
-      <NumericField
         decimal
         label={t('parameter.cfg')}
         min={params.cfg.min}
@@ -193,6 +130,69 @@ export function ImageControl(props: ImageControlProps) {
       >
         {t('parameter.newSeed')}
       </Button>
+    </Stack>
+    <Stack direction='row' spacing={4}>
+      <NumericField
+        label={t('parameter.batch')}
+        min={params.batch.min}
+        max={params.batch.max}
+        step={params.batch.step}
+        value={controlState.batch}
+        onChange={(batch) => {
+          if (doesExist(props.onChange)) {
+            props.onChange({
+              ...controlState,
+              batch,
+            });
+          }
+        }}
+      />
+      <FormControlLabel
+        label={t('parameter.tiledVAE')}
+        control={<Checkbox
+          checked={controlState.tiledVAE}
+          value='check'
+          onChange={(event) => {
+            if (doesExist(props.onChange)) {
+              props.onChange({
+                ...controlState,
+                tiledVAE: controlState.tiledVAE === false,
+              });
+            }
+          }}
+        />}
+      />
+      <NumericField
+        label={t('parameter.tiles')}
+        min={params.tiles.min}
+        max={params.tiles.max}
+        step={params.tiles.step}
+        value={controlState.tiles}
+        onChange={(tiles) => {
+          if (doesExist(props.onChange)) {
+            props.onChange({
+              ...controlState,
+              tiles,
+            });
+          }
+        }}
+      />
+      <NumericField
+        decimal
+        label={t('parameter.overlap')}
+        min={params.overlap.min}
+        max={params.overlap.max}
+        step={params.overlap.step}
+        value={controlState.overlap}
+        onChange={(overlap) => {
+          if (doesExist(props.onChange)) {
+            props.onChange({
+              ...controlState,
+              overlap,
+            });
+          }
+        }}
+      />
     </Stack>
     <PromptInput
       prompt={controlState.prompt}
