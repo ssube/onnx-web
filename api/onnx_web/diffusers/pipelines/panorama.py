@@ -59,14 +59,20 @@ def preprocess(image):
 
 
 def prepare_mask_and_masked_image(image, mask, latents_shape):
-    image = np.array(image.convert("RGB").resize((latents_shape[1] * 8, latents_shape[0] * 8)))
+    image = np.array(
+        image.convert("RGB").resize((latents_shape[1] * 8, latents_shape[0] * 8))
+    )
     image = image[None].transpose(0, 3, 1, 2)
     image = image.astype(np.float32) / 127.5 - 1.0
 
-    image_mask = np.array(mask.convert("L").resize((latents_shape[1] * 8, latents_shape[0] * 8)))
+    image_mask = np.array(
+        mask.convert("L").resize((latents_shape[1] * 8, latents_shape[0] * 8))
+    )
     masked_image = image * (image_mask < 127.5)
 
-    mask = mask.resize((latents_shape[1], latents_shape[0]), PIL_INTERPOLATION["nearest"])
+    mask = mask.resize(
+        (latents_shape[1], latents_shape[0]), PIL_INTERPOLATION["nearest"]
+    )
     mask = np.array(mask.convert("L"))
     mask = mask.astype(np.float32) / 255.0
     mask = mask[None, None]
@@ -998,7 +1004,13 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # check inputs. Raise error if not correct
         self.check_inputs(
-            prompt, height, width, callback_steps, negative_prompt, prompt_embeds, negative_prompt_embeds
+            prompt,
+            height,
+            width,
+            callback_steps,
+            negative_prompt,
+            prompt_embeds,
+            negative_prompt_embeds,
         )
 
         # define call parameters
@@ -1030,16 +1042,25 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         )
 
         num_channels_latents = NUM_LATENT_CHANNELS
-        latents_shape = (batch_size * num_images_per_prompt, num_channels_latents, height // 8, width // 8)
+        latents_shape = (
+            batch_size * num_images_per_prompt,
+            num_channels_latents,
+            height // 8,
+            width // 8,
+        )
         latents_dtype = prompt_embeds.dtype
         if latents is None:
             latents = generator.randn(*latents_shape).astype(latents_dtype)
         else:
             if latents.shape != latents_shape:
-                raise ValueError(f"Unexpected latents shape, got {latents.shape}, expected {latents_shape}")
+                raise ValueError(
+                    f"Unexpected latents shape, got {latents.shape}, expected {latents_shape}"
+                )
 
         # prepare mask and masked_image
-        mask, masked_image = prepare_mask_and_masked_image(image, mask_image, latents_shape[-2:])
+        mask, masked_image = prepare_mask_and_masked_image(
+            image, mask_image, latents_shape[-2:]
+        )
         mask = mask.astype(latents.dtype)
         masked_image = masked_image.astype(latents.dtype)
 
@@ -1048,18 +1069,25 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # duplicate mask and masked_image_latents for each generation per prompt
         mask = mask.repeat(batch_size * num_images_per_prompt, 0)
-        masked_image_latents = masked_image_latents.repeat(batch_size * num_images_per_prompt, 0)
+        masked_image_latents = masked_image_latents.repeat(
+            batch_size * num_images_per_prompt, 0
+        )
 
         mask = np.concatenate([mask] * 2) if do_classifier_free_guidance else mask
         masked_image_latents = (
-            np.concatenate([masked_image_latents] * 2) if do_classifier_free_guidance else masked_image_latents
+            np.concatenate([masked_image_latents] * 2)
+            if do_classifier_free_guidance
+            else masked_image_latents
         )
 
         num_channels_mask = mask.shape[1]
         num_channels_masked_image = masked_image_latents.shape[1]
 
         unet_input_channels = NUM_UNET_INPUT_CHANNELS
-        if num_channels_latents + num_channels_mask + num_channels_masked_image != unet_input_channels:
+        if (
+            num_channels_latents + num_channels_mask + num_channels_masked_image
+            != unet_input_channels
+        ):
             raise ValueError(
                 "Incorrect configuration settings! The config of `pipeline.unet` expects"
                 f" {unet_input_channels} but received `num_channels_latents`: {num_channels_latents} +"
@@ -1078,13 +1106,20 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         # eta (η) is only used with the DDIMScheduler, it will be ignored for other schedulers.
         # eta corresponds to η in DDIM paper: https://arxiv.org/abs/2010.02502
         # and should be between [0, 1]
-        accepts_eta = "eta" in set(inspect.signature(self.scheduler.step).parameters.keys())
+        accepts_eta = "eta" in set(
+            inspect.signature(self.scheduler.step).parameters.keys()
+        )
         extra_step_kwargs = {}
         if accepts_eta:
             extra_step_kwargs["eta"] = eta
 
         timestep_dtype = next(
-            (input.type for input in self.unet.model.get_inputs() if input.name == "timestep"), "tensor(float)"
+            (
+                input.type
+                for input in self.unet.model.get_inputs()
+                if input.name == "timestep"
+            ),
+            "tensor(float)",
         )
         timestep_dtype = ORT_TO_NP_TYPE[timestep_dtype]
 
@@ -1100,28 +1135,47 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             for h_start, h_end, w_start, w_end in views:
                 # get the latents corresponding to the current view coordinates
                 latents_for_view = latents[:, :, h_start:h_end, w_start:w_end]
+                mask_for_view = mask[:, :, h_start:h_end, w_start:w_end]
+                masked_latents_for_view = masked_image_latents[
+                    :, :, h_start:h_end, w_start:w_end
+                ]
 
                 # expand the latents if we are doing classifier free guidance
-                latent_model_input = np.concatenate([latents_for_view] * 2) if do_classifier_free_guidance else latents_for_view
+                latent_model_input = (
+                    np.concatenate([latents_for_view] * 2)
+                    if do_classifier_free_guidance
+                    else latents_for_view
+                )
                 # concat latents, mask, masked_image_latnets in the channel dimension
-                latent_model_input = self.scheduler.scale_model_input(torch.from_numpy(latent_model_input), t)
+                latent_model_input = self.scheduler.scale_model_input(
+                    torch.from_numpy(latent_model_input), t
+                )
                 latent_model_input = latent_model_input.cpu().numpy()
-                latent_model_input = np.concatenate([latent_model_input, mask, masked_image_latents], axis=1)
+                latent_model_input = np.concatenate(
+                    [latent_model_input, mask_for_view, masked_latents_for_view], axis=1
+                )
 
                 # predict the noise residual
                 timestep = np.array([t], dtype=timestep_dtype)
-                noise_pred = self.unet(sample=latent_model_input, timestep=timestep, encoder_hidden_states=prompt_embeds)[
-                    0
-                ]
+                noise_pred = self.unet(
+                    sample=latent_model_input,
+                    timestep=timestep,
+                    encoder_hidden_states=prompt_embeds,
+                )[0]
 
                 # perform guidance
                 if do_classifier_free_guidance:
                     noise_pred_uncond, noise_pred_text = np.split(noise_pred, 2)
-                    noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
+                    noise_pred = noise_pred_uncond + guidance_scale * (
+                        noise_pred_text - noise_pred_uncond
+                    )
 
                 # compute the previous noisy sample x_t -> x_t-1
                 scheduler_output = self.scheduler.step(
-                    torch.from_numpy(noise_pred), t, torch.from_numpy(latents), **extra_step_kwargs
+                    torch.from_numpy(noise_pred),
+                    t,
+                    torch.from_numpy(latents_for_view),
+                    **extra_step_kwargs,
                 )
                 latents_view_denoised = scheduler_output.prev_sample.numpy()
 
@@ -1139,7 +1193,10 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         # image = self.vae_decoder(latent_sample=latents)[0]
         # it seems likes there is a strange result for using half-precision vae decoder if batchsize>1
         image = np.concatenate(
-            [self.vae_decoder(latent_sample=latents[i : i + 1])[0] for i in range(latents.shape[0])]
+            [
+                self.vae_decoder(latent_sample=latents[i : i + 1])[0]
+                for i in range(latents.shape[0])
+            ]
         )
 
         image = np.clip(image / 2 + 0.5, 0, 1)
@@ -1167,7 +1224,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         if not return_dict:
             return (image, has_nsfw_concept)
 
-        return StableDiffusionPipelineOutput(images=image, nsfw_content_detected=has_nsfw_concept)
+        return StableDiffusionPipelineOutput(
+            images=image, nsfw_content_detected=has_nsfw_concept
+        )
 
     def __call__(
         self,
