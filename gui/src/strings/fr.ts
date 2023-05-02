@@ -120,6 +120,7 @@ export const I18N_STRINGS_FR = {
           top: '',
           bottom: '',
         },
+        overlap: '',
         pipeline: '',
         platform: '',
         prompt: '',
@@ -130,6 +131,7 @@ export const I18N_STRINGS_FR = {
         steps: '',
         strength: '',
         tiledVAE: '',
+        tiles: '',
         tileOrder: '',
         upscale: {
           label: '',

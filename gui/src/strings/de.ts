@@ -120,6 +120,7 @@ export const I18N_STRINGS_DE = {
           top: 'Top',
           bottom: 'Unterseite',
         },
+        overlap: '',
         pipeline: '',
         platform: 'Plattform',
         prompt: 'Prompt',
@@ -130,6 +131,7 @@ export const I18N_STRINGS_DE = {
         steps: 'Schritte',
         strength: 'Stärke',
         tiledVAE: '',
+        tiles: '',
         tileOrder: '',
         upscale: {
           label: '',

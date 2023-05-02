@@ -172,6 +172,7 @@ export const I18N_STRINGS_EN = {
           top: 'Top',
           bottom: 'Bottom',
         },
+        overlap: 'Overlap',
         pipeline: 'Pipeline',
         platform: 'Platform',
         prompt: 'Prompt',
@@ -182,6 +183,7 @@ export const I18N_STRINGS_EN = {
         steps: 'Steps',
         strength: 'Strength',
         tiledVAE: 'Tiled VAE',
+        tiles: 'Tile Size',
         tileOrder: 'Tile Order',
         upscale: {
           label: 'Upscale',
