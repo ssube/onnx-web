@@ -123,6 +123,9 @@ def upscale_outpaint(
         draw_mask.rectangle((left, top, left + tile, top + tile), fill="black")
         return result.images[0]
 
+    if params.pipeline == "panorama":
+        logger.debug("outpainting with one shot panorama, no tiling")
+        return outpaint(source, (source.width, source.height, max(source.width, source.height)))
     if overlap == 0:
         logger.debug("outpainting with 0 margin, using grid tiling")
         output = process_tile_grid(source, SizeChart.auto, 1, [outpaint])
