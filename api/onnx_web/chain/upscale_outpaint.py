@@ -58,8 +58,11 @@ def upscale_outpaint(
         noise_source=noise_source,
         mask_filter=mask_filter,
     )
-    stage_mask = ImageOps.contain(stage_mask, source.size)
-    stage_mask = ImageOps.pad(stage_mask, source.size, centering=(0, 0))
+
+    # masks start as 512x512, resize to cover the source, then trim the extra
+    mask_max = max(source.width, source.height)
+    stage_mask = ImageOps.contain(stage_mask, (mask_max, mask_max))
+    stage_mask = stage_mask.crop((0, 0, source.width, source.height))
 
     full_latents = get_latents_from_seed(params.seed, Size(*full_size))
 
