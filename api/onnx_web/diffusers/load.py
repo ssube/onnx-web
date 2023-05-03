@@ -127,8 +127,12 @@ def load_pipeline(
 
         # update panorama params
         if pipeline == "panorama":
-            cache_pipe.window = params.tiles // 8
-            cache_pipe.stride = params.stride() // 8
+            latent_window = params.tiles // 8
+            latent_stride = params.stride() // 8
+
+            cache_pipe.set_window_size(latent_window, latent_stride)
+            cache_pipe.vae_encoder.set_window_size(latent_window, latent_stride)
+            cache_pipe.vae_decoder.set_window_size(latent_window, latent_stride)
 
         # update scheduler
         cache_scheduler = server.cache.get("scheduler", scheduler_key)

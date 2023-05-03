@@ -1255,3 +1255,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         else:
             logger.debug("running txt2img panorama pipeline")
             return self.text2img(*args, **kwargs)
+
+    def set_window_size(self, window: int, stride: int):
+        self.window = window
+        self.stride = stride

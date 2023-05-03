@@ -34,12 +34,15 @@ class VAEWrapper(object):
         self.server = server
         self.wrapped = wrapped
         self.decoder = decoder
-        self.tiles = tiles
+        self.set_window_size(tiles, stride)
+
+    def set_window_size(self, window: int, stride: int):
+        self.window = window
         self.stride = stride
 
-        self.tile_latent_min_size = tiles
-        self.tile_sample_min_size = tiles * 8
-        self.tile_overlap_factor = stride / tiles
+        self.tile_latent_min_size = self.window
+        self.tile_sample_min_size = self.window * 8
+        self.tile_overlap_factor = self.stride / self.window
 
     def __call__(self, latent_sample=None, sample=None, **kwargs):
         global timestep_dtype
@@ -59,7 +62,7 @@ class VAEWrapper(object):
             logger.debug("converting VAE sample dtype")
             sample = sample.astype(timestep_dtype)
 
-        if self.tiles is not None and self.stride is not None:
+        if self.window is not None and self.stride is not None:
             if self.decoder:
                 return self.tiled_decode(latent_sample, **kwargs)
             else:
