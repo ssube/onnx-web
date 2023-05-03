@@ -3,7 +3,7 @@ from typing import Callable, Optional, Tuple
 
 import numpy as np
 import torch
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 
 from ..diffusers.load import load_pipeline
 from ..diffusers.utils import get_latents_from_seed, get_tile_latents
@@ -58,7 +58,9 @@ def upscale_outpaint(
         noise_source=noise_source,
         mask_filter=mask_filter,
     )
-    stage_mask = stage_mask.resize(source.size)
+    stage_mask = ImageOps.contain(stage_mask, source.size)
+    stage_mask = ImageOps.pad(stage_mask, source.size, centering=(0, 0))
+
     full_latents = get_latents_from_seed(params.seed, Size(*full_size))
 
     draw_mask = ImageDraw.Draw(stage_mask)
