@@ -43484,6 +43484,9 @@
     url.searchParams.append("cfg", params.cfg.toFixed(FIXED_FLOAT));
     url.searchParams.append("eta", params.eta.toFixed(FIXED_FLOAT));
     url.searchParams.append("steps", params.steps.toFixed(FIXED_INTEGER));
+    url.searchParams.append("tiledVAE", String(params.tiledVAE));
+    url.searchParams.append("tiles", params.tiles.toFixed(FIXED_INTEGER));
+    url.searchParams.append("overlap", params.overlap.toFixed(FIXED_FLOAT));
     if (doesExist2(params.scheduler)) {
       url.searchParams.append("scheduler", params.scheduler);
     }
@@ -43521,9 +43524,6 @@
   }
   __name(appendUpscaleToURL, "appendUpscaleToURL");
   function appendHighresToURL(url, highres) {
-    if (highres.tiledVAE) {
-      url.searchParams.append("tiledVAE", String(highres.tiledVAE));
-    }
     if (highres.enabled) {
       url.searchParams.append("highresIterations", highres.highresIterations.toFixed(FIXED_INTEGER));
       url.searchParams.append("highresMethod", highres.highresMethod);
@@ -69777,7 +69777,10 @@ Please use another name.` : formatMuiErrorMessage(18));
       prompt: defaults2.prompt.default,
       scheduler: defaults2.scheduler.default,
       steps: defaults2.steps.default,
-      seed: defaults2.seed.default
+      seed: defaults2.seed.default,
+      tiledVAE: defaults2.tiledVAE.default,
+      tiles: defaults2.tiles.default,
+      overlap: defaults2.overlap.default
     };
   }
   __name(baseParamsFromServer, "baseParamsFromServer");
@@ -69918,8 +69921,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         highresMethod: "",
         highresSteps: server.highresSteps.default,
         highresScale: server.highresScale.default,
-        highresStrength: server.highresStrength.default,
-        tiledVAE: server.tiledVAE.default
+        highresStrength: server.highresStrength.default
       },
       setHighres(params) {
         set((prev2) => ({
@@ -69934,8 +69936,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             highresMethod: "",
             highresSteps: server.highresSteps.default,
             highresScale: server.highresScale.default,
-            highresStrength: server.highresStrength.default,
-            tiledVAE: server.tiledVAE.default
+            highresStrength: server.highresStrength.default
           }
         });
       }
@@ -71794,11 +71795,6 @@ Please use another name.` : formatMuiErrorMessage(18));
             props.onChange(Object.assign(Object.assign({}, controlState), { eta }));
           }
         } }),
-        React130.createElement(NumericField, { label: t2("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: controlState.batch, onChange: (batch) => {
-          if (doesExist2(props.onChange)) {
-            props.onChange(Object.assign(Object.assign({}, controlState), { batch }));
-          }
-        } }),
         React130.createElement(NumericField, { decimal: true, label: t2("parameter.cfg"), min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: controlState.cfg, onChange: (cfg) => {
           if (doesExist2(props.onChange)) {
             props.onChange(Object.assign(Object.assign({}, controlState), { cfg }));
@@ -71821,6 +71817,30 @@ Please use another name.` : formatMuiErrorMessage(18));
           }
         } }, t2("parameter.newSeed"))
       ),
+      React130.createElement(
+        Stack_default2,
+        { direction: "row", spacing: 4 },
+        React130.createElement(NumericField, { label: t2("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: controlState.batch, onChange: (batch) => {
+          if (doesExist2(props.onChange)) {
+            props.onChange(Object.assign(Object.assign({}, controlState), { batch }));
+          }
+        } }),
+        React130.createElement(NumericField, { label: t2("parameter.tiles"), min: params.tiles.min, max: params.tiles.max, step: params.tiles.step, value: controlState.tiles, onChange: (tiles) => {
+          if (doesExist2(props.onChange)) {
+            props.onChange(Object.assign(Object.assign({}, controlState), { tiles }));
+          }
+        } }),
+        React130.createElement(NumericField, { decimal: true, label: t2("parameter.overlap"), min: params.overlap.min, max: params.overlap.max, step: params.overlap.step, value: controlState.overlap, onChange: (overlap) => {
+          if (doesExist2(props.onChange)) {
+            props.onChange(Object.assign(Object.assign({}, controlState), { overlap }));
+          }
+        } }),
+        React130.createElement(FormControlLabel_default, { label: t2("parameter.tiledVAE"), control: React130.createElement(Checkbox_default, { checked: controlState.tiledVAE, value: "check", onChange: (event) => {
+          if (doesExist2(props.onChange)) {
+            props.onChange(Object.assign(Object.assign({}, controlState), { tiledVAE: controlState.tiledVAE === false }));
+          }
+        } }) })
+      ),
       React130.createElement(PromptInput, { prompt: controlState.prompt, negativePrompt: controlState.negativePrompt, onChange: (value) => {
         if (doesExist2(props.onChange)) {
           props.onChange(Object.assign(Object.assign({}, controlState), value));
@@ -71842,11 +71862,6 @@ Please use another name.` : formatMuiErrorMessage(18));
     return React131.createElement(
       Stack_default2,
       { direction: "row", spacing: 4 },
-      React131.createElement(FormControlLabel_default, { label: t2("parameter.tiledVAE"), control: React131.createElement(Checkbox_default, { checked: highres.tiledVAE, value: "check", onChange: (event) => {
-        setHighres({
-          tiledVAE: highres.tiledVAE === false
-        });
-      } }) }),
       React131.createElement(FormControlLabel_default, { label: t2("parameter.highres.label"), control: React131.createElement(Checkbox_default, { checked: highres.enabled, value: "check", onChange: (event) => {
         setHighres({
           enabled: highres.enabled === false
@@ -72512,6 +72527,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             top: "Top",
             bottom: "Unterseite"
           },
+          overlap: "",
           pipeline: "",
           platform: "Plattform",
           prompt: "Prompt",
@@ -72522,6 +72538,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           steps: "Schritte",
           strength: "St\xE4rke",
           tiledVAE: "",
+          tiles: "",
           tileOrder: "",
           upscale: {
             label: "",
@@ -72782,6 +72799,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             top: "Top",
             bottom: "Bottom"
           },
+          overlap: "Overlap",
           pipeline: "Pipeline",
           platform: "Platform",
           prompt: "Prompt",
@@ -72792,6 +72810,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           steps: "Steps",
           strength: "Strength",
           tiledVAE: "Tiled VAE",
+          tiles: "Tile Size",
           tileOrder: "Tile Order",
           upscale: {
             label: "Upscale",
@@ -73023,6 +73042,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             top: "Top",
             bottom: "Fondo"
           },
+          overlap: "",
           pipeline: "",
           platform: "Plataforma de hardware",
           prompt: "Aviso",
@@ -73033,6 +73053,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           steps: "Pasos",
           strength: "Fuerza",
           tiledVAE: "",
+          tiles: "",
           tileOrder: "Orden de secciones",
           upscale: {
             label: "Aumento",
@@ -73236,6 +73257,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             top: "",
             bottom: ""
           },
+          overlap: "",
           pipeline: "",
           platform: "",
           prompt: "",
@@ -73246,6 +73268,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           steps: "",
           strength: "",
           tiledVAE: "",
+          tiles: "",
           tileOrder: "",
           upscale: {
             label: "",
