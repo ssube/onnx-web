@@ -147,21 +147,6 @@ export function ImageControl(props: ImageControlProps) {
           }
         }}
       />
-      <FormControlLabel
-        label={t('parameter.tiledVAE')}
-        control={<Checkbox
-          checked={controlState.tiledVAE}
-          value='check'
-          onChange={(event) => {
-            if (doesExist(props.onChange)) {
-              props.onChange({
-                ...controlState,
-                tiledVAE: controlState.tiledVAE === false,
-              });
-            }
-          }}
-        />}
-      />
       <NumericField
         label={t('parameter.tiles')}
         min={params.tiles.min}
@@ -192,6 +177,21 @@ export function ImageControl(props: ImageControlProps) {
             });
           }
         }}
+      />
+      <FormControlLabel
+        label={t('parameter.tiledVAE')}
+        control={<Checkbox
+          checked={controlState.tiledVAE}
+          value='check'
+          onChange={(event) => {
+            if (doesExist(props.onChange)) {
+              props.onChange({
+                ...controlState,
+                tiledVAE: controlState.tiledVAE === false,
+              });
+            }
+          }}
+        />}
       />
     </Stack>
     <PromptInput
