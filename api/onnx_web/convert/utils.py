@@ -14,7 +14,6 @@ from onnx.shape_inference import infer_shapes_path
 from onnxruntime.transformers.float16 import convert_float_to_float16
 from packaging import version
 from torch.onnx import export
-from yaml import safe_load
 
 from ..constants import ONNX_WEIGHTS
 from ..server import ServerContext
@@ -169,35 +168,6 @@ def source_format(model: Dict) -> Optional[str]:
             return ext
 
     return None
-
-
-class Config(object):
-    """
-    Shim for pydantic-style config.
-    """
-
-    def __init__(self, kwargs):
-        self.__dict__.update(kwargs)
-        for k, v in self.__dict__.items():
-            Config.config_from_key(self, k, v)
-
-    def __iter__(self):
-        for k in self.__dict__.keys():
-            yield k
-
-    @classmethod
-    def config_from_key(cls, target, k, v):
-        if isinstance(v, dict):
-            tmp = Config(v)
-            setattr(target, k, tmp)
-        else:
-            setattr(target, k, v)
-
-
-def load_yaml(file: str) -> Config:
-    with open(file, "r") as f:
-        data = safe_load(f.read())
-        return Config(data)
 
 
 def remove_prefix(name: str, prefix: str) -> str:

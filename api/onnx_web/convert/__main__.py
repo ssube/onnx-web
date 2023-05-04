@@ -10,9 +10,9 @@ from huggingface_hub.file_download import hf_hub_download
 from jsonschema import ValidationError, validate
 from onnx import load_model, save_model
 from transformers import CLIPTokenizer
-from yaml import safe_load
 
 from ..constants import ONNX_MODEL, ONNX_WEIGHTS
+from ..utils import load_config
 from .correction.gfpgan import convert_correction_gfpgan
 from .diffusion.control import convert_diffusion_control
 from .diffusion.diffusers import convert_diffusion_diffusers
@@ -604,16 +604,13 @@ def main() -> int:
     extras.sort()
     logger.debug("loading extra files: %s", extras)
 
-    with open("./schemas/extras.yaml", "r") as f:
-        extra_schema = safe_load(f.read())
+    extra_schema = load_config("./schemas/extras.yaml")
 
     for file in extras:
         if file is not None and file != "":
             logger.info("loading extra models from %s", file)
             try:
-                with open(file, "r") as f:
-                    data = safe_load(f.read())
-
+                data = load_config(file)
                 logger.debug("validating extras file %s", data)
                 try:
                     validate(data, extra_schema)

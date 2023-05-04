@@ -2,7 +2,6 @@ from io import BytesIO
 from logging import getLogger
 from os import path
 
-import yaml
 from flask import Flask, jsonify, make_response, request, url_for
 from jsonschema import validate
 from PIL import Image
@@ -28,6 +27,8 @@ from ..utils import (
     get_from_map,
     get_not_empty,
     get_size,
+    load_config,
+    load_config_str,
     sanitize_name,
 )
 from ..worker.pool import DevicePoolExecutor
@@ -352,9 +353,8 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
     if body is None:
         return error_reply("chain pipeline must have a body")
 
-    data = yaml.safe_load(body)
-    with open("./schemas/chain.yaml", "r") as f:
-        schema = yaml.safe_load(f.read())
+    data = load_config_str(body)
+    schema = load_config("./schemas/chain.yaml")
 
     logger.debug("validating chain request: %s against %s", data, schema)
     validate(data, schema)
