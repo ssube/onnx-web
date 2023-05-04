@@ -35,7 +35,7 @@ export function ImageControl(props: ImageControlProps) {
   });
 
   // max stride is the lesser of tile size and server's max stride
-  const maxStride = Math.max(controlState.tiles, params.stride.max);
+  const maxStride = Math.min(controlState.tiles, params.stride.max);
 
   return <Stack spacing={2}>
     <Stack direction='row' spacing={4}>
