@@ -3,7 +3,7 @@ from typing import Callable, Optional, Tuple
 
 import numpy as np
 import torch
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 
 from ..diffusers.load import load_pipeline
 from ..diffusers.utils import get_latents_from_seed, get_tile_latents
@@ -50,6 +50,11 @@ def upscale_outpaint(
         # if no mask was provided, keep the full source image
         stage_mask = Image.new("RGB", source.size, "black")
 
+    # masks start as 512x512, resize to cover the source, then trim the extra
+    mask_max = max(source.width, source.height)
+    stage_mask = ImageOps.contain(stage_mask, (mask_max, mask_max))
+    stage_mask = stage_mask.crop((0, 0, source.width, source.height))
+
     source, stage_mask, noise, full_size = expand_image(
         source,
         stage_mask,
@@ -58,7 +63,7 @@ def upscale_outpaint(
         noise_source=noise_source,
         mask_filter=mask_filter,
     )
-    stage_mask = stage_mask.resize(source.size)
+
     full_latents = get_latents_from_seed(params.seed, Size(*full_size))
 
     draw_mask = ImageDraw.Draw(stage_mask)

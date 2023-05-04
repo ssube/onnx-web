@@ -5,9 +5,7 @@ from os import path
 from typing import Any, Dict, List, Optional, Union
 
 import torch
-import yaml
 from jsonschema import ValidationError, validate
-from yaml import safe_load
 
 from ..image import (  # mask filters; noise sources
     mask_filter_gaussian_multiply,
@@ -35,7 +33,7 @@ from ..image import (  # mask filters; noise sources
 from ..models.meta import NetworkModel
 from ..params import DeviceParams
 from ..torch_before_ort import get_available_providers
-from ..utils import merge
+from ..utils import load_config, merge
 from .context import ServerContext
 
 logger = getLogger(__name__)
@@ -154,16 +152,13 @@ def load_extras(server: ServerContext):
     labels = {}
     strings = {}
 
-    with open("./schemas/extras.yaml", "r") as f:
-        extra_schema = safe_load(f.read())
+    extra_schema = load_config("./schemas/extras.yaml")
 
     for file in server.extra_models:
         if file is not None and file != "":
             logger.info("loading extra models from %s", file)
             try:
-                with open(file, "r") as f:
-                    data = safe_load(f.read())
-
+                data = load_config(file)
                 logger.debug("validating extras file %s", data)
                 try:
                     validate(data, extra_schema)
@@ -349,16 +344,15 @@ def load_params(server: ServerContext) -> None:
     params_file = path.join(server.params_path, "params.json")
     logger.debug("loading server parameters from file: %s", params_file)
 
-    with open(params_file, "r") as f:
-        config_params = yaml.safe_load(f)
+    config_params = load_config(params_file)
 
-        if "platform" in config_params and server.default_platform is not None:
-            logger.info(
-                "overriding default platform from environment: %s",
-                server.default_platform,
-            )
-            config_platform = config_params.get("platform", {})
-            config_platform["default"] = server.default_platform
+    if "platform" in config_params and server.default_platform is not None:
+        logger.info(
+            "overriding default platform from environment: %s",
+            server.default_platform,
+        )
+        config_platform = config_params.get("platform", {})
+        config_platform["default"] = server.default_platform
 
 
 def load_platforms(server: ServerContext) -> None:

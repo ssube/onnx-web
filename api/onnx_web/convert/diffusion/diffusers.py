@@ -247,6 +247,7 @@ def convert_diffusion_diffusers(
     model: Dict,
     source: str,
     format: str,
+    hf: bool = False,
 ) -> Tuple[bool, str]:
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
@@ -316,6 +317,13 @@ def convert_diffusion_diffusers(
             pipeline_class=pipe_class,
             **pipe_args,
         ).to(device, torch_dtype=dtype)
+    elif hf:
+        logger.debug("downloading pretrained model from Huggingface hub: %s", source)
+        pipeline = pipe_class.from_pretrained(
+            source,
+            torch_dtype=dtype,
+            use_auth_token=conversion.token,
+        ).to(device)
     else:
         logger.warning("pipeline source not found or not recognized: %s", source)
         raise ValueError(f"pipeline source not found or not recognized: {source}")

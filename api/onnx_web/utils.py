@@ -1,12 +1,15 @@
 import gc
 import importlib
+import json
 import threading
+from json import JSONDecodeError
 from logging import getLogger
 from os import environ, path
 from platform import system
 from typing import Any, Dict, List, Optional, Sequence, Union
 
 import torch
+from yaml import safe_load
 
 from .params import DeviceParams, SizeChart
 
@@ -167,3 +170,30 @@ def show_system_toast(msg: str) -> None:
             )
     else:
         logger.info("system notifications not yet available for %s", sys_name)
+
+
+def load_json(file: str) -> Dict:
+    with open(file, "r") as f:
+        data = json.loads(f.read())
+        return data
+
+
+def load_yaml(file: str) -> Dict:
+    with open(file, "r") as f:
+        data = safe_load(f.read())
+        return data
+
+
+def load_config(file: str) -> Dict:
+    name, ext = path.splitext(file)
+    if ext in [".yml", ".yaml"]:
+        return load_yaml(file)
+    elif ext in [".json"]:
+        return load_json(file)
+
+
+def load_config_str(raw: str) -> Dict:
+    try:
+        return json.loads(raw)
+    except JSONDecodeError:
+        return safe_load(raw)
