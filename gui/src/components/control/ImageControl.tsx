@@ -34,6 +34,9 @@ export function ImageControl(props: ImageControlProps) {
     staleTime: STALE_TIME,
   });
 
+  // max stride is the lesser of tile size and server's max stride
+  const maxStride = Math.max(controlState.tiles, params.stride.max);
+
   return <Stack spacing={2}>
     <Stack direction='row' spacing={4}>
       <QueryList
@@ -181,7 +184,7 @@ export function ImageControl(props: ImageControlProps) {
       <NumericField
         label={t('parameter.stride')}
         min={params.stride.min}
-        max={params.stride.max}
+        max={maxStride}
         step={params.stride.step}
         value={controlState.stride}
         onChange={(stride) => {

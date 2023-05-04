@@ -140,13 +140,17 @@ def pipeline_from_request(
         get_config_value("overlap", "max"),
         get_config_value("overlap", "min"),
     )
-    stride = get_and_clamp_float(
+    stride = get_and_clamp_int(
         request.args,
         "stride",
         get_config_value("stride"),
         get_config_value("stride", "max"),
         get_config_value("stride", "min"),
     )
+
+    if stride > tiles:
+        logger.info("limiting stride to tile size, %s > %s", stride, tiles)
+        stride = tiles
 
     seed = int(request.args.get("seed", -1))
     if seed == -1:

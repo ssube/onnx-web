@@ -220,6 +220,7 @@ export function baseParamsFromServer(defaults: ServerParams): Required<BaseImgPa
     tiledVAE: defaults.tiledVAE.default,
     tiles: defaults.tiles.default,
     overlap: defaults.overlap.default,
+    stride: defaults.stride.default,
   };
 }
 
