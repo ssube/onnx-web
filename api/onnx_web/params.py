@@ -214,6 +214,7 @@ class ImageParams:
         tiled_vae: bool = False,
         tiles: int = 512,
         overlap: float = 0.25,
+        stride: int = 64,
     ) -> None:
         self.model = model
         self.pipeline = pipeline
@@ -232,6 +233,7 @@ class ImageParams:
         self.tiled_vae = tiled_vae
         self.tiles = tiles
         self.overlap = overlap
+        self.stride = stride
 
     def do_cfg(self):
         return self.cfg > 1.0
@@ -260,9 +262,6 @@ class ImageParams:
     def lpw(self):
         return self.pipeline == "lpw"
 
-    def stride(self):
-        return int(self.tiles * self.overlap)
-
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {
             "model": self.model,
@@ -282,6 +281,7 @@ class ImageParams:
             "tiled_vae": self.tiled_vae,
             "tiles": self.tiles,
             "overlap": self.overlap,
+            "stride": self.stride,
         }
 
     def with_args(self, **kwargs):
@@ -303,6 +303,7 @@ class ImageParams:
             kwargs.get("tiled_vae", self.tiled_vae),
             kwargs.get("tiles", self.tiles),
             kwargs.get("overlap", self.overlap),
+            kwargs.get("stride", self.stride),
         )
 
 

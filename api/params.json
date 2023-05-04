@@ -186,6 +186,12 @@
     "max": 1,
     "step": 0.01
   },
+  "stride": {
+    "default": 128,
+    "min": 64,
+    "max": 512,
+    "step": 64
+  },
   "tiledVAE": {
     "default": false
   },

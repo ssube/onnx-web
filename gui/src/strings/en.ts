@@ -182,6 +182,7 @@ export const I18N_STRINGS_EN = {
         sourceFilter: 'Source Filter',
         steps: 'Steps',
         strength: 'Strength',
+        stride: 'UNet Stride',
         tiledVAE: 'Tiled VAE',
         tiles: 'Tile Size',
         tileOrder: 'Tile Order',

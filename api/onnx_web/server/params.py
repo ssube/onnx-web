@@ -140,6 +140,13 @@ def pipeline_from_request(
         get_config_value("overlap", "max"),
         get_config_value("overlap", "min"),
     )
+    stride = get_and_clamp_float(
+        request.args,
+        "stride",
+        get_config_value("stride"),
+        get_config_value("stride", "max"),
+        get_config_value("stride", "min"),
+    )
 
     seed = int(request.args.get("seed", -1))
     if seed == -1:
@@ -177,6 +184,7 @@ def pipeline_from_request(
         tiled_vae=tiled_vae,
         tiles=tiles,
         overlap=overlap,
+        stride=stride,
     )
     size = Size(width, height)
     return (device, params, size)

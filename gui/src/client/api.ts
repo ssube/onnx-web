@@ -51,6 +51,7 @@ export interface BaseImgParams {
   tiledVAE: boolean;
   tiles: number;
   overlap: number;
+  stride: number;
 
   cfg: number;
   steps: number;
@@ -409,6 +410,7 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
   url.searchParams.append('tiledVAE', String(params.tiledVAE));
   url.searchParams.append('tiles', params.tiles.toFixed(FIXED_INTEGER));
   url.searchParams.append('overlap', params.overlap.toFixed(FIXED_FLOAT));
+  url.searchParams.append('stride', params.stride.toFixed(FIXED_FLOAT));
 
   if (doesExist(params.scheduler)) {
     url.searchParams.append('scheduler', params.scheduler);

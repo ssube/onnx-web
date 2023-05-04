@@ -125,14 +125,17 @@ def load_pipeline(
         logger.debug("reusing existing diffusion pipeline")
         pipe = cache_pipe
 
+        cache_pipe.vae_encoder.set_tiled(tiled=params.tiled_vae)
+        cache_pipe.vae_decoder.set_tiled(tiled=params.tiled_vae)
+
         # update panorama params
         if pipeline == "panorama":
             latent_window = params.tiles // 8
-            latent_stride = params.stride() // 8
+            latent_stride = params.stride // 8
 
             cache_pipe.set_window_size(latent_window, latent_stride)
-            cache_pipe.vae_encoder.set_window_size(latent_window, latent_stride)
-            cache_pipe.vae_decoder.set_window_size(latent_window, latent_stride)
+            cache_pipe.vae_encoder.set_window_size(latent_window, params.overlap)
+            cache_pipe.vae_decoder.set_window_size(latent_window, params.overlap)
 
         # update scheduler
         cache_scheduler = server.cache.get("scheduler", scheduler_key)
@@ -332,7 +335,7 @@ def load_pipeline(
         # additional options for panorama pipeline
         if pipeline == "panorama":
             components["window"] = params.tiles // 8
-            components["stride"] = params.stride() // 8
+            components["stride"] = params.stride // 8
 
         pipeline_class = available_pipelines.get(pipeline, OnnxStableDiffusionPipeline)
         logger.debug("loading pretrained SD pipeline for %s", pipeline_class.__name__)
@@ -433,16 +436,16 @@ def patch_pipeline(
             server,
             original_decoder,
             decoder=True,
-            tiles=params.tiles,
-            stride=params.stride(),
+            window=params.tiles,
+            overlap=params.overlap,
         )
         original_encoder = pipe.vae_encoder
         pipe.vae_encoder = VAEWrapper(
             server,
             original_encoder,
             decoder=False,
-            tiles=params.tiles,
-            stride=params.stride(),
+            window=params.tiles,
+            overlap=params.overlap,
         )
     elif hasattr(pipe, "vae"):
         pass  # TODO: current wrapper does not work with upscaling VAE

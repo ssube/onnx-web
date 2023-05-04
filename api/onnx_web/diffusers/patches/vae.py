@@ -28,21 +28,22 @@ class VAEWrapper(object):
         server: ServerContext,
         wrapped: OnnxRuntimeModel,
         decoder: bool,
-        tiles: int,
-        stride: int,
+        window: int,
+        overlap: float,
     ):
         self.server = server
         self.wrapped = wrapped
         self.decoder = decoder
-        self.set_window_size(tiles, stride)
+        self.tiled = False
+        self.set_window_size(window, overlap)
 
-    def set_window_size(self, window: int, stride: int):
-        self.window = window
-        self.stride = stride
+    def set_tiled(self, tiled: bool = True):
+        self.tiled = tiled
 
-        self.tile_latent_min_size = self.window
-        self.tile_sample_min_size = self.window * 8
-        self.tile_overlap_factor = self.stride / self.window
+    def set_window_size(self, window: int, overlap: float):
+        self.tile_latent_min_size = window
+        self.tile_sample_min_size = window * 8
+        self.tile_overlap_factor = overlap
 
     def __call__(self, latent_sample=None, sample=None, **kwargs):
         global timestep_dtype
@@ -62,7 +63,7 @@ class VAEWrapper(object):
             logger.debug("converting VAE sample dtype")
             sample = sample.astype(timestep_dtype)
 
-        if self.window is not None and self.stride is not None:
+        if self.tiled:
             if self.decoder:
                 return self.tiled_decode(latent_sample, **kwargs)
             else:

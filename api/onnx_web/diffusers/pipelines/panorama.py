@@ -369,6 +369,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         )
         return views
 
+    @torch.no_grad()
     def text2img(
         self,
         prompt: Union[str, List[str]] = None,
@@ -619,6 +620,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             images=image, nsfw_content_detected=has_nsfw_concept
         )
 
+    @torch.no_grad()
     def img2img(
         self,
         prompt: Union[str, List[str]] = None,

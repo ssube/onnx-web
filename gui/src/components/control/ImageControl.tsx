@@ -178,6 +178,21 @@ export function ImageControl(props: ImageControlProps) {
           }
         }}
       />
+      <NumericField
+        label={t('parameter.stride')}
+        min={params.stride.min}
+        max={params.stride.max}
+        step={params.stride.step}
+        value={controlState.stride}
+        onChange={(stride) => {
+          if (doesExist(props.onChange)) {
+            props.onChange({
+              ...controlState,
+              stride,
+            });
+          }
+        }}
+      />
       <FormControlLabel
         label={t('parameter.tiledVAE')}
         control={<Checkbox

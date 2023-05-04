@@ -130,6 +130,7 @@ export const I18N_STRINGS_ES = {
         sourceFilter: '',
         steps: 'Pasos',
         strength: 'Fuerza',
+        stride: '',
         tiledVAE: '',
         tiles: '',
         tileOrder: 'Orden de secciones',
