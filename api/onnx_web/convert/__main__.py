@@ -65,7 +65,6 @@ base_models: Models = {
             "stable-diffusion-onnx-v1-inpainting",
             model_source_huggingface + "runwayml/stable-diffusion-inpainting",
         ),
-        # TODO: should have its own converter
         (
             "upscaling-stable-diffusion-x4",
             model_source_huggingface + "stabilityai/stable-diffusion-x4-upscaler",

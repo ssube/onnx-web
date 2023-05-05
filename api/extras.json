@@ -2,11 +2,11 @@
   "diffusion": [
     {
       "name": "diffusion-knollingcase",
-      "source": "Aybeeceedee/knollingcase"
+      "source": "huggingface://Aybeeceedee/knollingcase"
     },
     {
       "name": "diffusion-openjourney",
-      "source": "prompthero/openjourney"
+      "source": "huggingface://prompthero/openjourney"
     },
     {
       "name": "diffusion-stablydiffused-aesthetic-v2-6",
@@ -20,27 +20,27 @@
     },
     {
       "name": "stable-diffusion-onnx-v1-5",
-      "source": "runwayml/stable-diffusion-v1-5",
+      "source": "huggingface://runwayml/stable-diffusion-v1-5",
       "inversions": [
         {
           "name": "line-art",
-          "source": "sd-concepts-library/line-art"
+          "source": "huggingface://sd-concepts-library/line-art"
         },
         {
           "name": "cubex",
-          "source": "sd-concepts-library/cubex"
+          "source": "huggingface://sd-concepts-library/cubex"
         },
         {
           "name": "birb",
-          "source": "sd-concepts-library/birb-style"
+          "source": "huggingface://sd-concepts-library/birb-style"
         },
         {
           "name": "minecraft",
-          "source": "sd-concepts-library/minecraft-concept-art"
+          "source": "huggingface://sd-concepts-library/minecraft-concept-art"
         },
         {
           "name": "ugly-sonic",
-          "source": "sd-concepts-library/ugly-sonic"
+          "source": "huggingface://sd-concepts-library/ugly-sonic"
         }
       ]
     }
