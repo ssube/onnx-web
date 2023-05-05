@@ -196,7 +196,10 @@ export function MaskCanvas(props: MaskCanvasProps) {
   // painting state
   const painting = useRef(false);
   const dirty = useRef(false);
-  const background = useRef<string>();
+  const background = useRef<{ name: string; url: Maybe<string> }>({
+    name: '',
+    url: undefined,
+  });
 
   const state = mustExist(useContext(StateContext));
   const brush = useStore(state, (s) => s.brush);
@@ -218,21 +221,21 @@ export function MaskCanvas(props: MaskCanvasProps) {
     }
   }, [mask]);
 
-  useEffect(() => {
-    if (doesExist(source)) {
-      if (doesExist(background.current)) {
-        URL.revokeObjectURL(background.current);
-      }
-
-      background.current = URL.createObjectURL(source);
-
-      // initialize the mask if it does not exist
-      if (doesExist(mask) === false) {
-        getClearContext(maskRef);
-        dirty.current = true;
-      }
+  // update background ref
+  if (doesExist(source) && background.current.name !== source.name) {
+    if (doesExist(background.current.url)) {
+      URL.revokeObjectURL(background.current.url);
     }
-  }, [source]);
+
+    background.current.url = URL.createObjectURL(source);
+    background.current.name = source.name;
+
+    // initialize the mask if it does not exist
+    if (doesExist(mask) === false) {
+      getClearContext(maskRef);
+      dirty.current = true;
+    }
+  }
 
   const backgroundStyle: React.CSSProperties = {
     backgroundPosition: 'top left',
@@ -244,7 +247,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
   };
 
   if (doesExist(background.current)) {
-    backgroundStyle.backgroundImage = `url(${background.current})`;
+    backgroundStyle.backgroundImage = `url(${background.current.url})`;
   }
 
   const hiddenStyle: React.CSSProperties = {
