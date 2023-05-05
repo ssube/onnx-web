@@ -125,7 +125,8 @@ build-gui-bundle:
     - .build-oci
   stage: package
   needs:
-    - build-api-coverage
+    - build-api-coverage-3.8
+    - build-api-coverage-3.10
     - build-gui-bundle
   script:
     - mv -v gui/out/config.json gui/out/index.html api/gui/
@@ -183,7 +184,8 @@ package-api-twine:
     - .build-python
   stage: package
   needs:
-    - build-api-coverage
+    - build-api-coverage-3.8
+    - build-api-coverage-3.10
   only:
     - tags
   script:
