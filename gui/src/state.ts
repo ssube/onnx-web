@@ -24,6 +24,7 @@ import {
   UpscaleReqParams,
 } from './client/api.js';
 import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
+import { ExtrasFile } from './types.js';
 
 export type Theme = PaletteMode | ''; // tri-state, '' is unset
 
@@ -36,10 +37,6 @@ interface HistoryItem {
   image: ImageResponse;
   ready: Maybe<ReadyResponse>;
   retry: RetryParams;
-}
-
-interface ExtrasFile {
-  diffusion: Array<string>;
 }
 
 interface BrushSlice {
@@ -556,7 +553,6 @@ export function createStateSlices(server: ServerParams) {
         next.resetTxt2Img();
         next.resetUpscaleTab();
         next.resetBlend();
-        // TODO: reset more stuff
         return next;
       });
     },
@@ -564,7 +560,11 @@ export function createStateSlices(server: ServerParams) {
 
   const createExtraSlice: Slice<ExtraSlice> = (set) => ({
     extras: {
+      correction: [],
       diffusion: [],
+      networks: [],
+      sources: [],
+      upscaling: [],
     },
     setExtras(extras) {
       set((prev) => ({
