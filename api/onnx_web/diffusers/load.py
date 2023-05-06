@@ -125,18 +125,6 @@ def load_pipeline(
         logger.debug("reusing existing diffusion pipeline")
         pipe = cache_pipe
 
-        cache_pipe.vae_encoder.set_tiled(tiled=params.tiled_vae)
-        cache_pipe.vae_decoder.set_tiled(tiled=params.tiled_vae)
-
-        # update panorama params
-        if pipeline == "panorama":
-            latent_window = params.tiles // 8
-            latent_stride = params.stride // 8
-
-            cache_pipe.set_window_size(latent_window, latent_stride)
-            cache_pipe.vae_encoder.set_window_size(latent_window, params.overlap)
-            cache_pipe.vae_decoder.set_window_size(latent_window, params.overlap)
-
         # update scheduler
         cache_scheduler = server.cache.get("scheduler", scheduler_key)
         if cache_scheduler is None:
@@ -362,6 +350,18 @@ def load_pipeline(
 
         server.cache.set("diffusion", pipe_key, pipe)
         server.cache.set("scheduler", scheduler_key, components["scheduler"])
+
+    pipe.vae_encoder.set_tiled(tiled=params.tiled_vae)
+    pipe.vae_decoder.set_tiled(tiled=params.tiled_vae)
+
+    # update panorama params
+    if pipeline == "panorama":
+        latent_window = params.tiles // 8
+        latent_stride = params.stride // 8
+
+        pipe.set_window_size(latent_window, latent_stride)
+        pipe.vae_encoder.set_window_size(latent_window, params.overlap)
+        pipe.vae_decoder.set_window_size(latent_window, params.overlap)
 
     return pipe
 
