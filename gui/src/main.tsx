@@ -1,17 +1,18 @@
 import { mustDefault, mustExist, timeout, TimeoutError } from '@apextoaster/js-utils';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createLogger, Logger } from 'browser-bunyan';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { satisfies } from 'semver';
 import { createStore } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { ApiClient, makeClient } from './client/api.js';
+import { makeClient } from './client/api.js';
 import { LOCAL_CLIENT } from './client/local.js';
+import { ApiClient } from './client/types.js';
 import { ParamsVersionError } from './components/error/ParamsVersion.js';
 import { ServerParamsError } from './components/error/ServerParams.js';
 import { LoadingScreen } from './components/LoadingScreen.js';

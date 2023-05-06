@@ -1,6 +1,16 @@
 import { doesExist, Maybe } from '@apextoaster/js-utils';
 import { merge } from 'lodash';
-import { HighresParams, Img2ImgParams, InpaintParams, ModelParams, OutpaintParams, STATUS_SUCCESS, Txt2ImgParams, UpscaleParams } from './client/api.js';
+
+import { STATUS_SUCCESS } from './client/api.js';
+import {
+  HighresParams,
+  Img2ImgParams,
+  InpaintParams,
+  ModelParams,
+  OutpaintParams,
+  Txt2ImgParams,
+  UpscaleParams,
+} from './client/types.js';
 
 export interface ConfigBoolean {
   default: boolean;

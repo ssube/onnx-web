@@ -2,13 +2,13 @@ import { mustExist } from '@apextoaster/js-utils';
 import { Delete, Replay } from '@mui/icons-material';
 import { Alert, Box, Card, CardContent, IconButton, Tooltip } from '@mui/material';
 import { Stack } from '@mui/system';
+import { useMutation } from '@tanstack/react-query';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
-import { ImageResponse, ReadyResponse, RetryParams } from '../../client/api.js';
+import { ImageResponse, ReadyResponse, RetryParams } from '../../client/types.js';
 import { ClientContext, ConfigContext, StateContext } from '../../state.js';
 
 export interface ErrorCardProps {

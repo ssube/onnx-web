@@ -1,13 +1,13 @@
 import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Casino } from '@mui/icons-material';
 import { Button, Checkbox, FormControlLabel, Stack } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
-import { BaseImgParams } from '../../client/api.js';
+import { BaseImgParams } from '../../client/types.js';
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
 import { NumericField } from '../input/NumericField.js';

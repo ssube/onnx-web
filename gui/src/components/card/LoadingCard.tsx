@@ -1,13 +1,13 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Card, CardContent, CircularProgress, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
-import { ImageResponse } from '../../client/api.js';
+import { ImageResponse } from '../../client/types.js';
 import { POLL_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, StateContext } from '../../state.js';
 

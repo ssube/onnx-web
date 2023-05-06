@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
-import { ImageResponse } from '../../client/api.js';
+import { ImageResponse } from '../../client/types.js';
 import { BLEND_SOURCES, ConfigContext, StateContext } from '../../state.js';
 import { range, visibleIndex } from '../../utils.js';
 

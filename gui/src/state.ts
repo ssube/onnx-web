@@ -22,7 +22,7 @@ import {
   Txt2ImgParams,
   UpscaleParams,
   UpscaleReqParams,
-} from './client/api.js';
+} from './client/types.js';
 import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
 import { ExtrasFile } from './types.js';
 

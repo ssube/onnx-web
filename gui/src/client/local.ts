@@ -1,5 +1,6 @@
 import { BaseError } from 'noicejs';
-import { ApiClient } from './api.js';
+
+import { ApiClient } from './types.js';
 
 export class NoServerError extends BaseError {
   constructor() {
@@ -11,6 +12,12 @@ export class NoServerError extends BaseError {
  * @TODO client-side inference with https://www.npmjs.com/package/onnxruntime-web
  */
 export const LOCAL_CLIENT = {
+  async extras() {
+    throw new NoServerError();
+  },
+  async writeExtras(extras) {
+    throw new NoServerError();
+  },
   async filters() {
     throw new NoServerError();
   },
