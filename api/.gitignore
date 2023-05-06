@@ -2,6 +2,7 @@
 coverage.xml
 entry.py
 
+*.dot
 *.log
 *.swp
 *.pyc
