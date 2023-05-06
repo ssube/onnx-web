@@ -9,6 +9,7 @@ export const TAB_LABELS = [
   'inpaint',
   'upscale',
   'blend',
+  'models',
   'settings',
 ] as const;
 

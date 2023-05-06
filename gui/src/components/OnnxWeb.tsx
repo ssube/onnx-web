@@ -1,6 +1,6 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Container, CssBaseline, Divider, PaletteMode, Tab, useMediaQuery } from '@mui/material';
+import { Box, Container, CssBaseline, Divider, Tab, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
 import { useContext, useMemo } from 'react';
@@ -14,6 +14,7 @@ import { Logo } from './Logo.js';
 import { Blend } from './tab/Blend.js';
 import { Img2Img } from './tab/Img2Img.js';
 import { Inpaint } from './tab/Inpaint.js';
+import { Models } from './tab/Models.js';
 import { Settings } from './tab/Settings.js';
 import { Txt2Img } from './tab/Txt2Img.js';
 import { Upscale } from './tab/Upscale.js';
@@ -67,6 +68,9 @@ export function OnnxWeb() {
           </TabPanel>
           <TabPanel value='blend'>
             <Blend />
+          </TabPanel>
+          <TabPanel value='models'>
+            <Models />
           </TabPanel>
           <TabPanel value='settings'>
             <Settings />

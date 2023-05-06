@@ -38,6 +38,10 @@ interface HistoryItem {
   retry: RetryParams;
 }
 
+interface ExtrasFile {
+  diffusion: Array<string>;
+}
+
 interface BrushSlice {
   brush: BrushParams;
 
@@ -50,6 +54,12 @@ interface DefaultSlice {
 
   setDefaults(param: Partial<BaseImgParams>): void;
   setTheme(theme: Theme): void;
+}
+
+interface ExtraSlice {
+  extras: ExtrasFile;
+
+  setExtras(extras: Partial<ExtrasFile>): void;
 }
 
 interface HistorySlice {
@@ -139,7 +149,8 @@ export type OnnxState
   & HighresSlice
   & UpscaleSlice
   & BlendSlice
-  & ResetSlice;
+  & ResetSlice
+  & ExtraSlice;
 
 /**
  * Shorthand for state creator to reduce repeated arguments.
@@ -551,6 +562,21 @@ export function createStateSlices(server: ServerParams) {
     },
   });
 
+  const createExtraSlice: Slice<ExtraSlice> = (set) => ({
+    extras: {
+      diffusion: [],
+    },
+    setExtras(extras) {
+      set((prev) => ({
+        ...prev,
+        extras: {
+          ...prev.extras,
+          ...extras,
+        },
+      }));
+    },
+  });
+
   return {
     createBrushSlice,
     createDefaultSlice,
@@ -564,5 +590,6 @@ export function createStateSlices(server: ServerParams) {
     createHighresSlice,
     createBlendSlice,
     createResetSlice,
+    createExtraSlice,
   };
 }
