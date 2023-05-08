@@ -1,28 +1,44 @@
+import { mustExist } from '@apextoaster/js-utils';
 import { Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
+import { useStore } from 'zustand';
 
-const { useState } = React;
+import { OnnxState, StateContext } from '../../state';
+
+const { useContext, useState } = React;
 
 export interface EditableListProps<T> {
-  items: Array<T>;
+  // items: Array<T>;
+  selector: (s: OnnxState) => Array<T>;
 
   newItem: (l: string, s: string) => T;
-  renderItem: (t: T) => React.ReactElement;
-  setItems: (ts: Array<T>) => void;
+  // removeItem: (t: T) => void;
+  renderItem: (props: {
+    model: T;
+    onChange: (t: T) => void;
+  }) => React.ReactElement;
+  setItem: (t: T) => void;
 }
 
 export function EditableList<T>(props: EditableListProps<T>) {
-  const { items, newItem, renderItem, setItems } = props;
+  const state = mustExist(useContext(StateContext));
+  const items = useStore(state, props.selector);
+
+  const { newItem, renderItem, setItem } = props;
   const [nextLabel, setNextLabel] = useState('');
   const [nextSource, setNextSource] = useState('');
 
   return <Stack spacing={2}>
-    {items.map((it, idx) => <Stack direction='row' key={idx} spacing={2}>
-      {renderItem(it)}
-      <Button onClick={() => setItems([
-        ...items.slice(0, idx),
-        ...items.slice(idx + 1, items.length),
-      ])}>Remove</Button>
+    {items.map((model, idx) => <Stack direction='row' key={idx} spacing={2}>
+      {renderItem({
+        model,
+        onChange(t) {
+          setItem(t);
+        },
+      })}
+      <Button onClick={() => {
+        // removeItem(model);
+      }}>Remove</Button>
     </Stack>)}
     <Stack direction='row' spacing={2}>
       <TextField
@@ -38,8 +54,9 @@ export function EditableList<T>(props: EditableListProps<T>) {
         onChange={(event) => setNextSource(event.target.value)}
       />
       <Button onClick={() => {
-        setItems([...items, newItem(nextLabel, nextSource)]);
+        setItem(newItem(nextLabel, nextSource));
         setNextLabel('');
+        setNextSource('');
       }}>New</Button>
     </Stack>
   </Stack>;

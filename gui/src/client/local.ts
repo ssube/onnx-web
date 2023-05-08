@@ -69,10 +69,10 @@ export const LOCAL_CLIENT = {
   async strings() {
     return {};
   },
-  async restart(token) {
+  async restart() {
     throw new NoServerError();
   },
-  async status(token) {
+  async status() {
     throw new NoServerError();
   }
 } as ApiClient;

@@ -364,10 +364,10 @@ export interface ApiClient {
   /**
    * Restart the image job workers.
    */
-  restart(token: string): Promise<boolean>;
+  restart(): Promise<boolean>;
 
   /**
    * Check the status of the image job workers.
    */
-  status(token: string): Promise<Array<unknown>>;
+  status(): Promise<Array<unknown>>;
 }

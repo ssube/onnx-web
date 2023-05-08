@@ -143,9 +143,13 @@ export async function main() {
   // load config from GUI server
   const config = await loadConfig();
 
+  // get token from query string
+  const query = new URLSearchParams(window.location.search);
+  const token = query.get('token');
+
   // use that to create an API client
   const root = getApiRoot(config);
-  const client = makeClient(root);
+  const client = makeClient(root, token);
 
   // prep react-dom
   const appElement = mustExist(document.getElementById('app'));

@@ -21,12 +21,9 @@ export function ModelControl() {
   const setModel = useStore(state, (s) => s.setModel);
   const { t } = useTranslation();
 
-  // get token from query string
-  const query = new URLSearchParams(window.location.search);
-  const token = query.get('token');
   const [hash, _setHash] = useHash();
 
-  const restart = useMutation(['restart'], async () => client.restart(mustExist(token)));
+  const restart = useMutation(['restart'], async () => client.restart());
   const models = useQuery(['models'], async () => client.models(), {
     staleTime: STALE_TIME,
   });

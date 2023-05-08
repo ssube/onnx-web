@@ -1,12 +1,13 @@
-import { mustExist } from '@apextoaster/js-utils';
-import { Accordion, AccordionDetails, AccordionSummary, Button, Stack } from '@mui/material';
+import { doesExist, mustExist } from '@apextoaster/js-utils';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, CircularProgress, Stack } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import _ from 'lodash';
 import * as React from 'react';
 import { useStore } from 'zustand';
 
-import { ClientContext, StateContext } from '../../state.js';
-import { SafetensorFormat } from '../../types.js';
+import { STALE_TIME } from '../../config.js';
+import { ClientContext, OnnxState, StateContext } from '../../state.js';
+import { CorrectionModel, DiffusionModel, ExtraNetwork, ExtraSource, ExtrasFile, SafetensorFormat, UpscalingModel } from '../../types.js';
 import { EditableList } from '../input/EditableList';
 import { CorrectionModelInput } from '../input/model/CorrectionModel.js';
 import { DiffusionModelInput } from '../input/model/DiffusionModel.js';
@@ -14,29 +15,99 @@ import { ExtraNetworkInput } from '../input/model/ExtraNetwork.js';
 import { ExtraSourceInput } from '../input/model/ExtraSource.js';
 import { UpscalingModelInput } from '../input/model/UpscalingModel.js';
 
-const { useContext } = React;
+const { useContext, useEffect } = React;
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { kebabCase }  = _;
 
+function mergeModelLists<T extends DiffusionModel | ExtraSource>(local: Array<T>, server: Array<T>) {
+  const localNames = new Set(local.map((it) => it.name));
+
+  const merged = [...local];
+  for (const model of server) {
+    if (localNames.has(model.name) === false) {
+      merged.push(model);
+    }
+  }
+
+  return merged;
+}
+
+function mergeModels(local: ExtrasFile, server: ExtrasFile): ExtrasFile {
+  const merged: ExtrasFile = {
+    ...server,
+    correction: mergeModelLists(local.correction, server.correction),
+    diffusion: mergeModelLists(local.diffusion, server.diffusion),
+    networks: mergeModelLists(local.networks, server.networks),
+    sources: mergeModelLists(local.sources, server.sources),
+    upscaling: mergeModelLists(local.upscaling, server.upscaling),
+  };
+
+  return merged;
+}
+
+function selectDiffusionModels(state: OnnxState): Array<DiffusionModel> {
+  return state.extras.diffusion;
+}
+
+function selectCorrectionModels(state: OnnxState): Array<CorrectionModel> {
+  return state.extras.correction;
+}
+
+function selectUpscalingModels(state: OnnxState): Array<UpscalingModel> {
+  return state.extras.upscaling;
+}
+
+function selectExtraNetworks(state: OnnxState): Array<ExtraNetwork> {
+  return state.extras.networks;
+}
+
+function selectExtraSources(state: OnnxState): Array<ExtraSource> {
+  return state.extras.sources;
+}
+
 export function Models() {
   const state = mustExist(React.useContext(StateContext));
-  const extras = useStore(state, (s) => s.extras);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setExtras = useStore(state, (s) => s.setExtras);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setCorrectionModel = useStore(state, (s) => s.setCorrectionModel);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setDiffusionModel = useStore(state, (s) => s.setDiffusionModel);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setExtraNetwork = useStore(state, (s) => s.setExtraNetwork);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setExtraSource = useStore(state, (s) => s.setExtraSource);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setUpscalingModel = useStore(state, (s) => s.setUpscalingModel);
   const client = mustExist(useContext(ClientContext));
 
-  const serverExtras = useQuery(['extras'], async () => client.extras(), {
-    // staleTime: STALE_TIME,
+  const result = useQuery(['extras'], async () => client.extras(), {
+    staleTime: STALE_TIME,
   });
-
-  async function writeExtras() {
-    const resp = await client.writeExtras(extras);
-  }
 
   const query = useQueryClient();
   const write = useMutation(writeExtras, {
     onSuccess: () => query.invalidateQueries([ 'extras' ]),
   });
+
+  useEffect(() => {
+    if (result.status === 'success' && doesExist(result.data)) {
+      setExtras(mergeModels(state.getState().extras, result.data));
+    }
+  }, [result.status]);
+
+  if (result.status === 'error') {
+    return <Alert severity='error'>Error</Alert>;
+  }
+
+  if (result.status === 'loading') {
+    return <CircularProgress />;
+  }
+
+  async function writeExtras() {
+    const resp = await client.writeExtras(state.getState().extras);
+    // TODO: do something with resp
+  }
 
   return <Stack spacing={2}>
     <Accordion>
@@ -44,19 +115,17 @@ export function Models() {
         Diffusion Models
       </AccordionSummary>
       <AccordionDetails>
-        <EditableList
-          items={extras.diffusion}
+        <EditableList<DiffusionModel>
+          selector={selectDiffusionModels}
           newItem={(l, s) => ({
             format: 'safetensors' as SafetensorFormat,
             label: l,
             name: kebabCase(l),
             source: s,
           })}
-          renderItem={(t) => <DiffusionModelInput model={t}/>}
-          setItems={(diffusion) => setExtras({
-            ...extras,
-            diffusion,
-          })}
+          // removeItem={(m) => { /* TODO */ }}
+          renderItem={DiffusionModelInput}
+          setItem={(model) => setDiffusionModel(model)}
         />
       </AccordionDetails>
     </Accordion>
@@ -66,18 +135,15 @@ export function Models() {
       </AccordionSummary>
       <AccordionDetails>
         <EditableList
-          items={extras.correction}
+          selector={selectCorrectionModels}
           newItem={(l, s) => ({
             format: 'safetensors' as SafetensorFormat,
             label: l,
             name: kebabCase(l),
             source: s,
           })}
-          renderItem={(t) => <CorrectionModelInput model={t}/>}
-          setItems={(correction) => setExtras({
-            ...extras,
-            correction,
-          })}
+          renderItem={CorrectionModelInput}
+          setItem={(model) => setCorrectionModel(model)}
         />
       </AccordionDetails>
     </Accordion>
@@ -87,7 +153,7 @@ export function Models() {
       </AccordionSummary>
       <AccordionDetails>
         <EditableList
-          items={extras.upscaling}
+          selector={selectUpscalingModels}
           newItem={(l, s) => ({
             format: 'safetensors' as SafetensorFormat,
             label: l,
@@ -95,11 +161,8 @@ export function Models() {
             scale: 4,
             source: s,
           })}
-          renderItem={(t) => <UpscalingModelInput model={t}/>}
-          setItems={(upscaling) => setExtras({
-            ...extras,
-            upscaling,
-          })}
+          renderItem={UpscalingModelInput}
+          setItem={(model) => setUpscalingModel(model)}
         />
       </AccordionDetails>
     </Accordion>
@@ -109,7 +172,7 @@ export function Models() {
       </AccordionSummary>
       <AccordionDetails>
         <EditableList
-          items={extras.networks}
+          selector={selectExtraNetworks}
           newItem={(l, s) => ({
             format: 'safetensors' as SafetensorFormat,
             label: l,
@@ -118,11 +181,8 @@ export function Models() {
             source: s,
             type: 'inversion' as const,
           })}
-          renderItem={(t) => <ExtraNetworkInput model={t}/>}
-          setItems={(networks) => setExtras({
-            ...extras,
-            networks,
-          })}
+          renderItem={ExtraNetworkInput}
+          setItem={(model) => setExtraNetwork(model)}
         />
       </AccordionDetails>
     </Accordion>
@@ -132,18 +192,15 @@ export function Models() {
       </AccordionSummary>
       <AccordionDetails>
         <EditableList
-          items={extras.sources}
+          selector={selectExtraSources}
           newItem={(l, s) => ({
             format: 'safetensors' as SafetensorFormat,
             label: l,
             name: kebabCase(l),
             source: s,
           })}
-          renderItem={(t) => <ExtraSourceInput model={t}/>}
-          setItems={(sources) => setExtras({
-            ...extras,
-            sources,
-          })}
+          renderItem={ExtraSourceInput}
+          setItem={(model) => setExtraSource(model)}
         />
       </AccordionDetails>
     </Accordion>

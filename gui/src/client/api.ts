@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { doesExist, InvalidArgumentError } from '@apextoaster/js-utils';
+import { doesExist, InvalidArgumentError, Maybe } from '@apextoaster/js-utils';
 
 import { ServerParams } from '../config.js';
 import { range } from '../utils.js';
@@ -134,7 +134,7 @@ export function appendHighresToURL(url: URL, highres: HighresParams) {
 /**
  * Make an API client using the given API root and fetch client.
  */
-export function makeClient(root: string, f = fetch): ApiClient {
+export function makeClient(root: string, token: Maybe<string> = undefined, f = fetch): ApiClient {
   function parseRequest(url: URL, options: RequestInit): Promise<ImageResponse> {
     return f(url, options).then((res) => parseApiResponse(root, res));
   }
@@ -142,11 +142,20 @@ export function makeClient(root: string, f = fetch): ApiClient {
   return {
     async extras(): Promise<ExtrasFile> {
       const path = makeApiUrl(root, 'extras');
+
+      if (doesExist(token)) {
+        path.searchParams.append('token', token);
+      }
+
       const res = await f(path);
       return await res.json() as ExtrasFile;
     },
     async writeExtras(extras: ExtrasFile): Promise<WriteExtrasResponse> {
       const path = makeApiUrl(root, 'extras');
+
+      if (doesExist(token)) {
+        path.searchParams.append('token', token);
+      }
 
       const res = await f(path, {
         body: JSON.stringify(extras),
@@ -454,18 +463,24 @@ export function makeClient(root: string, f = fetch): ApiClient {
           throw new InvalidArgumentError('unknown request type');
       }
     },
-    async restart(token: string): Promise<boolean> {
+    async restart(): Promise<boolean> {
       const path = makeApiUrl(root, 'restart');
-      path.searchParams.append('token', token);
+
+      if (doesExist(token)) {
+        path.searchParams.append('token', token);
+      }
 
       const res = await f(path, {
         method: 'POST',
       });
       return res.status === STATUS_SUCCESS;
     },
-    async status(token: string): Promise<Array<unknown>> {
+    async status(): Promise<Array<unknown>> {
       const path = makeApiUrl(root, 'status');
-      path.searchParams.append('token', token);
+
+      if (doesExist(token)) {
+        path.searchParams.append('token', token);
+      }
 
       const res = await f(path);
       return res.json();
