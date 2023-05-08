@@ -5,7 +5,7 @@ import { useStore } from 'zustand';
 
 import { OnnxState, StateContext } from '../../state';
 
-const { useContext, useState } = React;
+const { useContext, useState, memo, useMemo } = React;
 
 export interface EditableListProps<T> {
   // items: Array<T>;
@@ -21,21 +21,20 @@ export interface EditableListProps<T> {
 }
 
 export function EditableList<T>(props: EditableListProps<T>) {
-  const state = mustExist(useContext(StateContext));
-  const items = useStore(state, props.selector);
+  const { newItem, renderItem, setItem, selector } = props;
 
-  const { newItem, renderItem, setItem } = props;
+  const state = mustExist(useContext(StateContext));
+  const items = useStore(state, selector);
   const [nextLabel, setNextLabel] = useState('');
   const [nextSource, setNextSource] = useState('');
+  const RenderMemo = useMemo(() => memo(renderItem), [renderItem]);
 
   return <Stack spacing={2}>
     {items.map((model, idx) => <Stack direction='row' key={idx} spacing={2}>
-      {renderItem({
-        model,
-        onChange(t) {
-          setItem(t);
-        },
-      })}
+      <RenderMemo
+        model={model}
+        onChange={setItem}
+      />
       <Button onClick={() => {
         // removeItem(model);
       }}>Remove</Button>

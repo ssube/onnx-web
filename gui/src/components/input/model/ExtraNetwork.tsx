@@ -45,6 +45,7 @@ export function ExtraNetworkInput(props: ExtraNetworkInputProps) {
     >
       <MenuItem value='ckpt'>ckpt</MenuItem>
       <MenuItem value='safetensors'>safetensors</MenuItem>
+      <MenuItem value='bin'>bin</MenuItem>
     </Select>
     <Select value={model.type} label='Type' onChange={(selection) => {
       onChange({

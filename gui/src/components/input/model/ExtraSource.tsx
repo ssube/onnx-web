@@ -37,6 +37,8 @@ export function ExtraSourceInput(props: ExtraSourceInputProps) {
     >
       <MenuItem value='ckpt'>ckpt</MenuItem>
       <MenuItem value='safetensors'>safetensors</MenuItem>
+      <MenuItem value='json'>json</MenuItem>
+      <MenuItem value='yaml'>yaml</MenuItem>
     </Select>
     <TextField label='Folder' value={model.dest} onChange={(event) => {
       onChange({
