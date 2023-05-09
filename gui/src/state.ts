@@ -65,6 +65,12 @@ interface ExtraSlice {
   setExtraNetwork(model: ExtraNetwork): void;
   setExtraSource(model: ExtraSource): void;
   setUpscalingModel(model: UpscalingModel): void;
+
+  removeCorrectionModel(model: CorrectionModel): void;
+  removeDiffusionModel(model: DiffusionModel): void;
+  removeExtraNetwork(model: ExtraNetwork): void;
+  removeExtraSource(model: ExtraSource): void;
+  removeUpscalingModel(model: UpscalingModel): void;
 }
 
 interface HistorySlice {
@@ -670,6 +676,70 @@ export function createStateSlices(server: ServerParams) {
           upscaling[exists] = model;
         }
 
+        return {
+          ...prev,
+          extras: {
+            ...prev.extras,
+            upscaling,
+          },
+        };
+      });
+    },
+    removeCorrectionModel(model) {
+      set((prev) => {
+        const correction = prev.extras.correction.filter((it) => model.name !== it.name);;
+        return {
+          ...prev,
+          extras: {
+            ...prev.extras,
+            correction,
+          },
+        };
+      });
+
+    },
+    removeDiffusionModel(model) {
+      set((prev) => {
+        const diffusion = prev.extras.diffusion.filter((it) => model.name !== it.name);;
+        return {
+          ...prev,
+          extras: {
+            ...prev.extras,
+            diffusion,
+          },
+        };
+      });
+
+    },
+    removeExtraNetwork(model) {
+      set((prev) => {
+        const networks = prev.extras.networks.filter((it) => model.name !== it.name);;
+        return {
+          ...prev,
+          extras: {
+            ...prev.extras,
+            networks,
+          },
+        };
+      });
+
+    },
+    removeExtraSource(model) {
+      set((prev) => {
+        const sources = prev.extras.sources.filter((it) => model.name !== it.name);;
+        return {
+          ...prev,
+          extras: {
+            ...prev.extras,
+            sources,
+          },
+        };
+      });
+
+    },
+    removeUpscalingModel(model) {
+      set((prev) => {
+        const upscaling = prev.extras.upscaling.filter((it) => model.name !== it.name);;
         return {
           ...prev,
           extras: {

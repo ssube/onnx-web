@@ -1,18 +1,20 @@
-import { MenuItem, Select, Stack, TextField } from '@mui/material';
+import { Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 
-import { DiffusionModel } from '../../../types.js';
+import { DiffusionModel, ModelFormat } from '../../../types.js';
 
 export interface DiffusionModelInputProps {
+  key?: number | string;
   model: DiffusionModel;
 
   onChange: (model: DiffusionModel) => void;
+  onRemove: (model: DiffusionModel) => void;
 }
 
 export function DiffusionModelInput(props: DiffusionModelInputProps) {
-  const { model, onChange } = props;
+  const { key, model, onChange, onRemove } = props;
 
-  return <Stack direction='row' spacing={2}>
+  return <Stack direction='row' spacing={2} key={key}>
     <TextField label='Label' value={model.label} onChange={(event) => {
       onChange({
         ...model,
@@ -28,11 +30,12 @@ export function DiffusionModelInput(props: DiffusionModelInputProps) {
     <Select value={model.format} label='Format' onChange={(selection) => {
       onChange({
         ...model,
-        format: selection.target.value as 'ckpt' | 'safetensors',
+        format: selection.target.value as ModelFormat,
       });
     }}>
       <MenuItem value='ckpt'>ckpt</MenuItem>
       <MenuItem value='safetensors'>safetensors</MenuItem>
     </Select>
+    <Button onClick={() => onRemove(model)}>Remove</Button>
   </Stack>;
 }

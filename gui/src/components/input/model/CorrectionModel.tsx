@@ -1,18 +1,20 @@
-import { MenuItem, Select, Stack, TextField } from '@mui/material';
+import { Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 
-import { CorrectionModel } from '../../../types';
+import { CorrectionArch, CorrectionModel, ModelFormat } from '../../../types.js';
 
 export interface CorrectionModelInputProps {
+  key?: number | string;
   model: CorrectionModel;
 
   onChange: (model: CorrectionModel) => void;
+  onRemove: (model: CorrectionModel) => void;
 }
 
 export function CorrectionModelInput(props: CorrectionModelInputProps) {
-  const { model, onChange } = props;
+  const { key, model, onChange, onRemove } = props;
 
-  return <Stack direction='row' spacing={2}>
+  return <Stack direction='row' spacing={2} key={key}>
     <TextField
       value={model.label}
       onChange={(event) => {
@@ -37,7 +39,7 @@ export function CorrectionModelInput(props: CorrectionModelInputProps) {
       onChange={(selection) => {
         onChange({
           ...model,
-          format: selection.target.value as 'safetensors',
+          format: selection.target.value as ModelFormat,
         });
       }}
     >
@@ -50,12 +52,13 @@ export function CorrectionModelInput(props: CorrectionModelInputProps) {
       onChange={(selection) => {
         onChange({
           ...model,
-          model: selection.target.value as 'codeformer',
+          model: selection.target.value as CorrectionArch,
         });
       }}
     >
       <MenuItem value='codeformer'>Codeformer</MenuItem>
       <MenuItem value='gfpgan'>GFPGAN</MenuItem>
     </Select>
+    <Button onClick={() => onRemove(model)}>Remove</Button>
   </Stack>;
 }

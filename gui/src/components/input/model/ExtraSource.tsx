@@ -1,18 +1,20 @@
+import { Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import * as React from 'react';
-import { MenuItem, Select, Stack, TextField } from '@mui/material';
 
-import { ExtraSource } from '../../../types';
+import { AnyFormat, ExtraSource } from '../../../types.js';
 
 export interface ExtraSourceInputProps {
+  key?: number | string;
   model: ExtraSource;
 
   onChange: (model: ExtraSource) => void;
+  onRemove: (model: ExtraSource) => void;
 }
 
 export function ExtraSourceInput(props: ExtraSourceInputProps) {
-  const { model, onChange } = props;
+  const { key, model, onChange, onRemove } = props;
 
-  return <Stack direction='row' spacing={2}>
+  return <Stack direction='row' spacing={2} key={key}>
     <TextField label='Name' value={model.name} onChange={(event) => {
       onChange({
         ...model,
@@ -31,7 +33,7 @@ export function ExtraSourceInput(props: ExtraSourceInputProps) {
       onChange={(selection) => {
         onChange({
           ...model,
-          format: selection.target.value as 'safetensors',
+          format: selection.target.value as AnyFormat,
         });
       }}
     >
@@ -46,5 +48,6 @@ export function ExtraSourceInput(props: ExtraSourceInputProps) {
         dest: event.target.value,
       });
     }} />
+    <Button onClick={() => onRemove(model)}>Remove</Button>
   </Stack>;
 }

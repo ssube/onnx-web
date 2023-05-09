@@ -3,25 +3,25 @@ import { Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 import { useStore } from 'zustand';
 
-import { OnnxState, StateContext } from '../../state';
+import { OnnxState, StateContext } from '../../state.js';
 
 const { useContext, useState, memo, useMemo } = React;
 
 export interface EditableListProps<T> {
-  // items: Array<T>;
   selector: (s: OnnxState) => Array<T>;
 
   newItem: (l: string, s: string) => T;
-  // removeItem: (t: T) => void;
+  removeItem: (t: T) => void;
   renderItem: (props: {
     model: T;
     onChange: (t: T) => void;
+    onRemove: (t: T) => void;
   }) => React.ReactElement;
   setItem: (t: T) => void;
 }
 
 export function EditableList<T>(props: EditableListProps<T>) {
-  const { newItem, renderItem, setItem, selector } = props;
+  const { newItem, removeItem, renderItem, setItem, selector } = props;
 
   const state = mustExist(useContext(StateContext));
   const items = useStore(state, selector);
@@ -30,15 +30,14 @@ export function EditableList<T>(props: EditableListProps<T>) {
   const RenderMemo = useMemo(() => memo(renderItem), [renderItem]);
 
   return <Stack spacing={2}>
-    {items.map((model, idx) => <Stack direction='row' key={idx} spacing={2}>
+    {items.map((model, idx) =>
       <RenderMemo
+        key={idx}
         model={model}
         onChange={setItem}
+        onRemove={removeItem}
       />
-      <Button onClick={() => {
-        // removeItem(model);
-      }}>Remove</Button>
-    </Stack>)}
+    )}
     <Stack direction='row' spacing={2}>
       <TextField
         label='Label'

@@ -1,19 +1,21 @@
-import { MenuItem, Select, Stack, TextField } from '@mui/material';
+import { Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 
-import { UpscalingModel } from '../../../types.js';
+import { ModelFormat, UpscalingArch, UpscalingModel } from '../../../types.js';
 import { NumericField } from '../NumericField.js';
 
 export interface UpscalingModelInputProps {
+  key?: number | string;
   model: UpscalingModel;
 
   onChange: (model: UpscalingModel) => void;
+  onRemove: (model: UpscalingModel) => void;
 }
 
 export function UpscalingModelInput(props: UpscalingModelInputProps) {
-  const { model, onChange } = props;
+  const { key, model, onChange, onRemove } = props;
 
-  return <Stack direction='row' spacing={2}>
+  return <Stack direction='row' spacing={2} key={key}>
     <TextField value={model.label} label='Label' onChange={(event) => {
       onChange({
         ...model,
@@ -29,7 +31,7 @@ export function UpscalingModelInput(props: UpscalingModelInputProps) {
     <Select value={model.format} label='Format' onChange={(selection) => {
       onChange({
         ...model,
-        format: selection.target.value as 'ckpt',
+        format: selection.target.value as ModelFormat,
       });
     }}>
       <MenuItem value='ckpt'>ckpt</MenuItem>
@@ -38,7 +40,7 @@ export function UpscalingModelInput(props: UpscalingModelInputProps) {
     <Select value={model.model} label='Type' onChange={(selection) => {
       onChange({
         ...model,
-        model: selection.target.value as 'bsrgan',
+        model: selection.target.value as UpscalingArch,
       });
     }}>
       <MenuItem value='bsrgan'>BSRGAN</MenuItem>
@@ -58,5 +60,6 @@ export function UpscalingModelInput(props: UpscalingModelInputProps) {
         });
       }}
     />
+    <Button onClick={() => onRemove(model)}>Remove</Button>
   </Stack>;
 }

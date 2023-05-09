@@ -7,7 +7,7 @@ import { useStore } from 'zustand';
 
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, OnnxState, StateContext } from '../../state.js';
-import { CorrectionModel, DiffusionModel, ExtraNetwork, ExtraSource, ExtrasFile, SafetensorFormat, UpscalingModel } from '../../types.js';
+import { CorrectionModel, DiffusionModel, ExtraNetwork, ExtraSource, ExtrasFile, NetworkModel, NetworkType, SafetensorFormat, UpscalingModel } from '../../types.js';
 import { EditableList } from '../input/EditableList';
 import { CorrectionModelInput } from '../input/model/CorrectionModel.js';
 import { DiffusionModelInput } from '../input/model/DiffusionModel.js';
@@ -79,6 +79,16 @@ export function Models() {
   const setExtraSource = useStore(state, (s) => s.setExtraSource);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setUpscalingModel = useStore(state, (s) => s.setUpscalingModel);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const removeCorrectionModel = useStore(state, (s) => s.removeCorrectionModel);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const removeDiffusionModel = useStore(state, (s) => s.removeDiffusionModel);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const removeExtraNetwork = useStore(state, (s) => s.removeExtraNetwork);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const removeExtraSource = useStore(state, (s) => s.removeExtraSource);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const removeUpscalingModel = useStore(state, (s) => s.removeUpscalingModel);
   const client = mustExist(useContext(ClientContext));
 
   const result = useQuery(['extras'], async () => client.extras(), {
@@ -123,7 +133,7 @@ export function Models() {
             name: kebabCase(l),
             source: s,
           })}
-          // removeItem={(m) => { /* TODO */ }}
+          removeItem={(m) => removeDiffusionModel(m)}
           renderItem={DiffusionModelInput}
           setItem={(model) => setDiffusionModel(model)}
         />
@@ -142,6 +152,7 @@ export function Models() {
             name: kebabCase(l),
             source: s,
           })}
+          removeItem={(m) => removeCorrectionModel(m)}
           renderItem={CorrectionModelInput}
           setItem={(model) => setCorrectionModel(model)}
         />
@@ -161,6 +172,7 @@ export function Models() {
             scale: 4,
             source: s,
           })}
+          removeItem={(m) => removeUpscalingModel(m)}
           renderItem={UpscalingModelInput}
           setItem={(model) => setUpscalingModel(model)}
         />
@@ -176,11 +188,12 @@ export function Models() {
           newItem={(l, s) => ({
             format: 'safetensors' as SafetensorFormat,
             label: l,
-            model: 'embeddings' as const,
+            model: 'embeddings' as NetworkModel,
             name: kebabCase(l),
             source: s,
-            type: 'inversion' as const,
+            type: 'inversion' as NetworkType,
           })}
+          removeItem={(m) => removeExtraNetwork(m)}
           renderItem={ExtraNetworkInput}
           setItem={(model) => setExtraNetwork(model)}
         />
@@ -199,6 +212,7 @@ export function Models() {
             name: kebabCase(l),
             source: s,
           })}
+          removeItem={(m) => removeExtraSource(m)}
           renderItem={ExtraSourceInput}
           setItem={(model) => setExtraSource(model)}
         />

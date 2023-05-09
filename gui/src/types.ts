@@ -1,6 +1,16 @@
 export type TorchFormat = 'bin' | 'ckpt' | 'pt' | 'pth';
 export type OnnxFormat = 'onnx';
 export type SafetensorFormat = 'safetensors';
+export type TensorFormat = TorchFormat | SafetensorFormat;
+export type ModelFormat = TensorFormat | OnnxFormat;
+export type MarkupFormat = 'json' | 'yaml';
+export type AnyFormat = MarkupFormat | ModelFormat;
+
+export type UpscalingArch = 'bsrgan' | 'resrgan' | 'swinir';
+export type CorrectionArch = 'codeformer' | 'gfpgan';
+
+export type NetworkType = 'inversion' | 'lora';
+export type NetworkModel = 'concept' | 'embeddings' | 'cloneofsimo' | 'sd-scripts';
 
 export interface BaseModel {
   /**
@@ -35,17 +45,17 @@ export interface DiffusionModel extends BaseModel {
 }
 
 export interface UpscalingModel extends BaseModel {
-  model?: 'bsrgan' | 'resrgan' | 'swinir';
+  model?: UpscalingArch;
   scale: number;
 }
 
 export interface CorrectionModel extends BaseModel {
-  model?: 'codeformer' | 'gfpgan';
+  model?: CorrectionArch;
 }
 
 export interface ExtraNetwork extends BaseModel {
-  model: 'concept' | 'embeddings' | 'cloneofsimo' | 'sd-scripts';
-  type: 'inversion' | 'lora';
+  model: NetworkModel;
+  type: NetworkType;
 }
 
 export interface ExtraSource {
