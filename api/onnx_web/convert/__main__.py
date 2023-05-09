@@ -546,7 +546,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
         logger.error("error while converting models: %s", model_errors)
 
 
-def main(args = None) -> int:
+def main(args=None) -> int:
     parser = ArgumentParser(
         prog="onnx-web model converter", description="convert checkpoint models to ONNX"
     )

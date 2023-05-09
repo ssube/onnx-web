@@ -6,6 +6,7 @@ from jsonschema import ValidationError, validate
 from ..utils import load_config, load_config_str
 from ..worker.pool import DevicePoolExecutor
 from .context import ServerContext
+from .load import load_extras, load_models
 from .utils import wrap_route
 
 logger = getLogger(__name__)
@@ -66,7 +67,17 @@ def update_extra_models(server: ServerContext):
     from onnx_web.convert.__main__ import main as convert
 
     logger.warning("downloading and converting models to ONNX")
-    convert(args=["--correction", "--diffusion", "--upscaling", "--extras", *server.extra_models])
+    convert(
+        args=[
+            "--correction",
+            "--diffusion",
+            "--upscaling",
+            "--extras",
+            *server.extra_models,
+        ]
+    )
+    load_models(server)
+    load_extras(server)
 
     return jsonify(data)
 
