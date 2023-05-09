@@ -81,6 +81,7 @@ class ServerContext:
             extra_models=environ.get("ONNX_WEB_EXTRA_MODELS", "").split(","),
             job_limit=int(environ.get("ONNX_WEB_JOB_LIMIT", DEFAULT_JOB_LIMIT)),
             memory_limit=memory_limit,
+            admin_token=environ.get("ONNX_WEB_ADMIN_TOKEN", None),
         )
 
     def torch_dtype(self):
