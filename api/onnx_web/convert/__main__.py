@@ -546,7 +546,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
         logger.error("error while converting models: %s", model_errors)
 
 
-def main() -> int:
+def main(args = None) -> int:
     parser = ArgumentParser(
         prog="onnx-web model converter", description="convert checkpoint models to ONNX"
     )
@@ -582,7 +582,7 @@ def main() -> int:
         help="HuggingFace token with read permissions for downloading models.",
     )
 
-    args = parser.parse_args()
+    args = args or parser.parse_args()
     logger.info("CLI arguments: %s", args)
 
     server = ConversionContext.from_environ()

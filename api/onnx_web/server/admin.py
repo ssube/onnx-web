@@ -48,9 +48,10 @@ def update_extra_models(server: ServerContext):
         return make_response(jsonify({})), 401
 
     extra_schema = load_config("./schemas/extras.yaml")
+    data_str = request.data.decode(encoding=request.content_encoding)
 
     try:
-        data = load_config_str(request.data)
+        data = load_config_str(data_str)
         try:
             validate(data, extra_schema)
         except ValidationError:
@@ -60,11 +61,13 @@ def update_extra_models(server: ServerContext):
 
     # TODO: make a backup
     with open(server.extra_models[0], mode="w") as f:
-        f.write(request.data)
+        f.write(data_str)
 
+    from argparse import Namespace
     from onnx_web.convert.__main__ import main as convert
+
     logger.warning("downloading and converting models to ONNX")
-    convert()
+    convert(args=Namespace(correction=True, diffusion=True, upscalinng=True, extras=server.extra_models))
 
     return jsonify(data)
 
