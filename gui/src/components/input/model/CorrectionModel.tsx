@@ -1,5 +1,6 @@
 import { Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { CorrectionArch, CorrectionModel, ModelFormat } from '../../../types.js';
 
@@ -13,9 +14,11 @@ export interface CorrectionModelInputProps {
 
 export function CorrectionModelInput(props: CorrectionModelInputProps) {
   const { key, model, onChange, onRemove } = props;
+  const { t } = useTranslation();
 
   return <Stack direction='row' spacing={2} key={key}>
     <TextField
+      label={t('extras.label')}
       value={model.label}
       onChange={(event) => {
         onChange({
@@ -25,6 +28,7 @@ export function CorrectionModelInput(props: CorrectionModelInputProps) {
       }}
     />
     <TextField
+      label={t('extras.source')}
       value={model.source}
       onChange={(event) => {
         onChange({
@@ -34,8 +38,8 @@ export function CorrectionModelInput(props: CorrectionModelInputProps) {
       }}
     />
     <Select
+      label={t('extras.format')}
       value={model.format}
-      label='Format'
       onChange={(selection) => {
         onChange({
           ...model,
@@ -47,8 +51,8 @@ export function CorrectionModelInput(props: CorrectionModelInputProps) {
       <MenuItem value='safetensors'>safetensors</MenuItem>
     </Select>
     <Select
+      label={t('extras.model')}
       value={model.model}
-      label='Type'
       onChange={(selection) => {
         onChange({
           ...model,
@@ -56,9 +60,9 @@ export function CorrectionModelInput(props: CorrectionModelInputProps) {
         });
       }}
     >
-      <MenuItem value='codeformer'>Codeformer</MenuItem>
-      <MenuItem value='gfpgan'>GFPGAN</MenuItem>
+      <MenuItem value='codeformer'>codeformer</MenuItem>
+      <MenuItem value='gfpgan'>gfpgan</MenuItem>
     </Select>
-    <Button onClick={() => onRemove(model)}>Remove</Button>
+    <Button onClick={() => onRemove(model)}>{t('extras.remove')}</Button>
   </Stack>;
 }

@@ -1,6 +1,7 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
 import { OnnxState, StateContext } from '../../state.js';
@@ -23,6 +24,7 @@ export interface EditableListProps<T> {
 export function EditableList<T>(props: EditableListProps<T>) {
   const { newItem, removeItem, renderItem, setItem, selector } = props;
 
+  const { t } = useTranslation();
   const state = mustExist(useContext(StateContext));
   const items = useStore(state, selector);
   const [nextLabel, setNextLabel] = useState('');
@@ -40,13 +42,13 @@ export function EditableList<T>(props: EditableListProps<T>) {
     )}
     <Stack direction='row' spacing={2}>
       <TextField
-        label='Label'
+        label={t('extras.label')}
         variant='outlined'
         value={nextLabel}
         onChange={(event) => setNextLabel(event.target.value)}
       />
       <TextField
-        label='Source'
+        label={t('extras.source')}
         variant='outlined'
         value={nextSource}
         onChange={(event) => setNextSource(event.target.value)}
@@ -55,7 +57,7 @@ export function EditableList<T>(props: EditableListProps<T>) {
         setItem(newItem(nextLabel, nextSource));
         setNextLabel('');
         setNextSource('');
-      }}>New</Button>
+      }}>{t('extras.add')}</Button>
     </Stack>
   </Stack>;
 }

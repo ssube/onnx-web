@@ -1,13 +1,27 @@
+/* eslint-disable camelcase */
 export const I18N_STRINGS_EN = {
   en: {
     translation: {
       admin: {
         restart: 'Restart Workers',
       },
+      convert: 'Save and Convert',
       error: {
         inpaint: {
           support: 'This diffusion model may not support inpainting.',
         },
+      },
+      extras: {
+        add: 'Add',
+        dest: 'Folder',
+        format: 'Format',
+        label: 'Label',
+        model: 'Model',
+        name: 'Name',
+        remove: 'Remove',
+        scale: 'Scale',
+        source: 'Source',
+        type: 'Type',
       },
       generate: 'Generate',
       highresMethod: {
@@ -126,11 +140,18 @@ export const I18N_STRINGS_EN = {
       },
       modelType: {
         control: 'ControlNet',
-        correction: 'Correction Model',
-        diffusion: 'Diffusion Model',
+        correction_one: 'Correction Model',
+        correction_other: 'Correction Models',
+        diffusion_one: 'Diffusion Model',
+        diffusion_other: 'Diffusion Models',
         inversion: 'Textual Inversion',
         lora: 'LoRA',
-        upscaling: 'Upscaling Model',
+        network_one: 'Extra Network',
+        network_other: 'Extra Networks',
+        source_one: 'Other Source',
+        source_other: 'Other Sources',
+        upscaling_one: 'Upscaling Model',
+        upscaling_other: 'Upscaling Models',
       },
       noiseSource: {
         'fill-edge': 'Fill Edges',

@@ -3,11 +3,22 @@ import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, CircularP
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import _ from 'lodash';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, OnnxState, StateContext } from '../../state.js';
-import { CorrectionModel, DiffusionModel, ExtraNetwork, ExtraSource, ExtrasFile, NetworkModel, NetworkType, SafetensorFormat, UpscalingModel } from '../../types.js';
+import {
+  CorrectionModel,
+  DiffusionModel,
+  ExtraNetwork,
+  ExtrasFile,
+  ExtraSource,
+  NetworkModel,
+  NetworkType,
+  SafetensorFormat,
+  UpscalingModel,
+} from '../../types.js';
 import { EditableList } from '../input/EditableList';
 import { CorrectionModelInput } from '../input/model/CorrectionModel.js';
 import { DiffusionModelInput } from '../input/model/DiffusionModel.js';
@@ -99,6 +110,7 @@ export function Models() {
   const write = useMutation(writeExtras, {
     onSuccess: () => query.invalidateQueries([ 'extras' ]),
   });
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (result.status === 'success' && doesExist(result.data)) {
@@ -107,11 +119,15 @@ export function Models() {
   }, [result.status]);
 
   if (result.status === 'error') {
-    return <Alert severity='error'>Error</Alert>;
+    return <Stack spacing={2} direction='row' sx={{ alignItems: 'center' }}>
+      <Alert severity='error'>Error</Alert>
+    </Stack>;
   }
 
   if (result.status === 'loading') {
-    return <CircularProgress />;
+    return <Stack spacing={2} direction='row' sx={{ alignItems: 'center' }}>
+      <CircularProgress />
+    </Stack> ;
   }
 
   async function writeExtras() {
@@ -122,7 +138,7 @@ export function Models() {
   return <Stack spacing={2}>
     <Accordion>
       <AccordionSummary>
-        Diffusion Models
+        {t('modelType.diffusion', {count: 10})}
       </AccordionSummary>
       <AccordionDetails>
         <EditableList<DiffusionModel>
@@ -141,7 +157,7 @@ export function Models() {
     </Accordion>
     <Accordion>
       <AccordionSummary>
-        Correction Models
+        {t('modelType.correction', {count: 10})}
       </AccordionSummary>
       <AccordionDetails>
         <EditableList
@@ -160,7 +176,7 @@ export function Models() {
     </Accordion>
     <Accordion>
       <AccordionSummary>
-        Upscaling Models
+        {t('modelType.upscaling', {count: 10})}
       </AccordionSummary>
       <AccordionDetails>
         <EditableList
@@ -180,7 +196,7 @@ export function Models() {
     </Accordion>
     <Accordion>
       <AccordionSummary>
-        Extra Networks
+        {t('modelType.network', {count: 10})}
       </AccordionSummary>
       <AccordionDetails>
         <EditableList
@@ -201,7 +217,7 @@ export function Models() {
     </Accordion>
     <Accordion>
       <AccordionSummary>
-        Other Sources
+        {t('modelType.source', {count: 10})}
       </AccordionSummary>
       <AccordionDetails>
         <EditableList
@@ -218,6 +234,6 @@ export function Models() {
         />
       </AccordionDetails>
     </Accordion>
-    <Button color='warning' onClick={() => write.mutate()}>Save & Convert</Button>
+    <Button color='warning' onClick={() => write.mutate()}>{t('convert')}</Button>
   </Stack>;
 }

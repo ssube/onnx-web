@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * This is a machine translation and may have some mistakes.
  *
@@ -9,10 +10,23 @@ export const I18N_STRINGS_ES = {
       admin: {
         restart: '',
       },
+      convert: '',
       error: {
         inpaint: {
           support: '',
         },
+      },
+      extras: {
+        add: '',
+        dest: '',
+        format: '',
+        label: '',
+        model: '',
+        name: '',
+        remove: '',
+        scale: '',
+        source: '',
+        type: '',
       },
       generate: 'Generar',
       history: {
@@ -74,11 +88,18 @@ export const I18N_STRINGS_ES = {
       },
       modelType: {
         control: '',
-        correction: 'Modelo de corrección',
-        diffusion: 'Modelo de difusión',
+        correction_one: 'Modelo de corrección',
+        correction_other: '',
+        diffusion_one: 'Modelo de difusión',
+        diffusion_other: '',
         inversion: '',
         lora: '',
-        upscaling: 'Modelo de aumento',
+        network_one: '',
+        network_other: '',
+        source_one: '',
+        source_other: '',
+        upscaling_one: 'Modelo de aumento',
+        upscaling_other: '',
       },
       noiseSource: {
         'fill-edge': 'Rellena los bordes',

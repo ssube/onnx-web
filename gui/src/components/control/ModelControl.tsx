@@ -92,7 +92,7 @@ export function ModelControl() {
       <QueryList
         id='diffusion'
         labelKey='model'
-        name={t('modelType.diffusion')}
+        name={t('modelType.diffusion', {count: 1})}
         query={{
           result: models,
           selector: (result) => result.diffusion,
@@ -107,7 +107,7 @@ export function ModelControl() {
       <QueryList
         id='upscaling'
         labelKey='model'
-        name={t('modelType.upscaling')}
+        name={t('modelType.upscaling', {count: 1})}
         query={{
           result: models,
           selector: (result) => result.upscaling,
@@ -122,7 +122,7 @@ export function ModelControl() {
       <QueryList
         id='correction'
         labelKey='model'
-        name={t('modelType.correction')}
+        name={t('modelType.correction', {count: 1})}
         query={{
           result: models,
           selector: (result) => result.correction,
