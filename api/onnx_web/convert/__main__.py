@@ -582,7 +582,7 @@ def main(args = None) -> int:
         help="HuggingFace token with read permissions for downloading models.",
     )
 
-    args = args or parser.parse_args()
+    args = parser.parse_args(args=args)
     logger.info("CLI arguments: %s", args)
 
     server = ConversionContext.from_environ()

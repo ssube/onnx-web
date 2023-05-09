@@ -48,7 +48,7 @@ def update_extra_models(server: ServerContext):
         return make_response(jsonify({})), 401
 
     extra_schema = load_config("./schemas/extras.yaml")
-    data_str = request.data.decode(encoding=request.content_encoding)
+    data_str = request.data.decode(encoding=(request.content_encoding or "utf-8"))
 
     try:
         data = load_config_str(data_str)
@@ -63,11 +63,10 @@ def update_extra_models(server: ServerContext):
     with open(server.extra_models[0], mode="w") as f:
         f.write(data_str)
 
-    from argparse import Namespace
     from onnx_web.convert.__main__ import main as convert
 
     logger.warning("downloading and converting models to ONNX")
-    convert(args=Namespace(correction=True, diffusion=True, upscalinng=True, extras=server.extra_models))
+    convert(args=["--correction", "--diffusion", "--upscaling", "--extras", *server.extra_models])
 
     return jsonify(data)
 
