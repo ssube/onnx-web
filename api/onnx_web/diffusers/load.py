@@ -340,19 +340,15 @@ def load_pipeline(
             pipe.set_progress_bar_config(disable=True)
 
         optimize_pipeline(server, pipe)
-
-        # TODO: remove this, not relevant with ONNX
-        if device is not None and hasattr(pipe, "to"):
-            pipe = pipe.to(device.torch_str())
-
-        # monkey-patch pipeline
         patch_pipeline(server, pipe, pipeline_class, params)
 
         server.cache.set("diffusion", pipe_key, pipe)
         server.cache.set("scheduler", scheduler_key, components["scheduler"])
 
-    pipe.vae_encoder.set_tiled(tiled=params.tiled_vae)
-    pipe.vae_decoder.set_tiled(tiled=params.tiled_vae)
+    if hasattr(pipe, "vae_decoder"):
+        pipe.vae_decoder.set_tiled(tiled=params.tiled_vae)
+    if hasattr(pipe, "vae_encoder"):
+        pipe.vae_encoder.set_tiled(tiled=params.tiled_vae)
 
     # update panorama params
     if pipeline == "panorama":
@@ -360,8 +356,10 @@ def load_pipeline(
         latent_stride = params.stride // 8
 
         pipe.set_window_size(latent_window, latent_stride)
-        pipe.vae_encoder.set_window_size(latent_window, params.overlap)
-        pipe.vae_decoder.set_window_size(latent_window, params.overlap)
+        if hasattr(pipe, "vae_decoder"):
+            pipe.vae_decoder.set_window_size(latent_window, params.overlap)
+        if hasattr(pipe, "vae_encoder"):
+            pipe.vae_encoder.set_window_size(latent_window, params.overlap)
 
     return pipe
 
