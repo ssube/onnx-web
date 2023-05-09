@@ -50,7 +50,7 @@ def update_extra_models(server: ServerContext):
     extra_schema = load_config("./schemas/extras.yaml")
 
     try:
-        data = load_config_str(request.json)
+        data = load_config_str(request.data)
         try:
             validate(data, extra_schema)
         except ValidationError:
@@ -58,8 +58,15 @@ def update_extra_models(server: ServerContext):
     except Exception:
         logger.exception("TODO")
 
-    # TODO: write to file
-    return jsonify(server.extra_models)
+    # TODO: make a backup
+    with open(server.extra_models[0], mode="w") as f:
+        f.write(request.data)
+
+    from onnx_web.convert.__main__ import main as convert
+    logger.warning("downloading and converting models to ONNX")
+    convert()
+
+    return jsonify(data)
 
 
 def register_admin_routes(app: Flask, server: ServerContext, pool: DevicePoolExecutor):
