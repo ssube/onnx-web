@@ -11,6 +11,8 @@ from .utils import wrap_route
 
 logger = getLogger(__name__)
 
+conversion_lock = False
+
 
 def check_admin(server: ServerContext):
     return request.args.get("token", None) == server.admin_token
@@ -45,8 +47,13 @@ def get_extra_models(server: ServerContext):
 
 
 def update_extra_models(server: ServerContext):
+    global conversion_lock
+
     if not check_admin(server):
         return make_response(jsonify({})), 401
+
+    if conversion_lock:
+        return make_response(jsonify({})), 409
 
     extra_schema = load_config("./schemas/extras.yaml")
     data_str = request.data.decode(encoding=(request.content_encoding or "utf-8"))
@@ -58,15 +65,16 @@ def update_extra_models(server: ServerContext):
         except ValidationError:
             logger.exception("invalid data in extras file")
     except Exception:
-        logger.exception("TODO")
+        logger.exception("error validating extras file")
 
     # TODO: make a backup
     with open(server.extra_models[0], mode="w") as f:
         f.write(data_str)
 
-    from onnx_web.convert.__main__ import main as convert
-
     logger.warning("downloading and converting models to ONNX")
+    conversion_lock = True
+
+    from onnx_web.convert.__main__ import main as convert
     convert(
         args=[
             "--correction",
@@ -76,8 +84,12 @@ def update_extra_models(server: ServerContext):
             *server.extra_models,
         ]
     )
+
+    logger.info("finished converting models, reloading server")
     load_models(server)
     load_extras(server)
+
+    conversion_lock = False
 
     return jsonify(data)
 
