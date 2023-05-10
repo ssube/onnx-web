@@ -78,7 +78,7 @@ class OnnxStableDiffusionUpscalePipeline(StableDiffusionUpscalePipeline):
             unet,
             low_res_scheduler,
             scheduler,
-            max_noise_level,
+            max_noise_level=max_noise_level,
         )
 
     def __call__(
