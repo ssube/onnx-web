@@ -193,6 +193,67 @@ TEST_DATA = [
             "txt2img-sd-v2-1-512-muffin-0",
         ],
     ),
+    TestCase(
+        "txt2img-sd-v1-5-512-muffin-taters",
+        "txt2img?prompt=<lora:taters:1.0>+a+giant+muffin+made+of+mashed+potatoes&seed=0&scheduler=unipc-multi",
+    ),
+    TestCase(
+        "txt2img-sd-v1-5-512-muffin-cloud",
+        "txt2img?prompt=<inversion:cloud:1.0>+a+giant+muffin+made+of+cloud-all&seed=0&scheduler=unipc-multi",
+    ),
+    TestCase(
+        "upscale-swinir-x4-2048-muffin",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-swinir-real-large-x4&scale=4&outscale=4",
+        source="txt2img-sd-v1-5-512-muffin-0",
+    ),
+    TestCase(
+        "upscale-codeformer-512-muffin",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0",
+        source="txt2img-sd-v1-5-512-muffin-0",
+    ),
+    TestCase(
+        "upscale-gfpgan-muffin",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0",
+        source="txt2img-sd-v1-5-512-muffin-0",
+    ),
+    TestCase(
+        "upscale-sd-x4-2048-muffin",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4&scale=4&outscale=4",
+        source="txt2img-sd-v1-5-512-muffin-0",
+    ),
+    TestCase(
+        "outpaint-panorama-even-256",
+        (
+            "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&noise=fill-mask"
+            "&top=256&bottom=256&left=256&right=256&pipeline=panorama"
+        ),
+        source="txt2img-sd-v1-5-512-muffin-0",
+        mask="mask-black",
+        max_attempts=SLOW_TEST,
+        mse_threshold=0.025,
+    ),
+    TestCase(
+        "outpaint-panorama-vertical-512",
+        (
+            "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&noise=histogram"
+            "&top=512&bottom=512&left=0&right=0&pipeline=panorama"
+        ),
+        source="txt2img-sd-v1-5-512-muffin-0",
+        mask="mask-black",
+        max_attempts=SLOW_TEST,
+        mse_threshold=0.025,
+    ),
+    TestCase(
+        "outpaint-panorama-horizontal-512",
+        (
+            "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&noise=histogram"
+            "&top=0&bottom=0&left=512&right=512&pipeline=panorama"
+        ),
+        source="txt2img-sd-v1-5-512-muffin-0",
+        mask="mask-black",
+        max_attempts=SLOW_TEST,
+        mse_threshold=0.025,
+    ),
 ]
 
 
