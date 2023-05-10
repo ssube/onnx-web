@@ -347,17 +347,19 @@ def main():
     passed = []
     failed = []
     for test in TEST_DATA:
-        try:
-            logger.info("starting test: %s", test.name)
-            if run_test(root, test):
-                logger.info("test passed: %s", test.name)
-                passed.append(test.name)
-            else:
-                logger.warning("test failed: %s", test.name)
+        for _i in range(3):
+            try:
+                logger.info("starting test: %s", test.name)
+                if run_test(root, test):
+                    logger.info("test passed: %s", test.name)
+                    passed.append(test.name)
+                    break
+                else:
+                    logger.warning("test failed: %s", test.name)
+                    failed.append(test.name)
+            except Exception:
+                logger.exception("error running test for %s", test.name)
                 failed.append(test.name)
-        except Exception:
-            logger.exception("error running test for %s", test.name)
-            failed.append(test.name)
 
     logger.info("%s of %s tests passed", len(passed), len(TEST_DATA))
     if len(failed) > 0:
