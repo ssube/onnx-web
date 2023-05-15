@@ -23,6 +23,7 @@ gfpgan
 realesrgan
 
 ### Server packages ###
+arpeggio
 boto3
 flask
 flask-cors
