@@ -1,10 +1,8 @@
 import sys
-import traceback
 from io import BytesIO
 from logging import getLogger
 from logging.config import dictConfig
 from os import environ, path
-from sys import argv
 from time import sleep
 from typing import List, Optional, Union
 
@@ -92,6 +90,10 @@ TEST_DATA = [
         "txt2img-sd-v2-1-768-muffin",
         "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v2-1&width=768&height=768",
         max_attempts=SLOW_TEST,
+    ),
+    TestCase(
+        "txt2img-openjourney-256-muffin",
+        "txt2img?prompt=mdjrny-v4+style+a+giant+muffin&seed=0&scheduler=ddim&model=diffusion-openjourney&width=256&height=256",
     ),
     TestCase(
         "txt2img-openjourney-512-muffin",
@@ -254,6 +256,63 @@ TEST_DATA = [
         max_attempts=SLOW_TEST,
         mse_threshold=0.025,
     ),
+    TestCase(
+        "upscale-resrgan-x4-codeformer-2048-muffin",
+        (
+            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4"
+            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0"
+        ),
+        source="txt2img-sd-v1-5-512-muffin-0",
+    ),
+    TestCase(
+        "upscale-resrgan-x4-gfpgan-2048-muffin",
+        (
+            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4"
+            "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0"
+        ),
+        source="txt2img-sd-v1-5-512-muffin-0",
+    ),
+    TestCase(
+        "upscale-swinir-x4-codeformer-2048-muffin",
+        (
+            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-swinir-real-large-x4&scale=4&outscale=4"
+            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0"
+        ),
+        source="txt2img-sd-v1-5-512-muffin-0",
+    ),
+    TestCase(
+        "upscale-swinir-x4-gfpgan-2048-muffin",
+        (
+            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-swinir-real-large-x4&scale=4&outscale=4"
+            "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0"
+        ),
+        source="txt2img-sd-v1-5-512-muffin-0",
+    ),
+    TestCase(
+        "upscale-sd-x4-codeformer-2048-muffin",
+        (
+            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4&scale=4&outscale=4"
+            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0"
+        ),
+        source="txt2img-sd-v1-5-512-muffin-0",
+    ),
+    TestCase(
+        "upscale-sd-x4-gfpgan-2048-muffin",
+        (
+            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4&scale=4&outscale=4"
+            "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0"
+        ),
+        source="txt2img-sd-v1-5-512-muffin-0",
+    ),
+    TestCase(
+        "txt2img-panorama-1024x768-muffin",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=1024&height=768&pipeline=panorama&tiledVAE=true",
+    ),
+    TestCase(
+        "img2img-panorama-1024x768-pumpkin",
+        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none&pipeline=panorama&tiledVAE=true",
+        source="txt2img-panorama-1024x768-muffin-0",
+    ),
 ]
 
 
@@ -405,6 +464,12 @@ def main():
     root = test_root()
     logger.info("running release tests against API: %s", root)
 
+    # make sure tests have unique names
+    test_names = [test.name for test in TEST_DATA]
+    if len(test_names) != len(set(test_names)):
+        logger.error("tests must have unique names: %s", test_names)
+        sys.exit(1)
+
     passed = []
     failed = []
     for test in TEST_DATA:
@@ -423,6 +488,7 @@ def main():
                 failed.append(test.name)
 
     logger.info("%s of %s tests passed", len(passed), len(TEST_DATA))
+    failed = set(failed)
     if len(failed) > 0:
         logger.error("%s tests had errors", len(failed))
         sys.exit(1)
