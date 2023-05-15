@@ -100,6 +100,7 @@ def get_model_version(
     return (v2, opts)
 
 
+@torch.no_grad()
 def convert_diffusion_diffusers_cnet(
     conversion: ConversionContext,
     source: str,
@@ -115,8 +116,10 @@ def convert_diffusion_diffusers_cnet(
 ):
     # CNet
     if unet is not None:
+        logger.debug("creating CNet from existing UNet config")
         pipe_cnet = UNet2DConditionModel_CNet.from_config(unet.config)
     else:
+        logger.debug("loading CNet from pretrained UNet config")
         pipe_cnet = UNet2DConditionModel_CNet.from_pretrained(source, subfolder="unet")
 
     pipe_cnet = pipe_cnet.to(device=device, dtype=dtype)
@@ -226,6 +229,7 @@ def convert_diffusion_diffusers_cnet(
     del pipe_cnet
     run_gc()
 
+    logger.debug("collating CNet external tensors")
     cnet_model_path = str(cnet_path.absolute().as_posix())
     cnet_dir = path.dirname(cnet_model_path)
     cnet = load_model(cnet_model_path)
@@ -350,6 +354,8 @@ def convert_diffusion_diffusers(
     )
 
     if not cnet_only:
+        encoder_path = output_path / "text_encoder" / ONNX_MODEL
+        logger.info("exporting text encoder to %s", encoder_path)
         onnx_export(
             pipeline.text_encoder,
             # casting to torch.int32 until the CLIP fix is released: https://github.com/huggingface/transformers/pull/18515/files
@@ -360,7 +366,7 @@ def convert_diffusion_diffusers(
                 None,  # output attentions
                 torch.tensor(True).to(device=device, dtype=torch.bool),
             ),
-            output_path=output_path / "text_encoder" / ONNX_MODEL,
+            output_path=encoder_path,
             ordered_input_names=["input_ids"],
             output_names=["last_hidden_state", "pooler_output", "hidden_states"],
             dynamic_axes={
@@ -390,6 +396,7 @@ def convert_diffusion_diffusers(
     unet_path = output_path / "unet" / ONNX_MODEL
 
     if not cnet_only:
+        logger.info("exporting UNet to %s", unet_path)
         onnx_export(
             pipeline.unet,
             model_args=(
@@ -416,23 +423,6 @@ def convert_diffusion_diffusers(
             external_data=True,
             v2=v2,
         )
-        unet_model_path = str(unet_path.absolute().as_posix())
-        unet_dir = path.dirname(unet_model_path)
-        unet = load_model(unet_model_path)
-
-        # clean up existing tensor files
-        rmtree(unet_dir)
-        mkdir(unet_dir)
-
-        # collate external tensor files into one
-        save_model(
-            unet,
-            unet_model_path,
-            save_as_external_data=True,
-            all_tensors_to_one_file=True,
-            location=ONNX_WEIGHTS,
-            convert_attribute=False,
-        )
 
     if not single_vae or not conversion.control:
         # if converting only the CNet, the rest of the model has already been converted
@@ -458,12 +448,32 @@ def convert_diffusion_diffusers(
     if cnet_only:
         logger.info("done converting CNet")
         return (True, dest_path)
+    else:
+        logger.debug("collating UNet external tensors")
+        unet_model_path = str(unet_path.absolute().as_posix())
+        unet_dir = path.dirname(unet_model_path)
+        unet = load_model(unet_model_path)
+
+        # clean up existing tensor files
+        rmtree(unet_dir)
+        mkdir(unet_dir)
+
+        # collate external tensor files into one
+        save_model(
+            unet,
+            unet_model_path,
+            save_as_external_data=True,
+            all_tensors_to_one_file=True,
+            location=ONNX_WEIGHTS,
+            convert_attribute=False,
+        )
 
     # VAE
     if replace_vae is not None:
         logger.debug("loading custom VAE: %s", replace_vae)
         vae = AutoencoderKL.from_pretrained(replace_vae)
         pipeline.vae = vae
+        run_gc()
 
     if single_vae:
         logger.debug("VAE config: %s", pipeline.vae.config)
@@ -473,6 +483,9 @@ def convert_diffusion_diffusers(
         vae_latent_channels = vae_only.config.latent_channels
         # forward only through the decoder part
         vae_only.forward = vae_only.decode
+
+        vae_path = output_path / "vae" / ONNX_MODEL
+        logger.info("exporting VAE to %s", vae_path)
         onnx_export(
             vae_only,
             model_args=(
@@ -481,7 +494,7 @@ def convert_diffusion_diffusers(
                 ).to(device=device, dtype=dtype),
                 False,
             ),
-            output_path=output_path / "vae" / ONNX_MODEL,
+            output_path=vae_path,
             ordered_input_names=["latent_sample", "return_dict"],
             output_names=["sample"],
             dynamic_axes={
@@ -499,6 +512,9 @@ def convert_diffusion_diffusers(
         vae_encoder.forward = lambda sample, return_dict: vae_encoder.encode(
             sample, return_dict
         )[0].sample()
+
+        vae_path = output_path / "vae_encoder" / ONNX_MODEL
+        logger.info("exporting VAE encoder to %s", vae_path)
         onnx_export(
             vae_encoder,
             model_args=(
@@ -507,7 +523,7 @@ def convert_diffusion_diffusers(
                 ),
                 False,
             ),
-            output_path=output_path / "vae_encoder" / ONNX_MODEL,
+            output_path=vae_path,
             ordered_input_names=["sample", "return_dict"],
             output_names=["latent_sample"],
             dynamic_axes={
@@ -522,6 +538,9 @@ def convert_diffusion_diffusers(
         vae_latent_channels = vae_decoder.config.latent_channels
         # forward only through the decoder part
         vae_decoder.forward = vae_encoder.decode
+
+        vae_path = output_path / "vae_decoder" / ONNX_MODEL
+        logger.info("exporting VAE encoder to %s", vae_path)
         onnx_export(
             vae_decoder,
             model_args=(
@@ -530,7 +549,7 @@ def convert_diffusion_diffusers(
                 ).to(device=device, dtype=dtype),
                 False,
             ),
-            output_path=output_path / "vae_decoder" / ONNX_MODEL,
+            output_path=vae_path,
             ordered_input_names=["latent_sample", "return_dict"],
             output_names=["sample"],
             dynamic_axes={
@@ -544,6 +563,7 @@ def convert_diffusion_diffusers(
     run_gc()
 
     if single_vae:
+        logger.debug("reloading diffusion model with upscaling pipeline")
         onnx_pipeline = OnnxStableDiffusionUpscalePipeline(
             vae=OnnxRuntimeModel.from_pretrained(output_path / "vae"),
             text_encoder=OnnxRuntimeModel.from_pretrained(output_path / "text_encoder"),
@@ -553,6 +573,7 @@ def convert_diffusion_diffusers(
             scheduler=pipeline.scheduler,
         )
     else:
+        logger.debug("reloading diffusion model with default pipeline")
         onnx_pipeline = OnnxStableDiffusionPipeline(
             vae_encoder=OnnxRuntimeModel.from_pretrained(output_path / "vae_encoder"),
             vae_decoder=OnnxRuntimeModel.from_pretrained(output_path / "vae_decoder"),
@@ -565,7 +586,7 @@ def convert_diffusion_diffusers(
             requires_safety_checker=False,
         )
 
-    logger.info("exporting ONNX model")
+    logger.info("exporting pretrained ONNX model to %s", output_path)
 
     onnx_pipeline.save_pretrained(output_path)
     logger.info("ONNX pipeline saved to %s", output_path)
@@ -574,15 +595,18 @@ def convert_diffusion_diffusers(
     del onnx_pipeline
     run_gc()
 
-    if single_vae:
-        _ = OnnxStableDiffusionUpscalePipeline.from_pretrained(
-            output_path, provider="CPUExecutionProvider"
-        )
-    else:
-        _ = OnnxStableDiffusionPipeline.from_pretrained(
-            output_path, provider="CPUExecutionProvider"
-        )
+    if conversion.reload:
+        if single_vae:
+            _ = OnnxStableDiffusionUpscalePipeline.from_pretrained(
+                output_path, provider="CPUExecutionProvider"
+            )
+        else:
+            _ = OnnxStableDiffusionPipeline.from_pretrained(
+                output_path, provider="CPUExecutionProvider"
+            )
 
-    logger.info("ONNX pipeline is loadable")
+        logger.info("ONNX pipeline is loadable")
+    else:
+        logger.debug("skipping ONNX reload test")
 
     return (True, dest_path)

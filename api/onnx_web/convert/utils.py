@@ -43,6 +43,7 @@ class ConversionContext(ServerContext):
         token: Optional[str] = None,
         prune: Optional[List[str]] = None,
         control: bool = True,
+        reload: bool = True,
         **kwargs,
     ) -> None:
         super().__init__(model_path=model_path, cache_path=cache_path, **kwargs)
@@ -50,8 +51,9 @@ class ConversionContext(ServerContext):
         self.control = control
         self.half = half
         self.opset = opset
-        self.token = token
         self.prune = prune or []
+        self.reload = reload
+        self.token = token
 
         if device is not None:
             self.training_device = device
@@ -65,6 +67,7 @@ class ConversionContext(ServerContext):
         context = super().from_environ()
         context.control = get_boolean(environ, "ONNX_WEB_CONVERT_CONTROL", True)
         context.opset = int(environ.get("ONNX_WEB_CONVERT_OPSET", DEFAULT_OPSET))
+        context.reload = get_boolean(environ, "ONNX_WEB_CONVERT_RELOAD", True)
         return context
 
 
