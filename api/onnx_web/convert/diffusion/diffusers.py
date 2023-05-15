@@ -35,7 +35,7 @@ from ...diffusers.load import optimize_pipeline
 from ...diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
 from ...diffusers.version_safe_diffusers import AttnProcessor
 from ...models.cnet import UNet2DConditionModel_CNet
-from ..utils import ConversionContext, is_torch_2_0, load_tensor, onnx_export
+from ..utils import ConversionContext, is_torch_2_0, load_tensor, onnx_export, run_gc
 
 logger = getLogger(__name__)
 
@@ -221,6 +221,9 @@ def convert_diffusion_diffusers_cnet(
         external_data=True,  # UNet is > 2GB, so the weights need to be split
         v2=v2,
     )
+    del pipe_cnet
+    run_gc()
+
     cnet_model_path = str(cnet_path.absolute().as_posix())
     cnet_dir = path.dirname(cnet_model_path)
     cnet = load_model(cnet_model_path)
@@ -238,7 +241,8 @@ def convert_diffusion_diffusers_cnet(
         location=ONNX_WEIGHTS,
         convert_attribute=False,
     )
-    del pipe_cnet
+    del cnet
+    run_gc()
 
 
 @torch.no_grad()
@@ -365,6 +369,7 @@ def convert_diffusion_diffusers(
         )
 
     del pipeline.text_encoder
+    run_gc()
 
     # UNET
     logger.debug("UNET config: %s", pipeline.unet.config)
@@ -427,7 +432,7 @@ def convert_diffusion_diffusers(
             convert_attribute=False,
         )
 
-    if not single_vae:
+    if not single_vae or not conversion.control:
         # if converting only the CNet, the rest of the model has already been converted
         convert_diffusion_diffusers_cnet(
             conversion,
@@ -446,6 +451,7 @@ def convert_diffusion_diffusers(
         logger.debug("skipping CNet for single-VAE model")
 
     del pipeline.unet
+    run_gc()
 
     if cnet_only:
         logger.info("done converting CNet")
@@ -533,6 +539,7 @@ def convert_diffusion_diffusers(
         )
 
     del pipeline.vae
+    run_gc()
 
     if single_vae:
         onnx_pipeline = OnnxStableDiffusionUpscalePipeline(
@@ -563,6 +570,7 @@ def convert_diffusion_diffusers(
 
     del pipeline
     del onnx_pipeline
+    run_gc()
 
     if single_vae:
         _ = OnnxStableDiffusionUpscalePipeline.from_pretrained(

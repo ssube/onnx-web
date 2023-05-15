@@ -75,6 +75,7 @@ def update_extra_models(server: ServerContext):
     conversion_lock = True
 
     from onnx_web.convert.__main__ import main as convert
+
     convert(
         args=[
             "--correction",

@@ -35,14 +35,16 @@ class ConversionContext(ServerContext):
         model_path: Optional[str] = None,
         cache_path: Optional[str] = None,
         device: Optional[str] = None,
-        half: Optional[bool] = False,
+        half: bool = False,
         opset: Optional[int] = None,
         token: Optional[str] = None,
         prune: Optional[List[str]] = None,
+        control: bool = True,
         **kwargs,
     ) -> None:
         super().__init__(model_path=model_path, cache_path=cache_path, **kwargs)
 
+        self.control = control
         self.half = half
         self.opset = opset
         self.token = token
