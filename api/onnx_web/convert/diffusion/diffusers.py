@@ -430,7 +430,7 @@ def convert_diffusion_diffusers(
         )
 
     cnet_path = None
-    if not single_vae or not conversion.control:
+    if conversion.control and not single_vae:
         # if converting only the CNet, the rest of the model has already been converted
         cnet_path = convert_diffusion_diffusers_cnet(
             conversion,
