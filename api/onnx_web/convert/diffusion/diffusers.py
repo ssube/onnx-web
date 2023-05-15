@@ -35,7 +35,8 @@ from ...diffusers.load import optimize_pipeline
 from ...diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
 from ...diffusers.version_safe_diffusers import AttnProcessor
 from ...models.cnet import UNet2DConditionModel_CNet
-from ..utils import ConversionContext, is_torch_2_0, load_tensor, onnx_export, run_gc
+from ...utils import run_gc
+from ..utils import ConversionContext, is_torch_2_0, load_tensor, onnx_export
 
 logger = getLogger(__name__)
 
