@@ -120,6 +120,7 @@ def convert_diffusion_diffusers_cnet(
         pipe_cnet = UNet2DConditionModel_CNet.from_pretrained(source, subfolder="unet")
 
     pipe_cnet = pipe_cnet.to(device=device, dtype=dtype)
+    run_gc()
 
     if is_torch_2_0:
         pipe_cnet.set_attn_processor(AttnProcessor())

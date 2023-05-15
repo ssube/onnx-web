@@ -22,6 +22,7 @@ from .upscaling.bsrgan import convert_upscaling_bsrgan
 from .upscaling.resrgan import convert_upscale_resrgan
 from .upscaling.swinir import convert_upscaling_swinir
 from .utils import (
+    DEFAULT_OPSET,
     ConversionContext,
     download_progress,
     remove_prefix,
@@ -572,7 +573,7 @@ def main(args=None) -> int:
     )
     parser.add_argument(
         "--opset",
-        default=14,
+        default=DEFAULT_OPSET,
         type=int,
         help="The version of the ONNX operator set to use.",
     )

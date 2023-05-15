@@ -4,8 +4,8 @@ from logging import getLogger
 from os import path
 from urllib.parse import urlparse
 
-from .context import ServerContext
 from ..utils import run_gc
+from .context import ServerContext
 
 logger = getLogger(__name__)
 
@@ -135,6 +135,7 @@ def patch_cache_path(server: ServerContext, url: str, **kwargs) -> str:
 def apply_patch_basicsr(server: ServerContext):
     logger.debug("patching BasicSR module")
     import basicsr.utils.download_util
+
     basicsr.utils.download_util.download_file_from_google_drive = patch_not_impl
     basicsr.utils.download_util.load_file_from_url = partial(patch_cache_path, server)
 
@@ -142,6 +143,7 @@ def apply_patch_basicsr(server: ServerContext):
 def apply_patch_codeformer(server: ServerContext):
     logger.debug("patching CodeFormer module")
     import codeformer.facelib.utils.misc
+
     codeformer.facelib.utils.misc.download_pretrained_models = patch_not_impl
     codeformer.facelib.utils.misc.load_file_from_url = partial(patch_cache_path, server)
 
@@ -149,6 +151,7 @@ def apply_patch_codeformer(server: ServerContext):
 def apply_patch_facexlib(server: ServerContext):
     logger.debug("patching Facexlib module")
     import facexlib.utils
+
     facexlib.utils.load_file_from_url = partial(patch_cache_path, server)
 
 

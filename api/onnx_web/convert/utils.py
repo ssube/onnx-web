@@ -17,6 +17,7 @@ from torch.onnx import export
 
 from ..constants import ONNX_WEIGHTS
 from ..server import ServerContext
+from ..utils import get_boolean
 
 logger = getLogger(__name__)
 
@@ -28,6 +29,8 @@ is_torch_2_0 = version.parse(
 ModelDict = Dict[str, Union[str, int]]
 LegacyModel = Tuple[str, str, Optional[bool], Optional[bool], Optional[int]]
 
+DEFAULT_OPSET = 14
+
 
 class ConversionContext(ServerContext):
     def __init__(
@@ -36,7 +39,7 @@ class ConversionContext(ServerContext):
         cache_path: Optional[str] = None,
         device: Optional[str] = None,
         half: bool = False,
-        opset: Optional[int] = None,
+        opset: int = DEFAULT_OPSET,
         token: Optional[str] = None,
         prune: Optional[List[str]] = None,
         control: bool = True,
@@ -56,6 +59,12 @@ class ConversionContext(ServerContext):
             self.training_device = "cuda" if torch.cuda.is_available() else "cpu"
 
         self.map_location = torch.device(self.training_device)
+
+    @classmethod
+    def from_environ(cls):
+        context = super().from_environ()
+        context.control = get_boolean(environ, "ONNX_WEB_CONVERT_CONTROL", True)
+        context.opset = int(environ.get("ONNX_WEB_CONVERT_OPSET", DEFAULT_OPSET))
 
 
 def download_progress(urls: List[Tuple[str, str]]):
