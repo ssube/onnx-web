@@ -65,6 +65,7 @@ class ConversionContext(ServerContext):
         context = super().from_environ()
         context.control = get_boolean(environ, "ONNX_WEB_CONVERT_CONTROL", True)
         context.opset = int(environ.get("ONNX_WEB_CONVERT_OPSET", DEFAULT_OPSET))
+        return context
 
 
 def download_progress(urls: List[Tuple[str, str]]):
