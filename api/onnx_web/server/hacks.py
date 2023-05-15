@@ -4,11 +4,8 @@ from logging import getLogger
 from os import path
 from urllib.parse import urlparse
 
-import basicsr.utils.download_util
-import codeformer.facelib.utils.misc
-import facexlib.utils
-
 from .context import ServerContext
+from ..utils import run_gc
 
 logger = getLogger(__name__)
 
@@ -44,6 +41,8 @@ def unload(exclude):
     logger.debug("unloading modules for patching: %s", to_unload)
     for mod in to_unload:
         del sys.modules[mod]
+
+    run_gc()
 
 
 # these should be the same sources and names as `convert.base_models.sources`, but inverted so the source is the key
@@ -135,18 +134,21 @@ def patch_cache_path(server: ServerContext, url: str, **kwargs) -> str:
 
 def apply_patch_basicsr(server: ServerContext):
     logger.debug("patching BasicSR module")
+    import basicsr.utils.download_util
     basicsr.utils.download_util.download_file_from_google_drive = patch_not_impl
     basicsr.utils.download_util.load_file_from_url = partial(patch_cache_path, server)
 
 
 def apply_patch_codeformer(server: ServerContext):
     logger.debug("patching CodeFormer module")
+    import codeformer.facelib.utils.misc
     codeformer.facelib.utils.misc.download_pretrained_models = patch_not_impl
     codeformer.facelib.utils.misc.load_file_from_url = partial(patch_cache_path, server)
 
 
 def apply_patch_facexlib(server: ServerContext):
     logger.debug("patching Facexlib module")
+    import facexlib.utils
     facexlib.utils.load_file_from_url = partial(patch_cache_path, server)
 
 
