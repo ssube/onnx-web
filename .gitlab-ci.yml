@@ -32,9 +32,9 @@ stages:
 .build-oci:
   extends:
     - .build-base
-  image: docker.io/docker:20.10
+  image: docker.io/docker:23.0
   services:
-    - docker.io/docker:20.10-dind
+    - docker.io/docker:23.0-dind
   allow_failure: false
   before_script:
     - mkdir ${HOME}/.docker
