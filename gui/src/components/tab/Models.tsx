@@ -30,7 +30,7 @@ const { useContext, useEffect } = React;
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { kebabCase }  = _;
 
-function mergeModelLists<T extends DiffusionModel | ExtraSource>(local: Array<T>, server: Array<T>) {
+function mergeModelLists<T extends DiffusionModel | ExtraSource>(local: Array<T>, server: Array<T> = []) {
   const localNames = new Set(local.map((it) => it.name));
 
   const merged = [...local];
@@ -43,7 +43,7 @@ function mergeModelLists<T extends DiffusionModel | ExtraSource>(local: Array<T>
   return merged;
 }
 
-function mergeModels(local: ExtrasFile, server: ExtrasFile): ExtrasFile {
+function mergeModels(local: ExtrasFile, server: Partial<ExtrasFile>): ExtrasFile {
   const merged: ExtrasFile = {
     ...server,
     correction: mergeModelLists(local.correction, server.correction),
