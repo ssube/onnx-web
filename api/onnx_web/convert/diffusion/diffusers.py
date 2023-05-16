@@ -325,13 +325,28 @@ def convert_diffusion_diffusers(
             use_auth_token=conversion.token,
         ).to(device)
     elif path.exists(source) and path.isfile(source):
-        logger.debug("loading pipeline from SD checkpoint: %s", source)
-        pipeline = download_from_original_stable_diffusion_ckpt(
-            source,
-            original_config_file=config_path,
-            pipeline_class=pipe_class,
-            **pipe_args,
-        ).to(device, torch_dtype=dtype)
+        if conversion.old_method:
+            logger.debug("converting SD checkpoint to Torch models: %s", source)
+            extract_checkpoint(
+                conversion,
+                path.join(conversion.cache_path, name + "-torch"),
+                source,
+                config_file=config,
+                vae_file=vae,
+            )
+            pipeline = pipe_class.from_pretrained(
+                source,
+                torch_dtype=dtype,
+                use_auth_token=conversion.token,
+            ).to(device)
+        else:
+            logger.debug("loading pipeline from SD checkpoint: %s", source)
+            pipeline = download_from_original_stable_diffusion_ckpt(
+                source,
+                original_config_file=config_path,
+                pipeline_class=pipe_class,
+                **pipe_args,
+            ).to(device, torch_dtype=dtype)
     elif hf:
         logger.debug("downloading pretrained model from Huggingface hub: %s", source)
         pipeline = pipe_class.from_pretrained(
