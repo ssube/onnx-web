@@ -450,8 +450,8 @@ def convert_diffusion_diffusers(
         )
 
     cnet_path = None
-    if conversion.control and not single_vae:
-        # if converting only the CNet, the rest of the model has already been converted
+    if conversion.control and not single_vae and conversion.share_unet:
+        logger.debug("converting CNet from loaded UNet")
         cnet_path = convert_diffusion_diffusers_cnet(
             conversion,
             source,
@@ -465,11 +465,26 @@ def convert_diffusion_diffusers(
             unet=pipeline.unet,
             v2=v2,
         )
-    else:
-        logger.debug("skipping CNet for single-VAE model")
 
     del pipeline.unet
     run_gc()
+
+    if conversion.control and not single_vae and not conversion.share_unet:
+        logger.info("loading and converting CNet")
+        cnet_path = convert_diffusion_diffusers_cnet(
+            conversion,
+            source,
+            device,
+            output_path,
+            dtype,
+            unet_in_channels,
+            unet_sample_size,
+            num_tokens,
+            text_hidden_size,
+            unet=None,
+            v2=v2,
+        )
+
 
     if cnet_path is not None:
         collate_cnet(cnet_path)
