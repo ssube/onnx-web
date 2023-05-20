@@ -37,6 +37,7 @@ from ...diffusers.version_safe_diffusers import AttnProcessor
 from ...models.cnet import UNet2DConditionModel_CNet
 from ...utils import run_gc
 from ..utils import ConversionContext, is_torch_2_0, load_tensor, onnx_export
+from .checkpoint import convert_extract_checkpoint
 
 logger = getLogger(__name__)
 
@@ -267,13 +268,15 @@ def convert_diffusion_diffusers(
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
     """
+    name = model.get("name")
+
+    # optional
     config = model.get("config", None)
     image_size = model.get("image_size", None)
-    name = model.get("name")
     pipe_type = model.get("pipeline", "txt2img")
-    single_vae = model.get("single_vae")
-    source = source or model.get("source")
-    replace_vae = model.get("vae")
+    single_vae = model.get("single_vae", False)
+    source = model.get("source", source)
+    replace_vae = model.get("vae", None)
     version = model.get("version", None)
 
     device = conversion.training_device
@@ -325,19 +328,21 @@ def convert_diffusion_diffusers(
             use_auth_token=conversion.token,
         ).to(device)
     elif path.exists(source) and path.isfile(source):
-        if conversion.old_method:
-            logger.debug("converting SD checkpoint to Torch models: %s", source)
-            extract_checkpoint(
+        if conversion.extract_torch:
+            logger.debug("extracting SD checkpoint to Torch models: %s", source)
+            torch_source = convert_extract_checkpoint(
                 conversion,
-                path.join(conversion.cache_path, name + "-torch"),
                 source,
+                path.join(conversion.cache_path, name + "-torch"),
                 config_file=config,
-                vae_file=vae,
+                vae_file=replace_vae,
+            )
+            logger.debug(
+                "loading pipeline from extracted checkpoint: %s", torch_source=source
             )
             pipeline = pipe_class.from_pretrained(
-                source,
+                torch_source,
                 torch_dtype=dtype,
-                use_auth_token=conversion.token,
             ).to(device)
         else:
             logger.debug("loading pipeline from SD checkpoint: %s", source)

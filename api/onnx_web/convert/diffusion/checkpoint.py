@@ -18,7 +18,7 @@ import os
 import re
 import shutil
 from logging import getLogger
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import torch
 from diffusers import (
@@ -51,10 +51,8 @@ from transformers import (
     CLIPVisionConfig,
 )
 
-from ...constants import ONNX_MODEL
 from ...utils import sanitize_name
-from ..utils import ConversionContext, ModelDict, load_tensor, load_yaml
-from .diffusers import convert_diffusion_diffusers
+from ..utils import ConversionContext, load_tensor, load_yaml
 
 logger = getLogger(__name__)
 
@@ -1660,64 +1658,34 @@ def extract_checkpoint(
 
 
 @torch.no_grad()
-def convert_diffusion_original(
+def convert_extract_checkpoint(
     conversion: ConversionContext,
-    model: ModelDict,
     source: str,
+    dest: str,
+    config_file: Optional[str] = None,
+    vae_file: Optional[str] = None,
 ) -> Tuple[bool, str]:
-    name = model["name"]
-    source = source or model["source"]
-
-    dest_path = os.path.join(conversion.model_path, name)
-    dest_index = os.path.join(dest_path, "model_index.json")
-    cnet_path = os.path.join(dest_path, "cnet", ONNX_MODEL)
-    logger.info(
-        "converting original Diffusers checkpoint %s: %s -> %s", name, source, dest_path
-    )
-
-    if os.path.exists(dest_path) and os.path.exists(dest_index):
-        if not os.path.exists(cnet_path):
-            logger.info(
-                "SD checkpoint was converted without a ControlNet UNet, converting one"
-            )
-        else:
-            logger.info("ONNX pipeline already exists, skipping")
-            return (False, dest_path)
-
-    torch_name = name + "-torch"
-    torch_path = os.path.join(conversion.cache_path, torch_name)
-    working_name = os.path.join(conversion.cache_path, torch_name, "working")
+    working_name = os.path.join(dest, "working")
     model_index = os.path.join(working_name, "model_index.json")
 
-    if os.path.exists(torch_path) and os.path.exists(model_index):
-        logger.info("Torch model already exists, reusing: %s", torch_path)
+    if os.path.exists(working_name) and os.path.exists(model_index):
+        logger.info("extracted Torch model already exists, reusing: %s", working_name)
     else:
         logger.info(
-            "converting checkpoint to Torch model: %s -> %s",
+            "extracting checkpoint to Torch model: %s -> %s",
             source,
-            torch_path,
+            dest,
         )
         if extract_checkpoint(
             conversion,
-            torch_name,
+            dest,
             source,
-            config_file=model.get("config"),
-            vae_file=model.get("vae"),
+            config_file=config_file,
+            vae_file=vae_file,
         ):
-            logger.info("converted checkpoint to Torch model")
+            logger.info("extracted checkpoint to Torch model: %s", working_name)
         else:
             logger.error("unable to convert checkpoint to Torch model")
             raise ValueError("unable to convert checkpoint to Torch model")
 
-    # VAE has already been converted and will confuse HF repo lookup
-    if "vae" in model:
-        del model["vae"]
-
-    result = convert_diffusion_diffusers(conversion, model, working_name)
-
-    if "torch" in conversion.prune:
-        logger.info("removing intermediate Torch models: %s", torch_path)
-        shutil.rmtree(torch_path)
-
-    logger.info("ONNX pipeline saved to %s", name)
-    return result
+    return working_name
