@@ -146,7 +146,7 @@ export function Models() {
           newItem={(l, s) => ({
             format: 'safetensors' as SafetensorFormat,
             label: l,
-            name: kebabCase(l),
+            name: `diffusion-${kebabCase(l)}`,
             source: s,
           })}
           removeItem={(m) => removeDiffusionModel(m)}
@@ -165,7 +165,7 @@ export function Models() {
           newItem={(l, s) => ({
             format: 'safetensors' as SafetensorFormat,
             label: l,
-            name: kebabCase(l),
+            name: `correction-${kebabCase(l)}`,
             source: s,
           })}
           removeItem={(m) => removeCorrectionModel(m)}
@@ -184,7 +184,7 @@ export function Models() {
           newItem={(l, s) => ({
             format: 'safetensors' as SafetensorFormat,
             label: l,
-            name: kebabCase(l),
+            name: `upscaling-${kebabCase(l)}`,
             scale: 4,
             source: s,
           })}
