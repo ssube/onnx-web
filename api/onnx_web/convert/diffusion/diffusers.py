@@ -320,6 +320,7 @@ def convert_diffusion_diffusers(
     if format == "safetensors":
         pipe_args["from_safetensors"] = True
 
+    torch_source = None
     if path.exists(source) and path.isdir(source):
         logger.debug("loading pipeline from diffusers directory: %s", source)
         pipeline = pipe_class.from_pretrained(
@@ -470,10 +471,11 @@ def convert_diffusion_diffusers(
     run_gc()
 
     if conversion.control and not single_vae and not conversion.share_unet:
-        logger.info("loading and converting CNet")
+        cnet_source = torch_source or source
+        logger.info("loading and converting CNet from %s", cnet_source)
         cnet_path = convert_diffusion_diffusers_cnet(
             conversion,
-            source,
+            cnet_source,
             device,
             output_path,
             dtype,
@@ -484,7 +486,6 @@ def convert_diffusion_diffusers(
             unet=None,
             v2=v2,
         )
-
 
     if cnet_path is not None:
         collate_cnet(cnet_path)

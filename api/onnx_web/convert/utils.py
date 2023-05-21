@@ -45,11 +45,13 @@ class ConversionContext(ServerContext):
         control: bool = True,
         reload: bool = True,
         share_unet: bool = True,
+        extract: bool = False,
         **kwargs,
     ) -> None:
         super().__init__(model_path=model_path, cache_path=cache_path, **kwargs)
 
         self.control = control
+        self.extract = extract
         self.half = half
         self.opset = opset
         self.prune = prune or []
@@ -68,6 +70,7 @@ class ConversionContext(ServerContext):
     def from_environ(cls):
         context = super().from_environ()
         context.control = get_boolean(environ, "ONNX_WEB_CONVERT_CONTROL", True)
+        context.extract = get_boolean(environ, "ONNX_WEB_CONVERT_EXTRACT", False)
         context.reload = get_boolean(environ, "ONNX_WEB_CONVERT_RELOAD", True)
         context.share_unet = get_boolean(environ, "ONNX_WEB_CONVERT_SHARE_UNET", True)
         context.opset = int(environ.get("ONNX_WEB_CONVERT_OPSET", DEFAULT_OPSET))
