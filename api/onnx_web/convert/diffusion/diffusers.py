@@ -275,7 +275,6 @@ def convert_diffusion_diffusers(
     image_size = model.get("image_size", None)
     pipe_type = model.get("pipeline", "txt2img")
     single_vae = model.get("single_vae", False)
-    source = model.get("source", source)
     replace_vae = model.get("vae", None)
     version = model.get("version", None)
 
