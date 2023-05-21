@@ -51,8 +51,8 @@ from transformers import (
     CLIPVisionConfig,
 )
 
-from ...utils import sanitize_name
-from ..utils import ConversionContext, load_tensor, load_yaml
+from ...utils import sanitize_name, load_config
+from ..utils import ConversionContext, load_tensor
 
 logger = getLogger(__name__)
 
@@ -1471,7 +1471,7 @@ def extract_checkpoint(
             return False
 
         logger.debug("trying to load: %s", original_config_file)
-        original_config = load_yaml(original_config_file)
+        original_config = load_config(original_config_file)
 
         num_train_timesteps = original_config.model.params.timesteps
         beta_start = original_config.model.params.linear_start
