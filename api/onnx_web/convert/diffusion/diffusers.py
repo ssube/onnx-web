@@ -338,7 +338,7 @@ def convert_diffusion_diffusers(
                 vae_file=replace_vae,
             )
             logger.debug(
-                "loading pipeline from extracted checkpoint: %s", torch_source=source
+                "loading pipeline from extracted checkpoint: %s", torch_source
             )
             pipeline = pipe_class.from_pretrained(
                 torch_source,
@@ -517,7 +517,11 @@ def convert_diffusion_diffusers(
 
     # VAE
     if replace_vae is not None:
-        logger.debug("loading custom VAE: %s", replace_vae)
+        if replace_vae.startswith("."):
+            logger.debug("custom VAE appears to be a local path, making it relative to the model path")
+            replace_vae = path.join(conversion.model_path, replace_vae)
+
+        logger.info("loading custom VAE: %s", replace_vae)
         vae = AutoencoderKL.from_pretrained(replace_vae)
         pipeline.vae = vae
         run_gc()
