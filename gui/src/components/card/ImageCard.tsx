@@ -140,7 +140,7 @@ export function ImageCard(props: ImageCardProps) {
               </IconButton>
             </Tooltip>
           </GridItem>
-          <GridItem xs={4}>{t('modelType.diffusion')}: {model}</GridItem>
+          <GridItem xs={4}>{t('modelType.diffusion', {count: 1})}: {model}</GridItem>
           <GridItem xs={4}>{t('parameter.scheduler')}: {scheduler}</GridItem>
           <GridItem xs={4}>{t('parameter.seed')}: {params.seed}</GridItem>
           <GridItem xs={4}>{t('parameter.cfg')}: {params.cfg}</GridItem>
