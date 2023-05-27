@@ -344,6 +344,9 @@ def convert_diffusion_diffusers(
                 torch_source,
                 torch_dtype=dtype,
             ).to(device)
+
+            # VAE replacement already happened during extraction, skip
+            replace_vae = None
         else:
             logger.debug("loading pipeline from SD checkpoint: %s", source)
             pipeline = download_from_original_stable_diffusion_ckpt(
