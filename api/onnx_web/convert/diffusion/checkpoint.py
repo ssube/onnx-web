@@ -1688,7 +1688,7 @@ def convert_extract_checkpoint(
     config_file: Optional[str] = None,
     vae_file: Optional[str] = None,
 ) -> Tuple[bool, str]:
-    working_name = os.path.join(dest, "working")
+    working_name = os.path.join(conversion.cache_path, dest, "working")
     model_index = os.path.join(working_name, "model_index.json")
 
     if os.path.exists(working_name) and os.path.exists(model_index):

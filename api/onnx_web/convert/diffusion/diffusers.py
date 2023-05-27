@@ -333,7 +333,7 @@ def convert_diffusion_diffusers(
             torch_source = convert_extract_checkpoint(
                 conversion,
                 source,
-                path.join(conversion.cache_path, name + "-torch"),
+                f"{name}-torch",
                 config_file=config,
                 vae_file=replace_vae,
             )
