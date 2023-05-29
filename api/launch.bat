@@ -1,3 +1,5 @@
+call onnx_env\Scripts\Activate.bat
+
 echo "Downloading and converting models to ONNX format..."
 IF "%ONNX_WEB_EXTRA_MODELS%"=="" (set ONNX_WEB_EXTRA_MODELS=..\models\extras.json)
 python -m onnx_web.convert ^
