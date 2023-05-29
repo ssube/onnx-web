@@ -51,7 +51,7 @@ from transformers import (
     CLIPVisionConfig,
 )
 
-from ...utils import sanitize_name, load_config
+from ...utils import load_config, sanitize_name
 from ..utils import ConversionContext, load_tensor
 
 logger = getLogger(__name__)

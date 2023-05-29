@@ -337,9 +337,7 @@ def convert_diffusion_diffusers(
                 config_file=config,
                 vae_file=replace_vae,
             )
-            logger.debug(
-                "loading pipeline from extracted checkpoint: %s", torch_source
-            )
+            logger.debug("loading pipeline from extracted checkpoint: %s", torch_source)
             pipeline = pipe_class.from_pretrained(
                 torch_source,
                 torch_dtype=dtype,
@@ -521,7 +519,9 @@ def convert_diffusion_diffusers(
     # VAE
     if replace_vae is not None:
         if replace_vae.startswith("."):
-            logger.debug("custom VAE appears to be a local path, making it relative to the model path")
+            logger.debug(
+                "custom VAE appears to be a local path, making it relative to the model path"
+            )
             replace_vae = path.join(conversion.model_path, replace_vae)
 
         logger.info("loading custom VAE: %s", replace_vae)
