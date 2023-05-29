@@ -108,6 +108,8 @@ export const I18N_STRINGS_EN = {
         'upscaling-swinir-classical-x3': 'SwinIR Classical x3',
         'upscaling-swinir-classical-x4': 'SwinIR Classical x4',
         'upscaling-swinir-classical-x8': 'SwinIR Classical x8',
+        'upscaling-swinir-real-large-x2': 'SwinIR Real Large x2',
+        'upscaling-swinir-real-large-x4': 'SwinIR Real Large x4',
         'upscaling-swinir-real-x2': 'SwinIR Real x2',
         'upscaling-swinir-real-x4': 'SwinIR Real x4',
         // extras
