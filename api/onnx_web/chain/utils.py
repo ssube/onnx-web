@@ -92,7 +92,7 @@ def process_tile_grid(
 
             tiles.append((left, top, tile_image))
 
-    scaled_size = (width * scale, height * scale, 3)
+    scaled_size = (height * scale, width * scale, 3)
     count = np.zeros(scaled_size)
     value = np.zeros(scaled_size)
     ref = np.array(tiles[0][2])
@@ -114,12 +114,16 @@ def process_tile_grid(
             equalized[:, :, c] = (equalized[:, :, c] * mask).astype(np.uint8)
 
         # accumulation
+        # equalized size may be wrong/too much
+        bottom = max((top * scale) + equalized.shape[0], scaled_size[0])
+        right = max((left * scale) + equalized.shape[1], scaled_size[1])
+
         value[
-            top * scale : (top * scale) + equalized.shape[0], left * scale : (left * scale) + equalized.shape[1], :
+            top * scale : bottom, left * scale : right, :
         ] += equalized
         count[
-            top * scale : (top * scale) + equalized.shape[0], left * scale : (left * scale) + equalized.shape[1], :
-        ] += np.repeat(mask, 3, axis=2)
+            top * scale : bottom, left * scale : right, :
+        ] += np.repeat(mask[:, :, np.newaxis], 3, axis=2)
 
     pixels = np.where(count > 0, value / count, value)
     return Image.fromarray(pixels)
