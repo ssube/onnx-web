@@ -36,11 +36,11 @@ def complete_tile(
 
 
 def get_tile_grads(
-        left: int,
-        top: int,
-        tile: int,
-        width: int,
-        height: int,
+    left: int,
+    top: int,
+    tile: int,
+    width: int,
+    height: int,
 ) -> Tuple[Tuple[float, float, float, float], Tuple[float, float, float, float]]:
     grad_x = [1, 1, 1, 1]
     grad_y = [1, 1, 1, 1]
@@ -51,10 +51,10 @@ def get_tile_grads(
     if top > 0:
         grad_y[0] = 0
 
-    if (left + tile) < width:
+    if (left + tile) >= width:
         grad_x[3] = 0
 
-    if (top + tile) < height:
+    if (top + tile) >= height:
         grad_y[3] = 0
 
     return (grad_x, grad_y)
@@ -103,13 +103,15 @@ def process_tile_grid(
         equalized = match_histograms(equalized, ref, channel_axis=-1)
 
         # gradient blending
+        points = [0, adj_tile * scale, (tile - adj_tile) * scale, (tile * scale) - 1]
         grad_x, grad_y = get_tile_grads(left, top, tile, width, height)
-        mult_x = [np.interp(i, [0, adj_tile, tile - adj_tile, tile], grad_x) for i in range(tile)]
-        mult_y = [np.interp(i, [0, adj_tile, tile - adj_tile, tile], grad_y) for i in range(tile)]
+        mult_x = [np.interp(i, points, grad_x) for i in range(tile * scale)]
+        mult_y = [np.interp(i, points, grad_y) for i in range(tile * scale)]
 
-        mask = np.ones_like(equalized) * mult_x
+        mask = np.ones_like(equalized[:, :, 0]) * mult_x
         mask = (mask.T * mult_y).T
-        equalized *= mask
+        for c in range(3):
+            equalized[:, :, c] *= mask.astype(np.uint8)
 
         # accumulation
         value[
@@ -117,7 +119,7 @@ def process_tile_grid(
         ] += equalized
         count[
             top * scale : (top + tile) * scale, left * scale : (left + tile) * scale, :
-        ] += 1
+        ] += mask
 
     pixels = np.where(count > 0, value / count, value)
     return Image.fromarray(pixels)
