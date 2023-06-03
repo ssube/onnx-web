@@ -42,20 +42,20 @@ def get_tile_grads(
     width: int,
     height: int,
 ) -> Tuple[Tuple[float, float, float, float], Tuple[float, float, float, float]]:
-    grad_x = [1, 1, 1, 1]
-    grad_y = [1, 1, 1, 1]
+    grad_x = [0, 1, 1, 0]
+    grad_y = [0, 1, 1, 0]
 
-    if left > 0:
-        grad_x[0] = 0
+    if left <= 0:
+        grad_x[0] = 1
 
-    if top > 0:
-        grad_y[0] = 0
+    if top <= 0:
+        grad_y[0] = 1
 
     if (left + tile) >= width:
-        grad_x[3] = 0
+        grad_x[3] = 1
 
     if (top + tile) >= height:
-        grad_y[3] = 0
+        grad_y[3] = 1
 
     return (grad_x, grad_y)
 
@@ -104,22 +104,22 @@ def process_tile_grid(
 
         # gradient blending
         points = [0, adj_tile * scale, (tile - adj_tile) * scale, (tile * scale) - 1]
-        grad_x, grad_y = get_tile_grads(left, top, tile, width, height)
+        grad_x, grad_y = get_tile_grads(left, top, adj_tile, width, height)
         mult_x = [np.interp(i, points, grad_x) for i in range(tile * scale)]
         mult_y = [np.interp(i, points, grad_y) for i in range(tile * scale)]
 
         mask = np.ones_like(equalized[:, :, 0]) * mult_x
         mask = (mask.T * mult_y).T
         for c in range(3):
-            equalized[:, :, c] *= mask.astype(np.uint8)
+            equalized[:, :, c] = (equalized[:, :, c] * mask).astype(np.uint8)
 
         # accumulation
         value[
-            top * scale : (top + tile) * scale, left * scale : (left + tile) * scale, :
+            top * scale : (top * scale) + equalized.shape[0], left * scale : (left * scale) + equalized.shape[1], :
         ] += equalized
         count[
-            top * scale : (top + tile) * scale, left * scale : (left + tile) * scale, :
-        ] += mask
+            top * scale : (top * scale) + equalized.shape[0], left * scale : (left * scale) + equalized.shape[1], :
+        ] += np.repeat(mask, 3, axis=2)
 
     pixels = np.where(count > 0, value / count, value)
     return Image.fromarray(pixels)
