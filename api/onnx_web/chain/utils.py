@@ -35,6 +35,31 @@ def complete_tile(
     return source
 
 
+def get_tile_grads(
+        left: int,
+        top: int,
+        tile: int,
+        width: int,
+        height: int,
+) -> Tuple[Tuple[float, float, float, float], Tuple[float, float, float, float]]:
+    grad_x = [1, 1, 1, 1]
+    grad_y = [1, 1, 1, 1]
+
+    if left > 0:
+        grad_x[0] = 0
+
+    if top > 0:
+        grad_y[0] = 0
+
+    if (left + tile) < width:
+        grad_x[3] = 0
+
+    if (top + tile) < height:
+        grad_y[3] = 0
+
+    return (grad_x, grad_y)
+
+
 def process_tile_grid(
     source: Image.Image,
     tile: int,
@@ -45,7 +70,7 @@ def process_tile_grid(
 ) -> Image.Image:
     width, height = source.size
 
-    adj_tile = tile * overlap
+    adj_tile = int(float(tile) * overlap)
     tiles_x = ceil(width / adj_tile)
     tiles_y = ceil(height / adj_tile)
     total = tiles_x * tiles_y
@@ -68,15 +93,28 @@ def process_tile_grid(
             tiles.append((left, top, tile_image))
 
     scaled_size = (width * scale, height * scale, 3)
-    count = np.zeros_like(scaled_size)
-    value = np.zeros_like(scaled_size)
-    ref = tiles[0][2]
+    count = np.zeros(scaled_size)
+    value = np.zeros(scaled_size)
+    ref = np.array(tiles[0][2])
 
     for left, top, tile_image in tiles:
-        equalized = match_histograms(tile_image, ref, channel_axis=-1)
+        # histogram equalization
+        equalized = np.array(tile_image)
+        equalized = match_histograms(equalized, ref, channel_axis=-1)
+
+        # gradient blending
+        grad_x, grad_y = get_tile_grads(left, top, tile, width, height)
+        mult_x = [np.interp(i, [0, adj_tile, tile - adj_tile, tile], grad_x) for i in range(tile)]
+        mult_y = [np.interp(i, [0, adj_tile, tile - adj_tile, tile], grad_y) for i in range(tile)]
+
+        mask = np.ones_like(equalized) * mult_x
+        mask = (mask.T * mult_y).T
+        equalized *= mask
+
+        # accumulation
         value[
             top * scale : (top + tile) * scale, left * scale : (left + tile) * scale, :
-        ] += np.array(equalized)
+        ] += equalized
         count[
             top * scale : (top + tile) * scale, left * scale : (left + tile) * scale, :
         ] += 1
