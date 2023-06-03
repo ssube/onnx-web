@@ -115,14 +115,17 @@ def process_tile_grid(
 
         # accumulation
         # equalized size may be wrong/too much
-        bottom = max((top * scale) + equalized.shape[0], scaled_size[0])
-        right = max((left * scale) + equalized.shape[1], scaled_size[1])
+        scaled_top = top * scale
+        scaled_left = left * scale
+
+        scaled_bottom = min(scaled_top + equalized.shape[0], scaled_size[0])
+        scaled_right = min(scaled_left + equalized.shape[1], scaled_size[1])
 
         value[
-            top * scale : bottom, left * scale : right, :
-        ] += equalized
+            scaled_top : scaled_bottom, scaled_left : scaled_right, :
+        ] += equalized[0 : scaled_bottom - scaled_top, 0 : scaled_right - scaled_left, :]
         count[
-            top * scale : bottom, left * scale : right, :
+            scaled_top : scaled_bottom, scaled_left : scaled_right, :
         ] += np.repeat(mask[:, :, np.newaxis], 3, axis=2)
 
     pixels = np.where(count > 0, value / count, value)
