@@ -328,7 +328,7 @@ def convert_diffusion_diffusers(
             use_auth_token=conversion.token,
         ).to(device)
     elif path.exists(source) and path.isfile(source):
-        if conversion.extract_torch:
+        if conversion.extract:
             logger.debug("extracting SD checkpoint to Torch models: %s", source)
             torch_source = convert_extract_checkpoint(
                 conversion,
