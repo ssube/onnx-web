@@ -126,7 +126,7 @@ def process_tile_grid(
         ] += equalized[0 : scaled_bottom - scaled_top, 0 : scaled_right - scaled_left, :]
         count[
             scaled_top : scaled_bottom, scaled_left : scaled_right, :
-        ] += np.repeat(mask[:, :, np.newaxis], 3, axis=2)
+        ] += np.repeat(mask[0 : scaled_bottom - scaled_top, 0 : scaled_right - scaled_left, np.newaxis], 3, axis=2)
 
     pixels = np.where(count > 0, value / count, value)
     return Image.fromarray(pixels)
