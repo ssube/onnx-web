@@ -88,7 +88,7 @@ def blend_tiles(
         mask = np.ones_like(equalized[:, :, 0]) * mult_x
         mask = (mask.T * mult_y).T
         for c in range(3):
-            equalized[:, :, c] = (equalized[:, :, c] * mask).astype(np.uint8)
+            equalized[:, :, c] = equalized[:, :, c] * mask
 
         scaled_top = top * scale
         scaled_left = left * scale
