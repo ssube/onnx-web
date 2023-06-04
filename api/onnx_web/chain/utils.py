@@ -4,9 +4,11 @@ from typing import List, Protocol, Tuple
 
 import numpy as np
 from PIL import Image
-from skimage.exposure import match_histograms
 
 from ..params import TileOrder
+
+# from skimage.exposure import match_histograms
+
 
 logger = getLogger(__name__)
 
@@ -72,12 +74,12 @@ def blend_tiles(
     scaled_size = (height * scale, width * scale, 3)
     count = np.zeros(scaled_size)
     value = np.zeros(scaled_size)
-    ref = np.array(tiles[0][2])
+    # ref = np.array(tiles[0][2])
 
     for left, top, tile_image in tiles:
         # histogram equalization
         equalized = np.array(tile_image).astype(np.float32)
-        equalized = match_histograms(equalized, ref, channel_axis=-1)
+        # equalized = match_histograms(equalized, ref, channel_axis=-1)
 
         # gradient blending
         points = [0, adj_tile * scale, (tile - adj_tile) * scale, (tile * scale) - 1]
