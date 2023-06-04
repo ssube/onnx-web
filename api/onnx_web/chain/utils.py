@@ -106,25 +106,25 @@ def blend_tiles(
     sum_cdf = np.zeros((3, bin_count))
     for _left, _top, tile_image in tiles:
         tile_data = np.array(tile_image)
-        tile_ycrcb = cv2.cvtColor(tile_data, cv2.COLOR_BGR2YCrCb)
+        tile_hsv = cv2.cvtColor(tile_data, cv2.COLOR_BGR2HSV)
 
         for c in range(3):
-            channel_cdf = cdf(tile_ycrcb[:, :, c])
+            channel_cdf = cdf(tile_hsv[:, :, c])
             sum_cdf[c] += channel_cdf
 
     sum_cdf /= len(tiles)
 
     for left, top, tile_image in tiles:
         # histogram equalization
-        equalized = np.array(tile_image)
-        equalized_ycrcb = cv2.cvtColor(tile_data, cv2.COLOR_BGR2YCrCb)
+        tile_data = np.array(tile_image)
+        equalized_hsv = cv2.cvtColor(tile_data, cv2.COLOR_BGR2HSV)
 
-        for c in range(3):
-            channel = equalized_ycrcb[:, :, c]
+        for c in [0]:
+            channel = equalized_hsv[:, :, c]
             equalized_channel = hist_matching(cdf(channel), sum_cdf[c], channel, bins)
-            equalized_ycrcb[:, :, c] = equalized_channel
+            equalized_hsv[:, :, c] = equalized_channel
 
-        equalized = cv2.cvtColor(equalized_ycrcb, cv2.COLOR_YCrCb2BGR)
+        equalized = cv2.cvtColor(equalized_hsv, cv2.COLOR_HSV2BGR)
         equalized = equalized.astype(np.float32)
 
         # gradient blending
