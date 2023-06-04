@@ -61,12 +61,12 @@ def get_tile_grads(
 
 
 def blend_tiles(
-        tiles: List[Tuple[int, int, Image.Image]],
-        scale: int,
-        width: int,
-        height: int,
-        tile: int,
-        overlap: float,
+    tiles: List[Tuple[int, int, Image.Image]],
+    scale: int,
+    width: int,
+    height: int,
+    tile: int,
+    overlap: float,
 ):
     adj_tile = int(float(tile) * overlap)
     scaled_size = (height * scale, width * scale, 3)
@@ -98,12 +98,18 @@ def blend_tiles(
         scaled_right = min(scaled_left + equalized.shape[1], scaled_size[1])
 
         # accumulation
-        value[
-            scaled_top : scaled_bottom, scaled_left : scaled_right, :
-        ] += equalized[0 : scaled_bottom - scaled_top, 0 : scaled_right - scaled_left, :]
-        count[
-            scaled_top : scaled_bottom, scaled_left : scaled_right, :
-        ] += np.repeat(mask[0 : scaled_bottom - scaled_top, 0 : scaled_right - scaled_left, np.newaxis], 3, axis=2)
+        value[scaled_top:scaled_bottom, scaled_left:scaled_right, :] += equalized[
+            0 : scaled_bottom - scaled_top, 0 : scaled_right - scaled_left, :
+        ]
+        count[scaled_top:scaled_bottom, scaled_left:scaled_right, :] += np.repeat(
+            mask[
+                0 : scaled_bottom - scaled_top,
+                0 : scaled_right - scaled_left,
+                np.newaxis,
+            ],
+            3,
+            axis=2,
+        )
 
     pixels = np.where(count > 0, value / count, value)
     return Image.fromarray(pixels)
@@ -169,7 +175,9 @@ def process_tile_spiral(
     tile_coords = generate_tile_spiral(width, height, tile, overlap=overlap)
     for left, top in tile_coords:
         counter += 1
-        logger.debug("processing tile %s of %s, %sx%s", counter, len(tile_coords), left, top)
+        logger.debug(
+            "processing tile %s of %s, %sx%s", counter, len(tile_coords), left, top
+        )
 
         tile_image = image.crop((left, top, left + tile, top + tile))
         tile_image = complete_tile(tile_image, tile)
