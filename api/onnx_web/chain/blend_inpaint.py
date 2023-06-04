@@ -114,7 +114,7 @@ def blend_inpaint(
 
         return result.images[0]
 
-    output = process_tile_order(stage.tile_order, source, SizeChart.auto, 1, [outpaint])
+    output = process_tile_order(stage.tile_order, source, SizeChart.auto, 1, [outpaint], overlap=params.overlap)
 
     logger.info("final output image size: %s", output.size)
     return output

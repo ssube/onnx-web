@@ -217,7 +217,7 @@ def run_highres(
             size.height // highres.scale,
             highres.scale,
             [highres_tile],
-            overlap=0,
+            overlap=params.overlap,
         )
 
     return image
