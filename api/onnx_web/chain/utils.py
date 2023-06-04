@@ -2,6 +2,7 @@ from logging import getLogger
 from math import ceil
 from typing import List, Protocol, Tuple
 
+import cv2
 import numpy as np
 from PIL import Image
 
@@ -105,22 +106,25 @@ def blend_tiles(
     sum_cdf = np.zeros((3, bin_count))
     for _left, _top, tile_image in tiles:
         tile_data = np.array(tile_image)
+        tile_ycrcb = cv2.cvtColor(tile_data, cv2.COLOR_BGR2YCrCb)
 
         for c in range(3):
-            tile_cdf = cdf(tile_data[:, :, c])
-            sum_cdf[c] += tile_cdf
+            channel_cdf = cdf(tile_ycrcb[:, :, c])
+            sum_cdf[c] += channel_cdf
 
     sum_cdf /= len(tiles)
 
     for left, top, tile_image in tiles:
         # histogram equalization
         equalized = np.array(tile_image)
+        equalized_ycrcb = cv2.cvtColor(tile_data, cv2.COLOR_BGR2YCrCb)
 
         for c in range(3):
-            channel = equalized[:, :, c]
+            channel = equalized_ycrcb[:, :, c]
             equalized_channel = hist_matching(cdf(channel), sum_cdf[c], channel, bins)
-            equalized[:, :, c] = equalized_channel
+            equalized_ycrcb[:, :, c] = equalized_channel
 
+        equalized = cv2.cvtColor(equalized_ycrcb, cv2.COLOR_YCrCb2BGR)
         equalized = equalized.astype(np.float32)
 
         # gradient blending
