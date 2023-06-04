@@ -68,7 +68,7 @@ def blend_tiles(
     tile: int,
     overlap: float,
 ):
-    adj_tile = int(float(tile) * overlap)
+    adj_tile = int(float(tile) * (1.0 - overlap))
     scaled_size = (height * scale, width * scale, 3)
     count = np.zeros(scaled_size)
     value = np.zeros(scaled_size)
@@ -125,7 +125,7 @@ def process_tile_grid(
 ) -> Image.Image:
     width, height = source.size
 
-    adj_tile = int(float(tile) * overlap)
+    adj_tile = int(float(tile) * (1.0 - overlap))
     tiles_x = ceil(width / adj_tile)
     tiles_y = ceil(height / adj_tile)
     total = tiles_x * tiles_y
@@ -147,7 +147,7 @@ def process_tile_grid(
 
             tiles.append((left, top, tile_image))
 
-    return blend_tiles(tiles, scale, width, height, tile, adj_tile)
+    return blend_tiles(tiles, scale, width, height, tile, overlap)
 
 
 def process_tile_spiral(
