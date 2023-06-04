@@ -4,11 +4,9 @@ from typing import List, Protocol, Tuple
 
 import numpy as np
 from PIL import Image
+from skimage.exposure import cumulative_distribution
 
 from ..params import TileOrder
-
-# from skimage.exposure import match_histograms
-
 
 logger = getLogger(__name__)
 
@@ -62,6 +60,31 @@ def get_tile_grads(
     return (grad_x, grad_y)
 
 
+def cdf(im):
+    """
+    computes the CDF of an image im as 2D numpy ndarray
+    """
+    c, b = cumulative_distribution(im)
+    # pad the beginning and ending pixels and their CDF values
+    c = np.insert(c, 0, [0] * b[0])
+    c = np.append(c, [1] * (255 - b[-1]))
+    return c
+
+
+def hist_matching(c, c_t, im, pixels):
+    """
+    c: CDF of input image computed with the function cdf()
+    c_t: CDF of template image computed with the function cdf()
+    im: input image as 2D numpy ndarray
+    returns the modified pixel values
+    """
+    # find closest pixel-matches corresponding to the CDF of the input image, given the value of the CDF H of
+    # the template image at the corresponding pixels, s.t. c_t = H(pixels) <=> pixels = H-1(c_t)
+    new_pixels = np.interp(c, c_t, pixels)
+    im = (np.reshape(new_pixels[im.ravel()], im.shape)).astype(np.uint8)
+    return im
+
+
 def blend_tiles(
     tiles: List[Tuple[int, int, Image.Image]],
     scale: int,
@@ -76,29 +99,21 @@ def blend_tiles(
     value = np.zeros(scaled_size)
 
     bin_count = 256
-    bins = None
+    bins = np.arange(bin_count)
 
-    sum_bins = np.zeros((bin_count,))
     sum_cdf = np.zeros((bin_count,))
     for _left, _top, tile_image in tiles:
-        tile_data = np.array(tile_image).flatten()
-        tile_histogram, bins = np.histogram(tile_data, bins=bin_count, density=True)
-        cdf = tile_histogram.cumsum()
-        cdf = (bin_count - 1) * cdf / cdf[-1]
+        tile_data = np.array(tile_image)
+        tile_cdf = cdf(tile_data)
 
-        sum_bins += bins
-        sum_cdf += cdf
+        sum_cdf += tile_cdf
 
-    sum_bins /= len(tiles)
     sum_cdf /= len(tiles)
 
     for left, top, tile_image in tiles:
         # histogram equalization
         equalized = np.array(tile_image).astype(np.float32)
-
-        original_shape = equalized.shape
-        equalized = np.interp(equalized.flatten(), sum_bins[:-1], sum_cdf)
-        equalized = equalized.reshape(original_shape)
+        equalized = hist_matching(cdf(equalized), sum_cdf, equalized, bins)
 
         # gradient blending
         points = [0, adj_tile * scale, (tile - adj_tile) * scale, (tile * scale) - 1]
