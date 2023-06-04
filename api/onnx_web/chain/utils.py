@@ -76,7 +76,7 @@ def blend_tiles(
 
     for left, top, tile_image in tiles:
         # histogram equalization
-        equalized = np.array(tile_image)
+        equalized = np.array(tile_image).astype(np.float32)
         equalized = match_histograms(equalized, ref, channel_axis=-1)
 
         # gradient blending
@@ -112,7 +112,7 @@ def blend_tiles(
         )
 
     pixels = np.where(count > 0, value / count, value)
-    return Image.fromarray(pixels)
+    return Image.fromarray(np.uint8(pixels))
 
 
 def process_tile_grid(
@@ -185,6 +185,7 @@ def process_tile_spiral(
         for filter in filters:
             tile_image = filter(tile_image, (left, top, tile))
 
+        image.paste(tile_image, (left * scale, top * scale))
         tiles.append((left, top, tile_image))
 
     return blend_tiles(tiles, scale, width, height, tile, overlap)
