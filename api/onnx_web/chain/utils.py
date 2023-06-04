@@ -74,12 +74,24 @@ def blend_tiles(
     scaled_size = (height * scale, width * scale, 3)
     count = np.zeros(scaled_size)
     value = np.zeros(scaled_size)
-    # ref = np.array(tiles[0][2])
+
+    bins = None
+    sum_cdf = np.zeros(scaled_size)
+    for _left, _top, tile_image in tiles:
+        tile_data = np.array(tile_image).flatten()
+        tile_histogram, bins = np.histogram(tile_data, bins=256, density=True)
+        cdf = tile_histogram.cumsum()
+        cdf = 255 * cdf / cdf[-1]
+
+        sum_cdf += cdf
 
     for left, top, tile_image in tiles:
         # histogram equalization
         equalized = np.array(tile_image).astype(np.float32)
-        # equalized = match_histograms(equalized, ref, channel_axis=-1)
+
+        original_shape = equalized.shape
+        equalized = np.interp(equalized.flatten(), bins[:-1], cdf)
+        equalized = equalized.reshape(original_shape)
 
         # gradient blending
         points = [0, adj_tile * scale, (tile - adj_tile) * scale, (tile * scale) - 1]
