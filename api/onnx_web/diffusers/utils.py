@@ -272,7 +272,15 @@ def get_tile_latents(
     xt = x + t
     yt = y + t
 
-    return full_latents[:, :, y:yt, x:xt]
+    tile_latents = full_latents[:, :, y:yt, x:xt]
+
+    if tile_latents.shape[2] < t or tile_latents.shape[3] < t:
+        px = t - tile_latents.shape[3]
+        py = t - tile_latents.shape[2]
+
+        tile_latents = np.pad(tile_latents, ((0, 0), (0, 0), (0, py), (0, px)), mode="reflect")
+
+    return tile_latents
 
 
 def get_scaled_latents(
