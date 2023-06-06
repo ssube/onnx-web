@@ -139,7 +139,7 @@ def process_tile_grid(
             idx = (y * tiles_x) + x
             left = x * adj_tile
             top = y * adj_tile
-            logger.debug("processing tile %s of %s, %s.%s", idx + 1, total, y, x)
+            logger.info("processing tile %s of %s, %s.%s", idx + 1, total, y, x)
 
             tile_image = source.crop((left, top, left + tile, top + tile))
             tile_image = complete_tile(tile_image, tile)
@@ -177,7 +177,7 @@ def process_tile_spiral(
     tile_coords = generate_tile_spiral(width, height, tile, overlap=overlap)
     for left, top in tile_coords:
         counter += 1
-        logger.debug(
+        logger.info(
             "processing tile %s of %s, %sx%s", counter, len(tile_coords), left, top
         )
 
