@@ -5,7 +5,6 @@ import numpy as np
 from diffusers import OnnxRuntimeModel
 
 from ...server import ServerContext
-from .vae import set_vae_dtype
 
 logger = getLogger(__name__)
 
@@ -37,7 +36,6 @@ class UNetWrapper(object):
             timestep.dtype,
             encoder_hidden_states.dtype,
         )
-        set_vae_dtype(timestep.dtype)
 
         if self.prompt_embeds is not None:
             step_index = self.prompt_index % len(self.prompt_embeds)

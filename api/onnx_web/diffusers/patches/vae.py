@@ -6,20 +6,13 @@ import torch
 from diffusers import OnnxRuntimeModel
 from diffusers.models.autoencoder_kl import AutoencoderKLOutput
 from diffusers.models.vae import DecoderOutput
+from onnx.helper import tensor_dtype_to_np_dtype
 
 from ...server import ServerContext
 
 logger = getLogger(__name__)
 
 LATENT_CHANNELS = 4
-
-# TODO: does this need to change for fp16 modes?
-timestep_dtype = np.float32
-
-
-def set_vae_dtype(dtype):
-    global timestep_dtype
-    timestep_dtype = dtype
 
 
 class VAEWrapper(object):
@@ -46,7 +39,10 @@ class VAEWrapper(object):
         self.tile_overlap_factor = overlap
 
     def __call__(self, latent_sample=None, sample=None, **kwargs):
-        global timestep_dtype
+        # set timestep dtype to input type
+        inputs = self.wrapped.model.graph.input
+        sample_input = [i for i in inputs if i.name == "sample" or i.name == "latent_sample"][0]
+        sample_dtype = tensor_dtype_to_np_dtype(sample_input.type.tensor_type.elem_type)
 
         logger.trace(
             "VAE %s parameter types: %s, %s",
@@ -55,13 +51,13 @@ class VAEWrapper(object):
             (sample.dtype if sample is not None else "none"),
         )
 
-        if latent_sample is not None and latent_sample.dtype != timestep_dtype:
-            logger.debug("converting VAE latent sample dtype")
-            latent_sample = latent_sample.astype(timestep_dtype)
+        if latent_sample is not None and latent_sample.dtype != sample_dtype:
+            logger.debug("converting VAE latent sample dtype to %s", sample_dtype)
+            latent_sample = latent_sample.astype(sample_dtype)
 
-        if sample is not None and sample.dtype != timestep_dtype:
-            logger.debug("converting VAE sample dtype")
-            sample = sample.astype(timestep_dtype)
+        if sample is not None and sample.dtype != sample_dtype:
+            logger.debug("converting VAE sample dtype to %s", sample_dtype)
+            sample = sample.astype(sample_dtype)
 
         if self.tiled:
             if self.decoder:
