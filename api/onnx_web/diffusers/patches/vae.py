@@ -41,7 +41,9 @@ class VAEWrapper(object):
     def __call__(self, latent_sample=None, sample=None, **kwargs):
         # set timestep dtype to input type
         inputs = self.wrapped.model.graph.input
-        sample_input = [i for i in inputs if i.name == "sample" or i.name == "latent_sample"][0]
+        sample_input = [
+            i for i in inputs if i.name == "sample" or i.name == "latent_sample"
+        ][0]
         sample_dtype = tensor_dtype_to_np_dtype(sample_input.type.tensor_type.elem_type)
 
         logger.trace(
