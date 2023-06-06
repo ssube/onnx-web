@@ -263,7 +263,9 @@ def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
 
 
 def get_tile_latents(
-    full_latents: np.ndarray, dims: Tuple[int, int, int]
+    full_latents: np.ndarray,
+    dims: Tuple[int, int, int],
+    size: Size,
 ) -> np.ndarray:
     x, y, tile = dims
     t = tile // LATENT_FACTOR
@@ -272,11 +274,14 @@ def get_tile_latents(
     xt = x + t
     yt = y + t
 
+    mx = size.width // LATENT_FACTOR
+    my = size.height // LATENT_FACTOR
+
     tile_latents = full_latents[:, :, y:yt, x:xt]
 
     if tile_latents.shape[2] < t or tile_latents.shape[3] < t:
-        px = t - tile_latents.shape[3]
-        py = t - tile_latents.shape[2]
+        px = mx - tile_latents.shape[3]
+        py = my - tile_latents.shape[2]
 
         tile_latents = np.pad(tile_latents, ((0, 0), (0, 0), (0, py), (0, px)), mode="reflect")
 

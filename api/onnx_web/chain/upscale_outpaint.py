@@ -83,7 +83,7 @@ def upscale_outpaint(
             save_image(server, "tile-source.png", tile_source)
             save_image(server, "tile-mask.png", tile_mask)
 
-        latents = get_tile_latents(full_latents, dims)
+        latents = get_tile_latents(full_latents, dims, size)
         pipe_type = params.get_valid_pipeline("inpaint", params.pipeline)
         pipe = load_pipeline(
             server,
