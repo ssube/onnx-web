@@ -6,7 +6,7 @@ import torch
 from diffusers import OnnxRuntimeModel
 from diffusers.models.autoencoder_kl import AutoencoderKLOutput
 from diffusers.models.vae import DecoderOutput
-from onnx.helper import tensor_dtype_to_np_dtype
+from diffusers.pipelines.onnx_utils import ORT_TO_NP_TYPE
 
 from ...server import ServerContext
 
@@ -40,11 +40,15 @@ class VAEWrapper(object):
 
     def __call__(self, latent_sample=None, sample=None, **kwargs):
         # set timestep dtype to input type
-        inputs = self.wrapped.model.graph.input
-        sample_input = [
-            i for i in inputs if i.name == "sample" or i.name == "latent_sample"
-        ][0]
-        sample_dtype = tensor_dtype_to_np_dtype(sample_input.type.tensor_type.elem_type)
+        sample_dtype = next(
+            (
+                input.type
+                for input in self.wrapped.model.get_inputs()
+                if input.name == "sample" or input.name == "latent_sample"
+            ),
+            "tensor(float)",
+        )
+        sample_dtype = ORT_TO_NP_TYPE[sample_dtype]
 
         logger.trace(
             "VAE %s parameter types: %s, %s",
