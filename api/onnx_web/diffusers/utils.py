@@ -283,7 +283,9 @@ def get_tile_latents(
         px = mx - tile_latents.shape[3]
         py = my - tile_latents.shape[2]
 
-        tile_latents = np.pad(tile_latents, ((0, 0), (0, 0), (0, py), (0, px)), mode="reflect")
+        tile_latents = np.pad(
+            tile_latents, ((0, 0), (0, 0), (0, py), (0, px)), mode="reflect"
+        )
 
     return tile_latents
 
