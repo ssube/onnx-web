@@ -74,16 +74,16 @@ def blend_tiles(
     scaled_size = (height * scale, width * scale, 3)
     count = np.zeros(scaled_size)
     value = np.zeros(scaled_size)
-    # ref = np.array(tiles[0][2])
 
     for left, top, tile_image in tiles:
         # histogram equalization
         equalized = np.array(tile_image).astype(np.float32)
-        # equalized = match_histograms(equalized, ref, channel_axis=-1)
 
         # gradient blending
         points = [0, adj_tile * scale, (tile - adj_tile) * scale, (tile * scale) - 1]
         grad_x, grad_y = get_tile_grads(left, top, adj_tile, width, height)
+        logger.trace("tile gradients: %s, %s", grad_x, grad_y)
+
         mult_x = [np.interp(i, points, grad_x) for i in range(tile * scale)]
         mult_y = [np.interp(i, points, grad_y) for i in range(tile * scale)]
 
@@ -122,7 +122,7 @@ def process_tile_grid(
     tile: int,
     scale: int,
     filters: List[TileCallback],
-    overlap: float = 0.5,
+    overlap: float = 0.0,
     **kwargs,
 ) -> Image.Image:
     width, height = source.size
