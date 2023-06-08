@@ -451,7 +451,7 @@ def run_test(
 
         mse = find_mse(result, ref)
 
-        if mse < (test.mse_threshold * 10):
+        if mse < test.mse_threshold:
             logger.info("MSE within threshold: %.5f < %.5f", mse, test.mse_threshold)
         else:
             logger.warning("MSE above threshold: %.5f > %.5f", mse, test.mse_threshold)
