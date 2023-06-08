@@ -46,7 +46,6 @@ class ConversionContext(ServerContext):
         reload: bool = True,
         share_unet: bool = True,
         extract: bool = False,
-
         **kwargs,
     ) -> None:
         super().__init__(model_path=model_path, cache_path=cache_path, **kwargs)
