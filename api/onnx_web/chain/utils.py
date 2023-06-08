@@ -71,6 +71,8 @@ def blend_tiles(
     overlap: float,
 ):
     adj_tile = int(float(tile) * (1.0 - overlap))
+    logger.trace("adjusting tile size from %s to %s based on %s overlap", tile, adj_tile, overlap)
+
     scaled_size = (height * scale, width * scale, 3)
     count = np.zeros(scaled_size)
     value = np.zeros(scaled_size)
@@ -82,7 +84,7 @@ def blend_tiles(
         # gradient blending
         points = [0, adj_tile * scale, (tile - adj_tile) * scale, (tile * scale) - 1]
         grad_x, grad_y = get_tile_grads(left, top, adj_tile, width, height)
-        logger.trace("tile gradients: %s, %s", grad_x, grad_y)
+        logger.trace("tile gradients: %s, %s, %s", points, grad_x, grad_y)
 
         mult_x = [np.interp(i, points, grad_x) for i in range(tile * scale)]
         mult_y = [np.interp(i, points, grad_y) for i in range(tile * scale)]
@@ -98,6 +100,7 @@ def blend_tiles(
         # equalized size may be wrong/too much
         scaled_bottom = min(scaled_top + equalized.shape[0], scaled_size[0])
         scaled_right = min(scaled_left + equalized.shape[1], scaled_size[1])
+        logger.trace("tile broadcast shapes: %s, %s, %s, %s", scaled_top, scaled_bottom, scaled_left, scaled_right)
 
         # accumulation
         value[scaled_top:scaled_bottom, scaled_left:scaled_right, :] += equalized[

@@ -46,6 +46,7 @@ class ConversionContext(ServerContext):
         reload: bool = True,
         share_unet: bool = True,
         extract: bool = False,
+
         **kwargs,
     ) -> None:
         super().__init__(model_path=model_path, cache_path=cache_path, **kwargs)
@@ -64,8 +65,6 @@ class ConversionContext(ServerContext):
         else:
             self.training_device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        self.map_location = torch.device(self.training_device)
-
     @classmethod
     def from_environ(cls):
         context = super().from_environ()
@@ -74,7 +73,16 @@ class ConversionContext(ServerContext):
         context.reload = get_boolean(environ, "ONNX_WEB_CONVERT_RELOAD", True)
         context.share_unet = get_boolean(environ, "ONNX_WEB_CONVERT_SHARE_UNET", True)
         context.opset = int(environ.get("ONNX_WEB_CONVERT_OPSET", DEFAULT_OPSET))
+
+        cpu_only = get_boolean(environ, "ONNX_WEB_CONVERT_CPU_ONLY", False)
+        if cpu_only:
+            context.training_device = "cpu"
+
         return context
+
+    @property
+    def map_location(self):
+        return torch.device(self.training_device)
 
 
 def download_progress(urls: List[Tuple[str, str]]):
