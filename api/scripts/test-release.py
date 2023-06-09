@@ -473,24 +473,29 @@ def main():
     passed = []
     failed = []
     for test in TEST_DATA:
+        test_passed = False
+
         for _i in range(3):
             try:
                 logger.info("starting test: %s", test.name)
                 if run_test(root, test):
                     logger.info("test passed: %s", test.name)
-                    passed.append(test.name)
+                    test_passed = True
                     break
                 else:
                     logger.warning("test failed: %s", test.name)
-                    failed.append(test.name)
             except Exception:
                 logger.exception("error running test for %s", test.name)
-                failed.append(test.name)
+
+        if test_passed:
+            passed.append(test.name)
+        else:
+            failed.append(test.name)
 
     logger.info("%s of %s tests passed", len(passed), len(TEST_DATA))
-    failed = set(failed)
+    failed = list(set(failed))
     if len(failed) > 0:
-        logger.error("%s tests had errors", len(failed))
+        logger.error("%s tests had errors: %s", len(failed), failed)
         sys.exit(1)
 
 
