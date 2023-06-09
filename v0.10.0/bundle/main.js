@@ -71982,7 +71982,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             React126.createElement(
               GridItem,
               { xs: 4 },
-              t2("modelType.diffusion"),
+              t2("modelType.diffusion", { count: 1 }),
               ": ",
               model
             ),
@@ -73407,7 +73407,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   // out/src/components/tab/Models.js
   var { useContext: useContext36, useEffect: useEffect29 } = React146;
   var { kebabCase } = import_lodash3.default;
-  function mergeModelLists(local, server) {
+  function mergeModelLists(local, server = []) {
     const localNames = new Set(local.map((it) => it.name));
     const merged = [...local];
     for (const model of server) {
@@ -73501,7 +73501,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           React146.createElement(EditableList, { selector: selectDiffusionModels, newItem: (l2, s) => ({
             format: "safetensors",
             label: l2,
-            name: kebabCase(l2),
+            name: `diffusion-${kebabCase(l2)}`,
             source: s
           }), removeItem: (m2) => removeDiffusionModel(m2), renderItem: DiffusionModelInput, setItem: (model) => setDiffusionModel(model) })
         )
@@ -73516,7 +73516,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           React146.createElement(EditableList, { selector: selectCorrectionModels, newItem: (l2, s) => ({
             format: "safetensors",
             label: l2,
-            name: kebabCase(l2),
+            name: `correction-${kebabCase(l2)}`,
             source: s
           }), removeItem: (m2) => removeCorrectionModel(m2), renderItem: CorrectionModelInput, setItem: (model) => setCorrectionModel(model) })
         )
@@ -73531,7 +73531,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           React146.createElement(EditableList, { selector: selectUpscalingModels, newItem: (l2, s) => ({
             format: "safetensors",
             label: l2,
-            name: kebabCase(l2),
+            name: `upscaling-${kebabCase(l2)}`,
             scale: 4,
             source: s
           }), removeItem: (m2) => removeUpscalingModel(m2), renderItem: UpscalingModelInput, setItem: (model) => setUpscalingModel(model) })
@@ -74178,6 +74178,8 @@ Please use another name.` : formatMuiErrorMessage(18));
           "upscaling-swinir-classical-x3": "SwinIR Classical x3",
           "upscaling-swinir-classical-x4": "SwinIR Classical x4",
           "upscaling-swinir-classical-x8": "SwinIR Classical x8",
+          "upscaling-swinir-real-large-x2": "SwinIR Real Large x2",
+          "upscaling-swinir-real-large-x4": "SwinIR Real Large x4",
           "upscaling-swinir-real-x2": "SwinIR Real x2",
           "upscaling-swinir-real-x4": "SwinIR Real x4",
           // extras
