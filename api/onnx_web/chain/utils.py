@@ -82,19 +82,20 @@ def blend_tiles(
     for left, top, tile_image in tiles:
         # histogram equalization
         equalized = np.array(tile_image).astype(np.float32)
+        mask = np.ones_like(equalized[:, :, 0])
 
-        # gradient blending
-        points = [0, adj_tile * scale, (tile - adj_tile) * scale, (tile * scale) - 1]
-        grad_x, grad_y = get_tile_grads(left, top, adj_tile, width, height)
-        logger.trace("tile gradients: %s, %s, %s", points, grad_x, grad_y)
+        if adj_tile < tile:
+            # gradient blending
+            points = [0, adj_tile * scale, (tile - adj_tile) * scale, (tile * scale) - 1]
+            grad_x, grad_y = get_tile_grads(left, top, adj_tile, width, height)
+            logger.trace("tile gradients: %s, %s, %s", points, grad_x, grad_y)
 
-        mult_x = [np.interp(i, points, grad_x) for i in range(tile * scale)]
-        mult_y = [np.interp(i, points, grad_y) for i in range(tile * scale)]
+            mult_x = [np.interp(i, points, grad_x) for i in range(tile * scale)]
+            mult_y = [np.interp(i, points, grad_y) for i in range(tile * scale)]
 
-        mask = np.ones_like(equalized[:, :, 0]) * mult_x
-        mask = (mask.T * mult_y).T
-        for c in range(3):
-            equalized[:, :, c] = equalized[:, :, c] * mask
+            mask = ((mask * mult_x).T * mult_y).T
+            for c in range(3):
+                equalized[:, :, c] = equalized[:, :, c] * mask
 
         scaled_top = top * scale
         scaled_left = left * scale
