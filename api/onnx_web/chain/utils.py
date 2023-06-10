@@ -85,8 +85,12 @@ def blend_tiles(
         mask = np.ones_like(equalized[:, :, 0])
 
         if adj_tile < tile:
+            # sort gradient points
+            p1 = adj_tile * scale
+            p2 = (tile - adj_tile) * scale
+            points = [0, min(p1, p2), max(p1, p2), tile * scale]
+
             # gradient blending
-            points = [0, adj_tile * scale, (tile - adj_tile) * scale, (tile * scale) - 1]
             grad_x, grad_y = get_tile_grads(left, top, adj_tile, width, height)
             logger.trace("tile gradients: %s, %s, %s", points, grad_x, grad_y)
 
