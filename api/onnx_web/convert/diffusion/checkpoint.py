@@ -1377,6 +1377,7 @@ def extract_checkpoint(
     conversion: ConversionContext,
     new_model_name: str,
     checkpoint_file: str,
+    is_inpainting: Optional[bool] = False,
     scheduler_type="ddim",
     extract_ema=False,
     train_unfrozen=False,
@@ -1537,6 +1538,9 @@ def extract_checkpoint(
             original_config, image_size=image_size
         )
         unet_config["upcast_attention"] = upcast_attention
+        if is_inpainting:
+            unet_config["in_channels "] = 9
+            
         unet = UNet2DConditionModel(**unet_config)
 
         converted_unet_checkpoint, has_ema = convert_ldm_unet_checkpoint(
@@ -1685,6 +1689,7 @@ def convert_extract_checkpoint(
     conversion: ConversionContext,
     source: str,
     dest: str,
+    is_inpainting: Optional[bool] = False,
     config_file: Optional[str] = None,
     vae_file: Optional[str] = None,
 ) -> Tuple[bool, str]:

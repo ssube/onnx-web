@@ -312,9 +312,11 @@ def convert_diffusion_diffusers(
     v2, pipe_args = get_model_version(
         source, conversion.map_location, size=image_size, version=version
     )
-
+    
+    is_inpainting = False
     if pipe_type == "inpaint":
         pipe_args["num_in_channels"] = 9
+        is_inpainting = True
 
     if format == "safetensors":
         pipe_args["from_safetensors"] = True
@@ -334,6 +336,7 @@ def convert_diffusion_diffusers(
                 conversion,
                 source,
                 f"{name}-torch",
+                is_inpainting=is_inpainting
                 config_file=config,
                 vae_file=replace_vae,
             )
