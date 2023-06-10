@@ -33,16 +33,34 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [LoRA tokens](#lora-tokens)
       - [Textual Inversion tokens](#textual-inversion-tokens)
       - [CLIP skip tokens](#clip-skip-tokens)
-    - [Long prompt weighting](#long-prompt-weighting)
+    - [Long prompt weighting syntax](#long-prompt-weighting-syntax)
+  - [Pipelines](#pipelines)
+    - [Stable Diffusion pipeline](#stable-diffusion-pipeline)
+    - [ControlNet pipeline](#controlnet-pipeline)
+    - [img2img pipeline](#img2img-pipeline)
+    - [Inpaint pipeline](#inpaint-pipeline)
+    - [Long prompt weighting pipeline](#long-prompt-weighting-pipeline)
+    - [Panorama pipeline](#panorama-pipeline)
+    - [Instruct pix2pix pipeline](#instruct-pix2pix-pipeline)
+    - [Txt2Img pipeline](#txt2img-pipeline)
+    - [Upscale pipeline](#upscale-pipeline)
   - [Tabs](#tabs)
     - [Txt2img tab](#txt2img-tab)
       - [Scheduler parameter](#scheduler-parameter)
+      - [Eta parameter](#eta-parameter)
       - [CFG parameter](#cfg-parameter)
       - [Steps parameter](#steps-parameter)
       - [Seed parameter](#seed-parameter)
+      - [Batch size parameter](#batch-size-parameter)
+      - [Tile size parameter](#tile-size-parameter)
+      - [Overlap parameter](#overlap-parameter)
+      - [UNet stride parameter](#unet-stride-parameter)
+      - [Tiled VAE parameter](#tiled-vae-parameter)
       - [Prompt parameter](#prompt-parameter)
       - [Negative prompt parameter](#negative-prompt-parameter)
       - [Width and height parameters](#width-and-height-parameters)
+      - [Highres parameters](#highres-parameters)
+      - [Upscale and correction parameters](#upscale-and-correction-parameters)
     - [Img2img tab](#img2img-tab)
       - [Img2img source image](#img2img-source-image)
       - [Strength parameter](#strength-parameter)
@@ -58,6 +76,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Denoise parameter](#denoise-parameter)
       - [Face correction and strength](#face-correction-and-strength)
     - [Blend tab](#blend-tab)
+    - [Models tab](#models-tab)
     - [Settings tab](#settings-tab)
       - [Image history setting](#image-history-setting)
       - [API server setting](#api-server-setting)
@@ -283,7 +302,7 @@ You can skip the last layers of the CLIP text encoder using the `clip` token:
 
 This makes your prompt less specific and some models have been trained to work better with some amount of skipping.
 
-### Long prompt weighting
+### Long prompt weighting syntax
 
 You can emphasize or deemphasize certain parts of the prompt by using the long prompt weighting option. This adds
 some additional tokens:
@@ -298,6 +317,46 @@ some additional tokens:
 _Note:_ The [token range syntax](#textual-inversion-tokens) currently does not work when long prompt weighting is
 enabled.
 
+## Pipelines
+
+TODO
+
+### Stable Diffusion pipeline
+
+TODO
+
+### ControlNet pipeline
+
+TODO
+
+### img2img pipeline
+
+TODO
+
+### Inpaint pipeline
+
+TODO
+
+### Long prompt weighting pipeline
+
+TODO
+
+### Panorama pipeline
+
+TODO
+
+### Instruct pix2pix pipeline
+
+TODO
+
+### Txt2Img pipeline
+
+TODO
+
+### Upscale pipeline
+
+TODO
+
 ## Tabs
 
 ### Txt2img tab
@@ -311,6 +370,10 @@ This mode takes a text prompt along with various other parameters and produces a
 This selects the scheduler algorithm used to resolve the latent noise into a coherent image.
 
 See [the scheduler comparison](#scheduler-comparison) for more details.
+
+#### Eta parameter
+
+TODO
 
 #### CFG parameter
 
@@ -343,6 +406,26 @@ You can use the same prompt and seed, while varying the steps and CFG, to produc
 
 Using -1 will generate a new seed on the server for each image.
 
+#### Batch size parameter
+
+TODO
+
+#### Tile size parameter
+
+TODO
+
+#### Overlap parameter
+
+TODO
+
+#### UNet stride parameter
+
+TODO
+
+#### Tiled VAE parameter
+
+TODO
+
 #### Prompt parameter
 
 The input text for your image, things that should be included.
@@ -372,6 +455,14 @@ The opposite of [the prompt parameter](#prompt-parameter), things that should _n
 #### Width and height parameters
 
 Controls the size of the output image, before upscaling.
+
+#### Highres parameters
+
+TODO
+
+#### Upscale and correction parameters
+
+TODO: these allow you to use the upscale and face correction models with other pipelines
 
 ### Img2img tab
 
@@ -485,6 +576,8 @@ without running a diffusion pipeline at all. This can be faster and avoids makin
 
 Resize the output image before returning it to the client.
 
+TODO: include other upscale models
+
 Enabling this will run Real ESRGAN and requires an upscaling model.
 
 Check out [the Real ESRGAN Github](https://github.com/xinntao/Real-ESRGAN) for more details.
@@ -518,6 +611,10 @@ The mask can be uploaded or edited directly in the browser. The first image will
 in the mask and the second image will be used as the source for white pixels. Gray values will blend the two.
 
 Upscaling and correction run after the images have been blended.
+
+### Models tab
+
+TODO
 
 ### Settings tab
 
