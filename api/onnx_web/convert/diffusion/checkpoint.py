@@ -1539,7 +1539,7 @@ def extract_checkpoint(
         )
         unet_config["upcast_attention"] = upcast_attention
         if is_inpainting:
-            unet_config["in_channels "] = 9
+            unet_config["in_channels"] = 9
 
         unet = UNet2DConditionModel(**unet_config)
 
