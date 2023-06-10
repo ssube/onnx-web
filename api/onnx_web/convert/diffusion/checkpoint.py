@@ -1709,6 +1709,7 @@ def convert_extract_checkpoint(
             dest,
             source,
             config_file=config_file,
+            is_inpainting=is_inpainting,
             vae_file=vae_file,
         ):
             logger.info("extracted checkpoint to Torch model: %s", working_name)
