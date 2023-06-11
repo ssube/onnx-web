@@ -250,10 +250,10 @@ class ImageParams:
             if pipeline in ["controlnet", "lpw", "panorama", "pix2pix"]:
                 return pipeline
         elif group == "inpaint":
-            if pipeline in ["controlnet", "panorama"]:
+            if pipeline in ["controlnet", "lpw", "panorama"]:
                 return pipeline
         elif group == "txt2img":
-            if pipeline in ["panorama"]:
+            if pipeline in ["lpw", "panorama"]:
                 return pipeline
 
         logger.debug("pipeline %s is not valid for %s", pipeline, group)
