@@ -340,7 +340,7 @@ def load_pipeline(
             pipe.set_progress_bar_config(disable=True)
 
         optimize_pipeline(server, pipe)
-        patch_pipeline(server, pipe, pipeline_class, params)
+        patch_pipeline(server, pipe, pipeline, pipeline_class, params)
 
         server.cache.set("diffusion", pipe_key, pipe)
         server.cache.set("scheduler", scheduler_key, components["scheduler"])
@@ -419,11 +419,14 @@ def optimize_pipeline(
 def patch_pipeline(
     server: ServerContext,
     pipe: StableDiffusionPipeline,
+    pipe_type: str,
     pipeline: Any,
     params: ImageParams,
 ) -> None:
     logger.debug("patching SD pipeline")
-    pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
+
+    if pipe_type != "lpw":
+        pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
 
     original_unet = pipe.unet
     pipe.unet = UNetWrapper(server, original_unet)
