@@ -30,7 +30,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [General structure](#general-structure)
     - [Useful keywords](#useful-keywords)
     - [Prompt tokens](#prompt-tokens)
-      - [LoRA tokens](#lora-tokens)
+      - [LoRA and LyCORIS tokens](#lora-and-lycoris-tokens)
       - [Textual Inversion tokens](#textual-inversion-tokens)
       - [CLIP skip tokens](#clip-skip-tokens)
     - [Long prompt weighting syntax](#long-prompt-weighting-syntax)
@@ -227,7 +227,7 @@ The `name` must be alphanumeric and must not contain any special characters othe
 The `weight` must be a number. For `clip`, it must be a positive integer. For `inversion` and `lora`, it can be an
 integer or decimal number and may be negative.
 
-#### LoRA tokens
+#### LoRA and LyCORIS tokens
 
 You can blend one or more [LoRA weights](https://arxiv.org/abs/2106.09685) with the ONNX diffusion model using a
 `lora` token:
@@ -319,7 +319,10 @@ enabled.
 
 ## Pipelines
 
-TODO
+The pipelines in onnx-web allow you to run Stable Diffusion in many different ways, such as ControlNet and using the
+long prompt weighting syntax.
+
+If you select a pipeline that is not valid for the current tab, the default pipeline for that tab will be used instead.
 
 ### Stable Diffusion pipeline
 
@@ -327,7 +330,7 @@ TODO
 
 ### ControlNet pipeline
 
-TODO
+The ControlNet pipeline
 
 ### img2img pipeline
 
@@ -1314,31 +1317,41 @@ Cannot read properties of undefined (reading 'default')
 You can use this table to figure out the final size for each image, based on the combination of parameters that you are
 using:
 
-| Input Width/Height | Highres | Scale | Upscaling | Scale | Outscale | Correction | Outscale | Upscale Order | Output Width/Height | Formula               |
-| ------------------ | ------- | ----- | --------- | ----- | -------- | ---------- | -------- | ------------- | ------------------- | --------------------- |
-| 512                | no      | n/a   | no        | n/a   | n/a      | no         | n/a      | n/a           | 512                 | `512 * 1 * 1 * 1`     |
-| 512                | yes     | 2     | no        | n/a   | n/a      | no         | n/a      | n/a           | 1024                | `512 * 2 * 1 * 1`     |
-| 512                | yes     | 4     | no        | n/a   | n/a      | no         | n/a      | n/a           | 2048                | `512 * 4 * 1 * 1`     |
-| 512                | no      | n/a   | yes       | 2     | 1        | no         | n/a      | n/a           | 512                 | `512 * 1 * 1 * 1`     |
-| 512                | no      | n/a   | yes       | 2     | 2        | no         | n/a      | n/a           | 1024                | `512 * 1 * 2 * 1`     |
-| 512                | no      | n/a   | yes       | 4     | 1        | no         | n/a      | n/a           | 512                 | `512 * 1 * 1 * 1`     |
-| 512                | no      | n/a   | yes       | 4     | 2        | no         | n/a      | n/a           | 1024                | `512 * 1 * 2 * 1`     |
-| 512                | no      | n/a   | yes       | 4     | 4        | no         | n/a      | n/a           | 2048                | `512 * 1 * 4 * 1`     |
-| 512                | no      | n/a   | no        | n/a   | n/a      | yes        | 1        | first         | 512                 | `512 * 1 * 1 * 1`     |
-| 512                | no      | n/a   | no        | n/a   | n/a      | yes        | 2        | first         | 1024                | `512 * 1 * 1 * 2`     |
-| 512                | no      | n/a   | no        | n/a   | n/a      | yes        | 1        | last          | 512                 | `512 * 1 * 1 * 1`     |
-| 512                | no      | n/a   | no        | n/a   | n/a      | yes        | 2        | last          | 1024                | `512 * 1 * 1 * 2`     |
-| 512                | no      | n/a   | no        | n/a   | n/a      | yes        | 1        | both          | 512                 | `512 * 1 * 1 * 1`     |
-| 512                | no      | n/a   | no        | n/a   | n/a      | yes        | 2        | both          | 2048                | `512 * 1 * 1 * 2 * 2` |
-| 512                | yes     | 2     | yes       | 2     | 2        | no         | n/a      | n/a           | 2048                | `512 * 2 * 2 * 1`     |
-| 512                | yes     | 4     | yes       | 2     | 2        | no         | n/a      | n/a           | 4096                | `512 * 4 * 2 * 1`     |
-| 512                | yes     | 2     | yes       | 4     | 4        | no         | n/a      | n/a           | 4096                | `512 * 2 * 4 * 1`     |
-| 512                | yes     | 4     | yes       | 4     | 4        | no         | n/a      | n/a           | 8192                | `512 * 4 * 4 * 1`     |
-| 512                | yes     | 2     | yes       | 2     | 2        | yes        | 2        | first or last | 4096                | `512 * 2 * 2 * 2`     |
-| 512                | yes     | 4     | yes       | 2     | 2        | yes        | 2        | first or last | 8192                | `512 * 4 * 2 * 2`     |
-| 512                | yes     | 2     | yes       | 4     | 4        | yes        | 2        | first or last | 8192                | `512 * 2 * 4 * 2`     |
-| 512                | yes     | 4     | yes       | 4     | 4        | yes        | 2        | first or last | 16k                 | `512 * 4 * 4 * 2`     |
-| 512                | yes     | 2     | yes       | 2     | 2        | yes        | 2        | both          | 8192                | `512 * 2 * 2 * 2 * 2` |
-| 512                | yes     | 4     | yes       | 2     | 2        | yes        | 2        | both          | 16k                 | `512 * 4 * 2 * 2 * 2` |
-| 512                | yes     | 2     | yes       | 4     | 4        | yes        | 2        | both          | 16k                 | `512 * 2 * 4 * 2 * 2` |
-| 512                | yes     | 4     | yes       | 4     | 4        | yes        | 2        | both          | 32k                 | `512 * 4 * 4 * 2 * 2` |
+| Input Width/Height | Highres | Iterations | Scale | Upscaling | Scale | Outscale | Correction | Outscale | Upscale Order | Output Width/Height | Formula                       |
+| ------------------ | ------- | ---------- | ----- | --------- | ----- | -------- | ---------- | -------- | ------------- | ------------------- | ----------------------------- |
+| 512                | no      | n/a        | n/a   | no        | n/a   | n/a      | no         | n/a      | n/a           | 512                 | `512 * 1 * 1 * 1`             |
+| 512                | yes     | 1          | 2     | no        | n/a   | n/a      | no         | n/a      | n/a           | 1024                | `512 * 2 * 1 * 1`             |
+| 512                | yes     | 1          | 4     | no        | n/a   | n/a      | no         | n/a      | n/a           | 2048                | `512 * 4 * 1 * 1`             |
+| 512                | yes     | 2          | 2     | no        | n/a   | n/a      | no         | n/a      | n/a           | 2048                | `512 * 2 * 2 * 1 * 1`         |
+| 512                | yes     | 2          | 4     | no        | n/a   | n/a      | no         | n/a      | n/a           | 4096                | `512 * 4 * 4 * 1 * 1`         |
+| 512                | no      | n/a        | n/a   | yes       | 2     | 1        | no         | n/a      | n/a           | 512                 | `512 * 1 * 1 * 1`             |
+| 512                | no      | n/a        | n/a   | yes       | 2     | 2        | no         | n/a      | n/a           | 1024                | `512 * 1 * 2 * 1`             |
+| 512                | no      | n/a        | n/a   | yes       | 4     | 1        | no         | n/a      | n/a           | 512                 | `512 * 1 * 1 * 1`             |
+| 512                | no      | n/a        | n/a   | yes       | 4     | 2        | no         | n/a      | n/a           | 1024                | `512 * 1 * 2 * 1`             |
+| 512                | no      | n/a        | n/a   | yes       | 4     | 4        | no         | n/a      | n/a           | 2048                | `512 * 1 * 4 * 1`             |
+| 512                | no      | n/a        | n/a   | no        | n/a   | n/a      | yes        | 1        | first         | 512                 | `512 * 1 * 1 * 1`             |
+| 512                | no      | n/a        | n/a   | no        | n/a   | n/a      | yes        | 2        | first         | 1024                | `512 * 1 * 1 * 2`             |
+| 512                | no      | n/a        | n/a   | no        | n/a   | n/a      | yes        | 1        | last          | 512                 | `512 * 1 * 1 * 1`             |
+| 512                | no      | n/a        | n/a   | no        | n/a   | n/a      | yes        | 2        | last          | 1024                | `512 * 1 * 1 * 2`             |
+| 512                | no      | n/a        | n/a   | no        | n/a   | n/a      | yes        | 1        | both          | 512                 | `512 * 1 * 1 * 1`             |
+| 512                | no      | n/a        | n/a   | no        | n/a   | n/a      | yes        | 2        | both          | 2048                | `512 * 1 * 1 * 2 * 2`         |
+| 512                | yes     | 1          | 2     | yes       | 2     | 2        | no         | n/a      | n/a           | 2048                | `512 * 2 * 2 * 1`             |
+| 512                | yes     | 1          | 4     | yes       | 2     | 2        | no         | n/a      | n/a           | 4096                | `512 * 4 * 2 * 1`             |
+| 512                | yes     | 1          | 2     | yes       | 4     | 4        | no         | n/a      | n/a           | 4096                | `512 * 2 * 4 * 1`             |
+| 512                | yes     | 1          | 4     | yes       | 4     | 4        | no         | n/a      | n/a           | 8192                | `512 * 4 * 4 * 1`             |
+| 512                | yes     | 1          | 2     | yes       | 2     | 2        | yes        | 2        | first or last | 4096                | `512 * 2 * 2 * 2`             |
+| 512                | yes     | 1          | 4     | yes       | 2     | 2        | yes        | 2        | first or last | 8192                | `512 * 4 * 2 * 2`             |
+| 512                | yes     | 1          | 2     | yes       | 4     | 4        | yes        | 2        | first or last | 8192                | `512 * 2 * 4 * 2`             |
+| 512                | yes     | 1          | 4     | yes       | 4     | 4        | yes        | 2        | first or last | 16k                 | `512 * 4 * 4 * 2`             |
+| 512                | yes     | 1          | 2     | yes       | 2     | 2        | yes        | 2        | both          | 8192                | `512 * 2 * 2 * 2 * 2`         |
+| 512                | yes     | 1          | 4     | yes       | 2     | 2        | yes        | 2        | both          | 16k                 | `512 * 4 * 2 * 2 * 2`         |
+| 512                | yes     | 2          | 2     | yes       | 2     | 2        | yes        | 2        | both          | 16k                 | `512 * 2 * 2 * 2 * 2 * 2`     |
+| 512                | yes     | 2          | 4     | yes       | 2     | 2        | yes        | 2        | both          | 64k                 | `512 * 4 * 4 * 2 * 2 * 2`     |
+| 512                | yes     | 3          | 2     | yes       | 2     | 2        | yes        | 2        | both          | 32k                 | `512 * 2 * 2 * 2 * 2 * 2 * 2` |
+| 512                | yes     | 3          | 4     | yes       | 2     | 2        | yes        | 2        | both          | 262k                | `512 * 4 * 4 * 4 * 2 * 2 * 2` |
+| 512                | yes     | 1          | 2     | yes       | 4     | 4        | yes        | 2        | both          | 16k                 | `512 * 2 * 4 * 2 * 2`         |
+| 512                | yes     | 1          | 4     | yes       | 4     | 4        | yes        | 2        | both          | 32k                 | `512 * 4 * 4 * 2 * 2`         |
+| 512                | yes     | 2          | 2     | yes       | 4     | 4        | yes        | 2        | both          | 32k                 | `512 * 2 * 4 * 2 * 2`         |
+| 512                | yes     | 2          | 4     | yes       | 4     | 4        | yes        | 2        | both          | 128k                | `512 * 4 * 4 * 2 * 2`         |
+| 512                | yes     | 3          | 2     | yes       | 4     | 4        | yes        | 2        | both          | 64k                 | `512 * 2 * 2 * 2 * 4 * 2 * 2` |
+| 512                | yes     | 3          | 4     | yes       | 4     | 4        | yes        | 2        | both          | 524k                | `512 * 4 * 4 * 4 * 4 * 2 * 2` |
