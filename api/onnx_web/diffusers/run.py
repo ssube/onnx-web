@@ -147,18 +147,14 @@ def run_highres(
     )
 
     def highres_tile(tile: Image.Image, dims):
-        scaled_size = (size.height * highres.scale, size.width * highres.scale)
+        scaled_size = (size.width * highres.scale, size.height * highres.scale)
 
         if highres.method == "bilinear":
             logger.debug("using bilinear interpolation for highres")
-            tile = tile.resize(
-                scaled_size, resample=Image.Resampling.BILINEAR
-            )
+            tile = tile.resize(scaled_size, resample=Image.Resampling.BILINEAR)
         elif highres.method == "lanczos":
             logger.debug("using Lanczos interpolation for highres")
-            tile = tile.resize(
-                scaled_size, resample=Image.Resampling.LANCZOS
-            )
+            tile = tile.resize(scaled_size, resample=Image.Resampling.LANCZOS)
         else:
             logger.debug("using upscaling pipeline for highres")
             tile = run_upscale_correction(
