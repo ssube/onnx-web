@@ -93,6 +93,8 @@ export function QueryMenu<T>(props: QueryMenuProps<T>) {
 
   // else: success
   const data = filterQuery(query, showEmpty);
+  const labeledData = data.map((it) => [it, getLabel(it)]).sort((a, b) => a[1].localeCompare(b[1]));
+  const menuItems = labeledData.map(([key, label]) => <MenuItem key={key} onClick={() => selectItem(key)}>{label}</MenuItem>);
 
   return <Box>
     <Button
@@ -112,7 +114,7 @@ export function QueryMenu<T>(props: QueryMenuProps<T>) {
         'aria-labelledby': `${id}-button`,
       }}
     >
-      {data.map((it, idx) => <MenuItem key={it} onClick={() => selectItem(it)}>{getLabel(it)}</MenuItem>)}
+      {menuItems}
     </Menu>
   </Box>;
 }
