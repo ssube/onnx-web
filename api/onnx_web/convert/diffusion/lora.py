@@ -79,8 +79,8 @@ def fix_node_name(key: str):
 
 def kernel_slice(x: int, y: int, shape: Tuple[int, int, int, int]) -> Tuple[int, int]:
     return (
-        max(x, shape[2]),
-        max(y, shape[3]),
+        min(x, shape[2] - 1),
+        min(y, shape[3] - 1),
     )
 
 
