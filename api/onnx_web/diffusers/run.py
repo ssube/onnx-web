@@ -147,7 +147,7 @@ def run_highres(
     )
 
     def highres_tile(tile: Image.Image, dims):
-        scaled_size = (size.width * highres.scale, size.height * highres.scale)
+        scaled_size = (tile.width * highres.scale, tile.height * highres.scale)
 
         if highres.method == "bilinear":
             logger.debug("using bilinear interpolation for highres")
