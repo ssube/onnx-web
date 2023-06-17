@@ -288,14 +288,9 @@ def blend_loras(
                                 down_w, down_h = kernel_slice(w, h, down_weight.shape)
                                 up_w, up_h = kernel_slice(w, h, up_weight.shape)
 
-                                weights[:, :, w, h] = up_weight[
-                                    :, :, up_w, up_h
-                                ].squeeze(3).squeeze(2) @ down_weight[
-                                    :, :, down_w, down_h
-                                ].squeeze(
-                                    3
-                                ).squeeze(
-                                    2
+                                weights[:, :, w, h] = (
+                                    up_weight[:, :, up_w, up_h]
+                                    @ down_weight[:, :, down_w, down_h]
                                 )
 
                         np_weights = weights.numpy() * (alpha / dim)
