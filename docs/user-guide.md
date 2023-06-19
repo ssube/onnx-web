@@ -224,6 +224,8 @@ has a lot of useful tips on how to build a good prompt. You can include keywords
 style, and level of detail. Throwing a few extra keywords into the end of the prompt can help add specific details,
 like the color and intensity of the lighting.
 
+Keywords:
+
 - color
   - bright
   - colorful
@@ -236,14 +238,14 @@ like the color and intensity of the lighting.
   - iridescent
   - translucent
 - lighting
+  - candlelight
   - cinematic lighting
+  - firelight
   - diffused|dramatic|soft lighting
   - neon lights
-  - candlelight
-  - firelight
-  - volumetric lighting
   - reflection
   - refraction
+  - volumetric lighting
 - material
   - brass
   - crystal
@@ -270,19 +272,24 @@ like the color and intensity of the lighting.
   - broad light
   - chromatic aberration
   - shallow|deep depth of field
+  - fish-eye
   - smooth|sharp|shallow focus
+  - god rays, sun rays, sun shafts
   - HDR
   - RAW color
   - wide-angle
   - tilt-shift
-  - fish-eye
-  - god rays, sun rays, sun shafts
+  - tone-mapped
 - quality & resolution
   - 4k
   - 8k
+  - exquisite
   - fine detail
   - highly detailed
+  - masterpiece
+  - Octane render
   - realistic
+  - Unreal Engine
 - style
   - abstract
   - art nouveau
@@ -295,10 +302,11 @@ like the color and intensity of the lighting.
   - surreal
 - subject
   - ancient
-  - lush
-  - futuristic
-  - medieval
   - cyberpunk
+  - futuristic
+  - isometric
+  - lush
+  - medieval
 
 Examples:
 
