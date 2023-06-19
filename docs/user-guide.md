@@ -206,6 +206,15 @@ can [add your own models](#adding-your-own-models) from many sources, including 
 
 ### General structure
 
+- subject and more important keywords first
+- quality keywords towards the end
+- if you want a specific lens or shot, put that first
+- cover subject, medium, style, color theme, lighting, and resolution
+- adjectives before nouns
+- figurative keywords as well as literal
+- include emotions and sensations
+- iterate
+
 TODO
 
 ### Useful keywords
@@ -214,6 +223,87 @@ The [OpenArt Stable Diffusion Prompt Book](https://cdn.openart.ai/assets/Stable%
 has a lot of useful tips on how to build a good prompt. You can include keywords to describe the subject, setting,
 style, and level of detail. Throwing a few extra keywords into the end of the prompt can help add specific details,
 like the color and intensity of the lighting.
+
+- color
+  - bright
+  - colorful
+  - cool
+  - dark
+  - deep
+  - dusky
+  - light
+  - warm
+  - iridescent
+  - translucent
+- lighting
+  - cinematic lighting
+  - diffused|dramatic|soft lighting
+  - neon lights
+  - candlelight
+  - firelight
+  - volumetric lighting
+  - reflection
+  - refraction
+- material
+  - brass
+  - crystal
+  - earth
+  - glass
+  - iron
+  - magma
+  - marble
+  - porcelain
+  - wood
+- medium
+  - 3d render
+  - digital illustration
+  - oil painting
+  - pastel drawing
+  - pencil sketch
+  - pen and ink
+  - sculpture
+  - watercolor painting
+- photography
+  - backlighting
+  - bloom
+  - bokeh
+  - broad light
+  - chromatic aberration
+  - shallow|deep depth of field
+  - smooth|sharp|shallow focus
+  - HDR
+  - RAW color
+  - wide-angle
+  - tilt-shift
+  - fish-eye
+  - god rays, sun rays, sun shafts
+- quality & resolution
+  - 4k
+  - 8k
+  - fine detail
+  - highly detailed
+  - realistic
+- style
+  - abstract
+  - art nouveau
+  - classical
+  - gothic
+  - graffiti
+  - hyperrealism
+  - modernism
+  - realistic
+  - surreal
+- subject
+  - ancient
+  - lush
+  - futuristic
+  - medieval
+  - cyberpunk
+
+Examples:
+
+- 4k, hdr, smooth, sharp focus, high resolution, photorealistic, detailed
+- 8k, HDR, shallow depth of field, broad light, high contrast, backlighting, bloom, light sparkles, chromatic aberration, sharp focus, RAW color photo
 
 ### Prompt tokens
 

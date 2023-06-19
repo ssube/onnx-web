@@ -21,7 +21,9 @@
 		"cSpell.words": [
 			"astype",
 			"Autoencoder",
+			"backlighting",
 			"basicsr",
+			"bokeh",
 			"Civitai",
 			"ckpt",
 			"codebook",
@@ -42,6 +44,7 @@
 			"Heun",
 			"Highres",
 			"huggingface",
+			"hyperrealism",
 			"Inpaint",
 			"inpainting",
 			"jsonify",
