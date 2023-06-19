@@ -1,2 +1,2 @@
-pytorch_lightning
-win10toast
+pytorch_lightning==2.0.0
+win10toast==0.9

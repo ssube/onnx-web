@@ -1,2 +1,2 @@
-pytorch_lightning
-PyGObject
+pytorch_lightning==2.0.0
+PyGObject==3.44.1
