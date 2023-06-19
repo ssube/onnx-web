@@ -15,11 +15,11 @@ import { HighresControl } from '../control/HighresControl.js';
 
 export function Upscale() {
   async function uploadSource() {
-    const { model, upscale } = state.getState();
+    const { highres, model, upscale } = state.getState();
     const { image, retry } = await client.upscale(model, {
       ...params,
       source: mustExist(params.source), // TODO: show an error if this doesn't exist
-    }, upscale);
+    }, upscale, highres);
 
     pushHistory(image, retry);
   }
