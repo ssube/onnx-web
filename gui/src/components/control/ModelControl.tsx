@@ -81,7 +81,6 @@ export function ModelControl() {
         query={{
           result: pipelines,
         }}
-        showNone
         value={params.pipeline}
         onChange={(pipeline) => {
           setModel({
