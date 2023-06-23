@@ -35,7 +35,6 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [CLIP skip tokens](#clip-skip-tokens)
     - [Long prompt weighting syntax](#long-prompt-weighting-syntax)
   - [Pipelines](#pipelines)
-    - [Stable Diffusion pipeline](#stable-diffusion-pipeline)
     - [ControlNet pipeline](#controlnet-pipeline)
     - [img2img pipeline](#img2img-pipeline)
     - [Inpaint pipeline](#inpaint-pipeline)
@@ -60,6 +59,11 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Negative prompt parameter](#negative-prompt-parameter)
       - [Width and height parameters](#width-and-height-parameters)
       - [Highres parameters](#highres-parameters)
+        - [Highres steps parameter](#highres-steps-parameter)
+        - [Highres scale parameter](#highres-scale-parameter)
+        - [Highres strength parameter](#highres-strength-parameter)
+        - [Highres upscaler parameter](#highres-upscaler-parameter)
+        - [Highres iterations parameter](#highres-iterations-parameter)
       - [Upscale and correction parameters](#upscale-and-correction-parameters)
     - [Img2img tab](#img2img-tab)
       - [Img2img source image](#img2img-source-image)
@@ -71,10 +75,12 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Noise source parameter](#noise-source-parameter)
       - [Outpaint parameters](#outpaint-parameters)
     - [Upscale tab](#upscale-tab)
-      - [Scale parameter](#scale-parameter)
-      - [Outscale parameter](#outscale-parameter)
-      - [Denoise parameter](#denoise-parameter)
-      - [Face correction and strength](#face-correction-and-strength)
+      - [Upscale scale parameter](#upscale-scale-parameter)
+      - [Upscale outscale parameter](#upscale-outscale-parameter)
+      - [Upscale denoise parameter](#upscale-denoise-parameter)
+      - [Correction strength parameter](#correction-strength-parameter)
+      - [Correction outscale parameter](#correction-outscale-parameter)
+      - [Correction order parameter](#correction-order-parameter)
     - [Blend tab](#blend-tab)
     - [Models tab](#models-tab)
     - [Settings tab](#settings-tab)
@@ -189,13 +195,15 @@ The models used by ONNX web are split up into four groups:
    2. specialized models like [Knollingcase](https://huggingface.co/Aybeeceedee/knollingcase) or
       [OpenJourney](https://huggingface.co/prompthero/openjourney)
 2. Upscaling
-   1. [Real ESRGAN](https://github.com/xinntao/Real-ESRGAN)
-   2. [Stable Diffusion](https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler)
+   1. [BSRGAN](https://github.com/cszn/BSRGAN)
+   2. [Real ESRGAN](https://github.com/xinntao/Real-ESRGAN)
+   3. [Stable Diffusion](https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler)
+   4. [SwinIR](https://github.com/JingyunLiang/SwinIR)
 3. Correction
    1. [CodeFormer](https://github.com/sczhou/CodeFormer)
    2. [GFPGAN](https://github.com/TencentARC/GFPGAN)
 4. Networks
-   1. [LoRA](https://arxiv.org/abs/2106.09685)
+   1. [LoRA](https://arxiv.org/abs/2106.09685) and [LyCORIS](https://github.com/KohakuBlueleaf/LyCORIS)
    2. [Textual Inversion](https://textual-inversion.github.io/)
 
 There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles. You
@@ -310,8 +318,16 @@ Keywords:
 
 Examples:
 
-- 4k, hdr, smooth, sharp focus, high resolution, photorealistic, detailed
-- 8k, HDR, shallow depth of field, broad light, high contrast, backlighting, bloom, light sparkles, chromatic aberration, sharp focus, RAW color photo
+- 4k, HDR, smooth, sharp focus, high resolution, photorealistic, detailed
+- 8k, HDR, shallow depth of field, broad light, high contrast, backlighting, bloom, light sparkles, chromatic
+  aberration, sharp focus, RAW color photo
+
+Links:
+
+- https://stable-diffusion-art.com/how-to-come-up-with-good-prompts-for-ai-image-generation
+- https://contentwritertools.com/stable-diffusion-prompt-guide
+- https://www.klartai.com/post/best-stable-diffusion-midjourney-prompt-a-comprehensive-guide-to-text-to-image-generation
+- https://getimg.ai/guides/guide-to-negative-prompts-in-stable-diffusion
 
 ### Prompt tokens
 
@@ -422,41 +438,63 @@ long prompt weighting syntax.
 
 If you select a pipeline that is not valid for the current tab, the default pipeline for that tab will be used instead.
 
-### Stable Diffusion pipeline
-
-TODO
-
 ### ControlNet pipeline
 
-The ControlNet pipeline
+The ControlNet pipeline allows you to modify an existing image using the ControlNet filters and models found in the
+img2img tab.
+
+ControlNet is only valid for the img2img tab.
 
 ### img2img pipeline
 
-TODO
+The img2img pipeline allows you to modify an existing image using a text prompt.
+
+Img2img is only valid for the img2img tab.
 
 ### Inpaint pipeline
 
-TODO
+The inpaint pipeline allows you to selectively replace sections of an existing image using a prompt.
+
+Inpaint is only valid for the inpaint tab.
 
 ### Long prompt weighting pipeline
 
-TODO
+The long prompt weighting pipeline allows you to use [long prompt weighting syntax](#long-prompt-weighting-syntax) in
+your prompt and emphasize some tokens over others.
+
+Long prompt weighting is valid for the following tabs:
+
+- txt2img
+- img2img
+- inpaint
 
 ### Panorama pipeline
 
-TODO
+The panorama pipeline allows you to generate and modify very large images.
+
+Panorama is valid for the following tabs:
+
+- txt2img
+- img2img
+- inpaint
 
 ### Instruct pix2pix pipeline
 
-TODO
+The instruct pix2pix pipelines allows you to modify an existing image using text instructions.
+
+Instruct pix2pix is only valid for the img2img tab.
 
 ### Txt2Img pipeline
 
-TODO
+The txt2img pipeline allows you to generate an image from a text prompt.
+
+Txt2img is only valid for the img2img tab.
 
 ### Upscale pipeline
 
-TODO
+The upscale pipeline is specifically for Stable Diffusion upscaling.
+
+TODO: why is this special? when do you need to use it?
 
 ## Tabs
 
@@ -509,23 +547,44 @@ Using -1 will generate a new seed on the server for each image.
 
 #### Batch size parameter
 
-TODO
+The number of images to generate each time you press the generate button.
+
+All of the images in the batch will share the same seed, and changing the batch size will change the results.
 
 #### Tile size parameter
 
-TODO
+The size of each UNet tile when running [the panorama pipeline](#panorama-pipeline).
+
+Increasing this is a lot like increasing the image size. It will produce larger areas with consistent shapes and
+outlines, but will increase memory. Decreasing this too far can produce deep-fried results.
 
 #### Overlap parameter
 
-TODO
+The amount that each highres and VAE tile should overlap.
+
+Increasing this will increase the number of tiles and will take longer, but will reduce the strength of the seams
+between tiles. Increasing this too far will cause blurry images.
+
+- 0.25 is usually good for [highres](#highres-parameters)
+- 0.5 is usually good for [panorama](#panorama-pipeline)
+
+_Note:_ The highres and VAE overlap parameters may be split up in the future.
 
 #### UNet stride parameter
 
-TODO
+The stride between UNet tiles when running [the panorama pipeline](#panorama-pipeline).
+
+This behaves a lot like [the overlap parameter](#overlap-parameter) but only applies to the UNet when using [the
+panorama pipeline](#panorama-pipeline).
+
+_Note:_ This parameter may be combined with the overlap parameter in the future.
 
 #### Tiled VAE parameter
 
-TODO
+Whether or not to use the tiled VAE.
+
+The tiled VAE uses less memory and allows you to generate larger images, but may produce seams without enough
+[overlap](#overlap-parameter).
 
 #### Prompt parameter
 
@@ -559,11 +618,46 @@ Controls the size of the output image, before upscaling.
 
 #### Highres parameters
 
-TODO
+##### Highres steps parameter
+
+The number of steps to use for each highres tile.
+
+This is the same as [the steps parameter](#steps-parameter) in img2img. The number of steps that will actually run
+is `steps * strength`, but a low number of steps (20-30) with moderate or high strength (0.5-1.0) will often produce
+more duplicate shapes and totem pole style images.
+
+##### Highres scale parameter
+
+The output scale for [the highres upscaler](#highres-upscaler-parameter).
+
+This is the same as [the upscale scale parameter](#upscale-scale-parameter).
+
+##### Highres strength parameter
+
+The blending strength for the highres img2img runs.
+
+This is the same as [the img2img strength parameter](#strength-parameter).
+
+##### Highres upscaler parameter
+
+The upscaling method to be used for highres tiles.
+
+- Bilinear is the fastest and produces moderate results, but usually needs more steps to correct the blur that has been
+  introduced
+- Lanczos is reasonably fast and produces fairly good results, but requires more CPU than bilinear upscaling
+- Upscaling uses your currently selected upscaling model and produces the best results, but can be very slow on CPU
+
+##### Highres iterations parameter
+
+The number of times to run highres.
+
+The image will be resized by [the highres scale](#highres-scale-parameter) each iteration, so this is exponential: a
+scale of 4 and 2 iterations will produce a final image that is 16 times the original size of the input image or
+parameters. A scale of 2 and 3 iterations will produce a final image that is 8 times the original size.
 
 #### Upscale and correction parameters
 
-TODO: these allow you to use the upscale and face correction models with other pipelines
+Please see [the upscale tab](#upscale-tab) for more details on the upscaling and correction parameters.
 
 ### Img2img tab
 
@@ -677,32 +771,41 @@ without running a diffusion pipeline at all. This can be faster and avoids makin
 
 Resize the output image before returning it to the client.
 
-TODO: include other upscale models
+This uses your currently selected [upscaling model](#model-and-network-types).
 
-Enabling this will run Real ESRGAN and requires an upscaling model.
+#### Upscale scale parameter
 
-Check out [the Real ESRGAN Github](https://github.com/xinntao/Real-ESRGAN) for more details.
+The trained output scale for the upscaling model.
 
-#### Scale parameter
+The final output size will be based on [the upscale outscale parameter](#upscale-outscale-parameter). Using a scale
+larger than the outscale can produce a sharper image.
 
-The output scale for Real ESRGAN. This output will be rescaled using the outscale parameter.
+#### Upscale outscale parameter
 
-#### Outscale parameter
+The final output scale for the upscaling model.
 
-The final output scale after running Real ESRGAN. This can increase _or_ decrease the size of the final
-output. Lanczos interpolation is used when the outscale is greater than the scale.
+This can increase _or_ decrease the size of the final output. Lanczos interpolation is used when the outscale is
+greater than the scale, which can produce a blurry image.
 
-#### Denoise parameter
+#### Upscale denoise parameter
 
 The amount of denoising to apply when using the RealESR x4 v4 model. Can be used to avoid over-smoothing the results.
 
-#### Face correction and strength
+#### Correction strength parameter
 
 Run face correction the the output image before returning it to the client.
 
-Enabling this will run GFPGAN and requires a correction model.
+This uses your currently selected [correction model](#model-and-network-types).
 
-Check out [the GFPGAN Github](https://github.com/TencentARC/GFPGAN) for more details.
+#### Correction outscale parameter
+
+The final output scale for the correction model.
+
+This is a lot like [the upscale outscale parameter](#upscale-outscale-parameter).
+
+#### Correction order parameter
+
+TODO
 
 ### Blend tab
 
