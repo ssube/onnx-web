@@ -589,6 +589,12 @@ between tiles. Increasing this too far will cause blurry images.
 
 _Note:_ The highres and VAE overlap parameters may be split up in the future.
 
+This shows a 50% overlap with three different prompts:
+
+![an image showing a gradient blending between a fantasy forest, castle with pointed spires, and futuristic city with neon lights](overlap-castle.png)
+
+> (fantastic location, sun rays|dark castle, shadows|scifi city, future)
+
 ##### 25% overlap
 
 Stable Diffusion works best when generating full-size tiles in your selected [tile size](#tile-size-parameter). When
