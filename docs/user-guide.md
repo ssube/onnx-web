@@ -1157,6 +1157,8 @@ some common configurations in a server context.
 - diffusion
   - array of diffusion models
   - each one has:
+    - config
+      - string
     - format
       - one of:
         - bin
@@ -1165,16 +1167,8 @@ some common configurations in a server context.
         - pt
         - pth
         - safetensors
-    - label
-      - string
-    - name
-      - string
-    - source
-      - string
-    - config
-      - string
-    - vae
-      - string
+    - image_size
+      - number
     - inversions
       - array of inversion networks
       - permanently blended with the base model
@@ -1185,6 +1179,8 @@ some common configurations in a server context.
         - label
         - token
         - weight
+    - label
+      - string
     - loras
       - array of lora networks
       - permanently blended with the base model
@@ -1193,6 +1189,27 @@ some common configurations in a server context.
         - source
         - label
         - weight
+    - name
+      - string
+    - pipeline
+      - one of:
+        - controlnet
+        - img2img
+        - inpaint
+        - lpw
+        - panorama
+        - pix2pix
+        - txt2img
+        - upscaling
+    - source
+      - string
+    - vae
+      - string
+    - version
+      - one of:
+        - v1
+        - v2
+        - v2.1
 - correction
   - array of correction models
   - each one has:
@@ -1200,6 +1217,10 @@ some common configurations in a server context.
       - same formats as diffusion models
     - label
       - string
+    - model
+      - one of:
+        - codeformer
+        - gfpgan
     - name
       - string
     - source
@@ -1211,6 +1232,11 @@ some common configurations in a server context.
       - same formats as diffusion models
     - label
       - string
+    - model
+      - one of:
+        - bsrgan
+        - resrgan
+        - swinir
     - name
       - string
     - source
