@@ -480,6 +480,9 @@ Long prompt weighting is valid for the following tabs:
 
 The panorama pipeline allows you to generate and modify very large images.
 
+Panorama works better with more steps; since the UNet results are averaged at the end of each step, more steps will
+blend the latents more effectively and produce a more coherent image. 40+ steps usually produces good results.
+
 Panorama is valid for the following tabs:
 
 - txt2img
@@ -669,7 +672,8 @@ The number of steps to use for each highres tile.
 
 This is the same as [the steps parameter](#steps-parameter) in img2img. The number of steps that will actually run
 is `steps * strength`, but a low number of steps (20-30) with moderate or high strength (0.5-1.0) will often produce
-more duplicate shapes and totem pole style images.
+more duplicate shapes and totem pole style images. Using 100-200 steps with 0.1-0.2 strength seems to work well, and
+will only run 10-20 actual UNet steps.
 
 ##### Highres scale parameter
 
