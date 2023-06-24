@@ -591,6 +591,10 @@ _Note:_ The highres and VAE overlap parameters may be split up in the future.
 
 ##### 25% overlap
 
+Stable Diffusion works best when generating full-size tiles in your selected [tile size](#tile-size-parameter). When
+the overlap leads to tiles that partially fall outside of the image boundaries, they will be generated at full size
+and cropped. These leads to some wasted pixels, but produces a more coherent image.
+
 Before cropping:
 
 ![25% overlap causes the third tile to run off the right side of the image](overlap-25p.png)
