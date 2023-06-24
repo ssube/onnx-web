@@ -512,7 +512,14 @@ See [the scheduler comparison](#scheduler-comparison) for more details.
 
 #### Eta parameter
 
-TODO
+The eta parameter only applies to the DDIM scheduler, and can introduce additional noise over time, leading to
+somewhat unpredictable images.
+
+From [the HuggingFace docs](https://huggingface.co/docs/diffusers/api/pipelines/ddim):
+
+> The eta parameter which controls the scale of the variance (0 is DDIM and 1 is one type of DDPM).
+
+In general, a higher eta parameter will require more [steps](#steps-parameter) to produce a similar quality result.
 
 #### CFG parameter
 
@@ -531,8 +538,12 @@ Roughly:
 The number of scheduler steps to run. Using more steps often results in an image with more details, but also takes
 longer to run.
 
-The Euler Ancestral scheduler can usually produce decent results in 30-45 steps, while some of the others need 80-100 or
-more. Inpainting may need more steps, up to 120 or 150 in some cases. Using too many steps can increase the contrast
+- Euler Ancestral: 30-45 steps
+- UniPC Multistep: 20-40 steps
+- DEIS Multistep: 20-40 steps
+- others: 40+
+
+Inpainting may need more steps, up to 120 or 150 in some cases. Using too many steps can increase the contrast
 of your image too much, almost like a posterize effect.
 
 #### Seed parameter
@@ -805,7 +816,12 @@ This is a lot like [the upscale outscale parameter](#upscale-outscale-parameter)
 
 #### Correction order parameter
 
-TODO
+Whether to run correction before upscaling, after upscaling, or both.
+
+Running correction before upscaling can remove noise and improve faces so that the upscaling model has a better input
+image to work with, while running correction after upscaling can help remove noise and artifacts introduced by the
+upscaling model. Using both will address both issues, but typically needs a lower [correction
+strength](#correction-strength-parameter).
 
 ### Blend tab
 
@@ -818,7 +834,9 @@ Upscaling and correction run after the images have been blended.
 
 ### Models tab
 
-TODO
+The models tab allows you to edit [your `extras.json` file](#adding-your-own-models) from the web UI.
+
+You must be a server admin (by providing the correct `token`) to view and save the extras file.
 
 ### Settings tab
 
