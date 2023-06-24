@@ -214,16 +214,22 @@ can [add your own models](#adding-your-own-models) from many sources, including 
 
 ### General structure
 
-- subject and more important keywords first
-- quality keywords towards the end
-- if you want a specific lens or shot, put that first
-- cover subject, medium, style, color theme, lighting, and resolution
-- adjectives before nouns
-- figurative keywords as well as literal
-- include emotions and sensations
-- iterate
+Building a good prompt is like telling a short story without any of the articles and other small words (a/an, of, the).
+The subject and more important keywords should often come first, along with any specific camera angle or lens that you
+want to use. More generic keywords about quality and resolution can come towards the end. Adjectives about a noun
+should usually come before the nouns they describe, like "denim shirt" rather than "shirt made of denim." Try using
+figurative keywords as well as literal ones, especially with colors and textures, and include emotions for people.
 
-TODO
+Things you can describe include:
+
+- the subject, their pose, and facial expression
+- the camera, lens, and angle used
+- lighting mood and intensity
+- depth of focus and amount of detail in the background
+
+Some prompts may not always be successful and may require a few images to get the result you want. If you still aren't
+seeing the image you have imagined, try adjusting [the CFG parameter](#cfg-parameter) and iterate on the prompt - add
+more keywords to describe the missing parts of the image and try moving them around, putting the focal objects first.
 
 ### Useful keywords
 
