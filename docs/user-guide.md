@@ -53,6 +53,8 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Batch size parameter](#batch-size-parameter)
       - [Tile size parameter](#tile-size-parameter)
       - [Overlap parameter](#overlap-parameter)
+        - [25% overlap](#25-overlap)
+        - [50% overlap](#50-overlap)
       - [UNet stride parameter](#unet-stride-parameter)
       - [Tiled VAE parameter](#tiled-vae-parameter)
       - [Prompt parameter](#prompt-parameter)
@@ -586,6 +588,22 @@ between tiles. Increasing this too far will cause blurry images.
 - 0.5 is usually good for [panorama](#panorama-pipeline)
 
 _Note:_ The highres and VAE overlap parameters may be split up in the future.
+
+##### 25% overlap
+
+Before cropping:
+
+![25% overlap causes the third tile to run off the right side of the image](overlap-25p.png)
+
+After cropping:
+
+![the third tile is cropped to the image size and only 50% of it is kept](overlap-25p-crop.png)
+
+##### 50% overlap
+
+![the tiles line up evenly and are not cropped](overlap-50p.png)
+
+Tiles evenly fill the image and do not need to be cropped.
 
 #### UNet stride parameter
 
