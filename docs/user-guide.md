@@ -1251,15 +1251,18 @@ This section catalogs the environment variables that can be set in the launch sc
 The following environment variables are available:
 
 - `ONNX_WEB_MODEL_PATH`
-  - The path to the models folder. Defaults to /models
+  - The path to the models folder. Defaults to `/models`.
 - `ONNX_WEB_EXTRA_MODELS`
-  - The path to the extra models json file. See [the Adding your own models section](#adding-your-own-models) for more information. Defaults to nothing.
+  - The path to the extra models json file. See [the Adding your own models section](#adding-your-own-models) for more
+    information. Defaults to nothing.
 - `ONNX_WEB_OUTPUT_PATH`
-  - The path to the model output folder (for generated images). Defaults to /outputs
+  - The path to the model output folder (for generated images). Defaults to `/outputs`.
 - `ONNX_WEB_PARAMS_PATH`
-  - The path to the params.json file that holds the model parameters currently in use. Defaults to /api. Not accessible by default in the Windows bundle; use the web interface or set another path.
+  - The path to the `params.json` file that holds the model parameters currently in use. Defaults to `/api`. Not
+    accessible by default in the Windows bundle; use the web interface or set another path.
 - `ONNX_WEB_CORS_ORIGIN`
-  - The allowed origins for [cross-origin resource sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) headers. Allows access from other websites or clients.
+  - The allowed origins for [cross-origin resource sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+    headers. Allows access from other websites or clients.
 - `ONNX_WEB_ANY_PLATFORM`
   - The platform that will be used when selecting any platform in the client.
 - `ONNX_WEB_BLOCK_PLATFORMS`
@@ -1267,9 +1270,10 @@ The following environment variables are available:
 - `ONNX_WEB_DEFAULT_PLATFORM`
   - The default platform that will be selected in the client, if you have more than one GPU or have CPU mode enabled.
 - `ONNX_WEB_IMAGE_FORMAT`
-  - The image format for the output. Defaults to .png.
+  - The image format for the output. Defaults to `.png`.
 - `ONNX_WEB_CACHE_MODELS`
-  - The number of models to cache. Decreasing this value may decrease VRAM usage and increase stability when switching models, but may also increase startup time. Defaults to 5.
+  - The number of models to cache. Decreasing this value may decrease VRAM usage and increase stability when switching
+    models, but may also increase startup time. Defaults to 5.
 - `ONNX_WEB_SHOW_PROGRESS`
   - Whether to show progress in the command prompt window. Defaults to True.
 - `ONNX_WEB_OPTIMIZATIONS`
@@ -1277,7 +1281,7 @@ The following environment variables are available:
 - `ONNX_WEB_JOB_LIMIT`
   - Job limit before workers will be automatically restarted. Defaults to 10.
 - `ONNX_WEB_MEMORY_LIMIT`
-  - VRAM usage limit for CUDA devices. Defaults to none.
+  - VRAM usage limit for CUDA devices. Defaults to none, which is no limit.
 
 ## Known errors
 
