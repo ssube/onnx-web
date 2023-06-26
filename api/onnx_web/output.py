@@ -72,7 +72,7 @@ def str_params(
     size: Size,
 ) -> str:
     return (
-        f"{params.input_prompt}. Negative prompt: {params.input_negative_prompt}."
+        f"{params.input_prompt}.\nNegative prompt: {params.input_negative_prompt}.\n"
         f"Steps: {params.steps}, Sampler: {params.scheduler}, CFG scale: {params.cfg}, "
         f"Seed: {params.seed}, Size: {size.width}x{size.height}, Model hash: TODO, Model: {params.model}, "
         f"Version: TODO, Tool: onnx-web"
@@ -131,11 +131,9 @@ def save_image(
         exif = PngImagePlugin.PngInfo()
 
         if params is not None:
-            exif.add_text("Make", "onnx-web")
-            exif.add_text("Model", "TODO: server.version")
-            exif.add_text("Parameters", str_params(params, size))
+            exif.add_text("make", "onnx-web")
             exif.add_text(
-                "JSON Parameters",
+                "maker note",
                 dumps(
                     json_params(
                         [output],
@@ -147,15 +145,14 @@ def save_image(
                     )
                 ),
             )
+            exif.add_text("model", "TODO: server.version")
+            exif.add_text("parameters", str_params(params, size))
 
         image.save(path, format=server.image_format, pnginfo=exif)
     else:
         exif = dump(
             {
                 "0th": {
-                    ExifIFD.UserComment: UserComment.dump(
-                        str_params(params, size), encoding="unicode"
-                    ),
                     ExifIFD.MakerNote: UserComment.dump(
                         dumps(
                             json_params(
@@ -168,6 +165,9 @@ def save_image(
                             )
                         ),
                         encoding="unicode",
+                    ),
+                    ExifIFD.UserComment: UserComment.dump(
+                        str_params(params, size), encoding="unicode"
                     ),
                     ImageIFD.Make: "onnx-web",
                     ImageIFD.Model: "TODO: server.version",
