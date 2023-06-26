@@ -4,7 +4,7 @@ from logging import getLogger
 from os import path
 from struct import pack
 from time import time
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Tuple
 
 from piexif import ExifIFD, ImageIFD, dump
 from piexif.helper import UserComment
@@ -70,11 +70,21 @@ def json_params(
 def str_params(
     params: ImageParams,
     size: Size,
+    inversions: List[Tuple[str, float]] = None,
+    loras: List[Tuple[str, float]] = None,
 ) -> str:
+    lora_hashes = (
+        ",".join([f"{name}: TODO" for name, weight in loras])
+        if loras is not None
+        else ""
+    )
+
     return (
         f"{params.input_prompt}.\nNegative prompt: {params.input_negative_prompt}.\n"
         f"Steps: {params.steps}, Sampler: {params.scheduler}, CFG scale: {params.cfg}, "
-        f"Seed: {params.seed}, Size: {size.width}x{size.height}, Model hash: TODO, Model: {params.model}, "
+        f"Seed: {params.seed}, Size: {size.width}x{size.height}, "
+        f"Model hash: TODO, Model: {params.model}, "
+        f'Lora hashes: "{lora_hashes}", '
         f"Version: TODO, Tool: onnx-web"
     )
 
@@ -124,6 +134,8 @@ def save_image(
     upscale: Optional[UpscaleParams] = None,
     border: Optional[Border] = None,
     highres: Optional[HighresParams] = None,
+    inversions: List[Tuple[str, float]] = None,
+    loras: List[Tuple[str, float]] = None,
 ) -> str:
     path = base_join(server.output_path, output)
 
@@ -146,7 +158,10 @@ def save_image(
                 ),
             )
             exif.add_text("model", "TODO: server.version")
-            exif.add_text("parameters", str_params(params, size))
+            exif.add_text(
+                "parameters",
+                str_params(params, size, inversions=inversions, loras=loras),
+            )
 
         image.save(path, format=server.image_format, pnginfo=exif)
     else:
@@ -167,7 +182,8 @@ def save_image(
                         encoding="unicode",
                     ),
                     ExifIFD.UserComment: UserComment.dump(
-                        str_params(params, size), encoding="unicode"
+                        str_params(params, size, inversions=inversions, loras=loras),
+                        encoding="unicode",
                     ),
                     ImageIFD.Make: "onnx-web",
                     ImageIFD.Model: "TODO: server.version",

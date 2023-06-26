@@ -315,7 +315,15 @@ def run_txt2img_pipeline(
         )
 
         dest = save_image(
-            server, output, image, params, size, upscale=upscale, highres=highres
+            server,
+            output,
+            image,
+            params,
+            size,
+            upscale=upscale,
+            highres=highres,
+            inversions=inversions,
+            loras=loras,
         )
 
     run_gc([job.get_device()])
@@ -439,7 +447,15 @@ def run_img2img_pipeline(
         )
 
         dest = save_image(
-            server, output, image, params, size, upscale=upscale, highres=highres
+            server,
+            output,
+            image,
+            params,
+            size,
+            upscale=upscale,
+            highres=highres,
+            inversions=inversions,
+            loras=loras,
         )
 
     run_gc([job.get_device()])
@@ -507,7 +523,15 @@ def run_inpaint_pipeline(
     )
 
     dest = save_image(
-        server, outputs[0], image, params, size, upscale=upscale, border=border
+        server,
+        outputs[0],
+        image,
+        params,
+        size,
+        upscale=upscale,
+        border=border,
+        inversions=inversions,
+        loras=loras,
     )
 
     del image
