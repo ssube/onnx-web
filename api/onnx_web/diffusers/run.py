@@ -7,7 +7,7 @@ from PIL import Image
 
 from ..chain import blend_mask, upscale_outpaint
 from ..chain.utils import process_tile_order
-from ..output import save_image, save_params
+from ..output import save_image
 from ..params import (
     Border,
     HighresParams,
@@ -314,7 +314,9 @@ def run_txt2img_pipeline(
             callback=progress,
         )
 
-        dest = save_image(server, output, image, params, size, upscale=upscale, highres=highres)
+        dest = save_image(
+            server, output, image, params, size, upscale=upscale, highres=highres
+        )
 
     run_gc([job.get_device()])
     show_system_toast(f"finished txt2img job: {dest}")
@@ -436,7 +438,9 @@ def run_img2img_pipeline(
             callback=progress,
         )
 
-        dest = save_image(server, output, image, params, size, upscale=upscale, highres=highres)
+        dest = save_image(
+            server, output, image, params, size, upscale=upscale, highres=highres
+        )
 
     run_gc([job.get_device()])
     show_system_toast(f"finished img2img job: {dest}")
@@ -502,7 +506,9 @@ def run_inpaint_pipeline(
         callback=progress,
     )
 
-    dest = save_image(server, outputs[0], image, params, size, upscale=upscale, border=border)
+    dest = save_image(
+        server, outputs[0], image, params, size, upscale=upscale, border=border
+    )
 
     del image
     run_gc([job.get_device()])

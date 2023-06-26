@@ -131,16 +131,20 @@ def save_image(
         exif = PngImagePlugin.PngInfo()
 
         if params is not None:
+            exif.add_text("Make", "onnx-web")
+            exif.add_text("Model", "TODO: server.version")
             exif.add_text("Parameters", str_params(params, size))
             exif.add_text(
                 "JSON Parameters",
-                json_params(
-                    [output],
-                    params,
-                    size,
-                    upscale=upscale,
-                    border=border,
-                    highres=highres,
+                dumps(
+                    json_params(
+                        [output],
+                        params,
+                        size,
+                        upscale=upscale,
+                        border=border,
+                        highres=highres,
+                    )
                 ),
             )
 
@@ -152,16 +156,36 @@ def save_image(
                     ExifIFD.UserComment: UserComment.dump(
                         str_params(params, size), encoding="unicode"
                     ),
+                    ExifIFD.MakerNote: UserComment.dump(
+                        dumps(
+                            json_params(
+                                [output],
+                                params,
+                                size,
+                                upscale=upscale,
+                                border=border,
+                                highres=highres,
+                            )
+                        ),
+                        encoding="unicode",
+                    ),
                     ImageIFD.Make: "onnx-web",
-                    ImageIFD.Model: "TODO",
-                    # TODO: add JSON params
+                    ImageIFD.Model: "TODO: server.version",
                 }
             }
         )
         image.save(path, format=server.image_format, exif=exif)
 
     if params is not None:
-        save_params(server, output, params, size, upscale=upscale, border=border, highres=highres)
+        save_params(
+            server,
+            output,
+            params,
+            size,
+            upscale=upscale,
+            border=border,
+            highres=highres,
+        )
 
     logger.debug("saved output image to: %s", path)
     return path
