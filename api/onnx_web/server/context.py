@@ -13,6 +13,7 @@ logger = getLogger(__name__)
 DEFAULT_CACHE_LIMIT = 5
 DEFAULT_JOB_LIMIT = 10
 DEFAULT_IMAGE_FORMAT = "png"
+DEFAULT_SERVER_VERSION = "v0.10.0"
 
 
 class ServerContext:
@@ -35,6 +36,7 @@ class ServerContext:
         job_limit: int = DEFAULT_JOB_LIMIT,
         memory_limit: Optional[int] = None,
         admin_token: Optional[str] = None,
+        server_version: Optional[str] = DEFAULT_SERVER_VERSION,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -53,6 +55,7 @@ class ServerContext:
         self.job_limit = job_limit
         self.memory_limit = memory_limit
         self.admin_token = admin_token or token_urlsafe()
+        self.server_version = server_version
 
         self.cache = ModelCache(self.cache_limit)
 
@@ -82,6 +85,9 @@ class ServerContext:
             job_limit=int(environ.get("ONNX_WEB_JOB_LIMIT", DEFAULT_JOB_LIMIT)),
             memory_limit=memory_limit,
             admin_token=environ.get("ONNX_WEB_ADMIN_TOKEN", None),
+            server_version=environ.get(
+                "ONNX_WEB_SERVER_VERSION", DEFAULT_SERVER_VERSION
+            ),
         )
 
     def torch_dtype(self):

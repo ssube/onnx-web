@@ -80,7 +80,11 @@ def run():
         logger.info("shutting down workers")
         p.join()
 
-    logger.info("starting API server with admin token: %s", server.admin_token)
+    logger.info(
+        "starting %s API server with admin token: %s",
+        server.server_version,
+        server.admin_token,
+    )
     atexit.register(partial(quit, pool))
     return app
 
@@ -89,7 +93,11 @@ if __name__ == "__main__":
     server, app, pool = main()
     logger.info("starting image workers")
     pool.start()
-    logger.info("starting API server with admin token: %s", server.admin_token)
+    logger.info(
+        "starting %s API server with admin token: %s",
+        server.server_version,
+        server.admin_token,
+    )
     app.run("0.0.0.0", 5000, debug=is_debug())
     logger.info("shutting down workers")
     pool.join()
