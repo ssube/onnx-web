@@ -314,8 +314,7 @@ def run_txt2img_pipeline(
             callback=progress,
         )
 
-        dest = save_image(server, output, image)
-        save_params(server, output, params, size, upscale=upscale, highres=highres)
+        dest = save_image(server, output, image, params, size, upscale=upscale, highres=highres)
 
     run_gc([job.get_device()])
     show_system_toast(f"finished txt2img job: {dest}")
@@ -413,11 +412,12 @@ def run_img2img_pipeline(
             loras,
         )
 
+        size = Size(*source.size)
         image = run_highres(
             job,
             server,
             params,
-            Size(source.width, source.height),
+            size,
             upscale,
             highres,
             image,
@@ -436,9 +436,7 @@ def run_img2img_pipeline(
             callback=progress,
         )
 
-        dest = save_image(server, output, image)
-        size = Size(*source.size)
-        save_params(server, output, params, size, upscale=upscale)
+        dest = save_image(server, output, image, params, size, upscale=upscale, highres=highres)
 
     run_gc([job.get_device()])
     show_system_toast(f"finished img2img job: {dest}")
@@ -504,12 +502,11 @@ def run_inpaint_pipeline(
         callback=progress,
     )
 
-    dest = save_image(server, outputs[0], image)
-    save_params(server, outputs[0], params, size, upscale=upscale, border=border)
+    dest = save_image(server, outputs[0], image, params, size, upscale=upscale, border=border)
 
     del image
-
     run_gc([job.get_device()])
+
     show_system_toast(f"finished inpaint job: {dest}")
     logger.info("finished inpaint job: %s", dest)
 
@@ -547,12 +544,11 @@ def run_upscale_pipeline(
         loras,
     )
 
-    dest = save_image(server, outputs[0], image)
-    save_params(server, outputs[0], params, size, upscale=upscale)
+    dest = save_image(server, outputs[0], image, params, size, upscale=upscale)
 
     del image
-
     run_gc([job.get_device()])
+
     show_system_toast(f"finished upscale job: {dest}")
     logger.info("finished upscale job: %s", dest)
 
@@ -586,11 +582,10 @@ def run_blend_pipeline(
         job, server, stage, params, image, upscale=upscale, callback=progress
     )
 
-    dest = save_image(server, outputs[0], image)
-    save_params(server, outputs[0], params, size, upscale=upscale)
+    dest = save_image(server, outputs[0], image, params, size, upscale=upscale)
 
     del image
-
     run_gc([job.get_device()])
+
     show_system_toast(f"finished blend job: {dest}")
     logger.info("finished blend job: %s", dest)

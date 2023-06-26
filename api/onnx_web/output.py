@@ -6,7 +6,9 @@ from struct import pack
 from time import time
 from typing import Any, List, Optional
 
-from PIL import Image
+from piexif import ExifIFD, ImageIFD, dump
+from piexif.helper import UserComment
+from PIL import Image, PngImagePlugin
 
 from .params import Border, HighresParams, ImageParams, Param, Size, UpscaleParams
 from .server import ServerContext
@@ -46,21 +48,35 @@ def json_params(
     json["params"]["model"] = path.basename(params.model)
     json["params"]["scheduler"] = params.scheduler
 
+    output_size = size
     if border is not None:
         json["border"] = border.tojson()
-        size = size.add_border(border)
+        output_size = output_size.add_border(border)
 
     if highres is not None:
         json["highres"] = highres.tojson()
-        size = highres.resize(size)
+        output_size = highres.resize(output_size)
 
     if upscale is not None:
         json["upscale"] = upscale.tojson()
-        size = upscale.resize(size)
+        output_size = upscale.resize(output_size)
 
-    json["size"] = size.tojson()
+    json["input_size"] = size.tojson()
+    json["size"] = output_size.tojson()
 
     return json
+
+
+def str_params(
+    params: ImageParams,
+    size: Size,
+) -> str:
+    return (
+        f"{params.input_prompt}. Negative prompt: {params.input_negative_prompt}."
+        f"Steps: {params.steps}, Sampler: {params.scheduler}, CFG scale: {params.cfg}, "
+        f"Seed: {params.seed}, Size: {size.width}x{size.height}, Model hash: TODO, Model: {params.model}, "
+        f"Version: TODO, Tool: onnx-web"
+    )
 
 
 def make_output_name(
@@ -99,9 +115,54 @@ def make_output_name(
     ]
 
 
-def save_image(server: ServerContext, output: str, image: Image.Image) -> str:
+def save_image(
+    server: ServerContext,
+    output: str,
+    image: Image.Image,
+    params: Optional[ImageParams] = None,
+    size: Optional[Size] = None,
+    upscale: Optional[UpscaleParams] = None,
+    border: Optional[Border] = None,
+    highres: Optional[HighresParams] = None,
+) -> str:
     path = base_join(server.output_path, output)
-    image.save(path, format=server.image_format)
+
+    if server.image_format == "png":
+        exif = PngImagePlugin.PngInfo()
+
+        if params is not None:
+            exif.add_text("Parameters", str_params([output], params, size))
+            exif.add_text(
+                "JSON Parameters",
+                json_params(
+                    [output],
+                    params,
+                    size,
+                    upscale=upscale,
+                    border=border,
+                    highres=highres,
+                ),
+            )
+
+        image.save(path, format=server.image_format, pnginfo=exif)
+    else:
+        exif = dump(
+            {
+                "0th": {
+                    ExifIFD.UserComment: UserComment.dump(
+                        str_params([output], params, size), encoding="unicode"
+                    ),
+                    ImageIFD.Make: "onnx-web",
+                    ImageIFD.Model: "TODO",
+                    # TODO: add JSON params
+                }
+            }
+        )
+        image.save(path, format=server.image_format, exif=exif)
+
+    if params is not None:
+        save_params(server, output, params, size, upscale=upscale, border=border, highres=highres)
+
     logger.debug("saved output image to: %s", path)
     return path
 
