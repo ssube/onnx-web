@@ -131,7 +131,7 @@ def save_image(
         exif = PngImagePlugin.PngInfo()
 
         if params is not None:
-            exif.add_text("Parameters", str_params([output], params, size))
+            exif.add_text("Parameters", str_params(params, size))
             exif.add_text(
                 "JSON Parameters",
                 json_params(
@@ -150,7 +150,7 @@ def save_image(
             {
                 "0th": {
                     ExifIFD.UserComment: UserComment.dump(
-                        str_params([output], params, size), encoding="unicode"
+                        str_params(params, size), encoding="unicode"
                     ),
                     ImageIFD.Make: "onnx-web",
                     ImageIFD.Model: "TODO",
