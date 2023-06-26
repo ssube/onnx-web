@@ -92,6 +92,7 @@ network_models: List[NetworkModel] = []
 upscaling_models: List[str] = []
 
 # Loaded from extra_models
+extra_hashes: Dict[str, str] = {}
 extra_strings: Dict[str, Any] = {}
 
 
@@ -123,6 +124,10 @@ def get_extra_strings():
     return extra_strings
 
 
+def get_extra_hashes():
+    return extra_hashes
+
+
 def get_highres_methods():
     return highres_methods
 
@@ -147,6 +152,7 @@ def load_extras(server: ServerContext):
     """
     Load the extras file(s) and collect the relevant parts for the server: labels and strings
     """
+    global extra_hashes
     global extra_strings
 
     labels = {}
@@ -173,8 +179,18 @@ def load_extras(server: ServerContext):
                 for model_type in ["diffusion", "correction", "upscaling", "networks"]:
                     if model_type in data:
                         for model in data[model_type]:
+                            model_name = model["name"]
+
+                            if "hash" in model:
+                                logger.debug(
+                                    "collecting hash for model %s from %s",
+                                    model_name,
+                                    file,
+                                )
+
+                                extra_hashes[model_name] = model["hash"]
+
                             if "label" in model:
-                                model_name = model["name"]
                                 logger.debug(
                                     "collecting label for model %s from %s",
                                     model_name,

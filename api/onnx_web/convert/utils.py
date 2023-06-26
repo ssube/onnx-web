@@ -183,7 +183,8 @@ def tuple_to_upscaling(model: Union[ModelDict, LegacyModel]):
         return model
 
 
-model_formats = ["onnx", "pth", "ckpt", "safetensors"]
+MODEL_FORMATS = ["onnx", "pth", "ckpt", "safetensors"]
+RESOLVE_FORMATS = ["safetensors", "ckpt", "pt", "bin"]
 
 
 def source_format(model: Dict) -> Optional[str]:
@@ -192,7 +193,7 @@ def source_format(model: Dict) -> Optional[str]:
 
     if "source" in model:
         _name, ext = path.splitext(model["source"])
-        if ext in model_formats:
+        if ext in MODEL_FORMATS:
             return ext
 
     return None
@@ -231,7 +232,7 @@ def load_tensor(name: str, map_location=None) -> Optional[Dict]:
             checkpoint = torch.load(name, map_location=map_location)
         else:
             logger.debug("searching for tensors with known extensions")
-            for next_extension in ["safetensors", "ckpt", "pt", "bin"]:
+            for next_extension in RESOLVE_FORMATS:
                 next_name = f"{name}.{next_extension}"
                 if path.exists(next_name):
                     checkpoint = load_tensor(next_name, map_location=map_location)
@@ -273,6 +274,16 @@ def load_tensor(name: str, map_location=None) -> Optional[Dict]:
         checkpoint = checkpoint["state_dict"]
 
     return checkpoint
+
+
+def resolve_tensor(name: str) -> Optional[str]:
+    logger.debug("searching for tensors with known extensions: %s", name)
+    for next_extension in RESOLVE_FORMATS:
+        next_name = f"{name}.{next_extension}"
+        if path.exists(next_name):
+            return next_name
+
+    return None
 
 
 def onnx_export(

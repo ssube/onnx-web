@@ -10,11 +10,29 @@ from piexif import ExifIFD, ImageIFD, dump
 from piexif.helper import UserComment
 from PIL import Image, PngImagePlugin
 
+from onnx_web.convert.utils import resolve_tensor
+from onnx_web.server.load import get_extra_hashes
+
 from .params import Border, HighresParams, ImageParams, Param, Size, UpscaleParams
 from .server import ServerContext
 from .utils import base_join
 
 logger = getLogger(__name__)
+
+HASH_BUFFER_SIZE = 2**22  # 4MB
+
+
+def hash_file(name: str):
+    sha = sha256()
+    with open(name, "rb") as f:
+        while True:
+            data = f.read(HASH_BUFFER_SIZE)
+            if not data:
+                break
+
+            sha.update(data)
+
+    return sha.hexdigest()
 
 
 def hash_value(sha, param: Optional[Param]):
@@ -68,24 +86,57 @@ def json_params(
 
 
 def str_params(
+    server: ServerContext,
     params: ImageParams,
     size: Size,
     inversions: List[Tuple[str, float]] = None,
     loras: List[Tuple[str, float]] = None,
 ) -> str:
-    lora_hashes = (
-        ",".join([f"{name}: TODO" for name, weight in loras])
-        if loras is not None
-        else ""
-    )
+    model_hash = get_extra_hashes().get(params.model, "unknown")
+    model_name = path.basename(path.normpath(params.model))
+    hash_map = {
+        model_name: model_hash,
+    }
+
+    inversion_hashes = ""
+    if inversions is not None:
+        inversion_pairs = [
+            (
+                name,
+                hash_file(
+                    resolve_tensor(path.join(server.model_path, "inversion", name))
+                ).upper(),
+            )
+            for name, _weight in inversions
+        ]
+        inversion_hashes = ",".join(
+            [f"{name}: {hash}" for name, hash in inversion_pairs]
+        )
+        hash_map.update(dict(inversion_pairs))
+
+    lora_hashes = ""
+    if loras is not None:
+        lora_pairs = [
+            (
+                name,
+                hash_file(
+                    resolve_tensor(path.join(server.model_path, "lora", name))
+                ).upper(),
+            )
+            for name, _weight in loras
+        ]
+        lora_hashes = ",".join([f"{name}: {hash}" for name, hash in lora_pairs])
+        hash_map.update(dict(lora_pairs))
 
     return (
-        f"{params.input_prompt}.\nNegative prompt: {params.input_negative_prompt}.\n"
+        f"{params.input_prompt}\nNegative prompt: {params.input_negative_prompt}\n"
         f"Steps: {params.steps}, Sampler: {params.scheduler}, CFG scale: {params.cfg}, "
         f"Seed: {params.seed}, Size: {size.width}x{size.height}, "
-        f"Model hash: TODO, Model: {params.model}, "
+        f"Model hash: {model_hash}, Model: {model_name}, "
+        f"Tool: onnx-web, Version: {server.server_version}, "
+        f'Inversion hashes: "{inversion_hashes}", '
         f'Lora hashes: "{lora_hashes}", '
-        f"Version: TODO, Tool: onnx-web"
+        f"Hashes: {dumps(hash_map)}"
     )
 
 
@@ -157,10 +208,10 @@ def save_image(
                     )
                 ),
             )
-            exif.add_text("model", "TODO: server.version")
+            exif.add_text("model", server.server_version)
             exif.add_text(
                 "parameters",
-                str_params(params, size, inversions=inversions, loras=loras),
+                str_params(server, params, size, inversions=inversions, loras=loras),
             )
 
         image.save(path, format=server.image_format, pnginfo=exif)
@@ -182,11 +233,13 @@ def save_image(
                         encoding="unicode",
                     ),
                     ExifIFD.UserComment: UserComment.dump(
-                        str_params(params, size, inversions=inversions, loras=loras),
+                        str_params(
+                            server, params, size, inversions=inversions, loras=loras
+                        ),
                         encoding="unicode",
                     ),
                     ImageIFD.Make: "onnx-web",
-                    ImageIFD.Model: "TODO: server.version",
+                    ImageIFD.Model: server.server_version,
                 }
             }
         )
