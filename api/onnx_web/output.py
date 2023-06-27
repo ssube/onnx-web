@@ -100,7 +100,7 @@ def str_params(
         model_hash_path = path.join(params.model, "hash.txt")
         if path.exists(model_hash_path):
             with open(model_hash_path, "r") as f:
-                model_hash = f.readline()
+                model_hash = f.readline().rstrip(",. \n\t\r")
 
     model_hash = model_hash or "unknown"
     hash_map = {
