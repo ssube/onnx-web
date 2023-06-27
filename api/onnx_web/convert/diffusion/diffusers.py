@@ -288,6 +288,7 @@ def convert_diffusion_diffusers(
     dest_path = path.join(conversion.model_path, name)
     model_index = path.join(dest_path, "model_index.json")
     model_cnet = path.join(dest_path, "cnet", ONNX_MODEL)
+    model_hash = path.join(dest_path, "hash.txt")
 
     # diffusers go into a directory rather than .onnx file
     logger.info(
@@ -299,6 +300,11 @@ def convert_diffusion_diffusers(
 
     cnet_only = False
     if path.exists(dest_path) and path.exists(model_index):
+        if "hash" in model and not path.exists(model_hash):
+            logger.info("ONNX model does not have hash file, adding one")
+            with open(model_hash, "w") as f:
+                f.write(model["hash"])
+
         if not single_vae and not path.exists(model_cnet):
             logger.info(
                 "ONNX model was converted without a ControlNet UNet, converting one"
