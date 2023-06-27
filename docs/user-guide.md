@@ -1167,6 +1167,8 @@ some common configurations in a server context.
         - pt
         - pth
         - safetensors
+    - hash
+      - string
     - image_size
       - number
     - inversions

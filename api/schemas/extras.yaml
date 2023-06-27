@@ -78,6 +78,8 @@ $defs:
         properties:
           config:
             type: string
+          hash:
+            type: string
           image_size:
             type: number
           inversions:
