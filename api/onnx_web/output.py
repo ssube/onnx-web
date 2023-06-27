@@ -92,8 +92,10 @@ def str_params(
     inversions: List[Tuple[str, float]] = None,
     loras: List[Tuple[str, float]] = None,
 ) -> str:
-    model_hash = get_extra_hashes().get(params.model, "unknown")
     model_name = path.basename(path.normpath(params.model))
+    logger.debug("getting model hash for %s", model_name)
+
+    model_hash = get_extra_hashes().get(model_name, "unknown")
     hash_map = {
         model_name: model_hash,
     }
