@@ -95,7 +95,14 @@ def str_params(
     model_name = path.basename(path.normpath(params.model))
     logger.debug("getting model hash for %s", model_name)
 
-    model_hash = get_extra_hashes().get(model_name, "unknown")
+    model_hash = get_extra_hashes().get(model_name, None)
+    if model_hash is None:
+        model_hash_path = path.join(params.model, "hash.txt")
+        if path.exists(model_hash_path):
+            with open(model_hash_path, "r") as f:
+                model_hash = f.readline()
+
+    model_hash = model_hash or "unknown"
     hash_map = {
         model_name: model_hash,
     }
