@@ -1,13 +1,11 @@
 from logging import getLogger
 from typing import Any, Optional
 
-import numpy as np
-import torch
 from PIL import Image
 
-from ..diffusers.load import load_pipeline
+from ..chain.base import ChainPipeline
+from ..chain.img2img import blend_img2img
 from ..diffusers.upscale import append_upscale_correction
-from ..diffusers.utils import parse_prompt
 from ..params import HighresParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
@@ -30,25 +28,12 @@ def upscale_highres(
     callback: Optional[ProgressCallback] = None,
     **kwargs,
 ) -> Image.Image:
-    image = stage_source or source
+    source = stage_source or source
 
     if highres.scale <= 1:
-        return image
+        return source
 
-    # load img2img pipeline once
-    pipe_type = params.get_valid_pipeline("img2img")
-    logger.debug("using %s pipeline for highres", pipe_type)
-
-    _prompt_pairs, loras, inversions = parse_prompt(params)
-    highres_pipe = pipeline or load_pipeline(
-        server,
-        params,
-        pipe_type,
-        job.get_device(),
-        inversions=inversions,
-        loras=loras,
-    )
-
+    chain = ChainPipeline()
     scaled_size = (source.width * highres.scale, source.height * highres.scale)
 
     # TODO: upscaling within the same stage prevents tiling from happening and causes OOM
@@ -60,7 +45,7 @@ def upscale_highres(
         source = source.resize(scaled_size, resample=Image.Resampling.LANCZOS)
     else:
         logger.debug("using upscaling pipeline for highres")
-        upscale = append_upscale_correction(
+        append_upscale_correction(
             StageParams(),
             params,
             upscale=upscale.with_args(
@@ -68,41 +53,24 @@ def upscale_highres(
                 scale=highres.scale,
                 outscale=highres.scale,
             ),
-        )
-        source = upscale(
-            job,
-            server,
-            source,
-            callback=callback,
+            chain=chain,
         )
 
-    if pipe_type == "lpw":
-        rng = torch.manual_seed(params.seed)
-        result = highres_pipe.img2img(
-            source,
-            params.prompt,
-            generator=rng,
-            guidance_scale=params.cfg,
-            negative_prompt=params.negative_prompt,
-            num_images_per_prompt=1,
-            num_inference_steps=highres.steps,
-            strength=highres.strength,
-            eta=params.eta,
-            callback=callback,
+    chain.append(
+        (
+            blend_img2img,
+            StageParams(),
+            {
+                "overlap": params.overlap,
+                "strength": highres.strength,
+            },
         )
-        return result.images[0]
-    else:
-        rng = np.random.RandomState(params.seed)
-        result = highres_pipe(
-            params.prompt,
-            source,
-            generator=rng,
-            guidance_scale=params.cfg,
-            negative_prompt=params.negative_prompt,
-            num_images_per_prompt=1,
-            num_inference_steps=highres.steps,
-            strength=highres.strength,
-            eta=params.eta,
-            callback=callback,
-        )
-        return result.images[0]
+    )
+
+    return chain(
+        job,
+        server,
+        params,
+        source,
+        callback=callback,
+    )

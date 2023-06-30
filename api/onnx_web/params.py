@@ -87,14 +87,14 @@ class Size:
 
     def tojson(self) -> Dict[str, int]:
         return {
-            "height": self.height,
             "width": self.width,
+            "height": self.height,
         }
 
     def with_args(self, **kwargs):
         return Size(
-            kwargs.get("height", self.height),
             kwargs.get("width", self.width),
+            kwargs.get("height", self.height),
         )
 
 

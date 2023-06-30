@@ -63,16 +63,17 @@ def run_txt2img_pipeline(
         )
 
     # apply highres
-    chain.append(
-        (
-            upscale_highres,
-            stage,
-            {
-                "highres": highres,
-                "upscale": upscale,
-            },
+    for _i in range(highres.iterations):
+        chain.append(
+            (
+                upscale_highres,
+                stage,
+                {
+                    "highres": highres,
+                    "upscale": upscale,
+                },
+            )
         )
-    )
 
     # apply upscaling and correction, after highres
     append_upscale_correction(
