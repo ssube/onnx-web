@@ -41,6 +41,13 @@ interface HistoryItem {
   retry: RetryParams;
 }
 
+interface ProfileItem {
+  name: string;
+  params: Txt2ImgParams;
+  highResParams?: Maybe<HighresParams>;
+  upscaleParams?: Maybe<UpscaleParams>;
+}
+
 interface BrushSlice {
   brush: BrushParams;
 
@@ -143,6 +150,13 @@ interface BlendSlice {
 interface ResetSlice {
   resetAll(): void;
 }
+
+interface ProfileSlice {
+  profiles: Array<ProfileItem>;
+
+  saveProfile(profile: ProfileItem): void;
+  removeProfile(profileName: string): void;
+}
 // #endregion
 
 /**
@@ -161,7 +175,8 @@ export type OnnxState
   & UpscaleSlice
   & BlendSlice
   & ResetSlice
-  & ExtraSlice;
+  & ExtraSlice
+  & ProfileSlice;
 
 /**
  * Shorthand for state creator to reduce repeated arguments.
@@ -572,6 +587,38 @@ export function createStateSlices(server: ServerParams) {
     },
   });
 
+  const createProfileSlice: Slice<ProfileSlice> = (set) => ({
+    profiles: [],
+    saveProfile(profile: ProfileItem) {
+      set((prev) => {
+        const profiles = [...prev.profiles];
+        const idx = profiles.findIndex((it) => it.name === profile.name);
+        if (idx >= 0) {
+          profiles[idx] = profile;
+        } else {
+          profiles.push(profile);
+        }
+        return {
+          ...prev,
+          profiles,
+        };
+      });
+    },
+    removeProfile(profileName: string) {
+      set((prev) => {
+        const profiles = [...prev.profiles];
+        const idx = profiles.findIndex((it) => it.name === profileName);
+        if (idx >= 0) {
+          profiles.splice(idx, 1);
+        }
+        return {
+          ...prev,
+          profiles,
+        };
+      });
+    }
+  });
+
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const createExtraSlice: Slice<ExtraSlice> = (set) => ({
     extras: {
@@ -765,5 +812,6 @@ export function createStateSlices(server: ServerParams) {
     createBlendSlice,
     createResetSlice,
     createExtraSlice,
+    createProfileSlice,
   };
 }

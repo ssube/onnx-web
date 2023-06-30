@@ -29,6 +29,16 @@ export const I18N_STRINGS_FR = {
         type: '',
       },
       generate: 'générer',
+      profile: {
+        add: '',
+        saveName: '',
+        saveProfile: '',
+        save: '',
+        saveCurrent: '',
+        name: '',
+        cancel: '',
+        load: '',
+      },
       highresMethod: {
         bilinear: '',
         lanczos: '',

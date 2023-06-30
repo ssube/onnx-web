@@ -24,6 +24,16 @@ export const I18N_STRINGS_EN = {
         type: 'Type',
       },
       generate: 'Generate',
+      profile: {
+        add: 'Add Profile',
+        saveName: 'Save Profile Name',
+        saveProfile: 'Save Profile',
+        save: 'Save',
+        saveCurrent: 'Save Current Profile',
+        name: 'Name',
+        cancel: 'Cancel',
+        load: 'Load Profile',
+      },
       highresMethod: {
         bilinear: 'Bilinear',
         lanczos: 'Lanczos',

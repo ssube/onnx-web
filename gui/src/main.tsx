@@ -60,6 +60,7 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
     createBlendSlice,
     createResetSlice,
     createExtraSlice,
+    createProfileSlice,
   } = createStateSlices(params);
   const state = createStore<OnnxState, [['zustand/persist', OnnxState]]>(persist((...slice) => ({
     ...createBrushSlice(...slice),
@@ -75,6 +76,7 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
     ...createBlendSlice(...slice),
     ...createResetSlice(...slice),
     ...createExtraSlice(...slice),
+    ...createProfileSlice(...slice),
   }), {
     name: STATE_KEY,
     partialize(s) {

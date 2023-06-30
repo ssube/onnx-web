@@ -13,6 +13,7 @@ import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../sta
 import { NumericField } from '../input/NumericField.js';
 import { PromptInput } from '../input/PromptInput.js';
 import { QueryList } from '../input/QueryList.js';
+import { Profiles } from '../Profiles.js';
 
 export interface ImageControlProps {
   selector: (state: OnnxState) => BaseImgParams;
@@ -39,6 +40,7 @@ export function ImageControl(props: ImageControlProps) {
 
   return <Stack spacing={2}>
     <Stack direction='row' spacing={4}>
+      <Profiles params={controlState} setParams={props.onChange} />
       <QueryList
         id='schedulers'
         labelKey='scheduler'

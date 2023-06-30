@@ -29,6 +29,16 @@ export const I18N_STRINGS_ES = {
         type: '',
       },
       generate: 'Generar',
+      profile: {
+        add: '',
+        saveName: '',
+        saveProfile: '',
+        save: '',
+        saveCurrent: '',
+        name: '',
+        cancel: '',
+        load: '',
+      },
       history: {
         empty: 'Sin antecedentes recientes. Presiona generar para crear una nueva imagen.',
       },
