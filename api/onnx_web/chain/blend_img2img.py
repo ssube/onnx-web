@@ -6,6 +6,7 @@ import torch
 from PIL import Image
 
 from ..diffusers.load import load_pipeline
+from ..diffusers.utils import encode_prompt, parse_prompt
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
@@ -20,8 +21,9 @@ def blend_img2img(
     params: ImageParams,
     source: Image.Image,
     *,
+    strength: float,
     callback: Optional[ProgressCallback] = None,
-    stage_source: Image.Image,
+    stage_source: Optional[Image.Image] = None,
     **kwargs,
 ) -> Image.Image:
     params = params.with_args(**kwargs)
@@ -30,14 +32,28 @@ def blend_img2img(
         "blending image using img2img, %s steps: %s", params.steps, params.prompt
     )
 
-    pipe_type = "lpw" if params.lpw() else "img2img"
+    prompt_pairs, loras, inversions = parse_prompt(params)
+
+    pipe_type = params.get_valid_pipeline("img2img")
     pipe = load_pipeline(
         server,
         params,
         pipe_type,
         job.get_device(),
-        # TODO: add LoRAs and TIs
+        inversions=inversions,
+        loras=loras,
     )
+
+    pipe_params = {}
+    if pipe_type == "controlnet":
+        pipe_params["controlnet_conditioning_scale"] = strength
+    elif pipe_type == "img2img":
+        pipe_params["strength"] = strength
+    elif pipe_type == "panorama":
+        pipe_params["strength"] = strength
+    elif pipe_type == "pix2pix":
+        pipe_params["image_guidance_scale"] = strength
+
     if params.lpw():
         logger.debug("using LPW pipeline for img2img")
         rng = torch.manual_seed(params.seed)
@@ -50,8 +66,13 @@ def blend_img2img(
             num_inference_steps=params.steps,
             strength=params.strength,
             callback=callback,
+            **pipe_params,
         )
     else:
+        # encode and record alternative prompts outside of LPW
+        prompt_embeds = encode_prompt(pipe, prompt_pairs, params.batch, params.do_cfg())
+        pipe.unet.set_prompts(prompt_embeds)
+
         rng = np.random.RandomState(params.seed)
         result = pipe(
             params.prompt,
@@ -62,6 +83,7 @@ def blend_img2img(
             num_inference_steps=params.steps,
             strength=params.strength,
             callback=callback,
+            **pipe_params,
         )
 
     output = result.images[0]

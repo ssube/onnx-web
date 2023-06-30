@@ -6,7 +6,7 @@ import torch
 from PIL import Image
 
 from ..diffusers.load import load_pipeline
-from ..diffusers.utils import get_latents_from_seed
+from ..diffusers.utils import encode_prompt, get_latents_from_seed, parse_prompt
 from ..params import ImageParams, Size, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
@@ -36,14 +36,17 @@ def source_txt2img(
             "a source image was passed to a txt2img stage, and will be discarded"
         )
 
+    prompt_pairs, loras, inversions = parse_prompt(params)
+
     latents = get_latents_from_seed(params.seed, size)
-    pipe_type = "lpw" if params.lpw() else "txt2img"
+    pipe_type = params.get_valid_pipeline("txt2img")
     pipe = load_pipeline(
         server,
         params,
         pipe_type,
         job.get_device(),
-        # TODO: add LoRAs and TIs
+        inversions=inversions,
+        loras=loras,
     )
 
     if params.lpw():
@@ -61,6 +64,10 @@ def source_txt2img(
             callback=callback,
         )
     else:
+        # encode and record alternative prompts outside of LPW
+        prompt_embeds = encode_prompt(pipe, prompt_pairs, params.batch, params.do_cfg())
+        pipe.unet.set_prompts(prompt_embeds)
+
         rng = np.random.RandomState(params.seed)
         result = pipe(
             params.prompt,

@@ -1,7 +1,5 @@
 from logging import getLogger
-from typing import List, Optional
-
-from PIL import Image
+from typing import List, Optional, Tuple
 
 from ..chain import (
     ChainPipeline,
@@ -14,24 +12,42 @@ from ..chain import (
     upscale_swinir,
 )
 from ..params import ImageParams, SizeChart, StageParams, UpscaleParams
-from ..server import ServerContext
-from ..worker import ProgressCallback, WorkerContext
 
 logger = getLogger(__name__)
 
 
-def run_upscale_correction(
-    job: WorkerContext,
-    server: ServerContext,
+def split_upscale(
+    upscale: UpscaleParams,
+) -> Tuple[Optional[UpscaleParams], UpscaleParams]:
+    if upscale.faces and (
+        upscale.upscale_order == "correction-both"
+        or upscale.upscale_order == "correction-first"
+    ):
+        return (
+            upscale.with_args(
+                scale=1,
+                outscale=1,
+            ),
+            upscale.with_args(
+                upscale_order="correction-last",
+            ),
+        )
+    else:
+        return (
+            None,
+            upscale,
+        )
+
+
+def append_upscale_correction(
     stage: StageParams,
     params: ImageParams,
-    image: Image.Image,
     *,
     upscale: UpscaleParams,
-    callback: Optional[ProgressCallback] = None,
+    chain: Optional[ChainPipeline] = None,
     pre_stages: List[PipelineStage] = None,
     post_stages: List[PipelineStage] = None,
-) -> Image.Image:
+) -> ChainPipeline:
     """
     This is a convenience method for a chain pipeline that will run upscaling and
     correction, based on the `upscale` params.
@@ -42,7 +58,9 @@ def run_upscale_correction(
         upscale.outscale,
     )
 
-    chain = ChainPipeline()
+    if chain is None:
+        chain = ChainPipeline()
+
     if pre_stages is not None:
         for stage, params in pre_stages:
             chain.append((stage, params))
@@ -103,12 +121,4 @@ def run_upscale_correction(
         for stage, params in post_stages:
             chain.append((stage, params))
 
-    return chain(
-        job,
-        server,
-        params,
-        image,
-        prompt=params.prompt,
-        upscale=upscale,
-        callback=callback,
-    )
+    return chain

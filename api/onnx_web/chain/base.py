@@ -88,7 +88,7 @@ class ChainPipeline:
         job: WorkerContext,
         server: ServerContext,
         params: ImageParams,
-        source: Image.Image,
+        source: Optional[Image.Image] = None,
         callback: Optional[ProgressCallback] = None,
         **pipeline_kwargs
     ) -> Image.Image:
