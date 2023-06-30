@@ -34,6 +34,7 @@ export function Profiles(props: ProfilesProps) {
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const saveProfile = useStore(state, (s) => s.saveProfile);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const removeProfile = useStore(state, (s) => s.removeProfile);
   const profiles = useStore(state, (s) => s.profiles);
   const highres = useStore(state, (s) => s.highres);
@@ -49,9 +50,9 @@ export function Profiles(props: ProfilesProps) {
       sx={{ width: 200 }}
       getOptionLabel={(option) => option.name}
       clearOnBlur
-      renderOption={(props, option) => (
+      renderOption={(optionProps, option) => (
         <ListItem
-          {...props}
+          {...optionProps}
           secondaryAction={
             <IconButton edge="end" onClick={(event) => {
               event.preventDefault();
@@ -80,7 +81,7 @@ export function Profiles(props: ProfilesProps) {
         </Stack>
       )}
       onChange={(event, value) => {
-        if (value?.params && doesExist(props.setParams)) {
+        if (doesExist(value) && doesExist(props.setParams)) {
           props.setParams({
             ...value.params
           });
