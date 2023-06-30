@@ -99,27 +99,36 @@ class ChainPipeline:
             callback = ChainProgress.from_progress(callback)
 
         start = monotonic()
-        logger.info(
-            "running pipeline on source image with dimensions %sx%s",
-            source.width,
-            source.height,
-        )
         image = source
+
+        if source is not None:
+            logger.info(
+                "running pipeline on source image with dimensions %sx%s",
+                source.width,
+                source.height,
+            )
+        else:
+            logger.info("running pipeline without source image")
 
         for stage_pipe, stage_params, stage_kwargs in self.stages:
             name = stage_params.name or stage_pipe.__name__
             kwargs = stage_kwargs or {}
             kwargs = {**pipeline_kwargs, **kwargs}
 
-            logger.debug(
-                "running stage %s on image with dimensions %sx%s, %s",
-                name,
-                image.width,
-                image.height,
-                kwargs.keys(),
-            )
+            if image is not None:
+                logger.debug(
+                    "running stage %s on source image with dimensions %sx%s, %s",
+                    name,
+                    image.width,
+                    image.height,
+                    kwargs.keys(),
+                )
+            else:
+                logger.debug(
+                    "running stage %s without source image, %s", name, kwargs.keys()
+                )
 
-            if (
+            if image is not None and (
                 image.width > stage_params.tile_size
                 or image.height > stage_params.tile_size
             ):

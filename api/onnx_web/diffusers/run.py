@@ -3,7 +3,13 @@ from typing import Any, List, Optional
 
 from PIL import Image
 
-from ..chain import blend_img2img, blend_mask, upscale_highres, upscale_outpaint
+from ..chain import (
+    blend_img2img,
+    blend_mask,
+    source_txt2img,
+    upscale_highres,
+    upscale_outpaint,
+)
 from ..chain.base import ChainPipeline
 from ..output import save_image
 from ..params import (
@@ -36,7 +42,7 @@ def run_txt2img_pipeline(
     # prepare the chain pipeline and first stage
     chain = ChainPipeline()
     stage = StageParams()
-    chain.append((blend_img2img, stage, None))
+    chain.append((source_txt2img, stage, None))
 
     # apply upscaling and correction, before highres
     first_upscale, after_upscale = split_upscale(upscale)
