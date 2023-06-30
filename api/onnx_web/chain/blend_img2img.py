@@ -64,7 +64,7 @@ def blend_img2img(
             image=source,
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
-            strength=params.strength,
+            strength=strength,
             callback=callback,
             **pipe_params,
         )
@@ -81,7 +81,7 @@ def blend_img2img(
             image=source,
             negative_prompt=params.negative_prompt,
             num_inference_steps=params.steps,
-            strength=params.strength,
+            strength=strength,
             callback=callback,
             **pipe_params,
         )

@@ -42,7 +42,15 @@ def run_txt2img_pipeline(
     # prepare the chain pipeline and first stage
     chain = ChainPipeline()
     stage = StageParams()
-    chain.append((source_txt2img, stage, None))
+    chain.append(
+        (
+            source_txt2img,
+            stage,
+            {
+                "size": size,
+            },
+        )
+    )
 
     # apply upscaling and correction, before highres
     first_upscale, after_upscale = split_upscale(upscale)
@@ -55,7 +63,16 @@ def run_txt2img_pipeline(
         )
 
     # apply highres
-    chain.append((upscale_highres, stage, None))
+    chain.append(
+        (
+            upscale_highres,
+            stage,
+            {
+                "highres": highres,
+                "upscale": upscale,
+            },
+        )
+    )
 
     # apply upscaling and correction, after highres
     append_upscale_correction(
@@ -146,7 +163,16 @@ def run_img2img_pipeline(
     # highres, if selected
     if highres.iterations > 0:
         for _i in range(highres.iterations):
-            chain.append((upscale_highres, stage, None))
+            chain.append(
+                (
+                    upscale_highres,
+                    stage,
+                    {
+                        "highres": highres,
+                        "upscale": upscale,
+                    },
+                )
+            )
 
     # apply upscaling and correction, after highres
     append_upscale_correction(
@@ -231,6 +257,7 @@ def run_inpaint_pipeline(
             stage,
             {
                 "highres": highres,
+                "upscale": upscale,
             },
         )
     )
@@ -293,7 +320,16 @@ def run_upscale_pipeline(
         )
 
     # apply highres
-    chain.append((upscale_highres, stage, None))
+    chain.append(
+        (
+            upscale_highres,
+            stage,
+            {
+                "highres": highres,
+                "upscale": upscale,
+            },
+        )
+    )
 
     # apply upscaling and correction, after highres
     append_upscale_correction(

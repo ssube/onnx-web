@@ -8,7 +8,7 @@ from PIL import Image
 from ..diffusers.load import load_pipeline
 from ..diffusers.upscale import append_upscale_correction
 from ..diffusers.utils import parse_prompt
-from ..params import HighresParams, ImageParams, Size, StageParams, UpscaleParams
+from ..params import HighresParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 from ..worker.context import ProgressCallback
@@ -25,7 +25,6 @@ def upscale_highres(
     *,
     highres: HighresParams,
     upscale: UpscaleParams,
-    size: Size,
     stage_source: Optional[Image.Image] = None,
     pipeline: Optional[Any] = None,
     callback: Optional[ProgressCallback] = None,
@@ -52,6 +51,7 @@ def upscale_highres(
 
     scaled_size = (source.width * highres.scale, source.height * highres.scale)
 
+    # TODO: upscaling within the same stage prevents tiling from happening and causes OOM
     if highres.method == "bilinear":
         logger.debug("using bilinear interpolation for highres")
         source = source.resize(scaled_size, resample=Image.Resampling.BILINEAR)
