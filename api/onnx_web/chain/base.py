@@ -180,6 +180,7 @@ class ChainPipeline:
                     stage_params.tile_size,
                     stage_params.outscale,
                     [stage_tile],
+                    **kwargs,
                 )
             else:
                 logger.debug("image within tile size, running stage")
