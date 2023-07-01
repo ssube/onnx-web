@@ -353,7 +353,7 @@ def run_blend_pipeline(
     # set up the chain pipeline and base stage
     chain = ChainPipeline()
     stage = StageParams()
-    stage.append((blend_mask, stage, None))
+    chain.stage(blend_mask, stage, stage_source=sources[1], stage_mask=mask)
 
     # apply upscaling and correction
     stage_upscale_correction(

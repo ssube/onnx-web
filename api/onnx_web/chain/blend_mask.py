@@ -18,8 +18,9 @@ def blend_mask(
     server: ServerContext,
     _stage: StageParams,
     _params: ImageParams,
+    source: Image.Image,
     *,
-    sources: Optional[List[Image.Image]] = None,
+    stage_source: Optional[Image.Image] = None,
     stage_mask: Optional[Image.Image] = None,
     _callback: Optional[ProgressCallback] = None,
     **kwargs,
@@ -34,9 +35,4 @@ def blend_mask(
         save_image(server, "last-mask.png", stage_mask)
         save_image(server, "last-mult-mask.png", mult_mask)
 
-    resized = [
-        valid_image(s, min_dims=mult_mask.size, max_dims=mult_mask.size)
-        for s in sources
-    ]
-
-    return Image.composite(resized[1], resized[0], mult_mask)
+    return Image.composite(source, stage_source, mult_mask)
