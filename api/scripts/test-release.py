@@ -307,6 +307,19 @@ TEST_DATA = [
         "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none&pipeline=panorama&tiledVAE=true",
         source="txt2img-panorama-1024x768-muffin-0",
     ),
+    TestCase(
+        "txt2img-sd-v1-5-tall-muffin",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=512&height=768",
+    ),
+    TestCase(
+        "upscale-resrgan-x4-tall-muffin",
+        (
+            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4"
+            "&correction=correction-gfpgan&faces=false&faceOutscale=1&faceStrength=1.0"
+        ),
+        source="txt2img-sd-v1-5-tall-muffin-0",
+    ),
+    # TODO: non-square controlnet
 ]
 
 
