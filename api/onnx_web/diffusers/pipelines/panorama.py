@@ -1243,11 +1243,18 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         *args,
         **kwargs,
     ):
-        if len(args) > 1 and (
-            isinstance(args[1], np.ndarray) or isinstance(args[1], PIL.Image.Image)
-        ):
-            if len(args) > 2 and (
+        if "image" in kwargs or (
+            len(args) > 1
+            and (
                 isinstance(args[1], np.ndarray) or isinstance(args[1], PIL.Image.Image)
+            )
+        ):
+            if "mask_image" in kwargs or (
+                len(args) > 2
+                and (
+                    isinstance(args[1], np.ndarray)
+                    or isinstance(args[1], PIL.Image.Image)
+                )
             ):
                 logger.debug("running inpaint panorama pipeline")
                 return self.inpaint(*args, **kwargs)
