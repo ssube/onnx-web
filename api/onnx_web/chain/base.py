@@ -166,7 +166,7 @@ class ChainPipeline:
                         params,
                         tile,
                         callback=callback,
-                        **kwargs
+                        **kwargs,
                     )
 
                     if is_debug():
@@ -191,7 +191,7 @@ class ChainPipeline:
                     params,
                     image,
                     callback=callback,
-                    **kwargs
+                    **kwargs,
                 )
 
             logger.debug(
