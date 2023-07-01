@@ -78,10 +78,30 @@ class ChainPipeline:
 
     def append(self, stage: PipelineStage):
         """
+        DEPRECATED: use `stage` instead
+
         Append an additional stage to this pipeline.
         """
         if stage is not None:
             self.stages.append(stage)
+
+    def run(
+        self,
+        job: WorkerContext,
+        server: ServerContext,
+        params: ImageParams,
+        source: Optional[Image.Image],
+        callback: Optional[ProgressCallback],
+        **kwargs
+    ) -> Image.Image:
+        """
+        TODO: handle List[Image] inputs and outputs
+        """
+        return self(job, server, params, source=source, callback=callback, **kwargs)
+
+    def stage(self, callback: StageCallback, params: StageParams, **kwargs):
+        self.stages.append((callback, params, kwargs))
+        return self
 
     def __call__(
         self,
@@ -93,7 +113,7 @@ class ChainPipeline:
         **pipeline_kwargs
     ) -> Image.Image:
         """
-        TODO: handle List[Image] inputs and outputs
+        DEPRECATED: use `run` instead
         """
         if callback is not None:
             callback = ChainProgress.from_progress(callback)

@@ -36,7 +36,7 @@ def split_upscale(
         )
 
 
-def append_upscale_correction(
+def stage_upscale_correction(
     stage: StageParams,
     params: ImageParams,
     *,

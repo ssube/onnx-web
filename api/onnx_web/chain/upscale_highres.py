@@ -4,8 +4,8 @@ from typing import Any, Optional
 from PIL import Image
 
 from ..chain.base import ChainPipeline
-from ..chain.img2img import blend_img2img
-from ..diffusers.upscale import append_upscale_correction
+from ..chain.blend_img2img import blend_img2img
+from ..diffusers.upscale import stage_upscale_correction
 from ..params import HighresParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
@@ -45,7 +45,7 @@ def upscale_highres(
         source = source.resize(scaled_size, resample=Image.Resampling.LANCZOS)
     else:
         logger.debug("using upscaling pipeline for highres")
-        append_upscale_correction(
+        stage_upscale_correction(
             StageParams(),
             params,
             upscale=upscale.with_args(
