@@ -28,5 +28,8 @@ git rev-parse HEAD > commit.txt
 set /p GIT_SHA=<commit.txt
 set GIT_HEAD=%GIT_SHA:~0,8%
 
+REM create version file
+echo "%BUNDLE_VERSION%-%BUNDLE_TYPE%-%GIT_HEAD%" > .\dist\version.txt
+
 REM create archive
 "C:\Program Files\7-Zip\7z.exe" a .\dist\onnx-web-v%BUNDLE_VERSION%-%BUNDLE_TYPE%-%GIT_HEAD%.zip ".\dist\*"
