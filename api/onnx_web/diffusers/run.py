@@ -79,7 +79,8 @@ def run_txt2img_pipeline(
     )
 
     # run and save
-    image = chain(job, server, params, None)
+    progress = job.get_progress_callback()
+    image = chain(job, server, params, None, callback=progress)
 
     _prompt_pairs, loras, inversions = parse_prompt(params)
     dest = save_image(
@@ -167,8 +168,9 @@ def run_img2img_pipeline(
     )
 
     # run and append the filtered source
+    progress = job.get_progress_callback()
     images = [
-        chain(job, server, params, source),
+        chain(job, server, params, source, callback=progress),
     ]
 
     if source_filter is not None and source_filter != "none":
@@ -247,7 +249,8 @@ def run_inpaint_pipeline(
     )
 
     # run and save
-    image = chain(job, server, params, source)
+    progress = job.get_progress_callback()
+    image = chain(job, server, params, source, callback=progress)
 
     _prompt_pairs, loras, inversions = parse_prompt(params)
     dest = save_image(
@@ -312,7 +315,9 @@ def run_upscale_pipeline(
     )
 
     # run and save
-    image = chain(job, server, params, source)
+    progress = job.get_progress_callback()
+    image = chain(job, server, params, source, callback=progress)
+
     _prompt_pairs, loras, inversions = parse_prompt(params)
     dest = save_image(
         server,
@@ -359,7 +364,8 @@ def run_blend_pipeline(
     )
 
     # run and save
-    image = chain(job, server, params, sources[0])
+    progress = job.get_progress_callback()
+    image = chain(job, server, params, sources[0], callback=progress)
     dest = save_image(server, outputs[0], image, params, size, upscale=upscale)
 
     # clean up

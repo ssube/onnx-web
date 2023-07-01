@@ -56,15 +56,11 @@ def upscale_highres(
             chain=chain,
         )
 
-    chain.append(
-        (
-            blend_img2img,
-            StageParams(),
-            {
-                "overlap": params.overlap,
-                "strength": highres.strength,
-            },
-        )
+    chain.stage(
+        blend_img2img,
+        StageParams(),
+        overlap=params.overlap,
+        strength=highres.strength,
     )
 
     return chain(
