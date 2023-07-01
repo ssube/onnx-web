@@ -3,7 +3,6 @@ from typing import List, Optional
 
 from PIL import Image
 
-from ..image import valid_image
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
@@ -24,6 +23,4 @@ def blend_linear(
 ) -> Image.Image:
     logger.info("blending image using linear interpolation")
 
-    resized = [valid_image(s) for s in sources]
-
-    return Image.blend(resized[1], resized[0], alpha)
+    return Image.blend(sources[1], sources[0], alpha)

@@ -23,7 +23,6 @@ def reduce_thumbnail(
     source = stage_source or source
     image = source.copy()
 
-    # TODO: should use a call to valid_image
     image = image.thumbnail((size.width, size.height))
 
     logger.info("created thumbnail with dimensions: %sx%s", image.width, image.height)

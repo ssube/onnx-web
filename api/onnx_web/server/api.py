@@ -15,7 +15,6 @@ from ..diffusers.run import (
     run_txt2img_pipeline,
     run_upscale_pipeline,
 )
-from ..image import valid_image  # mask filters; noise sources
 from ..output import json_params, make_output_name
 from ..params import Border, StageParams, TileOrder, UpscaleParams
 from ..transformers.run import run_txt2txt_pipeline
@@ -189,12 +188,6 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         server, "img2img", params, size, extras=[strength], count=output_count
     )
 
-    if params.get_valid_pipeline("img2img") != "panorama":
-        logger.info(
-            "resizing input image for limited pipeline, use panorama pipeline for full-size"
-        )
-        source = valid_image(source, min_dims=size, max_dims=size)
-
     job_name = output[0]
     pool.submit(
         job_name,
@@ -323,9 +316,6 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
 
     output = make_output_name(server, "upscale", params, size)
 
-    logger.info("resizing source image for limited pipeline")
-    source = valid_image(source, min_dims=size, max_dims=size)
-
     job_name = output[0]
     pool.submit(
         job_name,
@@ -396,7 +386,6 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
             source_file = request.files.get(stage_source_name)
             if source_file is not None:
                 source = Image.open(BytesIO(source_file.read())).convert("RGB")
-                source = valid_image(source, max_dims=(size.width, size.height))
                 kwargs["stage_source"] = source
 
         if stage_mask_name in request.files:
@@ -408,7 +397,6 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
             mask_file = request.files.get(stage_mask_name)
             if mask_file is not None:
                 mask = Image.open(BytesIO(mask_file.read())).convert("RGB")
-                mask = valid_image(mask, max_dims=(size.width, size.height))
                 kwargs["stage_mask"] = mask
 
         pipeline.append((callback, stage, kwargs))
@@ -447,7 +435,6 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
             logger.warning("missing source %s", i)
         else:
             source = Image.open(BytesIO(source_file.read())).convert("RGBA")
-            source = valid_image(source, mask.size, mask.size)
             sources.append(source)
 
     device, params, size = pipeline_from_request(server)

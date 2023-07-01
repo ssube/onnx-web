@@ -20,7 +20,6 @@ from .diffusers.stub_scheduler import StubScheduler
 from .diffusers.upscale import stage_upscale_correction
 from .image.utils import (
     expand_image,
-    valid_image,
 )
 from .image.mask_filter import (
     mask_filter_gaussian_multiply,

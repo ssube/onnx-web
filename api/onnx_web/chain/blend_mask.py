@@ -1,9 +1,8 @@
 from logging import getLogger
-from typing import List, Optional
+from typing import Optional
 
 from PIL import Image
 
-from ..image import valid_image
 from ..output import save_image
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
@@ -35,4 +34,4 @@ def blend_mask(
         save_image(server, "last-mask.png", stage_mask)
         save_image(server, "last-mult-mask.png", mult_mask)
 
-    return Image.composite(source, stage_source, mult_mask)
+    return Image.composite(stage_source, source, mult_mask)

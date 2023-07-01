@@ -1,6 +1,5 @@
 from .utils import (
     expand_image,
-    valid_image,
 )
 from .mask_filter import (
     mask_filter_gaussian_multiply,
