@@ -17,7 +17,7 @@ from .diffusers.run import (
     run_upscale_pipeline,
 )
 from .diffusers.stub_scheduler import StubScheduler
-from .diffusers.upscale import stage_upscale_correction
+from .chain.upscale import stage_upscale_correction
 from .image.utils import (
     expand_image,
 )

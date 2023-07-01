@@ -1,44 +1,44 @@
 from .base import ChainPipeline, PipelineStage, StageCallback, StageParams
-from .blend_img2img import blend_img2img
-from .blend_inpaint import blend_inpaint
-from .blend_linear import blend_linear
-from .blend_mask import blend_mask
-from .correct_codeformer import correct_codeformer
-from .correct_gfpgan import correct_gfpgan
-from .persist_disk import persist_disk
-from .persist_s3 import persist_s3
-from .reduce_crop import reduce_crop
-from .reduce_thumbnail import reduce_thumbnail
-from .source_noise import source_noise
-from .source_s3 import source_s3
-from .source_txt2img import source_txt2img
-from .source_url import source_url
-from .upscale_bsrgan import upscale_bsrgan
-from .upscale_highres import upscale_highres
-from .upscale_outpaint import upscale_outpaint
-from .upscale_resrgan import upscale_resrgan
-from .upscale_stable_diffusion import upscale_stable_diffusion
-from .upscale_swinir import upscale_swinir
+from .blend_img2img import BlendImg2ImgStage
+from .blend_inpaint import BlendInpaintStage
+from .blend_linear import BlendLinearStage
+from .blend_mask import BlendMaskStage
+from .correct_codeformer import CorrectCodeformerStage
+from .correct_gfpgan import CorrectGFPGANStage
+from .persist_disk import PersistDiskStage
+from .persist_s3 import PersistS3Stage
+from .reduce_crop import ReduceCropStage
+from .reduce_thumbnail import ReduceThumbnailStage
+from .source_noise import SourceNoiseStage
+from .source_s3 import SourceS3Stage
+from .source_txt2img import SourceTxt2ImgStage
+from .source_url import SourceURLStage
+from .upscale_bsrgan import UpscaleBSRGANStage
+from .upscale_highres import UpscaleHighresStage
+from .upscale_outpaint import UpscaleOutpaintStage
+from .upscale_resrgan import UpscaleRealESRGANStage
+from .upscale_stable_diffusion import UpscaleStableDiffusionStage
+from .upscale_swinir import UpscaleSwinIRStage
 
 CHAIN_STAGES = {
-    "blend-img2img": blend_img2img,
-    "blend-inpaint": blend_inpaint,
-    "blend-linear": blend_linear,
-    "blend-mask": blend_mask,
-    "correct-codeformer": correct_codeformer,
-    "correct-gfpgan": correct_gfpgan,
-    "persist-disk": persist_disk,
-    "persist-s3": persist_s3,
-    "reduce-crop": reduce_crop,
-    "reduce-thumbnail": reduce_thumbnail,
-    "source-noise": source_noise,
-    "source-s3": source_s3,
-    "source-txt2img": source_txt2img,
-    "source-url": source_url,
-    "upscale-bsrgan": upscale_bsrgan,
-    "upscale-highres": upscale_highres,
-    "upscale-outpaint": upscale_outpaint,
-    "upscale-resrgan": upscale_resrgan,
-    "upscale-stable-diffusion": upscale_stable_diffusion,
-    "upscale-swinir": upscale_swinir,
+    "blend-img2img": BlendImg2ImgStage,
+    "blend-inpaint": BlendInpaintStage,
+    "blend-linear": BlendLinearStage,
+    "blend-mask": BlendMaskStage,
+    "correct-codeformer": CorrectCodeformerStage,
+    "correct-gfpgan": CorrectGFPGANStage,
+    "persist-disk": PersistDiskStage,
+    "persist-s3": PersistS3Stage,
+    "reduce-crop": ReduceCropStage,
+    "reduce-thumbnail": ReduceThumbnailStage,
+    "source-noise": SourceNoiseStage,
+    "source-s3": SourceS3Stage,
+    "source-txt2img": SourceTxt2ImgStage,
+    "source-url": SourceURLStage,
+    "upscale-bsrgan": UpscaleBSRGANStage,
+    "upscale-highres": UpscaleHighresStage,
+    "upscale-outpaint": UpscaleOutpaintStage,
+    "upscale-resrgan": UpscaleRealESRGANStage,
+    "upscale-stable-diffusion": UpscaleStableDiffusionStage,
+    "upscale-swinir": UpscaleSwinIRStage,
 }

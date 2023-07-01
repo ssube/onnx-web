@@ -1,14 +1,14 @@
 from logging import getLogger
 from typing import List, Optional, Tuple
 
-from ..chain import ChainPipeline, PipelineStage
-from ..chain.correct_codeformer import correct_codeformer
-from ..chain.correct_gfpgan import correct_gfpgan
-from ..chain.upscale_bsrgan import upscale_bsrgan
-from ..chain.upscale_resrgan import upscale_resrgan
-from ..chain.upscale_stable_diffusion import upscale_stable_diffusion
-from ..chain.upscale_swinir import upscale_swinir
 from ..params import ImageParams, SizeChart, StageParams, UpscaleParams
+from . import ChainPipeline, PipelineStage
+from .correct_codeformer import CorrectCodeformerStage
+from .correct_gfpgan import CorrectGFPGANStage
+from .upscale_bsrgan import UpscaleBSRGANStage
+from .upscale_resrgan import UpscaleRealESRGANStage
+from .upscale_stable_diffusion import UpscaleStableDiffusionStage
+from .upscale_swinir import UpscaleSwinIRStage
 
 logger = getLogger(__name__)
 
@@ -72,23 +72,23 @@ def stage_upscale_correction(
                 tile_size=stage.tile_size,
                 outscale=upscale.outscale,
             )
-            upscale_stage = (upscale_bsrgan, bsrgan_params, upscale_opts)
+            upscale_stage = (UpscaleBSRGANStage(), bsrgan_params, upscale_opts)
         elif "esrgan" in upscale.upscale_model:
             esrgan_params = StageParams(
                 tile_size=stage.tile_size,
                 outscale=upscale.outscale,
             )
-            upscale_stage = (upscale_resrgan, esrgan_params, upscale_opts)
+            upscale_stage = (UpscaleRealESRGANStage(), esrgan_params, upscale_opts)
         elif "stable-diffusion" in upscale.upscale_model:
             mini_tile = min(SizeChart.mini, stage.tile_size)
             sd_params = StageParams(tile_size=mini_tile, outscale=upscale.outscale)
-            upscale_stage = (upscale_stable_diffusion, sd_params, upscale_opts)
+            upscale_stage = (UpscaleStableDiffusionStage(), sd_params, upscale_opts)
         elif "swinir" in upscale.upscale_model:
             swinir_params = StageParams(
                 tile_size=stage.tile_size,
                 outscale=upscale.outscale,
             )
-            upscale_stage = (upscale_swinir, swinir_params, upscale_opts)
+            upscale_stage = (UpscaleSwinIRStage(), swinir_params, upscale_opts)
         else:
             logger.warn("unknown upscaling model: %s", upscale.upscale_model)
 
@@ -98,9 +98,9 @@ def stage_upscale_correction(
             tile_size=stage.tile_size, outscale=upscale.face_outscale
         )
         if "codeformer" in upscale.correction_model:
-            correct_stage = (correct_codeformer, face_params, upscale_opts)
+            correct_stage = (CorrectCodeformerStage(), face_params, upscale_opts)
         elif "gfpgan" in upscale.correction_model:
-            correct_stage = (correct_gfpgan, face_params, upscale_opts)
+            correct_stage = (CorrectGFPGANStage(), face_params, upscale_opts)
         else:
             logger.warn("unknown correction model: %s", upscale.correction_model)
 

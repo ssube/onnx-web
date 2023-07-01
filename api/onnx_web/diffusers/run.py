@@ -4,13 +4,14 @@ from typing import Any, List, Optional
 from PIL import Image
 
 from ..chain import (
-    blend_img2img,
-    blend_mask,
-    source_txt2img,
-    upscale_highres,
-    upscale_outpaint,
+    BlendImg2ImgStage,
+    BlendMaskStage,
+    ChainPipeline,
+    SourceTxt2ImgStage,
+    UpscaleHighresStage,
+    UpscaleOutpaintStage,
 )
-from ..chain.base import ChainPipeline
+from ..chain.upscale import split_upscale, stage_upscale_correction
 from ..output import save_image
 from ..params import (
     Border,
@@ -24,7 +25,6 @@ from ..server import ServerContext
 from ..server.load import get_source_filters
 from ..utils import run_gc, show_system_toast
 from ..worker import WorkerContext
-from .upscale import split_upscale, stage_upscale_correction
 from .utils import parse_prompt
 
 logger = getLogger(__name__)
@@ -43,7 +43,7 @@ def run_txt2img_pipeline(
     chain = ChainPipeline()
     stage = StageParams()
     chain.stage(
-        source_txt2img,
+        SourceTxt2ImgStage(),
         stage,
         size=size,
     )
@@ -61,7 +61,7 @@ def run_txt2img_pipeline(
     # apply highres
     for _i in range(highres.iterations):
         chain.stage(
-            upscale_highres,
+            UpscaleHighresStage(),
             StageParams(
                 outscale=highres.scale,
             ),
@@ -125,7 +125,7 @@ def run_img2img_pipeline(
     chain = ChainPipeline()
     stage = StageParams()
     chain.stage(
-        blend_img2img,
+        BlendImg2ImgStage(),
         stage,
         strength=strength,
     )
@@ -144,7 +144,7 @@ def run_img2img_pipeline(
     if params.loopback > 0:
         for _i in range(params.loopback):
             chain.stage(
-                blend_img2img,
+                BlendImg2ImgStage(),
                 stage,
                 strength=strength,
             )
@@ -153,7 +153,7 @@ def run_img2img_pipeline(
     if highres.iterations > 0:
         for _i in range(highres.iterations):
             chain.stage(
-                upscale_highres,
+                UpscaleHighresStage(),
                 stage,
                 highres=highres,
                 upscale=upscale,
@@ -223,7 +223,7 @@ def run_inpaint_pipeline(
     chain = ChainPipeline()
     stage = StageParams(tile_order=tile_order)
     chain.stage(
-        upscale_outpaint,
+        UpscaleOutpaintStage(),
         stage,
         border=border,
         stage_mask=mask,
@@ -234,7 +234,7 @@ def run_inpaint_pipeline(
 
     # apply highres
     chain.stage(
-        upscale_highres,
+        UpscaleHighresStage(),
         stage,
         highres=highres,
         upscale=upscale,
@@ -300,7 +300,7 @@ def run_upscale_pipeline(
 
     # apply highres
     chain.stage(
-        upscale_highres,
+        UpscaleHighresStage(),
         stage,
         highres=highres,
         upscale=upscale,
@@ -353,7 +353,7 @@ def run_blend_pipeline(
     # set up the chain pipeline and base stage
     chain = ChainPipeline()
     stage = StageParams()
-    chain.stage(blend_mask, stage, stage_source=sources[1], stage_mask=mask)
+    chain.stage(BlendMaskStage(), stage, stage_source=sources[1], stage_mask=mask)
 
     # apply upscaling and correction
     stage_upscale_correction(

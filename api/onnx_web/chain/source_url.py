@@ -11,27 +11,29 @@ from ..worker import WorkerContext
 logger = getLogger(__name__)
 
 
-def source_url(
-    _job: WorkerContext,
-    _server: ServerContext,
-    _stage: StageParams,
-    _params: ImageParams,
-    source: Image.Image,
-    *,
-    source_url: str,
-    stage_source: Image.Image,
-    **kwargs,
-) -> Image.Image:
-    source = stage_source or source
-    logger.info("loading image from URL source")
+class SourceURLStage:
+    def run(
+        self,
+        _job: WorkerContext,
+        _server: ServerContext,
+        _stage: StageParams,
+        _params: ImageParams,
+        source: Image.Image,
+        *,
+        source_url: str,
+        stage_source: Image.Image,
+        **kwargs,
+    ) -> Image.Image:
+        source = stage_source or source
+        logger.info("loading image from URL source")
 
-    if source is not None:
-        logger.warn(
-            "a source image was passed to a source stage, and will be discarded"
-        )
+        if source is not None:
+            logger.warn(
+                "a source image was passed to a source stage, and will be discarded"
+            )
 
-    response = requests.get(source_url)
-    output = Image.open(BytesIO(response.content))
+        response = requests.get(source_url)
+        output = Image.open(BytesIO(response.content))
 
-    logger.info("final output image size: %sx%s", output.width, output.height)
-    return output
+        logger.info("final output image size: %sx%s", output.width, output.height)
+        return output

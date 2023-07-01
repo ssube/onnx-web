@@ -10,19 +10,21 @@ from ..worker import WorkerContext
 logger = getLogger(__name__)
 
 
-def persist_disk(
-    _job: WorkerContext,
-    server: ServerContext,
-    _stage: StageParams,
-    params: ImageParams,
-    source: Image.Image,
-    *,
-    output: str,
-    stage_source: Image.Image,
-    **kwargs,
-) -> Image.Image:
-    source = stage_source or source
+class PersistDiskStage:
+    def run(
+        self,
+        _job: WorkerContext,
+        server: ServerContext,
+        _stage: StageParams,
+        params: ImageParams,
+        source: Image.Image,
+        *,
+        output: str,
+        stage_source: Image.Image,
+        **kwargs,
+    ) -> Image.Image:
+        source = stage_source or source
 
-    dest = save_image(server, output, source, params=params)
-    logger.info("saved image to %s", dest)
-    return source
+        dest = save_image(server, output, source, params=params)
+        logger.info("saved image to %s", dest)
+        return source

@@ -9,21 +9,25 @@ from ..worker import WorkerContext
 logger = getLogger(__name__)
 
 
-def reduce_thumbnail(
-    _job: WorkerContext,
-    _server: ServerContext,
-    _stage: StageParams,
-    _params: ImageParams,
-    source: Image.Image,
-    *,
-    size: Size,
-    stage_source: Image.Image,
-    **kwargs,
-) -> Image.Image:
-    source = stage_source or source
-    image = source.copy()
+class ReduceThumbnailStage:
+    def run(
+        self,
+        _job: WorkerContext,
+        _server: ServerContext,
+        _stage: StageParams,
+        _params: ImageParams,
+        source: Image.Image,
+        *,
+        size: Size,
+        stage_source: Image.Image,
+        **kwargs,
+    ) -> Image.Image:
+        source = stage_source or source
+        image = source.copy()
 
-    image = image.thumbnail((size.width, size.height))
+        image = image.thumbnail((size.width, size.height))
 
-    logger.info("created thumbnail with dimensions: %sx%s", image.width, image.height)
-    return image
+        logger.info(
+            "created thumbnail with dimensions: %sx%s", image.width, image.height
+        )
+        return image

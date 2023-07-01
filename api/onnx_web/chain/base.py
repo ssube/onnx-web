@@ -10,6 +10,7 @@ from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..utils import is_debug
 from ..worker import ProgressCallback, WorkerContext
+from .stage import BaseStage
 from .utils import process_tile_order
 
 logger = getLogger(__name__)
@@ -35,7 +36,7 @@ class StageCallback(Protocol):
         pass
 
 
-PipelineStage = Tuple[StageCallback, StageParams, Optional[dict]]
+PipelineStage = Tuple[BaseStage, StageParams, Optional[dict]]
 
 
 class ChainProgress:
@@ -131,7 +132,7 @@ class ChainPipeline:
             logger.info("running pipeline without source image")
 
         for stage_pipe, stage_params, stage_kwargs in self.stages:
-            name = stage_params.name or stage_pipe.__name__
+            name = stage_params.name or stage_pipe.__class__.__name__
             kwargs = stage_kwargs or {}
             kwargs = {**pipeline_kwargs, **kwargs}
 
@@ -158,7 +159,7 @@ class ChainPipeline:
                 )
 
                 def stage_tile(tile: Image.Image, _dims) -> Image.Image:
-                    tile = stage_pipe(
+                    tile = stage_pipe.run(
                         job,
                         server,
                         stage_params,
@@ -182,7 +183,7 @@ class ChainPipeline:
                 )
             else:
                 logger.debug("image within tile size, running stage")
-                image = stage_pipe(
+                image = stage_pipe.run(
                     job,
                     server,
                     stage_params,

@@ -1,6 +1,4 @@
-from typing import Tuple, Union
-
-from PIL import Image, ImageChops, ImageOps
+from PIL import Image, ImageChops
 
 from ..params import Border, Size
 from .mask_filter import mask_filter_none

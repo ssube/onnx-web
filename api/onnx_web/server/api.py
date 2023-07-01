@@ -356,12 +356,12 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
 
     pipeline = ChainPipeline()
     for stage_data in data.get("stages", []):
-        callback = CHAIN_STAGES[stage_data.get("type")]
+        stage_class = CHAIN_STAGES[stage_data.get("type")]
         kwargs = stage_data.get("params", {})
-        logger.info("request stage: %s, %s", callback.__name__, kwargs)
+        logger.info("request stage: %s, %s", stage_class.__name__, kwargs)
 
         stage = StageParams(
-            stage_data.get("name", callback.__name__),
+            stage_data.get("name", stage_class.__name__),
             tile_size=get_size(kwargs.get("tile_size")),
             outscale=get_and_clamp_int(kwargs, "outscale", 1, 4),
         )
@@ -399,7 +399,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
                 mask = Image.open(BytesIO(mask_file.read())).convert("RGB")
                 kwargs["stage_mask"] = mask
 
-        pipeline.append((callback, stage, kwargs))
+        pipeline.append((stage_class(), stage, kwargs))
 
     logger.info("running chain pipeline with %s stages", len(pipeline.stages))
 
