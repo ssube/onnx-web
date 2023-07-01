@@ -98,9 +98,9 @@ def stage_upscale_correction(
             tile_size=stage.tile_size, outscale=upscale.face_outscale
         )
         if "codeformer" in upscale.correction_model:
-            correct_stage = (correct_codeformer, face_params, None)
+            correct_stage = (correct_codeformer, face_params, upscale_opts)
         elif "gfpgan" in upscale.correction_model:
-            correct_stage = (correct_gfpgan, face_params, None)
+            correct_stage = (correct_gfpgan, face_params, upscale_opts)
         else:
             logger.warn("unknown correction model: %s", upscale.correction_model)
 
