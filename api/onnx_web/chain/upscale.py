@@ -59,8 +59,8 @@ def stage_upscale_correction(
         chain = ChainPipeline()
 
     if pre_stages is not None:
-        for stage, params in pre_stages:
-            chain.append((stage, params))
+        for stage, pre_params, pre_opts in pre_stages:
+            chain.append((stage, pre_params, pre_opts))
 
     upscale_opts = {
         "upscale": upscale,
@@ -118,7 +118,7 @@ def stage_upscale_correction(
         logger.warn("unknown upscaling order: %s", upscale.upscale_order)
 
     if post_stages is not None:
-        for stage, params in post_stages:
-            chain.append((stage, params))
+        for stage, post_params, post_opts in post_stages:
+            chain.append((stage, post_params, post_opts))
 
     return chain
