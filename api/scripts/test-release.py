@@ -27,6 +27,7 @@ logger = getLogger(__name__)
 
 FAST_TEST = 20
 SLOW_TEST = 50
+VERY_SLOW_TEST = 100
 
 
 def test_path(relpath: str) -> str:
@@ -225,7 +226,7 @@ TEST_DATA = [
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
-        max_attempts=SLOW_TEST,
+        max_attempts=VERY_SLOW_TEST,
         mse_threshold=0.025,
     ),
     TestCase(
@@ -236,7 +237,7 @@ TEST_DATA = [
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
-        max_attempts=SLOW_TEST,
+        max_attempts=VERY_SLOW_TEST,
         mse_threshold=0.025,
     ),
     TestCase(
@@ -247,7 +248,7 @@ TEST_DATA = [
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
-        max_attempts=SLOW_TEST,
+        max_attempts=VERY_SLOW_TEST,
         mse_threshold=0.025,
     ),
     TestCase(
@@ -301,11 +302,13 @@ TEST_DATA = [
     TestCase(
         "txt2img-panorama-1024x768-muffin",
         "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=1024&height=768&pipeline=panorama&tiledVAE=true",
+        max_attempts=VERY_SLOW_TEST,
     ),
     TestCase(
         "img2img-panorama-1024x768-pumpkin",
         "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none&pipeline=panorama&tiledVAE=true",
         source="txt2img-panorama-1024x768-muffin-0",
+        max_attempts=VERY_SLOW_TEST,
     ),
     TestCase(
         "txt2img-sd-v1-5-tall-muffin",
