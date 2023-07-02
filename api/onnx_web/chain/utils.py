@@ -147,6 +147,14 @@ def process_tile_grid(
     tiles_x = ceil(width / adj_tile)
     tiles_y = ceil(height / adj_tile)
     total = tiles_x * tiles_y
+    logger.debug(
+        "processing %s tiles (%s x %s) with adjusted size of %s, %s overlap",
+        total,
+        tiles_x,
+        tiles_y,
+        adj_tile,
+        overlap,
+    )
 
     tiles: List[Tuple[int, int, Image.Image]] = []
 

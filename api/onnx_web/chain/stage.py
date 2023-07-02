@@ -2,9 +2,9 @@ from typing import Optional
 
 from PIL import Image
 
-from onnx_web.params import ImageParams, Size, SizeChart, StageParams
-from onnx_web.server.context import ServerContext
-from onnx_web.worker.context import WorkerContext
+from ..params import ImageParams, Size, SizeChart, StageParams
+from ..server.context import ServerContext
+from ..worker.context import WorkerContext
 
 
 class BaseStage:
