@@ -44,13 +44,14 @@ def stage_upscale_correction(
     chain: Optional[ChainPipeline] = None,
     pre_stages: List[PipelineStage] = None,
     post_stages: List[PipelineStage] = None,
+    **kwargs,
 ) -> ChainPipeline:
     """
     This is a convenience method for a chain pipeline that will run upscaling and
     correction, based on the `upscale` params.
     """
     logger.info(
-        "running upscaling and correction pipeline at %s:%s",
+        "staging upscaling and correction pipeline at %s:%s",
         upscale.scale,
         upscale.outscale,
     )
@@ -63,6 +64,7 @@ def stage_upscale_correction(
             chain.append((stage, pre_params, pre_opts))
 
     upscale_opts = {
+        **kwargs,
         "upscale": upscale,
     }
     upscale_stage = None

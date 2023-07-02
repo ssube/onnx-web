@@ -17,6 +17,7 @@ from .upscale_bsrgan import UpscaleBSRGANStage
 from .upscale_highres import UpscaleHighresStage
 from .upscale_outpaint import UpscaleOutpaintStage
 from .upscale_resrgan import UpscaleRealESRGANStage
+from .upscale_simple import UpscaleSimpleStage
 from .upscale_stable_diffusion import UpscaleStableDiffusionStage
 from .upscale_swinir import UpscaleSwinIRStage
 
@@ -39,6 +40,7 @@ CHAIN_STAGES = {
     "upscale-highres": UpscaleHighresStage,
     "upscale-outpaint": UpscaleOutpaintStage,
     "upscale-resrgan": UpscaleRealESRGANStage,
+    "upscale-simple": UpscaleSimpleStage,
     "upscale-stable-diffusion": UpscaleStableDiffusionStage,
     "upscale-swinir": UpscaleSwinIRStage,
 }

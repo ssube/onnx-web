@@ -11,7 +11,7 @@ from ..server import ServerContext
 from ..utils import is_debug
 from ..worker import ProgressCallback, WorkerContext
 from .stage import BaseStage
-from .utils import process_tile_order
+from .tile import process_tile_order
 
 logger = getLogger(__name__)
 

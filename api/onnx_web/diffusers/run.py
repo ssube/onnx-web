@@ -3,12 +3,13 @@ from typing import Any, List, Optional
 
 from PIL import Image
 
+from onnx_web.chain.highres import stage_highres
+
 from ..chain import (
     BlendImg2ImgStage,
     BlendMaskStage,
     ChainPipeline,
     SourceTxt2ImgStage,
-    UpscaleHighresStage,
     UpscaleOutpaintStage,
 )
 from ..chain.upscale import split_upscale, stage_upscale_correction
@@ -60,14 +61,12 @@ def run_txt2img_pipeline(
 
     # apply highres
     for _i in range(highres.iterations):
-        chain.stage(
-            UpscaleHighresStage(),
-            StageParams(
-                outscale=highres.scale,
-            ),
-            highres=highres,
-            upscale=upscale,
-            overlap=params.overlap,
+        stage_highres(
+            stage,
+            params,
+            highres,
+            upscale,
+            chain=chain,
         )
 
     # apply upscaling and correction, after highres
@@ -141,23 +140,22 @@ def run_img2img_pipeline(
         )
 
     # loopback through multiple img2img iterations
-    if params.loopback > 0:
-        for _i in range(params.loopback):
-            chain.stage(
-                BlendImg2ImgStage(),
-                stage,
-                strength=strength,
-            )
+    for _i in range(params.loopback):
+        chain.stage(
+            BlendImg2ImgStage(),
+            stage,
+            strength=strength,
+        )
 
     # highres, if selected
-    if highres.iterations > 0:
-        for _i in range(highres.iterations):
-            chain.stage(
-                UpscaleHighresStage(),
-                stage,
-                highres=highres,
-                upscale=upscale,
-            )
+    for _i in range(highres.iterations):
+        stage_highres(
+            stage,
+            params,
+            highres,
+            upscale,
+            chain=chain,
+        )
 
     # apply upscaling and correction, after highres
     stage_upscale_correction(
@@ -233,12 +231,14 @@ def run_inpaint_pipeline(
     )
 
     # apply highres
-    chain.stage(
-        UpscaleHighresStage(),
-        stage,
-        highres=highres,
-        upscale=upscale,
-    )
+    for _i in range(highres.iterations):
+        stage_highres(
+            stage,
+            params,
+            highres,
+            upscale,
+            chain=chain,
+        )
 
     # apply upscaling and correction
     stage_upscale_correction(
@@ -299,12 +299,14 @@ def run_upscale_pipeline(
         )
 
     # apply highres
-    chain.stage(
-        UpscaleHighresStage(),
-        stage,
-        highres=highres,
-        upscale=upscale,
-    )
+    for _i in range(highres.iterations):
+        stage_highres(
+            stage,
+            params,
+            highres,
+            upscale,
+            chain=chain,
+        )
 
     # apply upscaling and correction, after highres
     stage_upscale_correction(
