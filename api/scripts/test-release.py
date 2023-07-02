@@ -5,6 +5,7 @@ from logging import getLogger
 from logging.config import dictConfig
 from os import environ, path
 from time import sleep
+from tqdm import tqdm
 from typing import List, Optional, Union
 
 import cv2
@@ -217,6 +218,7 @@ TEST_DATA = [
         "upscale-sd-x4-2048-muffin",
         "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4&scale=4&outscale=4",
         source="txt2img-sd-v1-5-512-muffin-0",
+        max_attempts=VERY_SLOW_TEST,
     ),
     TestCase(
         "outpaint-panorama-even-256",
@@ -290,6 +292,7 @@ TEST_DATA = [
             "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
+        max_attempts=VERY_SLOW_TEST,
     ),
     TestCase(
         "upscale-sd-x4-gfpgan-2048-muffin",
@@ -298,6 +301,7 @@ TEST_DATA = [
             "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
+        max_attempts=VERY_SLOW_TEST,
     ),
     TestCase(
         "txt2img-panorama-1024x768-muffin",
@@ -446,17 +450,17 @@ def run_test(
     if keys is None:
         raise ValueError("could not generate image")
 
-    attempts = 0
-    while attempts < test.max_attempts:
+    ready = False
+    for attempt in tqdm(range(test.max_attempts)):
         if check_ready(host, keys[0]):
             logger.debug("image is ready: %s", keys)
+            ready = True
             break
         else:
             logger.debug("waiting for image to be ready")
-            attempts += 1
             sleep(6)
 
-    if attempts == test.max_attempts:
+    if not ready:
         raise ValueError("image was not ready in time")
 
     results = download_images(host, keys)
