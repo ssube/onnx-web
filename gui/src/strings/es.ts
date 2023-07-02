@@ -191,6 +191,10 @@ export const I18N_STRINGS_ES = {
         txt2txt: '',
         upscale: '',
       },
+      save: {
+        image: '',
+        metadata: '',
+      },
       setting: {
         connectServer: 'Conectar al servidor',
         history: 'Historia de la imagen',

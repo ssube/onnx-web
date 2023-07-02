@@ -256,6 +256,10 @@ export const I18N_STRINGS_EN = {
         rocm: 'ROCm',
         tensorrt: 'TensorRT',
       },
+      save: {
+        image: 'Image',
+        metadata: 'Metadata',
+      },
       setting: {
         connectServer: 'Connect',
         history: 'Image History',
