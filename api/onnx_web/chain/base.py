@@ -155,7 +155,10 @@ class ChainPipeline:
                 size=kwargs.get("size", None),
                 source=image,
             ):
-                tile = min(stage_pipe.max_tile, stage_params.tile_size)
+                tile = stage_params.tile_size
+                if stage_pipe.max_tile > 0:
+                    tile = min(stage_pipe.max_tile, stage_params.tile_size)
+
                 logger.info(
                     "image larger than tile size of %s, tiling stage",
                     tile,
