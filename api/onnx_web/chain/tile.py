@@ -1,11 +1,11 @@
 from logging import getLogger
 from math import ceil
-from typing import List, Protocol, Tuple
+from typing import List, Optional, Protocol, Tuple
 
 import numpy as np
 from PIL import Image
 
-from ..params import TileOrder
+from ..params import Size, TileOrder
 
 # from skimage.exposure import match_histograms
 
@@ -35,6 +35,23 @@ def complete_tile(
         return full_source
 
     return source
+
+
+def needs_tile(
+    max_tile: int,
+    stage_tile: int,
+    size: Optional[Size] = None,
+    source: Optional[Image.Image] = None,
+) -> bool:
+    tile = min(max_tile, stage_tile)
+
+    if source is not None:
+        return source.width > tile or source.height > tile
+
+    if size is not None:
+        return size.width > tile or size.height > tile
+
+    return False
 
 
 def get_tile_grads(

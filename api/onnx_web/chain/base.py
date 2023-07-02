@@ -11,7 +11,7 @@ from ..server import ServerContext
 from ..utils import is_debug
 from ..worker import ProgressCallback, WorkerContext
 from .stage import BaseStage
-from .tile import process_tile_order
+from .tile import needs_tile, process_tile_order
 
 logger = getLogger(__name__)
 
@@ -149,13 +149,16 @@ class ChainPipeline:
                     "running stage %s without source image, %s", name, kwargs.keys()
                 )
 
-            if image is not None and (
-                image.width > stage_params.tile_size
-                or image.height > stage_params.tile_size
+            if needs_tile(
+                stage_pipe.max_tile,
+                stage_params.tile_size,
+                size=kwargs.get("size", None),
+                source=image,
             ):
+                tile = min(stage_pipe.max_tile, stage_params.tile_size)
                 logger.info(
                     "image larger than tile size of %s, tiling stage",
-                    stage_params.tile_size,
+                    tile,
                 )
 
                 def stage_tile(tile: Image.Image, _dims) -> Image.Image:
@@ -177,7 +180,7 @@ class ChainPipeline:
                 image = process_tile_order(
                     stage_params.tile_order,
                     image,
-                    stage_params.tile_size,
+                    tile,
                     stage_params.outscale,
                     [stage_tile],
                     **kwargs,
