@@ -90,10 +90,12 @@ export function ImageCard(props: ImageCardProps) {
 
   function downloadImage() {
     window.open(outputs[index].url, '_blank');
+    close();
   }
 
   function downloadMetadata() {
     window.open(outputs[index].url + '.json', '_blank');
+    close();
   }
 
   function close() {
