@@ -43,6 +43,7 @@ def stage_highres(
         chain.stage(
             UpscaleSimpleStage(),
             stage,
+            method=highres.method,
             upscale=upscale.with_args(scale=highres.scale, outscale=highres.scale),
         )
 
