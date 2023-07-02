@@ -29,6 +29,9 @@ def complete_tile(
     source: Image.Image,
     tile: int,
 ) -> Image.Image:
+    if source is None:
+        return source
+
     if source.width < tile or source.height < tile:
         full_source = Image.new(source.mode, (tile, tile))
         full_source.paste(source)
@@ -158,7 +161,7 @@ def process_tile_grid(
     overlap: float = 0.0,
     **kwargs,
 ) -> Image.Image:
-    width, height = source.size
+    width, height = kwargs.get("size", source.size if source else None)
 
     adj_tile = int(float(tile) * (1.0 - overlap))
     tiles_x = ceil(width / adj_tile)
@@ -182,7 +185,9 @@ def process_tile_grid(
             top = y * adj_tile
             logger.info("processing tile %s of %s, %s.%s", idx + 1, total, y, x)
 
-            tile_image = source.crop((left, top, left + tile, top + tile))
+            tile_image = (
+                source.crop((left, top, left + tile, top + tile)) if source else None
+            )
             tile_image = complete_tile(tile_image, tile)
 
             for filter in filters:
@@ -204,7 +209,7 @@ def process_tile_spiral(
     if scale != 1:
         raise ValueError("unsupported scale")
 
-    width, height = source.size
+    width, height = kwargs.get("size", source.size if source else None)
 
     # spiral uses the previous run and needs a scratch texture for 3x memory
     image = Image.new("RGB", (width * scale, height * scale))
@@ -222,7 +227,7 @@ def process_tile_spiral(
             "processing tile %s of %s, %sx%s", counter, len(tile_coords), left, top
         )
 
-        tile_image = image.crop((left, top, left + tile, top + tile))
+        tile_image = image.crop((left, top, left + tile, top + tile)) if image else None
         tile_image = complete_tile(tile_image, tile)
 
         for filter in filters:
