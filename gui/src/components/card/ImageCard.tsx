@@ -28,7 +28,8 @@ export function ImageCard(props: ImageCardProps) {
   const { params, outputs, size } = image;
 
   const [_hash, setHash] = useHash();
-  const [anchor, setAnchor] = useState<Maybe<HTMLElement>>();
+  const [blendAnchor, setBlendAnchor] = useState<Maybe<HTMLElement>>();
+  const [saveAnchor, setSaveAnchor] = useState<Maybe<HTMLElement>>();
 
   const config = mustExist(useContext(ConfigContext));
   const state = mustExist(useContext(StateContext));
@@ -91,8 +92,14 @@ export function ImageCard(props: ImageCardProps) {
     window.open(outputs[index].url, '_blank');
   }
 
+  function downloadMetadata() {
+    window.open(outputs[index].url + '.json', '_blank');
+  }
+
   function close() {
-    setAnchor(undefined);
+    // TODO: split these up
+    setBlendAnchor(undefined);
+    setSaveAnchor(undefined);
   }
 
   const [index, setIndex] = useState(0);
@@ -151,10 +158,20 @@ export function ImageCard(props: ImageCardProps) {
           </GridItem>
           <GridItem xs={2}>
             <Tooltip title={t('tooltip.save')}>
-              <IconButton onClick={downloadImage}>
+              <IconButton onClick={(event) => {
+                setSaveAnchor(event.currentTarget);
+              }}>
                 <Download />
               </IconButton>
             </Tooltip>
+            <Menu
+              anchorEl={saveAnchor}
+              open={doesExist(saveAnchor)}
+              onClose={close}
+            >
+              <MenuItem key='save-image' onClick={downloadImage}>{t('save.image')}</MenuItem>
+              <MenuItem key='save-metadata' onClick={downloadMetadata}>{t('save.metadata')}</MenuItem>
+            </Menu>
           </GridItem>
           <GridItem xs={2}>
             <Tooltip title={t('tab.img2img')}>
@@ -180,14 +197,14 @@ export function ImageCard(props: ImageCardProps) {
           <GridItem xs={2}>
             <Tooltip title={t('tab.blend')}>
               <IconButton onClick={(event) => {
-                setAnchor(event.currentTarget);
+                setBlendAnchor(event.currentTarget);
               }}>
                 <Blender />
               </IconButton>
             </Tooltip>
             <Menu
-              anchorEl={anchor}
-              open={doesExist(anchor)}
+              anchorEl={blendAnchor}
+              open={doesExist(blendAnchor)}
               onClose={close}
             >
               {range(BLEND_SOURCES).map((idx) => <MenuItem key={idx} onClick={() => {
