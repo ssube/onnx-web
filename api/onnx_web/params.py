@@ -14,6 +14,7 @@ Point = Tuple[int, int]
 
 
 class SizeChart(IntEnum):
+    unlimited = 0
     mini = 128  # small tile for very expensive models
     half = 256  # half tile for outpainting
     auto = 512  # auto tile size
@@ -22,6 +23,7 @@ class SizeChart(IntEnum):
     hd4k = 2**12
     hd8k = 2**13
     hd16k = 2**14
+    hd32k = 2**15
     hd64k = 2**16
 
 

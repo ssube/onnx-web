@@ -7,7 +7,7 @@ from PIL import Image
 
 from ..diffusers.load import load_pipeline
 from ..diffusers.utils import encode_prompt, get_latents_from_seed, parse_prompt
-from ..params import ImageParams, Size, StageParams
+from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
 from .stage import BaseStage
@@ -16,6 +16,8 @@ logger = getLogger(__name__)
 
 
 class SourceTxt2ImgStage(BaseStage):
+    max_tile = SizeChart.unlimited
+
     def run(
         self,
         job: WorkerContext,

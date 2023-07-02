@@ -42,7 +42,9 @@ def run_txt2img_pipeline(
 ) -> None:
     # prepare the chain pipeline and first stage
     chain = ChainPipeline()
-    stage = StageParams()
+    stage = StageParams(
+        tile_size=params.tiles,
+    )
     chain.stage(
         SourceTxt2ImgStage(),
         stage,
@@ -122,7 +124,9 @@ def run_img2img_pipeline(
 
     # prepare the chain pipeline and first stage
     chain = ChainPipeline()
-    stage = StageParams()
+    stage = StageParams(
+        tile_size=params.tiles,
+    )
     chain.stage(
         BlendImg2ImgStage(),
         stage,
@@ -219,7 +223,7 @@ def run_inpaint_pipeline(
 
     # set up the chain pipeline and base stage
     chain = ChainPipeline()
-    stage = StageParams(tile_order=tile_order)
+    stage = StageParams(tile_order=tile_order, tile_size=params.tiles)
     chain.stage(
         UpscaleOutpaintStage(),
         stage,
@@ -286,7 +290,7 @@ def run_upscale_pipeline(
 ) -> None:
     # set up the chain pipeline, no base stage for upscaling
     chain = ChainPipeline()
-    stage = StageParams()
+    stage = StageParams(tile_size=params.tiles)
 
     # apply upscaling and correction, before highres
     first_upscale, after_upscale = split_upscale(upscale)
