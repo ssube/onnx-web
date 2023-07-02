@@ -10,11 +10,12 @@ from ..diffusers.utils import encode_prompt, parse_prompt
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
+from .stage import BaseStage
 
 logger = getLogger(__name__)
 
 
-class BlendImg2ImgStage:
+class BlendImg2ImgStage(BaseStage):
     def run(
         self,
         job: WorkerContext,

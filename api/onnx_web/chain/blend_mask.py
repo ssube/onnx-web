@@ -8,11 +8,12 @@ from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..utils import is_debug
 from ..worker import ProgressCallback, WorkerContext
+from .stage import BaseStage
 
 logger = getLogger(__name__)
 
 
-class BlendMaskStage:
+class BlendMaskStage(BaseStage):
     def run(
         self,
         _job: WorkerContext,

@@ -10,13 +10,14 @@ from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
+from .stage import BaseStage
 
 logger = getLogger(__name__)
 
 TAG_X4_V3 = "real-esrgan-x4-v3"
 
 
-class UpscaleRealESRGANStage:
+class UpscaleRealESRGANStage(BaseStage):
     def load(
         self, server: ServerContext, params: UpscaleParams, device: DeviceParams, tile=0
     ):

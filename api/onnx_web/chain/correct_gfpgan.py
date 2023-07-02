@@ -9,11 +9,12 @@ from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
+from .stage import BaseStage
 
 logger = getLogger(__name__)
 
 
-class CorrectGFPGANStage:
+class CorrectGFPGANStage(BaseStage):
     def load(
         self,
         server: ServerContext,

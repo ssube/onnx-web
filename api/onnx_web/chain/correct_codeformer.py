@@ -6,11 +6,12 @@ from PIL import Image
 from ..params import ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
+from .stage import BaseStage
 
 logger = getLogger(__name__)
 
 
-class CorrectCodeformerStage:
+class CorrectCodeformerStage(BaseStage):
     def run(
         self,
         job: WorkerContext,

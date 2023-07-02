@@ -5,11 +5,12 @@ from PIL import Image
 from ..params import ImageParams, Size, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
+from .stage import BaseStage
 
 logger = getLogger(__name__)
 
 
-class ReduceThumbnailStage:
+class ReduceThumbnailStage(BaseStage):
     def run(
         self,
         _job: WorkerContext,

@@ -10,11 +10,12 @@ from ..params import DeviceParams, ImageParams, Size, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
+from .stage import BaseStage
 
 logger = getLogger(__name__)
 
 
-class UpscaleBSRGANStage:
+class UpscaleBSRGANStage(BaseStage):
     max_tile = 64
 
     def load(

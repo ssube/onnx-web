@@ -8,11 +8,12 @@ from PIL import Image
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
+from .stage import BaseStage
 
 logger = getLogger(__name__)
 
 
-class SourceS3Stage:
+class SourceS3Stage(BaseStage):
     def run(
         self,
         _job: WorkerContext,
