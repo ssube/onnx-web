@@ -149,6 +149,7 @@ def blend_tiles(
             axis=2,
         )
 
+    logger.trace("mean tiles contributing to each pixel: %s", np.mean(count))
     pixels = np.where(count > 0, value / count, value)
     return Image.fromarray(np.uint8(pixels))
 
