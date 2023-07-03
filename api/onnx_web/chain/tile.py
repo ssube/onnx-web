@@ -91,7 +91,7 @@ def blend_tiles(
     overlap: float,
 ):
     adj_tile = int(float(tile) * (1.0 - overlap))
-    logger.trace(
+    logger.debug(
         "adjusting tile size from %s to %s based on %s overlap", tile, adj_tile, overlap
     )
 
@@ -112,7 +112,7 @@ def blend_tiles(
 
             # gradient blending
             grad_x, grad_y = get_tile_grads(left, top, adj_tile, width, height)
-            logger.trace("tile gradients: %s, %s, %s", points, grad_x, grad_y)
+            logger.debug("tile gradients: %s, %s, %s", points, grad_x, grad_y)
 
             mult_x = [np.interp(i, points, grad_x) for i in range(tile * scale)]
             mult_y = [np.interp(i, points, grad_y) for i in range(tile * scale)]
