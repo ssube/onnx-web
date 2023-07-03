@@ -71,10 +71,6 @@ class UpscaleBSRGANStage(BaseStage):
         device = job.get_device()
         bsrgan = self.load(server, stage, upscale, device)
 
-        tile_size = (64, 64)
-        tile_x = source.width // tile_size[0]
-        tile_y = source.height // tile_size[1]
-
         image = np.array(source) / 255.0
         image = image[:, :, [2, 1, 0]].astype(np.float32).transpose((2, 0, 1))
         image = np.expand_dims(image, axis=0)
@@ -91,33 +87,7 @@ class UpscaleBSRGANStage(BaseStage):
         )
         logger.trace("BSRGAN output shape: %s", dest.shape)
 
-        for x in range(tile_x):
-            for y in range(tile_y):
-                xt = x * tile_size[0]
-                yt = y * tile_size[1]
-
-                ix1 = xt
-                ix2 = xt + tile_size[0]
-                iy1 = yt
-                iy2 = yt + tile_size[1]
-                logger.debug(
-                    "running BSRGAN on tile: (%s, %s, %s, %s) -> (%s, %s, %s, %s)",
-                    ix1,
-                    ix2,
-                    iy1,
-                    iy2,
-                    ix1 * scale,
-                    ix2 * scale,
-                    iy1 * scale,
-                    iy2 * scale,
-                )
-
-                dest[
-                    :,
-                    :,
-                    ix1 * scale : ix2 * scale,
-                    iy1 * scale : iy2 * scale,
-                ] = bsrgan(image[:, :, ix1:ix2, iy1:iy2])
+        dest = bsrgan(image)
 
         dest = np.clip(np.squeeze(dest, axis=0), 0, 1)
         dest = dest[[2, 1, 0], :, :].transpose((1, 2, 0))
@@ -129,7 +99,8 @@ class UpscaleBSRGANStage(BaseStage):
 
     def steps(
         self,
-        _params: ImageParams,
+        params: ImageParams,
         size: Size,
     ) -> int:
-        return size.width // self.max_tile * size.height // self.max_tile
+        tile = min(params.tiles, self.max_tile)
+        return size.width // tile * size.height // tile
