@@ -52,6 +52,8 @@ class BlendImg2ImgStage(BaseStage):
             pipe_params["controlnet_conditioning_scale"] = strength
         elif pipe_type == "img2img":
             pipe_params["strength"] = strength
+        elif pipe_type == "lpw":
+            pipe_params["strength"] = strength
         elif pipe_type == "panorama":
             pipe_params["strength"] = strength
         elif pipe_type == "pix2pix":
