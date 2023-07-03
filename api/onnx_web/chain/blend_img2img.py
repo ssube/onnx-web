@@ -61,10 +61,10 @@ class BlendImg2ImgStage(BaseStage):
             logger.debug("using LPW pipeline for img2img")
             rng = torch.manual_seed(params.seed)
             result = pipe.img2img(
+                source,
                 params.prompt,
                 generator=rng,
                 guidance_scale=params.cfg,
-                image=source,
                 negative_prompt=params.negative_prompt,
                 num_inference_steps=params.steps,
                 callback=callback,
