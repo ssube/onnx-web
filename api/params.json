@@ -64,6 +64,9 @@
     "max": 8192,
     "step": 8
   },
+  "highres": {
+    "default": false
+  },
   "highresIterations": {
     "default": 1,
     "min": 1,

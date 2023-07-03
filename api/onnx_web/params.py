@@ -421,12 +421,14 @@ class UpscaleParams:
 class HighresParams:
     def __init__(
         self,
+        enabled: bool,
         scale: int,
         steps: int,
         strength: float,
         method: Literal["bilinear", "lanczos", "upscale"] = "lanczos",
         iterations: int = 1,
     ):
+        self.enabled = enabled
         self.scale = scale
         self.steps = steps
         self.strength = strength
@@ -441,6 +443,7 @@ class HighresParams:
 
     def tojson(self):
         return {
+            "enabled": self.enabled,
             "iterations": self.iterations,
             "method": self.method,
             "scale": self.scale,

@@ -283,6 +283,7 @@ def upscale_from_request() -> UpscaleParams:
 
 
 def highres_from_request() -> HighresParams:
+    enabled = get_boolean(request.args, "highres", get_config_value("highres"))
     iterations = get_and_clamp_int(
         request.args,
         "highresIterations",
@@ -313,6 +314,7 @@ def highres_from_request() -> HighresParams:
         get_config_value("highresStrength", "min"),
     )
     return HighresParams(
+        enabled,
         scale,
         steps,
         strength,

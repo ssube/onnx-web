@@ -123,6 +123,7 @@ export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
 
 export function appendHighresToURL(url: URL, highres: HighresParams) {
   if (highres.enabled) {
+    url.searchParams.append('highres', String(highres.enabled));
     url.searchParams.append('highresIterations', highres.highresIterations.toFixed(FIXED_INTEGER));
     url.searchParams.append('highresMethod', highres.highresMethod);
     url.searchParams.append('highresScale', highres.highresScale.toFixed(FIXED_INTEGER));

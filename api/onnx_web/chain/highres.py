@@ -22,36 +22,41 @@ def stage_highres(
     if chain is None:
         chain = ChainPipeline()
 
+    if not highres.enabled:
+        logger.debug("highres not enabled, skipping")
+        return chain
+
     if highres.iterations < 1:
         logger.debug("no highres iterations, skipping")
         return chain
 
-    if highres.method == "upscale":
-        logger.debug("using upscaling pipeline for highres")
-        stage_upscale_correction(
-            stage,
-            params,
-            upscale=upscale.with_args(
-                faces=False,
-                scale=highres.scale,
-                outscale=highres.scale,
-            ),
-            chain=chain,
-        )
-    else:
-        logger.debug("using simple upscaling for highres")
-        chain.stage(
-            UpscaleSimpleStage(),
-            stage,
-            method=highres.method,
-            upscale=upscale.with_args(scale=highres.scale, outscale=highres.scale),
-        )
+    for _i in range(highres.iterations):
+        if highres.method == "upscale":
+            logger.debug("using upscaling pipeline for highres")
+            stage_upscale_correction(
+                stage,
+                params,
+                upscale=upscale.with_args(
+                    faces=False,
+                    scale=highres.scale,
+                    outscale=highres.scale,
+                ),
+                chain=chain,
+            )
+        else:
+            logger.debug("using simple upscaling for highres")
+            chain.stage(
+                UpscaleSimpleStage(),
+                stage,
+                method=highres.method,
+                upscale=upscale.with_args(scale=highres.scale, outscale=highres.scale),
+            )
 
-    chain.stage(
-        BlendImg2ImgStage(),
-        stage,
-        overlap=params.overlap,
-        strength=highres.strength,
-    )
+        chain.stage(
+            BlendImg2ImgStage(),
+            stage,
+            overlap=params.overlap,
+            strength=highres.strength,
+        )
 
     return chain

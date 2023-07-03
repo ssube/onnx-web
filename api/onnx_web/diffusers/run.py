@@ -62,14 +62,13 @@ def run_txt2img_pipeline(
         )
 
     # apply highres
-    for _i in range(highres.iterations):
-        stage_highres(
-            stage,
-            params,
-            highres,
-            upscale,
-            chain=chain,
-        )
+    stage_highres(
+        stage,
+        params,
+        highres,
+        upscale,
+        chain=chain,
+    )
 
     # apply upscaling and correction, after highres
     stage_upscale_correction(
@@ -152,14 +151,13 @@ def run_img2img_pipeline(
         )
 
     # highres, if selected
-    for _i in range(highres.iterations):
-        stage_highres(
-            stage,
-            params,
-            highres,
-            upscale,
-            chain=chain,
-        )
+    stage_highres(
+        stage,
+        params,
+        highres,
+        upscale,
+        chain=chain,
+    )
 
     # apply upscaling and correction, after highres
     stage_upscale_correction(
@@ -234,21 +232,30 @@ def run_inpaint_pipeline(
         noise_source=noise_source,
     )
 
-    # apply highres
-    for _i in range(highres.iterations):
-        stage_highres(
+    # apply upscaling and correction, before highres
+    first_upscale, after_upscale = split_upscale(upscale)
+    if first_upscale:
+        stage_upscale_correction(
             stage,
             params,
-            highres,
-            upscale,
+            upscale=first_upscale,
             chain=chain,
         )
+
+    # apply highres
+    stage_highres(
+        stage,
+        params,
+        highres,
+        upscale,
+        chain=chain,
+    )
 
     # apply upscaling and correction
     stage_upscale_correction(
         stage,
         params,
-        upscale=upscale,
+        upscale=after_upscale,
         chain=chain,
     )
 
@@ -303,14 +310,13 @@ def run_upscale_pipeline(
         )
 
     # apply highres
-    for _i in range(highres.iterations):
-        stage_highres(
-            stage,
-            params,
-            highres,
-            upscale,
-            chain=chain,
-        )
+    stage_highres(
+        stage,
+        params,
+        highres,
+        upscale,
+        chain=chain,
+    )
 
     # apply upscaling and correction, after highres
     stage_upscale_correction(
