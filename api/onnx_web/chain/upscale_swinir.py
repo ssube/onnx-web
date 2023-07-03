@@ -7,7 +7,7 @@ from PIL import Image
 
 from ..models.onnx import OnnxModel
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
-from ..server import ServerContext
+from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
 from .stage import BaseStage
@@ -28,7 +28,7 @@ class UpscaleSwinIRStage(BaseStage):
         # must be within the load function for patch to take effect
         model_path = path.join(server.model_path, "%s.onnx" % (upscale.upscale_model))
         cache_key = (model_path,)
-        cache_pipe = server.cache.get("swinir", cache_key)
+        cache_pipe = server.cache.get(ModelTypes.upscaling, cache_key)
 
         if cache_pipe is not None:
             logger.info("reusing existing SwinIR pipeline")
@@ -43,7 +43,7 @@ class UpscaleSwinIRStage(BaseStage):
             sess_options=device.sess_options(),
         )
 
-        server.cache.set("swinir", cache_key, pipe)
+        server.cache.set(ModelTypes.upscaling, cache_key, pipe)
         run_gc([device])
 
         return pipe
@@ -75,7 +75,7 @@ class UpscaleSwinIRStage(BaseStage):
         image = np.array(source) / 255.0
         image = image[:, :, [2, 1, 0]].astype(np.float32).transpose((2, 0, 1))
         image = np.expand_dims(image, axis=0)
-        logger.info("SwinIR input shape: %s", image.shape)
+        logger.trace("SwinIR input shape: %s", image.shape)
 
         scale = upscale.outscale
         dest = np.zeros(
@@ -86,7 +86,7 @@ class UpscaleSwinIRStage(BaseStage):
                 image.shape[3] * scale,
             )
         )
-        logger.info("SwinIR output shape: %s", dest.shape)
+        logger.trace("SwinIR output shape: %s", dest.shape)
 
         dest = swinir(image)
         dest = np.clip(np.squeeze(dest, axis=0), 0, 1)

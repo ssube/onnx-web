@@ -7,7 +7,7 @@ from PIL import Image
 
 from ..onnx import OnnxRRDBNet
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
-from ..server import ServerContext
+from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
 from .stage import BaseStage
@@ -29,7 +29,7 @@ class UpscaleRealESRGANStage(BaseStage):
         model_path = path.join(server.model_path, model_file)
 
         cache_key = (model_path, params.format)
-        cache_pipe = server.cache.get("resrgan", cache_key)
+        cache_pipe = server.cache.get(ModelTypes.upscaling, cache_key)
         if cache_pipe is not None:
             logger.info("reusing existing Real ESRGAN pipeline")
             return cache_pipe
@@ -66,7 +66,7 @@ class UpscaleRealESRGANStage(BaseStage):
             half=False,  # TODO: use server optimizations
         )
 
-        server.cache.set("resrgan", cache_key, upsampler)
+        server.cache.set(ModelTypes.upscaling, cache_key, upsampler)
         run_gc([device])
 
         return upsampler

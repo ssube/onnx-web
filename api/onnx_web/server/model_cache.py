@@ -1,9 +1,17 @@
+from enum import Enum
 from logging import getLogger
 from typing import Any, List, Tuple
 
 logger = getLogger(__name__)
 
 cache: List[Tuple[str, Any, Any]] = []
+
+
+class ModelTypes(str, Enum):
+    correction = "correction"
+    diffusion = "diffusion"
+    scheduler = "scheduler"
+    upscaling = "upscaling"
 
 
 class ModelCache:

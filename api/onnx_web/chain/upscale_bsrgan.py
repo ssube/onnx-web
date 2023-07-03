@@ -7,7 +7,7 @@ from PIL import Image
 
 from ..models.onnx import OnnxModel
 from ..params import DeviceParams, ImageParams, Size, StageParams, UpscaleParams
-from ..server import ServerContext
+from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
 from .stage import BaseStage
@@ -28,7 +28,7 @@ class UpscaleBSRGANStage(BaseStage):
         # must be within the load function for patch to take effect
         model_path = path.join(server.model_path, "%s.onnx" % (upscale.upscale_model))
         cache_key = (model_path,)
-        cache_pipe = server.cache.get("bsrgan", cache_key)
+        cache_pipe = server.cache.get(ModelTypes.upscaling, cache_key)
 
         if cache_pipe is not None:
             logger.debug("reusing existing BSRGAN pipeline")
@@ -43,7 +43,7 @@ class UpscaleBSRGANStage(BaseStage):
             sess_options=device.sess_options(),
         )
 
-        server.cache.set("bsrgan", cache_key, pipe)
+        server.cache.set(ModelTypes.upscaling, cache_key, pipe)
         run_gc([device])
 
         return pipe

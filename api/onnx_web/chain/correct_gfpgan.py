@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
-from ..server import ServerContext
+from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
 from .stage import BaseStage
@@ -28,7 +28,7 @@ class CorrectGFPGANStage(BaseStage):
 
         face_path = path.join(server.cache_path, "%s.pth" % (upscale.correction_model))
         cache_key = (face_path,)
-        cache_pipe = server.cache.get("gfpgan", cache_key)
+        cache_pipe = server.cache.get(ModelTypes.correction, cache_key)
 
         if cache_pipe is not None:
             logger.info("reusing existing GFPGAN pipeline")
@@ -46,7 +46,7 @@ class CorrectGFPGANStage(BaseStage):
             upscale=upscale.face_outscale,
         )
 
-        server.cache.set("gfpgan", cache_key, gfpgan)
+        server.cache.set(ModelTypes.correction, cache_key, gfpgan)
         run_gc([device])
 
         return gfpgan

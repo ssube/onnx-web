@@ -4,5 +4,5 @@ from .hacks import (
     apply_patch_facexlib,
     apply_patches,
 )
-from .model_cache import ModelCache
+from .model_cache import ModelCache, ModelTypes
 from .context import ServerContext

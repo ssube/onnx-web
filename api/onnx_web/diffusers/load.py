@@ -11,7 +11,7 @@ from ..convert.diffusion.textual_inversion import blend_textual_inversions
 from ..diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
 from ..diffusers.utils import expand_prompt
 from ..params import DeviceParams, ImageParams
-from ..server import ServerContext
+from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from .patches.unet import UNetWrapper
 from .patches.vae import VAEWrapper
@@ -119,14 +119,14 @@ def load_pipeline(
     scheduler_key = (params.scheduler, model)
     scheduler_type = pipeline_schedulers[params.scheduler]
 
-    cache_pipe = server.cache.get("diffusion", pipe_key)
+    cache_pipe = server.cache.get(ModelTypes.diffusion, pipe_key)
 
     if cache_pipe is not None:
         logger.debug("reusing existing diffusion pipeline")
         pipe = cache_pipe
 
         # update scheduler
-        cache_scheduler = server.cache.get("scheduler", scheduler_key)
+        cache_scheduler = server.cache.get(ModelTypes.scheduler, scheduler_key)
         if cache_scheduler is None:
             logger.debug("loading new diffusion scheduler")
             scheduler = scheduler_type.from_pretrained(
@@ -141,7 +141,7 @@ def load_pipeline(
                 scheduler = scheduler.to(device.torch_str())
 
             pipe.scheduler = scheduler
-            server.cache.set("scheduler", scheduler_key, scheduler)
+            server.cache.set(ModelTypes.scheduler, scheduler_key, scheduler)
             run_gc([device])
 
     else:
@@ -342,8 +342,8 @@ def load_pipeline(
         optimize_pipeline(server, pipe)
         patch_pipeline(server, pipe, pipeline, pipeline_class, params)
 
-        server.cache.set("diffusion", pipe_key, pipe)
-        server.cache.set("scheduler", scheduler_key, components["scheduler"])
+        server.cache.set(ModelTypes.diffusion, pipe_key, pipe)
+        server.cache.set(ModelTypes.scheduler, scheduler_key, components["scheduler"])
 
     if hasattr(pipe, "vae_decoder"):
         pipe.vae_decoder.set_tiled(tiled=params.tiled_vae)
