@@ -42,6 +42,7 @@ def stage_highres(
                     outscale=highres.scale,
                 ),
                 chain=chain,
+                overlap=params.overlap,
             )
         else:
             logger.debug("using simple upscaling for highres")
@@ -49,6 +50,7 @@ def stage_highres(
                 UpscaleSimpleStage(),
                 stage,
                 method=highres.method,
+                overlap=params.overlap,
                 upscale=upscale.with_args(scale=highres.scale, outscale=highres.scale),
             )
 
