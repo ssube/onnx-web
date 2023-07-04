@@ -72,14 +72,11 @@ class ChainPipeline:
         job: WorkerContext,
         server: ServerContext,
         params: ImageParams,
-        source: Optional[Image.Image],
+        sources: List[Image.Image],
         callback: Optional[ProgressCallback],
         **kwargs
-    ) -> Image.Image:
-        """
-        TODO: handle List[Image] inputs and outputs
-        """
-        return self(job, server, params, source=source, callback=callback, **kwargs)
+    ) -> List[Image.Image]:
+        return self(job, server, params, sources=sources, callback=callback, **kwargs)
 
     def stage(self, callback: BaseStage, params: StageParams, **kwargs):
         self.stages.append((callback, params, kwargs))
@@ -161,10 +158,10 @@ class ChainPipeline:
                             server,
                             stage_params,
                             params,
-                            source_tile,
+                            [source_tile],
                             callback=callback,
                             **kwargs,
-                        )
+                        )[0]
 
                         if is_debug():
                             save_image(server, "last-tile.png", output_tile)
@@ -176,7 +173,7 @@ class ChainPipeline:
                         source,
                         tile,
                         stage_params.outscale,
-                        [stage_tile],
+                        stage_tile,
                         **kwargs,
                     )
                     stage_outputs.append(output)

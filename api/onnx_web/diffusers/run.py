@@ -80,20 +80,22 @@ def run_txt2img_pipeline(
 
     # run and save
     progress = job.get_progress_callback()
-    image = chain(job, server, params, None, callback=progress)
+    images = chain(job, server, params, [], callback=progress)
 
     _prompt_pairs, loras, inversions = parse_prompt(params)
-    dest = save_image(
-        server,
-        outputs[0],
-        image,
-        params,
-        size,
-        upscale=upscale,
-        highres=highres,
-        inversions=inversions,
-        loras=loras,
-    )
+
+    for image, output in zip(images, outputs):
+        dest = save_image(
+            server,
+            output,
+            image,
+            params,
+            size,
+            upscale=upscale,
+            highres=highres,
+            inversions=inversions,
+            loras=loras,
+        )
 
     # clean up
     run_gc([job.get_device()])
@@ -170,7 +172,7 @@ def run_img2img_pipeline(
     # run and append the filtered source
     progress = job.get_progress_callback()
     images = [
-        chain(job, server, params, source, callback=progress),
+        chain(job, server, params, [source], callback=progress),
     ]
 
     if source_filter is not None and source_filter != "none":
@@ -261,20 +263,21 @@ def run_inpaint_pipeline(
 
     # run and save
     progress = job.get_progress_callback()
-    image = chain(job, server, params, source, callback=progress)
+    images = chain(job, server, params, [source], callback=progress)
 
     _prompt_pairs, loras, inversions = parse_prompt(params)
-    dest = save_image(
-        server,
-        outputs[0],
-        image,
-        params,
-        size,
-        upscale=upscale,
-        border=border,
-        inversions=inversions,
-        loras=loras,
-    )
+    for image, output in zip(images, outputs):
+        dest = save_image(
+            server,
+            output,
+            image,
+            params,
+            size,
+            upscale=upscale,
+            border=border,
+            inversions=inversions,
+            loras=loras,
+        )
 
     # clean up
     del image
@@ -328,19 +331,20 @@ def run_upscale_pipeline(
 
     # run and save
     progress = job.get_progress_callback()
-    image = chain(job, server, params, source, callback=progress)
+    images = chain(job, server, params, [source], callback=progress)
 
     _prompt_pairs, loras, inversions = parse_prompt(params)
-    dest = save_image(
-        server,
-        outputs[0],
-        image,
-        params,
-        size,
-        upscale=upscale,
-        inversions=inversions,
-        loras=loras,
-    )
+    for image, output in zip(images, outputs):
+        dest = save_image(
+            server,
+            output,
+            image,
+            params,
+            size,
+            upscale=upscale,
+            inversions=inversions,
+            loras=loras,
+        )
 
     # clean up
     del image
@@ -377,8 +381,10 @@ def run_blend_pipeline(
 
     # run and save
     progress = job.get_progress_callback()
-    image = chain(job, server, params, sources[0], callback=progress)
-    dest = save_image(server, outputs[0], image, params, size, upscale=upscale)
+    images = chain(job, server, params, sources, callback=progress)
+
+    for image, output in zip(images, outputs):
+        dest = save_image(server, output, image, params, size, upscale=upscale)
 
     # clean up
     del image
