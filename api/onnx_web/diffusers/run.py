@@ -171,9 +171,7 @@ def run_img2img_pipeline(
 
     # run and append the filtered source
     progress = job.get_progress_callback()
-    images = [
-        chain(job, server, params, [source], callback=progress),
-    ]
+    images = chain(job, server, params, [source], callback=progress),
 
     if source_filter is not None and source_filter != "none":
         images.append(source)
