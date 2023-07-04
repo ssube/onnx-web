@@ -376,11 +376,11 @@ def replace_wildcards(prompt: str, seed: int, wildcards: Dict[str, List[str]]) -
         logger.debug("found wildcard in prompt: %s", next_match)
         name = next_match.groups()
 
-        if name not in wildcards:
+        wildcard = ""
+        if name in wildcards:
+            wildcard = random.choice(wildcards.get(name))
+        else:
             logger.warning("unknown wildcard: %s", name)
-            continue
-
-        wildcard = random.choice(wildcards.get(name))
 
         remaining_prompt = (
             remaining_prompt[: next_match.start()]
