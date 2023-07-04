@@ -59,9 +59,10 @@ class ChainPipeline:
 
     def append(self, stage: Optional[PipelineStage]):
         """
-        DEPRECATED: use `stage` instead
-
         Append an additional stage to this pipeline.
+
+        This requires an already-assembled `PipelineStage`. Use `ChainPipeline.stage` if you want the pipeline to
+        assemble the stage from loose arguments.
         """
         if stage is not None:
             self.stages.append(stage)
@@ -118,7 +119,7 @@ class ChainPipeline:
 
             if image is not None:
                 logger.debug(
-                    "running stage %s on source image with dimensions %sx%s, %s",
+                    "running stage %s with source size of %sx%s, parameters: %s",
                     name,
                     image.width,
                     image.height,
@@ -169,7 +170,7 @@ class ChainPipeline:
                     **kwargs,
                 )
             else:
-                logger.debug("image within tile size, running stage")
+                logger.debug("image within tile size of %s, running stage", tile)
                 image = stage_pipe.run(
                     job,
                     server,
@@ -181,7 +182,10 @@ class ChainPipeline:
                 )
 
             logger.debug(
-                "finished stage %s, result size: %sx%s", name, image.width, image.height
+                "finished stage %s with result size of %sx%s",
+                name,
+                image.width,
+                image.height,
             )
 
             if is_debug():
@@ -190,7 +194,7 @@ class ChainPipeline:
         end = monotonic()
         duration = timedelta(seconds=(end - start))
         logger.info(
-            "finished pipeline in %s, result size: %sx%s",
+            "finished pipeline in %s with result size of %sx%s",
             duration,
             image.width,
             image.height,
