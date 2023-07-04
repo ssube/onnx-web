@@ -460,7 +460,7 @@ def load_wildcards(server: ServerContext) -> None:
     )
 
     for file in wildcard_files:
-        with open(f"{file}.txt", "r") as f:
+        with open(path.join(server.model_path, "wildcard", f"{file}.txt"), "r") as f:
             lines = f.read().splitlines()
             logger.debug("loading wildcards from %s: %s", file, lines)
             wildcard_data[file] = lines
