@@ -186,7 +186,6 @@ class ImageParams:
     steps: int
     seed: int
     negative_prompt: Optional[str]
-    lpw: bool
     eta: float
     batch: int
     control: Optional[NetworkModel]

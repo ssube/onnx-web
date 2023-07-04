@@ -1,7 +1,7 @@
 from datetime import timedelta
 from logging import getLogger
 from time import monotonic
-from typing import Any, List, Optional, Protocol, Tuple
+from typing import Any, List, Optional, Tuple
 
 from PIL import Image
 
