@@ -205,6 +205,6 @@ class ChainPipeline:
         logger.info(
             "finished pipeline in %s with %s results",
             duration,
-            len(stage_outputs),
+            len(stage_sources),
         )
-        return stage_outputs
+        return stage_sources
