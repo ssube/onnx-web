@@ -90,6 +90,7 @@ correction_models: List[str] = []
 diffusion_models: List[str] = []
 network_models: List[NetworkModel] = []
 upscaling_models: List[str] = []
+wildcard_data: Dict[str, List[str]] = []
 
 # Loaded from extra_models
 extra_hashes: Dict[str, str] = {}
@@ -118,6 +119,10 @@ def get_network_models():
 
 def get_upscaling_models():
     return upscaling_models
+
+
+def get_wildcard_data():
+    return wildcard_data
 
 
 def get_extra_strings():
@@ -444,3 +449,20 @@ def load_platforms(server: ServerContext) -> None:
         "available acceleration platforms: %s",
         ", ".join([str(p) for p in available_platforms]),
     )
+
+
+def load_wildcards(server: ServerContext) -> None:
+    global wildcard_data
+
+    # simple wildcards
+    wildcard_files = list_model_globs(
+        server, ["*.txt"], base_path=path.join(server.model_path, "wildcard")
+    )
+
+    for file in wildcard_files:
+        with open(file, "r") as f:
+            lines = f.read().splitlines()
+            logger.debug("loading wildcards from %s: %s", file, lines)
+            wildcard_data[file] = lines
+
+    # TODO: structured wildcards

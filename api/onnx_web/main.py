@@ -21,6 +21,7 @@ from .server.load import (
     load_models,
     load_params,
     load_platforms,
+    load_wildcards,
 )
 from .server.static import register_static_routes
 from .server.utils import check_paths
@@ -46,6 +47,7 @@ def main():
     load_models(server)
     load_params(server)
     load_platforms(server)
+    load_wildcards(server)
 
     if is_debug():
         gc.set_debug(gc.DEBUG_STATS)

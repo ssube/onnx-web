@@ -6,7 +6,7 @@ from jsonschema import ValidationError, validate
 from ..utils import load_config, load_config_str
 from ..worker.pool import DevicePoolExecutor
 from .context import ServerContext
-from .load import load_extras, load_models
+from .load import load_extras, load_models, load_wildcards
 from .utils import wrap_route
 
 logger = getLogger(__name__)
@@ -88,6 +88,7 @@ def update_extra_models(server: ServerContext):
 
     logger.info("finished converting models, reloading server")
     load_models(server)
+    load_wildcards(server)
     load_extras(server)
 
     conversion_lock = False

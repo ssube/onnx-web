@@ -1,7 +1,8 @@
+import random
 from logging import getLogger
 from math import ceil
 from re import Pattern, compile
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -18,6 +19,8 @@ MAX_TOKENS_PER_GROUP = 77
 CLIP_TOKEN = compile(r"\<clip:([-\w]+):(\d+)\>")
 INVERSION_TOKEN = compile(r"\<inversion:([^:\>]+):(-?[\.|\d]+)\>")
 LORA_TOKEN = compile(r"\<lora:([^:\>]+):(-?[\.|\d]+)\>")
+WILDCARD_TOKEN = compile(r"__([-\w]+)__")
+
 INTERVAL_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
 ALTERNATIVE_RANGE = compile(r"\(([^\)]+)\)")
 
@@ -361,3 +364,28 @@ def encode_prompt(
         )
         for prompt, neg_prompt in prompt_pairs
     ]
+
+
+def replace_wildcards(prompt: str, seed: int, wildcards: Dict[str, List[str]]) -> str:
+    next_match = WILDCARD_TOKEN.search(prompt)
+    remaining_prompt = prompt
+
+    random.seed(seed)
+
+    while next_match is not None:
+        logger.debug("found wildcard in prompt: %s", next_match)
+        name = next_match.groups()
+
+        if name not in wildcards:
+            logger.warning("unknown wildcard: %s", name)
+            continue
+
+        wildcard = random.choice(wildcards.get(name))
+
+        remaining_prompt = (
+            remaining_prompt[: next_match.start()]
+            + wildcard
+            + remaining_prompt[next_match.end() :]
+        )
+
+    return remaining_prompt
