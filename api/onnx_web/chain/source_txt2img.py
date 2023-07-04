@@ -88,7 +88,4 @@ class SourceTxt2ImgStage(BaseStage):
                 callback=callback,
             )
 
-        output = result.images[0]
-
-        logger.info("final output image size: %sx%s", output.width, output.height)
-        return output
+        return result.images
