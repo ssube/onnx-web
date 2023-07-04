@@ -374,7 +374,7 @@ def replace_wildcards(prompt: str, seed: int, wildcards: Dict[str, List[str]]) -
 
     while next_match is not None:
         logger.debug("found wildcard in prompt: %s", next_match)
-        name = next_match.groups()
+        name, *rest = next_match.groups()
 
         wildcard = ""
         if name in wildcards:
@@ -387,5 +387,6 @@ def replace_wildcards(prompt: str, seed: int, wildcards: Dict[str, List[str]]) -
             + wildcard
             + remaining_prompt[next_match.end() :]
         )
+        next_match = WILDCARD_TOKEN.search(remaining_prompt)
 
     return remaining_prompt
