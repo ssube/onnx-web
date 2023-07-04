@@ -65,7 +65,9 @@ class SourceTxt2ImgStage(BaseStage):
                 guidance_scale=params.cfg,
                 latents=latents,
                 negative_prompt=params.negative_prompt,
+                num_images_per_prompt=params.batch,
                 num_inference_steps=params.steps,
+                eta=params.eta,
                 callback=callback,
             )
         else:
@@ -84,7 +86,9 @@ class SourceTxt2ImgStage(BaseStage):
                 guidance_scale=params.cfg,
                 latents=latents,
                 negative_prompt=params.negative_prompt,
+                num_images_per_prompt=params.batch,
                 num_inference_steps=params.steps,
+                eta=params.eta,
                 callback=callback,
             )
 
