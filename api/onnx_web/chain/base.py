@@ -173,7 +173,7 @@ class ChainPipeline:
                         source,
                         tile,
                         stage_params.outscale,
-                        stage_tile,
+                        [stage_tile],
                         **kwargs,
                     )
                     stage_outputs.append(output)
