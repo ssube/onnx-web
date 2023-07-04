@@ -268,7 +268,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
     model_errors = []
 
     if args.sources and "sources" in models:
-        for model in models.get("sources"):
+        for model in models.get("sources", []):
             model = tuple_to_source(model)
             name = model.get("name")
 
@@ -292,7 +292,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                     model_errors.append(name)
 
     if args.networks and "networks" in models:
-        for network in models.get("networks"):
+        for network in models.get("networks", []):
             name = network["name"]
 
             if name in args.skip:
@@ -316,6 +316,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                             conversion,
                             network,
                             dest,
+                            path.join(conversion.model_path, network_type, name),
                         )
                     if network_type == "inversion" and network_model == "concept":
                         dest, hf = fetch_model(
@@ -342,7 +343,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                     model_errors.append(name)
 
     if args.diffusion and "diffusion" in models:
-        for model in models.get("diffusion"):
+        for model in models.get("diffusion", []):
             model = tuple_to_diffusion(model)
             name = model.get("name")
 
@@ -483,7 +484,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                     model_errors.append(name)
 
     if args.upscaling and "upscaling" in models:
-        for model in models.get("upscaling"):
+        for model in models.get("upscaling", []):
             model = tuple_to_upscaling(model)
             name = model.get("name")
 
@@ -516,7 +517,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                     model_errors.append(name)
 
     if args.correction and "correction" in models:
-        for model in models.get("correction"):
+        for model in models.get("correction", []):
             model = tuple_to_correction(model)
             name = model.get("name")
 

@@ -43,6 +43,8 @@ class PromptPhrase:
         if isinstance(other, self.__class__):
             return other.tokens == self.tokens and other.weight == self.weight
 
+        return False
+
 
 class OnnxPromptVisitor(PTNodeVisitor):
     def __init__(self, defaults=True, weight=0.5, **kwargs):

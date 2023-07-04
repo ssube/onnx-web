@@ -21,7 +21,7 @@ class UpscaleHighresStage(BaseStage):
         stage: StageParams,
         params: ImageParams,
         source: Image.Image,
-        *,
+        *args,
         highres: HighresParams,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,

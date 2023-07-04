@@ -1,7 +1,7 @@
 from logging import getLogger
 from os import path
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Optional
 
 import torch
 
@@ -17,16 +17,15 @@ def convert_diffusion_control(
     conversion: ConversionContext,
     model: Dict,
     source: str,
-    model_path: str,
     output_path: str,
-    opset: int,
-    attention_slicing: str,
+    attention_slicing: Optional[str] = None,
 ):
     name = model.get("name")
     source = source or model.get("source")
 
     device = conversion.training_device
     dtype = conversion.torch_dtype()
+    opset = conversion.opset
     logger.debug("using Torch dtype %s for ControlNet", dtype)
 
     output_path = Path(output_path)
@@ -35,7 +34,7 @@ def convert_diffusion_control(
         logger.info("ONNX model already exists, skipping")
         return
 
-    controlnet = ControlNetModel.from_pretrained(model_path, torch_dtype=dtype)
+    controlnet = ControlNetModel.from_pretrained(source, torch_dtype=dtype)
     if attention_slicing is not None:
         logger.info("enabling attention slicing for ControlNet")
         controlnet.set_attention_slice(attention_slicing)

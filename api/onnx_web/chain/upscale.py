@@ -42,8 +42,8 @@ def stage_upscale_correction(
     *,
     upscale: UpscaleParams,
     chain: Optional[ChainPipeline] = None,
-    pre_stages: List[PipelineStage] = None,
-    post_stages: List[PipelineStage] = None,
+    pre_stages: Optional[List[PipelineStage]] = None,
+    post_stages: Optional[List[PipelineStage]] = None,
     **kwargs,
 ) -> ChainPipeline:
     """
@@ -60,14 +60,14 @@ def stage_upscale_correction(
         chain = ChainPipeline()
 
     if pre_stages is not None:
-        for stage, pre_params, pre_opts in pre_stages:
-            chain.append((stage, pre_params, pre_opts))
+        for pre_stage in pre_stages:
+            chain.append(pre_stage)
 
     upscale_opts = {
         **kwargs,
         "upscale": upscale,
     }
-    upscale_stage = None
+    upscale_stage: Optional[PipelineStage] = None
     if upscale.scale > 1:
         if "bsrgan" in upscale.upscale_model:
             bsrgan_params = StageParams(
@@ -94,12 +94,14 @@ def stage_upscale_correction(
         else:
             logger.warn("unknown upscaling model: %s", upscale.upscale_model)
 
-    correct_stage = None
+    correct_stage: Optional[PipelineStage] = None
     if upscale.faces:
         face_params = StageParams(
             tile_size=stage.tile_size, outscale=upscale.face_outscale
         )
-        if "codeformer" in upscale.correction_model:
+        if upscale.correction_model is None:
+            logger.warn("no correction model set, skipping")
+        elif "codeformer" in upscale.correction_model:
             correct_stage = (CorrectCodeformerStage(), face_params, upscale_opts)
         elif "gfpgan" in upscale.correction_model:
             correct_stage = (CorrectGFPGANStage(), face_params, upscale_opts)
@@ -120,7 +122,7 @@ def stage_upscale_correction(
         logger.warn("unknown upscaling order: %s", upscale.upscale_order)
 
     if post_stages is not None:
-        for stage, post_params, post_opts in post_stages:
-            chain.append((stage, post_params, post_opts))
+        for post_stage in post_stages:
+            chain.append(post_stage)
 
     return chain

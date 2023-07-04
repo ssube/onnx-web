@@ -15,7 +15,7 @@ def parse_prompt_compel(pipeline, prompt: str) -> np.ndarray:
 
 
 def parse_prompt_lpw(pipeline, prompt: str, debug=False) -> np.ndarray:
-    pass
+    raise NotImplementedError()
 
 
 def parse_prompt_onnx(pipeline, prompt: str, debug=False) -> np.ndarray:

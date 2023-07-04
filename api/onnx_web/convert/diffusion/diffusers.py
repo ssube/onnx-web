@@ -262,7 +262,7 @@ def convert_diffusion_diffusers(
     conversion: ConversionContext,
     model: Dict,
     source: str,
-    format: str,
+    format: Optional[str],
     hf: bool = False,
 ) -> Tuple[bool, str]:
     """

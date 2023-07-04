@@ -1,4 +1,4 @@
-from .base import ChainPipeline, PipelineStage, StageCallback, StageParams
+from .base import ChainPipeline, PipelineStage, StageParams
 from .blend_img2img import BlendImg2ImgStage
 from .blend_inpaint import BlendInpaintStage
 from .blend_linear import BlendLinearStage

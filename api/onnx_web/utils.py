@@ -6,7 +6,7 @@ from json import JSONDecodeError
 from logging import getLogger
 from os import environ, path
 from platform import system
-from typing import Any, Dict, List, Optional, Sequence, Union
+from typing import Any, Dict, List, Optional, Sequence, Union, TypeVar
 
 import torch
 from yaml import safe_load
@@ -43,9 +43,11 @@ def get_and_clamp_int(
     return min(max(int(args.get(key, default_value)), min_value), max_value)
 
 
+TElem = TypeVar("TElem")
+
 def get_from_list(
-    args: Any, key: str, values: Sequence[Any], default_value: Optional[Any] = None
-) -> Optional[Any]:
+    args: Any, key: str, values: Sequence[TElem], default_value: Optional[TElem] = None
+) -> Optional[TElem]:
     selected = args.get(key, default_value)
     if selected in values:
         return selected
@@ -57,7 +59,7 @@ def get_from_list(
     return None
 
 
-def get_from_map(args: Any, key: str, values: Dict[str, Any], default: Any) -> Any:
+def get_from_map(args: Any, key: str, values: Dict[str, TElem], default: TElem) -> TElem:
     selected = args.get(key, default)
     if selected in values:
         return values[selected]
@@ -65,7 +67,7 @@ def get_from_map(args: Any, key: str, values: Dict[str, Any], default: Any) -> A
         return values[default]
 
 
-def get_not_empty(args: Any, key: str, default: Any) -> Any:
+def get_not_empty(args: Any, key: str, default: TElem) -> TElem:
     val = args.get(key, default)
 
     if val is None or len(val) == 0:

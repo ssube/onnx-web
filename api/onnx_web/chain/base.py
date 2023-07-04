@@ -16,26 +16,6 @@ from .tile import needs_tile, process_tile_order
 logger = getLogger(__name__)
 
 
-class StageCallback(Protocol):
-    """
-    Definition for a stage job function.
-    """
-
-    def __call__(
-        self,
-        job: WorkerContext,
-        server: ServerContext,
-        stage: StageParams,
-        params: ImageParams,
-        source: Image.Image,
-        **kwargs: Any
-    ) -> Image.Image:
-        """
-        Run this stage against a source image.
-        """
-        pass
-
-
 PipelineStage = Tuple[BaseStage, StageParams, Optional[dict]]
 
 
@@ -77,7 +57,7 @@ class ChainPipeline:
         """
         self.stages = list(stages or [])
 
-    def append(self, stage: PipelineStage):
+    def append(self, stage: Optional[PipelineStage]):
         """
         DEPRECATED: use `stage` instead
 
@@ -100,7 +80,7 @@ class ChainPipeline:
         """
         return self(job, server, params, source=source, callback=callback, **kwargs)
 
-    def stage(self, callback: StageCallback, params: StageParams, **kwargs):
+    def stage(self, callback: BaseStage, params: StageParams, **kwargs):
         self.stages.append((callback, params, kwargs))
         return self
 
