@@ -90,10 +90,10 @@ class ChainPipeline:
         job: WorkerContext,
         server: ServerContext,
         params: ImageParams,
-        source: Optional[Image.Image] = None,
+        source: List[Image.Image],
         callback: Optional[ProgressCallback] = None,
         **pipeline_kwargs
-    ) -> Image.Image:
+    ) -> List[Image.Image]:
         """
         DEPRECATED: use `run` instead
         """
@@ -101,6 +101,8 @@ class ChainPipeline:
             callback = ChainProgress.from_progress(callback)
 
         start = monotonic()
+
+        # TODO: turn this into stage images
         image = source
 
         if source is not None:

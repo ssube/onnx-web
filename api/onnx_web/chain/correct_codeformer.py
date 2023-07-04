@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Optional
+from typing import List, Optional
 
 from PIL import Image
 
@@ -18,20 +18,18 @@ class CorrectCodeformerStage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *,
         stage_source: Optional[Image.Image] = None,
         upscale: UpscaleParams,
         **kwargs,
-    ) -> Image.Image:
+    ) -> List[Image.Image]:
         # must be within the load function for patch to take effect
         # TODO: rewrite and remove
         from codeformer import CodeFormer
-
-        source = stage_source or source
 
         upscale = upscale.with_args(**kwargs)
 
         device = job.get_device()
         pipe = CodeFormer(upscale=upscale.face_outscale).to(device.torch_str())
-        return pipe(source)
+        return [pipe(source) for source in sources]

@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Optional
+from typing import List, Optional
 
 from PIL import Image
 
@@ -18,30 +18,32 @@ class UpscaleSimpleStage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *,
         method: str,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> Image.Image:
-        source = stage_source or source
-
+    ) -> List[Image.Image]:
         if upscale.scale <= 1:
             logger.debug(
                 "simple upscale stage run with scale of %s, skipping", upscale.scale
             )
-            return source
+            return sources
 
-        scaled_size = (source.width * upscale.scale, source.height * upscale.scale)
+        outputs = []
+        for source in sources:
+            scaled_size = (source.width * upscale.scale, source.height * upscale.scale)
 
-        if method == "bilinear":
-            logger.debug("using bilinear interpolation for highres")
-            source = source.resize(scaled_size, resample=Image.Resampling.BILINEAR)
-        elif method == "lanczos":
-            logger.debug("using Lanczos interpolation for highres")
-            source = source.resize(scaled_size, resample=Image.Resampling.LANCZOS)
-        else:
-            logger.warning("unknown upscaling method: %s", method)
+            if method == "bilinear":
+                logger.debug("using bilinear interpolation for highres")
+                source = source.resize(scaled_size, resample=Image.Resampling.BILINEAR)
+            elif method == "lanczos":
+                logger.debug("using Lanczos interpolation for highres")
+                source = source.resize(scaled_size, resample=Image.Resampling.LANCZOS)
+            else:
+                logger.warning("unknown upscaling method: %s", method)
 
-        return source
+            outputs.append(source)
+
+        return outputs

@@ -1,4 +1,5 @@
 from logging import getLogger
+from typing import List
 
 from PIL import Image
 
@@ -17,18 +18,23 @@ class ReduceThumbnailStage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *,
         size: Size,
         stage_source: Image.Image,
         **kwargs,
-    ) -> Image.Image:
-        source = stage_source or source
-        image = source.copy()
+    ) -> List[Image.Image]:
+        outputs = []
 
-        image = image.thumbnail((size.width, size.height))
+        for source in sources:
+            image = source.copy()
 
-        logger.info(
-            "created thumbnail with dimensions: %sx%s", image.width, image.height
-        )
-        return image
+            image = image.thumbnail((size.width, size.height))
+
+            logger.info(
+                "created thumbnail with dimensions: %sx%s", image.width, image.height
+            )
+
+            outputs.append(image)
+
+        return outputs

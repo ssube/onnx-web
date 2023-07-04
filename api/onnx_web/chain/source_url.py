@@ -1,5 +1,6 @@
 from io import BytesIO
 from logging import getLogger
+from typing import List
 
 import requests
 from PIL import Image
@@ -19,22 +20,25 @@ class SourceURLStage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *,
-        source_url: str,
+        source_urls: List[str],
         stage_source: Image.Image,
         **kwargs,
-    ) -> Image.Image:
-        source = stage_source or source
+    ) -> List[Image.Image]:
         logger.info("loading image from URL source")
 
-        if source is not None:
+        if len(sources) > 0:
             logger.warn(
                 "a source image was passed to a source stage, and will be discarded"
             )
 
-        response = requests.get(source_url)
-        output = Image.open(BytesIO(response.content))
+        outputs = []
+        for url in source_urls:
+            response = requests.get(url)
+            output = Image.open(BytesIO(response.content))
 
-        logger.info("final output image size: %sx%s", output.width, output.height)
-        return output
+            logger.info("final output image size: %sx%s", output.width, output.height)
+            outputs.append(output)
+
+        return outputs

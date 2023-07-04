@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Optional
+from typing import List, Optional
 
 from PIL import Image
 
@@ -20,13 +20,13 @@ class BlendMaskStage(BaseStage):
         server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *,
         stage_source: Optional[Image.Image] = None,
         stage_mask: Optional[Image.Image] = None,
         _callback: Optional[ProgressCallback] = None,
         **kwargs,
-    ) -> Image.Image:
+    ) -> List[Image.Image]:
         logger.info("blending image using mask")
 
         mult_mask = Image.new("RGBA", stage_mask.size, color="black")
@@ -37,4 +37,4 @@ class BlendMaskStage(BaseStage):
             save_image(server, "last-mask.png", stage_mask)
             save_image(server, "last-mult-mask.png", mult_mask)
 
-        return Image.composite(stage_source, source, mult_mask)
+        return [Image.composite(stage_source, source, mult_mask) for source in sources]

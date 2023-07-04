@@ -18,12 +18,13 @@ class BlendLinearStage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
+        sources: List[Image.Image],
         *,
         alpha: float,
-        sources: Optional[List[Image.Image]] = None,
+        stage_source: Optional[Image.Image] = None,
         _callback: Optional[ProgressCallback] = None,
         **kwargs,
-    ) -> Image.Image:
-        logger.info("blending image using linear interpolation")
+    ) -> List[Image.Image]:
+        logger.info("blending source images using linear interpolation")
 
-        return Image.blend(sources[1], sources[0], alpha)
+        return [Image.blend(source, stage_source, alpha) for source in sources]

@@ -1,6 +1,6 @@
 from logging import getLogger
 from os import path
-from typing import Optional
+from typing import List, Optional
 
 import numpy as np
 from PIL import Image
@@ -54,45 +54,48 @@ class UpscaleSwinIRStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> Image.Image:
+    ) -> List[Image.Image]:
         upscale = upscale.with_args(**kwargs)
-        source = stage_source or source
 
         if upscale.upscale_model is None:
             logger.warn("no correction model given, skipping")
-            return source
+            return sources
 
         logger.info("correcting faces with SwinIR model: %s", upscale.upscale_model)
         device = job.get_device()
         swinir = self.load(server, stage, upscale, device)
 
-        # TODO: add support for grayscale (1-channel) images
-        image = np.array(source) / 255.0
-        image = image[:, :, [2, 1, 0]].astype(np.float32).transpose((2, 0, 1))
-        image = np.expand_dims(image, axis=0)
-        logger.trace("SwinIR input shape: %s", image.shape)
+        outputs = []
+        for source in sources:
+            # TODO: add support for grayscale (1-channel) images
+            image = np.array(source) / 255.0
+            image = image[:, :, [2, 1, 0]].astype(np.float32).transpose((2, 0, 1))
+            image = np.expand_dims(image, axis=0)
+            logger.trace("SwinIR input shape: %s", image.shape)
 
-        scale = upscale.outscale
-        dest = np.zeros(
-            (
-                image.shape[0],
-                image.shape[1],
-                image.shape[2] * scale,
-                image.shape[3] * scale,
+            scale = upscale.outscale
+            dest = np.zeros(
+                (
+                    image.shape[0],
+                    image.shape[1],
+                    image.shape[2] * scale,
+                    image.shape[3] * scale,
+                )
             )
-        )
-        logger.trace("SwinIR output shape: %s", dest.shape)
+            logger.trace("SwinIR output shape: %s", dest.shape)
 
-        dest = swinir(image)
-        dest = np.clip(np.squeeze(dest, axis=0), 0, 1)
-        dest = dest[[2, 1, 0], :, :].transpose((1, 2, 0))
-        dest = (dest * 255.0).round().astype(np.uint8)
+            dest = swinir(image)
+            dest = np.clip(np.squeeze(dest, axis=0), 0, 1)
+            dest = dest[[2, 1, 0], :, :].transpose((1, 2, 0))
+            dest = (dest * 255.0).round().astype(np.uint8)
 
-        output = Image.fromarray(dest, "RGB")
-        logger.info("output image size: %s x %s", output.width, output.height)
-        return output
+            output = Image.fromarray(dest, "RGB")
+            logger.info("output image size: %s x %s", output.width, output.height)
+            outputs.append(output)
+
+        return outputs

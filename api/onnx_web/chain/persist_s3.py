@@ -1,6 +1,6 @@
 from io import BytesIO
 from logging import getLogger
-from typing import Optional
+from typing import List, Optional
 
 from boto3 import Session
 from PIL import Image
@@ -20,7 +20,7 @@ class PersistS3Stage(BaseStage):
         server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *,
         output: str,
         bucket: str,
@@ -28,20 +28,19 @@ class PersistS3Stage(BaseStage):
         profile_name: Optional[str] = None,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> Image.Image:
-        source = stage_source or source
-
+    ) -> List[Image.Image]:
         session = Session(profile_name=profile_name)
         s3 = session.client("s3", endpoint_url=endpoint_url)
 
-        data = BytesIO()
-        source.save(data, format=server.image_format)
-        data.seek(0)
+        for source in sources:
+            data = BytesIO()
+            source.save(data, format=server.image_format)
+            data.seek(0)
 
-        try:
-            s3.upload_fileobj(data, bucket, output)
-            logger.info("saved image to s3://%s/%s", bucket, output)
-        except Exception:
-            logger.exception("error saving image to S3")
+            try:
+                s3.upload_fileobj(data, bucket, output)
+                logger.info("saved image to s3://%s/%s", bucket, output)
+            except Exception:
+                logger.exception("error saving image to S3")
 
-        return source
+        return sources

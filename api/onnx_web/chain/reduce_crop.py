@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Optional
+from typing import List, Optional
 
 from PIL import Image
 
@@ -18,17 +18,20 @@ class ReduceCropStage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *,
         origin: Size,
         size: Size,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> Image.Image:
-        source = stage_source or source
+    ) -> List[Image.Image]:
+        outputs = []
 
-        image = source.crop((origin.width, origin.height, size.width, size.height))
-        logger.info(
-            "created thumbnail with dimensions: %sx%s", image.width, image.height
-        )
-        return image
+        for source in sources:
+            image = source.crop((origin.width, origin.height, size.width, size.height))
+            logger.info(
+                "created thumbnail with dimensions: %sx%s", image.width, image.height
+            )
+            outputs.append(image)
+
+        return outputs

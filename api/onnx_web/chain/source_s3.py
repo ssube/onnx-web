@@ -1,6 +1,6 @@
 from io import BytesIO
 from logging import getLogger
-from typing import Optional
+from typing import List, Optional
 
 from boto3 import Session
 from PIL import Image
@@ -17,29 +17,30 @@ class SourceS3Stage(BaseStage):
     def run(
         self,
         _job: WorkerContext,
-        server: ServerContext,
+        _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        _sources: List[Image.Image],
         *,
-        source_key: str,
+        source_keys: List[str],
         bucket: str,
         endpoint_url: Optional[str] = None,
         profile_name: Optional[str] = None,
-        stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> Image.Image:
-        source = stage_source or source
-
+    ) -> List[Image.Image]:
         session = Session(profile_name=profile_name)
         s3 = session.client("s3", endpoint_url=endpoint_url)
 
-        try:
-            logger.info("loading image from s3://%s/%s", bucket, source_key)
-            data = BytesIO()
-            s3.download_fileobj(bucket, source_key, data)
+        outputs = []
+        for key in source_keys:
+            try:
+                logger.info("loading image from s3://%s/%s", bucket, key)
+                data = BytesIO()
+                s3.download_fileobj(bucket, key, data)
 
-            data.seek(0)
-            return Image.open(data)
-        except Exception:
-            logger.exception("error loading image from S3")
+                data.seek(0)
+                outputs.append(Image.open(data))
+            except Exception:
+                logger.exception("error loading image from S3")
+
+        return outputs

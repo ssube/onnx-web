@@ -1,6 +1,6 @@
 from logging import getLogger
 from os import path
-from typing import Optional
+from typing import List, Optional
 
 import numpy as np
 from PIL import Image
@@ -57,31 +57,32 @@ class CorrectGFPGANStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> Image.Image:
+    ) -> List[Image.Image]:
         upscale = upscale.with_args(**kwargs)
-        source = stage_source or source
 
         if upscale.correction_model is None:
             logger.warn("no face model given, skipping")
-            return source
+            return sources
 
         logger.info("correcting faces with GFPGAN model: %s", upscale.correction_model)
         device = job.get_device()
         gfpgan = self.load(server, stage, upscale, device)
 
-        output = np.array(source)
-        _, _, output = gfpgan.enhance(
-            output,
-            has_aligned=False,
-            only_center_face=False,
-            paste_back=True,
-            weight=upscale.face_strength,
-        )
-        output = Image.fromarray(output, "RGB")
+        outputs = []
+        for source in sources:
+            output = np.array(source)
+            _, _, output = gfpgan.enhance(
+                output,
+                has_aligned=False,
+                only_center_face=False,
+                paste_back=True,
+                weight=upscale.face_strength,
+            )
+            outputs.append(Image.fromarray(output, "RGB"))
 
-        return output
+        return outputs

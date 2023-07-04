@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Optional
+from typing import List, Optional
 
 from PIL import Image
 
@@ -20,25 +20,26 @@ class UpscaleHighresStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *args,
         highres: HighresParams,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         callback: Optional[ProgressCallback] = None,
         **kwargs,
-    ) -> Image.Image:
-        source = stage_source or source
-
+    ) -> List[Image.Image]:
         if highres.scale <= 1:
-            return source
+            return sources
 
         chain = stage_highres(stage, params, highres, upscale)
 
-        return chain(
-            job,
-            server,
-            params,
-            source,
-            callback=callback,
-        )
+        return [
+            chain(
+                job,
+                server,
+                params,
+                source,
+                callback=callback,
+            )
+            for source in sources
+        ]

@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Callable
+from typing import Callable, List
 
 from PIL import Image
 
@@ -18,22 +18,25 @@ class SourceNoiseStage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *,
         size: Size,
         noise_source: Callable,
         stage_source: Image.Image,
         **kwargs,
-    ) -> Image.Image:
-        source = stage_source or source
+    ) -> List[Image.Image]:
         logger.info("generating image from noise source")
 
-        if source is not None:
+        if len(sources) > 0:
             logger.warn(
-                "a source image was passed to a noise stage, but will be discarded"
+                "source images were passed to a noise stage and will be discarded"
             )
 
-        output = noise_source(source, (size.width, size.height), (0, 0))
+        outputs = []
+        for source in sources:
+            output = noise_source(source, (size.width, size.height), (0, 0))
 
-        logger.info("final output image size: %sx%s", output.width, output.height)
-        return output
+            logger.info("final output image size: %sx%s", output.width, output.height)
+            outputs.append(output)
+
+        return outputs

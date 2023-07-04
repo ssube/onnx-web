@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from PIL import Image
 
@@ -16,11 +16,11 @@ class BaseStage:
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *args,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> Image.Image:
+    ) -> List[Image.Image]:
         raise NotImplementedError()
 
     def steps(

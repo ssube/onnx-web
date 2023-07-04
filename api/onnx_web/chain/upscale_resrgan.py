@@ -1,6 +1,6 @@
 from logging import getLogger
 from os import path
-from typing import Optional
+from typing import List, Optional
 
 import numpy as np
 from PIL import Image
@@ -77,20 +77,25 @@ class UpscaleRealESRGANStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
-        source: Image.Image,
+        sources: List[Image.Image],
         *,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> Image.Image:
-        source = stage_source or source
+    ) -> List[Image.Image]:
         logger.info("upscaling image with Real ESRGAN: x%s", upscale.scale)
 
-        output = np.array(source)
-        upsampler = self.load(server, upscale, job.get_device(), tile=stage.tile_size)
+        outputs = []
+        for source in sources:
+            output = np.array(source)
+            upsampler = self.load(
+                server, upscale, job.get_device(), tile=stage.tile_size
+            )
 
-        output, _ = upsampler.enhance(output, outscale=upscale.outscale)
+            output, _ = upsampler.enhance(output, outscale=upscale.outscale)
 
-        output = Image.fromarray(output, "RGB")
-        logger.info("final output image size: %sx%s", output.width, output.height)
-        return output
+            output = Image.fromarray(output, "RGB")
+            logger.info("final output image size: %sx%s", output.width, output.height)
+            outputs.append(output)
+
+        return outputs
