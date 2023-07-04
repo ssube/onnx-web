@@ -90,7 +90,7 @@ correction_models: List[str] = []
 diffusion_models: List[str] = []
 network_models: List[NetworkModel] = []
 upscaling_models: List[str] = []
-wildcard_data: Dict[str, List[str]] = []
+wildcard_data: Dict[str, List[str]] = {}
 
 # Loaded from extra_models
 extra_hashes: Dict[str, str] = {}
