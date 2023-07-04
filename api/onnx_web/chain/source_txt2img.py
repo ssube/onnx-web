@@ -43,7 +43,7 @@ class SourceTxt2ImgStage(BaseStage):
 
         prompt_pairs, loras, inversions = parse_prompt(params)
 
-        latents = get_latents_from_seed(params.seed, size)
+        latents = get_latents_from_seed(params.seed, size, params.batch)
         pipe_type = params.get_valid_pipeline("txt2img")
         pipe = load_pipeline(
             server,
