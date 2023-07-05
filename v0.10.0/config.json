@@ -68,6 +68,9 @@
       "max": 8192,
       "step": 8
     },
+    "highres": {
+      "default": false
+    },
     "highresMethod": {
       "default": "lanczos",
       "keys": [
