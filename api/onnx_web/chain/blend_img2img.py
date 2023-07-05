@@ -7,7 +7,7 @@ from PIL import Image
 
 from ..diffusers.load import load_pipeline
 from ..diffusers.utils import encode_prompt, parse_prompt
-from ..params import ImageParams, StageParams
+from ..params import ImageParams, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
 from .stage import BaseStage
@@ -16,6 +16,8 @@ logger = getLogger(__name__)
 
 
 class BlendImg2ImgStage(BaseStage):
+    max_tile = SizeChart.unlimited
+
     def run(
         self,
         job: WorkerContext,

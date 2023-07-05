@@ -20,6 +20,8 @@ logger = getLogger(__name__)
 
 
 class UpscaleOutpaintStage(BaseStage):
+    max_tile = SizeChart.unlimited
+
     def run(
         self,
         job: WorkerContext,
