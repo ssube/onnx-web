@@ -138,7 +138,7 @@ class UpscaleOutpaintStage(BaseStage):
 
             if params.pipeline == "panorama":
                 logger.debug("outpainting with one shot panorama, no tiling")
-                return outpaint(source, (0, 0, max(source.width, source.height)))
+                output = outpaint(source, (0, 0, max(source.width, source.height)))
             if overlap == 0:
                 logger.debug("outpainting with 0 margin, using grid tiling")
                 output = process_tile_grid(source, SizeChart.auto, 1, [outpaint])
