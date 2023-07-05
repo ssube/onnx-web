@@ -67,6 +67,6 @@ class UpscaleStableDiffusionStage(BaseStage):
                 noise_level=upscale.denoise,
                 callback=callback,
             )
-            outputs.extend(result.image)
+            outputs.extend(result.images)
 
         return outputs
