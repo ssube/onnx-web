@@ -82,7 +82,7 @@ def run_txt2img_pipeline(
     progress = job.get_progress_callback()
     images = chain(job, server, params, [], callback=progress)
 
-    _prompt_pairs, loras, inversions = parse_prompt(params)
+    _prompt_pairs, loras, inversions = parse_prompt(params, use_input=True)
 
     for image, output in zip(images, outputs):
         dest = save_image(
@@ -177,7 +177,7 @@ def run_img2img_pipeline(
         images.append(source)
 
     # save with metadata
-    _prompt_pairs, loras, inversions = parse_prompt(params)
+    _prompt_pairs, loras, inversions = parse_prompt(params, use_input=True)
     size = Size(*source.size)
 
     for image, output in zip(images, outputs):
@@ -263,7 +263,7 @@ def run_inpaint_pipeline(
     progress = job.get_progress_callback()
     images = chain(job, server, params, [source], callback=progress)
 
-    _prompt_pairs, loras, inversions = parse_prompt(params)
+    _prompt_pairs, loras, inversions = parse_prompt(params, use_input=True)
     for image, output in zip(images, outputs):
         dest = save_image(
             server,
@@ -331,7 +331,7 @@ def run_upscale_pipeline(
     progress = job.get_progress_callback()
     images = chain(job, server, params, [source], callback=progress)
 
-    _prompt_pairs, loras, inversions = parse_prompt(params)
+    _prompt_pairs, loras, inversions = parse_prompt(params, use_input=True)
     for image, output in zip(images, outputs):
         dest = save_image(
             server,
