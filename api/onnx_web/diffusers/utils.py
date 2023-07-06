@@ -1,9 +1,9 @@
 import random
+from copy import deepcopy
 from logging import getLogger
 from math import ceil
 from re import Pattern, compile
 from typing import Dict, List, Optional, Tuple
-from copy import deepcopy
 
 import numpy as np
 import torch
