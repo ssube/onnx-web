@@ -26,9 +26,9 @@ except Exception as err:
 
 logger = getLogger(__name__)
 
-FAST_TEST = 20
-SLOW_TEST = 50
-VERY_SLOW_TEST = 100
+FAST_TEST = 10
+SLOW_TEST = 25
+VERY_SLOW_TEST = 75
 
 
 def test_path(relpath: str) -> str:
