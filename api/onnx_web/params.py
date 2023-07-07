@@ -317,7 +317,7 @@ class StageParams:
         self,
         name: Optional[str] = None,
         outscale: int = 1,
-        tile_order: str = TileOrder.grid,
+        tile_order: str = TileOrder.spiral,
         tile_size: int = SizeChart.auto,
         # batch_size: int = 1,
     ) -> None:
