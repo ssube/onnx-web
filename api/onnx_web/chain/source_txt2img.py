@@ -41,7 +41,9 @@ class SourceTxt2ImgStage(BaseStage):
                 "a source image was passed to a txt2img stage, and will be discarded"
             )
 
-        prompt_pairs, loras, inversions = parse_prompt(params)
+        prompt_pairs, loras, inversions, (prompt, negative_prompt) = parse_prompt(
+            params
+        )
 
         latents = get_latents_from_seed(params.seed, size, params.batch)
         pipe_type = params.get_valid_pipeline("txt2img")
@@ -58,13 +60,13 @@ class SourceTxt2ImgStage(BaseStage):
             logger.debug("using LPW pipeline for txt2img")
             rng = torch.manual_seed(params.seed)
             result = pipe.text2img(
-                params.prompt,
+                prompt,
                 height=size.height,
                 width=size.width,
                 generator=rng,
                 guidance_scale=params.cfg,
                 latents=latents,
-                negative_prompt=params.negative_prompt,
+                negative_prompt=negative_prompt,
                 num_images_per_prompt=params.batch,
                 num_inference_steps=params.steps,
                 eta=params.eta,
@@ -79,13 +81,13 @@ class SourceTxt2ImgStage(BaseStage):
 
             rng = np.random.RandomState(params.seed)
             result = pipe(
-                params.prompt,
+                prompt,
                 height=size.height,
                 width=size.width,
                 generator=rng,
                 guidance_scale=params.cfg,
                 latents=latents,
-                negative_prompt=params.negative_prompt,
+                negative_prompt=negative_prompt,
                 num_images_per_prompt=params.batch,
                 num_inference_steps=params.steps,
                 eta=params.eta,

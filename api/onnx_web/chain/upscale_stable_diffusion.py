@@ -35,7 +35,9 @@ class UpscaleStableDiffusionStage(BaseStage):
             "upscaling with Stable Diffusion, %s steps: %s", params.steps, params.prompt
         )
 
-        prompt_pairs, _loras, _inversions = parse_prompt(params)
+        prompt_pairs, _loras, _inversions, (prompt, negative_prompt) = parse_prompt(
+            params
+        )
 
         pipeline = load_pipeline(
             server,
@@ -57,11 +59,11 @@ class UpscaleStableDiffusionStage(BaseStage):
         outputs = []
         for source in sources:
             result = pipeline(
-                params.prompt,
+                prompt,
                 source,
                 generator=generator,
                 guidance_scale=params.cfg,
-                negative_prompt=params.negative_prompt,
+                negative_prompt=negative_prompt,
                 num_inference_steps=params.steps,
                 eta=params.eta,
                 noise_level=upscale.denoise,

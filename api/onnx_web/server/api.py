@@ -179,11 +179,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         get_config_value("strength", "min"),
     )
 
-    params.prompt = replace_wildcards(params.prompt, params.seed, get_wildcard_data())
-    if params.negative_prompt is not None:
-        params.negative_prompt = replace_wildcards(
-            params.negative_prompt, params.seed, get_wildcard_data()
-        )
+    replace_wildcards(params, get_wildcard_data())
 
     output_count = params.batch
     if source_filter is not None and source_filter != "none":
@@ -221,11 +217,7 @@ def txt2img(server: ServerContext, pool: DevicePoolExecutor):
     upscale = upscale_from_request()
     highres = highres_from_request()
 
-    params.prompt = replace_wildcards(params.prompt, params.seed, get_wildcard_data())
-    if params.negative_prompt is not None:
-        params.negative_prompt = replace_wildcards(
-            params.negative_prompt, params.seed, get_wildcard_data()
-        )
+    replace_wildcards(params, get_wildcard_data())
 
     output = make_output_name(server, "txt2img", params, size)
 
@@ -271,11 +263,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
         request.args, "tileOrder", [TileOrder.grid, TileOrder.kernel, TileOrder.spiral]
     )
 
-    params.prompt = replace_wildcards(params.prompt, params.seed, get_wildcard_data())
-    if params.negative_prompt is not None:
-        params.negative_prompt = replace_wildcards(
-            params.negative_prompt, params.seed, get_wildcard_data()
-        )
+    replace_wildcards(params, get_wildcard_data())
 
     output = make_output_name(
         server,
@@ -334,11 +322,7 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
     upscale = upscale_from_request()
     highres = highres_from_request()
 
-    params.prompt = replace_wildcards(params.prompt, params.seed, get_wildcard_data())
-    if params.negative_prompt is not None:
-        params.negative_prompt = replace_wildcards(
-            params.negative_prompt, params.seed, get_wildcard_data()
-        )
+    replace_wildcards(params, get_wildcard_data())
 
     output = make_output_name(server, "upscale", params, size)
 
@@ -380,11 +364,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
     output = make_output_name(server, "chain", params, size)
     job_name = output[0]
 
-    params.prompt = replace_wildcards(params.prompt, params.seed, get_wildcard_data())
-    if params.negative_prompt is not None:
-        params.negative_prompt = replace_wildcards(
-            params.negative_prompt, params.seed, get_wildcard_data()
-        )
+    replace_wildcards(params, get_wildcard_data())
 
     pipeline = ChainPipeline()
     for stage_data in data.get("stages", []):

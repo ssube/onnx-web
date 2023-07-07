@@ -312,12 +312,17 @@ def get_scaled_latents(
 def parse_prompt(
     params: ImageParams,
     use_input: bool = False,
-) -> Tuple[List[Tuple[str, str]], List[Tuple[str, float]], List[Tuple[str, float]]]:
+) -> Tuple[
+    List[Tuple[str, str]],
+    List[Tuple[str, float]],
+    List[Tuple[str, float]],
+    Tuple[str, str],
+]:
     prompt, loras = get_loras_from_prompt(
         params.input_prompt if use_input else params.prompt
     )
     prompt, inversions = get_inversions_from_prompt(prompt)
-    params.prompt = prompt
+    # params.prompt = prompt
 
     neg_prompt = None
     if params.input_negative_prompt is not None:
@@ -325,9 +330,8 @@ def parse_prompt(
             params.input_negative_prompt if use_input else params.negative_prompt
         )
         neg_prompt, neg_inversions = get_inversions_from_prompt(neg_prompt)
-        params.negative_prompt = neg_prompt
+        # params.negative_prompt = neg_prompt
 
-        # TODO: check whether these need to be * -1
         loras.extend(neg_loras)
         inversions.extend(neg_inversions)
 
@@ -352,7 +356,7 @@ def parse_prompt(
         for i in range(neg_prompt_count, prompt_count):
             neg_prompts.append(neg_prompts[i % neg_prompt_count])
 
-    return list(zip(prompts, neg_prompts)), loras, inversions
+    return list(zip(prompts, neg_prompts)), loras, inversions, (prompt, neg_prompt)
 
 
 def encode_prompt(
@@ -372,7 +376,7 @@ def encode_prompt(
     ]
 
 
-def replace_wildcards(prompt: str, seed: int, wildcards: Dict[str, List[str]]) -> str:
+def parse_wildcards(prompt: str, seed: int, wildcards: Dict[str, List[str]]) -> str:
     next_match = WILDCARD_TOKEN.search(prompt)
     remaining_prompt = prompt
 
@@ -398,6 +402,14 @@ def replace_wildcards(prompt: str, seed: int, wildcards: Dict[str, List[str]]) -
         next_match = WILDCARD_TOKEN.search(remaining_prompt)
 
     return remaining_prompt
+
+
+def replace_wildcards(params: ImageParams, wildcards: Dict[str, List[str]]):
+    params.prompt = parse_wildcards(params.prompt, params.seed, wildcards)
+    if params.negative_prompt is not None:
+        params.negative_prompt = parse_wildcards(
+            params.negative_prompt, params.seed, wildcards
+        )
 
 
 def pop_random(list: List[str]) -> str:
