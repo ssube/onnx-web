@@ -132,6 +132,7 @@ def run_img2img_pipeline(
         BlendImg2ImgStage(),
         stage,
         strength=strength,
+        overlap=params.overlap,
     )
 
     # apply upscaling and correction, before highres
