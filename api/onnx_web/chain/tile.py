@@ -1,14 +1,14 @@
+from enum import Enum
+import itertools
 from logging import getLogger
 from math import ceil
 from typing import List, Optional, Protocol, Tuple
-from enum import Enum
-import itertools
 
 import numpy as np
 from PIL import Image
 
-from ..params import Size, TileOrder
 from ..image.noise_source import noise_source_histogram
+from ..params import Size, TileOrder
 
 # from skimage.exposure import match_histograms
 
@@ -142,18 +142,14 @@ def blend_tiles(
         margin_right = writable_right - scaled_right
         
         logger.debug(
-            "tile broadcast shapes: %s, %s, %s, %s",
+            "tile broadcast shapes: %s, %s, %s, %s \n writing shapes: %s, %s, %s, %s",
             writable_top,
             writable_left,
             writable_bottom,
             writable_right,
-        )
-        
-        logger.debug(
-            "writing shapes: %s, %s, %s, %s",
             margin_top,
             equalized.shape[0] + margin_bottom,
-            scaled_left,
+            margin_left,
             equalized.shape[0] + margin_right,
         )
 
