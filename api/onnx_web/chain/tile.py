@@ -1,5 +1,5 @@
-from enum import Enum
 import itertools
+from enum import Enum
 from logging import getLogger
 from math import ceil
 from typing import List, Optional, Protocol, Tuple
@@ -130,17 +130,17 @@ def blend_tiles(
         # equalized size may be wrong/too much
         scaled_bottom = scaled_top + equalized.shape[0]
         scaled_right = scaled_left + equalized.shape[1]
-        
-        writable_top = max(scaled_top,0)
-        writable_left = max(scaled_left,0)
-        writable_bottom = min(scaled_bottom,scaled_size[0])
-        writable_right = min(scaled_right,scaled_size[1])
-        
+
+        writable_top = max(scaled_top, 0)
+        writable_left = max(scaled_left, 0)
+        writable_bottom = min(scaled_bottom, scaled_size[0])
+        writable_right = min(scaled_right, scaled_size[1])
+
         margin_top = writable_top - scaled_top
         margin_left = writable_left - scaled_left
         margin_bottom = writable_bottom - scaled_bottom
         margin_right = writable_right - scaled_right
-        
+
         logger.debug(
             "tile broadcast shapes: %s, %s, %s, %s \n writing shapes: %s, %s, %s, %s",
             writable_top,
@@ -154,10 +154,16 @@ def blend_tiles(
         )
 
         # accumulation
-        value[writable_top:writable_bottom, writable_left:writable_right, :] += equalized[
-            margin_top : equalized.shape[0] + margin_bottom, margin_left : equalized.shape[1] + margin_right, :
+        value[
+            writable_top:writable_bottom, writable_left:writable_right, :
+        ] += equalized[
+            margin_top : equalized.shape[0] + margin_bottom,
+            margin_left : equalized.shape[1] + margin_right,
+            :,
         ]
-        count[writable_top:writable_bottom, writable_left:writable_right, :] += np.repeat(
+        count[
+            writable_top:writable_bottom, writable_left:writable_right, :
+        ] += np.repeat(
             mask[
                 margin_top : equalized.shape[0] + margin_bottom,
                 margin_left : equalized.shape[1] + margin_right,
@@ -239,13 +245,13 @@ def process_tile_spiral(
         logger.info(
             "processing tile %s of %s, %sx%s", counter, len(tile_coords), left, top
         )
-        
+
         right = left + tile
         bottom = top + tile
-        
+
         left_margin = right_margin = top_margin = bottom_margin = 0
         needs_margin = False
-        
+
         if left < 0:
             needs_margin = True
             left_margin = 0 - left
@@ -258,11 +264,22 @@ def process_tile_spiral(
         if bottom > height:
             needs_margin = True
             bottom_margin = height - bottom
-        
+
         if needs_margin:
-            base_image = source.crop((left+left_margin, top+top_margin, right-right_margin, bottom-bottom_margin)) if source else None
-            tile_image = noise_source_histogram(base_image,(tile,tile),(0,0))
-            tile_image.paste(base_image,(left_margin,top_margin))
+            base_image = (
+                source.crop(
+                    (
+                        left + left_margin,
+                        top + top_margin,
+                        right - right_margin,
+                        bottom - bottom_margin,
+                    )
+                )
+                if source
+                else None
+            )
+            tile_image = noise_source_histogram(base_image, (tile, tile), (0, 0))
+            tile_image.paste(base_image, (left_margin, top_margin))
         else:
             tile_image = source.crop((left, top, right, bottom)) if source else None
 
@@ -303,25 +320,30 @@ def generate_tile_spiral(
     overlap: float = 0.0,
 ) -> List[Tuple[int, int]]:
     spacing = 1.0 - overlap
-    
-    tile_increment = round(tile * spacing/2)*2 #dividing and then multiplying by 2 ensures this will be an even number, which is necessary for the initial tile placement calculation
-    
-    #calculate the number of tiles needed
+
+    tile_increment = (
+        round(tile * spacing / 2) * 2
+    )  # dividing and then multiplying by 2 ensures this will be an even number, which is necessary for the initial tile placement calculation
+
+    # calculate the number of tiles needed
     width_tile_target = 1
     height_tile_target = 1
     if width > tile:
         width_tile_target = 1 + ceil((width - tile) / tile_increment)
     if height > tile:
         height_tile_target = 1 + ceil((height - tile) / tile_increment)
-    
-    #calculate the start position of the tiling
-    span_x = tile + (width_tile_target - 1)*tile_increment
-    span_y = tile + (height_tile_target - 1)*tile_increment
-    
-    tile_left = (width - span_x)/2 #guaranteed to be an integer because width and span will both be even
-    tile_top = (height - span_y)/2 #guaranteed to be an integer because width and span will both be even
-    
-    
+
+    # calculate the start position of the tiling
+    span_x = tile + (width_tile_target - 1) * tile_increment
+    span_y = tile + (height_tile_target - 1) * tile_increment
+
+    tile_left = (
+        width - span_x
+    ) / 2  # guaranteed to be an integer because width and span will both be even
+    tile_top = (
+        height - span_y
+    ) / 2  # guaranteed to be an integer because width and span will both be even
+
     logger.debug(
         "image size %s x %s, tiling to %s x %s, starting at %s, %s",
         width,
@@ -329,46 +351,48 @@ def generate_tile_spiral(
         width_tile_target,
         height_tile_target,
         tile_left,
-        tile_top
+        tile_top,
     )
-    
+
     tile_coords = []
 
     # start walking from the north-west corner, heading east
     class WalkState(Enum):
-        EAST = (1,0)
-        SOUTH = (0,1)
-        WEST = (-1,0)
-        NORTH = (0,-1)
-    
-    #initialize the tile_left placement
+        EAST = (1, 0)
+        SOUTH = (0, 1)
+        WEST = (-1, 0)
+        NORTH = (0, -1)
+
+    # initialize the tile_left placement
     tile_left -= tile_increment
     height_tile_target -= 1
-    
+
     for state in itertools.cycle(WalkState):
-        #This expression is stupid, but all it does is calculate the number of tiles we need in the appropriate direction
-        accum_tile_target = max(map(lambda coord,val: abs(coord*val),state.value,(width_tile_target,height_tile_target)))
-        #check if done
+        # This expression is stupid, but all it does is calculate the number of tiles we need in the appropriate direction
+        accum_tile_target = max(
+            map(
+                lambda coord, val: abs(coord * val),
+                state.value,
+                (width_tile_target, height_tile_target),
+            )
+        )
+        # check if done
         if accum_tile_target == 0:
             break
-            
-        #reset tile count
+
+        # reset tile count
         accum_tiles = 0
         while accum_tiles < accum_tile_target:
             # move to the next
-            tile_left += tile_increment*state.value[0]
-            tile_top += tile_increment*state.value[1]
-            
+            tile_left += tile_increment * state.value[0]
+            tile_top += tile_increment * state.value[1]
+
             # add a tile
-            logger.debug(
-                "adding tile at %s:%s",
-                tile_left,
-                tile_top
-            )
+            logger.debug("adding tile at %s:%s", tile_left, tile_top)
             tile_coords.append((int(tile_left), int(tile_top)))
 
             accum_tiles += 1
-        
+
         width_tile_target -= abs(state.value[0])
         height_tile_target -= abs(state.value[1])
 
