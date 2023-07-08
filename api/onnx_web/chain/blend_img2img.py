@@ -36,7 +36,9 @@ class BlendImg2ImgStage(BaseStage):
             "blending image using img2img, %s steps: %s", params.steps, params.prompt
         )
 
-        prompt_pairs, loras, inversions = parse_prompt(params)
+        prompt_pairs, loras, inversions, (prompt, negative_prompt) = parse_prompt(
+            params
+        )
 
         pipe_type = params.get_valid_pipeline("img2img")
         pipe = load_pipeline(
@@ -67,10 +69,10 @@ class BlendImg2ImgStage(BaseStage):
                 rng = torch.manual_seed(params.seed)
                 result = pipe.img2img(
                     source,
-                    params.prompt,
+                    prompt,
                     generator=rng,
                     guidance_scale=params.cfg,
-                    negative_prompt=params.negative_prompt,
+                    negative_prompt=negative_prompt,
                     num_inference_steps=params.steps,
                     callback=callback,
                     **pipe_params,
@@ -84,11 +86,11 @@ class BlendImg2ImgStage(BaseStage):
 
                 rng = np.random.RandomState(params.seed)
                 result = pipe(
-                    params.prompt,
+                    prompt,
                     generator=rng,
                     guidance_scale=params.cfg,
                     image=source,
-                    negative_prompt=params.negative_prompt,
+                    negative_prompt=negative_prompt,
                     num_inference_steps=params.steps,
                     callback=callback,
                     **pipe_params,

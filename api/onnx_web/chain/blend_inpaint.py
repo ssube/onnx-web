@@ -6,7 +6,7 @@ import torch
 from PIL import Image
 
 from ..diffusers.load import load_pipeline
-from ..diffusers.utils import get_latents_from_seed, parse_prompt
+from ..diffusers.utils import encode_prompt, get_latents_from_seed, parse_prompt
 from ..image import expand_image, mask_filter_none, noise_source_histogram
 from ..output import save_image
 from ..params import Border, ImageParams, Size, SizeChart, StageParams
@@ -43,7 +43,9 @@ class BlendInpaintStage(BaseStage):
             "blending image using inpaint, %s steps: %s", params.steps, params.prompt
         )
 
-        _prompt_pairs, loras, inversions = parse_prompt(params)
+        prompt_pairs, loras, inversions, (prompt, negative_prompt) = parse_prompt(
+            params
+        )
         pipe_type = params.get_valid_pipeline("inpaint")
         pipe = load_pipeline(
             server,
@@ -88,30 +90,36 @@ class BlendInpaintStage(BaseStage):
                     logger.debug("using LPW pipeline for inpaint")
                     rng = torch.manual_seed(params.seed)
                     result = pipe.inpaint(
-                        params.prompt,
+                        prompt,
                         generator=rng,
                         guidance_scale=params.cfg,
                         height=size.height,
                         image=tile_source,
                         latents=latents,
                         mask_image=tile_mask,
-                        negative_prompt=params.negative_prompt,
+                        negative_prompt=negative_prompt,
                         num_inference_steps=params.steps,
                         width=size.width,
                         eta=params.eta,
                         callback=callback,
                     )
                 else:
+                    # encode and record alternative prompts outside of LPW
+                    prompt_embeds = encode_prompt(
+                        pipe, prompt_pairs, params.batch, params.do_cfg()
+                    )
+                    pipe.unet.set_prompts(prompt_embeds)
+
                     rng = np.random.RandomState(params.seed)
                     result = pipe(
-                        params.prompt,
+                        prompt,
                         generator=rng,
                         guidance_scale=params.cfg,
                         height=size.height,
                         image=tile_source,
                         latents=latents,
                         mask_image=stage_mask,
-                        negative_prompt=params.negative_prompt,
+                        negative_prompt=negative_prompt,
                         num_inference_steps=params.steps,
                         width=size.width,
                         eta=params.eta,
