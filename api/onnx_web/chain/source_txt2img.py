@@ -32,6 +32,7 @@ class SourceTxt2ImgStage(BaseStage):
     ) -> Image.Image:
         params = params.with_args(**kwargs)
         size = size.with_args(**kwargs)
+
         logger.info(
             "generating image using txt2img, %s steps: %s", params.steps, params.prompt
         )
@@ -45,7 +46,17 @@ class SourceTxt2ImgStage(BaseStage):
             params
         )
 
-        latents = get_latents_from_seed(params.seed, size, params.batch)
+        tile_size = params.tiles
+        if max(size) > tile_size:
+            latent_size = Size(tile_size, tile_size)
+            latents = get_latents_from_seed(params.seed, latent_size, params.batch)
+            pipe_width = pipe_height = tile_size
+        else:
+            latent_size = Size(size.width, size.height)
+            latents = get_latents_from_seed(params.seed, latent_size, params.batch)
+            pipe_width = size.width
+            pipe_height = size.height
+
         pipe_type = params.get_valid_pipeline("txt2img")
         pipe = load_pipeline(
             server,
@@ -61,8 +72,8 @@ class SourceTxt2ImgStage(BaseStage):
             rng = torch.manual_seed(params.seed)
             result = pipe.text2img(
                 prompt,
-                height=size.height,
-                width=size.width,
+                height=pipe_height,
+                width=pipe_width,
                 generator=rng,
                 guidance_scale=params.cfg,
                 latents=latents,
@@ -82,8 +93,8 @@ class SourceTxt2ImgStage(BaseStage):
             rng = np.random.RandomState(params.seed)
             result = pipe(
                 prompt,
-                height=size.height,
-                width=size.width,
+                height=pipe_height,
+                width=pipe_width,
                 generator=rng,
                 guidance_scale=params.cfg,
                 latents=latents,

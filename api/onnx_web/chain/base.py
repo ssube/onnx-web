@@ -105,6 +105,7 @@ class ChainPipeline:
                 len(sources),
             )
         else:
+            sources = [None]
             logger.info("running pipeline without source images")
 
         stage_sources = sources
@@ -112,20 +113,11 @@ class ChainPipeline:
             name = stage_params.name or stage_pipe.__class__.__name__
             kwargs = stage_kwargs or {}
             kwargs = {**pipeline_kwargs, **kwargs}
-
-            if len(stage_sources) > 0:
-                logger.debug(
-                    "running stage %s with %s source images, parameters: %s",
-                    name,
-                    len(stage_sources),
-                    kwargs.keys(),
-                )
-            else:
-                logger.debug(
-                    "running stage %s without source images, parameters: %s",
-                    name,
-                    kwargs.keys(),
-                )
+            logger.debug(
+                "running stage %s, parameters: %s",
+                name,
+                kwargs.keys(),
+            )
 
             # the stage must be split and tiled if any image is larger than the selected/max tile size
             must_tile = any(

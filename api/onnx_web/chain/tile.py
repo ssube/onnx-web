@@ -233,13 +233,17 @@ def process_tile_spiral(
 ) -> Image.Image:
     width, height = kwargs.get("size", source.size if source else None)
 
-    # spiral uses the previous run and needs a scratch texture for 3x memory
-
     tiles: List[Tuple[int, int, Image.Image]] = []
 
     # tile tuples is source, multiply by scale for dest
     counter = 0
     tile_coords = generate_tile_spiral(width, height, tile, overlap=overlap)
+
+    if len(tile_coords) == 1:
+        single_tile = True
+    else:
+        single_tile = False
+
     for left, top in tile_coords:
         counter += 1
         logger.info(
@@ -266,21 +270,29 @@ def process_tile_spiral(
             bottom_margin = height - bottom
 
         if needs_margin:
-            base_image = (
-                source.crop(
-                    (
-                        left + left_margin,
-                        top + top_margin,
-                        right - right_margin,
-                        bottom - bottom_margin,
+            # in the special case where the image is smaller than the specified tile size, just use the image
+            if single_tile:
+                logger.debug("creating and processing single-tile subtile")
+                tile_image = source
+            # otherwise use add histogram noise outside of the image border
+            else:
+                logger.debug("tiling and adding margin")
+                base_image = (
+                    source.crop(
+                        (
+                            left + left_margin,
+                            top + top_margin,
+                            right - right_margin,
+                            bottom - bottom_margin,
+                        )
                     )
+                    if source
+                    else None
                 )
-                if source
-                else None
-            )
-            tile_image = noise_source_histogram(base_image, (tile, tile), (0, 0))
-            tile_image.paste(base_image, (left_margin, top_margin))
+                tile_image = noise_source_histogram(base_image, (tile, tile), (0, 0))
+                tile_image.paste(base_image, (left_margin, top_margin))
         else:
+            logger.debug("tiling normally")
             tile_image = source.crop((left, top, right, bottom)) if source else None
 
         for image_filter in filters:
@@ -288,7 +300,10 @@ def process_tile_spiral(
 
         tiles.append((left, top, tile_image))
 
-    return blend_tiles(tiles, scale, width, height, tile, overlap)
+    if single_tile:
+        return tile_image
+    else:
+        return blend_tiles(tiles, scale, width, height, tile, overlap)
 
 
 def process_tile_order(
@@ -326,16 +341,20 @@ def generate_tile_spiral(
     )  # dividing and then multiplying by 2 ensures this will be an even number, which is necessary for the initial tile placement calculation
 
     # calculate the number of tiles needed
-    width_tile_target = 1
-    height_tile_target = 1
     if width > tile:
         width_tile_target = 1 + ceil((width - tile) / tile_increment)
+    else:
+        width_tile_target = 1
     if height > tile:
         height_tile_target = 1 + ceil((height - tile) / tile_increment)
+    else:
+        height_tile_target = 1
 
     # calculate the start position of the tiling
     span_x = tile + (width_tile_target - 1) * tile_increment
     span_y = tile + (height_tile_target - 1) * tile_increment
+
+    logger.debug("tiled image overlap: %s. Span: %s x %s", overlap, span_x, span_y)
 
     tile_left = (
         width - span_x
