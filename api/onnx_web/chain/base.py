@@ -114,8 +114,9 @@ class ChainPipeline:
             kwargs = stage_kwargs or {}
             kwargs = {**pipeline_kwargs, **kwargs}
             logger.debug(
-                "running stage %s, parameters: %s",
+                "running stage %s with %s source images, parameters: %s",
                 name,
+                len(stage_sources) - stage_sources.count(None),
                 kwargs.keys(),
             )
 
