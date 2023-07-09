@@ -144,7 +144,9 @@ class ChainPipeline:
                         tile,
                     )
 
-                    def stage_tile(source_tile: Image.Image, tile_mask: Image.Image, _dims) -> Image.Image:
+                    def stage_tile(
+                        source_tile: Image.Image, tile_mask: Image.Image, _dims
+                    ) -> Image.Image:
                         output_tile = stage_pipe.run(
                             job,
                             server,

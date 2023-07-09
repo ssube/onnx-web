@@ -25,7 +25,7 @@ from ..params import (
 )
 from ..server import ServerContext
 from ..server.load import get_source_filters
-from ..utils import run_gc, show_system_toast, is_debug
+from ..utils import is_debug, run_gc, show_system_toast
 from ..worker import WorkerContext
 from .utils import parse_prompt
 
@@ -221,7 +221,7 @@ def run_inpaint_pipeline(
     tile_order: str,
 ) -> None:
     logger.debug("building inpaint pipeline")
-    
+
     if mask is None:
         # if no mask was provided, keep the full source image
         mask = Image.new("L", source.size, 0)

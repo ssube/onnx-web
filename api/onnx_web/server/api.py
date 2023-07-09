@@ -250,7 +250,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
 
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
     mask_top_layer = Image.open(BytesIO(mask_file.read())).convert("RGBA")
-    mask = Image.new("RGBA",mask_top_layer.size,color=(0,0,0,255))
+    mask = Image.new("RGBA", mask_top_layer.size, color=(0, 0, 0, 255))
     mask.alpha_composite(mask_top_layer)
     mask.convert(mode="L")
 

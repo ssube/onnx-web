@@ -32,7 +32,7 @@ class SourceTxt2ImgStage(BaseStage):
     ) -> Image.Image:
         params = params.with_args(**kwargs)
         size = size.with_args(**kwargs)
-        
+
         logger.info(
             "generating image using txt2img, %s steps: %s", params.steps, params.prompt
         )
@@ -45,18 +45,18 @@ class SourceTxt2ImgStage(BaseStage):
         prompt_pairs, loras, inversions, (prompt, negative_prompt) = parse_prompt(
             params
         )
-        
+
         tile_size = params.tiles
         if max(size) > tile_size:
-            latent_size = Size(tile_size,tile_size)
+            latent_size = Size(tile_size, tile_size)
             latents = get_latents_from_seed(params.seed, latent_size, params.batch)
-            pipe_width=pipe_height=tile_size
-        else: 
-            latent_size = Size(size.width,size.height)
+            pipe_width = pipe_height = tile_size
+        else:
+            latent_size = Size(size.width, size.height)
             latents = get_latents_from_seed(params.seed, latent_size, params.batch)
-            pipe_width=size.width
-            pipe_height=size.height
-        
+            pipe_width = size.width
+            pipe_height = size.height
+
         pipe_type = params.get_valid_pipeline("txt2img")
         pipe = load_pipeline(
             server,
