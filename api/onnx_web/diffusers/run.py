@@ -1,7 +1,7 @@
 from logging import getLogger
 from typing import Any, List, Optional
 
-from PIL import Image
+from PIL import Image, ImageOps
 
 from onnx_web.chain.highres import stage_highres
 
@@ -13,6 +13,7 @@ from ..chain import (
     UpscaleOutpaintStage,
 )
 from ..chain.upscale import split_upscale, stage_upscale_correction
+from ..image import expand_image
 from ..output import save_image
 from ..params import (
     Border,
@@ -24,7 +25,7 @@ from ..params import (
 )
 from ..server import ServerContext
 from ..server.load import get_source_filters
-from ..utils import run_gc, show_system_toast
+from ..utils import run_gc, show_system_toast, is_debug
 from ..worker import WorkerContext
 from .utils import parse_prompt
 
@@ -220,6 +221,29 @@ def run_inpaint_pipeline(
     tile_order: str,
 ) -> None:
     logger.debug("building inpaint pipeline")
+    
+    if mask is None:
+        # if no mask was provided, keep the full source image
+        mask = Image.new("L", source.size, 0)
+
+    # masks start as 512x512, resize to cover the source, then trim the extra
+    mask_max = max(source.width, source.height)
+    mask = ImageOps.contain(mask, (mask_max, mask_max))
+    mask = mask.crop((0, 0, source.width, source.height))
+
+    source, mask, noise, full_size = expand_image(
+        source,
+        mask,
+        border,
+        fill=fill_color,
+        noise_source=noise_source,
+        mask_filter=mask_filter,
+    )
+
+    if is_debug():
+        save_image(server, "full-source.png", source)
+        save_image(server, "full-mask.png", mask)
+        save_image(server, "full-noise.png", noise)
 
     # set up the chain pipeline and base stage
     chain = ChainPipeline()
@@ -228,10 +252,11 @@ def run_inpaint_pipeline(
         UpscaleOutpaintStage(),
         stage,
         border=border,
-        stage_mask=mask,
+        mask=mask,
         fill_color=fill_color,
         mask_filter=mask_filter,
         noise_source=noise_source,
+        overlap=params.overlap,
     )
 
     # apply upscaling and correction, before highres

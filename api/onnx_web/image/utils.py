@@ -14,7 +14,7 @@ def expand_image(
     noise_source=noise_source_histogram,
     mask_filter=mask_filter_none,
 ):
-    size = Size(*source.size).add_border(expand).round_to_tile()
+    size = Size(*source.size).add_border(expand)
     size = tuple(size)
     origin = (expand.left, expand.top)
 

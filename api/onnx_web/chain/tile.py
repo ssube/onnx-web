@@ -7,7 +7,14 @@ from typing import List, Optional, Protocol, Tuple
 import numpy as np
 from PIL import Image
 
-from ..image.noise_source import noise_source_histogram
+from ..image.noise_source import (
+    noise_source_fill_edge,
+    noise_source_fill_mask,
+    noise_source_gaussian,
+    noise_source_histogram,
+    noise_source_normal,
+    noise_source_uniform,
+)
 from ..params import Size, TileOrder
 
 # from skimage.exposure import match_histograms
@@ -232,18 +239,23 @@ def process_tile_spiral(
     **kwargs,
 ) -> Image.Image:
     width, height = kwargs.get("size", source.size if source else None)
-
+    mask = kwargs.get("mask",None)
+    noise_source = kwargs.get("noise_source",noise_source_histogram)
+    fill_color = kwargs.get("fill_color",None)
+    if not mask:
+        tile_mask = None
+    
     tiles: List[Tuple[int, int, Image.Image]] = []
 
     # tile tuples is source, multiply by scale for dest
     counter = 0
     tile_coords = generate_tile_spiral(width, height, tile, overlap=overlap)
-
+    
     if len(tile_coords) == 1:
         single_tile = True
     else:
         single_tile = False
-
+        
     for left, top in tile_coords:
         counter += 1
         logger.info(
@@ -268,37 +280,62 @@ def process_tile_spiral(
         if bottom > height:
             needs_margin = True
             bottom_margin = height - bottom
-
-        # if no source given, we don't have a source image
+        
+        #if no source given, we don't have a source image
         if not source:
             tile_image = None
         elif needs_margin:
-            # in the special case where the image is smaller than the specified tile size, just use the image
+            #in the special case where the image is smaller than the specified tile size, just use the image
             if single_tile:
                 logger.debug("creating and processing single-tile subtile")
                 tile_image = source
-            # otherwise use add histogram noise outside of the image border
+                if mask:
+                    tile_mask = mask
+            #otherwise use add histogram noise outside of the image border
             else:
-                logger.debug("tiling and adding margin")
-                base_image = source.crop(
-                    (
-                        left + left_margin,
-                        top + top_margin,
-                        right - right_margin,
-                        bottom - bottom_margin,
+                logger.debug("tiling and adding margins: %s, %s, %s, %s",
+                    left_margin,
+                    top_margin,
+                    right_margin,
+                    bottom_margin)
+                base_image = (
+                    source.crop(
+                        (
+                            left + left_margin,
+                            top + top_margin,
+                            right + right_margin,
+                            bottom + bottom_margin,
+                        )
                     )
                 )
-                tile_image = noise_source_histogram(base_image, (tile, tile), (0, 0))
+                tile_image = noise_source(base_image, (tile, tile), (0, 0),fill=fill_color)
                 tile_image.paste(base_image, (left_margin, top_margin))
+                
+                if mask:
+                    base_mask = (
+                        mask.crop(
+                            (
+                                left + left_margin,
+                                top + top_margin,
+                                right + right_margin,
+                                bottom + bottom_margin,
+                            )
+                        )
+                    )
+                    tile_mask = Image.new("L",(tile,tile),color=0)
+                    tile_mask.paste(base_mask, (left_margin, top_margin))
+                
         else:
             logger.debug("tiling normally")
             tile_image = source.crop((left, top, right, bottom))
+            if mask:
+                tile_mask = mask.crop((left, top, right, bottom))
 
         for image_filter in filters:
-            tile_image = image_filter(tile_image, (left, top, tile))
+            tile_image = image_filter(tile_image, tile_mask, (left, top, tile))
 
         tiles.append((left, top, tile_image))
-
+    
     if single_tile:
         return tile_image
     else:
@@ -352,8 +389,11 @@ def generate_tile_spiral(
     # calculate the start position of the tiling
     span_x = tile + (width_tile_target - 1) * tile_increment
     span_y = tile + (height_tile_target - 1) * tile_increment
-
-    logger.debug("tiled image overlap: %s. Span: %s x %s", overlap, span_x, span_y)
+    
+    logger.debug(
+        "tiled image overlap: %s. Span: %s x %s",
+        overlap,span_x,span_y
+    )
 
     tile_left = (
         width - span_x

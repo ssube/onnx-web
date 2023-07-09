@@ -34,6 +34,7 @@ class UpscaleOutpaintStage(BaseStage):
         stage: StageParams,
         params: ImageParams,
         sources: List[Image.Image],
+        tile_mask: Image.Image,
         *,
         border: Border,
         stage_source: Optional[Image.Image] = None,
@@ -60,121 +61,66 @@ class UpscaleOutpaintStage(BaseStage):
 
         outputs = []
         for source in sources:
-            logger.info(
-                "upscaling %s x %s image by expanding borders: %s",
-                source.width,
-                source.height,
-                border,
-            )
-
-            margin_x = float(max(border.left, border.right))
-            margin_y = float(max(border.top, border.bottom))
-            overlap = min(margin_x / source.width, margin_y / source.height)
-
-            if stage_mask is None:
-                # if no mask was provided, keep the full source image
-                stage_mask = Image.new("RGB", source.size, "black")
-
-            # masks start as 512x512, resize to cover the source, then trim the extra
-            mask_max = max(source.width, source.height)
-            stage_mask = ImageOps.contain(stage_mask, (mask_max, mask_max))
-            stage_mask = stage_mask.crop((0, 0, source.width, source.height))
-
-            source, stage_mask, noise, full_size = expand_image(
-                source,
-                stage_mask,
-                border,
-                fill=fill_color,
-                noise_source=noise_source,
-                mask_filter=mask_filter,
-            )
-
-            full_latents = get_latents_from_seed(params.seed, Size(*full_size))
-
-            draw_mask = ImageDraw.Draw(stage_mask)
-
-            if is_debug():
-                save_image(server, "last-source.png", source)
-                save_image(server, "last-mask.png", stage_mask)
-                save_image(server, "last-noise.png", noise)
-
-            def outpaint(tile_source: Image.Image, dims: Tuple[int, int, int]):
-                left, top, tile = dims
-                size = Size(*tile_source.size)
-                tile_mask = stage_mask.crop((left, top, left + tile, top + tile))
-                tile_mask = complete_tile(tile_mask, tile)
-
-                if is_debug():
-                    save_image(server, "tile-source.png", tile_source)
-                    save_image(server, "tile-mask.png", tile_mask)
-
-                latents = get_tile_latents(full_latents, dims, size)
-                if params.lpw():
-                    logger.debug("using LPW pipeline for inpaint")
-                    rng = torch.manual_seed(params.seed)
-                    result = pipe.inpaint(
-                        tile_source,
-                        tile_mask,
-                        prompt,
-                        generator=rng,
-                        guidance_scale=params.cfg,
-                        height=size.height,
-                        latents=latents,
-                        negative_prompt=negative_prompt,
-                        num_inference_steps=params.steps,
-                        width=size.width,
-                        callback=callback,
-                    )
-                else:
-                    # encode and record alternative prompts outside of LPW
-                    prompt_embeds = encode_prompt(
-                        pipe, prompt_pairs, params.batch, params.do_cfg()
-                    )
-                    pipe.unet.set_prompts(prompt_embeds)
-
-                    rng = np.random.RandomState(params.seed)
-                    result = pipe(
-                        prompt,
-                        tile_source,
-                        tile_mask,
-                        height=size.height,
-                        width=size.width,
-                        num_inference_steps=params.steps,
-                        guidance_scale=params.cfg,
-                        negative_prompt=negative_prompt,
-                        generator=rng,
-                        latents=latents,
-                        callback=callback,
-                    )
-
-                # once part of the image has been drawn, keep it
-                draw_mask.rectangle((left, top, left + tile, top + tile), fill="black")
-                return result.images[0]
-
-            if params.pipeline == "panorama":
-                logger.debug("outpainting with one shot panorama, no tiling")
-                output = outpaint(source, (0, 0, max(source.width, source.height)))
-            if overlap == 0:
-                logger.debug("outpainting with 0 margin, using grid tiling")
-                output = process_tile_grid(source, SizeChart.auto, 1, [outpaint])
-            elif border.left == border.right and border.top == border.bottom:
-                logger.debug(
-                    "outpainting with an even border, using spiral tiling with %s overlap",
-                    overlap,
-                )
-                output = process_tile_order(
-                    stage.tile_order,
+        
+            save_image(server, "tile-source.png", source)
+            save_image(server, "tile-mask.png", tile_mask)
+            
+            #if the tile mask is all black, skip processing this tile
+            if not tile_mask.getbbox():
+                outputs.append(source)
+                continue
+            
+            source_width, source_height = source.size
+            source_size = Size(source_width, source_height)
+            tile_size = params.tiles
+            if max(source_size) > tile_size:
+                latent_size = Size(tile_size,tile_size)
+                latents = get_latents_from_seed(params.seed, latent_size)
+                pipe_width=pipe_height=tile_size
+            else: 
+                latent_size = Size(source_size.width,source_size.height)
+                latents = get_latents_from_seed(params.seed, latent_size)
+                pipe_width=source_size.width
+                pipe_height=source_size.height
+                
+            if params.lpw():
+                logger.debug("using LPW pipeline for inpaint")
+                rng = torch.manual_seed(params.seed)
+                result = pipe.inpaint(
                     source,
-                    SizeChart.auto,
-                    1,
-                    [outpaint],
-                    overlap=overlap,
+                    tile_mask,
+                    prompt,
+                    negative_prompt=negative_prompt,
+                    height=pipe_height,
+                    width=pipe_width,
+                    num_inference_steps=params.steps,
+                    guidance_scale=params.cfg,
+                    generator=rng,
+                    latents=latents,
+                    callback=callback,
                 )
             else:
-                logger.debug("outpainting with an uneven border, using grid tiling")
-                output = process_tile_grid(source, SizeChart.auto, 1, [outpaint])
+                # encode and record alternative prompts outside of LPW
+                prompt_embeds = encode_prompt(
+                    pipe, prompt_pairs, params.batch, params.do_cfg()
+                )
+                pipe.unet.set_prompts(prompt_embeds)
 
-            logger.info("final output image size: %sx%s", output.width, output.height)
-            outputs.append(output)
+                rng = np.random.RandomState(params.seed)
+                result = pipe(
+                    prompt,
+                    source,
+                    tile_mask,
+                    negative_prompt=negative_prompt,
+                    height=pipe_height,
+                    width=pipe_width,
+                    num_inference_steps=params.steps,
+                    guidance_scale=params.cfg,
+                    generator=rng,
+                    latents=latents,
+                    callback=callback,
+                )
+            
+            outputs.extend(result.images)
 
         return outputs

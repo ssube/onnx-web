@@ -249,7 +249,10 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
         return error_reply("mask image is required")
 
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
-    mask = Image.open(BytesIO(mask_file.read())).convert("RGB")
+    mask_top_layer = Image.open(BytesIO(mask_file.read())).convert("RGBA")
+    mask = Image.new("RGBA",mask_top_layer.size,color=(0,0,0,255))
+    mask.alpha_composite(mask_top_layer)
+    mask.convert(mode="L")
 
     device, params, size = pipeline_from_request(server, "inpaint")
     expand = border_from_request()
@@ -262,6 +265,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     tile_order = get_from_list(
         request.args, "tileOrder", [TileOrder.grid, TileOrder.kernel, TileOrder.spiral]
     )
+    tile_order = TileOrder.spiral
 
     replace_wildcards(params, get_wildcard_data())
 
