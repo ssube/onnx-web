@@ -49,6 +49,7 @@ def run_txt2img_pipeline(
         SourceTxt2ImgStage(),
         stage,
         size=size,
+        overlap=params.overlap,
     )
 
     # apply upscaling and correction, before highres
