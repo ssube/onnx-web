@@ -138,7 +138,7 @@ def str_params(
         hash_map.update(dict(lora_pairs))
 
     return (
-        f"{params.input_prompt or ''}\nNegative prompt: {params.input_negative_prompt or ''}\n"
+        f"{params.prompt or ''}\nNegative prompt: {params.negative_prompt or ''}\n"
         f"Steps: {params.steps}, Sampler: {params.scheduler}, CFG scale: {params.cfg}, "
         f"Seed: {params.seed}, Size: {size.width}x{size.height}, "
         f"Model hash: {model_hash}, Model: {model_name}, "
