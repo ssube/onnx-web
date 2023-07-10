@@ -261,17 +261,19 @@ def run_inpaint_pipeline(
             int(mask_center_y + adj_mask_size / 2),
         )
         border_integrity = all(
-            adj_mask_border(0) >= 0,
-            adj_mask_border(1) >= 0,
-            adj_mask_border(2) <= source.width,
-            adj_mask_border(3) <= source.height,
+            (
+                adj_mask_border[0] >= 0,
+                adj_mask_border[1] >= 0,
+                adj_mask_border[2] <= source.width,
+                adj_mask_border[3] <= source.height,
+            )
         )
         logger.debug(
             "adjusted mask size %s, mask bounding box: %s",
             adj_mask_size,
             adj_mask_border,
         )
-        if border_integrity and adj_mask_size <= tile_size:
+        if True and adj_mask_size <= tile_size:
             full_res_inpaint = True
             original_source = source
             source = source.crop(adj_mask_border)
