@@ -6,7 +6,12 @@ import torch
 from PIL import Image
 
 from ..diffusers.load import load_pipeline
-from ..diffusers.utils import encode_prompt, get_latents_from_seed, get_tile_latents, parse_prompt
+from ..diffusers.utils import (
+    encode_prompt,
+    get_latents_from_seed,
+    get_tile_latents,
+    parse_prompt,
+)
 from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
