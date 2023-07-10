@@ -273,7 +273,7 @@ def run_inpaint_pipeline(
             adj_mask_size,
             adj_mask_border,
         )
-        if True and adj_mask_size <= tile_size:
+        if border_integrity and adj_mask_size <= tile_size:
             full_res_inpaint = True
             original_source = source
             source = source.crop(adj_mask_border)
