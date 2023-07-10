@@ -71,24 +71,15 @@ class UpscaleOutpaintStage(BaseStage):
                 outputs.append(source)
                 continue
 
-            size = Size(*source.size)
             tile_size = params.tiles
-            if max(size) > tile_size:
-                latent_size = Size(tile_size, tile_size)
-                pipe_width = pipe_height = tile_size
-            else:
-                latent_size = Size(size.width, size.height)
-                pipe_width = size.width
-                pipe_height = size.height
+            size = Size(*source.size)
+            latent_size = size.min(tile_size, tile_size)
 
             # generate new latents or slice existing
             if latents is None:
-                # generate new latents
                 latents = get_latents_from_seed(params.seed, latent_size, params.batch)
             else:
-                # slice existing latents and make sure there is a complete tile
-                latents = get_tile_latents(latents, dims, Size(tile_size, tile_size))
-                pipe_width = pipe_height = tile_size
+                latents = get_tile_latents(latents, dims, latent_size)
 
             if params.lpw():
                 logger.debug("using LPW pipeline for inpaint")
@@ -98,8 +89,8 @@ class UpscaleOutpaintStage(BaseStage):
                     tile_mask,
                     prompt,
                     negative_prompt=negative_prompt,
-                    height=pipe_height,
-                    width=pipe_width,
+                    height=latent_size.height,
+                    width=latent_size.width,
                     num_inference_steps=params.steps,
                     guidance_scale=params.cfg,
                     generator=rng,
@@ -119,8 +110,8 @@ class UpscaleOutpaintStage(BaseStage):
                     source,
                     tile_mask,
                     negative_prompt=negative_prompt,
-                    height=pipe_height,
-                    width=pipe_width,
+                    height=latent_size.height,
+                    width=latent_size.width,
                     num_inference_steps=params.steps,
                     guidance_scale=params.cfg,
                     generator=rng,
