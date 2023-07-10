@@ -6,7 +6,12 @@ import torch
 from PIL import Image
 
 from ..diffusers.load import load_pipeline
-from ..diffusers.utils import encode_prompt, get_latents_from_seed, get_tile_latents, parse_prompt
+from ..diffusers.utils import (
+    encode_prompt,
+    get_latents_from_seed,
+    get_tile_latents,
+    parse_prompt,
+)
 from ..image import mask_filter_none, noise_source_histogram
 from ..output import save_image
 from ..params import Border, ImageParams, Size, SizeChart, StageParams
@@ -68,23 +73,22 @@ class UpscaleOutpaintStage(BaseStage):
 
             size = Size(*source.size)
             tile_size = params.tiles
+            if max(size) > tile_size:
+                latent_size = Size(tile_size, tile_size)
+                pipe_width = pipe_height = tile_size
+            else:
+                latent_size = Size(size.width, size.height)
+                pipe_width = size.width
+                pipe_height = size.height
 
             # generate new latents or slice existing
             if latents is None:
-                if max(size) > tile_size:
-                    latent_size = Size(tile_size, tile_size)
-                    pipe_width = pipe_height = tile_size
-                else:
-                    latent_size = Size(size.width, size.height)
-                    pipe_width = size.width
-                    pipe_height = size.height
-
                 # generate new latents
                 latents = get_latents_from_seed(params.seed, latent_size, params.batch)
             else:
-                # slice existing latents
-                latents = get_tile_latents(latents, dims, size)
-                pipe_width, pipe_height, _tile_size = dims
+                # slice existing latents and make sure there is a complete tile
+                latents = get_tile_latents(latents, dims, Size(tile_size, tile_size))
+                pipe_width = pipe_height = tile_size
 
             if params.lpw():
                 logger.debug("using LPW pipeline for inpaint")
