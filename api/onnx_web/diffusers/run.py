@@ -251,7 +251,7 @@ def run_inpaint_pipeline(
         mask_width = mask_right - mask_left
         mask_height = mask_bottom - mask_top
         # ensure we have some padding around the mask when we do the inpaint (and that the region size is even)
-        adj_mask_size = ceil(max(mask_width, mask_height) * 1.5 / 2) * 2
+        adj_mask_size = ceil(max(mask_width, mask_height) * 1.2 / 2) * 2
         mask_center_x = int(round((mask_right + mask_left) / 2))
         mask_center_y = int(round((mask_bottom + mask_top) / 2))
         adj_mask_border = (
@@ -260,6 +260,36 @@ def run_inpaint_pipeline(
             int(mask_center_x + adj_mask_size / 2),
             int(mask_center_y + adj_mask_size / 2),
         )
+
+        if adj_mask_border[0] < 0:
+            adj_mask_border = (
+                0,
+                adj_mask_border[1],
+                adj_mask_border[2] - adj_mask_border[0],
+                adj_mask_border[3],
+            )
+        if adj_mask_border[1] < 0:
+            adj_mask_border = (
+                adj_mask_border[0],
+                0,
+                adj_mask_border[2],
+                adj_mask_border[3] - adj_mask_border[1],
+            )
+        if adj_mask_border[2] > source.width:
+            adj_mask_border = (
+                adj_mask_border[0] - (adj_mask_border[2] - source.width),
+                adj_mask_border[1],
+                source.width,
+                adj_mask_border[3],
+            )
+        if adj_mask_border[3] > source.height:
+            adj_mask_border = (
+                adj_mask_border[0],
+                adj_mask_border[1] - (adj_mask_border[3] - source.height),
+                adj_mask_border[2],
+                source.height,
+            )
+
         border_integrity = all(
             (
                 adj_mask_border[0] >= 0,
