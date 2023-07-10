@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Tuple
 
 import numpy as np
 import torch
