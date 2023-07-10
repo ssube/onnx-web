@@ -252,19 +252,28 @@ def run_inpaint_pipeline(
         mask_height = mask_bottom - mask_top
         # ensure we have some padding around the mask when we do the inpaint (and that the region size is even)
         adj_mask_size = ceil(max(mask_width, mask_height) * 1.5 / 2) * 2
-        logger.debug("adjusted mask size %s", adj_mask_size)
-        if adj_mask_size <= tile_size:
+        mask_center_x = int(round((mask_right + mask_left) / 2))
+        mask_center_y = int(round((mask_bottom + mask_top) / 2))
+        adj_mask_border = (
+            int(mask_center_x - adj_mask_size / 2),
+            int(mask_center_y - adj_mask_size / 2),
+            int(mask_center_x + adj_mask_size / 2),
+            int(mask_center_y + adj_mask_size / 2),
+        )
+        border_integrity = all(
+            adj_mask_border(0) >= 0,
+            adj_mask_border(1) >= 0,
+            adj_mask_border(2) <= source.width,
+            adj_mask_border(3) <= source.height,
+        )
+        logger.debug(
+            "adjusted mask size %s, mask bounding box: %s",
+            adj_mask_size,
+            adj_mask_border,
+        )
+        if border_integrity and adj_mask_size <= tile_size:
             full_res_inpaint = True
             original_source = source
-            mask_center_x = int(round((mask_right + mask_left) / 2))
-            mask_center_y = int(round((mask_bottom + mask_top) / 2))
-            adj_mask_border = (
-                int(mask_center_x - adj_mask_size / 2),
-                int(mask_center_y - adj_mask_size / 2),
-                int(mask_center_x + adj_mask_size / 2),
-                int(mask_center_y + adj_mask_size / 2),
-            )
-            logger.debug("mask bounding box: %s", adj_mask_border)
             source = source.crop(adj_mask_border)
             source = ImageOps.contain(source, (tile_size, tile_size))
             mask = mask.crop(adj_mask_border)
