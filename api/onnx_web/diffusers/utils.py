@@ -273,8 +273,8 @@ def get_tile_latents(
 ) -> np.ndarray:
     x, y, tile = dims
     t = tile // LATENT_FACTOR
-    x = x // LATENT_FACTOR
-    y = y // LATENT_FACTOR
+    x = max(0, x // LATENT_FACTOR)
+    y = max(0, y // LATENT_FACTOR)
     xt = x + t
     yt = y + t
 
