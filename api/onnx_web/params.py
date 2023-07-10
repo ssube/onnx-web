@@ -43,6 +43,11 @@ class Border:
     def __str__(self) -> str:
         return "(%s, %s, %s, %s)" % (self.left, self.right, self.top, self.bottom)
 
+    def isZero(self) -> bool:
+        return all(
+            value == 0 for value in (self.left, self.right, self.top, self.bottom)
+        )
+
     def tojson(self):
         return {
             "left": self.left,
