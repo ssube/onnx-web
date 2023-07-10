@@ -65,7 +65,7 @@ class SourceTxt2ImgStage(BaseStage):
         else:
             # slice existing latents
             latents = get_tile_latents(latents, dims, size)
-            pipe_width, pipe_height = size
+            pipe_width = pipe_height = tile_size
 
         pipe_type = params.get_valid_pipeline("txt2img")
         pipe = load_pipeline(
