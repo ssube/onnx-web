@@ -244,6 +244,11 @@ def run_inpaint_pipeline(
         mask_filter=mask_filter,
     )
 
+    if is_debug():
+        save_image(server, "full-source.png", source)
+        save_image(server, "full-mask.png", mask)
+        save_image(server, "full-noise.png", noise)
+
     # check if we can do full-res inpainting if no outpainting is done
     logger.debug("border zero: %s", border.isZero())
     if border.isZero():
@@ -262,34 +267,17 @@ def run_inpaint_pipeline(
             int(mask_center_y + adj_mask_size / 2),
         )
 
-        if adj_mask_border[0] < 0:
-            adj_mask_border = (
-                0,
-                adj_mask_border[1],
-                adj_mask_border[2] - adj_mask_border[0],
-                adj_mask_border[3],
-            )
-        if adj_mask_border[1] < 0:
-            adj_mask_border = (
-                adj_mask_border[0],
-                0,
-                adj_mask_border[2],
-                adj_mask_border[3] - adj_mask_border[1],
-            )
-        if adj_mask_border[2] > source.width:
-            adj_mask_border = (
-                adj_mask_border[0] - (adj_mask_border[2] - source.width),
-                adj_mask_border[1],
-                source.width,
-                adj_mask_border[3],
-            )
-        if adj_mask_border[3] > source.height:
-            adj_mask_border = (
-                adj_mask_border[0],
-                adj_mask_border[1] - (adj_mask_border[3] - source.height),
-                adj_mask_border[2],
-                source.height,
-            )
+        # we would like to subtract the excess width (subtract a positive) and add the deficient width (subtract a negative)
+        x_adj = -max(adj_mask_border[2] - source.width, 0) - min(adj_mask_border[0], 0)
+        # we would like to subtract the excess height (subtract a negative) and add the deficient height (subtract a negative)
+        y_adj = -max(adj_mask_border[3] - source.height, 0) - min(adj_mask_border[1], 0)
+
+        adj_mask_border = (
+            adj_mask_border[0] + x_adj,
+            adj_mask_border[1] + y_adj,
+            adj_mask_border[2] + x_adj,
+            adj_mask_border[3] + y_adj,
+        )
 
         border_integrity = all(
             (
@@ -314,11 +302,6 @@ def run_inpaint_pipeline(
             if is_debug():
                 save_image(server, "adjusted-mask.png", mask)
                 save_image(server, "adjusted-source.png", source)
-
-    if is_debug():
-        save_image(server, "full-source.png", source)
-        save_image(server, "full-mask.png", mask)
-        save_image(server, "full-noise.png", noise)
 
     # set up the chain pipeline and base stage
     chain = ChainPipeline()
