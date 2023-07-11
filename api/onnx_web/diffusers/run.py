@@ -221,6 +221,8 @@ def run_inpaint_pipeline(
     mask_filter: Any,
     fill_color: str,
     tile_order: str,
+    full_res_inpaint: bool,
+    full_res_inpaint_padding: float,
 ) -> None:
     logger.debug("building inpaint pipeline")
     tile_size = params.tiles
@@ -251,13 +253,15 @@ def run_inpaint_pipeline(
 
     # check if we can do full-res inpainting if no outpainting is done
     logger.debug("border zero: %s", border.isZero())
-    if border.isZero():
+    if full_res_inpaint and border.isZero():
         mask_left, mask_top, mask_right, mask_bottom = mask.getbbox()
         logger.debug("mask bbox: %s", mask.getbbox())
         mask_width = mask_right - mask_left
         mask_height = mask_bottom - mask_top
         # ensure we have some padding around the mask when we do the inpaint (and that the region size is even)
-        adj_mask_size = ceil(max(mask_width, mask_height) * 1.2 / 2) * 2
+        adj_mask_size = (
+            ceil(max(mask_width, mask_height) * full_res_inpaint_padding / 2) * 2
+        )
         mask_center_x = int(round((mask_right + mask_left) / 2))
         mask_center_y = int(round((mask_bottom + mask_top) / 2))
         adj_mask_border = (
@@ -293,7 +297,7 @@ def run_inpaint_pipeline(
             adj_mask_border,
         )
         if border_integrity and adj_mask_size <= tile_size:
-            full_res_inpaint = True
+            logger.debug("performing full-res inpainting")
             original_source = source
             source = source.crop(adj_mask_border)
             source = ImageOps.contain(source, (tile_size, tile_size))
@@ -302,6 +306,9 @@ def run_inpaint_pipeline(
             if is_debug():
                 save_image(server, "adjusted-mask.png", mask)
                 save_image(server, "adjusted-source.png", source)
+        else:
+            logger.debug("cannot perform full-res inpaint due to size issue")
+            full_res_inpaint = False
 
     # set up the chain pipeline and base stage
     chain = ChainPipeline()
