@@ -226,7 +226,6 @@ def run_inpaint_pipeline(
 ) -> None:
     logger.debug("building inpaint pipeline")
     tile_size = params.tiles
-    full_res_inpaint = False
 
     if mask is None:
         # if no mask was provided, keep the full source image
@@ -259,9 +258,7 @@ def run_inpaint_pipeline(
         mask_width = mask_right - mask_left
         mask_height = mask_bottom - mask_top
         # ensure we have some padding around the mask when we do the inpaint (and that the region size is even)
-        adj_mask_size = (
-            ceil(max(mask_width, mask_height) * full_res_inpaint_padding / 2) * 2
-        )
+        adj_mask_size = ceil(max(mask_width, mask_height) * full_res_inpaint_padding / 2) * 2
         mask_center_x = int(round((mask_right + mask_left) / 2))
         mask_center_y = int(round((mask_bottom + mask_top) / 2))
         adj_mask_border = (
@@ -270,18 +267,13 @@ def run_inpaint_pipeline(
             int(mask_center_x + adj_mask_size / 2),
             int(mask_center_y + adj_mask_size / 2),
         )
-
-        # we would like to subtract the excess width (subtract a positive) and add the deficient width (subtract a negative)
-        x_adj = -max(adj_mask_border[2] - source.width, 0) - min(adj_mask_border[0], 0)
-        # we would like to subtract the excess height (subtract a negative) and add the deficient height (subtract a negative)
-        y_adj = -max(adj_mask_border[3] - source.height, 0) - min(adj_mask_border[1], 0)
-
-        adj_mask_border = (
-            adj_mask_border[0] + x_adj,
-            adj_mask_border[1] + y_adj,
-            adj_mask_border[2] + x_adj,
-            adj_mask_border[3] + y_adj,
-        )
+        
+        #we would like to subtract the excess width (subtract a positive) and add the deficient width (subtract a negative)
+        x_adj = - max(adj_mask_border[2]-source.width,0) - min(adj_mask_border[0],0)
+        #we would like to subtract the excess height (subtract a negative) and add the deficient height (subtract a negative)
+        y_adj = - max(adj_mask_border[3]-source.height,0) - min(adj_mask_border[1],0)
+        
+        adj_mask_border = (adj_mask_border[0] + x_adj,adj_mask_border[1] + y_adj,adj_mask_border[2] + x_adj,adj_mask_border[3] + y_adj)
 
         border_integrity = all(
             (
