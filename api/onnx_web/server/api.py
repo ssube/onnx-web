@@ -17,7 +17,7 @@ from ..diffusers.run import (
 )
 from ..diffusers.utils import replace_wildcards
 from ..output import json_params, make_output_name
-from ..params import Border, StageParams, TileOrder, UpscaleParams
+from ..params import Border, Size, StageParams, TileOrder, UpscaleParams
 from ..transformers.run import run_txt2txt_pipeline
 from ..utils import (
     base_join,
@@ -163,8 +163,9 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         return error_reply("source image is required")
 
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
+    size = Size(source.width, source.height)
 
-    device, params, size = pipeline_from_request(server, "img2img")
+    device, params, _size = pipeline_from_request(server, "img2img")
     upscale = upscale_from_request()
     highres = highres_from_request()
     source_filter = get_from_list(
@@ -249,12 +250,14 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
         return error_reply("mask image is required")
 
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
+    size = Size(source.width, source.height)
+
     mask_top_layer = Image.open(BytesIO(mask_file.read())).convert("RGBA")
     mask = Image.new("RGBA", mask_top_layer.size, color=(0, 0, 0, 255))
     mask.alpha_composite(mask_top_layer)
     mask.convert(mode="L")
 
-    device, params, size = pipeline_from_request(server, "inpaint")
+    device, params, _size = pipeline_from_request(server, "inpaint")
     expand = border_from_request()
     upscale = upscale_from_request()
     highres = highres_from_request()

@@ -28,7 +28,7 @@ from ..server import ServerContext
 from ..server.load import get_source_filters
 from ..utils import is_debug, run_gc, show_system_toast
 from ..worker import WorkerContext
-from .utils import parse_prompt
+from .utils import get_latents_from_seed, parse_prompt
 
 logger = getLogger(__name__)
 
@@ -82,8 +82,9 @@ def run_txt2img_pipeline(
     )
 
     # run and save
+    latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     progress = job.get_progress_callback()
-    images = chain(job, server, params, [], callback=progress)
+    images = chain.run(job, server, params, [], callback=progress, latents=latents)
 
     _pairs, loras, inversions, _rest = parse_prompt(params)
 
@@ -361,8 +362,9 @@ def run_inpaint_pipeline(
     )
 
     # run and save
+    latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     progress = job.get_progress_callback()
-    images = chain(job, server, params, [source], callback=progress)
+    images = chain(job, server, params, [source], callback=progress, latents=latents)
 
     _pairs, loras, inversions, _rest = parse_prompt(params)
     for image, output in zip(images, outputs):

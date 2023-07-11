@@ -1,6 +1,5 @@
 from .base import ChainPipeline, PipelineStage, StageParams
 from .blend_img2img import BlendImg2ImgStage
-from .blend_inpaint import BlendInpaintStage
 from .blend_linear import BlendLinearStage
 from .blend_mask import BlendMaskStage
 from .correct_codeformer import CorrectCodeformerStage
@@ -23,7 +22,7 @@ from .upscale_swinir import UpscaleSwinIRStage
 
 CHAIN_STAGES = {
     "blend-img2img": BlendImg2ImgStage,
-    "blend-inpaint": BlendInpaintStage,
+    "blend-inpaint": UpscaleOutpaintStage,
     "blend-linear": BlendLinearStage,
     "blend-mask": BlendMaskStage,
     "correct-codeformer": CorrectCodeformerStage,

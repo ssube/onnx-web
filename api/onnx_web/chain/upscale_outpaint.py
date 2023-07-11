@@ -1,12 +1,17 @@
 from logging import getLogger
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Tuple
 
 import numpy as np
 import torch
 from PIL import Image
 
 from ..diffusers.load import load_pipeline
-from ..diffusers.utils import encode_prompt, get_latents_from_seed, parse_prompt
+from ..diffusers.utils import (
+    encode_prompt,
+    get_latents_from_seed,
+    get_tile_latents,
+    parse_prompt,
+)
 from ..image import mask_filter_none, noise_source_histogram
 from ..output import save_image
 from ..params import Border, ImageParams, Size, SizeChart, StageParams
@@ -28,15 +33,17 @@ class UpscaleOutpaintStage(BaseStage):
         stage: StageParams,
         params: ImageParams,
         sources: List[Image.Image],
-        tile_mask: Image.Image,
         *,
         border: Border,
-        stage_source: Optional[Image.Image] = None,
-        stage_mask: Optional[Image.Image] = None,
+        dims: Tuple[int, int, int],
+        tile_mask: Image.Image,
         fill_color: str = "white",
         mask_filter: Callable = mask_filter_none,
         noise_source: Callable = noise_source_histogram,
+        latents: Optional[np.ndarray] = None,
         callback: Optional[ProgressCallback] = None,
+        stage_source: Optional[Image.Image] = None,
+        stage_mask: Optional[Image.Image] = None,
         **kwargs,
     ) -> List[Image.Image]:
         prompt_pairs, loras, inversions, (prompt, negative_prompt) = parse_prompt(
@@ -64,18 +71,15 @@ class UpscaleOutpaintStage(BaseStage):
                 outputs.append(source)
                 continue
 
-            source_width, source_height = source.size
-            source_size = Size(source_width, source_height)
             tile_size = params.tiles
-            if max(source_size) > tile_size:
-                latent_size = Size(tile_size, tile_size)
-                latents = get_latents_from_seed(params.seed, latent_size)
-                pipe_width = pipe_height = tile_size
+            size = Size(*source.size)
+            latent_size = size.min(tile_size, tile_size)
+
+            # generate new latents or slice existing
+            if latents is None:
+                latents = get_latents_from_seed(params.seed, latent_size, params.batch)
             else:
-                latent_size = Size(source_size.width, source_size.height)
-                latents = get_latents_from_seed(params.seed, latent_size)
-                pipe_width = source_size.width
-                pipe_height = source_size.height
+                latents = get_tile_latents(latents, dims, latent_size)
 
             if params.lpw():
                 logger.debug("using LPW pipeline for inpaint")
@@ -85,8 +89,8 @@ class UpscaleOutpaintStage(BaseStage):
                     tile_mask,
                     prompt,
                     negative_prompt=negative_prompt,
-                    height=pipe_height,
-                    width=pipe_width,
+                    height=latent_size.height,
+                    width=latent_size.width,
                     num_inference_steps=params.steps,
                     guidance_scale=params.cfg,
                     generator=rng,
@@ -106,8 +110,8 @@ class UpscaleOutpaintStage(BaseStage):
                     source,
                     tile_mask,
                     negative_prompt=negative_prompt,
-                    height=pipe_height,
-                    width=pipe_width,
+                    height=latent_size.height,
+                    width=latent_size.width,
                     num_inference_steps=params.steps,
                     guidance_scale=params.cfg,
                     generator=rng,
