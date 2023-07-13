@@ -474,7 +474,9 @@ def load_wildcards(server: ServerContext) -> None:
     )
 
     for file in wildcard_files:
-        with open(path.join(server.model_path, "wildcard", file), "r", encoding="utf-8") as f:
+        with open(
+            path.join(server.model_path, "wildcard", file), "r", encoding="utf-8"
+        ) as f:
             lines = f.read().splitlines()
             lines = [line.strip() for line in lines if not line.startswith("#")]
             lines = [line for line in lines if len(line) > 0]

@@ -279,14 +279,13 @@ def get_tile_latents(
     xt = x + t
     yt = y + t
 
-    mx = size.width // LATENT_FACTOR
-    my = size.height // LATENT_FACTOR
-
     tile_latents = full_latents[:, :, y:yt, x:xt]
 
     if tile_latents.shape[2] < t or tile_latents.shape[3] < t:
         extra_latents = get_latents_from_seed(seed, size, batch=tile_latents.shape[0])
-        extra_latents[:, :, 0:tile_latents.shape[2], 0:tile_latents.shape[3]] = tile_latents
+        extra_latents[
+            :, :, 0 : tile_latents.shape[2], 0 : tile_latents.shape[3]
+        ] = tile_latents
         tile_latents = extra_latents
 
     return tile_latents
