@@ -4,4 +4,4 @@ python -m venv onnx_env
 pip install -r requirements/cpu.txt
 pip install -r requirements/base.txt
 
-.\launch.bat
+.\launch.ps1
