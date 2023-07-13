@@ -20,7 +20,7 @@ MAX_TOKENS_PER_GROUP = 77
 CLIP_TOKEN = compile(r"\<clip:([-\w]+):(\d+)\>")
 INVERSION_TOKEN = compile(r"\<inversion:([^:\>]+):(-?[\.|\d]+)\>")
 LORA_TOKEN = compile(r"\<lora:([^:\>]+):(-?[\.|\d]+)\>")
-WILDCARD_TOKEN = compile(r"__([-/\w]+)__")
+WILDCARD_TOKEN = compile(r"__([-/\\\w]+)__")
 
 INTERVAL_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
 ALTERNATIVE_RANGE = compile(r"\(([^\)]+)\)")
