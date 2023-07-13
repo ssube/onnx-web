@@ -1,4 +1,5 @@
 from logging import getLogger
+from math import ceil
 from typing import Any, List, Optional
 
 from PIL import Image, ImageOps
@@ -220,8 +221,11 @@ def run_inpaint_pipeline(
     mask_filter: Any,
     fill_color: str,
     tile_order: str,
+    full_res_inpaint: bool,
+    full_res_inpaint_padding: float,
 ) -> None:
     logger.debug("building inpaint pipeline")
+    tile_size = params.tiles
 
     if mask is None:
         # if no mask was provided, keep the full source image
@@ -246,9 +250,69 @@ def run_inpaint_pipeline(
         save_image(server, "full-mask.png", mask)
         save_image(server, "full-noise.png", noise)
 
+    # check if we can do full-res inpainting if no outpainting is done
+    logger.debug("border zero: %s", border.isZero())
+    full_res_inpaint = full_res_inpaint and border.isZero()
+    if full_res_inpaint:
+        mask_left, mask_top, mask_right, mask_bottom = mask.getbbox()
+        logger.debug("mask bbox: %s", mask.getbbox())
+        mask_width = mask_right - mask_left
+        mask_height = mask_bottom - mask_top
+        # ensure we have some padding around the mask when we do the inpaint (and that the region size is even)
+        adj_mask_size = (
+            ceil(max(mask_width, mask_height) * full_res_inpaint_padding / 2) * 2
+        )
+        mask_center_x = int(round((mask_right + mask_left) / 2))
+        mask_center_y = int(round((mask_bottom + mask_top) / 2))
+        adj_mask_border = (
+            int(mask_center_x - adj_mask_size / 2),
+            int(mask_center_y - adj_mask_size / 2),
+            int(mask_center_x + adj_mask_size / 2),
+            int(mask_center_y + adj_mask_size / 2),
+        )
+
+        # we would like to subtract the excess width (subtract a positive) and add the deficient width (subtract a negative)
+        x_adj = -max(adj_mask_border[2] - source.width, 0) - min(adj_mask_border[0], 0)
+        # we would like to subtract the excess height (subtract a negative) and add the deficient height (subtract a negative)
+        y_adj = -max(adj_mask_border[3] - source.height, 0) - min(adj_mask_border[1], 0)
+
+        adj_mask_border = (
+            adj_mask_border[0] + x_adj,
+            adj_mask_border[1] + y_adj,
+            adj_mask_border[2] + x_adj,
+            adj_mask_border[3] + y_adj,
+        )
+
+        border_integrity = all(
+            (
+                adj_mask_border[0] >= 0,
+                adj_mask_border[1] >= 0,
+                adj_mask_border[2] <= source.width,
+                adj_mask_border[3] <= source.height,
+            )
+        )
+        logger.debug(
+            "adjusted mask size %s, mask bounding box: %s",
+            adj_mask_size,
+            adj_mask_border,
+        )
+        if border_integrity and adj_mask_size <= tile_size:
+            logger.debug("performing full-res inpainting")
+            original_source = source
+            source = source.crop(adj_mask_border)
+            source = ImageOps.contain(source, (tile_size, tile_size))
+            mask = mask.crop(adj_mask_border)
+            mask = ImageOps.contain(mask, (tile_size, tile_size))
+            if is_debug():
+                save_image(server, "adjusted-mask.png", mask)
+                save_image(server, "adjusted-source.png", source)
+        else:
+            logger.debug("cannot perform full-res inpaint due to size issue")
+            full_res_inpaint = False
+
     # set up the chain pipeline and base stage
     chain = ChainPipeline()
-    stage = StageParams(tile_order=tile_order, tile_size=params.tiles)
+    stage = StageParams(tile_order=tile_order, tile_size=tile_size)
     chain.stage(
         UpscaleOutpaintStage(),
         stage,
@@ -294,6 +358,12 @@ def run_inpaint_pipeline(
 
     _pairs, loras, inversions, _rest = parse_prompt(params)
     for image, output in zip(images, outputs):
+        if full_res_inpaint:
+            if is_debug():
+                save_image(server, "adjusted-output.png", image)
+            mini_image = ImageOps.contain(image, (adj_mask_size, adj_mask_size))
+            image = original_source
+            image.paste(mini_image, box=adj_mask_border)
         dest = save_image(
             server,
             output,

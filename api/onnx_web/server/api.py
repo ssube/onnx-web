@@ -23,6 +23,7 @@ from ..utils import (
     base_join,
     get_and_clamp_float,
     get_and_clamp_int,
+    get_boolean,
     get_from_list,
     get_from_map,
     get_not_empty,
@@ -257,6 +258,17 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     mask.alpha_composite(mask_top_layer)
     mask.convert(mode="L")
 
+    full_res_inpaint = get_boolean(
+        request.args, "fullresInpaint", get_config_value("fullresInpaint")
+    )
+    full_res_inpaint_padding = get_and_clamp_float(
+        request.args,
+        "fullresInpaintPadding",
+        get_config_value("fullresInpaintPadding"),
+        get_config_value("fullresInpaintPadding", "max"),
+        get_config_value("fullresInpaintPadding", "min"),
+    )
+
     device, params, _size = pipeline_from_request(server, "inpaint")
     expand = border_from_request()
     upscale = upscale_from_request()
@@ -306,6 +318,8 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
         mask_filter,
         fill_color,
         tile_order,
+        full_res_inpaint,
+        full_res_inpaint_padding,
         needs_device=device,
     )
 

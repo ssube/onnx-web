@@ -58,6 +58,14 @@
     "default": "none",
     "keys": []
   },
+  "fullresInpaint": {
+    "default": true
+  },
+  "fullresInpaintPadding": {
+    "default": 1.2,
+    "min": 1,
+    "max": 2
+  },
   "height": {
     "default": 512,
     "min": 256,
