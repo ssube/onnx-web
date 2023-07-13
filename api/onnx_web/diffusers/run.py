@@ -252,7 +252,8 @@ def run_inpaint_pipeline(
 
     # check if we can do full-res inpainting if no outpainting is done
     logger.debug("border zero: %s", border.isZero())
-    if full_res_inpaint and border.isZero():
+    full_res_inpaint = full_res_inpaint and border.isZero()
+    if full_res_inpaint:
         mask_left, mask_top, mask_right, mask_bottom = mask.getbbox()
         logger.debug("mask bbox: %s", mask.getbbox())
         mask_width = mask_right - mask_left
