@@ -54,6 +54,9 @@ stages:
 .build-python:
   extends:
     - .build-base
+  tags:
+    - platform:k8s
+    - runner:large
   variables:
     PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   interruptible: true
