@@ -60,7 +60,7 @@ class SourceTxt2ImgStage(BaseStage):
         if latents is None:
             latents = get_latents_from_seed(params.seed, latent_size, params.batch)
         else:
-            latents = get_tile_latents(latents, dims, latent_size)
+            latents = get_tile_latents(latents, params.seed, latent_size, dims)
 
         pipe_type = params.get_valid_pipeline("txt2img")
         pipe = load_pipeline(

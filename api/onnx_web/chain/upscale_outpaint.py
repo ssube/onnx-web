@@ -79,7 +79,7 @@ class UpscaleOutpaintStage(BaseStage):
             if latents is None:
                 latents = get_latents_from_seed(params.seed, latent_size, params.batch)
             else:
-                latents = get_tile_latents(latents, dims, latent_size)
+                latents = get_tile_latents(latents, params.seed, latent_size, dims)
 
             if params.lpw():
                 logger.debug("using LPW pipeline for inpaint")
