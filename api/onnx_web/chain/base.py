@@ -150,22 +150,26 @@ class ChainPipeline:
                         tile_mask: Image.Image,
                         dims: Tuple[int, int, int],
                     ) -> Image.Image:
-                        output_tile = stage_pipe.run(
-                            job,
-                            server,
-                            stage_params,
-                            params,
-                            [source_tile],
-                            tile_mask=tile_mask,
-                            callback=callback,
-                            dims=dims,
-                            **kwargs,
-                        )[0]
+                        for i in range(3):
+                            try:
+                                output_tile = stage_pipe.run(
+                                    job,
+                                    server,
+                                    stage_params,
+                                    params,
+                                    [source_tile],
+                                    tile_mask=tile_mask,
+                                    callback=callback,
+                                    dims=dims,
+                                    **kwargs,
+                                )[0]
 
-                        if is_debug():
-                            save_image(server, "last-tile.png", output_tile)
+                                if is_debug():
+                                    save_image(server, "last-tile.png", output_tile)
 
-                        return output_tile
+                                return output_tile
+                            except:
+                                logger.exception("error while running stage pipeline for tile, retry %s of 3", i)
 
                     output = process_tile_order(
                         stage_params.tile_order,
@@ -180,15 +184,21 @@ class ChainPipeline:
                 stage_sources = stage_outputs
             else:
                 logger.debug("image within tile size of %s, running stage", tile)
-                stage_sources = stage_pipe.run(
-                    job,
-                    server,
-                    stage_params,
-                    params,
-                    stage_sources,
-                    callback=callback,
-                    **kwargs,
-                )
+                for i in range(3):
+                    try:
+                        stage_sources = stage_pipe.run(
+                            job,
+                            server,
+                            stage_params,
+                            params,
+                            stage_sources,
+                            callback=callback,
+                            **kwargs,
+                        )
+                        break
+                    except:
+                        logger.exception("error while running stage pipeline, retry %s of 3", i)
+
 
             logger.debug(
                 "finished stage %s with %s results",
