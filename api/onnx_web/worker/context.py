@@ -49,6 +49,7 @@ class WorkerContext:
 
     def start(self, job: str) -> None:
         self.job = job
+        self.retries = 3
         self.set_cancel(cancel=False)
         self.set_idle(idle=False)
 
