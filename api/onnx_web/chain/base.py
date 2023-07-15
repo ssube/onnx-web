@@ -167,7 +167,6 @@ class ChainPipeline:
                                 if is_debug():
                                     save_image(server, "last-tile.png", output_tile)
 
-                                job.retries = job.retries - (i + 1)
                                 return output_tile
                             except Exception:
                                 logger.exception(
@@ -175,6 +174,7 @@ class ChainPipeline:
                                     i,
                                 )
                                 run_gc([job.get_device()])
+                                job.retries = job.retries - (i + 1)
 
                         raise RuntimeError("exhausted retries on tile")
 
@@ -205,13 +205,13 @@ class ChainPipeline:
                         # doing this on the same line as stage_pipe.run can leave sources as None, which the pipeline
                         # does not like, so it throws
                         stage_sources = stage_outputs
-                        job.retries = job.retries - (i + 1)
                         break
                     except Exception:
                         logger.exception(
                             "error while running stage pipeline, retry %s of 3", i
                         )
                         run_gc([job.get_device()])
+                        job.retries = job.retries - (i + 1)
 
                 if job.retries <= 0:
                     raise RuntimeError("exhausted retries on stage")
