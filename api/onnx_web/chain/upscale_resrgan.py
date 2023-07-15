@@ -73,7 +73,7 @@ class UpscaleRealESRGANStage(BaseStage):
 
     def run(
         self,
-        job: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
@@ -89,7 +89,7 @@ class UpscaleRealESRGANStage(BaseStage):
         for source in sources:
             output = np.array(source)
             upsampler = self.load(
-                server, upscale, job.get_device(), tile=stage.tile_size
+                server, upscale, worker.get_device(), tile=stage.tile_size
             )
 
             output, _ = upsampler.enhance(output, outscale=upscale.outscale)

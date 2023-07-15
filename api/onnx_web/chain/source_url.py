@@ -16,7 +16,7 @@ logger = getLogger(__name__)
 class SourceURLStage(BaseStage):
     def run(
         self,
-        _job: WorkerContext,
+        _worker: WorkerContext,
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,

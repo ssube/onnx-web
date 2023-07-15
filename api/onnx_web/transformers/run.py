@@ -8,7 +8,7 @@ logger = getLogger(__name__)
 
 
 def run_txt2txt_pipeline(
-    job: WorkerContext,
+    worker: WorkerContext,
     _server: ServerContext,
     params: ImageParams,
     _size: Size,
@@ -20,7 +20,7 @@ def run_txt2txt_pipeline(
     model = "EleutherAI/gpt-j-6B"
     tokens = 1024
 
-    device = job.get_device()
+    device = worker.get_device()
 
     pipe = GPTJForCausalLM.from_pretrained(model).to(device.torch_str())
     tokenizer = AutoTokenizer.from_pretrained(model)

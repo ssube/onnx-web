@@ -15,7 +15,7 @@ logger = getLogger(__name__)
 class PersistDiskStage(BaseStage):
     def run(
         self,
-        _job: WorkerContext,
+        _worker: WorkerContext,
         server: ServerContext,
         _stage: StageParams,
         params: ImageParams,

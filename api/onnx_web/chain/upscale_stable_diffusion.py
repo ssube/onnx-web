@@ -18,7 +18,7 @@ logger = getLogger(__name__)
 class UpscaleStableDiffusionStage(BaseStage):
     def run(
         self,
-        job: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         _stage: StageParams,
         params: ImageParams,
@@ -43,7 +43,7 @@ class UpscaleStableDiffusionStage(BaseStage):
             server,
             params,
             "upscale",
-            job.get_device(),
+            worker.get_device(),
             model=path.join(server.model_path, upscale.upscale_model),
         )
         generator = torch.manual_seed(params.seed)

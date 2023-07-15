@@ -50,7 +50,7 @@ class UpscaleSwinIRStage(BaseStage):
 
     def run(
         self,
-        job: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
@@ -67,7 +67,7 @@ class UpscaleSwinIRStage(BaseStage):
             return sources
 
         logger.info("correcting faces with SwinIR model: %s", upscale.upscale_model)
-        device = job.get_device()
+        device = worker.get_device()
         swinir = self.load(server, stage, upscale, device)
 
         outputs = []

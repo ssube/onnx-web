@@ -70,14 +70,14 @@ class ChainPipeline:
 
     def run(
         self,
-        job: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         params: ImageParams,
         sources: List[Image.Image],
         callback: Optional[ProgressCallback],
         **kwargs
     ) -> List[Image.Image]:
-        return self(job, server, params, sources=sources, callback=callback, **kwargs)
+        return self(worker, server, params, sources=sources, callback=callback, **kwargs)
 
     def stage(self, callback: BaseStage, params: StageParams, **kwargs):
         self.stages.append((callback, params, kwargs))
@@ -85,7 +85,7 @@ class ChainPipeline:
 
     def __call__(
         self,
-        job: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         params: ImageParams,
         sources: List[Image.Image],
@@ -151,10 +151,10 @@ class ChainPipeline:
                         tile_mask: Image.Image,
                         dims: Tuple[int, int, int],
                     ) -> Image.Image:
-                        for i in range(job.retries):
+                        for i in range(worker.retries):
                             try:
                                 output_tile = stage_pipe.run(
-                                    job,
+                                    worker,
                                     server,
                                     stage_params,
                                     params,
@@ -175,8 +175,8 @@ class ChainPipeline:
                                     i,
                                 )
                                 server.cache.clear()
-                                run_gc([job.get_device()])
-                                job.retries = job.retries - (i + 1)
+                                run_gc([worker.get_device()])
+                                worker.retries = worker.retries - (i + 1)
 
                         raise RetryException("exhausted retries on tile")
 
@@ -193,10 +193,10 @@ class ChainPipeline:
                 stage_sources = stage_outputs
             else:
                 logger.debug("image within tile size of %s, running stage", tile)
-                for i in range(job.retries):
+                for i in range(worker.retries):
                     try:
                         stage_outputs = stage_pipe.run(
-                            job,
+                            worker,
                             server,
                             stage_params,
                             params,
@@ -213,10 +213,10 @@ class ChainPipeline:
                             "error while running stage pipeline, retry %s of 3", i
                         )
                         server.cache.clear()
-                        run_gc([job.get_device()])
-                        job.retries = job.retries - (i + 1)
+                        run_gc([worker.get_device()])
+                        worker.retries = worker.retries - (i + 1)
 
-                if job.retries <= 0:
+                if worker.retries <= 0:
                     raise RetryException("exhausted retries on stage")
 
             logger.debug(

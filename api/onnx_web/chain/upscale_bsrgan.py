@@ -50,7 +50,7 @@ class UpscaleBSRGANStage(BaseStage):
 
     def run(
         self,
-        job: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
@@ -67,7 +67,7 @@ class UpscaleBSRGANStage(BaseStage):
             return sources
 
         logger.info("upscaling with BSRGAN model: %s", upscale.upscale_model)
-        device = job.get_device()
+        device = worker.get_device()
         bsrgan = self.load(server, stage, upscale, device)
 
         outputs = []

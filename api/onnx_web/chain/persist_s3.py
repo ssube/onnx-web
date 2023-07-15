@@ -16,7 +16,7 @@ logger = getLogger(__name__)
 class PersistS3Stage(BaseStage):
     def run(
         self,
-        _job: WorkerContext,
+        _worker: WorkerContext,
         server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,

@@ -25,7 +25,7 @@ class SourceTxt2ImgStage(BaseStage):
 
     def run(
         self,
-        job: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         _stage: StageParams,
         params: ImageParams,
@@ -67,7 +67,7 @@ class SourceTxt2ImgStage(BaseStage):
             server,
             params,
             pipe_type,
-            job.get_device(),
+            worker.get_device(),
             inversions=inversions,
             loras=loras,
         )

@@ -34,7 +34,7 @@ logger = getLogger(__name__)
 
 
 def run_txt2img_pipeline(
-    job: WorkerContext,
+    worker: WorkerContext,
     server: ServerContext,
     params: ImageParams,
     size: Size,
@@ -83,8 +83,8 @@ def run_txt2img_pipeline(
 
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
-    progress = job.get_progress_callback()
-    images = chain.run(job, server, params, [], callback=progress, latents=latents)
+    progress = worker.get_progress_callback()
+    images = chain.run(worker, server, params, [], callback=progress, latents=latents)
 
     _pairs, loras, inversions, _rest = parse_prompt(params)
 
@@ -102,7 +102,7 @@ def run_txt2img_pipeline(
         )
 
     # clean up
-    run_gc([job.get_device()])
+    run_gc([worker.get_device()])
 
     # notify the user
     show_system_toast(f"finished txt2img job: {dest}")
@@ -110,7 +110,7 @@ def run_txt2img_pipeline(
 
 
 def run_img2img_pipeline(
-    job: WorkerContext,
+    worker: WorkerContext,
     server: ServerContext,
     params: ImageParams,
     outputs: List[str],
@@ -175,8 +175,8 @@ def run_img2img_pipeline(
     )
 
     # run and append the filtered source
-    progress = job.get_progress_callback()
-    images = chain(job, server, params, [source], callback=progress)
+    progress = worker.get_progress_callback()
+    images = chain(worker, server, params, [source], callback=progress)
 
     if source_filter is not None and source_filter != "none":
         images.append(source)
@@ -199,7 +199,7 @@ def run_img2img_pipeline(
         )
 
     # clean up
-    run_gc([job.get_device()])
+    run_gc([worker.get_device()])
 
     # notify the user
     show_system_toast(f"finished img2img job: {dest}")
@@ -207,7 +207,7 @@ def run_img2img_pipeline(
 
 
 def run_inpaint_pipeline(
-    job: WorkerContext,
+    worker: WorkerContext,
     server: ServerContext,
     params: ImageParams,
     size: Size,
@@ -353,8 +353,8 @@ def run_inpaint_pipeline(
 
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
-    progress = job.get_progress_callback()
-    images = chain(job, server, params, [source], callback=progress, latents=latents)
+    progress = worker.get_progress_callback()
+    images = chain(worker, server, params, [source], callback=progress, latents=latents)
 
     _pairs, loras, inversions, _rest = parse_prompt(params)
     for image, output in zip(images, outputs):
@@ -378,7 +378,7 @@ def run_inpaint_pipeline(
 
     # clean up
     del image
-    run_gc([job.get_device()])
+    run_gc([worker.get_device()])
 
     # notify the user
     show_system_toast(f"finished inpaint job: {dest}")
@@ -386,7 +386,7 @@ def run_inpaint_pipeline(
 
 
 def run_upscale_pipeline(
-    job: WorkerContext,
+    worker: WorkerContext,
     server: ServerContext,
     params: ImageParams,
     size: Size,
@@ -427,8 +427,8 @@ def run_upscale_pipeline(
     )
 
     # run and save
-    progress = job.get_progress_callback()
-    images = chain(job, server, params, [source], callback=progress)
+    progress = worker.get_progress_callback()
+    images = chain(worker, server, params, [source], callback=progress)
 
     _pairs, loras, inversions, _rest = parse_prompt(params)
     for image, output in zip(images, outputs):
@@ -445,7 +445,7 @@ def run_upscale_pipeline(
 
     # clean up
     del image
-    run_gc([job.get_device()])
+    run_gc([worker.get_device()])
 
     # notify the user
     show_system_toast(f"finished upscale job: {dest}")
@@ -453,7 +453,7 @@ def run_upscale_pipeline(
 
 
 def run_blend_pipeline(
-    job: WorkerContext,
+    worker: WorkerContext,
     server: ServerContext,
     params: ImageParams,
     size: Size,
@@ -477,15 +477,15 @@ def run_blend_pipeline(
     )
 
     # run and save
-    progress = job.get_progress_callback()
-    images = chain(job, server, params, sources, callback=progress)
+    progress = worker.get_progress_callback()
+    images = chain(worker, server, params, sources, callback=progress)
 
     for image, output in zip(images, outputs):
         dest = save_image(server, output, image, params, size, upscale=upscale)
 
     # clean up
     del image
-    run_gc([job.get_device()])
+    run_gc([worker.get_device()])
 
     # notify the user
     show_system_toast(f"finished blend job: {dest}")

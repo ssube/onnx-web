@@ -28,7 +28,7 @@ class UpscaleOutpaintStage(BaseStage):
 
     def run(
         self,
-        job: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         stage: StageParams,
         params: ImageParams,
@@ -55,7 +55,7 @@ class UpscaleOutpaintStage(BaseStage):
             server,
             params,
             pipe_type,
-            job.get_device(),
+            worker.get_device(),
             inversions=inversions,
             loras=loras,
         )

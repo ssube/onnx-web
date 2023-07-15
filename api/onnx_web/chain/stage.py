@@ -12,7 +12,7 @@ class BaseStage:
 
     def run(
         self,
-        job: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,

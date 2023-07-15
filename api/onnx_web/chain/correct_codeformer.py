@@ -14,7 +14,7 @@ logger = getLogger(__name__)
 class CorrectCodeformerStage(BaseStage):
     def run(
         self,
-        job: WorkerContext,
+        worker: WorkerContext,
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
@@ -30,6 +30,6 @@ class CorrectCodeformerStage(BaseStage):
 
         upscale = upscale.with_args(**kwargs)
 
-        device = job.get_device()
+        device = worker.get_device()
         pipe = CodeFormer(upscale=upscale.face_outscale).to(device.torch_str())
         return [pipe(source) for source in sources]

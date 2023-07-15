@@ -16,7 +16,7 @@ logger = getLogger(__name__)
 class UpscaleHighresStage(BaseStage):
     def run(
         self,
-        job: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         stage: StageParams,
         params: ImageParams,
@@ -35,7 +35,7 @@ class UpscaleHighresStage(BaseStage):
 
         return [
             chain(
-                job,
+                worker,
                 server,
                 params,
                 source,
