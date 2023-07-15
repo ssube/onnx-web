@@ -168,8 +168,11 @@ class ChainPipeline:
                                     save_image(server, "last-tile.png", output_tile)
 
                                 return output_tile
-                            except:
-                                logger.exception("error while running stage pipeline for tile, retry %s of 3", i)
+                            except Exception:
+                                logger.exception(
+                                    "error while running stage pipeline for tile, retry %s of 3",
+                                    i,
+                                )
 
                     output = process_tile_order(
                         stage_params.tile_order,
@@ -196,9 +199,10 @@ class ChainPipeline:
                             **kwargs,
                         )
                         break
-                    except:
-                        logger.exception("error while running stage pipeline, retry %s of 3", i)
-
+                    except Exception:
+                        logger.exception(
+                            "error while running stage pipeline, retry %s of 3", i
+                        )
 
             logger.debug(
                 "finished stage %s with %s results",
