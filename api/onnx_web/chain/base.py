@@ -5,6 +5,7 @@ from typing import Any, List, Optional, Tuple
 
 from PIL import Image
 
+from ..errors import RetryException
 from ..output import save_image
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
@@ -177,7 +178,7 @@ class ChainPipeline:
                                 run_gc([job.get_device()])
                                 job.retries = job.retries - (i + 1)
 
-                        raise RuntimeError("exhausted retries on tile")
+                        raise RetryException("exhausted retries on tile")
 
                     output = process_tile_order(
                         stage_params.tile_order,
@@ -216,7 +217,7 @@ class ChainPipeline:
                         job.retries = job.retries - (i + 1)
 
                 if job.retries <= 0:
-                    raise RuntimeError("exhausted retries on stage")
+                    raise RetryException("exhausted retries on stage")
 
             logger.debug(
                 "finished stage %s with %s results",

@@ -5,6 +5,7 @@ from sys import exit
 
 from setproctitle import setproctitle
 
+from ..errors import RetryException
 from ..server import ServerContext, apply_patches
 from ..torch_before_ort import get_available_providers
 from .context import WorkerContext
@@ -69,6 +70,10 @@ def worker_main(worker: WorkerContext, server: ServerContext):
             logger.info("worker got keyboard interrupt")
             worker.fail()
             exit(EXIT_INTERRUPT)
+        except RetryException:
+            logger.info("retry error in worker, exiting: %s")
+            worker.fail()
+            exit(EXIT_ERROR)
         except ValueError:
             logger.exception("value error in worker, exiting: %s")
             worker.fail()
