@@ -150,7 +150,7 @@ class ChainPipeline:
                         tile_mask: Image.Image,
                         dims: Tuple[int, int, int],
                     ) -> Image.Image:
-                        for i in range(3):
+                        for i in range(job.retries):
                             try:
                                 output_tile = stage_pipe.run(
                                     job,
@@ -167,6 +167,7 @@ class ChainPipeline:
                                 if is_debug():
                                     save_image(server, "last-tile.png", output_tile)
 
+                                job.retries = job.retries - i
                                 return output_tile
                             except Exception:
                                 logger.exception(
@@ -188,9 +189,9 @@ class ChainPipeline:
                 stage_sources = stage_outputs
             else:
                 logger.debug("image within tile size of %s, running stage", tile)
-                for i in range(3):
+                for i in range(job.retries):
                     try:
-                        stage_sources = stage_pipe.run(
+                        stage_outputs = stage_pipe.run(
                             job,
                             server,
                             stage_params,
@@ -199,6 +200,10 @@ class ChainPipeline:
                             callback=callback,
                             **kwargs,
                         )
+                        # doing this on the same line as stage_pipe.run can leave sources as None, which the pipeline
+                        # does not like, so it throws
+                        stage_sources = stage_outputs
+                        job.retries = job.retries - i
                         break
                     except Exception:
                         logger.exception(
