@@ -173,6 +173,7 @@ class ChainPipeline:
                                     "error while running stage pipeline for tile, retry %s of 3",
                                     i,
                                 )
+                                server.cache.clear()
                                 run_gc([job.get_device()])
                                 job.retries = job.retries - (i + 1)
 
@@ -210,6 +211,7 @@ class ChainPipeline:
                         logger.exception(
                             "error while running stage pipeline, retry %s of 3", i
                         )
+                        server.cache.clear()
                         run_gc([job.get_device()])
                         job.retries = job.retries - (i + 1)
 
