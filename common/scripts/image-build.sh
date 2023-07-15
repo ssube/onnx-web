@@ -18,7 +18,9 @@ docker build \
   --cache-from "${IMAGE_MAIN}" \
   --cache-from "${IMAGE_FULL}" \
   -f "${IMAGE_FILE}" \
-  -t "${IMAGE_FULL}" . || { echo "Failed to build image!"; exit 1; }
+  -t "${IMAGE_FULL}" \
+  "${IMAGE_ROOT}" || \
+  { echo "Failed to build image!"; exit 1; }
 
 if [[ "${IMAGE_PUSH}" == "--push" ]];
 then

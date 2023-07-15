@@ -35,6 +35,9 @@ stages:
   image: docker.io/docker:20.10
   services:
     - docker.io/docker:20.10-dind
+  tags:
+    - platform:k8s
+    - runner:large
   allow_failure: false
   before_script:
     - mkdir ${HOME}/.docker
@@ -129,15 +132,13 @@ build-gui-bundle:
   stage: package
   needs:
     - build-api-coverage-3.8
+    - build-api-coverage-3.9
     - build-api-coverage-3.10
     - build-gui-bundle
   script:
-    - mv -v gui/out/config.json gui/out/index.html api/gui/
-    - mv -v gui/out/bundle/main.js api/gui/bundle/
-    - cd api
     - ${CI_PROJECT_DIR}/common/scripts/image-build.sh --push
   variables:
-    IMAGE_ROOT: "${CI_PROJECT_DIR}/api"
+    IMAGE_ROOT: "${CI_PROJECT_DIR}"
     IMAGE_SUFFIX: api
 
 .package-gui-oci:
@@ -160,12 +161,11 @@ package-api-oci:
   parallel:
     matrix:
       - IMAGE_ARCH: cpu-buster
-        IMAGE_FILE: Containerfile.cpu.buster
+        IMAGE_FILE: api/Containerfile.cpu.buster
       - IMAGE_ARCH: cuda-ubuntu
-        IMAGE_FILE: Containerfile.cuda.ubuntu
-      # TODO: ROCm image build keeps running out of disk
-      # IMAGE_ARCH: rocm-ubuntu
-      # IMAGE_FILE: Containerfile.rocm.ubuntu
+        IMAGE_FILE: api/Containerfile.cuda.ubuntu
+      - IMAGE_ARCH: rocm-ubuntu
+        IMAGE_FILE: api/Containerfile.rocm.ubuntu
 
 package-gui-oci:
   extends:
