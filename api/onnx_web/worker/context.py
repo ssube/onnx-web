@@ -45,7 +45,7 @@ class WorkerContext:
         self.last_progress = None
         self.idle = idle
         self.timeout = 1.0
-        self.retries = 3 # TODO: get from env
+        self.retries = 3  # TODO: get from env
 
     def start(self, job: str) -> None:
         self.job = job
