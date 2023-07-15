@@ -8,7 +8,7 @@ from PIL import Image
 from ..output import save_image
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
-from ..utils import is_debug
+from ..utils import is_debug, run_gc
 from ..worker import ProgressCallback, WorkerContext
 from .stage import BaseStage
 from .tile import needs_tile, process_tile_order
@@ -173,6 +173,7 @@ class ChainPipeline:
                                     "error while running stage pipeline for tile, retry %s of 3",
                                     i,
                                 )
+                                run_gc([job.get_device()])
 
                     output = process_tile_order(
                         stage_params.tile_order,
@@ -203,6 +204,7 @@ class ChainPipeline:
                         logger.exception(
                             "error while running stage pipeline, retry %s of 3", i
                         )
+                        run_gc([job.get_device()])
 
             logger.debug(
                 "finished stage %s with %s results",
