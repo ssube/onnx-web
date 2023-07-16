@@ -317,16 +317,12 @@ def parse_prompt(
     """
     TODO: return a more structured format
     """
-    prompt, loras = get_loras_from_prompt(
-        params.prompt
-    )
+    prompt, loras = get_loras_from_prompt(params.prompt)
     prompt, inversions = get_inversions_from_prompt(prompt)
 
     neg_prompt = None
     if params.negative_prompt is not None:
-        neg_prompt, neg_loras = get_loras_from_prompt(
-            params.negative_prompt
-        )
+        neg_prompt, neg_loras = get_loras_from_prompt(params.negative_prompt)
         neg_prompt, neg_inversions = get_inversions_from_prompt(neg_prompt)
 
         loras.extend(neg_loras)
