@@ -29,7 +29,7 @@ class SourceURLStage(BaseStage):
         logger.info("loading image from URL source")
 
         if len(sources) > 0:
-            logger.warn(
+            logger.warning(
                 "a source image was passed to a source stage, and will be discarded"
             )
 

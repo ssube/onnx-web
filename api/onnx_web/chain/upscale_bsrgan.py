@@ -63,7 +63,7 @@ class UpscaleBSRGANStage(BaseStage):
         upscale = upscale.with_args(**kwargs)
 
         if upscale.upscale_model is None:
-            logger.warn("no upscaling model given, skipping")
+            logger.warning("no upscaling model given, skipping")
             return sources
 
         logger.info("upscaling with BSRGAN model: %s", upscale.upscale_model)

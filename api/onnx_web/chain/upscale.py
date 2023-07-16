@@ -92,7 +92,7 @@ def stage_upscale_correction(
             )
             upscale_stage = (UpscaleSwinIRStage(), swinir_params, upscale_opts)
         else:
-            logger.warn("unknown upscaling model: %s", upscale.upscale_model)
+            logger.warning("unknown upscaling model: %s", upscale.upscale_model)
 
     correct_stage: Optional[PipelineStage] = None
     if upscale.faces:
@@ -100,13 +100,13 @@ def stage_upscale_correction(
             tile_size=stage.tile_size, outscale=upscale.face_outscale
         )
         if upscale.correction_model is None:
-            logger.warn("no correction model set, skipping")
+            logger.warning("no correction model set, skipping")
         elif "codeformer" in upscale.correction_model:
             correct_stage = (CorrectCodeformerStage(), face_params, upscale_opts)
         elif "gfpgan" in upscale.correction_model:
             correct_stage = (CorrectGFPGANStage(), face_params, upscale_opts)
         else:
-            logger.warn("unknown correction model: %s", upscale.correction_model)
+            logger.warning("unknown correction model: %s", upscale.correction_model)
 
     if upscale.upscale_order == "correction-both":
         chain.append(correct_stage)
@@ -119,7 +119,7 @@ def stage_upscale_correction(
         chain.append(upscale_stage)
         chain.append(correct_stage)
     else:
-        logger.warn("unknown upscaling order: %s", upscale.upscale_order)
+        logger.warning("unknown upscaling order: %s", upscale.upscale_order)
 
     if post_stages is not None:
         for post_stage in post_stages:

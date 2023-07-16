@@ -63,7 +63,7 @@ class UpscaleSwinIRStage(BaseStage):
         upscale = upscale.with_args(**kwargs)
 
         if upscale.upscale_model is None:
-            logger.warn("no correction model given, skipping")
+            logger.warning("no correction model given, skipping")
             return sources
 
         logger.info("correcting faces with SwinIR model: %s", upscale.upscale_model)

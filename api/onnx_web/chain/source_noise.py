@@ -28,7 +28,7 @@ class SourceNoiseStage(BaseStage):
         logger.info("generating image from noise source")
 
         if len(sources) > 0:
-            logger.warn(
+            logger.warning(
                 "source images were passed to a noise stage and will be discarded"
             )
 

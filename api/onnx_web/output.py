@@ -47,7 +47,7 @@ def hash_value(sha, param: Optional[Param]):
     elif isinstance(param, str):
         sha.update(param.encode("utf-8"))
     else:
-        logger.warn("cannot hash param: %s, %s", param, type(param))
+        logger.warning("cannot hash param: %s, %s", param, type(param))
 
 
 def json_params(

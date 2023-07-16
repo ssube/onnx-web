@@ -53,7 +53,7 @@ def get_from_list(
     if selected in values:
         return selected
 
-    logger.warn("invalid selection %s, options: %s", selected, values)
+    logger.warning("invalid selection %s, options: %s", selected, values)
     if len(values) > 0:
         return values[0]
 

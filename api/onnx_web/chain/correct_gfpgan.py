@@ -66,7 +66,7 @@ class CorrectGFPGANStage(BaseStage):
         upscale = upscale.with_args(**kwargs)
 
         if upscale.correction_model is None:
-            logger.warn("no face model given, skipping")
+            logger.warning("no face model given, skipping")
             return sources
 
         logger.info("correcting faces with GFPGAN model: %s", upscale.correction_model)

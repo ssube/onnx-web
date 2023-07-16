@@ -45,7 +45,7 @@ class SourceTxt2ImgStage(BaseStage):
         )
 
         if "stage_source" in kwargs:
-            logger.warn(
+            logger.warning(
                 "a source image was passed to a txt2img stage, and will be discarded"
             )
 
