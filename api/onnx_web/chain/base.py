@@ -77,7 +77,9 @@ class ChainPipeline:
         callback: Optional[ProgressCallback],
         **kwargs
     ) -> List[Image.Image]:
-        return self(worker, server, params, sources=sources, callback=callback, **kwargs)
+        return self(
+            worker, server, params, sources=sources, callback=callback, **kwargs
+        )
 
     def stage(self, callback: BaseStage, params: StageParams, **kwargs):
         self.stages.append((callback, params, kwargs))
