@@ -308,26 +308,26 @@ def get_scaled_latents(
 
 def parse_prompt(
     params: ImageParams,
-    use_input: bool = False,
 ) -> Tuple[
     List[Tuple[str, str]],
     List[Tuple[str, float]],
     List[Tuple[str, float]],
     Tuple[str, str],
 ]:
+    """
+    TODO: return a more structured format
+    """
     prompt, loras = get_loras_from_prompt(
-        params.input_prompt if use_input else params.prompt
+        params.prompt
     )
     prompt, inversions = get_inversions_from_prompt(prompt)
-    # params.prompt = prompt
 
     neg_prompt = None
-    if params.input_negative_prompt is not None:
+    if params.negative_prompt is not None:
         neg_prompt, neg_loras = get_loras_from_prompt(
-            params.input_negative_prompt if use_input else params.negative_prompt
+            params.negative_prompt
         )
         neg_prompt, neg_inversions = get_inversions_from_prompt(neg_prompt)
-        # params.negative_prompt = neg_prompt
 
         loras.extend(neg_loras)
         inversions.extend(neg_inversions)
