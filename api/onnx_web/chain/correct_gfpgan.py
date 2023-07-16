@@ -53,7 +53,7 @@ class CorrectGFPGANStage(BaseStage):
 
     def run(
         self,
-        job: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
@@ -70,7 +70,7 @@ class CorrectGFPGANStage(BaseStage):
             return sources
 
         logger.info("correcting faces with GFPGAN model: %s", upscale.correction_model)
-        device = job.get_device()
+        device = worker.get_device()
         gfpgan = self.load(server, stage, upscale, device)
 
         outputs = []

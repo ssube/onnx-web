@@ -15,7 +15,8 @@ ProgressCallback = Callable[[int, int, Any], None]
 
 class WorkerContext:
     cancel: "Value[bool]"
-    job: str
+    job: Optional[str]
+    name: str
     pending: "Queue[JobCommand]"
     active_pid: "Value[int]"
     progress: "Queue[ProgressCommand]"
@@ -26,7 +27,7 @@ class WorkerContext:
 
     def __init__(
         self,
-        job: str,
+        name: str,
         device: DeviceParams,
         cancel: "Value[bool]",
         logs: "Queue[str]",
@@ -35,7 +36,7 @@ class WorkerContext:
         active_pid: "Value[int]",
         idle: "Value[bool]",
     ):
-        self.job = job
+        self.name = name
         self.device = device
         self.cancel = cancel
         self.progress = progress
@@ -96,56 +97,65 @@ class WorkerContext:
             self.idle.value = idle
 
     def set_progress(self, progress: int) -> None:
+        if self.job is None:
+            raise RuntimeError("no job on which to set progress")
+
         if self.is_cancelled():
             raise RuntimeError("job has been cancelled")
-        else:
-            logger.debug("setting progress for job %s to %s", self.job, progress)
-            self.last_progress = ProgressCommand(
-                self.job,
-                self.device.device,
-                False,
-                progress,
-                self.is_cancelled(),
-                False,
-            )
 
-            self.progress.put(
-                self.last_progress,
-                block=False,
-            )
-
-    def finish(self) -> None:
-        logger.debug("setting finished for job %s", self.job)
+        logger.debug("setting progress for job %s to %s", self.job, progress)
         self.last_progress = ProgressCommand(
             self.job,
             self.device.device,
-            True,
-            self.get_progress(),
+            False,
+            progress,
             self.is_cancelled(),
             False,
         )
+
         self.progress.put(
             self.last_progress,
             block=False,
         )
 
-    def fail(self) -> None:
-        logger.warning("setting failure for job %s", self.job)
-        try:
+    def finish(self) -> None:
+        if self.job is None:
+            logger.warning("setting finished without an active job")
+        else:
+            logger.debug("setting finished for job %s", self.job)
             self.last_progress = ProgressCommand(
                 self.job,
                 self.device.device,
                 True,
                 self.get_progress(),
                 self.is_cancelled(),
-                True,
+                False,
             )
             self.progress.put(
                 self.last_progress,
                 block=False,
             )
-        except Exception:
-            logger.exception("error setting failure on job %s", self.job)
+
+    def fail(self) -> None:
+        if self.job is None:
+            logger.warning("setting failure without an active job")
+        else:
+            logger.warning("setting failure for job %s", self.job)
+            try:
+                self.last_progress = ProgressCommand(
+                    self.job,
+                    self.device.device,
+                    True,
+                    self.get_progress(),
+                    self.is_cancelled(),
+                    True,
+                )
+                self.progress.put(
+                    self.last_progress,
+                    block=False,
+                )
+            except Exception:
+                logger.exception("error setting failure on job %s", self.job)
 
 
 class JobStatus:
