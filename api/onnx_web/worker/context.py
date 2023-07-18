@@ -36,6 +36,7 @@ class WorkerContext:
         active_pid: "Value[int]",
         idle: "Value[bool]",
     ):
+        self.job = None
         self.name = name
         self.device = device
         self.cancel = cancel

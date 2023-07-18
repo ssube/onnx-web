@@ -67,15 +67,15 @@ def worker_main(worker: WorkerContext, server: ServerContext):
             logger.trace("worker reached end of queue, setting idle flag")
             worker.set_idle()
         except KeyboardInterrupt:
-            logger.info("worker got keyboard interrupt")
+            logger.debug("worker got keyboard interrupt")
             worker.fail()
             exit(EXIT_INTERRUPT)
         except RetryException:
-            logger.info("retry error in worker, exiting: %s")
+            logger.exception("retry error in worker, exiting")
             worker.fail()
             exit(EXIT_ERROR)
         except ValueError:
-            logger.exception("value error in worker, exiting: %s")
+            logger.exception("value error in worker, exiting")
             worker.fail()
             exit(EXIT_ERROR)
         except Exception as e:
