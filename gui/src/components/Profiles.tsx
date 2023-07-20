@@ -14,7 +14,7 @@ import {
   TextField,
 } from '@mui/material';
 import * as ExifReader from 'exifreader';
-import { defaultTo } from 'lodash';
+import { defaultTo, isString } from 'lodash';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -176,11 +176,11 @@ export async function parseImageParams(file: File): Promise<Partial<Txt2ImgParam
   // eslint-disable-next-line dot-notation, @typescript-eslint/strict-boolean-expressions
   const userComment = tags.UserComment || tags['Parameters'] || tags['parameters'];
 
-  if (doesExist(makerNote) && isProbablyJSON(makerNote.value)) {
+  if (doesExist(makerNote) && isString(makerNote.value) && isProbablyJSON(makerNote.value)) {
     return parseJSONParams(makerNote.value);
   }
 
-  if (doesExist(userComment) && typeof userComment.value === 'string') {
+  if (doesExist(userComment) && isString(userComment.value)) {
     return parseAutoComment(userComment.value);
   }
 
@@ -202,13 +202,17 @@ export async function parseJSONParams(json: string): Promise<Partial<Txt2ImgPara
   return params;
 }
 
-export function isProbablyJSON(maybeJSON: unknown): maybeJSON is string {
+export function isProbablyJSON(maybeJSON: unknown): boolean {
   return typeof maybeJSON === 'string' && maybeJSON[0] === '{' && maybeJSON[maybeJSON.length - 1] === '}';
 }
 
 export const NEGATIVE_PROMPT_TAG = 'Negative prompt:';
 
-export function parseAutoComment(comment: string): Partial<Txt2ImgParams> {
+export async function parseAutoComment(comment: string): Promise<Partial<Txt2ImgParams>> {
+  if (isProbablyJSON(comment)) {
+    return parseJSONParams(comment);
+  }
+
   const lines = comment.split('\n');
   const [prompt, maybeNegative, ...otherLines] = lines;
 
