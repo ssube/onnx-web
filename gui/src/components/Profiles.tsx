@@ -80,7 +80,7 @@ export function Profiles(props: ProfilesProps) {
             <ImageSearch />
             <input
               hidden
-              accept={'*.json,*.jpg,*.jpeg,*.png,*.txt'}
+              accept={'.json,.jpg,.jpeg,.png,.txt,.webp'}
               type='file'
               onChange={(event) => {
                 const { files } = event.target;
