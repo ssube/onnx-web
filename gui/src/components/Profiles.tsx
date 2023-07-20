@@ -21,6 +21,7 @@ import { useStore } from 'zustand';
 
 import { BaseImgParams, Txt2ImgParams } from '../client/types.js';
 import { StateContext } from '../state.js';
+import { defaultTo } from 'lodash';
 
 export interface ProfilesProps {
   params: BaseImgParams;
@@ -157,12 +158,10 @@ export async function loadParamsFromFile(file: File): Promise<Partial<Txt2ImgPar
     case 'jpg':
     case 'jpeg':
     case 'png':
+    case 'webp':
       return parseImageParams(file);
     case 'json':
-    {
-      const params = JSON.parse(await file.text());
-      return params.params as Txt2ImgParams;
-    }
+      return parseJSONParams(await file.text());
     case 'txt':
     default:
       return parseAutoComment(await file.text());
@@ -178,8 +177,7 @@ export async function parseImageParams(file: File): Promise<Partial<Txt2ImgParam
   const userComment = tags.UserComment || tags['Parameters'] || tags['parameters'];
 
   if (doesExist(makerNote) && isProbablyJSON(makerNote.value)) {
-    const params = JSON.parse(makerNote.value);
-    return params.params as Txt2ImgParams; // TODO: enforce schema and do some error handling
+    return parseJSONParams(makerNote.value);
   }
 
   if (doesExist(userComment) && typeof userComment.value === 'string') {
@@ -187,6 +185,21 @@ export async function parseImageParams(file: File): Promise<Partial<Txt2ImgParam
   }
 
   return {};
+}
+
+export async function parseJSONParams(json: string): Promise<Partial<Txt2ImgParams>> {
+  const data = JSON.parse(json);
+  const params: Partial<Txt2ImgParams> = {
+    ...data.params,
+  };
+
+  const size = defaultTo(data.input_size, data.size);
+  if (doesExist(size)) {
+    params.height = size.height;
+    params.width = size.width;
+  }
+
+  return params;
 }
 
 export function isProbablyJSON(maybeJSON: unknown): maybeJSON is string {
