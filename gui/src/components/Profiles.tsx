@@ -14,6 +14,7 @@ import {
   TextField,
 } from '@mui/material';
 import * as ExifReader from 'exifreader';
+import { defaultTo } from 'lodash';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +22,6 @@ import { useStore } from 'zustand';
 
 import { BaseImgParams, Txt2ImgParams } from '../client/types.js';
 import { StateContext } from '../state.js';
-import { defaultTo } from 'lodash';
 
 export interface ProfilesProps {
   params: BaseImgParams;
