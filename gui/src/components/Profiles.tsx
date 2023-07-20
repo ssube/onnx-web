@@ -1,28 +1,26 @@
-import * as React from 'react';
-import { useContext } from 'react';
 import { doesExist, mustExist } from '@apextoaster/js-utils';
-import { useStore } from 'zustand';
-import { useTranslation } from 'react-i18next';
+import { Delete as DeleteIcon, ImageSearch, Save as SaveIcon } from '@mui/icons-material';
 import {
+  Autocomplete,
   Button,
-  IconButton,
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  TextField,
+  DialogContent,
+  DialogTitle,
+  IconButton,
   ListItem,
   ListItemText,
-  Autocomplete,
   Stack,
+  TextField,
 } from '@mui/material';
-import {
-  Delete as DeleteIcon,
-  Save as SaveIcon,
-} from '@mui/icons-material';
+import * as ExifReader from 'exifreader';
+import * as React from 'react';
+import { useContext } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useStore } from 'zustand';
 
+import { BaseImgParams, Txt2ImgParams } from '../client/types.js';
 import { StateContext } from '../state.js';
-import { BaseImgParams } from '../client/types.js';
 
 export interface ProfilesProps {
   params: BaseImgParams;
@@ -78,6 +76,29 @@ export function Profiles(props: ProfilesProps) {
           <Button type="button" variant="contained" onClick={() => setDialogOpen(true)}>
             <SaveIcon />
           </Button>
+          <Button component='label' variant="contained">
+            <ImageSearch />
+            <input
+              hidden
+              accept={'*.json,*.jpg,*.jpeg,*.png,*.txt'}
+              type='file'
+              onChange={(event) => {
+                const { files } = event.target;
+                if (doesExist(files) && files.length > 0) {
+                  const file = mustExist(files[0]);
+                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                  loadParamsFromFile(file).then((newParams) => {
+                    if (doesExist(props.setParams) && doesExist(newParams)) {
+                      props.setParams({
+                        ...props.params,
+                        ...newParams,
+                      });
+                    }
+                  });
+                }
+              }}
+            />
+          </Button>
         </Stack>
       )}
       onChange={(event, value) => {
@@ -123,4 +144,96 @@ export function Profiles(props: ProfilesProps) {
       </DialogActions>
     </Dialog>
   </>;
+}
+
+export async function loadParamsFromFile(file: File): Promise<Partial<Txt2ImgParams>> {
+  const parts = file.name.toLocaleLowerCase().split('.');
+  const ext = parts[parts.length - 1];
+
+  switch (ext) {
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
+      return parseImageParams(file);
+    case 'json':
+    {
+      const params = JSON.parse(await file.text());
+      return params.params as Txt2ImgParams;
+    }
+    case 'txt':
+    default:
+      return parseAutoComment(await file.text());
+  }
+}
+
+export async function parseImageParams(file: File): Promise<Partial<Txt2ImgParams>> {
+  const tags = await ExifReader.load(file);
+
+  // handle lowercase variation from my earlier mistakes
+  const makerNote = tags.MakerNote || tags['maker note'];
+  // eslint-disable-next-line dot-notation, @typescript-eslint/strict-boolean-expressions
+  const userComment = tags.UserComment || tags['Parameters'] || tags['parameters'];
+
+  if (doesExist(makerNote) && isProbablyJSON(makerNote.value)) {
+    const params = JSON.parse(makerNote.value);
+    return params.params as Txt2ImgParams; // TODO: enforce schema and do some error handling
+  }
+
+  if (doesExist(userComment) && typeof userComment.value === 'string') {
+    return parseAutoComment(userComment.value);
+  }
+
+  return {};
+}
+
+export function isProbablyJSON(maybeJSON: unknown): maybeJSON is string {
+  return typeof maybeJSON === 'string' && maybeJSON[0] === '{' && maybeJSON[maybeJSON.length - 1] === '}';
+}
+
+export const NEGATIVE_PROMPT_TAG = 'Negative prompt:';
+
+export function parseAutoComment(comment: string): Partial<Txt2ImgParams> {
+  const lines = comment.split('\n');
+  const [prompt, maybeNegative, ...otherLines] = lines;
+
+  const params: Partial<Txt2ImgParams> = {
+    prompt,
+  };
+
+  // check if maybeNegative is the negative prompt
+  if (maybeNegative.startsWith(NEGATIVE_PROMPT_TAG)) {
+    params.negativePrompt = maybeNegative.substring(NEGATIVE_PROMPT_TAG.length).trim();
+  } else {
+    otherLines.unshift(maybeNegative);
+  }
+
+  // join rest and split on commas
+  const other = otherLines.join(' ');
+  const otherParams = other.split(',');
+
+  for (const param of otherParams) {
+    const [key, value] = param.split(':');
+
+    switch (key.toLocaleLowerCase().trim()) {
+      case 'steps':
+        params.steps = parseInt(value, 10);
+        break;
+      case 'sampler':
+        params.scheduler = value;
+        break;
+      case 'cfg scale':
+        params.cfg = parseInt(value, 10);
+        break;
+      case 'seed':
+        params.seed = parseInt(value, 10);
+        break;
+      case 'size':
+        // TODO: parse size
+        break;
+      default:
+        // unknown param
+    }
+  }
+
+  return params;
 }

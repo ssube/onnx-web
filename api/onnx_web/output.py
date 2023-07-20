@@ -203,9 +203,9 @@ def save_image(
         exif = PngImagePlugin.PngInfo()
 
         if params is not None:
-            exif.add_text("make", "onnx-web")
+            exif.add_text("Make", "onnx-web")
             exif.add_text(
-                "maker note",
+                "Maker Note",
                 dumps(
                     json_params(
                         [output],
@@ -217,9 +217,9 @@ def save_image(
                     )
                 ),
             )
-            exif.add_text("model", server.server_version)
+            exif.add_text("Model", server.server_version)
             exif.add_text(
-                "parameters",
+                "Parameters",
                 str_params(server, params, size, inversions=inversions, loras=loras),
             )
 
