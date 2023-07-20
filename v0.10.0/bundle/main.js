@@ -317,10 +317,10 @@
           }
           __name(createRef, "createRef");
           var isArrayImpl = Array.isArray;
-          function isArray2(a2) {
+          function isArray3(a2) {
             return isArrayImpl(a2);
           }
-          __name(isArray2, "isArray");
+          __name(isArray3, "isArray");
           function typeName(value) {
             {
               var hasToStringTag = typeof Symbol === "function" && Symbol.toStringTag;
@@ -669,7 +669,7 @@
           __name(isValidElement14, "isValidElement");
           var SEPARATOR = ".";
           var SUBSEPARATOR = ":";
-          function escape2(key) {
+          function escape3(key) {
             var escapeRegex = /[=:]/g;
             var escaperLookup = {
               "=": "=0",
@@ -680,7 +680,7 @@
             });
             return "$" + escapedString;
           }
-          __name(escape2, "escape");
+          __name(escape3, "escape");
           var didWarnAboutMaps = false;
           var userProvidedKeyEscapeRegex = /\/+/g;
           function escapeUserProvidedKey(text) {
@@ -692,7 +692,7 @@
               {
                 checkKeyStringCoercion(element.key);
               }
-              return escape2("" + element.key);
+              return escape3("" + element.key);
             }
             return index.toString(36);
           }
@@ -723,7 +723,7 @@
               var _child = children;
               var mappedChild = callback(_child);
               var childKey = nameSoFar === "" ? SEPARATOR + getElementKey(_child, 0) : nameSoFar;
-              if (isArray2(mappedChild)) {
+              if (isArray3(mappedChild)) {
                 var escapedChildKey = "";
                 if (childKey != null) {
                   escapedChildKey = escapeUserProvidedKey(childKey) + "/";
@@ -758,7 +758,7 @@
             var nextName;
             var subtreeCount = 0;
             var nextNamePrefix = nameSoFar === "" ? SEPARATOR : nameSoFar + SUBSEPARATOR;
-            if (isArray2(children)) {
+            if (isArray3(children)) {
               for (var i = 0; i < children.length; i++) {
                 child = children[i];
                 nextName = nextNamePrefix + getElementKey(child, i);
@@ -1592,7 +1592,7 @@
             if (typeof node2 !== "object") {
               return;
             }
-            if (isArray2(node2)) {
+            if (isArray3(node2)) {
               for (var i = 0; i < node2.length; i++) {
                 var child = node2[i];
                 if (isValidElement14(child)) {
@@ -1685,7 +1685,7 @@
               var typeString;
               if (type === null) {
                 typeString = "null";
-              } else if (isArray2(type)) {
+              } else if (isArray3(type)) {
                 typeString = "array";
               } else if (type !== void 0 && type.$$typeof === REACT_ELEMENT_TYPE) {
                 typeString = "<" + (getComponentNameFromType(type.type) || "Unknown") + " />";
@@ -3931,11 +3931,11 @@
             if (node2.hasOwnProperty(valueField) || typeof descriptor === "undefined" || typeof descriptor.get !== "function" || typeof descriptor.set !== "function") {
               return;
             }
-            var get3 = descriptor.get, set2 = descriptor.set;
+            var get6 = descriptor.get, set2 = descriptor.set;
             Object.defineProperty(node2, valueField, {
               configurable: true,
               get: function() {
-                return get3.call(this);
+                return get6.call(this);
               },
               set: function(value) {
                 {
@@ -4214,10 +4214,10 @@
           }
           __name(postMountWrapper$1, "postMountWrapper$1");
           var isArrayImpl = Array.isArray;
-          function isArray2(a2) {
+          function isArray3(a2) {
             return isArrayImpl(a2);
           }
-          __name(isArray2, "isArray");
+          __name(isArray3, "isArray");
           var didWarnValueDefaultValue$1;
           {
             didWarnValueDefaultValue$1 = false;
@@ -4239,7 +4239,7 @@
                 if (props[propName] == null) {
                   continue;
                 }
-                var propNameIsArray = isArray2(props[propName]);
+                var propNameIsArray = isArray3(props[propName]);
                 if (props.multiple && !propNameIsArray) {
                   error2("The `%s` prop supplied to <select> must be an array if `multiple` is true.%s", propName, getDeclarationErrorAddendum());
                 } else if (!props.multiple && propNameIsArray) {
@@ -4378,7 +4378,7 @@
                   if (defaultValue != null) {
                     throw new Error("If you supply `defaultValue` on a <textarea>, do not pass children.");
                   }
-                  if (isArray2(children)) {
+                  if (isArray3(children)) {
                     if (children.length > 1) {
                       throw new Error("<textarea> can only have at most one child.");
                     }
@@ -5917,10 +5917,10 @@
             }
           }
           __name(clearCaughtError, "clearCaughtError");
-          function get2(key) {
+          function get5(key) {
             return key._reactInternals;
           }
-          __name(get2, "get");
+          __name(get5, "get");
           function has(key) {
             return key._reactInternals !== void 0;
           }
@@ -6099,7 +6099,7 @@
                 instance2._warnedAboutRefsInRender = true;
               }
             }
-            var fiber = get2(component);
+            var fiber = get5(component);
             if (!fiber) {
               return false;
             }
@@ -13159,7 +13159,7 @@
           var classComponentUpdater = {
             isMounted,
             enqueueSetState: function(inst, payload, callback) {
-              var fiber = get2(inst);
+              var fiber = get5(inst);
               var eventTime = requestEventTime();
               var lane = requestUpdateLane(fiber);
               var update = createUpdate(eventTime, lane);
@@ -13180,7 +13180,7 @@
               }
             },
             enqueueReplaceState: function(inst, payload, callback) {
-              var fiber = get2(inst);
+              var fiber = get5(inst);
               var eventTime = requestEventTime();
               var lane = requestUpdateLane(fiber);
               var update = createUpdate(eventTime, lane);
@@ -13202,7 +13202,7 @@
               }
             },
             enqueueForceUpdate: function(inst, callback) {
-              var fiber = get2(inst);
+              var fiber = get5(inst);
               var eventTime = requestEventTime();
               var lane = requestUpdateLane(fiber);
               var update = createUpdate(eventTime, lane);
@@ -13320,7 +13320,7 @@
                 error2("%s: getSnapshotBeforeUpdate() is defined as a static method and will be ignored. Instead, declare it as an instance method.", name);
               }
               var _state = instance2.state;
-              if (_state && (typeof _state !== "object" || isArray2(_state))) {
+              if (_state && (typeof _state !== "object" || isArray3(_state))) {
                 error2("%s.state: must be set to an object or null", name);
               }
               if (typeof instance2.getChildContext === "function" && typeof ctor.childContextTypes !== "object") {
@@ -13969,7 +13969,7 @@
                     return createChild(returnFiber, init3(payload), lanes);
                   }
                 }
-                if (isArray2(newChild) || getIteratorFn(newChild)) {
+                if (isArray3(newChild) || getIteratorFn(newChild)) {
                   var _created3 = createFiberFromFragment(newChild, returnFiber.mode, lanes, null);
                   _created3.return = returnFiber;
                   return _created3;
@@ -14014,7 +14014,7 @@
                     return updateSlot(returnFiber, oldFiber, init3(payload), lanes);
                   }
                 }
-                if (isArray2(newChild) || getIteratorFn(newChild)) {
+                if (isArray3(newChild) || getIteratorFn(newChild)) {
                   if (key !== null) {
                     return null;
                   }
@@ -14050,7 +14050,7 @@
                     var init3 = newChild._init;
                     return updateFromMap(existingChildren, returnFiber, newIdx, init3(payload), lanes);
                 }
-                if (isArray2(newChild) || getIteratorFn(newChild)) {
+                if (isArray3(newChild) || getIteratorFn(newChild)) {
                   var _matchedFiber3 = existingChildren.get(newIdx) || null;
                   return updateFragment2(returnFiber, _matchedFiber3, newChild, lanes, null);
                 }
@@ -14431,7 +14431,7 @@
                     var init3 = newChild._init;
                     return reconcileChildFibers2(returnFiber, currentFirstChild, init3(payload), lanes);
                 }
-                if (isArray2(newChild)) {
+                if (isArray3(newChild)) {
                   return reconcileChildrenArray(returnFiber, currentFirstChild, newChild, lanes);
                 }
                 if (getIteratorFn(newChild)) {
@@ -14650,8 +14650,8 @@
           }
           __name(resetWorkInProgressVersions, "resetWorkInProgressVersions");
           function registerMutableSourceForHydration(root2, mutableSource) {
-            var getVersion = mutableSource._getVersion;
-            var version = getVersion(mutableSource._source);
+            var getVersion2 = mutableSource._getVersion;
+            var version = getVersion2(mutableSource._source);
             if (root2.mutableSourceEagerHydrationData == null) {
               root2.mutableSourceEagerHydrationData = [mutableSource, version];
             } else {
@@ -14703,7 +14703,7 @@
           __name(updateHookTypesDev, "updateHookTypesDev");
           function checkDepsAreArrayDev(deps) {
             {
-              if (deps !== void 0 && deps !== null && !isArray2(deps)) {
+              if (deps !== void 0 && deps !== null && !isArray3(deps)) {
                 error2("%s received a final argument that is not an array (instead, received `%s`). When specified, the final argument must be an array.", currentHookNameInDev, typeof deps);
               }
             }
@@ -18198,7 +18198,7 @@
           __name(validateTailOptions, "validateTailOptions");
           function validateSuspenseListNestedChild(childSlot, index2) {
             {
-              var isAnArray = isArray2(childSlot);
+              var isAnArray = isArray3(childSlot);
               var isIterable = !isAnArray && typeof getIteratorFn(childSlot) === "function";
               if (isAnArray || isIterable) {
                 var type = isAnArray ? "array" : "iterable";
@@ -18212,7 +18212,7 @@
           function validateSuspenseListChildren(children, revealOrder) {
             {
               if ((revealOrder === "forwards" || revealOrder === "backwards") && children !== void 0 && children !== null && children !== false) {
-                if (isArray2(children)) {
+                if (isArray3(children)) {
                   for (var i = 0; i < children.length; i++) {
                     if (!validateSuspenseListNestedChild(children[i], i)) {
                       return;
@@ -23591,7 +23591,7 @@
             if (!parentComponent) {
               return emptyContextObject;
             }
-            var fiber = get2(parentComponent);
+            var fiber = get5(parentComponent);
             var parentContext = findCurrentUnmaskedContext(fiber);
             if (fiber.tag === ClassComponent) {
               var Component = fiber.type;
@@ -23604,7 +23604,7 @@
           __name(getContextForSubtree, "getContextForSubtree");
           function findHostInstanceWithWarning(component, methodName) {
             {
-              var fiber = get2(component);
+              var fiber = get5(component);
               if (fiber === void 0) {
                 if (typeof component.render === "function") {
                   throw new Error("Unable to find node on an unmounted component.");
@@ -23818,9 +23818,9 @@
           {
             var copyWithDeleteImpl = /* @__PURE__ */ __name(function(obj, path2, index2) {
               var key = path2[index2];
-              var updated = isArray2(obj) ? obj.slice() : assign2({}, obj);
+              var updated = isArray3(obj) ? obj.slice() : assign2({}, obj);
               if (index2 + 1 === path2.length) {
-                if (isArray2(updated)) {
+                if (isArray3(updated)) {
                   updated.splice(key, 1);
                 } else {
                   delete updated[key];
@@ -23835,11 +23835,11 @@
             }, "copyWithDelete");
             var copyWithRenameImpl = /* @__PURE__ */ __name(function(obj, oldPath, newPath, index2) {
               var oldKey = oldPath[index2];
-              var updated = isArray2(obj) ? obj.slice() : assign2({}, obj);
+              var updated = isArray3(obj) ? obj.slice() : assign2({}, obj);
               if (index2 + 1 === oldPath.length) {
                 var newKey = newPath[index2];
                 updated[newKey] = updated[oldKey];
-                if (isArray2(updated)) {
+                if (isArray3(updated)) {
                   updated.splice(oldKey, 1);
                 } else {
                   delete updated[oldKey];
@@ -23874,7 +23874,7 @@
                 return value;
               }
               var key = path2[index2];
-              var updated = isArray2(obj) ? obj.slice() : assign2({}, obj);
+              var updated = isArray3(obj) ? obj.slice() : assign2({}, obj);
               updated[key] = copyWithSetImpl(obj[key], path2, index2 + 1, value);
               return updated;
             }, "copyWithSetImpl");
@@ -26009,10 +26009,10 @@
           return !isStale2(this, hit);
         }
         get(key) {
-          return get2(this, key, true);
+          return get5(this, key, true);
         }
         peek(key) {
-          return get2(this, key, false);
+          return get5(this, key, false);
         }
         pop() {
           const node2 = this[LRU_LIST].tail;
@@ -26041,11 +26041,11 @@
           }
         }
         prune() {
-          this[CACHE].forEach((value, key) => get2(this, key, false));
+          this[CACHE].forEach((value, key) => get5(this, key, false));
         }
       };
       __name(LRUCache, "LRUCache");
-      var get2 = /* @__PURE__ */ __name((self2, key, doUse) => {
+      var get5 = /* @__PURE__ */ __name((self2, key, doUse) => {
         const node2 = self2[CACHE].get(key);
         if (node2) {
           const hit = node2.value;
@@ -27347,10 +27347,10 @@
             return typeOf(object) === REACT_PROVIDER_TYPE;
           }
           __name(isContextProvider, "isContextProvider");
-          function isElement2(object) {
+          function isElement3(object) {
             return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
           }
-          __name(isElement2, "isElement");
+          __name(isElement3, "isElement");
           function isForwardRef(object) {
             return typeOf(object) === REACT_FORWARD_REF_TYPE;
           }
@@ -27400,7 +27400,7 @@
           exports.isConcurrentMode = isConcurrentMode;
           exports.isContextConsumer = isContextConsumer;
           exports.isContextProvider = isContextProvider;
-          exports.isElement = isElement2;
+          exports.isElement = isElement3;
           exports.isForwardRef = isForwardRef;
           exports.isFragment = isFragment6;
           exports.isLazy = isLazy;
@@ -28202,10 +28202,10 @@
             return typeOf(object) === REACT_PROVIDER_TYPE;
           }
           __name(isContextProvider, "isContextProvider");
-          function isElement2(object) {
+          function isElement3(object) {
             return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
           }
-          __name(isElement2, "isElement");
+          __name(isElement3, "isElement");
           function isForwardRef(object) {
             return typeOf(object) === REACT_FORWARD_REF_TYPE;
           }
@@ -28258,7 +28258,7 @@
           exports.isConcurrentMode = isConcurrentMode;
           exports.isContextConsumer = isContextConsumer;
           exports.isContextProvider = isContextProvider;
-          exports.isElement = isElement2;
+          exports.isElement = isElement3;
           exports.isForwardRef = isForwardRef;
           exports.isFragment = isFragment6;
           exports.isLazy = isLazy;
@@ -28388,10 +28388,10 @@
             return typeOf(object) === REACT_PROVIDER_TYPE;
           }
           __name(isContextProvider, "isContextProvider");
-          function isElement2(object) {
+          function isElement3(object) {
             return typeof object === "object" && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
           }
-          __name(isElement2, "isElement");
+          __name(isElement3, "isElement");
           function isForwardRef(object) {
             return typeOf(object) === REACT_FORWARD_REF_TYPE;
           }
@@ -28441,7 +28441,7 @@
           exports.isConcurrentMode = isConcurrentMode;
           exports.isContextConsumer = isContextConsumer;
           exports.isContextProvider = isContextProvider;
-          exports.isElement = isElement2;
+          exports.isElement = isElement3;
           exports.isForwardRef = isForwardRef;
           exports.isFragment = isFragment6;
           exports.isLazy = isLazy;
@@ -29027,10 +29027,10 @@
           }
           __name(checkPropTypes, "checkPropTypes");
           var isArrayImpl = Array.isArray;
-          function isArray2(a2) {
+          function isArray3(a2) {
             return isArrayImpl(a2);
           }
-          __name(isArray2, "isArray");
+          __name(isArray3, "isArray");
           function typeName(value) {
             {
               var hasToStringTag = typeof Symbol === "function" && Symbol.toStringTag;
@@ -29318,7 +29318,7 @@
               if (typeof node2 !== "object") {
                 return;
               }
-              if (isArray2(node2)) {
+              if (isArray3(node2)) {
                 for (var i = 0; i < node2.length; i++) {
                   var child = node2[i];
                   if (isValidElement14(child)) {
@@ -29413,7 +29413,7 @@
                 var typeString;
                 if (type === null) {
                   typeString = "null";
-                } else if (isArray2(type)) {
+                } else if (isArray3(type)) {
                   typeString = "array";
                 } else if (type !== void 0 && type.$$typeof === REACT_ELEMENT_TYPE) {
                   typeString = "<" + (getComponentNameFromType(type.type) || "Unknown") + " />";
@@ -29431,7 +29431,7 @@
                 var children = props.children;
                 if (children !== void 0) {
                   if (isStaticChildren) {
-                    if (isArray2(children)) {
+                    if (isArray3(children)) {
                       for (var i = 0; i < children.length; i++) {
                         validateChildKeys(children[i], type);
                       }
@@ -30260,13 +30260,13 @@
           }();
           var ctxClearTimeout = context.clearTimeout !== root.clearTimeout && context.clearTimeout, ctxNow = Date2 && Date2.now !== root.Date.now && Date2.now, ctxSetTimeout = context.setTimeout !== root.setTimeout && context.setTimeout;
           var nativeCeil = Math2.ceil, nativeFloor = Math2.floor, nativeGetSymbols = Object2.getOwnPropertySymbols, nativeIsBuffer = Buffer2 ? Buffer2.isBuffer : undefined2, nativeIsFinite = context.isFinite, nativeJoin = arrayProto.join, nativeKeys = overArg(Object2.keys, Object2), nativeMax = Math2.max, nativeMin = Math2.min, nativeNow = Date2.now, nativeParseInt = context.parseInt, nativeRandom = Math2.random, nativeReverse = arrayProto.reverse;
-          var DataView = getNative(context, "DataView"), Map2 = getNative(context, "Map"), Promise2 = getNative(context, "Promise"), Set2 = getNative(context, "Set"), WeakMap2 = getNative(context, "WeakMap"), nativeCreate = getNative(Object2, "create");
+          var DataView3 = getNative(context, "DataView"), Map2 = getNative(context, "Map"), Promise2 = getNative(context, "Promise"), Set2 = getNative(context, "Set"), WeakMap2 = getNative(context, "WeakMap"), nativeCreate = getNative(Object2, "create");
           var metaMap = WeakMap2 && new WeakMap2();
           var realNames = {};
-          var dataViewCtorString = toSource(DataView), mapCtorString = toSource(Map2), promiseCtorString = toSource(Promise2), setCtorString = toSource(Set2), weakMapCtorString = toSource(WeakMap2);
+          var dataViewCtorString = toSource(DataView3), mapCtorString = toSource(Map2), promiseCtorString = toSource(Promise2), setCtorString = toSource(Set2), weakMapCtorString = toSource(WeakMap2);
           var symbolProto = Symbol2 ? Symbol2.prototype : undefined2, symbolValueOf = symbolProto ? symbolProto.valueOf : undefined2, symbolToString = symbolProto ? symbolProto.toString : undefined2;
           function lodash(value) {
-            if (isObjectLike(value) && !isArray2(value) && !(value instanceof LazyWrapper)) {
+            if (isObjectLike(value) && !isArray3(value) && !(value instanceof LazyWrapper)) {
               if (value instanceof LodashWrapper) {
                 return value;
               }
@@ -30388,7 +30388,7 @@
           }
           __name(lazyReverse, "lazyReverse");
           function lazyValue() {
-            var array = this.__wrapped__.value(), dir2 = this.__dir__, isArr = isArray2(array), isRight = dir2 < 0, arrLength = isArr ? array.length : 0, view = getView(0, arrLength, this.__views__), start2 = view.start, end2 = view.end, length2 = end2 - start2, index = isRight ? end2 : start2 - 1, iteratees = this.__iteratees__, iterLength = iteratees.length, resIndex = 0, takeCount = nativeMin(length2, this.__takeCount__);
+            var array = this.__wrapped__.value(), dir2 = this.__dir__, isArr = isArray3(array), isRight = dir2 < 0, arrLength = isArr ? array.length : 0, view = getView(0, arrLength, this.__views__), start2 = view.start, end2 = view.end, length2 = end2 - start2, index = isRight ? end2 : start2 - 1, iteratees = this.__iteratees__, iterLength = iteratees.length, resIndex = 0, takeCount = nativeMin(length2, this.__takeCount__);
             if (!isArr || !isRight && arrLength == length2 && takeCount == length2) {
               return baseWrapperValue(array, this.__actions__);
             }
@@ -30625,7 +30625,7 @@
           Stack3.prototype.has = stackHas;
           Stack3.prototype.set = stackSet;
           function arrayLikeKeys(value, inherited) {
-            var isArr = isArray2(value), isArg = !isArr && isArguments(value), isBuff = !isArr && !isArg && isBuffer(value), isType = !isArr && !isArg && !isBuff && isTypedArray(value), skipIndexes = isArr || isArg || isBuff || isType, result2 = skipIndexes ? baseTimes(value.length, String2) : [], length2 = result2.length;
+            var isArr = isArray3(value), isArg = !isArr && isArguments(value), isBuff = !isArr && !isArg && isBuffer(value), isType = !isArr && !isArg && !isBuff && isTypedArray(value), skipIndexes = isArr || isArg || isBuff || isType, result2 = skipIndexes ? baseTimes(value.length, String2) : [], length2 = result2.length;
             for (var key in value) {
               if ((inherited || hasOwnProperty2.call(value, key)) && !(skipIndexes && // Safari 9 has enumerable `arguments.length` in strict mode.
               (key == "length" || // Node.js 0.10 has enumerable non-index properties on buffers.
@@ -30705,7 +30705,7 @@
           function baseAt(object, paths) {
             var index = -1, length2 = paths.length, result2 = Array2(length2), skip = object == null;
             while (++index < length2) {
-              result2[index] = skip ? undefined2 : get2(object, paths[index]);
+              result2[index] = skip ? undefined2 : get5(object, paths[index]);
             }
             return result2;
           }
@@ -30733,7 +30733,7 @@
             if (!isObject(value)) {
               return value;
             }
-            var isArr = isArray2(value);
+            var isArr = isArray3(value);
             if (isArr) {
               result2 = initCloneArray(value);
               if (!isDeep) {
@@ -30944,7 +30944,7 @@
           __name(baseGet, "baseGet");
           function baseGetAllKeys(object, keysFunc, symbolsFunc) {
             var result2 = keysFunc(object);
-            return isArray2(object) ? result2 : arrayPush(result2, symbolsFunc(object));
+            return isArray3(object) ? result2 : arrayPush(result2, symbolsFunc(object));
           }
           __name(baseGetAllKeys, "baseGetAllKeys");
           function baseGetTag(value) {
@@ -31040,7 +31040,7 @@
           }
           __name(baseIsEqual, "baseIsEqual");
           function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
-            var objIsArr = isArray2(object), othIsArr = isArray2(other), objTag = objIsArr ? arrayTag : getTag(object), othTag = othIsArr ? arrayTag : getTag(other);
+            var objIsArr = isArray3(object), othIsArr = isArray3(other), objTag = objIsArr ? arrayTag : getTag(object), othTag = othIsArr ? arrayTag : getTag(other);
             objTag = objTag == argsTag ? objectTag : objTag;
             othTag = othTag == argsTag ? objectTag : othTag;
             var objIsObj = objTag == objectTag, othIsObj = othTag == objectTag, isSameTag = objTag == othTag;
@@ -31134,7 +31134,7 @@
               return identity;
             }
             if (typeof value == "object") {
-              return isArray2(value) ? baseMatchesProperty(value[0], value[1]) : baseMatches(value);
+              return isArray3(value) ? baseMatchesProperty(value[0], value[1]) : baseMatches(value);
             }
             return property(value);
           }
@@ -31192,7 +31192,7 @@
               return matchesStrictComparable(toKey(path2), srcValue);
             }
             return function(object) {
-              var objValue = get2(object, path2);
+              var objValue = get5(object, path2);
               return objValue === undefined2 && objValue === srcValue ? hasIn(object, path2) : baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG);
             };
           }
@@ -31224,10 +31224,10 @@
             var newValue = customizer ? customizer(objValue, srcValue, key + "", object, source, stack) : undefined2;
             var isCommon = newValue === undefined2;
             if (isCommon) {
-              var isArr = isArray2(srcValue), isBuff = !isArr && isBuffer(srcValue), isTyped = !isArr && !isBuff && isTypedArray(srcValue);
+              var isArr = isArray3(srcValue), isBuff = !isArr && isBuffer(srcValue), isTyped = !isArr && !isBuff && isTypedArray(srcValue);
               newValue = srcValue;
               if (isArr || isBuff || isTyped) {
-                if (isArray2(objValue)) {
+                if (isArray3(objValue)) {
                   newValue = objValue;
                 } else if (isArrayLikeObject(objValue)) {
                   newValue = copyArray(objValue);
@@ -31271,7 +31271,7 @@
           function baseOrderBy(collection, iteratees, orders) {
             if (iteratees.length) {
               iteratees = arrayMap(iteratees, function(iteratee2) {
-                if (isArray2(iteratee2)) {
+                if (isArray3(iteratee2)) {
                   return function(value) {
                     return baseGet(value, iteratee2.length === 1 ? iteratee2[0] : iteratee2);
                   };
@@ -31536,7 +31536,7 @@
             if (typeof value == "string") {
               return value;
             }
-            if (isArray2(value)) {
+            if (isArray3(value)) {
               return arrayMap(value, baseToString) + "";
             }
             if (isSymbol(value)) {
@@ -31649,7 +31649,7 @@
           }
           __name(castFunction, "castFunction");
           function castPath(value, object) {
-            if (isArray2(value)) {
+            if (isArray3(value)) {
               return value;
             }
             return isKey(value, object) ? [value] : stringToPath(toString(value));
@@ -31800,7 +31800,7 @@
           __name(copySymbolsIn, "copySymbolsIn");
           function createAggregator(setter, initializer) {
             return function(collection, iteratee2) {
-              var func = isArray2(collection) ? arrayAggregator : baseAggregator, accumulator = initializer ? initializer() : {};
+              var func = isArray3(collection) ? arrayAggregator : baseAggregator, accumulator = initializer ? initializer() : {};
               return func(collection, setter, getIteratee(iteratee2, 2), accumulator);
             };
           }
@@ -31979,7 +31979,7 @@
               }
               return function() {
                 var args = arguments, value = args[0];
-                if (wrapper && args.length == 1 && isArray2(value)) {
+                if (wrapper && args.length == 1 && isArray3(value)) {
                   return wrapper.plant(value).value();
                 }
                 var index2 = 0, result2 = length2 ? funcs[index2].apply(this, args) : value;
@@ -32498,7 +32498,7 @@
             return result2;
           };
           var getTag = baseGetTag;
-          if (DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag || Map2 && getTag(new Map2()) != mapTag || Promise2 && getTag(Promise2.resolve()) != promiseTag || Set2 && getTag(new Set2()) != setTag || WeakMap2 && getTag(new WeakMap2()) != weakMapTag) {
+          if (DataView3 && getTag(new DataView3(new ArrayBuffer(1))) != dataViewTag || Map2 && getTag(new Map2()) != mapTag || Promise2 && getTag(Promise2.resolve()) != promiseTag || Set2 && getTag(new Set2()) != setTag || WeakMap2 && getTag(new WeakMap2()) != weakMapTag) {
             getTag = /* @__PURE__ */ __name(function(value) {
               var result2 = baseGetTag(value), Ctor = result2 == objectTag ? value.constructor : undefined2, ctorString = Ctor ? toSource(Ctor) : "";
               if (ctorString) {
@@ -32559,7 +32559,7 @@
               return result2;
             }
             length2 = object == null ? 0 : object.length;
-            return !!length2 && isLength(length2) && isIndex(key, length2) && (isArray2(object) || isArguments(object));
+            return !!length2 && isLength(length2) && isIndex(key, length2) && (isArray3(object) || isArguments(object));
           }
           __name(hasPath, "hasPath");
           function initCloneArray(array) {
@@ -32621,7 +32621,7 @@
           }
           __name(insertWrapDetails, "insertWrapDetails");
           function isFlattenable(value) {
-            return isArray2(value) || isArguments(value) || !!(spreadableSymbol && value && value[spreadableSymbol]);
+            return isArray3(value) || isArguments(value) || !!(spreadableSymbol && value && value[spreadableSymbol]);
           }
           __name(isFlattenable, "isFlattenable");
           function isIndex(value, length2) {
@@ -32642,7 +32642,7 @@
           }
           __name(isIterateeCall, "isIterateeCall");
           function isKey(value, object) {
-            if (isArray2(value)) {
+            if (isArray3(value)) {
               return false;
             }
             var type = typeof value;
@@ -32922,7 +32922,7 @@
             while (index--) {
               args[index - 1] = arguments[index];
             }
-            return arrayPush(isArray2(array) ? copyArray(array) : [array], baseFlatten(args, 1));
+            return arrayPush(isArray3(array) ? copyArray(array) : [array], baseFlatten(args, 1));
           }
           __name(concat2, "concat");
           var difference = baseRest(function(array, values4) {
@@ -33428,7 +33428,7 @@
             }
           });
           function every(collection, predicate, guard) {
-            var func = isArray2(collection) ? arrayEvery : baseEvery;
+            var func = isArray3(collection) ? arrayEvery : baseEvery;
             if (guard && isIterateeCall(collection, predicate, guard)) {
               predicate = undefined2;
             }
@@ -33436,7 +33436,7 @@
           }
           __name(every, "every");
           function filter(collection, predicate) {
-            var func = isArray2(collection) ? arrayFilter : baseFilter;
+            var func = isArray3(collection) ? arrayFilter : baseFilter;
             return func(collection, getIteratee(predicate, 3));
           }
           __name(filter, "filter");
@@ -33456,12 +33456,12 @@
           }
           __name(flatMapDepth, "flatMapDepth");
           function forEach(collection, iteratee2) {
-            var func = isArray2(collection) ? arrayEach : baseEach;
+            var func = isArray3(collection) ? arrayEach : baseEach;
             return func(collection, getIteratee(iteratee2, 3));
           }
           __name(forEach, "forEach");
           function forEachRight(collection, iteratee2) {
-            var func = isArray2(collection) ? arrayEachRight : baseEachRight;
+            var func = isArray3(collection) ? arrayEachRight : baseEachRight;
             return func(collection, getIteratee(iteratee2, 3));
           }
           __name(forEachRight, "forEachRight");
@@ -33479,7 +33479,7 @@
             if (fromIndex < 0) {
               fromIndex = nativeMax(length2 + fromIndex, 0);
             }
-            return isString(collection) ? fromIndex <= length2 && collection.indexOf(value, fromIndex) > -1 : !!length2 && baseIndexOf(collection, value, fromIndex) > -1;
+            return isString2(collection) ? fromIndex <= length2 && collection.indexOf(value, fromIndex) > -1 : !!length2 && baseIndexOf(collection, value, fromIndex) > -1;
           }
           __name(includes, "includes");
           var invokeMap = baseRest(function(collection, path2, args) {
@@ -33493,7 +33493,7 @@
             baseAssignValue(result2, key, value);
           });
           function map(collection, iteratee2) {
-            var func = isArray2(collection) ? arrayMap : baseMap;
+            var func = isArray3(collection) ? arrayMap : baseMap;
             return func(collection, getIteratee(iteratee2, 3));
           }
           __name(map, "map");
@@ -33501,11 +33501,11 @@
             if (collection == null) {
               return [];
             }
-            if (!isArray2(iteratees)) {
+            if (!isArray3(iteratees)) {
               iteratees = iteratees == null ? [] : [iteratees];
             }
             orders = guard ? undefined2 : orders;
-            if (!isArray2(orders)) {
+            if (!isArray3(orders)) {
               orders = orders == null ? [] : [orders];
             }
             return baseOrderBy(collection, iteratees, orders);
@@ -33517,22 +33517,22 @@
             return [[], []];
           });
           function reduce(collection, iteratee2, accumulator) {
-            var func = isArray2(collection) ? arrayReduce : baseReduce, initAccum = arguments.length < 3;
+            var func = isArray3(collection) ? arrayReduce : baseReduce, initAccum = arguments.length < 3;
             return func(collection, getIteratee(iteratee2, 4), accumulator, initAccum, baseEach);
           }
           __name(reduce, "reduce");
           function reduceRight(collection, iteratee2, accumulator) {
-            var func = isArray2(collection) ? arrayReduceRight : baseReduce, initAccum = arguments.length < 3;
+            var func = isArray3(collection) ? arrayReduceRight : baseReduce, initAccum = arguments.length < 3;
             return func(collection, getIteratee(iteratee2, 4), accumulator, initAccum, baseEachRight);
           }
           __name(reduceRight, "reduceRight");
           function reject(collection, predicate) {
-            var func = isArray2(collection) ? arrayFilter : baseFilter;
+            var func = isArray3(collection) ? arrayFilter : baseFilter;
             return func(collection, negate(getIteratee(predicate, 3)));
           }
           __name(reject, "reject");
           function sample(collection) {
-            var func = isArray2(collection) ? arraySample : baseSample;
+            var func = isArray3(collection) ? arraySample : baseSample;
             return func(collection);
           }
           __name(sample, "sample");
@@ -33542,12 +33542,12 @@
             } else {
               n = toInteger(n);
             }
-            var func = isArray2(collection) ? arraySampleSize : baseSampleSize;
+            var func = isArray3(collection) ? arraySampleSize : baseSampleSize;
             return func(collection, n);
           }
           __name(sampleSize, "sampleSize");
           function shuffle(collection) {
-            var func = isArray2(collection) ? arrayShuffle : baseShuffle;
+            var func = isArray3(collection) ? arrayShuffle : baseShuffle;
             return func(collection);
           }
           __name(shuffle, "shuffle");
@@ -33556,7 +33556,7 @@
               return 0;
             }
             if (isArrayLike(collection)) {
-              return isString(collection) ? stringSize(collection) : collection.length;
+              return isString2(collection) ? stringSize(collection) : collection.length;
             }
             var tag = getTag(collection);
             if (tag == mapTag || tag == setTag) {
@@ -33566,7 +33566,7 @@
           }
           __name(size, "size");
           function some(collection, predicate, guard) {
-            var func = isArray2(collection) ? arraySome : baseSome;
+            var func = isArray3(collection) ? arraySome : baseSome;
             if (guard && isIterateeCall(collection, predicate, guard)) {
               predicate = undefined2;
             }
@@ -33797,7 +33797,7 @@
           }
           __name(once, "once");
           var overArgs = castRest(function(func, transforms) {
-            transforms = transforms.length == 1 && isArray2(transforms[0]) ? arrayMap(transforms[0], baseUnary(getIteratee())) : arrayMap(baseFlatten(transforms, 1), baseUnary(getIteratee()));
+            transforms = transforms.length == 1 && isArray3(transforms[0]) ? arrayMap(transforms[0], baseUnary(getIteratee())) : arrayMap(baseFlatten(transforms, 1), baseUnary(getIteratee()));
             var funcsLength = transforms.length;
             return baseRest(function(args) {
               var index = -1, length2 = nativeMin(args.length, funcsLength);
@@ -33869,7 +33869,7 @@
               return [];
             }
             var value = arguments[0];
-            return isArray2(value) ? value : [value];
+            return isArray3(value) ? value : [value];
           }
           __name(castArray, "castArray");
           function clone(value) {
@@ -33907,7 +33907,7 @@
           }()) ? baseIsArguments : function(value) {
             return isObjectLike(value) && hasOwnProperty2.call(value, "callee") && !propertyIsEnumerable.call(value, "callee");
           };
-          var isArray2 = Array2.isArray;
+          var isArray3 = Array2.isArray;
           var isArrayBuffer = nodeIsArrayBuffer ? baseUnary(nodeIsArrayBuffer) : baseIsArrayBuffer;
           function isArrayLike(value) {
             return value != null && isLength(value.length) && !isFunction(value);
@@ -33923,15 +33923,15 @@
           __name(isBoolean, "isBoolean");
           var isBuffer = nativeIsBuffer || stubFalse;
           var isDate = nodeIsDate ? baseUnary(nodeIsDate) : baseIsDate;
-          function isElement2(value) {
+          function isElement3(value) {
             return isObjectLike(value) && value.nodeType === 1 && !isPlainObject3(value);
           }
-          __name(isElement2, "isElement");
+          __name(isElement3, "isElement");
           function isEmpty7(value) {
             if (value == null) {
               return true;
             }
-            if (isArrayLike(value) && (isArray2(value) || typeof value == "string" || typeof value.splice == "function" || isBuffer(value) || isTypedArray(value) || isArguments(value))) {
+            if (isArrayLike(value) && (isArray3(value) || typeof value == "string" || typeof value.splice == "function" || isBuffer(value) || isTypedArray(value) || isArguments(value))) {
               return !value.length;
             }
             var tag = getTag(value);
@@ -34047,10 +34047,10 @@
           }
           __name(isSafeInteger, "isSafeInteger");
           var isSet = nodeIsSet ? baseUnary(nodeIsSet) : baseIsSet;
-          function isString(value) {
-            return typeof value == "string" || !isArray2(value) && isObjectLike(value) && baseGetTag(value) == stringTag;
+          function isString2(value) {
+            return typeof value == "string" || !isArray3(value) && isObjectLike(value) && baseGetTag(value) == stringTag;
           }
-          __name(isString, "isString");
+          __name(isString2, "isString");
           function isSymbol(value) {
             return typeof value == "symbol" || isObjectLike(value) && baseGetTag(value) == symbolTag;
           }
@@ -34077,7 +34077,7 @@
               return [];
             }
             if (isArrayLike(value)) {
-              return isString(value) ? stringToArray(value) : copyArray(value);
+              return isString2(value) ? stringToArray(value) : copyArray(value);
             }
             if (symIterator && value[symIterator]) {
               return iteratorToArray(value[symIterator]());
@@ -34223,11 +34223,11 @@
             return object == null ? [] : baseFunctions(object, keysIn(object));
           }
           __name(functionsIn, "functionsIn");
-          function get2(object, path2, defaultValue) {
+          function get5(object, path2, defaultValue) {
             var result2 = object == null ? undefined2 : baseGet(object, path2);
             return result2 === undefined2 ? defaultValue : result2;
           }
-          __name(get2, "get");
+          __name(get5, "get");
           function has(object, path2) {
             return object != null && hasPath(object, path2, baseHas);
           }
@@ -34356,7 +34356,7 @@
           var toPairs = createToPairs(keys);
           var toPairsIn = createToPairs(keysIn);
           function transform(object, iteratee2, accumulator) {
-            var isArr = isArray2(object), isArrLike = isArr || isBuffer(object) || isTypedArray(object);
+            var isArr = isArray3(object), isArrLike = isArr || isBuffer(object) || isTypedArray(object);
             iteratee2 = getIteratee(iteratee2, 4);
             if (accumulator == null) {
               var Ctor = object && object.constructor;
@@ -34483,11 +34483,11 @@
             return position2 >= 0 && string.slice(position2, end2) == target;
           }
           __name(endsWith, "endsWith");
-          function escape2(string) {
+          function escape3(string) {
             string = toString(string);
             return string && reHasUnescapedHtml.test(string) ? string.replace(reUnescapedHtml, escapeHtmlChar) : string;
           }
-          __name(escape2, "escape");
+          __name(escape3, "escape");
           function escapeRegExp(string) {
             string = toString(string);
             return string && reHasRegExpChar.test(string) ? string.replace(reRegExpChar, "\\$&") : string;
@@ -34500,7 +34500,7 @@
             return result2 + (index ? " " : "") + word.toLowerCase();
           });
           var lowerFirst = createCaseFirst("toLowerCase");
-          function pad(string, length2, chars2) {
+          function pad2(string, length2, chars2) {
             string = toString(string);
             length2 = toInteger(length2);
             var strLength = length2 ? stringSize(string) : 0;
@@ -34510,7 +34510,7 @@
             var mid = (length2 - strLength) / 2;
             return createPadding(nativeFloor(mid), chars2) + string + createPadding(nativeCeil(mid), chars2);
           }
-          __name(pad, "pad");
+          __name(pad2, "pad");
           function padEnd(string, length2, chars2) {
             string = toString(string);
             length2 = toInteger(length2);
@@ -34782,10 +34782,10 @@
             };
           }
           __name(constant, "constant");
-          function defaultTo(value, defaultValue) {
+          function defaultTo2(value, defaultValue) {
             return value == null || value !== value ? defaultValue : value;
           }
-          __name(defaultTo, "defaultTo");
+          __name(defaultTo2, "defaultTo");
           var flow = createFlow();
           var flowRight = createFlow(true);
           function identity(value) {
@@ -34910,7 +34910,7 @@
           }
           __name(times, "times");
           function toPath(value) {
-            if (isArray2(value)) {
+            if (isArray3(value)) {
               return arrayMap(value, toKey);
             }
             return isSymbol(value) ? [value] : copyArray(stringToPath(toString(value)));
@@ -35134,11 +35134,11 @@
           lodash.cloneWith = cloneWith;
           lodash.conformsTo = conformsTo;
           lodash.deburr = deburr;
-          lodash.defaultTo = defaultTo;
+          lodash.defaultTo = defaultTo2;
           lodash.divide = divide;
           lodash.endsWith = endsWith;
           lodash.eq = eq;
-          lodash.escape = escape2;
+          lodash.escape = escape3;
           lodash.escapeRegExp = escapeRegExp;
           lodash.every = every;
           lodash.find = find;
@@ -35154,7 +35154,7 @@
           lodash.forInRight = forInRight;
           lodash.forOwn = forOwn;
           lodash.forOwnRight = forOwnRight;
-          lodash.get = get2;
+          lodash.get = get5;
           lodash.gt = gt;
           lodash.gte = gte;
           lodash.has = has;
@@ -35166,14 +35166,14 @@
           lodash.inRange = inRange;
           lodash.invoke = invoke;
           lodash.isArguments = isArguments;
-          lodash.isArray = isArray2;
+          lodash.isArray = isArray3;
           lodash.isArrayBuffer = isArrayBuffer;
           lodash.isArrayLike = isArrayLike;
           lodash.isArrayLikeObject = isArrayLikeObject;
           lodash.isBoolean = isBoolean;
           lodash.isBuffer = isBuffer;
           lodash.isDate = isDate;
-          lodash.isElement = isElement2;
+          lodash.isElement = isElement3;
           lodash.isEmpty = isEmpty7;
           lodash.isEqual = isEqual;
           lodash.isEqualWith = isEqualWith;
@@ -35196,7 +35196,7 @@
           lodash.isRegExp = isRegExp;
           lodash.isSafeInteger = isSafeInteger;
           lodash.isSet = isSet;
-          lodash.isString = isString;
+          lodash.isString = isString2;
           lodash.isSymbol = isSymbol;
           lodash.isTypedArray = isTypedArray;
           lodash.isUndefined = isUndefined;
@@ -35226,7 +35226,7 @@
           lodash.noConflict = noConflict;
           lodash.noop = noop5;
           lodash.now = now;
-          lodash.pad = pad;
+          lodash.pad = pad2;
           lodash.padEnd = padEnd;
           lodash.padStart = padStart;
           lodash.parseInt = parseInt2;
@@ -35378,7 +35378,7 @@
               return;
             }
             lodash.prototype[methodName] = function() {
-              var value = this.__wrapped__, args = isTaker ? [1] : arguments, isLazy = value instanceof LazyWrapper, iteratee2 = args[0], useLazy = isLazy || isArray2(value);
+              var value = this.__wrapped__, args = isTaker ? [1] : arguments, isLazy = value instanceof LazyWrapper, iteratee2 = args[0], useLazy = isLazy || isArray3(value);
               var interceptor = /* @__PURE__ */ __name(function(value2) {
                 var result3 = lodashFunc.apply(lodash, arrayPush([value2], args));
                 return isTaker && chainAll ? result3[0] : result3;
@@ -35406,10 +35406,10 @@
               var args = arguments;
               if (retUnwrapped && !this.__chain__) {
                 var value = this.value();
-                return func.apply(isArray2(value) ? value : [], args);
+                return func.apply(isArray3(value) ? value : [], args);
               }
               return this[chainName](function(value2) {
-                return func.apply(isArray2(value2) ? value2 : [], args);
+                return func.apply(isArray3(value2) ? value2 : [], args);
               });
             };
           });
@@ -39594,7 +39594,7 @@
     "'": "&#39;",
     "/": "&#x2F;"
   };
-  function escape(data) {
+  function escape2(data) {
     if (typeof data === "string") {
       return data.replace(/[&<>"'\/]/g, function(s) {
         return _entityMap[s];
@@ -39602,7 +39602,7 @@
     }
     return data;
   }
-  __name(escape, "escape");
+  __name(escape2, "escape");
   var isIE10 = typeof window !== "undefined" && window.navigator && typeof window.navigator.userAgentData === "undefined" && window.navigator.userAgent && window.navigator.userAgent.indexOf("MSIE") > -1;
   var chars = [" ", ",", "?", "!", ";"];
   function looksLikeObjectPath(key, nsSeparator, keySeparator) {
@@ -40874,7 +40874,7 @@
             escapeValue: true
           };
         var iOpts = options.interpolation;
-        this.escape = iOpts.escape !== void 0 ? iOpts.escape : escape;
+        this.escape = iOpts.escape !== void 0 ? iOpts.escape : escape2;
         this.escapeValue = iOpts.escapeValue !== void 0 ? iOpts.escapeValue : true;
         this.useRawValueToEscape = iOpts.useRawValueToEscape !== void 0 ? iOpts.useRawValueToEscape : false;
         this.prefix = iOpts.prefix ? regexEscape(iOpts.prefix) : iOpts.prefixEscaped || "{{";
@@ -41401,7 +41401,7 @@
       }, "loaded")
     }, {
       key: "read",
-      value: /* @__PURE__ */ __name(function read3(lng, ns, fcName) {
+      value: /* @__PURE__ */ __name(function read12(lng, ns, fcName) {
         var _this3 = this;
         var tried = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
         var wait = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : this.retryTimeout;
@@ -41478,7 +41478,7 @@
       }, "prepareLoading")
     }, {
       key: "load",
-      value: /* @__PURE__ */ __name(function load(languages, namespaces, callback) {
+      value: /* @__PURE__ */ __name(function load2(languages, namespaces, callback) {
         this.prepareLoading(languages, namespaces, {}, callback);
       }, "load")
     }, {
@@ -41851,7 +41851,7 @@
           };
         });
         var deferred = defer2();
-        var load = /* @__PURE__ */ __name(function load2() {
+        var load2 = /* @__PURE__ */ __name(function load3() {
           var finish = /* @__PURE__ */ __name(function finish2(err, t2) {
             if (_this2.isInitialized && !_this2.initializedStoreOnce)
               _this2.logger.warn("init: i18next is already initialized. You should call init just once!");
@@ -41867,9 +41867,9 @@
           _this2.changeLanguage(_this2.options.lng, finish);
         }, "load");
         if (this.options.resources || !this.options.initImmediate) {
-          load();
+          load2();
         } else {
-          setTimeout(load, 0);
+          setTimeout(load2, 0);
         }
         return deferred;
       }, "init")
@@ -43163,7 +43163,7 @@
       };
     }
   }, "toThenable");
-  var oldImpl = /* @__PURE__ */ __name((config, baseOptions) => (set, get2, api) => {
+  var oldImpl = /* @__PURE__ */ __name((config, baseOptions) => (set, get5, api) => {
     let options = {
       getStorage: () => localStorage,
       serialize: JSON.stringify,
@@ -43192,13 +43192,13 @@
           );
           set(...args);
         },
-        get2,
+        get5,
         api
       );
     }
     const thenableSerialize = toThenable(options.serialize);
     const setItem = /* @__PURE__ */ __name(() => {
-      const state = options.partialize({ ...get2() });
+      const state = options.partialize({ ...get5() });
       let errorInSync;
       const thenable = thenableSerialize({ state, version: options.version }).then(
         (serializedValue) => storage.setItem(options.name, serializedValue)
@@ -43220,7 +43220,7 @@
         set(...args);
         void setItem();
       },
-      get2,
+      get5,
       api
     );
     let stateFromStorage;
@@ -43229,8 +43229,8 @@
       if (!storage)
         return;
       hasHydrated = false;
-      hydrationListeners.forEach((cb) => cb(get2()));
-      const postRehydrationCallback = ((_a = options.onRehydrateStorage) == null ? void 0 : _a.call(options, get2())) || void 0;
+      hydrationListeners.forEach((cb) => cb(get5()));
+      const postRehydrationCallback = ((_a = options.onRehydrateStorage) == null ? void 0 : _a.call(options, get5())) || void 0;
       return toThenable(storage.getItem.bind(storage))(options.name).then((storageValue) => {
         if (storageValue) {
           return options.deserialize(storageValue);
@@ -43255,7 +43255,7 @@
         var _a2;
         stateFromStorage = options.merge(
           migratedState,
-          (_a2 = get2()) != null ? _a2 : configResult
+          (_a2 = get5()) != null ? _a2 : configResult
         );
         set(stateFromStorage, true);
         return setItem();
@@ -43299,7 +43299,7 @@
     hydrate();
     return stateFromStorage || configResult;
   }, "oldImpl");
-  var newImpl = /* @__PURE__ */ __name((config, baseOptions) => (set, get2, api) => {
+  var newImpl = /* @__PURE__ */ __name((config, baseOptions) => (set, get5, api) => {
     let options = {
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => state,
@@ -43322,12 +43322,12 @@
           );
           set(...args);
         },
-        get2,
+        get5,
         api
       );
     }
     const setItem = /* @__PURE__ */ __name(() => {
-      const state = options.partialize({ ...get2() });
+      const state = options.partialize({ ...get5() });
       return storage.setItem(options.name, {
         state,
         version: options.version
@@ -43343,7 +43343,7 @@
         set(...args);
         void setItem();
       },
-      get2,
+      get5,
       api
     );
     let stateFromStorage;
@@ -43354,9 +43354,9 @@
       hasHydrated = false;
       hydrationListeners.forEach((cb) => {
         var _a2;
-        return cb((_a2 = get2()) != null ? _a2 : configResult);
+        return cb((_a2 = get5()) != null ? _a2 : configResult);
       });
-      const postRehydrationCallback = ((_b = options.onRehydrateStorage) == null ? void 0 : _b.call(options, (_a = get2()) != null ? _a : configResult)) || void 0;
+      const postRehydrationCallback = ((_b = options.onRehydrateStorage) == null ? void 0 : _b.call(options, (_a = get5()) != null ? _a : configResult)) || void 0;
       return toThenable(storage.getItem.bind(storage))(options.name).then((deserializedStorageValue) => {
         if (deserializedStorageValue) {
           if (typeof deserializedStorageValue.version === "number" && deserializedStorageValue.version !== options.version) {
@@ -43377,13 +43377,13 @@
         var _a2;
         stateFromStorage = options.merge(
           migratedState,
-          (_a2 = get2()) != null ? _a2 : configResult
+          (_a2 = get5()) != null ? _a2 : configResult
         );
         set(stateFromStorage, true);
         return setItem();
       }).then(() => {
         postRehydrationCallback == null ? void 0 : postRehydrationCallback(stateFromStorage, void 0);
-        stateFromStorage = get2();
+        stateFromStorage = get5();
         hasHydrated = true;
         finishHydrationListeners.forEach((cb) => cb(stateFromStorage));
       }).catch((e2) => {
@@ -49540,18 +49540,18 @@ const theme2 = createTheme({ palette: {
         delay = 0
       } = options, other = _objectWithoutPropertiesLoose(options, _excluded11);
       if (true) {
-        const isString = /* @__PURE__ */ __name((value) => typeof value === "string", "isString");
+        const isString2 = /* @__PURE__ */ __name((value) => typeof value === "string", "isString");
         const isNumber = /* @__PURE__ */ __name((value) => !isNaN(parseFloat(value)), "isNumber");
-        if (!isString(props) && !Array.isArray(props)) {
+        if (!isString2(props) && !Array.isArray(props)) {
           console.error('MUI: Argument "props" must be a string or Array.');
         }
-        if (!isNumber(durationOption) && !isString(durationOption)) {
+        if (!isNumber(durationOption) && !isString2(durationOption)) {
           console.error(`MUI: Argument "duration" must be a number or a string but found ${durationOption}.`);
         }
-        if (!isString(easingOption)) {
+        if (!isString2(easingOption)) {
           console.error('MUI: Argument "easing" must be a string.');
         }
-        if (!isNumber(delay) && !isString(delay)) {
+        if (!isNumber(delay) && !isString2(delay)) {
           console.error('MUI: Argument "delay" must be a number or a string.');
         }
         if (Object.keys(other).length !== 0) {
@@ -75434,55 +75434,61 @@ Please use another name.` : formatMuiErrorMessage(18));
     d: "M11 9h2v2h-2zm-2 2h2v2H9zm4 0h2v2h-2zm2-2h2v2h-2zM7 9h2v2H7zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V5h14v6z"
   }), "Gradient");
 
-  // node_modules/@mui/icons-material/esm/InvertColors.js
+  // node_modules/@mui/icons-material/esm/ImageSearch.js
   var import_jsx_runtime137 = __toESM(require_jsx_runtime());
-  var InvertColors_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime137.jsx)("path", {
+  var ImageSearch_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime137.jsx)("path", {
+    d: "M18 13v7H4V6h5.02c.05-.71.22-1.38.48-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5l-2-2zm-1.5 5h-11l2.75-3.53 1.96 2.36 2.75-3.54zm2.8-9.11c.44-.7.7-1.51.7-2.39C20 4.01 17.99 2 15.5 2S11 4.01 11 6.5s2.01 4.5 4.49 4.5c.88 0 1.7-.26 2.39-.7L21 13.42 22.42 12 19.3 8.89zM15.5 9C14.12 9 13 7.88 13 6.5S14.12 4 15.5 4 18 5.12 18 6.5 16.88 9 15.5 9z"
+  }), "ImageSearch");
+
+  // node_modules/@mui/icons-material/esm/InvertColors.js
+  var import_jsx_runtime138 = __toESM(require_jsx_runtime());
+  var InvertColors_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime138.jsx)("path", {
     d: "M12 4.81V19c-3.31 0-6-2.63-6-5.87 0-1.56.62-3.03 1.75-4.14L12 4.81M6.35 7.56C4.9 8.99 4 10.96 4 13.13 4 17.48 7.58 21 12 21s8-3.52 8-7.87c0-2.17-.9-4.14-2.35-5.57L12 2 6.35 7.56z"
   }), "InvertColors");
 
   // node_modules/@mui/icons-material/esm/KeyboardArrowDown.js
-  var import_jsx_runtime138 = __toESM(require_jsx_runtime());
-  var KeyboardArrowDown_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime138.jsx)("path", {
+  var import_jsx_runtime139 = __toESM(require_jsx_runtime());
+  var KeyboardArrowDown_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime139.jsx)("path", {
     d: "M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
   }), "KeyboardArrowDown");
 
   // node_modules/@mui/icons-material/esm/PhotoCamera.js
-  var import_jsx_runtime139 = __toESM(require_jsx_runtime());
-  var PhotoCamera_default = createSvgIcon([/* @__PURE__ */ (0, import_jsx_runtime139.jsx)("circle", {
+  var import_jsx_runtime140 = __toESM(require_jsx_runtime());
+  var PhotoCamera_default = createSvgIcon([/* @__PURE__ */ (0, import_jsx_runtime140.jsx)("circle", {
     cx: "12",
     cy: "12",
     r: "3.2"
-  }, "0"), /* @__PURE__ */ (0, import_jsx_runtime139.jsx)("path", {
+  }, "0"), /* @__PURE__ */ (0, import_jsx_runtime140.jsx)("path", {
     d: "M9 2 7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"
   }, "1")], "PhotoCamera");
 
   // node_modules/@mui/icons-material/esm/Refresh.js
-  var import_jsx_runtime140 = __toESM(require_jsx_runtime());
-  var Refresh_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime140.jsx)("path", {
+  var import_jsx_runtime141 = __toESM(require_jsx_runtime());
+  var Refresh_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime141.jsx)("path", {
     d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
   }), "Refresh");
 
   // node_modules/@mui/icons-material/esm/Replay.js
-  var import_jsx_runtime141 = __toESM(require_jsx_runtime());
-  var Replay_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime141.jsx)("path", {
+  var import_jsx_runtime142 = __toESM(require_jsx_runtime());
+  var Replay_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime142.jsx)("path", {
     d: "M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"
   }), "Replay");
 
   // node_modules/@mui/icons-material/esm/Save.js
-  var import_jsx_runtime142 = __toESM(require_jsx_runtime());
-  var Save_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime142.jsx)("path", {
+  var import_jsx_runtime143 = __toESM(require_jsx_runtime());
+  var Save_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime143.jsx)("path", {
     d: "M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"
   }), "Save");
 
   // node_modules/@mui/icons-material/esm/Undo.js
-  var import_jsx_runtime143 = __toESM(require_jsx_runtime());
-  var Undo_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime143.jsx)("path", {
+  var import_jsx_runtime144 = __toESM(require_jsx_runtime());
+  var Undo_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime144.jsx)("path", {
     d: "M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"
   }), "Undo");
 
   // node_modules/@mui/icons-material/esm/ZoomOutMap.js
-  var import_jsx_runtime144 = __toESM(require_jsx_runtime());
-  var ZoomOutMap_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime144.jsx)("path", {
+  var import_jsx_runtime145 = __toESM(require_jsx_runtime());
+  var ZoomOutMap_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime145.jsx)("path", {
     d: "m15 3 2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3h-6zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3v6zm6 12-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6h6zm12-6-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6v-6z"
   }), "ZoomOutMap");
 
@@ -76746,7 +76752,4906 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(PromptInput, "PromptInput");
 
+  // node_modules/exifreader/src/utils.js
+  function getStringFromDataView(dataView, offset2, length2) {
+    const chars2 = [];
+    for (let i = 0; i < length2 && offset2 + i < dataView.byteLength; i++) {
+      chars2.push(dataView.getUint8(offset2 + i));
+    }
+    return getStringValueFromArray(chars2);
+  }
+  __name(getStringFromDataView, "getStringFromDataView");
+  function getUnicodeStringFromDataView(dataView, offset2, length2) {
+    const chars2 = [];
+    for (let i = 0; i < length2 && offset2 + i < dataView.byteLength; i += 2) {
+      chars2.push(dataView.getUint16(offset2 + i));
+    }
+    return getStringValueFromArray(chars2);
+  }
+  __name(getUnicodeStringFromDataView, "getUnicodeStringFromDataView");
+  function getStringValueFromArray(charArray) {
+    return charArray.map((charCode) => String.fromCharCode(charCode)).join("");
+  }
+  __name(getStringValueFromArray, "getStringValueFromArray");
+  function objectAssign() {
+    for (let i = 1; i < arguments.length; i++) {
+      for (const property in arguments[i]) {
+        arguments[0][property] = arguments[i][property];
+      }
+    }
+    return arguments[0];
+  }
+  __name(objectAssign, "objectAssign");
+  function deferInit(object, key, initializer) {
+    let initialized = false;
+    Object.defineProperty(object, key, {
+      get() {
+        if (!initialized) {
+          initialized = true;
+          Object.defineProperty(object, key, {
+            configurable: true,
+            enumerable: true,
+            value: initializer.apply(object),
+            writable: true
+          });
+        }
+        return object[key];
+      },
+      configurable: true,
+      enumerable: true
+    });
+  }
+  __name(deferInit, "deferInit");
+  function getBase64Image(image) {
+    if (typeof btoa !== "undefined") {
+      if (typeof image === "string") {
+        return btoa(image);
+      }
+      return btoa(Array.prototype.reduce.call(new Uint8Array(image), (data, byte) => data + String.fromCharCode(byte), ""));
+    }
+    if (typeof Buffer === "undefined") {
+      return void 0;
+    }
+    if (typeof Buffer.from !== void 0) {
+      return Buffer.from(image).toString("base64");
+    }
+    return new Buffer(image).toString("base64");
+  }
+  __name(getBase64Image, "getBase64Image");
+  function dataUriToBuffer(dataUri) {
+    const data = dataUri.substring(dataUri.indexOf(",") + 1);
+    if (dataUri.indexOf(";base64") !== -1) {
+      if (typeof atob !== "undefined") {
+        return Uint8Array.from(atob(data), (char2) => char2.charCodeAt(0)).buffer;
+      }
+      if (typeof Buffer === "undefined") {
+        return void 0;
+      }
+      if (typeof Buffer.from !== void 0) {
+        return Buffer.from(data, "base64");
+      }
+      return new Buffer(data, "base64");
+    }
+    const decodedData = decodeURIComponent(data);
+    if (typeof Buffer !== "undefined") {
+      if (typeof Buffer.from !== void 0) {
+        return Buffer.from(decodedData);
+      }
+      return new Buffer(decodedData);
+    }
+    return Uint8Array.from(decodedData, (char2) => char2.charCodeAt(0)).buffer;
+  }
+  __name(dataUriToBuffer, "dataUriToBuffer");
+
+  // node_modules/exifreader/src/dataview.js
+  var DataView2 = class {
+    constructor(buffer) {
+      if (bufferTypeIsUnsupported(buffer)) {
+        throw new Error("DataView: Passed buffer type is unsupported.");
+      }
+      this.buffer = buffer;
+      this.byteLength = this.buffer.length;
+    }
+    getUint8(offset2) {
+      return this.buffer.readUInt8(offset2);
+    }
+    getUint16(offset2, littleEndian) {
+      if (littleEndian) {
+        return this.buffer.readUInt16LE(offset2);
+      }
+      return this.buffer.readUInt16BE(offset2);
+    }
+    getUint32(offset2, littleEndian) {
+      if (littleEndian) {
+        return this.buffer.readUInt32LE(offset2);
+      }
+      return this.buffer.readUInt32BE(offset2);
+    }
+    getInt32(offset2, littleEndian) {
+      if (littleEndian) {
+        return this.buffer.readInt32LE(offset2);
+      }
+      return this.buffer.readInt32BE(offset2);
+    }
+  };
+  __name(DataView2, "DataView");
+  function bufferTypeIsUnsupported(buffer) {
+    return typeof buffer !== "object" || buffer.length === void 0 || buffer.readUInt8 === void 0 || buffer.readUInt16LE === void 0 || buffer.readUInt16BE === void 0 || buffer.readUInt32LE === void 0 || buffer.readUInt32BE === void 0 || buffer.readInt32LE === void 0 || buffer.readInt32BE === void 0;
+  }
+  __name(bufferTypeIsUnsupported, "bufferTypeIsUnsupported");
+
+  // node_modules/exifreader/src/constants.js
+  var constants_default = {
+    USE_FILE: true,
+    USE_JFIF: true,
+    USE_PNG_FILE: true,
+    USE_EXIF: true,
+    USE_IPTC: true,
+    USE_XMP: true,
+    USE_ICC: true,
+    USE_MPF: true,
+    USE_THUMBNAIL: true,
+    USE_TIFF: true,
+    USE_JPEG: true,
+    USE_PNG: true,
+    USE_HEIC: true,
+    USE_WEBP: true
+  };
+
+  // node_modules/exifreader/src/tag-names-utils.js
+  function getStringValue(value) {
+    return value.map((charCode) => String.fromCharCode(charCode)).join("");
+  }
+  __name(getStringValue, "getStringValue");
+  function getEncodedString(value) {
+    if (value.length >= 8) {
+      const encoding = getStringValue(value.slice(0, 8));
+      if (encoding === "ASCII\0\0\0") {
+        return getStringValue(value.slice(8));
+      } else if (encoding === "JIS\0\0\0\0\0") {
+        return "[JIS encoded text]";
+      } else if (encoding === "UNICODE\0") {
+        return "[Unicode encoded text]";
+      } else if (encoding === "\0\0\0\0\0\0\0\0") {
+        return "[Undefined encoding]";
+      }
+    }
+    return "Undefined";
+  }
+  __name(getEncodedString, "getEncodedString");
+  function getCalculatedGpsValue(value) {
+    return value[0][0] / value[0][1] + value[1][0] / value[1][1] / 60 + value[2][0] / value[2][1] / 3600;
+  }
+  __name(getCalculatedGpsValue, "getCalculatedGpsValue");
+
+  // node_modules/exifreader/src/byte-order.js
+  var LITTLE_ENDIAN = 18761;
+  var BIG_ENDIAN = 19789;
+  var byte_order_default = {
+    BIG_ENDIAN,
+    LITTLE_ENDIAN,
+    getByteOrder
+  };
+  function getByteOrder(dataView, tiffHeaderOffset) {
+    if (dataView.getUint16(tiffHeaderOffset) === LITTLE_ENDIAN) {
+      return LITTLE_ENDIAN;
+    } else if (dataView.getUint16(tiffHeaderOffset) === BIG_ENDIAN) {
+      return BIG_ENDIAN;
+    }
+    throw new Error("Illegal byte order value. Faulty image.");
+  }
+  __name(getByteOrder, "getByteOrder");
+
+  // node_modules/exifreader/src/image-header-tiff.js
+  var image_header_tiff_default = {
+    isTiffFile,
+    findTiffOffsets
+  };
+  function isTiffFile(dataView) {
+    const MIN_TIFF_DATA_BUFFER_LENGTH = 4;
+    return !!dataView && dataView.byteLength >= MIN_TIFF_DATA_BUFFER_LENGTH && hasTiffMarker(dataView);
+  }
+  __name(isTiffFile, "isTiffFile");
+  function hasTiffMarker(dataView) {
+    const TIFF_ID = 42;
+    const TIFF_ID_OFFSET = 2;
+    const littleEndian = dataView.getUint16(0) === byte_order_default.LITTLE_ENDIAN;
+    return dataView.getUint16(TIFF_ID_OFFSET, littleEndian) === TIFF_ID;
+  }
+  __name(hasTiffMarker, "hasTiffMarker");
+  function findTiffOffsets() {
+    const TIFF_FILE_HEADER_OFFSET = 0;
+    if (constants_default.USE_EXIF) {
+      return {
+        hasAppMarkers: true,
+        tiffHeaderOffset: TIFF_FILE_HEADER_OFFSET
+      };
+    }
+    return {};
+  }
+  __name(findTiffOffsets, "findTiffOffsets");
+
+  // node_modules/exifreader/src/image-header-jpeg.js
+  var image_header_jpeg_default = {
+    isJpegFile,
+    findJpegOffsets
+  };
+  var MIN_JPEG_DATA_BUFFER_LENGTH = 2;
+  var JPEG_ID = 65496;
+  var JPEG_ID_SIZE = 2;
+  var APP_ID_OFFSET = 4;
+  var APP_MARKER_SIZE = 2;
+  var JFIF_DATA_OFFSET = 2;
+  var TIFF_HEADER_OFFSET = 10;
+  var IPTC_DATA_OFFSET = 18;
+  var XMP_DATA_OFFSET = 33;
+  var XMP_EXTENDED_DATA_OFFSET = 79;
+  var APP2_ICC_DATA_OFFSET = 18;
+  var MPF_DATA_OFFSET = 8;
+  var APP2_ICC_IDENTIFIER = "ICC_PROFILE\0";
+  var ICC_CHUNK_NUMBER_OFFSET = APP_ID_OFFSET + APP2_ICC_IDENTIFIER.length;
+  var ICC_TOTAL_CHUNKS_OFFSET = ICC_CHUNK_NUMBER_OFFSET + 1;
+  var APP2_MPF_IDENTIFIER = "MPF\0";
+  var SOF0_MARKER = 65472;
+  var SOF2_MARKER = 65474;
+  var DHT_MARKER = 65476;
+  var DQT_MARKER = 65499;
+  var DRI_MARKER = 65501;
+  var SOS_MARKER = 65498;
+  var APP0_MARKER = 65504;
+  var APP1_MARKER = 65505;
+  var APP2_MARKER = 65506;
+  var APP13_MARKER = 65517;
+  var APP15_MARKER = 65519;
+  var COMMENT_MARKER = 65534;
+  var FILL_BYTE = 65535;
+  var APP0_JFIF_IDENTIFIER = "JFIF";
+  var APP1_EXIF_IDENTIFIER = "Exif";
+  var APP1_XMP_IDENTIFIER = "http://ns.adobe.com/xap/1.0/\0";
+  var APP1_XMP_EXTENDED_IDENTIFIER = "http://ns.adobe.com/xmp/extension/\0";
+  var APP13_IPTC_IDENTIFIER = "Photoshop 3.0";
+  function isJpegFile(dataView) {
+    return !!dataView && dataView.byteLength >= MIN_JPEG_DATA_BUFFER_LENGTH && dataView.getUint16(0) === JPEG_ID;
+  }
+  __name(isJpegFile, "isJpegFile");
+  function findJpegOffsets(dataView) {
+    let appMarkerPosition = JPEG_ID_SIZE;
+    let fieldLength;
+    let sof0DataOffset;
+    let sof2DataOffset;
+    let jfifDataOffset;
+    let tiffHeaderOffset;
+    let iptcDataOffset;
+    let xmpChunks;
+    let iccChunks;
+    let mpfDataOffset;
+    while (appMarkerPosition + APP_ID_OFFSET + 5 <= dataView.byteLength) {
+      if (constants_default.USE_FILE && isSOF0Marker(dataView, appMarkerPosition)) {
+        sof0DataOffset = appMarkerPosition + APP_MARKER_SIZE;
+      } else if (constants_default.USE_FILE && isSOF2Marker(dataView, appMarkerPosition)) {
+        sof2DataOffset = appMarkerPosition + APP_MARKER_SIZE;
+      } else if (constants_default.USE_JFIF && isApp0JfifMarker(dataView, appMarkerPosition)) {
+        fieldLength = dataView.getUint16(appMarkerPosition + APP_MARKER_SIZE);
+        jfifDataOffset = appMarkerPosition + JFIF_DATA_OFFSET;
+      } else if (constants_default.USE_EXIF && isApp1ExifMarker(dataView, appMarkerPosition)) {
+        fieldLength = dataView.getUint16(appMarkerPosition + APP_MARKER_SIZE);
+        tiffHeaderOffset = appMarkerPosition + TIFF_HEADER_OFFSET;
+      } else if (constants_default.USE_XMP && isApp1XmpMarker(dataView, appMarkerPosition)) {
+        if (!xmpChunks) {
+          xmpChunks = [];
+        }
+        fieldLength = dataView.getUint16(appMarkerPosition + APP_MARKER_SIZE);
+        xmpChunks.push(getXmpChunkDetails(appMarkerPosition, fieldLength));
+      } else if (constants_default.USE_XMP && isApp1ExtendedXmpMarker(dataView, appMarkerPosition)) {
+        if (!xmpChunks) {
+          xmpChunks = [];
+        }
+        fieldLength = dataView.getUint16(appMarkerPosition + APP_MARKER_SIZE);
+        xmpChunks.push(getExtendedXmpChunkDetails(appMarkerPosition, fieldLength));
+      } else if (constants_default.USE_IPTC && isApp13PhotoshopMarker(dataView, appMarkerPosition)) {
+        fieldLength = dataView.getUint16(appMarkerPosition + APP_MARKER_SIZE);
+        iptcDataOffset = appMarkerPosition + IPTC_DATA_OFFSET;
+      } else if (constants_default.USE_ICC && isApp2ICCMarker(dataView, appMarkerPosition)) {
+        fieldLength = dataView.getUint16(appMarkerPosition + APP_MARKER_SIZE);
+        const iccDataOffset = appMarkerPosition + APP2_ICC_DATA_OFFSET;
+        const iccDataLength = fieldLength - (APP2_ICC_DATA_OFFSET - APP_MARKER_SIZE);
+        const iccChunkNumber = dataView.getUint8(appMarkerPosition + ICC_CHUNK_NUMBER_OFFSET);
+        const iccChunksTotal = dataView.getUint8(appMarkerPosition + ICC_TOTAL_CHUNKS_OFFSET);
+        if (!iccChunks) {
+          iccChunks = [];
+        }
+        iccChunks.push({ offset: iccDataOffset, length: iccDataLength, chunkNumber: iccChunkNumber, chunksTotal: iccChunksTotal });
+      } else if (constants_default.USE_MPF && isApp2MPFMarker(dataView, appMarkerPosition)) {
+        fieldLength = dataView.getUint16(appMarkerPosition + APP_MARKER_SIZE);
+        mpfDataOffset = appMarkerPosition + MPF_DATA_OFFSET;
+      } else if (isAppMarker(dataView, appMarkerPosition)) {
+        fieldLength = dataView.getUint16(appMarkerPosition + APP_MARKER_SIZE);
+      } else if (isFillByte(dataView, appMarkerPosition)) {
+        appMarkerPosition++;
+        continue;
+      } else {
+        break;
+      }
+      appMarkerPosition += APP_MARKER_SIZE + fieldLength;
+    }
+    return {
+      hasAppMarkers: appMarkerPosition > JPEG_ID_SIZE,
+      fileDataOffset: sof0DataOffset || sof2DataOffset,
+      jfifDataOffset,
+      tiffHeaderOffset,
+      iptcDataOffset,
+      xmpChunks,
+      iccChunks,
+      mpfDataOffset
+    };
+  }
+  __name(findJpegOffsets, "findJpegOffsets");
+  function isSOF0Marker(dataView, appMarkerPosition) {
+    return dataView.getUint16(appMarkerPosition) === SOF0_MARKER;
+  }
+  __name(isSOF0Marker, "isSOF0Marker");
+  function isSOF2Marker(dataView, appMarkerPosition) {
+    return dataView.getUint16(appMarkerPosition) === SOF2_MARKER;
+  }
+  __name(isSOF2Marker, "isSOF2Marker");
+  function isApp2ICCMarker(dataView, appMarkerPosition) {
+    const markerIdLength = APP2_ICC_IDENTIFIER.length;
+    return dataView.getUint16(appMarkerPosition) === APP2_MARKER && getStringFromDataView(dataView, appMarkerPosition + APP_ID_OFFSET, markerIdLength) === APP2_ICC_IDENTIFIER;
+  }
+  __name(isApp2ICCMarker, "isApp2ICCMarker");
+  function isApp2MPFMarker(dataView, appMarkerPosition) {
+    const markerIdLength = APP2_MPF_IDENTIFIER.length;
+    return dataView.getUint16(appMarkerPosition) === APP2_MARKER && getStringFromDataView(dataView, appMarkerPosition + APP_ID_OFFSET, markerIdLength) === APP2_MPF_IDENTIFIER;
+  }
+  __name(isApp2MPFMarker, "isApp2MPFMarker");
+  function isApp0JfifMarker(dataView, appMarkerPosition) {
+    const markerIdLength = APP1_EXIF_IDENTIFIER.length;
+    return dataView.getUint16(appMarkerPosition) === APP0_MARKER && getStringFromDataView(dataView, appMarkerPosition + APP_ID_OFFSET, markerIdLength) === APP0_JFIF_IDENTIFIER && dataView.getUint8(appMarkerPosition + APP_ID_OFFSET + markerIdLength) === 0;
+  }
+  __name(isApp0JfifMarker, "isApp0JfifMarker");
+  function isApp1ExifMarker(dataView, appMarkerPosition) {
+    const markerIdLength = APP1_EXIF_IDENTIFIER.length;
+    return dataView.getUint16(appMarkerPosition) === APP1_MARKER && getStringFromDataView(dataView, appMarkerPosition + APP_ID_OFFSET, markerIdLength) === APP1_EXIF_IDENTIFIER && dataView.getUint8(appMarkerPosition + APP_ID_OFFSET + markerIdLength) === 0;
+  }
+  __name(isApp1ExifMarker, "isApp1ExifMarker");
+  function isApp1XmpMarker(dataView, appMarkerPosition) {
+    return dataView.getUint16(appMarkerPosition) === APP1_MARKER && isXmpIdentifier(dataView, appMarkerPosition);
+  }
+  __name(isApp1XmpMarker, "isApp1XmpMarker");
+  function isXmpIdentifier(dataView, appMarkerPosition) {
+    const markerIdLength = APP1_XMP_IDENTIFIER.length;
+    return getStringFromDataView(dataView, appMarkerPosition + APP_ID_OFFSET, markerIdLength) === APP1_XMP_IDENTIFIER;
+  }
+  __name(isXmpIdentifier, "isXmpIdentifier");
+  function isApp1ExtendedXmpMarker(dataView, appMarkerPosition) {
+    return dataView.getUint16(appMarkerPosition) === APP1_MARKER && isExtendedXmpIdentifier(dataView, appMarkerPosition);
+  }
+  __name(isApp1ExtendedXmpMarker, "isApp1ExtendedXmpMarker");
+  function isExtendedXmpIdentifier(dataView, appMarkerPosition) {
+    const markerIdLength = APP1_XMP_EXTENDED_IDENTIFIER.length;
+    return getStringFromDataView(dataView, appMarkerPosition + APP_ID_OFFSET, markerIdLength) === APP1_XMP_EXTENDED_IDENTIFIER;
+  }
+  __name(isExtendedXmpIdentifier, "isExtendedXmpIdentifier");
+  function getXmpChunkDetails(appMarkerPosition, fieldLength) {
+    return {
+      dataOffset: appMarkerPosition + XMP_DATA_OFFSET,
+      length: fieldLength - (XMP_DATA_OFFSET - APP_MARKER_SIZE)
+    };
+  }
+  __name(getXmpChunkDetails, "getXmpChunkDetails");
+  function getExtendedXmpChunkDetails(appMarkerPosition, fieldLength) {
+    return {
+      dataOffset: appMarkerPosition + XMP_EXTENDED_DATA_OFFSET,
+      length: fieldLength - (XMP_EXTENDED_DATA_OFFSET - APP_MARKER_SIZE)
+    };
+  }
+  __name(getExtendedXmpChunkDetails, "getExtendedXmpChunkDetails");
+  function isApp13PhotoshopMarker(dataView, appMarkerPosition) {
+    const markerIdLength = APP13_IPTC_IDENTIFIER.length;
+    return dataView.getUint16(appMarkerPosition) === APP13_MARKER && getStringFromDataView(dataView, appMarkerPosition + APP_ID_OFFSET, markerIdLength) === APP13_IPTC_IDENTIFIER && dataView.getUint8(appMarkerPosition + APP_ID_OFFSET + markerIdLength) === 0;
+  }
+  __name(isApp13PhotoshopMarker, "isApp13PhotoshopMarker");
+  function isAppMarker(dataView, appMarkerPosition) {
+    const appMarker = dataView.getUint16(appMarkerPosition);
+    return appMarker >= APP0_MARKER && appMarker <= APP15_MARKER || appMarker === COMMENT_MARKER || appMarker === SOF0_MARKER || appMarker === SOF2_MARKER || appMarker === DHT_MARKER || appMarker === DQT_MARKER || appMarker === DRI_MARKER || appMarker === SOS_MARKER;
+  }
+  __name(isAppMarker, "isAppMarker");
+  function isFillByte(dataView, appMarkerPosition) {
+    return dataView.getUint16(appMarkerPosition) === FILL_BYTE;
+  }
+  __name(isFillByte, "isFillByte");
+
+  // node_modules/exifreader/src/image-header-png.js
+  var image_header_png_default = {
+    isPngFile,
+    findPngOffsets
+  };
+  var PNG_ID = "\x89PNG\r\n\n";
+  var PNG_CHUNK_LENGTH_SIZE = 4;
+  var PNG_CHUNK_TYPE_SIZE = 4;
+  var PNG_CHUNK_LENGTH_OFFSET = 0;
+  var PNG_CHUNK_TYPE_OFFSET = PNG_CHUNK_LENGTH_SIZE;
+  var PNG_CHUNK_DATA_OFFSET = PNG_CHUNK_LENGTH_SIZE + PNG_CHUNK_TYPE_SIZE;
+  var PNG_XMP_PREFIX = "XML:com.adobe.xmp\0";
+  var TYPE_TEXT = "tEXt";
+  var TYPE_ITXT = "iTXt";
+  var TYPE_PHYS = "pHYs";
+  var TYPE_TIME = "tIME";
+  var TYPE_EXIF = "eXIf";
+  function isPngFile(dataView) {
+    return !!dataView && getStringFromDataView(dataView, 0, PNG_ID.length) === PNG_ID;
+  }
+  __name(isPngFile, "isPngFile");
+  function findPngOffsets(dataView) {
+    const PNG_CRC_SIZE = 4;
+    const offsets = {
+      hasAppMarkers: false
+    };
+    let offset2 = PNG_ID.length;
+    while (offset2 + PNG_CHUNK_LENGTH_SIZE + PNG_CHUNK_TYPE_SIZE <= dataView.byteLength) {
+      if (constants_default.USE_PNG_FILE && isPngImageHeaderChunk(dataView, offset2)) {
+        offsets.hasAppMarkers = true;
+        offsets.pngHeaderOffset = offset2 + PNG_CHUNK_DATA_OFFSET;
+      } else if (constants_default.USE_XMP && isPngXmpChunk(dataView, offset2)) {
+        const dataOffset = getPngXmpDataOffset(dataView, offset2);
+        if (dataOffset !== void 0) {
+          offsets.hasAppMarkers = true;
+          offsets.xmpChunks = [{
+            dataOffset,
+            length: dataView.getUint32(offset2 + PNG_CHUNK_LENGTH_OFFSET) - (dataOffset - (offset2 + PNG_CHUNK_DATA_OFFSET))
+          }];
+        }
+      } else if (isPngTextChunk(dataView, offset2)) {
+        offsets.hasAppMarkers = true;
+        const chunkType = getStringFromDataView(dataView, offset2 + PNG_CHUNK_TYPE_OFFSET, PNG_CHUNK_TYPE_SIZE);
+        if (!offsets.pngTextChunks) {
+          offsets.pngTextChunks = [];
+        }
+        offsets.pngTextChunks.push({
+          length: dataView.getUint32(offset2 + PNG_CHUNK_LENGTH_OFFSET),
+          type: chunkType,
+          offset: offset2 + PNG_CHUNK_DATA_OFFSET
+        });
+      } else if (isPngExifChunk(dataView, offset2)) {
+        offsets.hasAppMarkers = true;
+        offsets.tiffHeaderOffset = offset2 + PNG_CHUNK_DATA_OFFSET;
+      } else if (isPngChunk(dataView, offset2)) {
+        offsets.hasAppMarkers = true;
+        if (!offsets.pngChunkOffsets) {
+          offsets.pngChunkOffsets = [];
+        }
+        offsets.pngChunkOffsets.push(offset2 + PNG_CHUNK_LENGTH_OFFSET);
+      }
+      offset2 += dataView.getUint32(offset2 + PNG_CHUNK_LENGTH_OFFSET) + PNG_CHUNK_LENGTH_SIZE + PNG_CHUNK_TYPE_SIZE + PNG_CRC_SIZE;
+    }
+    return offsets;
+  }
+  __name(findPngOffsets, "findPngOffsets");
+  function isPngImageHeaderChunk(dataView, offset2) {
+    const PNG_CHUNK_TYPE_IMAGE_HEADER = "IHDR";
+    return getStringFromDataView(dataView, offset2 + PNG_CHUNK_TYPE_OFFSET, PNG_CHUNK_TYPE_SIZE) === PNG_CHUNK_TYPE_IMAGE_HEADER;
+  }
+  __name(isPngImageHeaderChunk, "isPngImageHeaderChunk");
+  function isPngXmpChunk(dataView, offset2) {
+    const PNG_CHUNK_TYPE_INTERNATIONAL_TEXT = "iTXt";
+    return getStringFromDataView(dataView, offset2 + PNG_CHUNK_TYPE_OFFSET, PNG_CHUNK_TYPE_SIZE) === PNG_CHUNK_TYPE_INTERNATIONAL_TEXT && getStringFromDataView(dataView, offset2 + PNG_CHUNK_DATA_OFFSET, PNG_XMP_PREFIX.length) === PNG_XMP_PREFIX;
+  }
+  __name(isPngXmpChunk, "isPngXmpChunk");
+  function isPngTextChunk(dataView, offset2) {
+    const PNG_CHUNK_TYPE_TEXT = "tEXt";
+    const PNG_CHUNK_TYPE_ITXT = "iTXt";
+    const chunkType = getStringFromDataView(dataView, offset2 + PNG_CHUNK_TYPE_OFFSET, PNG_CHUNK_TYPE_SIZE);
+    return chunkType === PNG_CHUNK_TYPE_TEXT || chunkType === PNG_CHUNK_TYPE_ITXT;
+  }
+  __name(isPngTextChunk, "isPngTextChunk");
+  function isPngExifChunk(dataView, offset2) {
+    return getStringFromDataView(dataView, offset2 + PNG_CHUNK_TYPE_OFFSET, PNG_CHUNK_TYPE_SIZE) === TYPE_EXIF;
+  }
+  __name(isPngExifChunk, "isPngExifChunk");
+  function isPngChunk(dataView, offset2) {
+    const SUPPORTED_PNG_CHUNK_TYPES = [TYPE_PHYS, TYPE_TIME];
+    const chunkType = getStringFromDataView(dataView, offset2 + PNG_CHUNK_TYPE_OFFSET, PNG_CHUNK_TYPE_SIZE);
+    return SUPPORTED_PNG_CHUNK_TYPES.includes(chunkType);
+  }
+  __name(isPngChunk, "isPngChunk");
+  function getPngXmpDataOffset(dataView, offset2) {
+    const COMPRESSION_FLAG_SIZE = 1;
+    const COMPRESSION_METHOD_SIZE = 1;
+    offset2 += PNG_CHUNK_DATA_OFFSET + PNG_XMP_PREFIX.length + COMPRESSION_FLAG_SIZE + COMPRESSION_METHOD_SIZE;
+    let numberOfNullSeparators = 0;
+    while (numberOfNullSeparators < 2 && offset2 < dataView.byteLength) {
+      if (dataView.getUint8(offset2) === 0) {
+        numberOfNullSeparators++;
+      }
+      offset2++;
+    }
+    if (numberOfNullSeparators < 2) {
+      return void 0;
+    }
+    return offset2;
+  }
+  __name(getPngXmpDataOffset, "getPngXmpDataOffset");
+
+  // node_modules/exifreader/src/image-header-heic.js
+  var image_header_heic_default = {
+    isHeicFile,
+    findHeicOffsets
+  };
+  function isHeicFile(dataView) {
+    if (!dataView) {
+      return false;
+    }
+    const HEIC_ID = "ftyp";
+    const HEIC_ID_OFFSET = 4;
+    const HEIC_MAJOR_BRANDS = ["heic", "heix", "hevc", "hevx", "heim", "heis", "hevm", "hevs", "mif1"];
+    const HEIC_MAJOR_BRAND_LENGTH = 4;
+    const heicMajorBrand = getStringFromDataView(dataView, HEIC_ID_OFFSET + HEIC_ID.length, HEIC_MAJOR_BRAND_LENGTH);
+    return getStringFromDataView(dataView, HEIC_ID_OFFSET, HEIC_ID.length) === HEIC_ID && HEIC_MAJOR_BRANDS.indexOf(heicMajorBrand) !== -1;
+  }
+  __name(isHeicFile, "isHeicFile");
+  function findHeicOffsets(dataView) {
+    if (constants_default.USE_EXIF || constants_default.USE_ICC) {
+      const { offset: metaOffset, length: metaLength } = findMetaAtom(dataView);
+      if (metaOffset === void 0) {
+        return { hasAppMarkers: false };
+      }
+      const metaEndOffset = Math.min(metaOffset + metaLength, dataView.byteLength);
+      const { exifItemOffset, ilocOffset, colrOffset } = findMetaItems(dataView, metaOffset, metaEndOffset);
+      const exifOffset = findExifOffset(dataView, exifItemOffset, ilocOffset, metaEndOffset);
+      const iccChunks = findIccChunks(dataView, colrOffset, metaEndOffset);
+      return {
+        hasAppMarkers: exifOffset !== void 0 || iccChunks !== void 0,
+        tiffHeaderOffset: exifOffset,
+        iccChunks
+      };
+    }
+    return { hasAppMarkers: false };
+  }
+  __name(findHeicOffsets, "findHeicOffsets");
+  function findMetaAtom(dataView) {
+    const ATOM_LENGTH_SIZE = 4;
+    const ATOM_TYPE_SIZE = 4;
+    const ATOM_MIN_LENGTH = 8;
+    const ATOM_TYPE_OFFSET = 4;
+    let offset2 = 0;
+    while (offset2 + ATOM_LENGTH_SIZE + ATOM_TYPE_SIZE <= dataView.byteLength) {
+      const atomLength = getAtomLength(dataView, offset2);
+      if (atomLength >= ATOM_MIN_LENGTH) {
+        const atomType = getStringFromDataView(dataView, offset2 + ATOM_TYPE_OFFSET, ATOM_TYPE_SIZE);
+        if (atomType === "meta") {
+          return {
+            offset: offset2,
+            length: atomLength
+          };
+        }
+      }
+      offset2 += atomLength;
+    }
+    return {
+      offset: void 0,
+      length: 0
+    };
+  }
+  __name(findMetaAtom, "findMetaAtom");
+  function getAtomLength(dataView, offset2) {
+    const ATOM_EXTENDED_SIZE_LOW_OFFSET = 12;
+    const atomLength = dataView.getUint32(offset2);
+    if (extendsToEndOfFile(atomLength)) {
+      return dataView.byteLength - offset2;
+    }
+    if (hasExtendedSize(atomLength)) {
+      if (hasEmptyHighBits(dataView, offset2)) {
+        return dataView.getUint32(offset2 + ATOM_EXTENDED_SIZE_LOW_OFFSET);
+      }
+    }
+    return atomLength;
+  }
+  __name(getAtomLength, "getAtomLength");
+  function extendsToEndOfFile(atomLength) {
+    return atomLength === 0;
+  }
+  __name(extendsToEndOfFile, "extendsToEndOfFile");
+  function hasExtendedSize(atomLength) {
+    return atomLength === 1;
+  }
+  __name(hasExtendedSize, "hasExtendedSize");
+  function hasEmptyHighBits(dataView, offset2) {
+    const ATOM_EXTENDED_SIZE_OFFSET = 8;
+    return dataView.getUint32(offset2 + ATOM_EXTENDED_SIZE_OFFSET) === 0;
+  }
+  __name(hasEmptyHighBits, "hasEmptyHighBits");
+  function findMetaItems(dataView, offset2, metaEndOffset) {
+    const STRING_SIZE = 4;
+    const ITEM_INDEX_REL_OFFSET = -4;
+    const offsets = {
+      ilocOffset: void 0,
+      exifItemOffset: void 0,
+      colrOffset: void 0
+    };
+    while (offset2 + STRING_SIZE <= metaEndOffset && (!offsets.ilocOffset || !offsets.exifItemOffset || !offsets.colrOffset)) {
+      const itemName = getStringFromDataView(dataView, offset2, STRING_SIZE);
+      if (constants_default.USE_EXIF && itemName === "iloc") {
+        offsets.ilocOffset = offset2;
+      } else if (constants_default.USE_EXIF && itemName === "Exif") {
+        offsets.exifItemOffset = offset2 + ITEM_INDEX_REL_OFFSET;
+      } else if (constants_default.USE_ICC && itemName === "colr") {
+        offsets.colrOffset = offset2 + ITEM_INDEX_REL_OFFSET;
+      }
+      offset2++;
+    }
+    return offsets;
+  }
+  __name(findMetaItems, "findMetaItems");
+  function findExifOffset(dataView, exifItemOffset, offset2, metaEndOffset) {
+    const EXIF_ITEM_OFFSET_SIZE = 2;
+    const ILOC_DATA_OFFSET = 12;
+    const EXIF_POINTER_OFFSET = 8;
+    const EXIF_POINTER_SIZE = 4;
+    const EXIF_PREFIX_LENGTH_OFFSET = 4;
+    const ILOC_ITEM_SIZE = 16;
+    if (!offset2 || !exifItemOffset || exifItemOffset + EXIF_ITEM_OFFSET_SIZE > metaEndOffset) {
+      return void 0;
+    }
+    const exifItemIndex = dataView.getUint16(exifItemOffset);
+    offset2 += ILOC_DATA_OFFSET;
+    while (offset2 + ILOC_ITEM_SIZE <= metaEndOffset) {
+      const itemIndex = dataView.getUint16(offset2);
+      if (itemIndex === exifItemIndex) {
+        const exifPointer = dataView.getUint32(offset2 + EXIF_POINTER_OFFSET);
+        if (exifPointer + EXIF_POINTER_SIZE <= dataView.byteLength) {
+          const exifOffset = dataView.getUint32(exifPointer);
+          const prefixLength = exifOffset + EXIF_PREFIX_LENGTH_OFFSET;
+          return exifPointer + prefixLength;
+        }
+      }
+      offset2 += ILOC_ITEM_SIZE;
+    }
+    return void 0;
+  }
+  __name(findExifOffset, "findExifOffset");
+  function findIccChunks(dataView, offset2, metaEndOffset) {
+    const ITEM_TYPE_OFFSET = 8;
+    const ITEM_TYPE_SIZE = 4;
+    const ITEM_CONTENT_OFFSET = 12;
+    if (!offset2 || offset2 + ITEM_CONTENT_OFFSET > metaEndOffset) {
+      return void 0;
+    }
+    const colorType = getStringFromDataView(dataView, offset2 + ITEM_TYPE_OFFSET, ITEM_TYPE_SIZE);
+    if (colorType !== "prof" && colorType !== "rICC") {
+      return void 0;
+    }
+    return [{
+      offset: offset2 + ITEM_CONTENT_OFFSET,
+      length: getAtomLength(dataView, offset2) - ITEM_CONTENT_OFFSET,
+      chunkNumber: 1,
+      chunksTotal: 1
+    }];
+  }
+  __name(findIccChunks, "findIccChunks");
+
+  // node_modules/exifreader/src/image-header-webp.js
+  var image_header_webp_default = {
+    isWebpFile,
+    findOffsets
+  };
+  function isWebpFile(dataView) {
+    const RIFF_ID_OFFSET = 0;
+    const RIFF_ID = "RIFF";
+    const WEBP_MARKER_OFFSET = 8;
+    const WEBP_MARKER = "WEBP";
+    return !!dataView && getStringFromDataView(dataView, RIFF_ID_OFFSET, RIFF_ID.length) === RIFF_ID && getStringFromDataView(dataView, WEBP_MARKER_OFFSET, WEBP_MARKER.length) === WEBP_MARKER;
+  }
+  __name(isWebpFile, "isWebpFile");
+  function findOffsets(dataView) {
+    const SUB_CHUNK_START_OFFSET = 12;
+    const CHUNK_SIZE_OFFSET = 4;
+    const EXIF_IDENTIFIER = "Exif\0\0";
+    const CHUNK_HEADER_SIZE = 8;
+    let offset2 = SUB_CHUNK_START_OFFSET;
+    let hasAppMarkers = false;
+    let tiffHeaderOffset;
+    let xmpChunks;
+    let iccChunks;
+    while (offset2 + CHUNK_HEADER_SIZE < dataView.byteLength) {
+      const chunkId = getStringFromDataView(dataView, offset2, 4);
+      const chunkSize = dataView.getUint32(offset2 + CHUNK_SIZE_OFFSET, true);
+      if (constants_default.USE_EXIF && chunkId === "EXIF") {
+        hasAppMarkers = true;
+        if (getStringFromDataView(dataView, offset2 + CHUNK_HEADER_SIZE, EXIF_IDENTIFIER.length) === EXIF_IDENTIFIER) {
+          tiffHeaderOffset = offset2 + CHUNK_HEADER_SIZE + EXIF_IDENTIFIER.length;
+        } else {
+          tiffHeaderOffset = offset2 + CHUNK_HEADER_SIZE;
+        }
+      } else if (constants_default.USE_XMP && chunkId === "XMP ") {
+        hasAppMarkers = true;
+        xmpChunks = [{
+          dataOffset: offset2 + CHUNK_HEADER_SIZE,
+          length: chunkSize
+        }];
+      } else if (constants_default.USE_ICC && chunkId === "ICCP") {
+        hasAppMarkers = true;
+        iccChunks = [{
+          offset: offset2 + CHUNK_HEADER_SIZE,
+          length: chunkSize,
+          chunkNumber: 1,
+          chunksTotal: 1
+        }];
+      }
+      offset2 += CHUNK_HEADER_SIZE + (chunkSize % 2 === 0 ? chunkSize : chunkSize + 1);
+    }
+    return {
+      hasAppMarkers,
+      tiffHeaderOffset,
+      xmpChunks,
+      iccChunks
+    };
+  }
+  __name(findOffsets, "findOffsets");
+
+  // node_modules/exifreader/src/image-header.js
+  var image_header_default = {
+    parseAppMarkers
+  };
+  function parseAppMarkers(dataView) {
+    if (constants_default.USE_TIFF && image_header_tiff_default.isTiffFile(dataView)) {
+      return image_header_tiff_default.findTiffOffsets();
+    }
+    if (constants_default.USE_JPEG && image_header_jpeg_default.isJpegFile(dataView)) {
+      return image_header_jpeg_default.findJpegOffsets(dataView);
+    }
+    if (constants_default.USE_PNG && image_header_png_default.isPngFile(dataView)) {
+      return image_header_png_default.findPngOffsets(dataView);
+    }
+    if (constants_default.USE_HEIC && image_header_heic_default.isHeicFile(dataView)) {
+      return image_header_heic_default.findHeicOffsets(dataView);
+    }
+    if (constants_default.USE_WEBP && image_header_webp_default.isWebpFile(dataView)) {
+      return image_header_webp_default.findOffsets(dataView);
+    }
+    throw new Error("Invalid image format");
+  }
+  __name(parseAppMarkers, "parseAppMarkers");
+
+  // node_modules/exifreader/src/types.js
+  var typeSizes = {
+    1: 1,
+    // BYTE
+    2: 1,
+    // ASCII
+    3: 2,
+    // SHORT
+    4: 4,
+    // LONG
+    5: 8,
+    // RATIONAL
+    7: 1,
+    // UNDEFINED
+    9: 4,
+    // SLONG
+    10: 8,
+    // SRATIONAL
+    13: 4
+    // IFD
+  };
+  var tagTypes = {
+    "BYTE": 1,
+    "ASCII": 2,
+    "SHORT": 3,
+    "LONG": 4,
+    "RATIONAL": 5,
+    "UNDEFINED": 7,
+    "SLONG": 9,
+    "SRATIONAL": 10,
+    "IFD": 13
+  };
+  var types_default = {
+    getAsciiValue,
+    getByteAt,
+    getAsciiAt,
+    getShortAt,
+    getLongAt,
+    getRationalAt,
+    getUndefinedAt,
+    getSlongAt,
+    getSrationalAt,
+    getIfdPointerAt,
+    typeSizes,
+    tagTypes,
+    getTypeSize
+  };
+  function getAsciiValue(charArray) {
+    return charArray.map((charCode) => String.fromCharCode(charCode));
+  }
+  __name(getAsciiValue, "getAsciiValue");
+  function getByteAt(dataView, offset2) {
+    return dataView.getUint8(offset2);
+  }
+  __name(getByteAt, "getByteAt");
+  function getAsciiAt(dataView, offset2) {
+    return dataView.getUint8(offset2);
+  }
+  __name(getAsciiAt, "getAsciiAt");
+  function getShortAt(dataView, offset2, byteOrder) {
+    return dataView.getUint16(offset2, byteOrder === byte_order_default.LITTLE_ENDIAN);
+  }
+  __name(getShortAt, "getShortAt");
+  function getLongAt(dataView, offset2, byteOrder) {
+    return dataView.getUint32(offset2, byteOrder === byte_order_default.LITTLE_ENDIAN);
+  }
+  __name(getLongAt, "getLongAt");
+  function getRationalAt(dataView, offset2, byteOrder) {
+    return [getLongAt(dataView, offset2, byteOrder), getLongAt(dataView, offset2 + 4, byteOrder)];
+  }
+  __name(getRationalAt, "getRationalAt");
+  function getUndefinedAt(dataView, offset2) {
+    return getByteAt(dataView, offset2);
+  }
+  __name(getUndefinedAt, "getUndefinedAt");
+  function getSlongAt(dataView, offset2, byteOrder) {
+    return dataView.getInt32(offset2, byteOrder === byte_order_default.LITTLE_ENDIAN);
+  }
+  __name(getSlongAt, "getSlongAt");
+  function getSrationalAt(dataView, offset2, byteOrder) {
+    return [getSlongAt(dataView, offset2, byteOrder), getSlongAt(dataView, offset2 + 4, byteOrder)];
+  }
+  __name(getSrationalAt, "getSrationalAt");
+  function getIfdPointerAt(dataView, offset2, byteOrder) {
+    return getLongAt(dataView, offset2, byteOrder);
+  }
+  __name(getIfdPointerAt, "getIfdPointerAt");
+  function getTypeSize(typeName) {
+    if (tagTypes[typeName] === void 0) {
+      throw new Error("No such type found.");
+    }
+    return typeSizes[tagTypes[typeName]];
+  }
+  __name(getTypeSize, "getTypeSize");
+
+  // node_modules/exifreader/src/tag-names-common.js
+  var tag_names_common_default = {
+    ApertureValue: (value) => Math.pow(Math.sqrt(2), value[0] / value[1]).toFixed(2),
+    ColorSpace(value) {
+      if (value === 1) {
+        return "sRGB";
+      } else if (value === 65535) {
+        return "Uncalibrated";
+      }
+      return "Unknown";
+    },
+    ComponentsConfiguration(value) {
+      return value.map((character2) => {
+        if (character2 === 49) {
+          return "Y";
+        } else if (character2 === 50) {
+          return "Cb";
+        } else if (character2 === 51) {
+          return "Cr";
+        } else if (character2 === 52) {
+          return "R";
+        } else if (character2 === 53) {
+          return "G";
+        } else if (character2 === 54) {
+          return "B";
+        }
+      }).join("");
+    },
+    Contrast(value) {
+      if (value === 0) {
+        return "Normal";
+      } else if (value === 1) {
+        return "Soft";
+      } else if (value === 2) {
+        return "Hard";
+      }
+      return "Unknown";
+    },
+    CustomRendered(value) {
+      if (value === 0) {
+        return "Normal process";
+      } else if (value === 1) {
+        return "Custom process";
+      }
+      return "Unknown";
+    },
+    ExposureMode(value) {
+      if (value === 0) {
+        return "Auto exposure";
+      } else if (value === 1) {
+        return "Manual exposure";
+      } else if (value === 2) {
+        return "Auto bracket";
+      }
+      return "Unknown";
+    },
+    ExposureProgram(value) {
+      if (value === 0) {
+        return "Undefined";
+      } else if (value === 1) {
+        return "Manual";
+      } else if (value === 2) {
+        return "Normal program";
+      } else if (value === 3) {
+        return "Aperture priority";
+      } else if (value === 4) {
+        return "Shutter priority";
+      } else if (value === 5) {
+        return "Creative program";
+      } else if (value === 6) {
+        return "Action program";
+      } else if (value === 7) {
+        return "Portrait mode";
+      } else if (value === 8) {
+        return "Landscape mode";
+      } else if (value === 9) {
+        return "Bulb";
+      }
+      return "Unknown";
+    },
+    ExposureTime(value) {
+      if (value[0] >= value[1]) {
+        return `${Math.round(value[0] / value[1])}`;
+      }
+      if (value[0] !== 0) {
+        return `1/${Math.round(value[1] / value[0])}`;
+      }
+      return `0/${value[1]}`;
+    },
+    FNumber: (value) => `f/${value[0] / value[1]}`,
+    FocalLength: (value) => value[0] / value[1] + " mm",
+    FocalPlaneResolutionUnit(value) {
+      if (value === 2) {
+        return "inches";
+      } else if (value === 3) {
+        return "centimeters";
+      }
+      return "Unknown";
+    },
+    LightSource: (value) => {
+      if (value === 1) {
+        return "Daylight";
+      } else if (value === 2) {
+        return "Fluorescent";
+      } else if (value === 3) {
+        return "Tungsten (incandescent light)";
+      } else if (value === 4) {
+        return "Flash";
+      } else if (value === 9) {
+        return "Fine weather";
+      } else if (value === 10) {
+        return "Cloudy weather";
+      } else if (value === 11) {
+        return "Shade";
+      } else if (value === 12) {
+        return "Daylight fluorescent (D 5700 \u2013 7100K)";
+      } else if (value === 13) {
+        return "Day white fluorescent (N 4600 \u2013 5400K)";
+      } else if (value === 14) {
+        return "Cool white fluorescent (W 3900 \u2013 4500K)";
+      } else if (value === 15) {
+        return "White fluorescent (WW 3200 \u2013 3700K)";
+      } else if (value === 17) {
+        return "Standard light A";
+      } else if (value === 18) {
+        return "Standard light B";
+      } else if (value === 19) {
+        return "Standard light C";
+      } else if (value === 20) {
+        return "D55";
+      } else if (value === 21) {
+        return "D65";
+      } else if (value === 22) {
+        return "D75";
+      } else if (value === 23) {
+        return "D50";
+      } else if (value === 24) {
+        return "ISO studio tungsten";
+      } else if (value === 255) {
+        return "Other light source";
+      }
+      return "Unknown";
+    },
+    MeteringMode(value) {
+      if (value === 1) {
+        return "Average";
+      } else if (value === 2) {
+        return "CenterWeightedAverage";
+      } else if (value === 3) {
+        return "Spot";
+      } else if (value === 4) {
+        return "MultiSpot";
+      } else if (value === 5) {
+        return "Pattern";
+      } else if (value === 6) {
+        return "Partial";
+      } else if (value === 255) {
+        return "Other";
+      }
+      return "Unknown";
+    },
+    ResolutionUnit(value) {
+      if (value === 2) {
+        return "inches";
+      }
+      if (value === 3) {
+        return "centimeters";
+      }
+      return "Unknown";
+    },
+    Saturation(value) {
+      if (value === 0) {
+        return "Normal";
+      } else if (value === 1) {
+        return "Low saturation";
+      } else if (value === 2) {
+        return "High saturation";
+      }
+      return "Unknown";
+    },
+    SceneCaptureType(value) {
+      if (value === 0) {
+        return "Standard";
+      } else if (value === 1) {
+        return "Landscape";
+      } else if (value === 2) {
+        return "Portrait";
+      } else if (value === 3) {
+        return "Night scene";
+      }
+      return "Unknown";
+    },
+    Sharpness(value) {
+      if (value === 0) {
+        return "Normal";
+      } else if (value === 1) {
+        return "Soft";
+      } else if (value === 2) {
+        return "Hard";
+      }
+      return "Unknown";
+    },
+    ShutterSpeedValue(value) {
+      const denominator = Math.pow(2, value[0] / value[1]);
+      if (denominator <= 1) {
+        return `${Math.round(1 / denominator)}`;
+      }
+      return `1/${Math.round(denominator)}`;
+    },
+    WhiteBalance(value) {
+      if (value === 0) {
+        return "Auto white balance";
+      } else if (value === 1) {
+        return "Manual white balance";
+      }
+      return "Unknown";
+    },
+    XResolution: (value) => "" + Math.round(value[0] / value[1]),
+    YResolution: (value) => "" + Math.round(value[0] / value[1])
+  };
+
+  // node_modules/exifreader/src/tag-names-0th-ifd.js
+  var tag_names_0th_ifd_default = {
+    11: "ProcessingSoftware",
+    254: {
+      name: "SubfileType",
+      description: (value) => ({
+        0: "Full-resolution image",
+        1: "Reduced-resolution image",
+        2: "Single page of multi-page image",
+        3: "Single page of multi-page reduced-resolution image",
+        4: "Transparency mask",
+        5: "Transparency mask of reduced-resolution image",
+        6: "Transparency mask of multi-page image",
+        7: "Transparency mask of reduced-resolution multi-page image",
+        65537: "Alternate reduced-resolution image",
+        4294967295: "Invalid"
+      })[value] || "Unknown"
+    },
+    255: {
+      name: "OldSubfileType",
+      description: (value) => ({
+        0: "Full-resolution image",
+        1: "Reduced-resolution image",
+        2: "Single page of multi-page image"
+      })[value] || "Unknown"
+    },
+    256: "ImageWidth",
+    257: "ImageLength",
+    258: "BitsPerSample",
+    259: "Compression",
+    262: "PhotometricInterpretation",
+    263: {
+      name: "Thresholding",
+      description: (value) => ({
+        1: "No dithering or halftoning",
+        2: "Ordered dither or halfton",
+        3: "Randomized dither"
+      })[value] || "Unknown"
+    },
+    264: "CellWidth",
+    265: "CellLength",
+    266: {
+      name: "FillOrder",
+      description: (value) => ({
+        1: "Normal",
+        2: "Reversed"
+      })[value] || "Unknown"
+    },
+    269: "DocumentName",
+    270: "ImageDescription",
+    271: "Make",
+    272: "Model",
+    273: "StripOffsets",
+    274: {
+      name: "Orientation",
+      description: (value) => {
+        if (value === 1) {
+          return "top-left";
+        }
+        if (value === 2) {
+          return "top-right";
+        }
+        if (value === 3) {
+          return "bottom-right";
+        }
+        if (value === 4) {
+          return "bottom-left";
+        }
+        if (value === 5) {
+          return "left-top";
+        }
+        if (value === 6) {
+          return "right-top";
+        }
+        if (value === 7) {
+          return "right-bottom";
+        }
+        if (value === 8) {
+          return "left-bottom";
+        }
+        return "Undefined";
+      }
+    },
+    277: "SamplesPerPixel",
+    278: "RowsPerStrip",
+    279: "StripByteCounts",
+    280: "MinSampleValue",
+    281: "MaxSampleValue",
+    282: {
+      "name": "XResolution",
+      "description": tag_names_common_default.XResolution
+    },
+    283: {
+      "name": "YResolution",
+      "description": tag_names_common_default.YResolution
+    },
+    284: "PlanarConfiguration",
+    285: "PageName",
+    286: {
+      "name": "XPosition",
+      "description": (value) => {
+        return "" + Math.round(value[0] / value[1]);
+      }
+    },
+    287: {
+      "name": "YPosition",
+      "description": (value) => {
+        return "" + Math.round(value[0] / value[1]);
+      }
+    },
+    290: {
+      name: "GrayResponseUnit",
+      description: (value) => ({
+        1: "0.1",
+        2: "0.001",
+        3: "0.0001",
+        4: "1e-05",
+        5: "1e-06"
+      })[value] || "Unknown"
+    },
+    296: {
+      name: "ResolutionUnit",
+      description: tag_names_common_default.ResolutionUnit
+    },
+    297: "PageNumber",
+    301: "TransferFunction",
+    305: "Software",
+    306: "DateTime",
+    315: "Artist",
+    316: "HostComputer",
+    317: "Predictor",
+    318: {
+      "name": "WhitePoint",
+      "description": (values3) => {
+        return values3.map((value) => `${value[0]}/${value[1]}`).join(", ");
+      }
+    },
+    319: {
+      "name": "PrimaryChromaticities",
+      "description": (values3) => {
+        return values3.map((value) => `${value[0]}/${value[1]}`).join(", ");
+      }
+    },
+    321: "HalftoneHints",
+    322: "TileWidth",
+    323: "TileLength",
+    330: "A100DataOffset",
+    332: {
+      name: "InkSet",
+      description: (value) => ({
+        1: "CMYK",
+        2: "Not CMYK"
+      })[value] || "Unknown"
+    },
+    337: "TargetPrinter",
+    338: {
+      name: "ExtraSamples",
+      description: (value) => ({
+        0: "Unspecified",
+        1: "Associated Alpha",
+        2: "Unassociated Alpha"
+      })[value] || "Unknown"
+    },
+    339: {
+      name: "SampleFormat",
+      description: (value) => {
+        const formats = {
+          1: "Unsigned",
+          2: "Signed",
+          3: "Float",
+          4: "Undefined",
+          5: "Complex int",
+          6: "Complex float"
+        };
+        if (!Array.isArray(value)) {
+          return "Unknown";
+        }
+        return value.map((sample) => formats[sample] || "Unknown").join(", ");
+      }
+    },
+    513: "JPEGInterchangeFormat",
+    514: "JPEGInterchangeFormatLength",
+    529: {
+      "name": "YCbCrCoefficients",
+      "description": (values3) => {
+        return values3.map((value) => "" + value[0] / value[1]).join("/");
+      }
+    },
+    530: "YCbCrSubSampling",
+    531: {
+      name: "YCbCrPositioning",
+      description: (value) => {
+        if (value === 1) {
+          return "centered";
+        }
+        if (value === 2) {
+          return "co-sited";
+        }
+        return "undefined " + value;
+      }
+    },
+    532: {
+      "name": "ReferenceBlackWhite",
+      "description": (values3) => {
+        return values3.map((value) => "" + value[0] / value[1]).join(", ");
+      }
+    },
+    700: "ApplicationNotes",
+    18246: "Rating",
+    18249: "RatingPercent",
+    33432: {
+      name: "Copyright",
+      description: (value) => value.join("; ")
+    },
+    33550: "PixelScale",
+    33723: "IPTC-NAA",
+    33920: "IntergraphMatrix",
+    33922: "ModelTiePoint",
+    34118: "SEMInfo",
+    34264: "ModelTransform",
+    34377: "PhotoshopSettings",
+    34665: "Exif IFD Pointer",
+    34675: "ICC_Profile",
+    34735: "GeoTiffDirectory",
+    34736: "GeoTiffDoubleParams",
+    34737: "GeoTiffAsciiParams",
+    34853: "GPS Info IFD Pointer",
+    40091: "XPTitle",
+    40092: "XPComment",
+    40093: "XPAuthor",
+    40094: "XPKeywords",
+    40095: "XPSubject",
+    42112: "GDALMetadata",
+    42113: "GDALNoData",
+    50341: "PrintIM",
+    50707: "DNGBackwardVersion",
+    50708: "UniqueCameraModel",
+    50709: "LocalizedCameraModel",
+    50721: "ColorMatrix1",
+    50722: "ColorMatrix2",
+    50723: "CameraCalibration1",
+    50724: "CameraCalibration2",
+    50725: "ReductionMatrix1",
+    50726: "ReductionMatrix2",
+    50727: "AnalogBalance",
+    50728: "AsShotNeutral",
+    50729: "AsShotWhiteXY",
+    50730: "BaselineExposure",
+    50731: "BaselineNoise",
+    50732: "BaselineSharpness",
+    50734: "LinearResponseLimit",
+    50735: "CameraSerialNumber",
+    50736: "DNGLensInfo",
+    50739: "ShadowScale",
+    50741: {
+      name: "MakerNoteSafety",
+      description: (value) => ({
+        0: "Unsafe",
+        1: "Safe"
+      })[value] || "Unknown"
+    },
+    50778: {
+      name: "CalibrationIlluminant1",
+      description: tag_names_common_default["LightSource"]
+    },
+    50779: {
+      name: "CalibrationIlluminant2",
+      description: tag_names_common_default["LightSource"]
+    },
+    50781: "RawDataUniqueID",
+    50827: "OriginalRawFileName",
+    50828: "OriginalRawFileData",
+    50831: "AsShotICCProfile",
+    50832: "AsShotPreProfileMatrix",
+    50833: "CurrentICCProfile",
+    50834: "CurrentPreProfileMatrix",
+    50879: "ColorimetricReference",
+    50885: "SRawType",
+    50898: "PanasonicTitle",
+    50899: "PanasonicTitle2",
+    50931: "CameraCalibrationSig",
+    50932: "ProfileCalibrationSig",
+    50933: "ProfileIFD",
+    50934: "AsShotProfileName",
+    50936: "ProfileName",
+    50937: "ProfileHueSatMapDims",
+    50938: "ProfileHueSatMapData1",
+    50939: "ProfileHueSatMapData2",
+    50940: "ProfileToneCurve",
+    50941: {
+      name: "ProfileEmbedPolicy",
+      description: (value) => ({
+        0: "Allow Copying",
+        1: "Embed if Used",
+        2: "Never Embed",
+        3: "No Restrictions"
+      })[value] || "Unknown"
+    },
+    50942: "ProfileCopyright",
+    50964: "ForwardMatrix1",
+    50965: "ForwardMatrix2",
+    50966: "PreviewApplicationName",
+    50967: "PreviewApplicationVersion",
+    50968: "PreviewSettingsName",
+    50969: "PreviewSettingsDigest",
+    50970: {
+      name: "PreviewColorSpace",
+      description: (value) => ({
+        1: "Gray Gamma 2.2",
+        2: "sRGB",
+        3: "Adobe RGB",
+        4: "ProPhoto RGB"
+      })[value] || "Unknown"
+    },
+    50971: "PreviewDateTime",
+    50972: "RawImageDigest",
+    50973: "OriginalRawFileDigest",
+    50981: "ProfileLookTableDims",
+    50982: "ProfileLookTableData",
+    51043: "TimeCodes",
+    51044: "FrameRate",
+    51058: "TStop",
+    51081: "ReelName",
+    51089: "OriginalDefaultFinalSize",
+    51090: "OriginalBestQualitySize",
+    51091: "OriginalDefaultCropSize",
+    51105: "CameraLabel",
+    51107: {
+      name: "ProfileHueSatMapEncoding",
+      description: (value) => ({
+        0: "Linear",
+        1: "sRGB"
+      })[value] || "Unknown"
+    },
+    51108: {
+      name: "ProfileLookTableEncoding",
+      description: (value) => ({
+        0: "Linear",
+        1: "sRGB"
+      })[value] || "Unknown"
+    },
+    51109: "BaselineExposureOffset",
+    51110: {
+      name: "DefaultBlackRender",
+      description: (value) => ({
+        0: "Auto",
+        1: "None"
+      })[value] || "Unknown"
+    },
+    51111: "NewRawImageDigest",
+    51112: "RawToPreviewGain"
+  };
+
+  // node_modules/exifreader/src/tag-names-exif-ifd.js
+  var tag_names_exif_ifd_default = {
+    33434: {
+      "name": "ExposureTime",
+      "description": tag_names_common_default.ExposureTime
+    },
+    33437: {
+      "name": "FNumber",
+      "description": tag_names_common_default.FNumber
+    },
+    34850: {
+      "name": "ExposureProgram",
+      "description": tag_names_common_default.ExposureProgram
+    },
+    34852: "SpectralSensitivity",
+    34855: "ISOSpeedRatings",
+    34856: {
+      "name": "OECF",
+      "description": () => "[Raw OECF table data]"
+    },
+    34858: "TimeZoneOffset",
+    34859: "SelfTimerMode",
+    34864: {
+      name: "SensitivityType",
+      description: (value) => ({
+        1: "Standard Output Sensitivity",
+        2: "Recommended Exposure Index",
+        3: "ISO Speed",
+        4: "Standard Output Sensitivity and Recommended Exposure Index",
+        5: "Standard Output Sensitivity and ISO Speed",
+        6: "Recommended Exposure Index and ISO Speed",
+        7: "Standard Output Sensitivity, Recommended Exposure Index and ISO Speed"
+      })[value] || "Unknown"
+    },
+    34865: "StandardOutputSensitivity",
+    34866: "RecommendedExposureIndex",
+    34867: "ISOSpeed",
+    34868: "ISOSpeedLatitudeyyy",
+    34869: "ISOSpeedLatitudezzz",
+    36864: {
+      "name": "ExifVersion",
+      "description": (value) => getStringValue(value)
+    },
+    36867: "DateTimeOriginal",
+    36868: "DateTimeDigitized",
+    36873: "GooglePlusUploadCode",
+    36880: "OffsetTime",
+    36881: "OffsetTimeOriginal",
+    36882: "OffsetTimeDigitized",
+    37121: {
+      "name": "ComponentsConfiguration",
+      "description": tag_names_common_default.ComponentsConfiguration
+    },
+    37122: "CompressedBitsPerPixel",
+    37377: {
+      "name": "ShutterSpeedValue",
+      "description": tag_names_common_default.ShutterSpeedValue
+    },
+    37378: {
+      "name": "ApertureValue",
+      "description": tag_names_common_default.ApertureValue
+    },
+    37379: "BrightnessValue",
+    37380: "ExposureBiasValue",
+    37381: {
+      "name": "MaxApertureValue",
+      "description": (value) => {
+        return Math.pow(Math.sqrt(2), value[0] / value[1]).toFixed(2);
+      }
+    },
+    37382: {
+      "name": "SubjectDistance",
+      "description": (value) => value[0] / value[1] + " m"
+    },
+    37383: {
+      "name": "MeteringMode",
+      "description": tag_names_common_default.MeteringMode
+    },
+    37384: {
+      "name": "LightSource",
+      description: tag_names_common_default.LightSource
+    },
+    37385: {
+      "name": "Flash",
+      "description": (value) => {
+        if (value === 0) {
+          return "Flash did not fire";
+        } else if (value === 1) {
+          return "Flash fired";
+        } else if (value === 5) {
+          return "Strobe return light not detected";
+        } else if (value === 7) {
+          return "Strobe return light detected";
+        } else if (value === 9) {
+          return "Flash fired, compulsory flash mode";
+        } else if (value === 13) {
+          return "Flash fired, compulsory flash mode, return light not detected";
+        } else if (value === 15) {
+          return "Flash fired, compulsory flash mode, return light detected";
+        } else if (value === 16) {
+          return "Flash did not fire, compulsory flash mode";
+        } else if (value === 24) {
+          return "Flash did not fire, auto mode";
+        } else if (value === 25) {
+          return "Flash fired, auto mode";
+        } else if (value === 29) {
+          return "Flash fired, auto mode, return light not detected";
+        } else if (value === 31) {
+          return "Flash fired, auto mode, return light detected";
+        } else if (value === 32) {
+          return "No flash function";
+        } else if (value === 65) {
+          return "Flash fired, red-eye reduction mode";
+        } else if (value === 69) {
+          return "Flash fired, red-eye reduction mode, return light not detected";
+        } else if (value === 71) {
+          return "Flash fired, red-eye reduction mode, return light detected";
+        } else if (value === 73) {
+          return "Flash fired, compulsory flash mode, red-eye reduction mode";
+        } else if (value === 77) {
+          return "Flash fired, compulsory flash mode, red-eye reduction mode, return light not detected";
+        } else if (value === 79) {
+          return "Flash fired, compulsory flash mode, red-eye reduction mode, return light detected";
+        } else if (value === 89) {
+          return "Flash fired, auto mode, red-eye reduction mode";
+        } else if (value === 93) {
+          return "Flash fired, auto mode, return light not detected, red-eye reduction mode";
+        } else if (value === 95) {
+          return "Flash fired, auto mode, return light detected, red-eye reduction mode";
+        }
+        return "Unknown";
+      }
+    },
+    37386: {
+      "name": "FocalLength",
+      "description": tag_names_common_default.FocalLength
+    },
+    37393: "ImageNumber",
+    37394: {
+      name: "SecurityClassification",
+      description: (value) => ({
+        "C": "Confidential",
+        "R": "Restricted",
+        "S": "Secret",
+        "T": "Top Secret",
+        "U": "Unclassified"
+      })[value] || "Unknown"
+    },
+    37395: "ImageHistory",
+    37396: {
+      "name": "SubjectArea",
+      "description": (value) => {
+        if (value.length === 2) {
+          return `Location; X: ${value[0]}, Y: ${value[1]}`;
+        } else if (value.length === 3) {
+          return `Circle; X: ${value[0]}, Y: ${value[1]}, diameter: ${value[2]}`;
+        } else if (value.length === 4) {
+          return `Rectangle; X: ${value[0]}, Y: ${value[1]}, width: ${value[2]}, height: ${value[3]}`;
+        }
+        return "Unknown";
+      }
+    },
+    37500: {
+      "name": "MakerNote",
+      "description": () => "[Raw maker note data]"
+    },
+    37510: {
+      "name": "UserComment",
+      "description": getEncodedString
+    },
+    37520: "SubSecTime",
+    37521: "SubSecTimeOriginal",
+    37522: "SubSecTimeDigitized",
+    37888: {
+      "name": "AmbientTemperature",
+      "description": (value) => value[0] / value[1] + " \xB0C"
+    },
+    37889: {
+      "name": "Humidity",
+      "description": (value) => value[0] / value[1] + " %"
+    },
+    37890: {
+      "name": "Pressure",
+      "description": (value) => value[0] / value[1] + " hPa"
+    },
+    37891: {
+      "name": "WaterDepth",
+      "description": (value) => value[0] / value[1] + " m"
+    },
+    37892: {
+      "name": "Acceleration",
+      "description": (value) => value[0] / value[1] + " mGal"
+    },
+    37893: {
+      "name": "CameraElevationAngle",
+      "description": (value) => value[0] / value[1] + " \xB0"
+    },
+    40960: {
+      "name": "FlashpixVersion",
+      "description": (value) => value.map((charCode) => String.fromCharCode(charCode)).join("")
+    },
+    40961: {
+      "name": "ColorSpace",
+      "description": tag_names_common_default.ColorSpace
+    },
+    40962: "PixelXDimension",
+    40963: "PixelYDimension",
+    40964: "RelatedSoundFile",
+    40965: "Interoperability IFD Pointer",
+    41483: "FlashEnergy",
+    41484: {
+      "name": "SpatialFrequencyResponse",
+      "description": () => "[Raw SFR table data]"
+    },
+    41486: "FocalPlaneXResolution",
+    41487: "FocalPlaneYResolution",
+    41488: {
+      "name": "FocalPlaneResolutionUnit",
+      "description": tag_names_common_default.FocalPlaneResolutionUnit
+    },
+    41492: {
+      "name": "SubjectLocation",
+      "description": ([x, y2]) => `X: ${x}, Y: ${y2}`
+    },
+    41493: "ExposureIndex",
+    41495: {
+      "name": "SensingMethod",
+      "description": (value) => {
+        if (value === 1) {
+          return "Undefined";
+        } else if (value === 2) {
+          return "One-chip color area sensor";
+        } else if (value === 3) {
+          return "Two-chip color area sensor";
+        } else if (value === 4) {
+          return "Three-chip color area sensor";
+        } else if (value === 5) {
+          return "Color sequential area sensor";
+        } else if (value === 7) {
+          return "Trilinear sensor";
+        } else if (value === 8) {
+          return "Color sequential linear sensor";
+        }
+        return "Unknown";
+      }
+    },
+    41728: {
+      "name": "FileSource",
+      "description": (value) => {
+        if (value === 3) {
+          return "DSC";
+        }
+        return "Unknown";
+      }
+    },
+    41729: {
+      "name": "SceneType",
+      "description": (value) => {
+        if (value === 1) {
+          return "A directly photographed image";
+        }
+        return "Unknown";
+      }
+    },
+    41730: {
+      "name": "CFAPattern",
+      "description": () => "[Raw CFA pattern table data]"
+    },
+    41985: {
+      "name": "CustomRendered",
+      "description": tag_names_common_default.CustomRendered
+    },
+    41986: {
+      "name": "ExposureMode",
+      "description": tag_names_common_default.ExposureMode
+    },
+    41987: {
+      "name": "WhiteBalance",
+      "description": tag_names_common_default.WhiteBalance
+    },
+    41988: {
+      "name": "DigitalZoomRatio",
+      "description": (value) => {
+        if (value[0] === 0) {
+          return "Digital zoom was not used";
+        }
+        return "" + value[0] / value[1];
+      }
+    },
+    41989: {
+      "name": "FocalLengthIn35mmFilm",
+      "description": (value) => {
+        if (value === 0) {
+          return "Unknown";
+        }
+        return value;
+      }
+    },
+    41990: {
+      "name": "SceneCaptureType",
+      "description": tag_names_common_default.SceneCaptureType
+    },
+    41991: {
+      "name": "GainControl",
+      "description": (value) => {
+        if (value === 0) {
+          return "None";
+        } else if (value === 1) {
+          return "Low gain up";
+        } else if (value === 2) {
+          return "High gain up";
+        } else if (value === 3) {
+          return "Low gain down";
+        } else if (value === 4) {
+          return "High gain down";
+        }
+        return "Unknown";
+      }
+    },
+    41992: {
+      "name": "Contrast",
+      "description": tag_names_common_default.Contrast
+    },
+    41993: {
+      "name": "Saturation",
+      "description": tag_names_common_default.Saturation
+    },
+    41994: {
+      "name": "Sharpness",
+      "description": tag_names_common_default.Sharpness
+    },
+    41995: {
+      "name": "DeviceSettingDescription",
+      "description": () => "[Raw device settings table data]"
+    },
+    41996: {
+      "name": "SubjectDistanceRange",
+      "description": (value) => {
+        if (value === 1) {
+          return "Macro";
+        } else if (value === 2) {
+          return "Close view";
+        } else if (value === 3) {
+          return "Distant view";
+        }
+        return "Unknown";
+      }
+    },
+    42016: "ImageUniqueID",
+    42032: "CameraOwnerName",
+    42033: "BodySerialNumber",
+    42034: {
+      "name": "LensSpecification",
+      "description": (value) => {
+        const focalLengths = `${value[0][0] / value[0][1]}-${value[1][0] / value[1][1]} mm`;
+        if (value[3][1] === 0) {
+          return `${focalLengths} f/?`;
+        }
+        return `${focalLengths} f/${1 / (value[2][1] / value[2][1] / (value[3][0] / value[3][1]))}`;
+      }
+    },
+    42035: "LensMake",
+    42036: "LensModel",
+    42037: "LensSerialNumber",
+    42080: {
+      name: "CompositeImage",
+      description: (value) => ({
+        1: "Not a Composite Image",
+        2: "General Composite Image",
+        3: "Composite Image Captured While Shooting"
+      })[value] || "Unknown"
+    },
+    42081: "SourceImageNumberOfCompositeImage",
+    42082: "SourceExposureTimesOfCompositeImage",
+    42240: "Gamma",
+    59932: "Padding",
+    59933: "OffsetSchema",
+    65e3: "OwnerName",
+    65001: "SerialNumber",
+    65002: "Lens",
+    65100: "RawFile",
+    65101: "Converter",
+    65102: "WhiteBalance",
+    65105: "Exposure",
+    65106: "Shadows",
+    65107: "Brightness",
+    65108: "Contrast",
+    65109: "Saturation",
+    65110: "Sharpness",
+    65111: "Smoothness",
+    65112: "MoireFilter"
+  };
+
+  // node_modules/exifreader/src/tag-names-gps-ifd.js
+  var tag_names_gps_ifd_default = {
+    0: {
+      "name": "GPSVersionID",
+      "description": (value) => {
+        if (value[0] === 2 && value[1] === 2 && value[2] === 0 && value[3] === 0) {
+          return "Version 2.2";
+        }
+        return "Unknown";
+      }
+    },
+    1: {
+      "name": "GPSLatitudeRef",
+      "description": (value) => {
+        const ref = value.join("");
+        if (ref === "N") {
+          return "North latitude";
+        } else if (ref === "S") {
+          return "South latitude";
+        }
+        return "Unknown";
+      }
+    },
+    2: {
+      "name": "GPSLatitude",
+      "description": getCalculatedGpsValue
+    },
+    3: {
+      "name": "GPSLongitudeRef",
+      "description": (value) => {
+        const ref = value.join("");
+        if (ref === "E") {
+          return "East longitude";
+        } else if (ref === "W") {
+          return "West longitude";
+        }
+        return "Unknown";
+      }
+    },
+    4: {
+      "name": "GPSLongitude",
+      "description": getCalculatedGpsValue
+    },
+    5: {
+      "name": "GPSAltitudeRef",
+      "description": (value) => {
+        if (value === 0) {
+          return "Sea level";
+        } else if (value === 1) {
+          return "Sea level reference (negative value)";
+        }
+        return "Unknown";
+      }
+    },
+    6: {
+      "name": "GPSAltitude",
+      "description": (value) => {
+        return value[0] / value[1] + " m";
+      }
+    },
+    7: {
+      "name": "GPSTimeStamp",
+      "description": (values3) => {
+        return values3.map(([numerator, denominator]) => {
+          const num = numerator / denominator;
+          if (/^\d(\.|$)/.test(`${num}`)) {
+            return `0${num}`;
+          }
+          return num;
+        }).join(":");
+      }
+    },
+    8: "GPSSatellites",
+    9: {
+      "name": "GPSStatus",
+      "description": (value) => {
+        const status = value.join("");
+        if (status === "A") {
+          return "Measurement in progress";
+        } else if (status === "V") {
+          return "Measurement Interoperability";
+        }
+        return "Unknown";
+      }
+    },
+    10: {
+      "name": "GPSMeasureMode",
+      "description": (value) => {
+        const mode = value.join("");
+        if (mode === "2") {
+          return "2-dimensional measurement";
+        } else if (mode === "3") {
+          return "3-dimensional measurement";
+        }
+        return "Unknown";
+      }
+    },
+    11: "GPSDOP",
+    12: {
+      "name": "GPSSpeedRef",
+      "description": (value) => {
+        const ref = value.join("");
+        if (ref === "K") {
+          return "Kilometers per hour";
+        } else if (ref === "M") {
+          return "Miles per hour";
+        } else if (ref === "N") {
+          return "Knots";
+        }
+        return "Unknown";
+      }
+    },
+    13: "GPSSpeed",
+    14: {
+      "name": "GPSTrackRef",
+      "description": (value) => {
+        const ref = value.join("");
+        if (ref === "T") {
+          return "True direction";
+        } else if (ref === "M") {
+          return "Magnetic direction";
+        }
+        return "Unknown";
+      }
+    },
+    15: "GPSTrack",
+    16: {
+      "name": "GPSImgDirectionRef",
+      "description": (value) => {
+        const ref = value.join("");
+        if (ref === "T") {
+          return "True direction";
+        } else if (ref === "M") {
+          return "Magnetic direction";
+        }
+        return "Unknown";
+      }
+    },
+    17: "GPSImgDirection",
+    18: "GPSMapDatum",
+    19: {
+      "name": "GPSDestLatitudeRef",
+      "description": (value) => {
+        const ref = value.join("");
+        if (ref === "N") {
+          return "North latitude";
+        } else if (ref === "S") {
+          return "South latitude";
+        }
+        return "Unknown";
+      }
+    },
+    20: {
+      "name": "GPSDestLatitude",
+      "description": (value) => {
+        return value[0][0] / value[0][1] + value[1][0] / value[1][1] / 60 + value[2][0] / value[2][1] / 3600;
+      }
+    },
+    21: {
+      "name": "GPSDestLongitudeRef",
+      "description": (value) => {
+        const ref = value.join("");
+        if (ref === "E") {
+          return "East longitude";
+        } else if (ref === "W") {
+          return "West longitude";
+        }
+        return "Unknown";
+      }
+    },
+    22: {
+      "name": "GPSDestLongitude",
+      "description": (value) => {
+        return value[0][0] / value[0][1] + value[1][0] / value[1][1] / 60 + value[2][0] / value[2][1] / 3600;
+      }
+    },
+    23: {
+      "name": "GPSDestBearingRef",
+      "description": (value) => {
+        const ref = value.join("");
+        if (ref === "T") {
+          return "True direction";
+        } else if (ref === "M") {
+          return "Magnetic direction";
+        }
+        return "Unknown";
+      }
+    },
+    24: "GPSDestBearing",
+    25: {
+      "name": "GPSDestDistanceRef",
+      "description": (value) => {
+        const ref = value.join("");
+        if (ref === "K") {
+          return "Kilometers";
+        } else if (ref === "M") {
+          return "Miles";
+        } else if (ref === "N") {
+          return "Knots";
+        }
+        return "Unknown";
+      }
+    },
+    26: "GPSDestDistance",
+    27: {
+      "name": "GPSProcessingMethod",
+      "description": getEncodedString
+    },
+    28: {
+      "name": "GPSAreaInformation",
+      "description": getEncodedString
+    },
+    29: "GPSDateStamp",
+    30: {
+      "name": "GPSDifferential",
+      "description": (value) => {
+        if (value === 0) {
+          return "Measurement without differential correction";
+        } else if (value === 1) {
+          return "Differential correction applied";
+        }
+        return "Unknown";
+      }
+    },
+    31: "GPSHPositioningError"
+  };
+
+  // node_modules/exifreader/src/tag-names-interoperability-ifd.js
+  var tag_names_interoperability_ifd_default = {
+    1: "InteroperabilityIndex",
+    2: {
+      name: "InteroperabilityVersion",
+      description: (value) => getStringValue(value)
+    },
+    4096: "RelatedImageFileFormat",
+    4097: "RelatedImageWidth",
+    4098: "RelatedImageHeight"
+  };
+
+  // node_modules/exifreader/src/tag-names-mpf-ifd.js
+  var tag_names_mpf_ifd_default = {
+    45056: {
+      "name": "MPFVersion",
+      "description": (value) => getStringValue(value)
+    },
+    45057: "NumberOfImages",
+    45058: "MPEntry",
+    45059: "ImageUIDList",
+    45060: "TotalFrames"
+  };
+
+  // node_modules/exifreader/src/tag-names.js
+  var tagNames0thExifIfds = objectAssign({}, tag_names_0th_ifd_default, tag_names_exif_ifd_default);
+  var tag_names_default = {
+    "0th": tagNames0thExifIfds,
+    "exif": tagNames0thExifIfds,
+    "gps": tag_names_gps_ifd_default,
+    "interoperability": tag_names_interoperability_ifd_default,
+    "mpf": constants_default.USE_MPF ? tag_names_mpf_ifd_default : {}
+  };
+
+  // node_modules/exifreader/src/tags.js
+  var EXIF_IFD_POINTER_KEY = "Exif IFD Pointer";
+  var GPS_INFO_IFD_POINTER_KEY = "GPS Info IFD Pointer";
+  var INTEROPERABILITY_IFD_POINTER_KEY = "Interoperability IFD Pointer";
+  var getTagValueAt = {
+    1: types_default.getByteAt,
+    2: types_default.getAsciiAt,
+    3: types_default.getShortAt,
+    4: types_default.getLongAt,
+    5: types_default.getRationalAt,
+    7: types_default.getUndefinedAt,
+    9: types_default.getSlongAt,
+    10: types_default.getSrationalAt,
+    13: types_default.getIfdPointerAt
+  };
+  var tags_default = {
+    read: read3,
+    readMpf
+  };
+  function read3(dataView, tiffHeaderOffset, includeUnknown) {
+    const byteOrder = byte_order_default.getByteOrder(dataView, tiffHeaderOffset);
+    let tags2 = read0thIfd(dataView, tiffHeaderOffset, byteOrder, includeUnknown);
+    tags2 = readExifIfd(tags2, dataView, tiffHeaderOffset, byteOrder, includeUnknown);
+    tags2 = readGpsIfd(tags2, dataView, tiffHeaderOffset, byteOrder, includeUnknown);
+    tags2 = readInteroperabilityIfd(tags2, dataView, tiffHeaderOffset, byteOrder, includeUnknown);
+    return tags2;
+  }
+  __name(read3, "read");
+  function read0thIfd(dataView, tiffHeaderOffset, byteOrder, includeUnknown) {
+    return readIfd(dataView, "0th", tiffHeaderOffset, get0thIfdOffset(dataView, tiffHeaderOffset, byteOrder), byteOrder, includeUnknown);
+  }
+  __name(read0thIfd, "read0thIfd");
+  function get0thIfdOffset(dataView, tiffHeaderOffset, byteOrder) {
+    return tiffHeaderOffset + types_default.getLongAt(dataView, tiffHeaderOffset + 4, byteOrder);
+  }
+  __name(get0thIfdOffset, "get0thIfdOffset");
+  function readExifIfd(tags2, dataView, tiffHeaderOffset, byteOrder, includeUnknown) {
+    if (tags2[EXIF_IFD_POINTER_KEY] !== void 0) {
+      return objectAssign(tags2, readIfd(dataView, "exif", tiffHeaderOffset, tiffHeaderOffset + tags2[EXIF_IFD_POINTER_KEY].value, byteOrder, includeUnknown));
+    }
+    return tags2;
+  }
+  __name(readExifIfd, "readExifIfd");
+  function readGpsIfd(tags2, dataView, tiffHeaderOffset, byteOrder, includeUnknown) {
+    if (tags2[GPS_INFO_IFD_POINTER_KEY] !== void 0) {
+      return objectAssign(tags2, readIfd(dataView, "gps", tiffHeaderOffset, tiffHeaderOffset + tags2[GPS_INFO_IFD_POINTER_KEY].value, byteOrder, includeUnknown));
+    }
+    return tags2;
+  }
+  __name(readGpsIfd, "readGpsIfd");
+  function readInteroperabilityIfd(tags2, dataView, tiffHeaderOffset, byteOrder, includeUnknown) {
+    if (tags2[INTEROPERABILITY_IFD_POINTER_KEY] !== void 0) {
+      return objectAssign(tags2, readIfd(dataView, "interoperability", tiffHeaderOffset, tiffHeaderOffset + tags2[INTEROPERABILITY_IFD_POINTER_KEY].value, byteOrder, includeUnknown));
+    }
+    return tags2;
+  }
+  __name(readInteroperabilityIfd, "readInteroperabilityIfd");
+  function readMpf(dataView, dataOffset, includeUnknown) {
+    const byteOrder = byte_order_default.getByteOrder(dataView, dataOffset);
+    const tags2 = readIfd(dataView, "mpf", dataOffset, get0thIfdOffset(dataView, dataOffset, byteOrder), byteOrder, includeUnknown);
+    return addMpfImages(dataView, dataOffset, tags2, byteOrder);
+  }
+  __name(readMpf, "readMpf");
+  function addMpfImages(dataView, dataOffset, tags2, byteOrder) {
+    const ENTRY_SIZE = 16;
+    if (!tags2["MPEntry"]) {
+      return tags2;
+    }
+    const images = [];
+    for (let i = 0; i < Math.ceil(tags2["MPEntry"].value.length / ENTRY_SIZE); i++) {
+      images[i] = {};
+      const attributes = getImageNumberValue(tags2["MPEntry"].value, i * ENTRY_SIZE, types_default.getTypeSize("LONG"), byteOrder);
+      images[i]["ImageFlags"] = getImageFlags(attributes);
+      images[i]["ImageFormat"] = getImageFormat(attributes);
+      images[i]["ImageType"] = getImageType(attributes);
+      const imageSize = getImageNumberValue(tags2["MPEntry"].value, i * ENTRY_SIZE + 4, types_default.getTypeSize("LONG"), byteOrder);
+      images[i]["ImageSize"] = {
+        value: imageSize,
+        description: "" + imageSize
+      };
+      const imageOffset = isFirstIndividualImage(i) ? 0 : getImageNumberValue(tags2["MPEntry"].value, i * ENTRY_SIZE + 8, types_default.getTypeSize("LONG"), byteOrder) + dataOffset;
+      images[i]["ImageOffset"] = {
+        value: imageOffset,
+        description: "" + imageOffset
+      };
+      const dependentImage1EntryNumber = getImageNumberValue(tags2["MPEntry"].value, i * ENTRY_SIZE + 12, types_default.getTypeSize("SHORT"), byteOrder);
+      images[i]["DependentImage1EntryNumber"] = {
+        value: dependentImage1EntryNumber,
+        description: "" + dependentImage1EntryNumber
+      };
+      const dependentImage2EntryNumber = getImageNumberValue(tags2["MPEntry"].value, i * ENTRY_SIZE + 14, types_default.getTypeSize("SHORT"), byteOrder);
+      images[i]["DependentImage2EntryNumber"] = {
+        value: dependentImage2EntryNumber,
+        description: "" + dependentImage2EntryNumber
+      };
+      images[i].image = dataView.buffer.slice(imageOffset, imageOffset + imageSize);
+      deferInit(images[i], "base64", function() {
+        return getBase64Image(this.image);
+      });
+    }
+    tags2["Images"] = images;
+    return tags2;
+  }
+  __name(addMpfImages, "addMpfImages");
+  function getImageNumberValue(entries, offset2, size, byteOrder) {
+    if (byteOrder === byte_order_default.LITTLE_ENDIAN) {
+      let value2 = 0;
+      for (let i = 0; i < size; i++) {
+        value2 += entries[offset2 + i] << 8 * i;
+      }
+      return value2;
+    }
+    let value = 0;
+    for (let i = 0; i < size; i++) {
+      value += entries[offset2 + i] << 8 * (size - 1 - i);
+    }
+    return value;
+  }
+  __name(getImageNumberValue, "getImageNumberValue");
+  function getImageFlags(attributes) {
+    const flags = [
+      attributes >> 31 & 1,
+      attributes >> 30 & 1,
+      attributes >> 29 & 1
+    ];
+    const flagsDescription = [];
+    if (flags[0]) {
+      flagsDescription.push("Dependent Parent Image");
+    }
+    if (flags[1]) {
+      flagsDescription.push("Dependent Child Image");
+    }
+    if (flags[2]) {
+      flagsDescription.push("Representative Image");
+    }
+    return {
+      value: flags,
+      description: flagsDescription.join(", ") || "None"
+    };
+  }
+  __name(getImageFlags, "getImageFlags");
+  function getImageFormat(attributes) {
+    const imageFormat = attributes >> 24 & 7;
+    return {
+      value: imageFormat,
+      description: imageFormat === 0 ? "JPEG" : "Unknown"
+    };
+  }
+  __name(getImageFormat, "getImageFormat");
+  function getImageType(attributes) {
+    const type = attributes & 16777215;
+    const descriptions = {
+      196608: "Baseline MP Primary Image",
+      65537: "Large Thumbnail (VGA equivalent)",
+      65538: "Large Thumbnail (Full HD equivalent)",
+      131073: "Multi-Frame Image (Panorama)",
+      131074: "Multi-Frame Image (Disparity)",
+      131075: "Multi-Frame Image (Multi-Angle)",
+      0: "Undefined"
+    };
+    return {
+      value: type,
+      description: descriptions[type] || "Unknown"
+    };
+  }
+  __name(getImageType, "getImageType");
+  function isFirstIndividualImage(i) {
+    return i === 0;
+  }
+  __name(isFirstIndividualImage, "isFirstIndividualImage");
+  function readIfd(dataView, ifdType, tiffHeaderOffset, offset2, byteOrder, includeUnknown) {
+    const FIELD_COUNT_SIZE = types_default.getTypeSize("SHORT");
+    const FIELD_SIZE = 12;
+    const tags2 = {};
+    const numberOfFields = getNumberOfFields(dataView, offset2, byteOrder);
+    offset2 += FIELD_COUNT_SIZE;
+    for (let fieldIndex = 0; fieldIndex < numberOfFields; fieldIndex++) {
+      if (offset2 + FIELD_SIZE > dataView.byteLength) {
+        break;
+      }
+      const tag = readTag(dataView, ifdType, tiffHeaderOffset, offset2, byteOrder, includeUnknown);
+      if (tag !== void 0) {
+        tags2[tag.name] = {
+          "id": tag.id,
+          "value": tag.value,
+          "description": tag.description
+        };
+      }
+      offset2 += FIELD_SIZE;
+    }
+    if (constants_default.USE_THUMBNAIL && offset2 < dataView.byteLength - types_default.getTypeSize("LONG")) {
+      const nextIfdOffset = types_default.getLongAt(dataView, offset2, byteOrder);
+      if (nextIfdOffset !== 0) {
+        tags2["Thumbnail"] = readIfd(dataView, ifdType, tiffHeaderOffset, tiffHeaderOffset + nextIfdOffset, byteOrder, true);
+      }
+    }
+    return tags2;
+  }
+  __name(readIfd, "readIfd");
+  function getNumberOfFields(dataView, offset2, byteOrder) {
+    if (offset2 + types_default.getTypeSize("SHORT") <= dataView.byteLength) {
+      return types_default.getShortAt(dataView, offset2, byteOrder);
+    }
+    return 0;
+  }
+  __name(getNumberOfFields, "getNumberOfFields");
+  function readTag(dataView, ifdType, tiffHeaderOffset, offset2, byteOrder, includeUnknown) {
+    const TAG_CODE_IPTC_NAA = 33723;
+    const TAG_TYPE_OFFSET = types_default.getTypeSize("SHORT");
+    const TAG_COUNT_OFFSET = TAG_TYPE_OFFSET + types_default.getTypeSize("SHORT");
+    const TAG_VALUE_OFFSET = TAG_COUNT_OFFSET + types_default.getTypeSize("LONG");
+    const tagCode = types_default.getShortAt(dataView, offset2, byteOrder);
+    const tagType = types_default.getShortAt(dataView, offset2 + TAG_TYPE_OFFSET, byteOrder);
+    const tagCount = types_default.getLongAt(dataView, offset2 + TAG_COUNT_OFFSET, byteOrder);
+    let tagValue;
+    if (types_default.typeSizes[tagType] === void 0 || !includeUnknown && tag_names_default[ifdType][tagCode] === void 0) {
+      return void 0;
+    }
+    if (tagValueFitsInOffsetSlot(tagType, tagCount)) {
+      tagValue = getTagValue(dataView, offset2 + TAG_VALUE_OFFSET, tagType, tagCount, byteOrder);
+    } else {
+      const tagValueOffset = types_default.getLongAt(dataView, offset2 + TAG_VALUE_OFFSET, byteOrder);
+      if (tagValueFitsInDataView(dataView, tiffHeaderOffset, tagValueOffset, tagType, tagCount)) {
+        const forceByteType = tagCode === TAG_CODE_IPTC_NAA;
+        tagValue = getTagValue(dataView, tiffHeaderOffset + tagValueOffset, tagType, tagCount, byteOrder, forceByteType);
+      } else {
+        tagValue = "<faulty value>";
+      }
+    }
+    if (tagType === types_default.tagTypes["ASCII"]) {
+      tagValue = splitNullSeparatedAsciiString(tagValue);
+      tagValue = decodeAsciiValue(tagValue);
+    }
+    let tagName = `undefined-${tagCode}`;
+    let tagDescription = tagValue;
+    if (tag_names_default[ifdType][tagCode] !== void 0) {
+      if (tag_names_default[ifdType][tagCode]["name"] !== void 0 && tag_names_default[ifdType][tagCode]["description"] !== void 0) {
+        tagName = tag_names_default[ifdType][tagCode]["name"];
+        try {
+          tagDescription = tag_names_default[ifdType][tagCode]["description"](tagValue);
+        } catch (error2) {
+          tagDescription = getDescriptionFromTagValue(tagValue);
+        }
+      } else if (tagType === types_default.tagTypes["RATIONAL"] || tagType === types_default.tagTypes["SRATIONAL"]) {
+        tagName = tag_names_default[ifdType][tagCode];
+        tagDescription = "" + tagValue[0] / tagValue[1];
+      } else {
+        tagName = tag_names_default[ifdType][tagCode];
+        tagDescription = getDescriptionFromTagValue(tagValue);
+      }
+    }
+    return {
+      id: tagCode,
+      name: tagName,
+      value: tagValue,
+      description: tagDescription
+    };
+  }
+  __name(readTag, "readTag");
+  function tagValueFitsInOffsetSlot(tagType, tagCount) {
+    return types_default.typeSizes[tagType] * tagCount <= types_default.getTypeSize("LONG");
+  }
+  __name(tagValueFitsInOffsetSlot, "tagValueFitsInOffsetSlot");
+  function getTagValue(dataView, offset2, type, count, byteOrder, forceByteType = false) {
+    let value = [];
+    if (forceByteType) {
+      count = count * types_default.typeSizes[type];
+      type = types_default.tagTypes["BYTE"];
+    }
+    for (let valueIndex = 0; valueIndex < count; valueIndex++) {
+      value.push(getTagValueAt[type](dataView, offset2, byteOrder));
+      offset2 += types_default.typeSizes[type];
+    }
+    if (type === types_default.tagTypes["ASCII"]) {
+      value = types_default.getAsciiValue(value);
+    } else if (value.length === 1) {
+      value = value[0];
+    }
+    return value;
+  }
+  __name(getTagValue, "getTagValue");
+  function tagValueFitsInDataView(dataView, tiffHeaderOffset, tagValueOffset, tagType, tagCount) {
+    return tiffHeaderOffset + tagValueOffset + types_default.typeSizes[tagType] * tagCount <= dataView.byteLength;
+  }
+  __name(tagValueFitsInDataView, "tagValueFitsInDataView");
+  function splitNullSeparatedAsciiString(string) {
+    const tagValue = [];
+    let i = 0;
+    for (let j2 = 0; j2 < string.length; j2++) {
+      if (string[j2] === "\0") {
+        i++;
+        continue;
+      }
+      if (tagValue[i] === void 0) {
+        tagValue[i] = "";
+      }
+      tagValue[i] += string[j2];
+    }
+    return tagValue;
+  }
+  __name(splitNullSeparatedAsciiString, "splitNullSeparatedAsciiString");
+  function decodeAsciiValue(asciiValue) {
+    try {
+      return asciiValue.map((value) => decodeURIComponent(escape(value)));
+    } catch (error2) {
+      return asciiValue;
+    }
+  }
+  __name(decodeAsciiValue, "decodeAsciiValue");
+  function getDescriptionFromTagValue(tagValue) {
+    if (tagValue instanceof Array) {
+      return tagValue.join(", ");
+    }
+    return tagValue;
+  }
+  __name(getDescriptionFromTagValue, "getDescriptionFromTagValue");
+
+  // node_modules/exifreader/src/file-tags.js
+  var file_tags_default = {
+    read: read4
+  };
+  function read4(dataView, fileDataOffset) {
+    const length2 = getLength(dataView, fileDataOffset);
+    const numberOfColorComponents = getNumberOfColorComponents(dataView, fileDataOffset, length2);
+    return {
+      "Bits Per Sample": getDataPrecision(dataView, fileDataOffset, length2),
+      "Image Height": getImageHeight(dataView, fileDataOffset, length2),
+      "Image Width": getImageWidth(dataView, fileDataOffset, length2),
+      "Color Components": numberOfColorComponents,
+      "Subsampling": numberOfColorComponents && getSubsampling(dataView, fileDataOffset, numberOfColorComponents.value, length2)
+    };
+  }
+  __name(read4, "read");
+  function getLength(dataView, fileDataOffset) {
+    return types_default.getShortAt(dataView, fileDataOffset);
+  }
+  __name(getLength, "getLength");
+  function getDataPrecision(dataView, fileDataOffset, length2) {
+    const OFFSET = 2;
+    const SIZE2 = 1;
+    if (OFFSET + SIZE2 > length2) {
+      return void 0;
+    }
+    const value = types_default.getByteAt(dataView, fileDataOffset + OFFSET);
+    return {
+      value,
+      description: "" + value
+    };
+  }
+  __name(getDataPrecision, "getDataPrecision");
+  function getImageHeight(dataView, fileDataOffset, length2) {
+    const OFFSET = 3;
+    const SIZE2 = 2;
+    if (OFFSET + SIZE2 > length2) {
+      return void 0;
+    }
+    const value = types_default.getShortAt(dataView, fileDataOffset + OFFSET);
+    return {
+      value,
+      description: `${value}px`
+    };
+  }
+  __name(getImageHeight, "getImageHeight");
+  function getImageWidth(dataView, fileDataOffset, length2) {
+    const OFFSET = 5;
+    const SIZE2 = 2;
+    if (OFFSET + SIZE2 > length2) {
+      return void 0;
+    }
+    const value = types_default.getShortAt(dataView, fileDataOffset + OFFSET);
+    return {
+      value,
+      description: `${value}px`
+    };
+  }
+  __name(getImageWidth, "getImageWidth");
+  function getNumberOfColorComponents(dataView, fileDataOffset, length2) {
+    const OFFSET = 7;
+    const SIZE2 = 1;
+    if (OFFSET + SIZE2 > length2) {
+      return void 0;
+    }
+    const value = types_default.getByteAt(dataView, fileDataOffset + OFFSET);
+    return {
+      value,
+      description: "" + value
+    };
+  }
+  __name(getNumberOfColorComponents, "getNumberOfColorComponents");
+  function getSubsampling(dataView, fileDataOffset, numberOfColorComponents, length2) {
+    const OFFSET = 8;
+    const SIZE2 = 3 * numberOfColorComponents;
+    if (OFFSET + SIZE2 > length2) {
+      return void 0;
+    }
+    const components = [];
+    for (let i = 0; i < numberOfColorComponents; i++) {
+      const componentOffset = fileDataOffset + OFFSET + i * 3;
+      components.push([
+        types_default.getByteAt(dataView, componentOffset),
+        types_default.getByteAt(dataView, componentOffset + 1),
+        types_default.getByteAt(dataView, componentOffset + 2)
+      ]);
+    }
+    return {
+      value: components,
+      description: components.length > 1 ? getComponentIds(components) + getSamplingType(components) : ""
+    };
+  }
+  __name(getSubsampling, "getSubsampling");
+  function getComponentIds(components) {
+    const ids = {
+      1: "Y",
+      2: "Cb",
+      3: "Cr",
+      4: "I",
+      5: "Q"
+    };
+    return components.map((compontent) => ids[compontent[0]]).join("");
+  }
+  __name(getComponentIds, "getComponentIds");
+  function getSamplingType(components) {
+    const types = {
+      17: "4:4:4 (1 1)",
+      18: "4:4:0 (1 2)",
+      20: "4:4:1 (1 4)",
+      33: "4:2:2 (2 1)",
+      34: "4:2:0 (2 2)",
+      36: "4:2:1 (2 4)",
+      65: "4:1:1 (4 1)",
+      66: "4:1:0 (4 2)"
+    };
+    if (components.length === 0 || components[0][1] === void 0 || types[components[0][1]] === void 0) {
+      return "";
+    }
+    return types[components[0][1]];
+  }
+  __name(getSamplingType, "getSamplingType");
+
+  // node_modules/exifreader/src/jfif-tags.js
+  var jfif_tags_default = {
+    read: read5
+  };
+  function read5(dataView, jfifDataOffset) {
+    const length2 = getLength2(dataView, jfifDataOffset);
+    const thumbnailWidth = getThumbnailWidth(dataView, jfifDataOffset, length2);
+    const thumbnailHeight = getThumbnailHeight(dataView, jfifDataOffset, length2);
+    const tags2 = {
+      "JFIF Version": getVersion(dataView, jfifDataOffset, length2),
+      "Resolution Unit": getResolutionUnit(dataView, jfifDataOffset, length2),
+      "XResolution": getXResolution(dataView, jfifDataOffset, length2),
+      "YResolution": getYResolution(dataView, jfifDataOffset, length2),
+      "JFIF Thumbnail Width": thumbnailWidth,
+      "JFIF Thumbnail Height": thumbnailHeight
+    };
+    if (thumbnailWidth !== void 0 && thumbnailHeight !== void 0) {
+      const thumbnail = getThumbnail(dataView, jfifDataOffset, 3 * thumbnailWidth.value * thumbnailHeight.value, length2);
+      if (thumbnail) {
+        tags2["JFIF Thumbnail"] = thumbnail;
+      }
+    }
+    for (const tagName in tags2) {
+      if (tags2[tagName] === void 0) {
+        delete tags2[tagName];
+      }
+    }
+    return tags2;
+  }
+  __name(read5, "read");
+  function getLength2(dataView, jfifDataOffset) {
+    return types_default.getShortAt(dataView, jfifDataOffset);
+  }
+  __name(getLength2, "getLength");
+  function getVersion(dataView, jfifDataOffset, length2) {
+    const OFFSET = 7;
+    const SIZE2 = 2;
+    if (OFFSET + SIZE2 > length2) {
+      return void 0;
+    }
+    const majorVersion = types_default.getByteAt(dataView, jfifDataOffset + OFFSET);
+    const minorVersion = types_default.getByteAt(dataView, jfifDataOffset + OFFSET + 1);
+    return {
+      value: majorVersion * 256 + minorVersion,
+      description: majorVersion + "." + minorVersion
+    };
+  }
+  __name(getVersion, "getVersion");
+  function getResolutionUnit(dataView, jfifDataOffset, length2) {
+    const OFFSET = 9;
+    const SIZE2 = 1;
+    if (OFFSET + SIZE2 > length2) {
+      return void 0;
+    }
+    const value = types_default.getByteAt(dataView, jfifDataOffset + OFFSET);
+    return {
+      value,
+      description: getResolutionUnitDescription(value)
+    };
+  }
+  __name(getResolutionUnit, "getResolutionUnit");
+  function getResolutionUnitDescription(value) {
+    if (value === 0) {
+      return "None";
+    }
+    if (value === 1) {
+      return "inches";
+    }
+    if (value === 2) {
+      return "cm";
+    }
+    return "Unknown";
+  }
+  __name(getResolutionUnitDescription, "getResolutionUnitDescription");
+  function getXResolution(dataView, jfifDataOffset, length2) {
+    const OFFSET = 10;
+    const SIZE2 = 2;
+    if (OFFSET + SIZE2 > length2) {
+      return void 0;
+    }
+    const value = types_default.getShortAt(dataView, jfifDataOffset + OFFSET);
+    return {
+      value,
+      description: "" + value
+    };
+  }
+  __name(getXResolution, "getXResolution");
+  function getYResolution(dataView, jfifDataOffset, length2) {
+    const OFFSET = 12;
+    const SIZE2 = 2;
+    if (OFFSET + SIZE2 > length2) {
+      return void 0;
+    }
+    const value = types_default.getShortAt(dataView, jfifDataOffset + OFFSET);
+    return {
+      value,
+      description: "" + value
+    };
+  }
+  __name(getYResolution, "getYResolution");
+  function getThumbnailWidth(dataView, jfifDataOffset, length2) {
+    const OFFSET = 14;
+    const SIZE2 = 1;
+    if (OFFSET + SIZE2 > length2) {
+      return void 0;
+    }
+    const value = types_default.getByteAt(dataView, jfifDataOffset + OFFSET);
+    return {
+      value,
+      description: `${value}px`
+    };
+  }
+  __name(getThumbnailWidth, "getThumbnailWidth");
+  function getThumbnailHeight(dataView, jfifDataOffset, length2) {
+    const OFFSET = 15;
+    const SIZE2 = 1;
+    if (OFFSET + SIZE2 > length2) {
+      return void 0;
+    }
+    const value = types_default.getByteAt(dataView, jfifDataOffset + OFFSET);
+    return {
+      value,
+      description: `${value}px`
+    };
+  }
+  __name(getThumbnailHeight, "getThumbnailHeight");
+  function getThumbnail(dataView, jfifDataOffset, thumbnailLength, length2) {
+    const OFFSET = 16;
+    if (thumbnailLength === 0 || OFFSET + thumbnailLength > length2) {
+      return void 0;
+    }
+    const value = dataView.buffer.slice(jfifDataOffset + OFFSET, jfifDataOffset + OFFSET + thumbnailLength);
+    return {
+      value,
+      description: "<24-bit RGB pixel data>"
+    };
+  }
+  __name(getThumbnail, "getThumbnail");
+
+  // node_modules/exifreader/src/iptc-tag-names.js
+  var iptc_tag_names_default = {
+    "iptc": {
+      256: {
+        "name": "Model Version",
+        "description": (value) => {
+          return ((value[0] << 8) + value[1]).toString();
+        }
+      },
+      261: {
+        "name": "Destination",
+        "repeatable": true
+      },
+      276: {
+        "name": "File Format",
+        "description": (value) => {
+          return ((value[0] << 8) + value[1]).toString();
+        }
+      },
+      278: {
+        "name": "File Format Version",
+        "description": (value) => {
+          return ((value[0] << 8) + value[1]).toString();
+        }
+      },
+      286: "Service Identifier",
+      296: "Envelope Number",
+      306: "Product ID",
+      316: "Envelope Priority",
+      326: {
+        "name": "Date Sent",
+        "description": getCreationDate
+      },
+      336: {
+        "name": "Time Sent",
+        "description": getCreationTime
+      },
+      346: {
+        "name": "Coded Character Set",
+        "description": getEncodingName,
+        "encoding_name": getEncodingName
+      },
+      356: "UNO",
+      376: {
+        "name": "ARM Identifier",
+        "description": (value) => {
+          return ((value[0] << 8) + value[1]).toString();
+        }
+      },
+      378: {
+        "name": "ARM Version",
+        "description": (value) => {
+          return ((value[0] << 8) + value[1]).toString();
+        }
+      },
+      512: {
+        "name": "Record Version",
+        "description": (value) => {
+          return ((value[0] << 8) + value[1]).toString();
+        }
+      },
+      515: "Object Type Reference",
+      516: "Object Attribute Reference",
+      517: "Object Name",
+      519: "Edit Status",
+      520: {
+        "name": "Editorial Update",
+        "description": (value) => {
+          if (getStringValue(value) === "01") {
+            return "Additional Language";
+          }
+          return "Unknown";
+        }
+      },
+      522: "Urgency",
+      524: {
+        "name": "Subject Reference",
+        "repeatable": true,
+        "description": (value) => {
+          const parts = getStringValue(value).split(":");
+          return parts[2] + (parts[3] ? "/" + parts[3] : "") + (parts[4] ? "/" + parts[4] : "");
+        }
+      },
+      527: "Category",
+      532: {
+        "name": "Supplemental Category",
+        "repeatable": true
+      },
+      534: "Fixture Identifier",
+      537: {
+        "name": "Keywords",
+        "repeatable": true
+      },
+      538: {
+        "name": "Content Location Code",
+        "repeatable": true
+      },
+      539: {
+        "name": "Content Location Name",
+        "repeatable": true
+      },
+      542: "Release Date",
+      547: "Release Time",
+      549: "Expiration Date",
+      550: "Expiration Time",
+      552: "Special Instructions",
+      554: {
+        "name": "Action Advised",
+        "description": (value) => {
+          const string = getStringValue(value);
+          if (string === "01") {
+            return "Object Kill";
+          } else if (string === "02") {
+            return "Object Replace";
+          } else if (string === "03") {
+            return "Object Append";
+          } else if (string === "04") {
+            return "Object Reference";
+          }
+          return "Unknown";
+        }
+      },
+      557: {
+        "name": "Reference Service",
+        "repeatable": true
+      },
+      559: {
+        "name": "Reference Date",
+        "repeatable": true
+      },
+      562: {
+        "name": "Reference Number",
+        "repeatable": true
+      },
+      567: {
+        "name": "Date Created",
+        "description": getCreationDate
+      },
+      572: {
+        "name": "Time Created",
+        "description": getCreationTime
+      },
+      574: {
+        "name": "Digital Creation Date",
+        "description": getCreationDate
+      },
+      575: {
+        "name": "Digital Creation Time",
+        "description": getCreationTime
+      },
+      577: "Originating Program",
+      582: "Program Version",
+      587: {
+        "name": "Object Cycle",
+        "description": (value) => {
+          const string = getStringValue(value);
+          if (string === "a") {
+            return "morning";
+          } else if (string === "p") {
+            return "evening";
+          } else if (string === "b") {
+            return "both";
+          }
+          return "Unknown";
+        }
+      },
+      592: {
+        "name": "By-line",
+        "repeatable": true
+      },
+      597: {
+        "name": "By-line Title",
+        "repeatable": true
+      },
+      602: "City",
+      604: "Sub-location",
+      607: "Province/State",
+      612: "Country/Primary Location Code",
+      613: "Country/Primary Location Name",
+      615: "Original Transmission Reference",
+      617: "Headline",
+      622: "Credit",
+      627: "Source",
+      628: "Copyright Notice",
+      630: {
+        "name": "Contact",
+        "repeatable": true
+      },
+      632: "Caption/Abstract",
+      634: {
+        "name": "Writer/Editor",
+        "repeatable": true
+      },
+      637: {
+        "name": "Rasterized Caption",
+        "description": (value) => value
+      },
+      642: "Image Type",
+      643: {
+        "name": "Image Orientation",
+        "description": (value) => {
+          const string = getStringValue(value);
+          if (string === "P") {
+            return "Portrait";
+          } else if (string === "L") {
+            return "Landscape";
+          } else if (string === "S") {
+            return "Square";
+          }
+          return "Unknown";
+        }
+      },
+      647: "Language Identifier",
+      662: {
+        "name": "Audio Type",
+        "description": (value) => {
+          const stringValue = getStringValue(value);
+          const character0 = stringValue.charAt(0);
+          const character1 = stringValue.charAt(1);
+          let description = "";
+          if (character0 === "1") {
+            description += "Mono";
+          } else if (character0 === "2") {
+            description += "Stereo";
+          }
+          if (character1 === "A") {
+            description += ", actuality";
+          } else if (character1 === "C") {
+            description += ", question and answer session";
+          } else if (character1 === "M") {
+            description += ", music, transmitted by itself";
+          } else if (character1 === "Q") {
+            description += ", response to a question";
+          } else if (character1 === "R") {
+            description += ", raw sound";
+          } else if (character1 === "S") {
+            description += ", scener";
+          } else if (character1 === "V") {
+            description += ", voicer";
+          } else if (character1 === "W") {
+            description += ", wrap";
+          }
+          if (description !== "") {
+            return description;
+          }
+          return stringValue;
+        }
+      },
+      663: {
+        "name": "Audio Sampling Rate",
+        "description": (value) => parseInt(getStringValue(value), 10) + " Hz"
+      },
+      664: {
+        "name": "Audio Sampling Resolution",
+        "description": (value) => {
+          const bits = parseInt(getStringValue(value), 10);
+          return bits + (bits === 1 ? " bit" : " bits");
+        }
+      },
+      665: {
+        "name": "Audio Duration",
+        "description": (value) => {
+          const duration2 = getStringValue(value);
+          if (duration2.length >= 6) {
+            return duration2.substr(0, 2) + ":" + duration2.substr(2, 2) + ":" + duration2.substr(4, 2);
+          }
+          return duration2;
+        }
+      },
+      666: "Audio Outcue",
+      698: "Short Document ID",
+      699: "Unique Document ID",
+      700: "Owner ID",
+      712: {
+        "name": (value) => {
+          if (value.length === 2) {
+            return "ObjectData Preview File Format";
+          }
+          return "Record 2 destination";
+        },
+        "description": (value) => {
+          if (value.length === 2) {
+            const intValue = (value[0] << 8) + value[1];
+            if (intValue === 0) {
+              return "No ObjectData";
+            } else if (intValue === 1) {
+              return "IPTC-NAA Digital Newsphoto Parameter Record";
+            } else if (intValue === 2) {
+              return "IPTC7901 Recommended Message Format";
+            } else if (intValue === 3) {
+              return "Tagged Image File Format (Adobe/Aldus Image data)";
+            } else if (intValue === 4) {
+              return "Illustrator (Adobe Graphics data)";
+            } else if (intValue === 5) {
+              return "AppleSingle (Apple Computer Inc)";
+            } else if (intValue === 6) {
+              return "NAA 89-3 (ANPA 1312)";
+            } else if (intValue === 7) {
+              return "MacBinary II";
+            } else if (intValue === 8) {
+              return "IPTC Unstructured Character Oriented File Format (UCOFF)";
+            } else if (intValue === 9) {
+              return "United Press International ANPA 1312 variant";
+            } else if (intValue === 10) {
+              return "United Press International Down-Load Message";
+            } else if (intValue === 11) {
+              return "JPEG File Interchange (JFIF)";
+            } else if (intValue === 12) {
+              return "Photo-CD Image-Pac (Eastman Kodak)";
+            } else if (intValue === 13) {
+              return "Microsoft Bit Mapped Graphics File [*.BMP]";
+            } else if (intValue === 14) {
+              return "Digital Audio File [*.WAV] (Microsoft & Creative Labs)";
+            } else if (intValue === 15) {
+              return "Audio plus Moving Video [*.AVI] (Microsoft)";
+            } else if (intValue === 16) {
+              return "PC DOS/Windows Executable Files [*.COM][*.EXE]";
+            } else if (intValue === 17) {
+              return "Compressed Binary File [*.ZIP] (PKWare Inc)";
+            } else if (intValue === 18) {
+              return "Audio Interchange File Format AIFF (Apple Computer Inc)";
+            } else if (intValue === 19) {
+              return "RIFF Wave (Microsoft Corporation)";
+            } else if (intValue === 20) {
+              return "Freehand (Macromedia/Aldus)";
+            } else if (intValue === 21) {
+              return 'Hypertext Markup Language "HTML" (The Internet Society)';
+            } else if (intValue === 22) {
+              return "MPEG 2 Audio Layer 2 (Musicom), ISO/IEC";
+            } else if (intValue === 23) {
+              return "MPEG 2 Audio Layer 3, ISO/IEC";
+            } else if (intValue === 24) {
+              return "Portable Document File (*.PDF) Adobe";
+            } else if (intValue === 25) {
+              return "News Industry Text Format (NITF)";
+            } else if (intValue === 26) {
+              return "Tape Archive (*.TAR)";
+            } else if (intValue === 27) {
+              return "Tidningarnas Telegrambyr\xE5 NITF version (TTNITF DTD)";
+            } else if (intValue === 28) {
+              return "Ritzaus Bureau NITF version (RBNITF DTD)";
+            } else if (intValue === 29) {
+              return "Corel Draw [*.CDR]";
+            }
+            return `Unknown format ${intValue}`;
+          }
+          return getStringValue(value);
+        }
+      },
+      713: {
+        "name": "ObjectData Preview File Format Version",
+        "description": (value, tags2) => {
+          const formatVersions = {
+            "00": { "00": "1" },
+            "01": { "01": "1", "02": "2", "03": "3", "04": "4" },
+            "02": { "04": "4" },
+            "03": { "01": "5.0", "02": "6.0" },
+            "04": { "01": "1.40" },
+            "05": { "01": "2" },
+            "06": { "01": "1" },
+            "11": { "01": "1.02" },
+            "20": { "01": "3.1", "02": "4.0", "03": "5.0", "04": "5.5" },
+            "21": { "02": "2.0" }
+          };
+          const stringValue = getStringValue(value);
+          if (tags2["ObjectData Preview File Format"]) {
+            const objectDataPreviewFileFormat = getStringValue(tags2["ObjectData Preview File Format"].value);
+            if (formatVersions[objectDataPreviewFileFormat] && formatVersions[objectDataPreviewFileFormat][stringValue]) {
+              return formatVersions[objectDataPreviewFileFormat][stringValue];
+            }
+          }
+          return stringValue;
+        }
+      },
+      714: "ObjectData Preview Data",
+      1802: {
+        "name": "Size Mode",
+        "description": (value) => {
+          return value[0].toString();
+        }
+      },
+      1812: {
+        "name": "Max Subfile Size",
+        "description": (value) => {
+          let n = 0;
+          for (let i = 0; i < value.length; i++) {
+            n = (n << 8) + value[i];
+          }
+          return n.toString();
+        }
+      },
+      1882: {
+        "name": "ObjectData Size Announced",
+        "description": (value) => {
+          let n = 0;
+          for (let i = 0; i < value.length; i++) {
+            n = (n << 8) + value[i];
+          }
+          return n.toString();
+        }
+      },
+      1887: {
+        "name": "Maximum ObjectData Size",
+        "description": (value) => {
+          let n = 0;
+          for (let i = 0; i < value.length; i++) {
+            n = (n << 8) + value[i];
+          }
+          return n.toString();
+        }
+      }
+    }
+  };
+  function getCreationDate(value) {
+    const date = getStringValue(value);
+    if (date.length >= 8) {
+      return date.substr(0, 4) + "-" + date.substr(4, 2) + "-" + date.substr(6, 2);
+    }
+    return date;
+  }
+  __name(getCreationDate, "getCreationDate");
+  function getCreationTime(value) {
+    const time = getStringValue(value);
+    let parsedTime = time;
+    if (time.length >= 6) {
+      parsedTime = time.substr(0, 2) + ":" + time.substr(2, 2) + ":" + time.substr(4, 2);
+      if (time.length === 11) {
+        parsedTime += time.substr(6, 1) + time.substr(7, 2) + ":" + time.substr(9, 2);
+      }
+    }
+    return parsedTime;
+  }
+  __name(getCreationTime, "getCreationTime");
+  function getEncodingName(value) {
+    const string = getStringValue(value);
+    if (string === "\x1B%G") {
+      return "UTF-8";
+    } else if (string === "\x1B%5") {
+      return "Windows-1252";
+    } else if (string === "\x1B%/G") {
+      return "UTF-8 Level 1";
+    } else if (string === "\x1B%/H") {
+      return "UTF-8 Level 2";
+    } else if (string === "\x1B%/I") {
+      return "UTF-8 Level 3";
+    } else if (string === "\x1B/A") {
+      return "ISO-8859-1";
+    } else if (string === "\x1B/B") {
+      return "ISO-8859-2";
+    } else if (string === "\x1B/C") {
+      return "ISO-8859-3";
+    } else if (string === "\x1B/D") {
+      return "ISO-8859-4";
+    } else if (string === "\x1B/@") {
+      return "ISO-8859-5";
+    } else if (string === "\x1B/G") {
+      return "ISO-8859-6";
+    } else if (string === "\x1B/F") {
+      return "ISO-8859-7";
+    } else if (string === "\x1B/H") {
+      return "ISO-8859-8";
+    }
+    return "Unknown";
+  }
+  __name(getEncodingName, "getEncodingName");
+
+  // node_modules/exifreader/src/text-decoder.js
+  var text_decoder_default = {
+    get: get2
+  };
+  function get2() {
+    if (typeof TextDecoder !== "undefined") {
+      return TextDecoder;
+    }
+    return void 0;
+  }
+  __name(get2, "get");
+
+  // node_modules/exifreader/src/tag-decoder.js
+  var TAG_HEADER_SIZE = 5;
+  var tag_decoder_default = {
+    decode,
+    TAG_HEADER_SIZE
+  };
+  function decode(encoding, tagValue) {
+    const Decoder = text_decoder_default.get();
+    if (typeof Decoder !== "undefined" && encoding !== void 0) {
+      try {
+        return new Decoder(encoding).decode(Uint8Array.from(tagValue));
+      } catch (error2) {
+      }
+    }
+    const stringValue = tagValue.map((charCode) => String.fromCharCode(charCode)).join("");
+    return decodeAsciiValue2(stringValue);
+  }
+  __name(decode, "decode");
+  function decodeAsciiValue2(asciiValue) {
+    try {
+      return decodeURIComponent(escape(asciiValue));
+    } catch (error2) {
+      return asciiValue;
+    }
+  }
+  __name(decodeAsciiValue2, "decodeAsciiValue");
+
+  // node_modules/exifreader/src/iptc-tags.js
+  var BYTES_8BIM = 943868237;
+  var BYTES_8BIM_SIZE = 4;
+  var RESOURCE_BLOCK_HEADER_SIZE = BYTES_8BIM_SIZE + 8;
+  var NAA_RESOURCE_BLOCK_TYPE = 1028;
+  var TAG_HEADER_SIZE2 = 5;
+  var iptc_tags_default = {
+    read: read6
+  };
+  function read6(dataView, dataOffset, includeUnknown) {
+    try {
+      if (Array.isArray(dataView)) {
+        return parseTags(new DataView(Uint8Array.from(dataView).buffer), { size: dataView.length }, 0, includeUnknown);
+      }
+      const { naaBlock, dataOffset: newDataOffset } = getNaaResourceBlock(dataView, dataOffset);
+      return parseTags(dataView, naaBlock, newDataOffset, includeUnknown);
+    } catch (error2) {
+      return {};
+    }
+  }
+  __name(read6, "read");
+  function getNaaResourceBlock(dataView, dataOffset) {
+    while (dataOffset + RESOURCE_BLOCK_HEADER_SIZE <= dataView.byteLength) {
+      const resourceBlock = getResourceBlock(dataView, dataOffset);
+      if (isNaaResourceBlock(resourceBlock)) {
+        return { naaBlock: resourceBlock, dataOffset: dataOffset + RESOURCE_BLOCK_HEADER_SIZE };
+      }
+      dataOffset += RESOURCE_BLOCK_HEADER_SIZE + resourceBlock.size + getBlockPadding(resourceBlock);
+    }
+    throw new Error("No IPTC NAA resource block.");
+  }
+  __name(getNaaResourceBlock, "getNaaResourceBlock");
+  function getResourceBlock(dataView, dataOffset) {
+    const RESOURCE_BLOCK_SIZE_OFFSET = 10;
+    if (dataView.getUint32(dataOffset, false) !== BYTES_8BIM) {
+      throw new Error("Not an IPTC resource block.");
+    }
+    return {
+      type: dataView.getUint16(dataOffset + BYTES_8BIM_SIZE),
+      size: dataView.getUint16(dataOffset + RESOURCE_BLOCK_SIZE_OFFSET)
+    };
+  }
+  __name(getResourceBlock, "getResourceBlock");
+  function isNaaResourceBlock(resourceBlock) {
+    return resourceBlock.type === NAA_RESOURCE_BLOCK_TYPE;
+  }
+  __name(isNaaResourceBlock, "isNaaResourceBlock");
+  function getBlockPadding(resourceBlock) {
+    if (resourceBlock.size % 2 !== 0) {
+      return 1;
+    }
+    return 0;
+  }
+  __name(getBlockPadding, "getBlockPadding");
+  function parseTags(dataView, naaBlock, dataOffset, includeUnknown) {
+    const tags2 = {};
+    let encoding = void 0;
+    const endOfBlockOffset = dataOffset + naaBlock["size"];
+    while (dataOffset < endOfBlockOffset && dataOffset < dataView.byteLength) {
+      const { tag, tagSize } = readTag2(dataView, dataOffset, tags2, encoding, includeUnknown);
+      if (tag === null) {
+        break;
+      }
+      if (tag) {
+        if ("encoding" in tag) {
+          encoding = tag.encoding;
+        }
+        if (tags2[tag.name] === void 0 || tag["repeatable"] === void 0) {
+          tags2[tag.name] = {
+            id: tag.id,
+            value: tag.value,
+            description: tag.description
+          };
+        } else {
+          if (!(tags2[tag.name] instanceof Array)) {
+            tags2[tag.name] = [{
+              id: tags2[tag.name].id,
+              value: tags2[tag.name].value,
+              description: tags2[tag.name].description
+            }];
+          }
+          tags2[tag.name].push({
+            id: tag.id,
+            value: tag.value,
+            description: tag.description
+          });
+        }
+      }
+      dataOffset += TAG_HEADER_SIZE2 + tagSize;
+    }
+    return tags2;
+  }
+  __name(parseTags, "parseTags");
+  function readTag2(dataView, dataOffset, tags2, encoding, includeUnknown) {
+    const TAG_CODE_OFFSET = 1;
+    const TAG_SIZE_OFFSET = 3;
+    if (leadByteIsMissing(dataView, dataOffset)) {
+      return { tag: null, tagSize: 0 };
+    }
+    const tagCode = dataView.getUint16(dataOffset + TAG_CODE_OFFSET);
+    const tagSize = dataView.getUint16(dataOffset + TAG_SIZE_OFFSET);
+    if (!includeUnknown && !iptc_tag_names_default["iptc"][tagCode]) {
+      return { tag: void 0, tagSize };
+    }
+    const tagValue = getTagValue2(dataView, dataOffset + TAG_HEADER_SIZE2, tagSize);
+    const tag = {
+      id: tagCode,
+      name: getTagName(iptc_tag_names_default["iptc"][tagCode], tagCode, tagValue),
+      value: tagValue,
+      description: getTagDescription(iptc_tag_names_default["iptc"][tagCode], tagValue, tags2, encoding)
+    };
+    if (tagIsRepeatable(tagCode)) {
+      tag["repeatable"] = true;
+    }
+    if (tagContainsEncoding(tagCode)) {
+      tag["encoding"] = iptc_tag_names_default["iptc"][tagCode]["encoding_name"](tagValue);
+    }
+    return { tag, tagSize };
+  }
+  __name(readTag2, "readTag");
+  function leadByteIsMissing(dataView, dataOffset) {
+    const TAG_LEAD_BYTE = 28;
+    return dataView.getUint8(dataOffset) !== TAG_LEAD_BYTE;
+  }
+  __name(leadByteIsMissing, "leadByteIsMissing");
+  function getTagValue2(dataView, offset2, size) {
+    const value = [];
+    for (let valueIndex = 0; valueIndex < size; valueIndex++) {
+      value.push(dataView.getUint8(offset2 + valueIndex));
+    }
+    return value;
+  }
+  __name(getTagValue2, "getTagValue");
+  function getTagName(tag, tagCode, tagValue) {
+    if (!tag) {
+      return `undefined-${tagCode}`;
+    }
+    if (tagIsName(tag)) {
+      return tag;
+    }
+    if (hasDynamicName(tag)) {
+      return tag["name"](tagValue);
+    }
+    return tag["name"];
+  }
+  __name(getTagName, "getTagName");
+  function tagIsName(tag) {
+    return typeof tag === "string";
+  }
+  __name(tagIsName, "tagIsName");
+  function hasDynamicName(tag) {
+    return typeof tag["name"] === "function";
+  }
+  __name(hasDynamicName, "hasDynamicName");
+  function getTagDescription(tag, tagValue, tags2, encoding) {
+    if (hasDescriptionProperty(tag)) {
+      try {
+        return tag["description"](tagValue, tags2);
+      } catch (error2) {
+      }
+    }
+    if (tagValueIsText(tag, tagValue)) {
+      return tag_decoder_default.decode(encoding, tagValue);
+    }
+    return tagValue;
+  }
+  __name(getTagDescription, "getTagDescription");
+  function tagValueIsText(tag, tagValue) {
+    return tag && tagValue instanceof Array;
+  }
+  __name(tagValueIsText, "tagValueIsText");
+  function hasDescriptionProperty(tag) {
+    return tag && tag["description"] !== void 0;
+  }
+  __name(hasDescriptionProperty, "hasDescriptionProperty");
+  function tagIsRepeatable(tagCode) {
+    return iptc_tag_names_default["iptc"][tagCode] && iptc_tag_names_default["iptc"][tagCode]["repeatable"];
+  }
+  __name(tagIsRepeatable, "tagIsRepeatable");
+  function tagContainsEncoding(tagCode) {
+    return iptc_tag_names_default["iptc"][tagCode] && iptc_tag_names_default["iptc"][tagCode]["encoding_name"] !== void 0;
+  }
+  __name(tagContainsEncoding, "tagContainsEncoding");
+
+  // node_modules/exifreader/src/xmp-tag-names.js
+  var xmp_tag_names_default = {
+    "tiff:Orientation"(value) {
+      if (value === "1") {
+        return "Horizontal (normal)";
+      }
+      if (value === "2") {
+        return "Mirror horizontal";
+      }
+      if (value === "3") {
+        return "Rotate 180";
+      }
+      if (value === "4") {
+        return "Mirror vertical";
+      }
+      if (value === "5") {
+        return "Mirror horizontal and rotate 270 CW";
+      }
+      if (value === "6") {
+        return "Rotate 90 CW";
+      }
+      if (value === "7") {
+        return "Mirror horizontal and rotate 90 CW";
+      }
+      if (value === "8") {
+        return "Rotate 270 CW";
+      }
+      return value;
+    },
+    "tiff:ResolutionUnit": (value) => tag_names_common_default.ResolutionUnit(parseInt(value, 10)),
+    "tiff:XResolution": (value) => fraction(tag_names_common_default.XResolution, value),
+    "tiff:YResolution": (value) => fraction(tag_names_common_default.YResolution, value),
+    "exif:ApertureValue": (value) => fraction(tag_names_common_default.ApertureValue, value),
+    "exif:GPSLatitude": calculateGPSValue,
+    "exif:GPSLongitude": calculateGPSValue,
+    "exif:FNumber": (value) => fraction(tag_names_common_default.FNumber, value),
+    "exif:FocalLength": (value) => fraction(tag_names_common_default.FocalLength, value),
+    "exif:FocalPlaneResolutionUnit": (value) => tag_names_common_default.FocalPlaneResolutionUnit(parseInt(value, 10)),
+    "exif:ColorSpace": (value) => tag_names_common_default.ColorSpace(parseNumber2(value)),
+    "exif:ComponentsConfiguration"(value, description) {
+      if (/^\d, \d, \d, \d$/.test(description)) {
+        const numbers = description.split(", ").map((number) => number.charCodeAt(0));
+        return tag_names_common_default.ComponentsConfiguration(numbers);
+      }
+      return description;
+    },
+    "exif:Contrast": (value) => tag_names_common_default.Contrast(parseInt(value, 10)),
+    "exif:CustomRendered": (value) => tag_names_common_default.CustomRendered(parseInt(value, 10)),
+    "exif:ExposureMode": (value) => tag_names_common_default.ExposureMode(parseInt(value, 10)),
+    "exif:ExposureProgram": (value) => tag_names_common_default.ExposureProgram(parseInt(value, 10)),
+    "exif:ExposureTime"(value) {
+      if (isFraction(value)) {
+        return tag_names_common_default.ExposureTime(value.split("/").map((number) => parseInt(number, 10)));
+      }
+      return value;
+    },
+    "exif:MeteringMode": (value) => tag_names_common_default.MeteringMode(parseInt(value, 10)),
+    "exif:Saturation": (value) => tag_names_common_default.Saturation(parseInt(value, 10)),
+    "exif:SceneCaptureType": (value) => tag_names_common_default.SceneCaptureType(parseInt(value, 10)),
+    "exif:Sharpness": (value) => tag_names_common_default.Sharpness(parseInt(value, 10)),
+    "exif:ShutterSpeedValue": (value) => fraction(tag_names_common_default.ShutterSpeedValue, value),
+    "exif:WhiteBalance": (value) => tag_names_common_default.WhiteBalance(parseInt(value, 10))
+  };
+  function fraction(func, value) {
+    if (isFraction(value)) {
+      return func(value.split("/"));
+    }
+    return value;
+  }
+  __name(fraction, "fraction");
+  function parseNumber2(value) {
+    if (value.substring(0, 2) === "0x") {
+      return parseInt(value.substring(2), 16);
+    }
+    return parseInt(value, 10);
+  }
+  __name(parseNumber2, "parseNumber");
+  function isFraction(value) {
+    return /^-?\d+\/-?\d+$/.test(value);
+  }
+  __name(isFraction, "isFraction");
+  function calculateGPSValue(value) {
+    const [degreesString, minutesString] = value.split(",");
+    if (degreesString !== void 0 && minutesString !== void 0) {
+      const degrees = parseFloat(degreesString);
+      const minutes = parseFloat(minutesString);
+      const ref = minutesString.charAt(minutesString.length - 1);
+      if (!Number.isNaN(degrees) && !Number.isNaN(minutes)) {
+        return "" + (degrees + minutes / 60) + ref;
+      }
+    }
+    return value;
+  }
+  __name(calculateGPSValue, "calculateGPSValue");
+
+  // node_modules/exifreader/src/dom-parser.js
+  var dom_parser_default = {
+    get: get3
+  };
+  function get3() {
+    if (typeof DOMParser !== "undefined") {
+      return new DOMParser();
+    }
+    try {
+      return new (__non_webpack_require__("@xmldom/xmldom")).DOMParser({
+        errorHandler: {
+          error: () => {
+            throw new Error("Faulty XML");
+          }
+        }
+      });
+    } catch (error2) {
+      return void 0;
+    }
+  }
+  __name(get3, "get");
+
+  // node_modules/exifreader/src/xmp-tags.js
+  var xmp_tags_default = {
+    read: read7
+  };
+  function read7(dataView, chunks) {
+    const tags2 = {};
+    if (typeof dataView === "string") {
+      readTags(tags2, dataView);
+      return tags2;
+    }
+    const [standardXmp, extendedXmp] = extractCompleteChunks(dataView, chunks);
+    const hasStandardTags = readTags(tags2, standardXmp);
+    if (extendedXmp) {
+      const hasExtendedTags = readTags(tags2, extendedXmp);
+      if (!hasStandardTags && !hasExtendedTags) {
+        delete tags2._raw;
+        readTags(tags2, combineChunks(dataView, chunks));
+      }
+    }
+    return tags2;
+  }
+  __name(read7, "read");
+  function extractCompleteChunks(dataView, chunks) {
+    if (chunks.length === 0) {
+      return [];
+    }
+    const completeChunks = [combineChunks(dataView, chunks.slice(0, 1))];
+    if (chunks.length > 1) {
+      completeChunks.push(combineChunks(dataView, chunks.slice(1)));
+    }
+    return completeChunks;
+  }
+  __name(extractCompleteChunks, "extractCompleteChunks");
+  function combineChunks(dataView, chunks) {
+    const totalLength = chunks.reduce((size, chunk) => size + chunk.length, 0);
+    const combinedChunks = new Uint8Array(totalLength);
+    let offset2 = 0;
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      const slice3 = dataView.buffer.slice(chunk.dataOffset, chunk.dataOffset + chunk.length);
+      combinedChunks.set(new Uint8Array(slice3), offset2);
+      offset2 += chunk.length;
+    }
+    return new DataView(combinedChunks.buffer);
+  }
+  __name(combineChunks, "combineChunks");
+  function readTags(tags2, chunkDataView) {
+    try {
+      const { doc, raw } = getDocument(chunkDataView);
+      tags2._raw = (tags2._raw || "") + raw;
+      const rdf = getRDF(doc);
+      objectAssign(tags2, parseXMPObject(convertToObject(rdf, true)));
+      return true;
+    } catch (error2) {
+      return false;
+    }
+  }
+  __name(readTags, "readTags");
+  function getDocument(chunkDataView) {
+    const domParser = dom_parser_default.get();
+    if (!domParser) {
+      console.warn("Warning: DOMParser is not available. It is needed to be able to parse XMP tags.");
+      throw new Error();
+    }
+    const xmlString = typeof chunkDataView === "string" ? chunkDataView : getStringFromDataView(chunkDataView, 0, chunkDataView.byteLength);
+    const doc = domParser.parseFromString(trimXmlSource(xmlString), "application/xml");
+    if (doc.documentElement.nodeName === "parsererror") {
+      throw new Error(doc.documentElement.textContent);
+    }
+    return {
+      doc,
+      raw: xmlString
+    };
+  }
+  __name(getDocument, "getDocument");
+  function trimXmlSource(xmlSource) {
+    return xmlSource.replace(/^.+(<\?xpacket begin)/, "$1").replace(/(<\?xpacket end=".*"\?>).+$/, "$1");
+  }
+  __name(trimXmlSource, "trimXmlSource");
+  function getRDF(node2) {
+    for (let i = 0; i < node2.childNodes.length; i++) {
+      if (node2.childNodes[i].tagName === "x:xmpmeta") {
+        return getRDF(node2.childNodes[i]);
+      }
+      if (node2.childNodes[i].tagName === "rdf:RDF") {
+        return node2.childNodes[i];
+      }
+    }
+    throw new Error();
+  }
+  __name(getRDF, "getRDF");
+  function convertToObject(node2, isTopNode = false) {
+    const childNodes = getChildNodes(node2);
+    if (hasTextOnlyContent(childNodes)) {
+      if (isTopNode) {
+        return {};
+      }
+      return getTextValue(childNodes[0]);
+    }
+    return getElementsFromNodes(childNodes);
+  }
+  __name(convertToObject, "convertToObject");
+  function getChildNodes(node2) {
+    const elements = [];
+    for (let i = 0; i < node2.childNodes.length; i++) {
+      elements.push(node2.childNodes[i]);
+    }
+    return elements;
+  }
+  __name(getChildNodes, "getChildNodes");
+  function hasTextOnlyContent(nodes) {
+    return nodes.length === 1 && nodes[0].nodeName === "#text";
+  }
+  __name(hasTextOnlyContent, "hasTextOnlyContent");
+  function getTextValue(node2) {
+    return node2.nodeValue;
+  }
+  __name(getTextValue, "getTextValue");
+  function getElementsFromNodes(nodes) {
+    const elements = {};
+    nodes.forEach((node2) => {
+      if (isElement2(node2)) {
+        const nodeElement = getElementFromNode(node2);
+        if (elements[node2.nodeName] !== void 0) {
+          if (!Array.isArray(elements[node2.nodeName])) {
+            elements[node2.nodeName] = [elements[node2.nodeName]];
+          }
+          elements[node2.nodeName].push(nodeElement);
+        } else {
+          elements[node2.nodeName] = nodeElement;
+        }
+      }
+    });
+    return elements;
+  }
+  __name(getElementsFromNodes, "getElementsFromNodes");
+  function isElement2(node2) {
+    return node2.nodeName && node2.nodeName !== "#text";
+  }
+  __name(isElement2, "isElement");
+  function getElementFromNode(node2) {
+    return {
+      attributes: getAttributes(node2),
+      value: convertToObject(node2)
+    };
+  }
+  __name(getElementFromNode, "getElementFromNode");
+  function getAttributes(element) {
+    const attributes = {};
+    for (let i = 0; i < element.attributes.length; i++) {
+      attributes[element.attributes[i].nodeName] = decodeURIComponent(escape(element.attributes[i].value));
+    }
+    return attributes;
+  }
+  __name(getAttributes, "getAttributes");
+  function parseXMPObject(xmpObject) {
+    const tags2 = {};
+    if (typeof xmpObject === "string") {
+      return xmpObject;
+    }
+    for (const nodeName in xmpObject) {
+      let nodes = xmpObject[nodeName];
+      if (!Array.isArray(nodes)) {
+        nodes = [nodes];
+      }
+      nodes.forEach((node2) => {
+        objectAssign(tags2, parseNodeAttributesAsTags(node2.attributes));
+        if (typeof node2.value === "object") {
+          objectAssign(tags2, parseNodeChildrenAsTags(node2.value));
+        }
+      });
+    }
+    return tags2;
+  }
+  __name(parseXMPObject, "parseXMPObject");
+  function parseNodeAttributesAsTags(attributes) {
+    const tags2 = {};
+    for (const name in attributes) {
+      if (isTagAttribute(name)) {
+        tags2[getLocalName(name)] = {
+          value: attributes[name],
+          attributes: {},
+          description: getDescription(attributes[name], name)
+        };
+      }
+    }
+    return tags2;
+  }
+  __name(parseNodeAttributesAsTags, "parseNodeAttributesAsTags");
+  function isTagAttribute(name) {
+    return name !== "rdf:parseType" && !isNamespaceDefinition(name);
+  }
+  __name(isTagAttribute, "isTagAttribute");
+  function isNamespaceDefinition(name) {
+    return name.split(":")[0] === "xmlns";
+  }
+  __name(isNamespaceDefinition, "isNamespaceDefinition");
+  function getLocalName(name) {
+    if (/^MicrosoftPhoto(_\d+_)?:Rating$/i.test(name)) {
+      return "RatingPercent";
+    }
+    return name.split(":")[1];
+  }
+  __name(getLocalName, "getLocalName");
+  function getDescription(value, name = void 0) {
+    if (Array.isArray(value)) {
+      const arrayDescription = getDescriptionOfArray(value);
+      if (name && typeof xmp_tag_names_default[name] === "function") {
+        return xmp_tag_names_default[name](value, arrayDescription);
+      }
+      return arrayDescription;
+    }
+    if (typeof value === "object") {
+      return getDescriptionOfObject(value);
+    }
+    try {
+      if (name && typeof xmp_tag_names_default[name] === "function") {
+        return xmp_tag_names_default[name](value);
+      }
+      return decodeURIComponent(escape(value));
+    } catch (error2) {
+      return value;
+    }
+  }
+  __name(getDescription, "getDescription");
+  function getDescriptionOfArray(value) {
+    return value.map((item) => {
+      if (item.value !== void 0) {
+        return getDescription(item.value);
+      }
+      return getDescription(item);
+    }).join(", ");
+  }
+  __name(getDescriptionOfArray, "getDescriptionOfArray");
+  function getDescriptionOfObject(value) {
+    const descriptions = [];
+    for (const key in value) {
+      descriptions.push(`${getClearTextKey(key)}: ${getDescription(value[key].value)}`);
+    }
+    return descriptions.join("; ");
+  }
+  __name(getDescriptionOfObject, "getDescriptionOfObject");
+  function getClearTextKey(key) {
+    if (key === "CiAdrCity") {
+      return "CreatorCity";
+    }
+    if (key === "CiAdrCtry") {
+      return "CreatorCountry";
+    }
+    if (key === "CiAdrExtadr") {
+      return "CreatorAddress";
+    }
+    if (key === "CiAdrPcode") {
+      return "CreatorPostalCode";
+    }
+    if (key === "CiAdrRegion") {
+      return "CreatorRegion";
+    }
+    if (key === "CiEmailWork") {
+      return "CreatorWorkEmail";
+    }
+    if (key === "CiTelWork") {
+      return "CreatorWorkPhone";
+    }
+    if (key === "CiUrlWork") {
+      return "CreatorWorkUrl";
+    }
+    return key;
+  }
+  __name(getClearTextKey, "getClearTextKey");
+  function parseNodeChildrenAsTags(children) {
+    const tags2 = {};
+    for (const name in children) {
+      if (!isNamespaceDefinition(name)) {
+        tags2[getLocalName(name)] = parseNodeAsTag(children[name], name);
+      }
+    }
+    return tags2;
+  }
+  __name(parseNodeChildrenAsTags, "parseNodeChildrenAsTags");
+  function parseNodeAsTag(node2, name) {
+    if (hasNestedSimpleRdfDescription(node2)) {
+      return parseNodeAsSimpleRdfDescription(node2, name);
+    }
+    if (hasNestedStructureRdfDescription(node2)) {
+      return parseNodeAsStructureRdfDescription(node2, name);
+    }
+    if (isCompactStructure(node2)) {
+      return parseNodeAsCompactStructure(node2, name);
+    }
+    if (isArray2(node2)) {
+      return parseNodeAsArray(node2, name);
+    }
+    return parseNodeAsSimpleValue(node2, name);
+  }
+  __name(parseNodeAsTag, "parseNodeAsTag");
+  function hasNestedSimpleRdfDescription(node2) {
+    return node2.attributes["rdf:parseType"] === "Resource" && node2.value["rdf:value"] !== void 0 || node2.value["rdf:Description"] !== void 0 && node2.value["rdf:Description"].value["rdf:value"] !== void 0;
+  }
+  __name(hasNestedSimpleRdfDescription, "hasNestedSimpleRdfDescription");
+  function parseNodeAsSimpleRdfDescription(node2, name) {
+    const attributes = parseNodeAttributes(node2);
+    if (node2.value["rdf:Description"] !== void 0) {
+      node2 = node2.value["rdf:Description"];
+    }
+    objectAssign(attributes, parseNodeAttributes(node2), parseNodeChildrenAsAttributes(node2));
+    const value = parseRdfValue(node2);
+    return {
+      value,
+      attributes,
+      description: getDescription(value, name)
+    };
+  }
+  __name(parseNodeAsSimpleRdfDescription, "parseNodeAsSimpleRdfDescription");
+  function parseNodeAttributes(node2) {
+    const attributes = {};
+    for (const name in node2.attributes) {
+      if (name !== "rdf:parseType" && name !== "rdf:resource" && !isNamespaceDefinition(name)) {
+        attributes[getLocalName(name)] = node2.attributes[name];
+      }
+    }
+    return attributes;
+  }
+  __name(parseNodeAttributes, "parseNodeAttributes");
+  function parseNodeChildrenAsAttributes(node2) {
+    const attributes = {};
+    for (const name in node2.value) {
+      if (name !== "rdf:value" && !isNamespaceDefinition(name)) {
+        attributes[getLocalName(name)] = node2.value[name].value;
+      }
+    }
+    return attributes;
+  }
+  __name(parseNodeChildrenAsAttributes, "parseNodeChildrenAsAttributes");
+  function parseRdfValue(node2) {
+    return getURIValue(node2.value["rdf:value"]) || node2.value["rdf:value"].value;
+  }
+  __name(parseRdfValue, "parseRdfValue");
+  function hasNestedStructureRdfDescription(node2) {
+    return node2.attributes["rdf:parseType"] === "Resource" || node2.value["rdf:Description"] !== void 0 && node2.value["rdf:Description"].value["rdf:value"] === void 0;
+  }
+  __name(hasNestedStructureRdfDescription, "hasNestedStructureRdfDescription");
+  function parseNodeAsStructureRdfDescription(node2, name) {
+    const tag = {
+      value: {},
+      attributes: {}
+    };
+    if (node2.value["rdf:Description"] !== void 0) {
+      objectAssign(tag.value, parseNodeAttributesAsTags(node2.value["rdf:Description"].attributes));
+      objectAssign(tag.attributes, parseNodeAttributes(node2));
+      node2 = node2.value["rdf:Description"];
+    }
+    objectAssign(tag.value, parseNodeChildrenAsTags(node2.value));
+    tag.description = getDescription(tag.value, name);
+    return tag;
+  }
+  __name(parseNodeAsStructureRdfDescription, "parseNodeAsStructureRdfDescription");
+  function isCompactStructure(node2) {
+    return Object.keys(node2.value).length === 0 && node2.attributes["xml:lang"] === void 0 && node2.attributes["rdf:resource"] === void 0;
+  }
+  __name(isCompactStructure, "isCompactStructure");
+  function parseNodeAsCompactStructure(node2, name) {
+    const value = parseNodeAttributesAsTags(node2.attributes);
+    return {
+      value,
+      attributes: {},
+      description: getDescription(value, name)
+    };
+  }
+  __name(parseNodeAsCompactStructure, "parseNodeAsCompactStructure");
+  function isArray2(node2) {
+    return getArrayChild(node2.value) !== void 0;
+  }
+  __name(isArray2, "isArray");
+  function getArrayChild(value) {
+    return value["rdf:Bag"] || value["rdf:Seq"] || value["rdf:Alt"];
+  }
+  __name(getArrayChild, "getArrayChild");
+  function parseNodeAsArray(node2, name) {
+    let items = getArrayChild(node2.value).value["rdf:li"];
+    const attributes = parseNodeAttributes(node2);
+    const value = [];
+    if (items === void 0) {
+      items = [];
+    } else if (!Array.isArray(items)) {
+      items = [items];
+    }
+    items.forEach((item) => {
+      value.push(parseArrayValue(item));
+    });
+    return {
+      value,
+      attributes,
+      description: getDescription(value, name)
+    };
+  }
+  __name(parseNodeAsArray, "parseNodeAsArray");
+  function parseArrayValue(item) {
+    if (hasNestedSimpleRdfDescription(item)) {
+      return parseNodeAsSimpleRdfDescription(item);
+    }
+    if (hasNestedStructureRdfDescription(item)) {
+      return parseNodeAsStructureRdfDescription(item).value;
+    }
+    if (isCompactStructure(item)) {
+      return parseNodeAsCompactStructure(item).value;
+    }
+    return parseNodeAsSimpleValue(item);
+  }
+  __name(parseArrayValue, "parseArrayValue");
+  function parseNodeAsSimpleValue(node2, name) {
+    const value = getURIValue(node2) || parseXMPObject(node2.value);
+    return {
+      value,
+      attributes: parseNodeAttributes(node2),
+      description: getDescription(value, name)
+    };
+  }
+  __name(parseNodeAsSimpleValue, "parseNodeAsSimpleValue");
+  function getURIValue(node2) {
+    return node2.attributes && node2.attributes["rdf:resource"];
+  }
+  __name(getURIValue, "getURIValue");
+
+  // node_modules/exifreader/src/icc-tag-names.js
+  var iccTags = {
+    "desc": {
+      "name": "ICC Description"
+    },
+    "cprt": {
+      "name": "ICC Copyright"
+    },
+    "dmdd": {
+      "name": "ICC Device Model Description"
+    },
+    "vued": {
+      "name": "ICC Viewing Conditions Description"
+    },
+    "dmnd": {
+      "name": "ICC Device Manufacturer for Display"
+    },
+    "tech": {
+      "name": "Technology"
+    }
+  };
+  var iccProfile = {
+    4: {
+      "name": "Preferred CMM type",
+      "value": (dataView, offset2) => getStringFromDataView(dataView, offset2, 4),
+      "description": (value) => value !== null ? toCompany(value) : ""
+    },
+    8: {
+      "name": "Profile Version",
+      "value": (dataView, offset2) => {
+        return dataView.getUint8(offset2).toString(10) + "." + (dataView.getUint8(offset2 + 1) >> 4).toString(10) + "." + (dataView.getUint8(offset2 + 1) % 16).toString(10);
+      }
+    },
+    12: {
+      "name": "Profile/Device class",
+      "value": (dataView, offset2) => getStringFromDataView(dataView, offset2, 4),
+      "description": (value) => {
+        switch (value.toLowerCase()) {
+          case "scnr":
+            return "Input Device profile";
+          case "mntr":
+            return "Display Device profile";
+          case "prtr":
+            return "Output Device profile";
+          case "link":
+            return "DeviceLink profile";
+          case "abst":
+            return "Abstract profile";
+          case "spac":
+            return "ColorSpace profile";
+          case "nmcl":
+            return "NamedColor profile";
+          case "cenc":
+            return "ColorEncodingSpace profile";
+          case "mid ":
+            return "MultiplexIdentification profile";
+          case "mlnk":
+            return "MultiplexLink profile";
+          case "mvis":
+            return "MultiplexVisualization profile";
+          default:
+            return value;
+        }
+      }
+    },
+    16: {
+      "name": "Color Space",
+      "value": (dataView, offset2) => getStringFromDataView(dataView, offset2, 4)
+    },
+    20: {
+      "name": "Connection Space",
+      "value": (dataView, offset2) => getStringFromDataView(dataView, offset2, 4)
+    },
+    24: {
+      "name": "ICC Profile Date",
+      "value": (dataView, offset2) => parseDate(dataView, offset2).toISOString()
+    },
+    36: {
+      "name": "ICC Signature",
+      "value": (dataView, offset2) => sliceToString(dataView.buffer.slice(offset2, offset2 + 4))
+    },
+    40: {
+      "name": "Primary Platform",
+      "value": (dataView, offset2) => getStringFromDataView(dataView, offset2, 4),
+      "description": (value) => toCompany(value)
+    },
+    48: {
+      "name": "Device Manufacturer",
+      "value": (dataView, offset2) => getStringFromDataView(dataView, offset2, 4),
+      "description": (value) => toCompany(value)
+    },
+    52: {
+      "name": "Device Model Number",
+      "value": (dataView, offset2) => getStringFromDataView(dataView, offset2, 4)
+    },
+    64: {
+      "name": "Rendering Intent",
+      "value": (dataView, offset2) => dataView.getUint32(offset2),
+      "description": (value) => {
+        switch (value) {
+          case 0:
+            return "Perceptual";
+          case 1:
+            return "Relative Colorimetric";
+          case 2:
+            return "Saturation";
+          case 3:
+            return "Absolute Colorimetric";
+          default:
+            return value;
+        }
+      }
+    },
+    80: {
+      "name": "Profile Creator",
+      "value": (dataView, offset2) => getStringFromDataView(dataView, offset2, 4)
+    }
+  };
+  function parseDate(dataView, offset2) {
+    const year = dataView.getUint16(offset2);
+    const month = dataView.getUint16(offset2 + 2) - 1;
+    const day = dataView.getUint16(offset2 + 4);
+    const hours = dataView.getUint16(offset2 + 6);
+    const minutes = dataView.getUint16(offset2 + 8);
+    const seconds = dataView.getUint16(offset2 + 10);
+    return new Date(Date.UTC(year, month, day, hours, minutes, seconds));
+  }
+  __name(parseDate, "parseDate");
+  function sliceToString(slice3) {
+    return String.fromCharCode.apply(null, new Uint8Array(slice3));
+  }
+  __name(sliceToString, "sliceToString");
+  function toCompany(value) {
+    switch (value.toLowerCase()) {
+      case "appl":
+        return "Apple";
+      case "adbe":
+        return "Adobe";
+      case "msft":
+        return "Microsoft";
+      case "sunw":
+        return "Sun Microsystems";
+      case "sgi":
+        return "Silicon Graphics";
+      case "tgnt":
+        return "Taligent";
+      default:
+        return value;
+    }
+  }
+  __name(toCompany, "toCompany");
+
+  // node_modules/exifreader/src/icc-tags.js
+  var icc_tags_default = {
+    read: read8
+  };
+  var PROFILE_HEADER_LENGTH = 84;
+  var ICC_TAG_COUNT_OFFSET = 128;
+  var ICC_SIGNATURE = "acsp";
+  var TAG_TYPE_DESC = "desc";
+  var TAG_TYPE_MULTI_LOCALIZED_UNICODE_TYPE = "mluc";
+  var TAG_TYPE_TEXT = "text";
+  var TAG_TYPE_SIGNATURE = "sig ";
+  var TAG_TABLE_SINGLE_TAG_DATA = 12;
+  function read8(dataView, iccData) {
+    try {
+      const totalIccProfileLength = iccData.reduce((sum2, icc) => sum2 + icc.length, 0);
+      const iccBinaryData = new Uint8Array(totalIccProfileLength);
+      let offset2 = 0;
+      const buffer = getBuffer(dataView);
+      for (let chunkNumber = 1; chunkNumber <= iccData.length; chunkNumber++) {
+        const iccDataChunk = iccData.find((x) => x.chunkNumber === chunkNumber);
+        if (!iccDataChunk) {
+          throw new Error(`ICC chunk ${chunkNumber} not found`);
+        }
+        const data = buffer.slice(iccDataChunk.offset, iccDataChunk.offset + iccDataChunk.length);
+        const chunkData = new Uint8Array(data);
+        iccBinaryData.set(chunkData, offset2);
+        offset2 += chunkData.length;
+      }
+      return parseTags2(new DataView(iccBinaryData.buffer));
+    } catch (error2) {
+      return {};
+    }
+  }
+  __name(read8, "read");
+  function getBuffer(dataView) {
+    if (Array.isArray(dataView)) {
+      return new DataView(Uint8Array.from(dataView).buffer).buffer;
+    }
+    return dataView.buffer;
+  }
+  __name(getBuffer, "getBuffer");
+  function iccDoesNotHaveTagCount(buffer) {
+    return buffer.length < ICC_TAG_COUNT_OFFSET + 4;
+  }
+  __name(iccDoesNotHaveTagCount, "iccDoesNotHaveTagCount");
+  function hasTagsData(buffer, tagHeaderOffset) {
+    return buffer.length < tagHeaderOffset + TAG_TABLE_SINGLE_TAG_DATA;
+  }
+  __name(hasTagsData, "hasTagsData");
+  function parseTags2(dataView) {
+    const buffer = dataView.buffer;
+    const length2 = dataView.getUint32();
+    if (dataView.byteLength !== length2) {
+      throw new Error("ICC profile length not matching");
+    }
+    if (dataView.length < PROFILE_HEADER_LENGTH) {
+      throw new Error("ICC profile too short");
+    }
+    const tags2 = {};
+    const iccProfileKeys = Object.keys(iccProfile);
+    for (let i = 0; i < iccProfileKeys.length; i++) {
+      const offset2 = iccProfileKeys[i];
+      const profileEntry = iccProfile[offset2];
+      const value = profileEntry.value(dataView, parseInt(offset2, 10));
+      let description = value;
+      if (profileEntry.description) {
+        description = profileEntry.description(value);
+      }
+      tags2[profileEntry.name] = {
+        value,
+        description
+      };
+    }
+    const signature = sliceToString2(buffer.slice(36, 40));
+    if (signature !== ICC_SIGNATURE) {
+      throw new Error("ICC profile: missing signature");
+    }
+    if (iccDoesNotHaveTagCount(buffer)) {
+      return tags2;
+    }
+    const tagCount = dataView.getUint32(128);
+    let tagHeaderOffset = 132;
+    for (let i = 0; i < tagCount; i++) {
+      if (hasTagsData(buffer, tagHeaderOffset)) {
+        return tags2;
+      }
+      const tagSignature = getStringFromDataView(dataView, tagHeaderOffset, 4);
+      const tagOffset = dataView.getUint32(tagHeaderOffset + 4);
+      const tagSize = dataView.getUint32(tagHeaderOffset + 8);
+      if (tagOffset > buffer.length) {
+        return tags2;
+      }
+      const tagType = getStringFromDataView(dataView, tagOffset, 4);
+      if (tagType === TAG_TYPE_DESC) {
+        const tagValueSize = dataView.getUint32(tagOffset + 8);
+        if (tagValueSize > tagSize) {
+          return tags2;
+        }
+        const val = sliceToString2(buffer.slice(tagOffset + 12, tagOffset + tagValueSize + 11));
+        addTag(tags2, tagSignature, val);
+      } else if (tagType === TAG_TYPE_MULTI_LOCALIZED_UNICODE_TYPE) {
+        const numRecords = dataView.getUint32(tagOffset + 8);
+        const recordSize = dataView.getUint32(tagOffset + 12);
+        let offset2 = tagOffset + 16;
+        const val = [];
+        for (let recordNum = 0; recordNum < numRecords; recordNum++) {
+          const languageCode = getStringFromDataView(dataView, offset2 + 0, 2);
+          const countryCode = getStringFromDataView(dataView, offset2 + 2, 2);
+          const textLength = dataView.getUint32(offset2 + 4);
+          const textOffset = dataView.getUint32(offset2 + 8);
+          const text = getUnicodeStringFromDataView(dataView, tagOffset + textOffset, textLength);
+          val.push({ languageCode, countryCode, text });
+          offset2 += recordSize;
+        }
+        if (numRecords === 1) {
+          addTag(tags2, tagSignature, val[0].text);
+        } else {
+          const valObj = {};
+          for (let valIndex = 0; valIndex < val.length; valIndex++) {
+            valObj[`${val[valIndex].languageCode}-${val[valIndex].countryCode}`] = val[valIndex].text;
+          }
+          addTag(tags2, tagSignature, valObj);
+        }
+      } else if (tagType === TAG_TYPE_TEXT) {
+        const val = sliceToString2(buffer.slice(tagOffset + 8, tagOffset + tagSize - 7));
+        addTag(tags2, tagSignature, val);
+      } else if (tagType === TAG_TYPE_SIGNATURE) {
+        const val = sliceToString2(buffer.slice(tagOffset + 8, tagOffset + 12));
+        addTag(tags2, tagSignature, val);
+      }
+      tagHeaderOffset = tagHeaderOffset + 12;
+    }
+    return tags2;
+  }
+  __name(parseTags2, "parseTags");
+  function sliceToString2(slice3) {
+    return String.fromCharCode.apply(null, new Uint8Array(slice3));
+  }
+  __name(sliceToString2, "sliceToString");
+  function addTag(tags2, tagSignature, value) {
+    if (iccTags[tagSignature]) {
+      tags2[iccTags[tagSignature].name] = { value, description: value };
+    } else {
+      tags2[tagSignature] = { value, description: value };
+    }
+  }
+  __name(addTag, "addTag");
+
+  // node_modules/exifreader/src/png-file-tags.js
+  var png_file_tags_default = {
+    read: read9
+  };
+  function read9(dataView, fileDataOffset) {
+    return {
+      "Image Width": getImageWidth2(dataView, fileDataOffset),
+      "Image Height": getImageHeight2(dataView, fileDataOffset),
+      "Bit Depth": getBitDepth(dataView, fileDataOffset),
+      "Color Type": getColorType(dataView, fileDataOffset),
+      "Compression": getCompression(dataView, fileDataOffset),
+      "Filter": getFilter(dataView, fileDataOffset),
+      "Interlace": getInterlace(dataView, fileDataOffset)
+    };
+  }
+  __name(read9, "read");
+  function getImageWidth2(dataView, fileDataOffset) {
+    const OFFSET = 0;
+    const SIZE2 = 4;
+    if (fileDataOffset + OFFSET + SIZE2 > dataView.byteLength) {
+      return void 0;
+    }
+    const value = types_default.getLongAt(dataView, fileDataOffset);
+    return {
+      value,
+      description: `${value}px`
+    };
+  }
+  __name(getImageWidth2, "getImageWidth");
+  function getImageHeight2(dataView, fileDataOffset) {
+    const OFFSET = 4;
+    const SIZE2 = 4;
+    if (fileDataOffset + OFFSET + SIZE2 > dataView.byteLength) {
+      return void 0;
+    }
+    const value = types_default.getLongAt(dataView, fileDataOffset + OFFSET);
+    return {
+      value,
+      description: `${value}px`
+    };
+  }
+  __name(getImageHeight2, "getImageHeight");
+  function getBitDepth(dataView, fileDataOffset) {
+    const OFFSET = 8;
+    const SIZE2 = 1;
+    if (fileDataOffset + OFFSET + SIZE2 > dataView.byteLength) {
+      return void 0;
+    }
+    const value = types_default.getByteAt(dataView, fileDataOffset + OFFSET);
+    return {
+      value,
+      description: `${value}`
+    };
+  }
+  __name(getBitDepth, "getBitDepth");
+  function getColorType(dataView, fileDataOffset) {
+    const OFFSET = 9;
+    const SIZE2 = 1;
+    const COLOR_TYPES = {
+      0: "Grayscale",
+      2: "RGB",
+      3: "Palette",
+      4: "Grayscale with Alpha",
+      6: "RGB with Alpha"
+    };
+    if (fileDataOffset + OFFSET + SIZE2 > dataView.byteLength) {
+      return void 0;
+    }
+    const value = types_default.getByteAt(dataView, fileDataOffset + OFFSET);
+    return {
+      value,
+      description: COLOR_TYPES[value] || "Unknown"
+    };
+  }
+  __name(getColorType, "getColorType");
+  function getCompression(dataView, fileDataOffset) {
+    const OFFSET = 10;
+    const SIZE2 = 1;
+    if (fileDataOffset + OFFSET + SIZE2 > dataView.byteLength) {
+      return void 0;
+    }
+    const value = types_default.getByteAt(dataView, fileDataOffset + OFFSET);
+    return {
+      value,
+      description: value === 0 ? "Deflate/Inflate" : "Unknown"
+    };
+  }
+  __name(getCompression, "getCompression");
+  function getFilter(dataView, fileDataOffset) {
+    const OFFSET = 11;
+    const SIZE2 = 1;
+    if (fileDataOffset + OFFSET + SIZE2 > dataView.byteLength) {
+      return void 0;
+    }
+    const value = types_default.getByteAt(dataView, fileDataOffset + OFFSET);
+    return {
+      value,
+      description: value === 0 ? "Adaptive" : "Unknown"
+    };
+  }
+  __name(getFilter, "getFilter");
+  function getInterlace(dataView, fileDataOffset) {
+    const OFFSET = 12;
+    const SIZE2 = 1;
+    const INTERLACE_TYPES = {
+      0: "Noninterlaced",
+      1: "Adam7 Interlace"
+    };
+    if (fileDataOffset + OFFSET + SIZE2 > dataView.byteLength) {
+      return void 0;
+    }
+    const value = types_default.getByteAt(dataView, fileDataOffset + OFFSET);
+    return {
+      value,
+      description: INTERLACE_TYPES[value] || "Unknown"
+    };
+  }
+  __name(getInterlace, "getInterlace");
+
+  // node_modules/exifreader/src/png-text-tags.js
+  var png_text_tags_default = {
+    read: read10
+  };
+  var STATE_KEYWORD = "STATE_KEYWORD";
+  var STATE_COMPRESSION = "STATE_COMPRESSION";
+  var STATE_LANG = "STATE_LANG";
+  var STATE_TRANSLATED_KEYWORD = "STATE_TRANSLATED_KEYWORD";
+  var STATE_TEXT = "STATE_TEXT";
+  var COMPRESSION_SECTION_LENGTH = 2;
+  function read10(dataView, pngTextChunks) {
+    return pngTextChunks.reduce((tags2, { offset: offset2, length: length2, type }) => {
+      const { name, value, description } = getNameAndValue(dataView, offset2, length2, type);
+      if (name) {
+        tags2[name] = {
+          value,
+          description
+        };
+      }
+      return tags2;
+    }, {});
+  }
+  __name(read10, "read");
+  function getNameAndValue(dataView, offset2, length2, type) {
+    const keywordChars = [];
+    const langChars = [];
+    const translatedKeywordChars = [];
+    const valueChars = [];
+    let parsingState = STATE_KEYWORD;
+    for (let i = 0; i < length2 && offset2 + i < dataView.byteLength; i++) {
+      if (parsingState === STATE_COMPRESSION) {
+        const compressionFlag = dataView.getUint8(offset2 + i);
+        if (compressionFlag !== 0) {
+          return {};
+        }
+        i += COMPRESSION_SECTION_LENGTH;
+        parsingState = moveToNextState(type, parsingState);
+      }
+      const byte = dataView.getUint8(offset2 + i);
+      if (byte === 0) {
+        parsingState = moveToNextState(type, parsingState);
+      } else if (parsingState === STATE_KEYWORD) {
+        keywordChars.push(byte);
+      } else if (parsingState === STATE_LANG) {
+        langChars.push(byte);
+      } else if (parsingState === STATE_TRANSLATED_KEYWORD) {
+        translatedKeywordChars.push(byte);
+      } else {
+        valueChars.push(byte);
+      }
+    }
+    const textValue = getStringValueFromArray(valueChars);
+    return {
+      name: getName(type, langChars, keywordChars),
+      value: textValue,
+      description: type === TYPE_ITXT ? tag_decoder_default.decode("UTF-8", valueChars) : textValue
+    };
+  }
+  __name(getNameAndValue, "getNameAndValue");
+  function moveToNextState(type, parsingState) {
+    if (parsingState === STATE_KEYWORD && type === TYPE_ITXT) {
+      return STATE_COMPRESSION;
+    }
+    if (parsingState === STATE_COMPRESSION) {
+      return STATE_LANG;
+    }
+    if (parsingState === STATE_LANG) {
+      return STATE_TRANSLATED_KEYWORD;
+    }
+    return STATE_TEXT;
+  }
+  __name(moveToNextState, "moveToNextState");
+  function getName(type, langChars, keywordChars) {
+    const name = getStringValueFromArray(keywordChars);
+    if (type === TYPE_TEXT || langChars.length === 0) {
+      return name;
+    }
+    const lang = getStringValueFromArray(langChars);
+    return `${name} (${lang})`;
+  }
+  __name(getName, "getName");
+
+  // node_modules/exifreader/src/png-tags.js
+  var png_tags_default = {
+    read: read11
+  };
+  function read11(dataView, chunkOffsets) {
+    const tags2 = {};
+    for (let i = 0; i < chunkOffsets.length; i++) {
+      const chunkLength = types_default.getLongAt(dataView, chunkOffsets[i] + PNG_CHUNK_LENGTH_OFFSET);
+      const chunkType = getStringFromDataView(dataView, chunkOffsets[i] + PNG_CHUNK_TYPE_OFFSET, PNG_CHUNK_TYPE_SIZE);
+      if (chunkType === TYPE_PHYS) {
+        tags2["Pixels Per Unit X"] = getPixelsPerUnitX(dataView, chunkOffsets[i], chunkLength);
+        tags2["Pixels Per Unit Y"] = getPixelsPerUnitY(dataView, chunkOffsets[i], chunkLength);
+        tags2["Pixel Units"] = getPixelUnits(dataView, chunkOffsets[i], chunkLength);
+      } else if (chunkType === TYPE_TIME) {
+        tags2["Modify Date"] = getModifyDate(dataView, chunkOffsets[i], chunkLength);
+      }
+    }
+    return tags2;
+  }
+  __name(read11, "read");
+  function getPixelsPerUnitX(dataView, chunkOffset, chunkLength) {
+    const TAG_OFFSET = 0;
+    const TAG_SIZE = 4;
+    if (!tagFitsInBuffer(dataView, chunkOffset, chunkLength, TAG_OFFSET, TAG_SIZE)) {
+      return void 0;
+    }
+    const value = types_default.getLongAt(dataView, chunkOffset + PNG_CHUNK_DATA_OFFSET + TAG_OFFSET);
+    return {
+      value,
+      description: "" + value
+    };
+  }
+  __name(getPixelsPerUnitX, "getPixelsPerUnitX");
+  function getPixelsPerUnitY(dataView, chunkOffset, chunkLength) {
+    const TAG_OFFSET = 4;
+    const TAG_SIZE = 4;
+    if (!tagFitsInBuffer(dataView, chunkOffset, chunkLength, TAG_OFFSET, TAG_SIZE)) {
+      return void 0;
+    }
+    const value = types_default.getLongAt(dataView, chunkOffset + PNG_CHUNK_DATA_OFFSET + TAG_OFFSET);
+    return {
+      value,
+      description: "" + value
+    };
+  }
+  __name(getPixelsPerUnitY, "getPixelsPerUnitY");
+  function getPixelUnits(dataView, chunkOffset, chunkLength) {
+    const TAG_OFFSET = 8;
+    const TAG_SIZE = 1;
+    if (!tagFitsInBuffer(dataView, chunkOffset, chunkLength, TAG_OFFSET, TAG_SIZE)) {
+      return void 0;
+    }
+    const value = types_default.getByteAt(dataView, chunkOffset + PNG_CHUNK_DATA_OFFSET + TAG_OFFSET);
+    return {
+      value,
+      description: value === 1 ? "meters" : "Unknown"
+    };
+  }
+  __name(getPixelUnits, "getPixelUnits");
+  function getModifyDate(dataView, chunkOffset, chunkLength) {
+    const TIME_TAG_SIZE = 7;
+    if (!tagFitsInBuffer(dataView, chunkOffset, chunkLength, 0, TIME_TAG_SIZE)) {
+      return void 0;
+    }
+    const year = types_default.getShortAt(dataView, chunkOffset + PNG_CHUNK_DATA_OFFSET);
+    const month = types_default.getByteAt(dataView, chunkOffset + PNG_CHUNK_DATA_OFFSET + 2);
+    const day = types_default.getByteAt(dataView, chunkOffset + PNG_CHUNK_DATA_OFFSET + 3);
+    const hours = types_default.getByteAt(dataView, chunkOffset + PNG_CHUNK_DATA_OFFSET + 4);
+    const minutes = types_default.getByteAt(dataView, chunkOffset + PNG_CHUNK_DATA_OFFSET + 5);
+    const seconds = types_default.getByteAt(dataView, chunkOffset + PNG_CHUNK_DATA_OFFSET + 6);
+    return {
+      value: [year, month, day, hours, minutes, seconds],
+      description: `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)} ${pad(hours, 2)}:${pad(minutes, 2)}:${pad(seconds, 2)}`
+    };
+  }
+  __name(getModifyDate, "getModifyDate");
+  function tagFitsInBuffer(dataView, chunkOffset, chunkLength, tagOffset, tagSize) {
+    return tagOffset + tagSize <= chunkLength && chunkOffset + PNG_CHUNK_DATA_OFFSET + tagOffset + tagSize <= dataView.byteLength;
+  }
+  __name(tagFitsInBuffer, "tagFitsInBuffer");
+  function pad(number, size) {
+    return `${"0".repeat(size - ("" + number).length)}${number}`;
+  }
+  __name(pad, "pad");
+
+  // node_modules/exifreader/src/thumbnail.js
+  var COMPRESSION_JPEG = [6, 7, 99];
+  var thumbnail_default = {
+    get: get4
+  };
+  function get4(dataView, thumbnailTags, tiffHeaderOffset) {
+    if (hasJpegThumbnail(thumbnailTags)) {
+      thumbnailTags.type = "image/jpeg";
+      const offset2 = tiffHeaderOffset + thumbnailTags.JPEGInterchangeFormat.value;
+      thumbnailTags.image = dataView.buffer.slice(offset2, offset2 + thumbnailTags.JPEGInterchangeFormatLength.value);
+      deferInit(thumbnailTags, "base64", function() {
+        return getBase64Image(this.image);
+      });
+    }
+    return thumbnailTags;
+  }
+  __name(get4, "get");
+  function hasJpegThumbnail(tags2) {
+    return tags2 && (tags2.Compression === void 0 || COMPRESSION_JPEG.includes(tags2.Compression.value)) && tags2.JPEGInterchangeFormat && tags2.JPEGInterchangeFormat.value && tags2.JPEGInterchangeFormatLength && tags2.JPEGInterchangeFormatLength.value;
+  }
+  __name(hasJpegThumbnail, "hasJpegThumbnail");
+
+  // node_modules/exifreader/src/errors.js
+  function MetadataMissingError(message) {
+    this.name = "MetadataMissingError";
+    this.message = message || "No Exif data";
+    this.stack = new Error().stack;
+  }
+  __name(MetadataMissingError, "MetadataMissingError");
+  MetadataMissingError.prototype = new Error();
+  var errors_default = {
+    MetadataMissingError
+  };
+
+  // node_modules/exifreader/src/exif-reader.js
+  function load(data, options) {
+    if (isFilePathOrURL(data)) {
+      return loadFile(data, options).then((fileContents) => loadFromData(fileContents, options));
+    }
+    if (isBrowserFileObject(data)) {
+      return loadFileObject(data).then((fileContents) => loadFromData(fileContents, options));
+    }
+    return loadFromData(data, options);
+  }
+  __name(load, "load");
+  function isFilePathOrURL(data) {
+    return typeof data === "string";
+  }
+  __name(isFilePathOrURL, "isFilePathOrURL");
+  function loadFile(filename, options) {
+    if (/^https?:\/\//.test(filename)) {
+      if (typeof fetch !== "undefined") {
+        return browserFetchRemoteFile(filename, options);
+      }
+      return nodeFetchRemoteFile(filename, options);
+    }
+    if (isDataUri(filename)) {
+      return Promise.resolve(dataUriToBuffer(filename));
+    }
+    return loadLocalFile(filename, options);
+  }
+  __name(loadFile, "loadFile");
+  function browserFetchRemoteFile(url, { length: length2 } = {}) {
+    const options = { method: "GET" };
+    if (Number.isInteger(length2) && length2 >= 0) {
+      options.headers = {
+        range: `bytes=0-${length2 - 1}`
+      };
+    }
+    return fetch(url, options).then((response) => response.arrayBuffer());
+  }
+  __name(browserFetchRemoteFile, "browserFetchRemoteFile");
+  function nodeFetchRemoteFile(url, { length: length2 } = {}) {
+    return new Promise((resolve, reject) => {
+      const options = {};
+      if (Number.isInteger(length2) && length2 >= 0) {
+        options.headers = {
+          range: `bytes=0-${length2 - 1}`
+        };
+      }
+      const get5 = requireNodeGet(url);
+      get5(url, options, (response) => {
+        if (response.statusCode >= 200 && response.statusCode <= 299) {
+          const data = [];
+          response.on("data", (chunk) => data.push(Buffer.from(chunk)));
+          response.on("error", (error2) => reject(error2));
+          response.on("end", () => resolve(Buffer.concat(data)));
+        } else {
+          reject(`Could not fetch file: ${response.statusCode} ${response.statusMessage}`);
+          response.resume();
+        }
+      }).on("error", (error2) => reject(error2));
+    });
+  }
+  __name(nodeFetchRemoteFile, "nodeFetchRemoteFile");
+  function requireNodeGet(url) {
+    if (/^https:\/\//.test(url)) {
+      return __non_webpack_require__("https").get;
+    }
+    return __non_webpack_require__("http").get;
+  }
+  __name(requireNodeGet, "requireNodeGet");
+  function isDataUri(filename) {
+    return /^data:[^;,]*(;base64)?,/.test(filename);
+  }
+  __name(isDataUri, "isDataUri");
+  function loadLocalFile(filename, { length: length2 } = {}) {
+    return new Promise((resolve, reject) => {
+      const fs = requireNodeFs();
+      fs.open(filename, (error2, fd) => {
+        if (error2) {
+          reject(error2);
+        } else {
+          fs.stat(filename, (error3, stat) => {
+            if (error3) {
+              reject(error3);
+            } else {
+              const size = Math.min(stat.size, length2 !== void 0 ? length2 : stat.size);
+              const buffer = Buffer.alloc(size);
+              const options = {
+                buffer,
+                length: size
+              };
+              fs.read(fd, options, (error4) => {
+                if (error4) {
+                  reject(error4);
+                } else {
+                  fs.close(fd, (error5) => {
+                    if (error5) {
+                      console.warn(`Could not close file ${filename}:`, error5);
+                    }
+                    resolve(buffer);
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    });
+  }
+  __name(loadLocalFile, "loadLocalFile");
+  function requireNodeFs() {
+    try {
+      return __non_webpack_require__("fs");
+    } catch (error2) {
+      return void 0;
+    }
+  }
+  __name(requireNodeFs, "requireNodeFs");
+  function isBrowserFileObject(data) {
+    return typeof window !== "undefined" && typeof File !== "undefined" && data instanceof File;
+  }
+  __name(isBrowserFileObject, "isBrowserFileObject");
+  function loadFileObject(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (readerEvent) => resolve(readerEvent.target.result);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsArrayBuffer(file);
+    });
+  }
+  __name(loadFileObject, "loadFileObject");
+  function loadFromData(data, options) {
+    if (isNodeBuffer(data)) {
+      data = new Uint8Array(data).buffer;
+    }
+    return loadView(getDataView(data), options);
+  }
+  __name(loadFromData, "loadFromData");
+  function isNodeBuffer(data) {
+    try {
+      return Buffer.isBuffer(data);
+    } catch (error2) {
+      return false;
+    }
+  }
+  __name(isNodeBuffer, "isNodeBuffer");
+  function getDataView(data) {
+    try {
+      return new DataView(data);
+    } catch (error2) {
+      return new DataView2(data);
+    }
+  }
+  __name(getDataView, "getDataView");
+  function loadView(dataView, { expanded = false, includeUnknown = false } = { expanded: false, includeUnknown: false }) {
+    let foundMetaData = false;
+    let tags2 = {};
+    const {
+      fileDataOffset,
+      jfifDataOffset,
+      tiffHeaderOffset,
+      iptcDataOffset,
+      xmpChunks,
+      iccChunks,
+      mpfDataOffset,
+      pngHeaderOffset,
+      pngTextChunks,
+      pngChunkOffsets
+    } = image_header_default.parseAppMarkers(dataView);
+    if (constants_default.USE_JPEG && constants_default.USE_FILE && hasFileData(fileDataOffset)) {
+      foundMetaData = true;
+      const readTags2 = file_tags_default.read(dataView, fileDataOffset);
+      if (expanded) {
+        tags2.file = readTags2;
+      } else {
+        tags2 = objectAssign({}, tags2, readTags2);
+      }
+    }
+    if (constants_default.USE_JPEG && constants_default.USE_JFIF && hasJfifData(jfifDataOffset)) {
+      foundMetaData = true;
+      const readTags2 = jfif_tags_default.read(dataView, jfifDataOffset);
+      if (expanded) {
+        tags2.jfif = readTags2;
+      } else {
+        tags2 = objectAssign({}, tags2, readTags2);
+      }
+    }
+    if (constants_default.USE_EXIF && hasExifData(tiffHeaderOffset)) {
+      foundMetaData = true;
+      const readTags2 = tags_default.read(dataView, tiffHeaderOffset, includeUnknown);
+      if (readTags2.Thumbnail) {
+        tags2.Thumbnail = readTags2.Thumbnail;
+        delete readTags2.Thumbnail;
+      }
+      if (expanded) {
+        tags2.exif = readTags2;
+        addGpsGroup(tags2);
+      } else {
+        tags2 = objectAssign({}, tags2, readTags2);
+      }
+      if (constants_default.USE_TIFF && constants_default.USE_IPTC && readTags2["IPTC-NAA"] && !hasIptcData(iptcDataOffset)) {
+        const readIptcTags = iptc_tags_default.read(readTags2["IPTC-NAA"].value, 0, includeUnknown);
+        if (expanded) {
+          tags2.iptc = readIptcTags;
+        } else {
+          tags2 = objectAssign({}, tags2, readIptcTags);
+        }
+      }
+      if (constants_default.USE_TIFF && constants_default.USE_XMP && readTags2["ApplicationNotes"] && !hasXmpData(xmpChunks)) {
+        const readXmpTags = xmp_tags_default.read(getStringValueFromArray(readTags2["ApplicationNotes"].value));
+        if (expanded) {
+          tags2.xmp = readXmpTags;
+        } else {
+          delete readXmpTags._raw;
+          tags2 = objectAssign({}, tags2, readXmpTags);
+        }
+      }
+      if (constants_default.USE_TIFF && constants_default.USE_ICC && readTags2["ICC_Profile"] && !hasIccData(iccChunks)) {
+        const readIccTags = icc_tags_default.read(
+          readTags2["ICC_Profile"].value,
+          [{
+            offset: 0,
+            length: readTags2["ICC_Profile"].value.length,
+            chunkNumber: 1,
+            chunksTotal: 1
+          }]
+        );
+        if (expanded) {
+          tags2.icc = readIccTags;
+        } else {
+          tags2 = objectAssign({}, tags2, readIccTags);
+        }
+      }
+    }
+    if (constants_default.USE_JPEG && constants_default.USE_IPTC && hasIptcData(iptcDataOffset)) {
+      foundMetaData = true;
+      const readTags2 = iptc_tags_default.read(dataView, iptcDataOffset, includeUnknown);
+      if (expanded) {
+        tags2.iptc = readTags2;
+      } else {
+        tags2 = objectAssign({}, tags2, readTags2);
+      }
+    }
+    if (constants_default.USE_XMP && hasXmpData(xmpChunks)) {
+      foundMetaData = true;
+      const readTags2 = xmp_tags_default.read(dataView, xmpChunks);
+      if (expanded) {
+        tags2.xmp = readTags2;
+      } else {
+        delete readTags2._raw;
+        tags2 = objectAssign({}, tags2, readTags2);
+      }
+    }
+    if ((constants_default.USE_JPEG || constants_default.USE_WEBP) && constants_default.USE_ICC && hasIccData(iccChunks)) {
+      foundMetaData = true;
+      const readTags2 = icc_tags_default.read(dataView, iccChunks);
+      if (expanded) {
+        tags2.icc = readTags2;
+      } else {
+        tags2 = objectAssign({}, tags2, readTags2);
+      }
+    }
+    if (constants_default.USE_MPF && hasMpfData(mpfDataOffset)) {
+      foundMetaData = true;
+      const readMpfTags = tags_default.readMpf(dataView, mpfDataOffset, includeUnknown);
+      if (expanded) {
+        tags2.mpf = readMpfTags;
+      } else {
+        tags2 = objectAssign({}, tags2, readMpfTags);
+      }
+    }
+    if (constants_default.USE_PNG && constants_default.USE_PNG_FILE && hasPngFileData(pngHeaderOffset)) {
+      foundMetaData = true;
+      const readTags2 = png_file_tags_default.read(dataView, pngHeaderOffset);
+      if (expanded) {
+        tags2.png = !tags2.png ? readTags2 : objectAssign({}, tags2.png, readTags2);
+        tags2.pngFile = readTags2;
+      } else {
+        tags2 = objectAssign({}, tags2, readTags2);
+      }
+    }
+    if (constants_default.USE_PNG && hasPngTextData(pngTextChunks)) {
+      foundMetaData = true;
+      const readTags2 = png_text_tags_default.read(dataView, pngTextChunks);
+      if (expanded) {
+        tags2.png = !tags2.png ? readTags2 : objectAssign({}, tags2.png, readTags2);
+        tags2.pngText = readTags2;
+      } else {
+        tags2 = objectAssign({}, tags2, readTags2);
+      }
+    }
+    if (constants_default.USE_PNG && hasPngData(pngChunkOffsets)) {
+      foundMetaData = true;
+      const readTags2 = png_tags_default.read(dataView, pngChunkOffsets);
+      if (expanded) {
+        tags2.png = !tags2.png ? readTags2 : objectAssign({}, tags2.png, readTags2);
+      } else {
+        tags2 = objectAssign({}, tags2, readTags2);
+      }
+    }
+    const thumbnail = (constants_default.USE_JPEG || constants_default.USE_WEBP) && constants_default.USE_EXIF && constants_default.USE_THUMBNAIL && thumbnail_default.get(dataView, tags2.Thumbnail, tiffHeaderOffset);
+    if (thumbnail) {
+      foundMetaData = true;
+      tags2.Thumbnail = thumbnail;
+    } else {
+      delete tags2.Thumbnail;
+    }
+    if (!foundMetaData) {
+      throw new errors_default.MetadataMissingError();
+    }
+    return tags2;
+  }
+  __name(loadView, "loadView");
+  function hasFileData(fileDataOffset) {
+    return fileDataOffset !== void 0;
+  }
+  __name(hasFileData, "hasFileData");
+  function hasJfifData(jfifDataOffset) {
+    return jfifDataOffset !== void 0;
+  }
+  __name(hasJfifData, "hasJfifData");
+  function hasExifData(tiffHeaderOffset) {
+    return tiffHeaderOffset !== void 0;
+  }
+  __name(hasExifData, "hasExifData");
+  function addGpsGroup(tags2) {
+    if (tags2.exif) {
+      if (tags2.exif.GPSLatitude && tags2.exif.GPSLatitudeRef) {
+        try {
+          tags2.gps = tags2.gps || {};
+          tags2.gps.Latitude = getCalculatedGpsValue(tags2.exif.GPSLatitude.value);
+          if (tags2.exif.GPSLatitudeRef.value.join("") === "S") {
+            tags2.gps.Latitude = -tags2.gps.Latitude;
+          }
+        } catch (error2) {
+        }
+      }
+      if (tags2.exif.GPSLongitude && tags2.exif.GPSLongitudeRef) {
+        try {
+          tags2.gps = tags2.gps || {};
+          tags2.gps.Longitude = getCalculatedGpsValue(tags2.exif.GPSLongitude.value);
+          if (tags2.exif.GPSLongitudeRef.value.join("") === "W") {
+            tags2.gps.Longitude = -tags2.gps.Longitude;
+          }
+        } catch (error2) {
+        }
+      }
+      if (tags2.exif.GPSAltitude && tags2.exif.GPSAltitudeRef) {
+        try {
+          tags2.gps = tags2.gps || {};
+          tags2.gps.Altitude = tags2.exif.GPSAltitude.value[0] / tags2.exif.GPSAltitude.value[1];
+          if (tags2.exif.GPSAltitudeRef.value === 1) {
+            tags2.gps.Altitude = -tags2.gps.Altitude;
+          }
+        } catch (error2) {
+        }
+      }
+    }
+  }
+  __name(addGpsGroup, "addGpsGroup");
+  function hasIptcData(iptcDataOffset) {
+    return iptcDataOffset !== void 0;
+  }
+  __name(hasIptcData, "hasIptcData");
+  function hasXmpData(xmpChunks) {
+    return Array.isArray(xmpChunks) && xmpChunks.length > 0;
+  }
+  __name(hasXmpData, "hasXmpData");
+  function hasIccData(iccDataOffsets) {
+    return Array.isArray(iccDataOffsets) && iccDataOffsets.length > 0;
+  }
+  __name(hasIccData, "hasIccData");
+  function hasMpfData(mpfDataOffset) {
+    return mpfDataOffset !== void 0;
+  }
+  __name(hasMpfData, "hasMpfData");
+  function hasPngFileData(pngFileDataOffset) {
+    return pngFileDataOffset !== void 0;
+  }
+  __name(hasPngFileData, "hasPngFileData");
+  function hasPngTextData(pngTextChunks) {
+    return pngTextChunks !== void 0;
+  }
+  __name(hasPngTextData, "hasPngTextData");
+  function hasPngData(pngChunkOffsets) {
+    return pngChunkOffsets !== void 0;
+  }
+  __name(hasPngData, "hasPngData");
+
   // out/src/components/Profiles.js
+  var import_lodash3 = __toESM(require_lodash(), 1);
   var React149 = __toESM(require_react(), 1);
   var import_react32 = __toESM(require_react(), 1);
   function Profiles(props) {
@@ -76781,6 +81686,24 @@ Please use another name.` : formatMuiErrorMessage(18));
           Button_default,
           { type: "button", variant: "contained", onClick: () => setDialogOpen(true) },
           React149.createElement(Save_default, null)
+        ),
+        React149.createElement(
+          Button_default,
+          { component: "label", variant: "contained" },
+          React149.createElement(ImageSearch_default, null),
+          React149.createElement("input", { hidden: true, accept: ".json,.jpg,.jpeg,.png,.txt,.webp", type: "file", onChange: (event) => {
+            const { files } = event.target;
+            if (doesExist2(files) && files.length > 0) {
+              const file = mustExist(files[0]);
+              loadParamsFromFile(file).then((newParams) => {
+                if (doesExist2(props.setParams) && doesExist2(newParams)) {
+                  props.setParams(Object.assign(Object.assign({}, props.params), newParams));
+                }
+              });
+            }
+          }, onClick: (event) => {
+            event.currentTarget.value = "";
+          } })
         )
       ), onChange: (event, value) => {
         if (doesExist2(value) && doesExist2(props.setParams)) {
@@ -76815,6 +81738,96 @@ Please use another name.` : formatMuiErrorMessage(18));
     );
   }
   __name(Profiles, "Profiles");
+  async function loadParamsFromFile(file) {
+    const parts = file.name.toLocaleLowerCase().split(".");
+    const ext = parts[parts.length - 1];
+    switch (ext) {
+      case "jpg":
+      case "jpeg":
+      case "png":
+      case "webp":
+        return parseImageParams(file);
+      case "json":
+        return parseJSONParams(await file.text());
+      case "txt":
+      default:
+        return parseAutoComment(await file.text());
+    }
+  }
+  __name(loadParamsFromFile, "loadParamsFromFile");
+  async function parseImageParams(file) {
+    const tags2 = await load(file);
+    const makerNote = tags2.MakerNote || tags2["maker note"];
+    const userComment = tags2.UserComment || tags2["Parameters"] || tags2["parameters"];
+    if (doesExist2(makerNote) && (0, import_lodash3.isString)(makerNote.value) && isProbablyJSON(makerNote.value)) {
+      return parseJSONParams(makerNote.value);
+    }
+    if (doesExist2(userComment) && (0, import_lodash3.isString)(userComment.value)) {
+      return parseAutoComment(userComment.value);
+    }
+    return {};
+  }
+  __name(parseImageParams, "parseImageParams");
+  async function parseJSONParams(json) {
+    const data = JSON.parse(json);
+    const params = Object.assign({}, data.params);
+    const size = (0, import_lodash3.defaultTo)(data.input_size, data.size);
+    if (doesExist2(size)) {
+      params.height = size.height;
+      params.width = size.width;
+    }
+    return params;
+  }
+  __name(parseJSONParams, "parseJSONParams");
+  function isProbablyJSON(maybeJSON) {
+    return typeof maybeJSON === "string" && maybeJSON[0] === "{" && maybeJSON[maybeJSON.length - 1] === "}";
+  }
+  __name(isProbablyJSON, "isProbablyJSON");
+  var NEGATIVE_PROMPT_TAG = "Negative prompt:";
+  async function parseAutoComment(comment2) {
+    if (isProbablyJSON(comment2)) {
+      return parseJSONParams(comment2);
+    }
+    const lines = comment2.split("\n");
+    const [prompt, maybeNegative, ...otherLines] = lines;
+    const params = {
+      prompt
+    };
+    if (maybeNegative.startsWith(NEGATIVE_PROMPT_TAG)) {
+      params.negativePrompt = maybeNegative.substring(NEGATIVE_PROMPT_TAG.length).trim();
+    } else {
+      otherLines.unshift(maybeNegative);
+    }
+    const other = otherLines.join(" ");
+    const otherParams = other.split(",");
+    for (const param of otherParams) {
+      const [key, value] = param.split(":");
+      switch (key.toLocaleLowerCase().trim()) {
+        case "steps":
+          params.steps = parseInt(value, 10);
+          break;
+        case "sampler":
+          params.scheduler = value;
+          break;
+        case "cfg scale":
+          params.cfg = parseInt(value, 10);
+          break;
+        case "seed":
+          params.seed = parseInt(value, 10);
+          break;
+        case "size":
+          {
+            const [width2, height2] = value.split("x");
+            params.height = parseInt(height2, 10);
+            params.width = parseInt(width2, 10);
+          }
+          break;
+        default:
+      }
+    }
+    return params;
+  }
+  __name(parseAutoComment, "parseAutoComment");
 
   // out/src/components/control/ImageControl.js
   function ImageControl(props) {
@@ -77213,7 +82226,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(Inpaint, "Inpaint");
 
   // out/src/components/tab/Models.js
-  var import_lodash3 = __toESM(require_lodash(), 1);
+  var import_lodash4 = __toESM(require_lodash(), 1);
   var React161 = __toESM(require_react(), 1);
 
   // out/src/components/input/EditableList.js
@@ -77426,7 +82439,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/tab/Models.js
   var { useContext: useContext41, useEffect: useEffect31 } = React161;
-  var { kebabCase } = import_lodash3.default;
+  var { kebabCase } = import_lodash4.default;
   function mergeModelLists(local, server = []) {
     const localNames = new Set(local.map((it) => it.name));
     const merged = [...local];
