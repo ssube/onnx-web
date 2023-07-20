@@ -97,6 +97,9 @@ export function Profiles(props: ProfilesProps) {
                   });
                 }
               }}
+              onClick={(event) => {
+                event.currentTarget.value = '';
+              }}
             />
           </Button>
         </Stack>
@@ -228,7 +231,11 @@ export function parseAutoComment(comment: string): Partial<Txt2ImgParams> {
         params.seed = parseInt(value, 10);
         break;
       case 'size':
-        // TODO: parse size
+        {
+          const [width, height] = value.split('x');
+          params.height = parseInt(height, 10);
+          params.width = parseInt(width, 10);
+        }
         break;
       default:
         // unknown param
