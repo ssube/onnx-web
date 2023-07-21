@@ -1,4 +1,4 @@
-import { doesExist, mustExist } from '@apextoaster/js-utils';
+import { InvalidArgumentError, Maybe, doesExist, mustExist } from '@apextoaster/js-utils';
 import { Delete as DeleteIcon, ImageSearch, Save as SaveIcon } from '@mui/icons-material';
 import {
   Autocomplete,
@@ -172,19 +172,40 @@ export async function parseImageParams(file: File): Promise<Partial<Txt2ImgParam
   const tags = await ExifReader.load(file);
 
   // handle lowercase variation from my earlier mistakes
-  const makerNote = tags.MakerNote || tags['maker note'];
+  const makerNote = decodeTag(defaultTo(tags.MakerNote, tags['maker note']));
   // eslint-disable-next-line dot-notation, @typescript-eslint/strict-boolean-expressions
-  const userComment = tags.UserComment || tags['Parameters'] || tags['parameters'];
+  const userComment = decodeTag(defaultTo(defaultTo(tags.UserComment, tags['Parameters']), tags['parameters']));
 
-  if (doesExist(makerNote) && isString(makerNote.value) && isProbablyJSON(makerNote.value)) {
-    return parseJSONParams(makerNote.value);
+  if (doesExist(makerNote) && isProbablyJSON(makerNote)) {
+    return parseJSONParams(makerNote);
   }
 
-  if (doesExist(userComment) && isString(userComment.value)) {
-    return parseAutoComment(userComment.value);
+  if (doesExist(userComment)) {
+    return parseAutoComment(userComment);
   }
 
   return {};
+}
+
+export function isNumberArray(it: unknown): it is Array<number> {
+  return Array.isArray(it) && typeof it[0] === 'number';
+}
+
+export function decodeTag(tag: Maybe<ExifReader.XmpTag | (ExifReader.NumberTag & ExifReader.NumberArrayTag)>): Maybe<string> {
+  // eslint-disable-next-line no-restricted-syntax
+  if (!doesExist(tag)) {
+    return undefined;
+  }
+
+  if (isString(tag.value)) {
+    return tag.value;
+  }
+
+  if (tag.description === '[Unicode encoded text]' && isNumberArray(tag.value)) {
+    return Buffer.from(tag.value).toString('utf-8');
+  }
+
+  throw new InvalidArgumentError('tag value cannot be decoded');
 }
 
 export async function parseJSONParams(json: string): Promise<Partial<Txt2ImgParams>> {
