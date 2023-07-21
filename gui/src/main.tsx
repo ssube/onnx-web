@@ -47,35 +47,27 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
 
   // prep zustand with a slice for each tab, using local storage
   const {
-    createBrushSlice,
     createDefaultSlice,
     createHistorySlice,
     createImg2ImgSlice,
     createInpaintSlice,
     createModelSlice,
-    createOutpaintSlice,
     createTxt2ImgSlice,
     createUpscaleSlice,
-    createHighresSlice,
     createBlendSlice,
     createResetSlice,
-    createExtraSlice,
     createProfileSlice,
   } = createStateSlices(params);
   const state = createStore<OnnxState, [['zustand/persist', OnnxState]]>(persist((...slice) => ({
-    ...createBrushSlice(...slice),
     ...createDefaultSlice(...slice),
     ...createHistorySlice(...slice),
     ...createImg2ImgSlice(...slice),
     ...createInpaintSlice(...slice),
     ...createModelSlice(...slice),
     ...createTxt2ImgSlice(...slice),
-    ...createOutpaintSlice(...slice),
     ...createUpscaleSlice(...slice),
-    ...createHighresSlice(...slice),
     ...createBlendSlice(...slice),
     ...createResetSlice(...slice),
-    ...createExtraSlice(...slice),
     ...createProfileSlice(...slice),
   }), {
     name: STATE_KEY,
@@ -91,8 +83,8 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
           mask: undefined,
           source: undefined,
         },
-        upscaleTab: {
-          ...s.upscaleTab,
+        upscale: {
+          ...s.upscale,
           source: undefined,
         },
         blend: {

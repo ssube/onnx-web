@@ -14,12 +14,13 @@ import { ImageInput } from '../input/ImageInput.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
 import { HighresControl } from '../control/HighresControl.js';
+import { ModelControl } from '../control/ModelControl.js';
+import { Profiles } from '../Profiles.js';
 
 export function Img2Img() {
   const { params } = mustExist(useContext(ConfigContext));
 
   async function uploadSource() {
-    const { model, img2img, upscale, highres } = state.getState();
     const { image, retry } = await client.img2img(model, {
       ...img2img,
       source: mustExist(img2img.source), // TODO: show an error if this doesn't exist
@@ -42,21 +43,27 @@ export function Img2Img() {
   });
 
   const state = mustExist(useContext(StateContext));
-  const control = useStore(state, (s) => s.model.control);
+  const model = useStore(state, (s) => s.img2imgModel);
   const source = useStore(state, (s) => s.img2img.source);
-  const sourceFilter = useStore(state, (s) => s.img2img.sourceFilter);
-  const strength = useStore(state, (s) => s.img2img.strength);
-  const loopback = useStore(state, (s) => s.img2img.loopback);
+  const img2img = useStore(state, (s) => s.img2img);
+  const highres = useStore(state, (s) => s.img2imgHighres);
+  const upscale = useStore(state, (s) => s.img2imgUpscale);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setModel = useStore(state, (s) => s.setModel);
+  const setHighres = useStore(state, (s) => s.setImg2ImgHighres);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setUpscale = useStore(state, (s) => s.setImg2ImgUpscale);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setModel = useStore(state, (s) => s.setImg2ImgModel);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
 
   return <Box>
     <Stack spacing={2}>
+      <Profiles params={img2img} setParams={setImg2Img} highres={highres} setHighres={setHighres} upscale={upscale} setUpscale={setUpscale} />
+      <ModelControl model={model} setModel={setModel} />
       <ImageInput
         filter={IMAGE_FILTER}
         image={source}
@@ -77,7 +84,7 @@ export function Img2Img() {
             result: models,
             selector: (result) => result.networks.filter((network) => network.type === 'control').map((network) => network.name),
           }}
-          value={control}
+          value={model.control}
           onChange={(newControl) => {
             setModel({
               control: newControl,
@@ -93,7 +100,7 @@ export function Img2Img() {
             selector: (f) => f.source,
           }}
           showNone
-          value={sourceFilter}
+          value={img2img.sourceFilter}
           onChange={(newFilter) => {
             setImg2Img({
               sourceFilter: newFilter,
@@ -106,7 +113,7 @@ export function Img2Img() {
           min={params.strength.min}
           max={params.strength.max}
           step={params.strength.step}
-          value={strength}
+          value={img2img.strength}
           onChange={(value) => {
             setImg2Img({
               strength: value,
@@ -118,7 +125,7 @@ export function Img2Img() {
           min={params.loopback.min}
           max={params.loopback.max}
           step={params.loopback.step}
-          value={loopback}
+          value={img2img.loopback}
           onChange={(value) => {
             setImg2Img({
               loopback: value,
@@ -126,8 +133,8 @@ export function Img2Img() {
           }}
         />
       </Stack>
-      <HighresControl />
-      <UpscaleControl />
+      <HighresControl highres={highres} setHighres={setHighres} />
+      <UpscaleControl upscale={upscale} setUpscale={setUpscale} />
       <Button
         disabled={doesExist(source) === false}
         variant='contained'

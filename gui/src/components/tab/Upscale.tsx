@@ -1,25 +1,27 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
 import { IMAGE_FILTER } from '../../config.js';
 import { ClientContext, StateContext } from '../../state.js';
+import { HighresControl } from '../control/HighresControl.js';
+import { ModelControl } from '../control/ModelControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { PromptInput } from '../input/PromptInput.js';
-import { HighresControl } from '../control/HighresControl.js';
+import { Profiles } from '../Profiles.js';
 
 export function Upscale() {
   async function uploadSource() {
-    const { highres, model, upscale } = state.getState();
-    const { image, retry } = await client.upscale(model, {
-      ...params,
-      source: mustExist(params.source), // TODO: show an error if this doesn't exist
-    }, upscale, highres);
+    const { upscaleHighres, upscaleUpscale, upscaleModel, upscale } = state.getState();
+    const { image, retry } = await client.upscale(upscaleModel, {
+      ...upscale,
+      source: mustExist(upscale.source), // TODO: show an error if this doesn't exist
+    }, upscaleUpscale, upscaleHighres);
 
     pushHistory(image, retry);
   }
@@ -31,21 +33,32 @@ export function Upscale() {
   });
 
   const state = mustExist(useContext(StateContext));
-  const params = useStore(state, (s) => s.upscaleTab);
+  const highres = useStore(state, (s) => s.upscaleHighres);
+  const model = useStore(state, (s) => s.upscaleModel);
+  const params = useStore(state, (s) => s.upscale);
+  const upscale = useStore(state, (s) => s.upscaleUpscale);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setSource = useStore(state, (s) => s.setUpscaleTab);
+  const setModel = useStore(state, (s) => s.setUpscalingModel);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setHighres = useStore(state, (s) => s.setUpscaleHighres);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setUpscale = useStore(state, (s) => s.setUpscaleUpscale);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setParams = useStore(state, (s) => s.setUpscale);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
 
   return <Box>
     <Stack spacing={2}>
+      <Profiles params={params} setParams={setParams} highres={highres} setHighres={setHighres} upscale={upscale} setUpscale={setUpscale} />
+      <ModelControl model={model} setModel={setModel} />
       <ImageInput
         filter={IMAGE_FILTER}
         image={params.source}
         label={t('input.image.source')}
         onChange={(file) => {
-          setSource({
+          setParams({
             source: file,
           });
         }}
@@ -54,11 +67,11 @@ export function Upscale() {
         prompt={params.prompt}
         negativePrompt={params.negativePrompt}
         onChange={(value) => {
-          setSource(value);
+          setParams(value);
         }}
       />
-      <HighresControl />
-      <UpscaleControl />
+      <HighresControl highres={highres} setHighres={setHighres} />
+      <UpscaleControl upscale={upscale} setUpscale={setUpscale} />
       <Button
         disabled={doesExist(params.source) === false}
         variant='contained'

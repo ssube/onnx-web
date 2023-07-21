@@ -20,29 +20,35 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
-import { BaseImgParams, Txt2ImgParams } from '../client/types.js';
+import { BaseImgParams, HighresParams, Txt2ImgParams, UpscaleParams } from '../client/types.js';
 import { StateContext } from '../state.js';
 
+const { useState, Fragment } = React;
+
 export interface ProfilesProps {
+  highres: HighresParams;
   params: BaseImgParams;
-  setParams: ((params: BaseImgParams) => void) | undefined;
+  upscale: UpscaleParams;
+
+  setHighres(params: HighresParams): void;
+  setParams(params: BaseImgParams): void;
+  setUpscale(params: UpscaleParams): void;
 }
 
 export function Profiles(props: ProfilesProps) {
   const state = mustExist(useContext(StateContext));
+  const profiles = useStore(state, (s) => s.profiles);
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const saveProfile = useStore(state, (s) => s.saveProfile);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const removeProfile = useStore(state, (s) => s.removeProfile);
-  const profiles = useStore(state, (s) => s.profiles);
-  const highres = useStore(state, (s) => s.highres);
-  const upscale = useStore(state, (s) => s.upscale);
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [profileName, setProfileName] = React.useState('');
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [profileName, setProfileName] = useState('');
   const { t } = useTranslation();
 
-  return <>
+  return <Stack direction='row' spacing={2}>
     <Autocomplete
       id="profile-select"
       options={profiles}
@@ -77,36 +83,10 @@ export function Profiles(props: ProfilesProps) {
           <Button type="button" variant="contained" onClick={() => setDialogOpen(true)}>
             <SaveIcon />
           </Button>
-          <Button component='label' variant="contained">
-            <ImageSearch />
-            <input
-              hidden
-              accept={'.json,.jpg,.jpeg,.png,.txt,.webp'}
-              type='file'
-              onChange={(event) => {
-                const { files } = event.target;
-                if (doesExist(files) && files.length > 0) {
-                  const file = mustExist(files[0]);
-                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                  loadParamsFromFile(file).then((newParams) => {
-                    if (doesExist(props.setParams) && doesExist(newParams)) {
-                      props.setParams({
-                        ...props.params,
-                        ...newParams,
-                      });
-                    }
-                  });
-                }
-              }}
-              onClick={(event) => {
-                event.currentTarget.value = '';
-              }}
-            />
-          </Button>
         </Stack>
       )}
       onChange={(event, value) => {
-        if (doesExist(value) && doesExist(props.setParams)) {
+        if (doesExist(value)) {
           props.setParams({
             ...value.params
           });
@@ -138,8 +118,8 @@ export function Profiles(props: ProfilesProps) {
             saveProfile({
               params: props.params,
               name: profileName,
-              highResParams: highres,
-              upscaleParams: upscale,
+              highResParams: props.highres,
+              upscaleParams: props.upscale,
             });
             setDialogOpen(false);
             setProfileName('');
@@ -147,7 +127,33 @@ export function Profiles(props: ProfilesProps) {
         >{t('profile.save')}</Button>
       </DialogActions>
     </Dialog>
-  </>;
+    <Button component='label' variant="contained">
+      <ImageSearch />
+      <input
+        hidden
+        accept={'.json,.jpg,.jpeg,.png,.txt,.webp'}
+        type='file'
+        onChange={(event) => {
+          const { files } = event.target;
+          if (doesExist(files) && files.length > 0) {
+            const file = mustExist(files[0]);
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            loadParamsFromFile(file).then((newParams) => {
+              if (doesExist(newParams)) {
+                props.setParams({
+                  ...props.params,
+                  ...newParams,
+                });
+              }
+            });
+          }
+        }}
+        onClick={(event) => {
+          event.currentTarget.value = '';
+        }}
+      />
+    </Button>
+  </Stack>;
 }
 
 export async function loadParamsFromFile(file: File): Promise<Partial<Txt2ImgParams>> {
@@ -276,7 +282,7 @@ export async function parseAutoComment(comment: string): Promise<Partial<Txt2Img
         }
         break;
       default:
-        // unknown param
+      // unknown param
     }
   }
 

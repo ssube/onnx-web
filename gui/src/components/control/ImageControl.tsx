@@ -13,21 +13,21 @@ import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../sta
 import { NumericField } from '../input/NumericField.js';
 import { PromptInput } from '../input/PromptInput.js';
 import { QueryList } from '../input/QueryList.js';
-import { Profiles } from '../Profiles.js';
 
 export interface ImageControlProps {
-  selector: (state: OnnxState) => BaseImgParams;
-
-  onChange?: (params: BaseImgParams) => void;
+  onChange(params: BaseImgParams): void;
+  selector(state: OnnxState): BaseImgParams;
 }
 
 /**
  * Doesn't need to use state directly, the parent component knows which params to pass
  */
 export function ImageControl(props: ImageControlProps) {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const { onChange, selector } = props;
   const { params } = mustExist(useContext(ConfigContext));
   const state = mustExist(useContext(StateContext));
-  const controlState = useStore(state, props.selector);
+  const controlState = useStore(state, selector);
   const { t } = useTranslation();
 
   const client = mustExist(useContext(ClientContext));
@@ -40,7 +40,6 @@ export function ImageControl(props: ImageControlProps) {
 
   return <Stack spacing={2}>
     <Stack direction='row' spacing={4}>
-      <Profiles params={controlState} setParams={props.onChange} />
       <QueryList
         id='schedulers'
         labelKey='scheduler'
@@ -50,8 +49,8 @@ export function ImageControl(props: ImageControlProps) {
         }}
         value={mustDefault(controlState.scheduler, '')}
         onChange={(value) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
+          if (doesExist(onChange)) {
+            onChange({
               ...controlState,
               scheduler: value,
             });
@@ -66,8 +65,8 @@ export function ImageControl(props: ImageControlProps) {
         step={params.eta.step}
         value={controlState.eta}
         onChange={(eta) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
+          if (doesExist(onChange)) {
+            onChange({
               ...controlState,
               eta,
             });
@@ -82,8 +81,8 @@ export function ImageControl(props: ImageControlProps) {
         step={params.cfg.step}
         value={controlState.cfg}
         onChange={(cfg) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
+          if (doesExist(onChange)) {
+            onChange({
               ...controlState,
               cfg,
             });
@@ -97,12 +96,10 @@ export function ImageControl(props: ImageControlProps) {
         step={params.steps.step}
         value={controlState.steps}
         onChange={(steps) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
-              ...controlState,
-              steps,
-            });
-          }
+          onChange({
+            ...controlState,
+            steps,
+          });
         }}
       />
       <NumericField
@@ -112,12 +109,10 @@ export function ImageControl(props: ImageControlProps) {
         step={params.seed.step}
         value={controlState.seed}
         onChange={(seed) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
-              ...controlState,
-              seed,
-            });
-          }
+          onChange({
+            ...controlState,
+            seed,
+          });
         }}
       />
       <Button
@@ -125,12 +120,10 @@ export function ImageControl(props: ImageControlProps) {
         startIcon={<Casino />}
         onClick={() => {
           const seed = Math.floor(Math.random() * params.seed.max);
-          if (doesExist(props.onChange)) {
-            props.onChange({
-              ...controlState,
-              seed,
-            });
-          }
+          props.onChange({
+            ...controlState,
+            seed,
+          });
         }}
       >
         {t('parameter.newSeed')}
@@ -144,12 +137,10 @@ export function ImageControl(props: ImageControlProps) {
         step={params.batch.step}
         value={controlState.batch}
         onChange={(batch) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
-              ...controlState,
-              batch,
-            });
-          }
+          props.onChange({
+            ...controlState,
+            batch,
+          });
         }}
       />
       <NumericField
@@ -159,12 +150,10 @@ export function ImageControl(props: ImageControlProps) {
         step={params.tiles.step}
         value={controlState.tiles}
         onChange={(tiles) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
-              ...controlState,
-              tiles,
-            });
-          }
+          props.onChange({
+            ...controlState,
+            tiles,
+          });
         }}
       />
       <NumericField
@@ -175,12 +164,10 @@ export function ImageControl(props: ImageControlProps) {
         step={params.overlap.step}
         value={controlState.overlap}
         onChange={(overlap) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
-              ...controlState,
-              overlap,
-            });
-          }
+          props.onChange({
+            ...controlState,
+            overlap,
+          });
         }}
       />
       <NumericField
@@ -190,12 +177,10 @@ export function ImageControl(props: ImageControlProps) {
         step={params.stride.step}
         value={controlState.stride}
         onChange={(stride) => {
-          if (doesExist(props.onChange)) {
-            props.onChange({
-              ...controlState,
-              stride,
-            });
-          }
+          props.onChange({
+            ...controlState,
+            stride,
+          });
         }}
       />
       <FormControlLabel
@@ -204,12 +189,10 @@ export function ImageControl(props: ImageControlProps) {
           checked={controlState.tiledVAE}
           value='check'
           onChange={(event) => {
-            if (doesExist(props.onChange)) {
-              props.onChange({
-                ...controlState,
-                tiledVAE: controlState.tiledVAE === false,
-              });
-            }
+            props.onChange({
+              ...controlState,
+              tiledVAE: controlState.tiledVAE === false,
+            });
           }}
         />}
       />
@@ -218,12 +201,10 @@ export function ImageControl(props: ImageControlProps) {
       prompt={controlState.prompt}
       negativePrompt={controlState.negativePrompt}
       onChange={(value) => {
-        if (doesExist(props.onChange)) {
-          props.onChange({
-            ...controlState,
-            ...value,
-          });
-        }
+        props.onChange({
+          ...controlState,
+          ...value,
+        });
       }}
     />
   </Stack>;

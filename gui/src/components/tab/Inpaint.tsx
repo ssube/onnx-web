@@ -1,21 +1,23 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Alert, Box, Button, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Stack } from '@mui/material';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
 import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, StateContext } from '../../state.js';
+import { HighresControl } from '../control/HighresControl.js';
 import { ImageControl } from '../control/ImageControl.js';
+import { ModelControl } from '../control/ModelControl.js';
 import { OutpaintControl } from '../control/OutpaintControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { MaskCanvas } from '../input/MaskCanvas.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
-import { HighresControl } from '../control/HighresControl.js';
+import { Profiles } from '../Profiles.js';
 
 export function Inpaint() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -29,9 +31,6 @@ export function Inpaint() {
   });
 
   async function uploadSource(): Promise<void> {
-    // these are not watched by the component, only sent by the mutation
-    const { model, inpaint, outpaint, upscale, highres } = state.getState();
-
     if (outpaint.enabled) {
       const { image, retry } = await client.outpaint(model, {
         ...inpaint,
@@ -57,21 +56,31 @@ export function Inpaint() {
   }
 
   function supportsInpaint(): boolean {
-    return diffusionModel.includes('inpaint');
+    return model.model.includes('inpaint');
   }
 
   const state = mustExist(useContext(StateContext));
-  const fillColor = useStore(state, (s) => s.inpaint.fillColor);
-  const filter = useStore(state, (s) => s.inpaint.filter);
-  const noise = useStore(state, (s) => s.inpaint.noise);
   const mask = useStore(state, (s) => s.inpaint.mask);
   const source = useStore(state, (s) => s.inpaint.source);
-  const strength = useStore(state, (s) => s.inpaint.strength);
-  const tileOrder = useStore(state, (s) => s.inpaint.tileOrder);
-  const diffusionModel = useStore(state, (s) => s.model.model);
+  const inpaint = useStore(state, (s) => s.inpaint);
+  const outpaint = useStore(state, (s) => s.outpaint);
+
+  const brush = useStore(state, (s) => s.inpaintBrush);
+  const highres = useStore(state, (s) => s.inpaintHighres);
+  const model = useStore(state, (s) => s.inpaintModel);
+  const upscale = useStore(state, (s) => s.inpaintUpscale);
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setInpaint = useStore(state, (s) => s.setInpaint);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setBrush = useStore(state, (s) => s.setInpaintBrush);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setModel = useStore(state, (s) => s.setInpaintModel);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setHighres = useStore(state, (s) => s.setInpaintHighres);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setUpscale = useStore(state, (s) => s.setInpaintUpscale);
+
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
@@ -91,6 +100,8 @@ export function Inpaint() {
 
   return <Box>
     <Stack spacing={2}>
+      <Profiles params={inpaint} setParams={setInpaint} highres={highres} setHighres={setHighres} upscale={upscale} setUpscale={setUpscale} />
+      <ModelControl model={model} setModel={setModel} />
       {renderBanner()}
       <ImageInput
         filter={IMAGE_FILTER}
@@ -115,6 +126,7 @@ export function Inpaint() {
         }}
       />
       <MaskCanvas
+        brush={brush}
         source={source}
         mask={mask}
         onSave={(file) => {
@@ -122,6 +134,7 @@ export function Inpaint() {
             mask: file,
           });
         }}
+        setBrush={setBrush}
       />
       <ImageControl
         selector={(s) => s.inpaint}
@@ -134,7 +147,7 @@ export function Inpaint() {
         min={params.strength.min}
         max={params.strength.max}
         step={params.strength.step}
-        value={strength}
+        value={inpaint.strength}
         onChange={(value) => {
           setInpaint({
             strength: value,
@@ -150,7 +163,7 @@ export function Inpaint() {
             result: filters,
             selector: (f) => f.mask,
           }}
-          value={filter}
+          value={inpaint.filter}
           onChange={(newFilter) => {
             setInpaint({
               filter: newFilter,
@@ -164,7 +177,7 @@ export function Inpaint() {
           query={{
             result: noises,
           }}
-          value={noise}
+          value={inpaint.noise}
           onChange={(newNoise) => {
             setInpaint({
               noise: newNoise,
@@ -176,7 +189,7 @@ export function Inpaint() {
           <Select
             labelId={'outpaint-tiling'}
             label={t('parameter.tileOrder')}
-            value={tileOrder}
+            value={inpaint.tileOrder}
             onChange={(e) => {
               setInpaint({
                 tileOrder: e.target.value,
@@ -194,7 +207,7 @@ export function Inpaint() {
             sx={{ mx: 1 }}
             control={
               <input
-                defaultValue={fillColor}
+                defaultValue={inpaint.fillColor}
                 name='fill-color'
                 type='color'
                 onBlur={(event) => {
@@ -208,8 +221,8 @@ export function Inpaint() {
         </Stack>
       </Stack>
       <OutpaintControl />
-      <HighresControl />
-      <UpscaleControl />
+      <HighresControl highres={highres} setHighres={setHighres} />
+      <UpscaleControl upscale={upscale} setUpscale={setUpscale} />
       <Button
         disabled={preventInpaint()}
         variant='contained'

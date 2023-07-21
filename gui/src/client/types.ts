@@ -140,9 +140,7 @@ export interface UpscaleParams {
 /**
  * Parameters for upscale requests.
  */
-export interface UpscaleReqParams {
-  prompt: string;
-  negativePrompt?: string;
+export interface UpscaleReqParams extends BaseImgParams {
   source: Blob;
 }
 

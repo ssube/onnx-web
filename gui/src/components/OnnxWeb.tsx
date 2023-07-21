@@ -8,7 +8,6 @@ import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
 import { StateContext } from '../state.js';
-import { ModelControl } from './control/ModelControl.js';
 import { ImageHistory } from './ImageHistory.js';
 import { Logo } from './Logo.js';
 import { Blend } from './tab/Blend.js';
@@ -42,9 +41,6 @@ export function OnnxWeb() {
       <Container>
         <Box sx={{ my: 4 }}>
           <Logo />
-        </Box>
-        <Box sx={{ mx: 4, my: 4 }}>
-          <ModelControl />
         </Box>
         <TabContext value={getTab(hash)}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

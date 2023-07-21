@@ -38,7 +38,7 @@ export function ImageCard(props: ImageCardProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setInpaint = useStore(state, (s) => s.setInpaint);
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setUpscale = useStore(state, (s) => s.setUpscaleTab);
+  const setUpscale = useStore(state, (s) => s.setUpscale);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setBlend = useStore(state, (s) => s.setBlend);
 

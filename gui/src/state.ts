@@ -48,36 +48,12 @@ interface ProfileItem {
   upscaleParams?: Maybe<UpscaleParams>;
 }
 
-interface BrushSlice {
-  brush: BrushParams;
-
-  setBrush(brush: Partial<BrushParams>): void;
-}
-
 interface DefaultSlice {
   defaults: TabState<BaseImgParams>;
   theme: Theme;
 
   setDefaults(param: Partial<BaseImgParams>): void;
   setTheme(theme: Theme): void;
-}
-
-interface ExtraSlice {
-  extras: ExtrasFile;
-
-  setExtras(extras: Partial<ExtrasFile>): void;
-
-  setCorrectionModel(model: CorrectionModel): void;
-  setDiffusionModel(model: DiffusionModel): void;
-  setExtraNetwork(model: ExtraNetwork): void;
-  setExtraSource(model: ExtraSource): void;
-  setUpscalingModel(model: UpscalingModel): void;
-
-  removeCorrectionModel(model: CorrectionModel): void;
-  removeDiffusionModel(model: DiffusionModel): void;
-  removeExtraNetwork(model: ExtraNetwork): void;
-  removeExtraSource(model: ExtraSource): void;
-  removeUpscalingModel(model: UpscalingModel): void;
 }
 
 interface HistorySlice {
@@ -91,60 +67,96 @@ interface HistorySlice {
 }
 
 interface ModelSlice {
-  model: ModelParams;
+  extras: ExtrasFile;
 
-  setModel(model: Partial<ModelParams>): void;
+  removeCorrectionModel(model: CorrectionModel): void;
+  removeDiffusionModel(model: DiffusionModel): void;
+  removeExtraNetwork(model: ExtraNetwork): void;
+  removeExtraSource(model: ExtraSource): void;
+  removeUpscalingModel(model: UpscalingModel): void;
+
+  setExtras(extras: Partial<ExtrasFile>): void;
+
+  setCorrectionModel(model: CorrectionModel): void;
+  setDiffusionModel(model: DiffusionModel): void;
+  setExtraNetwork(model: ExtraNetwork): void;
+  setExtraSource(model: ExtraSource): void;
+  setUpscalingModel(model: UpscalingModel): void;
 }
 
 // #region tab slices
 interface Txt2ImgSlice {
   txt2img: TabState<Txt2ImgParams>;
+  txt2imgModel: ModelParams;
+  txt2imgHighres: HighresParams;
+  txt2imgUpscale: UpscaleParams;
+
+  resetTxt2Img(): void;
 
   setTxt2Img(params: Partial<Txt2ImgParams>): void;
-  resetTxt2Img(): void;
+  setTxt2ImgModel(params: Partial<ModelParams>): void;
+  setTxt2ImgHighres(params: Partial<HighresParams>): void;
+  setTxt2ImgUpscale(params: Partial<UpscaleParams>): void;
 }
 
 interface Img2ImgSlice {
   img2img: TabState<Img2ImgParams>;
+  img2imgModel: ModelParams;
+  img2imgHighres: HighresParams;
+  img2imgUpscale: UpscaleParams;
+
+  resetImg2Img(): void;
 
   setImg2Img(params: Partial<Img2ImgParams>): void;
-  resetImg2Img(): void;
+  setImg2ImgModel(params: Partial<ModelParams>): void;
+  setImg2ImgHighres(params: Partial<HighresParams>): void;
+  setImg2ImgUpscale(params: Partial<UpscaleParams>): void;
 }
 
 interface InpaintSlice {
   inpaint: TabState<InpaintParams>;
-
-  setInpaint(params: Partial<InpaintParams>): void;
-  resetInpaint(): void;
-}
-
-interface OutpaintSlice {
+  inpaintBrush: BrushParams;
+  inpaintModel: ModelParams;
+  inpaintHighres: HighresParams;
+  inpaintUpscale: UpscaleParams;
   outpaint: OutpaintPixels;
 
+  resetInpaint(): void;
+
+  setInpaint(params: Partial<InpaintParams>): void;
+  setInpaintBrush(brush: Partial<BrushParams>): void;
+  setInpaintModel(params: Partial<ModelParams>): void;
+  setInpaintHighres(params: Partial<HighresParams>): void;
+  setInpaintUpscale(params: Partial<UpscaleParams>): void;
   setOutpaint(pixels: Partial<OutpaintPixels>): void;
 }
 
-interface HighresSlice {
-  highres: HighresParams;
-
-  setHighres(params: Partial<HighresParams>): void;
-  resetHighres(): void;
-}
-
 interface UpscaleSlice {
-  upscale: UpscaleParams;
-  upscaleTab: TabState<UpscaleReqParams>;
+  upscale: TabState<UpscaleReqParams>;
+  upscaleHighres: HighresParams;
+  upscaleModel: ModelParams;
+  upscaleUpscale: UpscaleParams;
 
-  setUpscale(upscale: Partial<UpscaleParams>): void;
-  setUpscaleTab(params: Partial<UpscaleReqParams>): void;
-  resetUpscaleTab(): void;
+  resetUpscale(): void;
+
+  setUpscale(params: Partial<UpscaleReqParams>): void;
+  setUpscaleHighres(params: Partial<HighresParams>): void;
+  setUpscaleModel(params: Partial<ModelParams>): void;
+  setUpscaleUpscale(params: Partial<UpscaleParams>): void;
 }
 
 interface BlendSlice {
   blend: TabState<BlendParams>;
+  blendBrush: BrushParams;
+  blendModel: ModelParams;
+  blendUpscale: UpscaleParams;
+
+  resetBlend(): void;
 
   setBlend(blend: Partial<BlendParams>): void;
-  resetBlend(): void;
+  setBlendBrush(brush: Partial<BrushParams>): void;
+  setBlendModel(model: Partial<ModelParams>): void;
+  setBlendUpscale(params: Partial<UpscaleParams>): void;
 }
 
 interface ResetSlice {
@@ -154,8 +166,9 @@ interface ResetSlice {
 interface ProfileSlice {
   profiles: Array<ProfileItem>;
 
-  saveProfile(profile: ProfileItem): void;
   removeProfile(profileName: string): void;
+
+  saveProfile(profile: ProfileItem): void;
 }
 // #endregion
 
@@ -163,19 +176,16 @@ interface ProfileSlice {
  * Full merged state including all slices.
  */
 export type OnnxState
-  = BrushSlice
-  & DefaultSlice
+  = DefaultSlice
   & HistorySlice
   & Img2ImgSlice
   & InpaintSlice
   & ModelSlice
-  & OutpaintSlice
   & Txt2ImgSlice
-  & HighresSlice
   & UpscaleSlice
   & BlendSlice
   & ResetSlice
-  & ExtraSlice
+  & ModelSlice
   & ProfileSlice;
 
 /**
@@ -268,13 +278,48 @@ export function baseParamsFromServer(defaults: ServerParams): Required<BaseImgPa
  * else should be initialized from the default value in the base parameters.
  */
 export function createStateSlices(server: ServerParams) {
-  const base = baseParamsFromServer(server);
+  const defaultParams = baseParamsFromServer(server);
+  const defaultHighres: HighresParams = {
+    enabled: false,
+    highresIterations: server.highresIterations.default,
+    highresMethod: '',
+    highresSteps: server.highresSteps.default,
+    highresScale: server.highresScale.default,
+    highresStrength: server.highresStrength.default,
+  };
+  const defaultModel: ModelParams = {
+    control: server.control.default,
+    correction: server.correction.default,
+    model: server.model.default,
+    pipeline: server.pipeline.default,
+    platform: server.platform.default,
+    upscaling: server.upscaling.default,
+  };
+  const defaultUpscale: UpscaleParams = {
+    denoise: server.denoise.default,
+    enabled: false,
+    faces: false,
+    faceOutscale: server.faceOutscale.default,
+    faceStrength: server.faceStrength.default,
+    outscale: server.outscale.default,
+    scale: server.scale.default,
+    upscaleOrder: server.upscaleOrder.default,
+  };
 
   const createTxt2ImgSlice: Slice<Txt2ImgSlice> = (set) => ({
     txt2img: {
-      ...base,
+      ...defaultParams,
       width: server.width.default,
       height: server.height.default,
+    },
+    txt2imgHighres: {
+      ...defaultHighres,
+    },
+    txt2imgModel: {
+      ...defaultModel,
+    },
+    txt2imgUpscale: {
+      ...defaultUpscale,
     },
     setTxt2Img(params) {
       set((prev) => ({
@@ -284,10 +329,34 @@ export function createStateSlices(server: ServerParams) {
         },
       }));
     },
+    setTxt2ImgHighres(params) {
+      set((prev) => ({
+        txt2imgHighres: {
+          ...prev.txt2imgHighres,
+          ...params,
+        },
+      }));
+    },
+    setTxt2ImgModel(params) {
+      set((prev) => ({
+        txt2imgModel: {
+          ...prev.txt2imgModel,
+          ...params,
+        },
+      }));
+    },
+    setTxt2ImgUpscale(params) {
+      set((prev) => ({
+        txt2imgUpscale: {
+          ...prev.txt2imgUpscale,
+          ...params,
+        },
+      }));
+    },
     resetTxt2Img() {
       set({
         txt2img: {
-          ...base,
+          ...defaultParams,
           width: server.width.default,
           height: server.height.default,
         },
@@ -297,11 +366,31 @@ export function createStateSlices(server: ServerParams) {
 
   const createImg2ImgSlice: Slice<Img2ImgSlice> = (set) => ({
     img2img: {
-      ...base,
+      ...defaultParams,
       loopback: server.loopback.default,
       source: null,
       sourceFilter: '',
       strength: server.strength.default,
+    },
+    img2imgHighres: {
+      ...defaultHighres,
+    },
+    img2imgModel: {
+      ...defaultModel,
+    },
+    img2imgUpscale: {
+      ...defaultUpscale,
+    },
+    resetImg2Img() {
+      set({
+        img2img: {
+          ...defaultParams,
+          loopback: server.loopback.default,
+          source: null,
+          sourceFilter: '',
+          strength: server.strength.default,
+        },
+      });
     },
     setImg2Img(params) {
       set((prev) => ({
@@ -311,22 +400,35 @@ export function createStateSlices(server: ServerParams) {
         },
       }));
     },
-    resetImg2Img() {
-      set({
-        img2img: {
-          ...base,
-          loopback: server.loopback.default,
-          source: null,
-          sourceFilter: '',
-          strength: server.strength.default,
+    setImg2ImgHighres(params) {
+      set((prev) => ({
+        img2imgHighres: {
+          ...prev.img2imgHighres,
+          ...params,
         },
-      });
+      }));
+    },
+    setImg2ImgModel(params) {
+      set((prev) => ({
+        img2imgModel: {
+          ...prev.img2imgModel,
+          ...params,
+        },
+      }));
+    },
+    setImg2ImgUpscale(params) {
+      set((prev) => ({
+        img2imgUpscale: {
+          ...prev.img2imgUpscale,
+          ...params,
+        },
+      }));
     },
   });
 
   const createInpaintSlice: Slice<InpaintSlice> = (set) => ({
     inpaint: {
-      ...base,
+      ...defaultParams,
       fillColor: server.fillColor.default,
       filter: server.filter.default,
       mask: null,
@@ -335,18 +437,29 @@ export function createStateSlices(server: ServerParams) {
       strength: server.strength.default,
       tileOrder: server.tileOrder.default,
     },
-    setInpaint(params) {
-      set((prev) => ({
-        inpaint: {
-          ...prev.inpaint,
-          ...params,
-        },
-      }));
+    inpaintBrush: {
+      ...DEFAULT_BRUSH,
+    },
+    inpaintHighres: {
+      ...defaultHighres,
+    },
+    inpaintModel: {
+      ...defaultModel,
+    },
+    inpaintUpscale: {
+      ...defaultUpscale,
+    },
+    outpaint: {
+      enabled: false,
+      left: server.left.default,
+      right: server.right.default,
+      top: server.top.default,
+      bottom: server.bottom.default,
     },
     resetInpaint() {
       set({
         inpaint: {
-          ...base,
+          ...defaultParams,
           fillColor: server.fillColor.default,
           filter: server.filter.default,
           mask: null,
@@ -356,6 +469,54 @@ export function createStateSlices(server: ServerParams) {
           tileOrder: server.tileOrder.default,
         },
       });
+    },
+    setInpaint(params) {
+      set((prev) => ({
+        inpaint: {
+          ...prev.inpaint,
+          ...params,
+        },
+      }));
+    },
+    setInpaintBrush(brush) {
+      set((prev) => ({
+        inpaintBrush: {
+          ...prev.inpaintBrush,
+          ...brush,
+        },
+      }));
+    },
+    setInpaintHighres(params) {
+      set((prev) => ({
+        inpaintHighres: {
+          ...prev.inpaintHighres,
+          ...params,
+        },
+      }));
+    },
+    setInpaintModel(params) {
+      set((prev) => ({
+        inpaintModel: {
+          ...prev.inpaintModel,
+          ...params,
+        },
+      }));
+    },
+    setInpaintUpscale(params) {
+      set((prev) => ({
+        inpaintUpscale: {
+          ...prev.inpaintUpscale,
+          ...params,
+        },
+      }));
+    },
+    setOutpaint(pixels) {
+      set((prev) => ({
+        outpaint: {
+          ...prev.outpaint,
+          ...pixels,
+        }
+      }));
     },
   });
 
@@ -405,109 +566,59 @@ export function createStateSlices(server: ServerParams) {
     },
   });
 
-  const createOutpaintSlice: Slice<OutpaintSlice> = (set) => ({
-    outpaint: {
-      enabled: false,
-      left: server.left.default,
-      right: server.right.default,
-      top: server.top.default,
-      bottom: server.bottom.default,
-    },
-    setOutpaint(pixels) {
-      set((prev) => ({
-        outpaint: {
-          ...prev.outpaint,
-          ...pixels,
-        }
-      }));
-    },
-  });
-
-  const createBrushSlice: Slice<BrushSlice> = (set) => ({
-    brush: {
-      ...DEFAULT_BRUSH,
-    },
-    setBrush(brush) {
-      set((prev) => ({
-        brush: {
-          ...prev.brush,
-          ...brush,
-        },
-      }));
-    },
-  });
-
   const createUpscaleSlice: Slice<UpscaleSlice> = (set) => ({
     upscale: {
-      denoise: server.denoise.default,
-      enabled: false,
-      faces: false,
-      faceOutscale: server.faceOutscale.default,
-      faceStrength: server.faceStrength.default,
-      outscale: server.outscale.default,
-      scale: server.scale.default,
-      upscaleOrder: server.upscaleOrder.default,
-    },
-    upscaleTab: {
-      negativePrompt: server.negativePrompt.default,
-      prompt: server.prompt.default,
+      ...defaultParams,
       source: null,
     },
-    setUpscale(upscale) {
-      set((prev) => ({
-        upscale: {
-          ...prev.upscale,
-          ...upscale,
-        },
-      }));
+    upscaleHighres: {
+      ...defaultHighres,
     },
-    setUpscaleTab(source) {
-      set((prev) => ({
-        upscaleTab: {
-          ...prev.upscaleTab,
-          ...source,
-        },
-      }));
+    upscaleModel: {
+      ...defaultModel,
     },
-    resetUpscaleTab() {
+    upscaleUpscale: {
+      ...defaultUpscale,
+    },
+    resetUpscale() {
       set({
-        upscaleTab: {
-          negativePrompt: server.negativePrompt.default,
-          prompt: server.prompt.default,
+        upscale: {
+          ...defaultParams,
           source: null,
         },
       });
     },
-  });
-
-  const createHighresSlice: Slice<HighresSlice> = (set) => ({
-    highres: {
-      enabled: false,
-      highresIterations: server.highresIterations.default,
-      highresMethod: '',
-      highresSteps: server.highresSteps.default,
-      highresScale: server.highresScale.default,
-      highresStrength: server.highresStrength.default,
-    },
-    setHighres(params) {
+    setUpscale(source) {
       set((prev) => ({
-        highres: {
-          ...prev.highres,
+        upscale: {
+          ...prev.upscale,
+          ...source,
+        },
+      }));
+    },
+    setUpscaleHighres(params) {
+      set((prev) => ({
+        upscaleHighres: {
+          ...prev.upscaleHighres,
           ...params,
         },
       }));
     },
-    resetHighres() {
-      set({
-        highres: {
-          enabled: false,
-          highresIterations: server.highresIterations.default,
-          highresMethod: '',
-          highresSteps: server.highresSteps.default,
-          highresScale: server.highresScale.default,
-          highresStrength: server.highresStrength.default,
+    setUpscaleModel(params) {
+      set((prev) => ({
+        upscaleModel: {
+          ...prev.upscaleModel,
+          ...defaultModel,
         },
-      });
+      }));
+    },
+    setUpscaleUpscale(params) {
+      set((prev) => ({
+        upscaleUpscale: {
+          ...prev.upscaleUpscale,
+          ...params,
+        },
+      }));
     },
   });
 
@@ -516,13 +627,14 @@ export function createStateSlices(server: ServerParams) {
       mask: null,
       sources: [],
     },
-    setBlend(blend) {
-      set((prev) => ({
-        blend: {
-          ...prev.blend,
-          ...blend,
-        },
-      }));
+    blendBrush: {
+      ...DEFAULT_BRUSH,
+    },
+    blendModel: {
+      ...defaultModel,
+    },
+    blendUpscale: {
+      ...defaultUpscale,
     },
     resetBlend() {
       set({
@@ -532,11 +644,43 @@ export function createStateSlices(server: ServerParams) {
         },
       });
     },
+    setBlend(blend) {
+      set((prev) => ({
+        blend: {
+          ...prev.blend,
+          ...blend,
+        },
+      }));
+    },
+    setBlendBrush(brush) {
+      set((prev) => ({
+        blendBrush: {
+          ...prev.blendBrush,
+          ...brush,
+        },
+      }));
+    },
+    setBlendModel(model) {
+      set((prev) => ({
+        blendModel: {
+          ...prev.blendModel,
+          ...model,
+        },
+      }));
+    },
+    setBlendUpscale(params) {
+      set((prev) => ({
+        blendUpscale: {
+          ...prev.blendUpscale,
+          ...params,
+        },
+      }));
+    },
   });
 
   const createDefaultSlice: Slice<DefaultSlice> = (set) => ({
     defaults: {
-      ...base,
+      ...defaultParams,
     },
     theme: '',
     setDefaults(params) {
@@ -554,25 +698,6 @@ export function createStateSlices(server: ServerParams) {
     }
   });
 
-  const createModelSlice: Slice<ModelSlice> = (set) => ({
-    model: {
-      control: server.control.default,
-      correction: server.correction.default,
-      model: server.model.default,
-      pipeline: server.pipeline.default,
-      platform: server.platform.default,
-      upscaling: server.upscaling.default,
-    },
-    setModel(params) {
-      set((prev) => ({
-        model: {
-          ...prev.model,
-          ...params,
-        }
-      }));
-    },
-  });
-
   const createResetSlice: Slice<ResetSlice> = (set) => ({
     resetAll() {
       set((prev) => {
@@ -580,7 +705,7 @@ export function createStateSlices(server: ServerParams) {
         next.resetImg2Img();
         next.resetInpaint();
         next.resetTxt2Img();
-        next.resetUpscaleTab();
+        next.resetUpscale();
         next.resetBlend();
         return next;
       });
@@ -620,7 +745,7 @@ export function createStateSlices(server: ServerParams) {
   });
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  const createExtraSlice: Slice<ExtraSlice> = (set) => ({
+  const createModelSlice: Slice<ModelSlice> = (set) => ({
     extras: {
       correction: [],
       diffusion: [],
@@ -799,19 +924,15 @@ export function createStateSlices(server: ServerParams) {
   });
 
   return {
-    createBrushSlice,
     createDefaultSlice,
     createHistorySlice,
     createImg2ImgSlice,
     createInpaintSlice,
-    createModelSlice,
-    createOutpaintSlice,
     createTxt2ImgSlice,
     createUpscaleSlice,
-    createHighresSlice,
     createBlendSlice,
     createResetSlice,
-    createExtraSlice,
+    createModelSlice,
     createProfileSlice,
   };
 }

@@ -4,8 +4,8 @@ import { Button, Stack, Typography } from '@mui/material';
 import { throttle } from 'lodash';
 import React, { RefObject, useContext, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useStore } from 'zustand';
 
+import { BrushParams } from '../../client/types.js';
 import { SAVE_TIME } from '../../config.js';
 import { ConfigContext, LoggerContext, StateContext } from '../../state.js';
 import { imageFromBlob } from '../../utils.js';
@@ -36,14 +36,17 @@ export interface Point {
 }
 
 export interface MaskCanvasProps {
+  brush: BrushParams;
   source?: Maybe<Blob>;
   mask?: Maybe<Blob>;
 
-  onSave: (blob: Blob) => void;
+  onSave(blob: Blob): void;
+  setBrush(brush: Partial<BrushParams>): void;
 }
 
 export function MaskCanvas(props: MaskCanvasProps) {
-  const { source, mask } = props;
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const { source, mask, brush, setBrush } = props;
   const { params } = mustExist(useContext(ConfigContext));
   const logger = mustExist(useContext(LoggerContext));
 
@@ -202,9 +205,6 @@ export function MaskCanvas(props: MaskCanvasProps) {
   });
 
   const state = mustExist(useContext(StateContext));
-  const brush = useStore(state, (s) => s.brush);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setBrush = useStore(state, (s) => s.setBrush);
   const { t } = useTranslation();
 
   useEffect(() => {

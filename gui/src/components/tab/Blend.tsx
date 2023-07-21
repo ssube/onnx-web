@@ -15,12 +15,12 @@ import { MaskCanvas } from '../input/MaskCanvas.js';
 
 export function Blend() {
   async function uploadSource() {
-    const { model, blend, upscale } = state.getState();
-    const { image, retry } = await client.blend(model, {
+    const { blend, blendModel, blendUpscale } = state.getState();
+    const { image, retry } = await client.blend(blendModel, {
       ...blend,
       mask: mustExist(blend.mask),
       sources: mustExist(blend.sources), // TODO: show an error if this doesn't exist
-    }, upscale);
+    }, blendUpscale);
 
     pushHistory(image, retry);
   }
@@ -32,9 +32,15 @@ export function Blend() {
   });
 
   const state = mustExist(useContext(StateContext));
+  const brush = useStore(state, (s) => s.blendBrush);
   const blend = useStore(state, (s) => s.blend);
+  const upscale = useStore(state, (s) => s.blendUpscale);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setBlend = useStore(state, (s) => s.setBlend);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setBrush = useStore(state, (s) => s.setBlendBrush);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const setUpscale = useStore(state, (s) => s.setBlendUpscale);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
@@ -61,6 +67,7 @@ export function Blend() {
         />
       )}
       <MaskCanvas
+        brush={brush}
         source={sources[0]}
         mask={blend.mask}
         onSave={(mask) => {
@@ -68,8 +75,9 @@ export function Blend() {
             mask,
           });
         }}
+        setBrush={setBrush}
       />
-      <UpscaleControl />
+      <UpscaleControl upscale={upscale} setUpscale={setUpscale} />
       <Button
         disabled={sources.length < 2}
         variant='contained'
