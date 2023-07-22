@@ -23,13 +23,13 @@ export function Img2Img() {
   const { params } = mustExist(useContext(ConfigContext));
 
   async function uploadSource() {
-    const innerState = state.getState();
-    const img2img = selectParams(innerState);
+    const state = store.getState();
+    const img2img = selectParams(state);
 
     const { image, retry } = await client.img2img(model, {
       ...img2img,
       source: mustExist(img2img.source), // TODO: show an error if this doesn't exist
-    }, selectUpscale(innerState), selectHighres(innerState));
+    }, selectUpscale(state), selectHighres(state));
 
     pushHistory(image, retry);
   }
@@ -47,10 +47,10 @@ export function Img2Img() {
     staleTime: STALE_TIME,
   });
 
-  const state = mustExist(useContext(StateContext));
-  const { pushHistory, setHighres, setImg2Img, setModel, setUpscale } = useStore(state, selectActions, shallow);
-  const { loopback, source, sourceFilter, strength } = useStore(state, selectReactParams, shallow);
-  const model = useStore(state, selectModel);
+  const store = mustExist(useContext(StateContext));
+  const { pushHistory, setHighres, setImg2Img, setModel, setUpscale } = useStore(store, selectActions, shallow);
+  const { loopback, source, sourceFilter, strength } = useStore(store, selectReactParams, shallow);
+  const model = useStore(store, selectModel);
 
   const { t } = useTranslation();
 
@@ -75,7 +75,7 @@ export function Img2Img() {
           });
         }}
       />
-      <ImageControl selector={(s) => s.img2img} onChange={setImg2Img} />
+      <ImageControl selector={selectParams} onChange={setImg2Img} />
       <Stack direction='row' spacing={2}>
         <QueryList
           id='control'

@@ -2,10 +2,12 @@ import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Casino } from '@mui/icons-material';
 import { Button, Checkbox, FormControlLabel, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
+import { omit } from 'lodash';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
 import { BaseImgParams } from '../../client/types.js';
 import { STALE_TIME } from '../../config.js';
@@ -14,9 +16,17 @@ import { NumericField } from '../input/NumericField.js';
 import { PromptInput } from '../input/PromptInput.js';
 import { QueryList } from '../input/QueryList.js';
 
+const { useMemo } = React;
+
+type BaseParamsWithoutPrompt = Omit<BaseImgParams, 'prompt' | 'negativePrompt'>;
+
 export interface ImageControlProps {
-  onChange(params: BaseImgParams): void;
+  onChange(params: Partial<BaseImgParams>): void;
   selector(state: OnnxState): BaseImgParams;
+}
+
+export function omitPrompt(selector: (state: OnnxState) => BaseImgParams): (state: OnnxState) => BaseParamsWithoutPrompt {
+  return (state) => omit(selector(state), 'prompt', 'negativePrompt');
 }
 
 /**
@@ -25,9 +35,11 @@ export interface ImageControlProps {
 export function ImageControl(props: ImageControlProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { onChange, selector } = props;
+
+  const selectOmitPrompt = useMemo(() => omitPrompt(selector), [selector]);
   const { params } = mustExist(useContext(ConfigContext));
-  const state = mustExist(useContext(StateContext));
-  const controlState = useStore(state, selector);
+  const store = mustExist(useContext(StateContext));
+  const state = useStore(store, selectOmitPrompt, shallow);
   const { t } = useTranslation();
 
   const client = mustExist(useContext(ClientContext));
@@ -36,7 +48,7 @@ export function ImageControl(props: ImageControlProps) {
   });
 
   // max stride is the lesser of tile size and server's max stride
-  const maxStride = Math.min(controlState.tiles, params.stride.max);
+  const maxStride = Math.min(state.tiles, params.stride.max);
 
   return <Stack spacing={2}>
     <Stack direction='row' spacing={4}>
@@ -47,11 +59,11 @@ export function ImageControl(props: ImageControlProps) {
         query={{
           result: schedulers,
         }}
-        value={mustDefault(controlState.scheduler, '')}
+        value={mustDefault(state.scheduler, '')}
         onChange={(value) => {
           if (doesExist(onChange)) {
             onChange({
-              ...controlState,
+              ...state,
               scheduler: value,
             });
           }
@@ -63,11 +75,11 @@ export function ImageControl(props: ImageControlProps) {
         min={params.eta.min}
         max={params.eta.max}
         step={params.eta.step}
-        value={controlState.eta}
+        value={state.eta}
         onChange={(eta) => {
           if (doesExist(onChange)) {
             onChange({
-              ...controlState,
+              ...state,
               eta,
             });
           }
@@ -79,11 +91,11 @@ export function ImageControl(props: ImageControlProps) {
         min={params.cfg.min}
         max={params.cfg.max}
         step={params.cfg.step}
-        value={controlState.cfg}
+        value={state.cfg}
         onChange={(cfg) => {
           if (doesExist(onChange)) {
             onChange({
-              ...controlState,
+              ...state,
               cfg,
             });
           }
@@ -94,10 +106,10 @@ export function ImageControl(props: ImageControlProps) {
         min={params.steps.min}
         max={params.steps.max}
         step={params.steps.step}
-        value={controlState.steps}
+        value={state.steps}
         onChange={(steps) => {
           onChange({
-            ...controlState,
+            ...state,
             steps,
           });
         }}
@@ -107,10 +119,10 @@ export function ImageControl(props: ImageControlProps) {
         min={params.seed.min}
         max={params.seed.max}
         step={params.seed.step}
-        value={controlState.seed}
+        value={state.seed}
         onChange={(seed) => {
           onChange({
-            ...controlState,
+            ...state,
             seed,
           });
         }}
@@ -121,7 +133,7 @@ export function ImageControl(props: ImageControlProps) {
         onClick={() => {
           const seed = Math.floor(Math.random() * params.seed.max);
           props.onChange({
-            ...controlState,
+            ...state,
             seed,
           });
         }}
@@ -135,10 +147,10 @@ export function ImageControl(props: ImageControlProps) {
         min={params.batch.min}
         max={params.batch.max}
         step={params.batch.step}
-        value={controlState.batch}
+        value={state.batch}
         onChange={(batch) => {
           props.onChange({
-            ...controlState,
+            ...state,
             batch,
           });
         }}
@@ -148,10 +160,10 @@ export function ImageControl(props: ImageControlProps) {
         min={params.tiles.min}
         max={params.tiles.max}
         step={params.tiles.step}
-        value={controlState.tiles}
+        value={state.tiles}
         onChange={(tiles) => {
           props.onChange({
-            ...controlState,
+            ...state,
             tiles,
           });
         }}
@@ -162,10 +174,10 @@ export function ImageControl(props: ImageControlProps) {
         min={params.overlap.min}
         max={params.overlap.max}
         step={params.overlap.step}
-        value={controlState.overlap}
+        value={state.overlap}
         onChange={(overlap) => {
           props.onChange({
-            ...controlState,
+            ...state,
             overlap,
           });
         }}
@@ -175,10 +187,10 @@ export function ImageControl(props: ImageControlProps) {
         min={params.stride.min}
         max={maxStride}
         step={params.stride.step}
-        value={controlState.stride}
+        value={state.stride}
         onChange={(stride) => {
           props.onChange({
-            ...controlState,
+            ...state,
             stride,
           });
         }}
@@ -186,23 +198,22 @@ export function ImageControl(props: ImageControlProps) {
       <FormControlLabel
         label={t('parameter.tiledVAE')}
         control={<Checkbox
-          checked={controlState.tiledVAE}
+          checked={state.tiledVAE}
           value='check'
           onChange={(event) => {
             props.onChange({
-              ...controlState,
-              tiledVAE: controlState.tiledVAE === false,
+              ...state,
+              tiledVAE: state.tiledVAE === false,
             });
           }}
         />}
       />
     </Stack>
     <PromptInput
-      prompt={controlState.prompt}
-      negativePrompt={controlState.negativePrompt}
+      selector={selector}
       onChange={(value) => {
         props.onChange({
-          ...controlState,
+          ...state,
           ...value,
         });
       }}

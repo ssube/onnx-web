@@ -18,7 +18,7 @@ import { Profiles } from '../Profiles.js';
 
 export function Upscale() {
   async function uploadSource() {
-    const { upscaleHighres, upscaleUpscale, upscaleModel, upscale } = state.getState();
+    const { upscaleHighres, upscaleUpscale, upscaleModel, upscale } = store.getState();
     const { image, retry } = await client.upscale(upscaleModel, {
       ...upscale,
       source: mustExist(upscale.source), // TODO: show an error if this doesn't exist
@@ -33,19 +33,10 @@ export function Upscale() {
     onSuccess: () => query.invalidateQueries([ 'ready' ]),
   });
 
-  const state = mustExist(useContext(StateContext));
-  const model = useStore(state, (s) => s.upscaleModel);
-  const params = useStore(state, (s) => s.upscale);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setModel = useStore(state, (s) => s.setUpscalingModel);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setHighres = useStore(state, (s) => s.setUpscaleHighres);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setUpscale = useStore(state, (s) => s.setUpscaleUpscale);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setParams = useStore(state, (s) => s.setUpscale);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const pushHistory = useStore(state, (s) => s.pushHistory);
+  const store = mustExist(useContext(StateContext));
+  const { pushHistory, setHighres, setModel, setParams, setUpscale } = useStore(store, selectActions);
+  const model = useStore(store, selectModel);
+  const params = useStore(store, selectParams);
   const { t } = useTranslation();
 
   return <Box>
@@ -70,8 +61,7 @@ export function Upscale() {
         }}
       />
       <PromptInput
-        prompt={params.prompt}
-        negativePrompt={params.negativePrompt}
+        selector={selectParams}
         onChange={(value) => {
           setParams(value);
         }}
@@ -85,6 +75,21 @@ export function Upscale() {
       >{t('generate')}</Button>
     </Stack>
   </Box>;
+}
+
+export function selectActions(state: OnnxState) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    pushHistory: state.pushHistory,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setHighres: state.setUpscaleHighres,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setModel: state.setUpscaleModel,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setParams: state.setUpscale,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setUpscale: state.setUpscaleUpscale,
+  };
 }
 
 export function selectModel(state: OnnxState): ModelParams {

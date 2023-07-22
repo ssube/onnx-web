@@ -1,9 +1,9 @@
 import { doesExist, Maybe, mustDefault, mustExist } from '@apextoaster/js-utils';
-import { Alert, FormControl, FormLabel, InputLabel, LinearProgress, MenuItem, Select, Typography } from '@mui/material';
+import { Alert, FormControl, FormLabel, InputLabel, LinearProgress, MenuItem, Select } from '@mui/material';
+import { UseQueryResult } from '@tanstack/react-query';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseQueryResult } from '@tanstack/react-query';
 
 export interface QueryListComplete {
   result: UseQueryResult<Array<string>>;

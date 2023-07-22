@@ -1,23 +1,28 @@
-import { doesExist, mustExist } from '@apextoaster/js-utils';
+import { mustExist } from '@apextoaster/js-utils';
 import { TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useStore } from 'zustand';
 
-import { QueryMenu } from '../input/QueryMenu.js';
 import { STALE_TIME } from '../../config.js';
-import { ClientContext } from '../../state.js';
+import { ClientContext, OnnxState, StateContext } from '../../state.js';
+import { QueryMenu } from '../input/QueryMenu.js';
 
 const { useContext } = React;
 
+/**
+ * @todo replace with a selector
+ */
 export interface PromptValue {
   prompt: string;
   negativePrompt?: string;
 }
 
-export interface PromptInputProps extends PromptValue {
-  onChange: (value: PromptValue) => void;
+export interface PromptInputProps {
+  selector(state: OnnxState): PromptValue;
+  onChange(value: PromptValue): void;
 }
 
 export const PROMPT_GROUP = 75;
@@ -31,15 +36,19 @@ function splitPrompt(prompt: string): Array<string> {
 }
 
 export function PromptInput(props: PromptInputProps) {
-  const { prompt = '', negativePrompt = '' } = props;
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const { selector, onChange } = props;
 
-  const tokens = splitPrompt(prompt);
-  const groups = Math.ceil(tokens.length / PROMPT_GROUP);
+  const store = mustExist(useContext(StateContext));
+  const { prompt, negativePrompt } = useStore(store, selector);
 
   const client = mustExist(useContext(ClientContext));
   const models = useQuery(['models'], async () => client.models(), {
     staleTime: STALE_TIME,
   });
+
+  const tokens = splitPrompt(prompt);
+  const groups = Math.ceil(tokens.length / PROMPT_GROUP);
 
   const { t } = useTranslation();
   const helper = t('input.prompt.tokens', {
@@ -48,7 +57,7 @@ export function PromptInput(props: PromptInputProps) {
   });
 
   function addToken(type: string, name: string, weight = 1.0) {
-    props.onChange({
+    onChange({
       prompt: `<${type}:${name}:1.0> ${prompt}`,
       negativePrompt,
     });
@@ -61,12 +70,10 @@ export function PromptInput(props: PromptInputProps) {
       variant='outlined'
       value={prompt}
       onChange={(event) => {
-        if (doesExist(props.onChange)) {
-          props.onChange({
-            prompt: event.target.value,
-            negativePrompt,
-          });
-        }
+        props.onChange({
+          prompt: event.target.value,
+          negativePrompt,
+        });
       }}
     />
     <TextField
@@ -74,12 +81,10 @@ export function PromptInput(props: PromptInputProps) {
       variant='outlined'
       value={negativePrompt}
       onChange={(event) => {
-        if (doesExist(props.onChange)) {
-          props.onChange({
-            prompt,
-            negativePrompt: event.target.value,
-          });
-        }
+        props.onChange({
+          prompt,
+          negativePrompt: event.target.value,
+        });
       }}
     />
     <Stack direction='row' spacing={2}>

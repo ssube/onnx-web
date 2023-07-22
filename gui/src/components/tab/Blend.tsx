@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
-import { BlendParams, ModelParams, UpscaleParams } from '../../client/types.js';
+import { BlendParams, BrushParams, ModelParams, UpscaleParams } from '../../client/types.js';
 import { IMAGE_FILTER } from '../../config.js';
 import { BLEND_SOURCES, ClientContext, OnnxState, StateContext, TabState } from '../../state.js';
 import { range } from '../../utils.js';
@@ -16,7 +16,7 @@ import { MaskCanvas } from '../input/MaskCanvas.js';
 
 export function Blend() {
   async function uploadSource() {
-    const { blend, blendModel, blendUpscale } = state.getState();
+    const { blend, blendModel, blendUpscale } = store.getState();
     const { image, retry } = await client.blend(blendModel, {
       ...blend,
       mask: mustExist(blend.mask),
@@ -32,17 +32,10 @@ export function Blend() {
     onSuccess: () => query.invalidateQueries(['ready']),
   });
 
-  const state = mustExist(useContext(StateContext));
-  const brush = useStore(state, (s) => s.blendBrush);
-  const blend = useStore(state, selectParams);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setBlend = useStore(state, (s) => s.setBlend);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setBrush = useStore(state, (s) => s.setBlendBrush);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setUpscale = useStore(state, (s) => s.setBlendUpscale);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const pushHistory = useStore(state, (s) => s.pushHistory);
+  const store = mustExist(useContext(StateContext));
+  const { pushHistory, setBlend, setBrush, setUpscale } = useStore(store, selectActions);
+  const brush = useStore(store, selectBrush);
+  const blend = useStore(store, selectParams);
   const { t } = useTranslation();
 
   const sources = mustDefault(blend.sources, []);
@@ -85,6 +78,23 @@ export function Blend() {
       >{t('generate')}</Button>
     </Stack>
   </Box>;
+}
+
+export function selectActions(state: OnnxState) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    pushHistory: state.pushHistory,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setBlend: state.setBlend,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setBrush: state.setBlendBrush,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setUpscale: state.setBlendUpscale,
+  };
+}
+
+export function selectBrush(state: OnnxState): BrushParams {
+  return state.blendBrush;
 }
 
 export function selectModel(state: OnnxState): ModelParams {

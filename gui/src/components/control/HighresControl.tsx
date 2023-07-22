@@ -18,8 +18,8 @@ export function HighresControl(props: HighresControlProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { selectHighres, setHighres } = props;
 
-  const state = mustExist(useContext(StateContext));
-  const highres = useStore(state, selectHighres);
+  const store = mustExist(useContext(StateContext));
+  const highres = useStore(store, selectHighres);
 
   const { params } = mustExist(useContext(ConfigContext));
   const { t } = useTranslation();

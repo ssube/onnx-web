@@ -8,7 +8,7 @@ import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
 import { ImageResponse } from '../../client/types.js';
-import { BLEND_SOURCES, ConfigContext, StateContext } from '../../state.js';
+import { BLEND_SOURCES, ConfigContext, OnnxState, StateContext } from '../../state.js';
 import { range, visibleIndex } from '../../utils.js';
 
 export interface ImageCardProps {
@@ -32,15 +32,8 @@ export function ImageCard(props: ImageCardProps) {
   const [saveAnchor, setSaveAnchor] = useState<Maybe<HTMLElement>>();
 
   const config = mustExist(useContext(ConfigContext));
-  const state = mustExist(useContext(StateContext));
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setImg2Img = useStore(state, (s) => s.setImg2Img);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setInpaint = useStore(state, (s) => s.setInpaint);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setUpscale = useStore(state, (s) => s.setUpscale);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setBlend = useStore(state, (s) => s.setBlend);
+  const store = mustExist(useContext(StateContext));
+  const { setBlend, setImg2Img, setInpaint, setUpscale } = useStore(store, selectActions);
 
   async function loadSource() {
     const req = await fetch(outputs[index].url);
@@ -73,7 +66,7 @@ export function ImageCard(props: ImageCardProps) {
 
   async function copySourceToBlend(idx: number) {
     const blob = await loadSource();
-    const sources = mustDefault(state.getState().blend.sources, []);
+    const sources = mustDefault(store.getState().blend.sources, []);
     const newSources = [...sources];
     newSources[idx] = blob;
     setBlend({
@@ -228,4 +221,17 @@ export function ImageCard(props: ImageCardProps) {
       </Box>
     </CardContent>
   </Card>;
+}
+
+export function selectActions(state: OnnxState) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setBlend: state.setBlend,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setImg2Img: state.setImg2Img,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setInpaint: state.setInpaint,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setUpscale: state.setUpscale,
+  };
 }

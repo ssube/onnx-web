@@ -20,8 +20,8 @@ export function Txt2Img() {
   const { params } = mustExist(useContext(ConfigContext));
 
   async function generateImage() {
-    const innerState = state.getState();
-    const { image, retry } = await client.txt2img(model, selectParams(innerState), selectUpscale(innerState), selectHighres(innerState));
+    const state = store.getState();
+    const { image, retry } = await client.txt2img(model, selectParams(state), selectUpscale(state), selectHighres(state));
 
     pushHistory(image, retry);
   }
@@ -32,10 +32,10 @@ export function Txt2Img() {
     onSuccess: () => query.invalidateQueries([ 'ready' ]),
   });
 
-  const state = mustExist(useContext(StateContext));
-  const { pushHistory, setHighres, setModel, setParams, setUpscale } = useStore(state, selectActions, shallow);
-  const { height, width } = useStore(state, selectReactParams, shallow);
-  const model = useStore(state, selectModel);
+  const store = mustExist(useContext(StateContext));
+  const { pushHistory, setHighres, setModel, setParams, setUpscale } = useStore(store, selectActions, shallow);
+  const { height, width } = useStore(store, selectReactParams, shallow);
+  const model = useStore(store, selectModel);
 
   const { t } = useTranslation();
 

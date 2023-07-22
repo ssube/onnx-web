@@ -1,9 +1,11 @@
 import { doesExist, Maybe, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { KeyboardArrowDown } from '@mui/icons-material';
-import { Alert, Box, Button, FormControl, FormLabel, LinearProgress, Menu, MenuItem, Typography } from '@mui/material';
+import { Alert, Box, Button, FormControl, FormLabel, LinearProgress, Menu, MenuItem } from '@mui/material';
+import { UseQueryResult } from '@tanstack/react-query';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { UseQueryResult } from '@tanstack/react-query';
+
+const { useState } = React;
 
 export interface QueryMenuComplete {
   result: UseQueryResult<Array<string>>;
@@ -53,7 +55,7 @@ export function QueryMenu<T>(props: QueryMenuProps<T>) {
 
   const { t } = useTranslation();
 
-  const [anchor, setAnchor] = React.useState<Maybe<HTMLElement>>(undefined);
+  const [anchor, setAnchor] = useState<Maybe<HTMLElement>>(undefined);
 
   function closeMenu() {
     setAnchor(undefined);

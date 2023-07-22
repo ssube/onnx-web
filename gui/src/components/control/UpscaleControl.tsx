@@ -18,8 +18,8 @@ export function UpscaleControl(props: UpscaleControlProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { selectUpscale, setUpscale } = props;
 
-  const state = mustExist(useContext(StateContext));
-  const upscale = useStore(state, selectUpscale);
+  const store = mustExist(useContext(StateContext));
+  const upscale = useStore(store, selectUpscale);
 
   const { params } = mustExist(useContext(ConfigContext));
   const { t } = useTranslation();

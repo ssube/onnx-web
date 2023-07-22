@@ -7,7 +7,7 @@ import { useContext, useMemo } from 'react';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
-import { StateContext } from '../state.js';
+import { OnnxState, StateContext } from '../state.js';
 import { ImageHistory } from './ImageHistory.js';
 import { Logo } from './Logo.js';
 import { Blend } from './tab/Blend.js';
@@ -22,7 +22,8 @@ import { getTab, getTheme, TAB_LABELS } from './utils.js';
 export function OnnxWeb() {
   /* checks for system light/dark mode preference */
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const stateTheme = useStore(mustExist(useContext(StateContext)), (s) => s.theme);
+  const store = mustExist(useContext(StateContext));
+  const stateTheme = useStore(store, selectTheme);
 
   const theme = useMemo(
     () => createTheme({
@@ -79,4 +80,8 @@ export function OnnxWeb() {
       </Container>
     </ThemeProvider>
   );
+}
+
+export function selectTheme(state: OnnxState) {
+  return state.theme;
 }

@@ -35,13 +35,13 @@ export type Theme = PaletteMode | ''; // tri-state, '' is unset
  */
 export type TabState<TabParams> = ConfigFiles<Required<TabParams>> & ConfigState<Required<TabParams>>;
 
-interface HistoryItem {
+export interface HistoryItem {
   image: ImageResponse;
   ready: Maybe<ReadyResponse>;
   retry: RetryParams;
 }
 
-interface ProfileItem {
+export interface ProfileItem {
   name: string;
   params: BaseImgParams | Txt2ImgParams;
   highres?: Maybe<HighresParams>;

@@ -28,7 +28,7 @@ import { UpscalingModelInput } from '../input/model/UpscalingModel.js';
 
 const { useContext, useEffect } = React;
 // eslint-disable-next-line @typescript-eslint/unbound-method
-const { kebabCase }  = _;
+const { kebabCase } = _;
 
 function mergeModelLists<T extends DiffusionModel | ExtraSource>(local: Array<T>, server: Array<T> = []) {
   const localNames = new Set(local.map((it) => it.name));
@@ -77,44 +77,35 @@ function selectExtraSources(state: OnnxState): Array<ExtraSource> {
 }
 
 export function Models() {
-  const state = mustExist(React.useContext(StateContext));
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setExtras = useStore(state, (s) => s.setExtras);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setCorrectionModel = useStore(state, (s) => s.setCorrectionModel);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setDiffusionModel = useStore(state, (s) => s.setDiffusionModel);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setExtraNetwork = useStore(state, (s) => s.setExtraNetwork);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setExtraSource = useStore(state, (s) => s.setExtraSource);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setUpscalingModel = useStore(state, (s) => s.setUpscalingModel);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const removeCorrectionModel = useStore(state, (s) => s.removeCorrectionModel);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const removeDiffusionModel = useStore(state, (s) => s.removeDiffusionModel);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const removeExtraNetwork = useStore(state, (s) => s.removeExtraNetwork);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const removeExtraSource = useStore(state, (s) => s.removeExtraSource);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const removeUpscalingModel = useStore(state, (s) => s.removeUpscalingModel);
-  const client = mustExist(useContext(ClientContext));
+  const store = mustExist(useContext(StateContext));
+  const {
+    setCorrectionModel,
+    setDiffusionModel,
+    setExtraNetwork,
+    setExtraSource,
+    setExtras,
+    setUpscalingModel,
+    removeCorrectionModel,
+    removeDiffusionModel,
+    removeExtraNetwork,
+    removeExtraSource,
+    removeUpscalingModel,
+  } = useStore(store, selectActions);
 
+  const client = mustExist(useContext(ClientContext));
   const result = useQuery(['extras'], async () => client.extras(), {
     staleTime: STALE_TIME,
   });
 
   const query = useQueryClient();
   const write = useMutation(writeExtras, {
-    onSuccess: () => query.invalidateQueries([ 'extras' ]),
+    onSuccess: () => query.invalidateQueries(['extras']),
   });
   const { t } = useTranslation();
 
   useEffect(() => {
     if (result.status === 'success' && doesExist(result.data)) {
-      setExtras(mergeModels(state.getState().extras, result.data));
+      setExtras(mergeModels(store.getState().extras, result.data));
     }
   }, [result.status]);
 
@@ -127,18 +118,18 @@ export function Models() {
   if (result.status === 'loading') {
     return <Stack spacing={2} direction='row' sx={{ alignItems: 'center' }}>
       <CircularProgress />
-    </Stack> ;
+    </Stack>;
   }
 
   async function writeExtras() {
-    const resp = await client.writeExtras(state.getState().extras);
+    const resp = await client.writeExtras(store.getState().extras);
     // TODO: do something with resp
   }
 
   return <Stack spacing={2}>
     <Accordion>
       <AccordionSummary>
-        {t('modelType.diffusion', {count: 10})}
+        {t('modelType.diffusion', { count: 10 })}
       </AccordionSummary>
       <AccordionDetails>
         <EditableList<DiffusionModel>
@@ -157,7 +148,7 @@ export function Models() {
     </Accordion>
     <Accordion>
       <AccordionSummary>
-        {t('modelType.correction', {count: 10})}
+        {t('modelType.correction', { count: 10 })}
       </AccordionSummary>
       <AccordionDetails>
         <EditableList
@@ -176,7 +167,7 @@ export function Models() {
     </Accordion>
     <Accordion>
       <AccordionSummary>
-        {t('modelType.upscaling', {count: 10})}
+        {t('modelType.upscaling', { count: 10 })}
       </AccordionSummary>
       <AccordionDetails>
         <EditableList
@@ -196,7 +187,7 @@ export function Models() {
     </Accordion>
     <Accordion>
       <AccordionSummary>
-        {t('modelType.network', {count: 10})}
+        {t('modelType.network', { count: 10 })}
       </AccordionSummary>
       <AccordionDetails>
         <EditableList
@@ -217,7 +208,7 @@ export function Models() {
     </Accordion>
     <Accordion>
       <AccordionSummary>
-        {t('modelType.source', {count: 10})}
+        {t('modelType.source', { count: 10 })}
       </AccordionSummary>
       <AccordionDetails>
         <EditableList
@@ -236,4 +227,31 @@ export function Models() {
     </Accordion>
     <Button color='warning' onClick={() => write.mutate()}>{t('convert')}</Button>
   </Stack>;
+}
+
+export function selectActions(state: OnnxState) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setExtras: state.setExtras,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setCorrectionModel: state.setCorrectionModel,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setDiffusionModel: state.setDiffusionModel,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setExtraNetwork: state.setExtraNetwork,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setExtraSource: state.setExtraSource,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setUpscalingModel: state.setUpscalingModel,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    removeCorrectionModel: state.removeCorrectionModel,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    removeDiffusionModel: state.removeDiffusionModel,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    removeExtraNetwork: state.removeExtraNetwork,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    removeExtraSource: state.removeExtraSource,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    removeUpscalingModel: state.removeUpscalingModel,
+  };
 }

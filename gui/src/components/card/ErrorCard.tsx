@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
 import { ImageResponse, ReadyResponse, RetryParams } from '../../client/types.js';
-import { ClientContext, ConfigContext, StateContext } from '../../state.js';
+import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
 
 export interface ErrorCardProps {
   image: ImageResponse;
@@ -20,14 +20,11 @@ export interface ErrorCardProps {
 export function ErrorCard(props: ErrorCardProps) {
   const { image, ready, retry: retryParams } = props;
 
-  const client = mustExist(React.useContext(ClientContext));
+  const client = mustExist(useContext(ClientContext));
   const { params } = mustExist(useContext(ConfigContext));
 
   const state = mustExist(useContext(StateContext));
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const pushHistory = useStore(state, (s) => s.pushHistory);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const removeHistory = useStore(state, (s) => s.removeHistory);
+  const { pushHistory, removeHistory } = useStore(state, selectActions);
   const { t } = useTranslation();
 
   async function retryImage() {
@@ -71,4 +68,13 @@ export function ErrorCard(props: ErrorCardProps) {
       </Box>
     </CardContent>
   </Card>;
+}
+
+export function selectActions(state: OnnxState) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    pushHistory: state.pushHistory,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    removeHistory: state.removeHistory,
+  };
 }

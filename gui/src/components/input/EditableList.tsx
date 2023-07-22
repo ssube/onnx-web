@@ -25,8 +25,8 @@ export function EditableList<T>(props: EditableListProps<T>) {
   const { newItem, removeItem, renderItem, setItem, selector } = props;
 
   const { t } = useTranslation();
-  const state = mustExist(useContext(StateContext));
-  const items = useStore(state, selector);
+  const store = mustExist(useContext(StateContext));
+  const items = useStore(store, selector);
   const [nextLabel, setNextLabel] = useState('');
   const [nextSource, setNextSource] = useState('');
   const RenderMemo = useMemo(() => memo(renderItem), [renderItem]);

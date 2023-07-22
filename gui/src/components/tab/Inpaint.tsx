@@ -33,9 +33,9 @@ export function Inpaint() {
   });
 
   async function uploadSource(): Promise<void> {
-    const innerState = state.getState();
-    const { outpaint } = innerState;
-    const inpaint = selectParams(innerState);
+    const state = store.getState();
+    const { outpaint } = state;
+    const inpaint = selectParams(state);
 
     if (outpaint.enabled) {
       const { image, retry } = await client.outpaint(model, {
@@ -43,7 +43,7 @@ export function Inpaint() {
         ...outpaint,
         mask: mustExist(mask),
         source: mustExist(source),
-      }, selectUpscale(innerState), selectHighres(innerState));
+      }, selectUpscale(state), selectHighres(state));
 
       pushHistory(image, retry);
     } else {
@@ -51,7 +51,7 @@ export function Inpaint() {
         ...inpaint,
         mask: mustExist(mask),
         source: mustExist(source),
-      }, selectUpscale(innerState), selectHighres(innerState));
+      }, selectUpscale(state), selectHighres(state));
 
       pushHistory(image, retry);
     }
@@ -65,11 +65,11 @@ export function Inpaint() {
     return model.model.includes('inpaint');
   }
 
-  const state = mustExist(useContext(StateContext));
-  const { pushHistory, setBrush, setHighres, setModel, setInpaint, setUpscale } = useStore(state, selectActions, shallow);
-  const { source, mask, strength, noise, filter, tileOrder, fillColor } = useStore(state, selectReactParams, shallow);
-  const model = useStore(state, selectModel);
-  const brush = useStore(state, selectBrush);
+  const store = mustExist(useContext(StateContext));
+  const { pushHistory, setBrush, setHighres, setModel, setInpaint, setUpscale } = useStore(store, selectActions, shallow);
+  const { source, mask, strength, noise, filter, tileOrder, fillColor } = useStore(store, selectReactParams, shallow);
+  const model = useStore(store, selectModel);
+  const brush = useStore(store, selectBrush);
 
   const { t } = useTranslation();
 
@@ -132,7 +132,7 @@ export function Inpaint() {
         setBrush={setBrush}
       />
       <ImageControl
-        selector={(s) => s.inpaint}
+        selector={selectParams}
         onChange={(newParams) => {
           setInpaint(newParams);
         }}

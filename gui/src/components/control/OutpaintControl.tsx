@@ -5,15 +5,14 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
-import { ConfigContext, StateContext } from '../../state.js';
+import { ConfigContext, OnnxState, StateContext } from '../../state.js';
 import { NumericField } from '../input/NumericField.js';
 
 export function OutpaintControl() {
   const { params } = mustExist(useContext(ConfigContext));
-  const state = mustExist(useContext(StateContext));
-  const outpaint = useStore(state, (s) => s.outpaint);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setOutpaint = useStore(state, (s) => s.setOutpaint);
+  const store = mustExist(useContext(StateContext));
+  const {setOutpaint} = useStore(store, selectActions);
+  const outpaint = useStore(store, selectOutpaint);
   const { t } = useTranslation();
 
   return <Stack direction='row' spacing={4}>
@@ -82,4 +81,15 @@ export function OutpaintControl() {
       }}
     />
   </Stack>;
+}
+
+export function selectActions(state: OnnxState) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setOutpaint: state.setOutpaint,
+  };
+}
+
+export function selectOutpaint(state: OnnxState) {
+  return state.outpaint;
 }

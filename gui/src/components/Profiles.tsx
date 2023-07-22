@@ -37,13 +37,9 @@ export interface ProfilesProps {
 }
 
 export function Profiles(props: ProfilesProps) {
-  const state = mustExist(useContext(StateContext));
-  const profiles = useStore(state, (s) => s.profiles);
-
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const saveProfile = useStore(state, (s) => s.saveProfile);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const removeProfile = useStore(state, (s) => s.removeProfile);
+  const store = mustExist(useContext(StateContext));
+  const { removeProfile, saveProfile } = useStore(store, selectActions);
+  const profiles = useStore(store, selectProfiles);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [profileName, setProfileName] = useState('');
@@ -116,12 +112,12 @@ export function Profiles(props: ProfilesProps) {
         <Button
           variant='contained'
           onClick={() => {
-            const innerState = state.getState();
+            const state = store.getState();
             saveProfile({
-              params: props.selectParams(innerState),
+              params: props.selectParams(state),
               name: profileName,
-              highres: props.selectHighres(innerState),
-              upscale: props.selectUpscale(innerState),
+              highres: props.selectHighres(state),
+              upscale: props.selectUpscale(state),
             });
             setDialogOpen(false);
             setProfileName('');
@@ -161,16 +157,29 @@ export function Profiles(props: ProfilesProps) {
       />
     </Button>
     <Button component='label' variant='contained' onClick={() => {
-      const innerState = state.getState();
+      const state = store.getState();
       downloadParamsAsFile({
-        params: props.selectParams(innerState),
-        highres: props.selectHighres(innerState),
-        upscale: props.selectUpscale(innerState),
+        params: props.selectParams(state),
+        highres: props.selectHighres(state),
+        upscale: props.selectUpscale(state),
       });
     }}>
       <Download />
     </Button>
   </Stack>;
+}
+
+export function selectActions(state: OnnxState) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    removeProfile: state.removeProfile,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    saveProfile: state.saveProfile,
+  };
+}
+
+export function selectProfiles(state: OnnxState) {
+  return state.profiles;
 }
 
 export async function loadParamsFromFile(file: File): Promise<DeepPartial<ImageMetadata>> {

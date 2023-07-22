@@ -9,7 +9,7 @@ import { useStore } from 'zustand';
 
 import { ImageResponse } from '../../client/types.js';
 import { POLL_TIME } from '../../config.js';
-import { ClientContext, ConfigContext, StateContext } from '../../state.js';
+import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
 
 const LOADING_PERCENT = 100;
 const LOADING_OVERAGE = 99;
@@ -23,14 +23,11 @@ export function LoadingCard(props: LoadingCardProps) {
   const { image, index } = props;
   const { steps } = props.image.params;
 
-  const client = mustExist(React.useContext(ClientContext));
+  const client = mustExist(useContext(ClientContext));
   const { params } = mustExist(useContext(ConfigContext));
 
-  const state = mustExist(useContext(StateContext));
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const removeHistory = useStore(state, (s) => s.removeHistory);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setReady = useStore(state, (s) => s.setReady);
+  const store = mustExist(useContext(StateContext));
+  const { removeHistory, setReady } = useStore(store, selectActions);
   const { t } = useTranslation();
 
   const cancel = useMutation(() => client.cancel(image.outputs[index].key));
@@ -117,4 +114,13 @@ export function LoadingCard(props: LoadingCardProps) {
       </Box>
     </CardContent>
   </Card>;
+}
+
+export function selectActions(state: OnnxState) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    removeHistory: state.removeHistory,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setReady: state.setReady,
+  };
 }
