@@ -52,7 +52,7 @@ export function Profiles(props: ProfilesProps) {
     <Autocomplete
       id="profile-select"
       options={profiles}
-      sx={{ width: 200 }}
+      sx={{ width: '25em' }}
       getOptionLabel={(option) => option.name}
       clearOnBlur
       renderOption={(optionProps, option) => (
