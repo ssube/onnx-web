@@ -5,6 +5,7 @@ import _ from 'lodash';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, OnnxState, StateContext } from '../../state.js';
@@ -90,7 +91,7 @@ export function Models() {
     removeExtraNetwork,
     removeExtraSource,
     removeUpscalingModel,
-  } = useStore(store, selectActions);
+  } = useStore(store, selectActions, shallow);
 
   const client = mustExist(useContext(ClientContext));
   const result = useQuery(['extras'], async () => client.extras(), {

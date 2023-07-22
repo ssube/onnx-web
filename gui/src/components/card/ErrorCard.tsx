@@ -7,6 +7,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
 import { ImageResponse, ReadyResponse, RetryParams } from '../../client/types.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
@@ -24,7 +25,7 @@ export function ErrorCard(props: ErrorCardProps) {
   const { params } = mustExist(useContext(ConfigContext));
 
   const state = mustExist(useContext(StateContext));
-  const { pushHistory, removeHistory } = useStore(state, selectActions);
+  const { pushHistory, removeHistory } = useStore(state, selectActions, shallow);
   const { t } = useTranslation();
 
   async function retryImage() {

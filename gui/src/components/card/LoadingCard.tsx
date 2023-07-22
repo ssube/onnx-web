@@ -6,6 +6,7 @@ import * as React from 'react';
 import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
 import { ImageResponse } from '../../client/types.js';
 import { POLL_TIME } from '../../config.js';
@@ -27,7 +28,7 @@ export function LoadingCard(props: LoadingCardProps) {
   const { params } = mustExist(useContext(ConfigContext));
 
   const store = mustExist(useContext(StateContext));
-  const { removeHistory, setReady } = useStore(store, selectActions);
+  const { removeHistory, setReady } = useStore(store, selectActions, shallow);
   const { t } = useTranslation();
 
   const cancel = useMutation(() => client.cancel(image.outputs[index].key));

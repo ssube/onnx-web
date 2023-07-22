@@ -19,6 +19,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
 import { BaseImgParams, HighresParams, ImageMetadata, Txt2ImgParams, UpscaleParams } from '../client/types.js';
 import { OnnxState, StateContext } from '../state.js';
@@ -38,7 +39,7 @@ export interface ProfilesProps {
 
 export function Profiles(props: ProfilesProps) {
   const store = mustExist(useContext(StateContext));
-  const { removeProfile, saveProfile } = useStore(store, selectActions);
+  const { removeProfile, saveProfile } = useStore(store, selectActions, shallow);
   const profiles = useStore(store, selectProfiles);
 
   const [dialogOpen, setDialogOpen] = useState(false);

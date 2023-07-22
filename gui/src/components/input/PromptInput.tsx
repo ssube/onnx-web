@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, OnnxState, StateContext } from '../../state.js';
@@ -40,7 +41,7 @@ export function PromptInput(props: PromptInputProps) {
   const { selector, onChange } = props;
 
   const store = mustExist(useContext(StateContext));
-  const { prompt, negativePrompt } = useStore(store, selector);
+  const { prompt, negativePrompt } = useStore(store, selector, shallow);
 
   const client = mustExist(useContext(ClientContext));
   const models = useQuery(['models'], async () => client.models(), {

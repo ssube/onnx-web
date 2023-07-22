@@ -5,6 +5,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
 import { HighresParams, ModelParams, UpscaleParams, UpscaleReqParams } from '../../client/types.js';
 import { IMAGE_FILTER } from '../../config.js';
@@ -34,7 +35,7 @@ export function Upscale() {
   });
 
   const store = mustExist(useContext(StateContext));
-  const { pushHistory, setHighres, setModel, setParams, setUpscale } = useStore(store, selectActions);
+  const { pushHistory, setHighres, setModel, setParams, setUpscale } = useStore(store, selectActions, shallow);
   const model = useStore(store, selectModel);
   const params = useStore(store, selectParams);
   const { t } = useTranslation();

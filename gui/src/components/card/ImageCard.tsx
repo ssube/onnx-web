@@ -6,6 +6,7 @@ import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
 import { ImageResponse } from '../../client/types.js';
 import { BLEND_SOURCES, ConfigContext, OnnxState, StateContext } from '../../state.js';
@@ -33,7 +34,7 @@ export function ImageCard(props: ImageCardProps) {
 
   const config = mustExist(useContext(ConfigContext));
   const store = mustExist(useContext(StateContext));
-  const { setBlend, setImg2Img, setInpaint, setUpscale } = useStore(store, selectActions);
+  const { setBlend, setImg2Img, setInpaint, setUpscale } = useStore(store, selectActions, shallow);
 
   async function loadSource() {
     const req = await fetch(outputs[index].url);

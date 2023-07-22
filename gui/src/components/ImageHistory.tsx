@@ -4,18 +4,17 @@ import { ReactNode, useContext } from 'react';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
-import { StateContext } from '../state.js';
+import { OnnxState, StateContext } from '../state.js';
 import { ErrorCard } from './card/ErrorCard.js';
 import { ImageCard } from './card/ImageCard.js';
 import { LoadingCard } from './card/LoadingCard.js';
 
 export function ImageHistory() {
-  const history = useStore(mustExist(useContext(StateContext)), (state) => state.history);
-  const limit = useStore(mustExist(useContext(StateContext)), (state) => state.limit);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const removeHistory = useStore(mustExist(useContext(StateContext)), (state) => state.removeHistory);
-
+  const store = mustExist(useContext(StateContext));
+  const { history, limit } = useStore(store, selectParams, shallow);
+  const { removeHistory } = useStore(store, selectActions, shallow);
   const { t } = useTranslation();
 
   const children: Array<[string, ReactNode]> = [];
@@ -42,4 +41,18 @@ export function ImageHistory() {
   }
 
   return <Grid container spacing={2}>{children.map(([key, child]) => <Grid item key={key} xs={6}>{child}</Grid>)}</Grid>;
+}
+
+export function selectActions(state: OnnxState) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    removeHistory: state.removeHistory,
+  };
+}
+
+export function selectParams(state: OnnxState) {
+  return {
+    history: state.history,
+    limit: state.limit,
+  };
 }

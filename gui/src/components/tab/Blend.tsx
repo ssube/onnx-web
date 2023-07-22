@@ -5,6 +5,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
 import { BlendParams, BrushParams, ModelParams, UpscaleParams } from '../../client/types.js';
 import { IMAGE_FILTER } from '../../config.js';
@@ -33,7 +34,7 @@ export function Blend() {
   });
 
   const store = mustExist(useContext(StateContext));
-  const { pushHistory, setBlend, setBrush, setUpscale } = useStore(store, selectActions);
+  const { pushHistory, setBlend, setBrush, setUpscale } = useStore(store, selectActions, shallow);
   const brush = useStore(store, selectBrush);
   const blend = useStore(store, selectParams);
   const { t } = useTranslation();

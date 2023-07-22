@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
 import { ConfigContext, OnnxState, StateContext } from '../../state.js';
 import { NumericField } from '../input/NumericField.js';
@@ -11,7 +12,7 @@ import { NumericField } from '../input/NumericField.js';
 export function OutpaintControl() {
   const { params } = mustExist(useContext(ConfigContext));
   const store = mustExist(useContext(StateContext));
-  const {setOutpaint} = useStore(store, selectActions);
+  const {setOutpaint} = useStore(store, selectActions, shallow);
   const outpaint = useStore(store, selectOutpaint);
   const { t } = useTranslation();
 
