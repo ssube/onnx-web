@@ -1,5 +1,5 @@
 import { InvalidArgumentError, Maybe, doesExist, mustExist } from '@apextoaster/js-utils';
-import { Delete as DeleteIcon, ImageSearch, Save as SaveIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, Download, ImageSearch, Save as SaveIcon } from '@mui/icons-material';
 import {
   Autocomplete,
   Button,
@@ -153,6 +153,11 @@ export function Profiles(props: ProfilesProps) {
         }}
       />
     </Button>
+    <Button component='label' variant='contained' onClick={() => {
+      downloadParamsAsFile(props.params);
+    }}>
+      <Download />
+    </Button>
   </Stack>;
 }
 
@@ -172,6 +177,21 @@ export async function loadParamsFromFile(file: File): Promise<Partial<Txt2ImgPar
     default:
       return parseAutoComment(await file.text());
   }
+}
+
+/**
+ * from https://stackoverflow.com/a/30800715
+ */
+export function downloadParamsAsFile(params: Txt2ImgParams): void {
+  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({
+    params,
+  }));
+  const elem = document.createElement('a');
+  elem.setAttribute('href', dataStr);
+  elem.setAttribute('download', 'parameters.json');
+  document.body.appendChild(elem); // required for firefox
+  elem.click();
+  elem.remove();
 }
 
 export async function parseImageParams(file: File): Promise<Partial<Txt2ImgParams>> {
