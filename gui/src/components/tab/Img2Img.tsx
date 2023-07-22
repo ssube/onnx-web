@@ -22,10 +22,13 @@ export function Img2Img() {
   const { params } = mustExist(useContext(ConfigContext));
 
   async function uploadSource() {
+    const innerState = state.getState();
+    const img2img = selectParams(innerState);
+
     const { image, retry } = await client.img2img(model, {
       ...img2img,
       source: mustExist(img2img.source), // TODO: show an error if this doesn't exist
-    }, upscale, highres);
+    }, selectUpscale(innerState), selectHighres(innerState));
 
     pushHistory(image, retry);
   }
@@ -46,9 +49,9 @@ export function Img2Img() {
   const state = mustExist(useContext(StateContext));
   const model = useStore(state, selectModel);
   const source = useStore(state, (s) => s.img2img.source);
-  const img2img = useStore(state, selectParams);
-  const highres = useStore(state, selectHighres);
-  const upscale = useStore(state, selectUpscale);
+  const sourceFilter = useStore(state, (s) => s.img2img.sourceFilter);
+  const strength = useStore(state, (s) => s.img2img.strength);
+  const loopback = useStore(state, (s) => s.img2img.loopback);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -64,11 +67,11 @@ export function Img2Img() {
   return <Box>
     <Stack spacing={2}>
       <Profiles
-        params={img2img}
+        selectHighres={selectHighres}
+        selectParams={selectParams}
+        selectUpscale={selectUpscale}
         setParams={setImg2Img}
-        highres={highres}
         setHighres={setHighres}
-        upscale={upscale}
         setUpscale={setUpscale}
       />
       <ModelControl model={model} setModel={setModel} />
@@ -108,7 +111,7 @@ export function Img2Img() {
             selector: (f) => f.source,
           }}
           showNone
-          value={img2img.sourceFilter}
+          value={sourceFilter}
           onChange={(newFilter) => {
             setImg2Img({
               sourceFilter: newFilter,
@@ -121,7 +124,7 @@ export function Img2Img() {
           min={params.strength.min}
           max={params.strength.max}
           step={params.strength.step}
-          value={img2img.strength}
+          value={strength}
           onChange={(value) => {
             setImg2Img({
               strength: value,
@@ -133,7 +136,7 @@ export function Img2Img() {
           min={params.loopback.min}
           max={params.loopback.max}
           step={params.loopback.step}
-          value={img2img.loopback}
+          value={loopback}
           onChange={(value) => {
             setImg2Img({
               loopback: value,
@@ -141,8 +144,8 @@ export function Img2Img() {
           }}
         />
       </Stack>
-      <HighresControl highres={highres} setHighres={setHighres} />
-      <UpscaleControl upscale={upscale} setUpscale={setUpscale} />
+      <HighresControl selectHighres={selectHighres} setHighres={setHighres} />
+      <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
       <Button
         disabled={doesExist(source) === false}
         variant='contained'

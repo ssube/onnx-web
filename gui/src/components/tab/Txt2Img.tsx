@@ -1,25 +1,26 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
+import { HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../../client/types.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext, TabState } from '../../state.js';
 import { HighresControl } from '../control/HighresControl.js';
 import { ImageControl } from '../control/ImageControl.js';
+import { ModelControl } from '../control/ModelControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { NumericField } from '../input/NumericField.js';
-import { ModelControl } from '../control/ModelControl.js';
 import { Profiles } from '../Profiles.js';
-import { HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../../client/types.js';
 
 export function Txt2Img() {
   const { params } = mustExist(useContext(ConfigContext));
 
   async function generateImage() {
-    const { image, retry } = await client.txt2img(model, txt2img, upscale, highres);
+    const innerState = state.getState();
+    const { image, retry } = await client.txt2img(model, selectParams(innerState), selectUpscale(innerState), selectHighres(innerState));
 
     pushHistory(image, retry);
   }
@@ -31,10 +32,9 @@ export function Txt2Img() {
   });
 
   const state = mustExist(useContext(StateContext));
-  const txt2img = useStore(state, selectParams);
+  const height = useStore(state, (s) => s.txt2img.height);
+  const width = useStore(state, (s) => s.txt2img.width);
   const model = useStore(state, selectModel);
-  const highres = useStore(state, selectHighres);
-  const upscale = useStore(state, selectUpscale);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setParams = useStore(state, (s) => s.setTxt2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -50,22 +50,22 @@ export function Txt2Img() {
   return <Box>
     <Stack spacing={2}>
       <Profiles
-        params={txt2img}
+        selectParams={selectParams}
+        selectHighres={selectHighres}
+        selectUpscale={selectUpscale}
         setParams={setParams}
-        highres={highres}
         setHighres={setHighres}
-        upscale={upscale}
         setUpscale={setUpscale}
       />
       <ModelControl model={model} setModel={setModel} />
-      <ImageControl selector={(s) => s.txt2img} onChange={setParams} />
+      <ImageControl selector={selectParams} onChange={setParams} />
       <Stack direction='row' spacing={4}>
         <NumericField
           label={t('parameter.width')}
           min={params.width.min}
           max={params.width.max}
           step={params.width.step}
-          value={txt2img.width}
+          value={width}
           onChange={(value) => {
             setParams({
               width: value,
@@ -77,7 +77,7 @@ export function Txt2Img() {
           min={params.height.min}
           max={params.height.max}
           step={params.height.step}
-          value={txt2img.height}
+          value={height}
           onChange={(value) => {
             setParams({
               height: value,
@@ -85,8 +85,8 @@ export function Txt2Img() {
           }}
         />
       </Stack>
-      <HighresControl highres={highres} setHighres={setHighres} />
-      <UpscaleControl upscale={upscale} setUpscale={setUpscale} />
+      <HighresControl selectHighres={selectHighres} setHighres={setHighres} />
+      <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
       <Button
         variant='contained'
         onClick={() => generate.mutate()}

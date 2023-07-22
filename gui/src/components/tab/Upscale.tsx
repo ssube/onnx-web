@@ -6,8 +6,9 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
+import { HighresParams, ModelParams, UpscaleParams, UpscaleReqParams } from '../../client/types.js';
 import { IMAGE_FILTER } from '../../config.js';
-import { ClientContext, StateContext } from '../../state.js';
+import { ClientContext, OnnxState, StateContext, TabState } from '../../state.js';
 import { HighresControl } from '../control/HighresControl.js';
 import { ModelControl } from '../control/ModelControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
@@ -33,10 +34,8 @@ export function Upscale() {
   });
 
   const state = mustExist(useContext(StateContext));
-  const highres = useStore(state, (s) => s.upscaleHighres);
   const model = useStore(state, (s) => s.upscaleModel);
   const params = useStore(state, (s) => s.upscale);
-  const upscale = useStore(state, (s) => s.upscaleUpscale);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setModel = useStore(state, (s) => s.setUpscalingModel);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -51,7 +50,14 @@ export function Upscale() {
 
   return <Box>
     <Stack spacing={2}>
-      <Profiles params={params} setParams={setParams} highres={highres} setHighres={setHighres} upscale={upscale} setUpscale={setUpscale} />
+      <Profiles
+        selectHighres={selectHighres}
+        selectParams={selectParams}
+        selectUpscale={selectUpscale}
+        setParams={setParams}
+        setHighres={setHighres}
+        setUpscale={setUpscale}
+      />
       <ModelControl model={model} setModel={setModel} />
       <ImageInput
         filter={IMAGE_FILTER}
@@ -70,8 +76,8 @@ export function Upscale() {
           setParams(value);
         }}
       />
-      <HighresControl highres={highres} setHighres={setHighres} />
-      <UpscaleControl upscale={upscale} setUpscale={setUpscale} />
+      <HighresControl selectHighres={selectHighres} setHighres={setHighres} />
+      <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
       <Button
         disabled={doesExist(params.source) === false}
         variant='contained'
@@ -79,4 +85,20 @@ export function Upscale() {
       >{t('generate')}</Button>
     </Stack>
   </Box>;
+}
+
+export function selectModel(state: OnnxState): ModelParams {
+  return state.upscaleModel;
+}
+
+export function selectParams(state: OnnxState): TabState<UpscaleReqParams> {
+  return state.upscale;
+}
+
+export function selectHighres(state: OnnxState): HighresParams {
+  return state.upscaleHighres;
+}
+
+export function selectUpscale(state: OnnxState): UpscaleParams {
+  return state.upscaleUpscale;
 }

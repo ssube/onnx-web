@@ -3,19 +3,23 @@ import { Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, 
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useStore } from 'zustand';
 
 import { HighresParams } from '../../client/types.js';
-import { ConfigContext } from '../../state.js';
+import { ConfigContext, OnnxState, StateContext } from '../../state.js';
 import { NumericField } from '../input/NumericField.js';
 
 export interface HighresControlProps {
-  highres: HighresParams;
+  selectHighres(state: OnnxState): HighresParams;
   setHighres(params: Partial<HighresParams>): void;
 }
 
 export function HighresControl(props: HighresControlProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { highres, setHighres } = props;
+  const { selectHighres, setHighres } = props;
+
+  const state = mustExist(useContext(StateContext));
+  const highres = useStore(state, selectHighres);
 
   const { params } = mustExist(useContext(ConfigContext));
   const { t } = useTranslation();

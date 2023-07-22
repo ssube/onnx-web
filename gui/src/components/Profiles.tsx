@@ -21,15 +21,15 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
 import { BaseImgParams, HighresParams, ImageMetadata, Txt2ImgParams, UpscaleParams } from '../client/types.js';
-import { StateContext } from '../state.js';
+import { OnnxState, StateContext } from '../state.js';
 import { DeepPartial } from '../types.js';
 
 const { useState } = React;
 
 export interface ProfilesProps {
-  highres: HighresParams;
-  params: BaseImgParams;
-  upscale: UpscaleParams;
+  selectHighres(state: OnnxState): HighresParams;
+  selectParams(state: OnnxState): BaseImgParams;
+  selectUpscale(state: OnnxState): UpscaleParams;
 
   setHighres(params: Partial<HighresParams>): void;
   setParams(params: Partial<BaseImgParams>): void;
@@ -116,11 +116,12 @@ export function Profiles(props: ProfilesProps) {
         <Button
           variant='contained'
           onClick={() => {
+            const innerState = state.getState();
             saveProfile({
-              params: props.params,
+              params: props.selectParams(innerState),
               name: profileName,
-              highres: props.highres,
-              upscale: props.upscale,
+              highres: props.selectHighres(innerState),
+              upscale: props.selectUpscale(innerState),
             });
             setDialogOpen(false);
             setProfileName('');
@@ -160,7 +161,12 @@ export function Profiles(props: ProfilesProps) {
       />
     </Button>
     <Button component='label' variant='contained' onClick={() => {
-      downloadParamsAsFile(props);
+      const innerState = state.getState();
+      downloadParamsAsFile({
+        params: props.selectParams(innerState),
+        highres: props.selectHighres(innerState),
+        upscale: props.selectUpscale(innerState),
+      });
     }}>
       <Download />
     </Button>

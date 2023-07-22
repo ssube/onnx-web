@@ -3,19 +3,23 @@ import { Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, 
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useStore } from 'zustand';
 
 import { UpscaleParams } from '../../client/types.js';
-import { ConfigContext } from '../../state.js';
+import { ConfigContext, OnnxState, StateContext } from '../../state.js';
 import { NumericField } from '../input/NumericField.js';
 
 export interface UpscaleControlProps {
-  upscale: UpscaleParams;
+  selectUpscale(state: OnnxState): UpscaleParams;
   setUpscale(params: Partial<UpscaleParams>): void;
 }
 
 export function UpscaleControl(props: UpscaleControlProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { upscale, setUpscale } = props;
+  const { selectUpscale, setUpscale } = props;
+
+  const state = mustExist(useContext(StateContext));
+  const upscale = useStore(state, selectUpscale);
 
   const { params } = mustExist(useContext(ConfigContext));
   const { t } = useTranslation();

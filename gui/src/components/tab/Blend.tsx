@@ -1,13 +1,14 @@
 import { mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
+import { BlendParams, ModelParams, UpscaleParams } from '../../client/types.js';
 import { IMAGE_FILTER } from '../../config.js';
-import { BLEND_SOURCES, ClientContext, StateContext } from '../../state.js';
+import { BLEND_SOURCES, ClientContext, OnnxState, StateContext, TabState } from '../../state.js';
 import { range } from '../../utils.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
@@ -33,8 +34,7 @@ export function Blend() {
 
   const state = mustExist(useContext(StateContext));
   const brush = useStore(state, (s) => s.blendBrush);
-  const blend = useStore(state, (s) => s.blend);
-  const upscale = useStore(state, (s) => s.blendUpscale);
+  const blend = useStore(state, selectParams);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setBlend = useStore(state, (s) => s.setBlend);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -77,7 +77,7 @@ export function Blend() {
         }}
         setBrush={setBrush}
       />
-      <UpscaleControl upscale={upscale} setUpscale={setUpscale} />
+      <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
       <Button
         disabled={sources.length < 2}
         variant='contained'
@@ -85,4 +85,16 @@ export function Blend() {
       >{t('generate')}</Button>
     </Stack>
   </Box>;
+}
+
+export function selectModel(state: OnnxState): ModelParams {
+  return state.blendModel;
+}
+
+export function selectParams(state: OnnxState): TabState<BlendParams> {
+  return state.blend;
+}
+
+export function selectUpscale(state: OnnxState): UpscaleParams {
+  return state.blendUpscale;
 }
