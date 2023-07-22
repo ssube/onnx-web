@@ -5,8 +5,9 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
-import { HighresParams, InpaintParams, ModelParams, UpscaleParams } from '../../client/types.js';
+import { BrushParams, HighresParams, InpaintParams, ModelParams, UpscaleParams } from '../../client/types.js';
 import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext, TabState } from '../../state.js';
 import { HighresControl } from '../control/HighresControl.js';
@@ -33,6 +34,7 @@ export function Inpaint() {
 
   async function uploadSource(): Promise<void> {
     const innerState = state.getState();
+    const { outpaint } = innerState;
     const inpaint = selectParams(innerState);
 
     if (outpaint.enabled) {
@@ -64,42 +66,23 @@ export function Inpaint() {
   }
 
   const state = mustExist(useContext(StateContext));
-  const source = useStore(state, (s) => s.inpaint.source);
-  const mask = useStore(state, (s) => s.inpaint.mask);
-  const strength = useStore(state, (s) => s.inpaint.strength);
-  const noise = useStore(state, (s) => s.inpaint.noise);
-  const filter = useStore(state, (s) => s.inpaint.filter);
-  const tileOrder = useStore(state, (s) => s.inpaint.tileOrder);
-  const fillColor = useStore(state, (s) => s.inpaint.fillColor);
+  const { pushHistory, setBrush, setHighres, setModel, setInpaint, setUpscale } = useStore(state, selectActions, shallow);
+  const { source, mask, strength, noise, filter, tileOrder, fillColor } = useStore(state, selectReactParams, shallow);
   const model = useStore(state, selectModel);
-  const outpaint = useStore(state, (s) => s.outpaint);
-  const brush = useStore(state, (s) => s.inpaintBrush);
+  const brush = useStore(state, selectBrush);
 
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setInpaint = useStore(state, (s) => s.setInpaint);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setBrush = useStore(state, (s) => s.setInpaintBrush);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setModel = useStore(state, (s) => s.setInpaintModel);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setHighres = useStore(state, (s) => s.setInpaintHighres);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setUpscale = useStore(state, (s) => s.setInpaintUpscale);
-
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const pushHistory = useStore(state, (s) => s.pushHistory);
   const { t } = useTranslation();
 
   const query = useQueryClient();
   const upload = useMutation(uploadSource, {
-    onSuccess: () => query.invalidateQueries([ 'ready' ]),
+    onSuccess: () => query.invalidateQueries(['ready']),
   });
 
   function renderBanner() {
     if (supportsInpaint()) {
       return undefined;
     } else {
-      return <Alert severity="warning">{t('error.inpaint.support')}</Alert>;
+      return <Alert severity='warning'>{t('error.inpaint.support')}</Alert>;
     }
   }
 
@@ -245,12 +228,45 @@ export function Inpaint() {
   </Box>;
 }
 
+export function selectActions(state: OnnxState) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    pushHistory: state.pushHistory,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setBrush: state.setInpaintBrush,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setHighres: state.setInpaintHighres,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setModel: state.setInpaintModel,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setInpaint: state.setInpaint,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setUpscale: state.setInpaintUpscale,
+  };
+}
+
+export function selectBrush(state: OnnxState): BrushParams {
+  return state.inpaintBrush;
+}
+
 export function selectModel(state: OnnxState): ModelParams {
   return state.inpaintModel;
 }
 
 export function selectParams(state: OnnxState): TabState<InpaintParams> {
   return state.inpaint;
+}
+
+export function selectReactParams(state: OnnxState) {
+  return {
+    source: state.inpaint.source,
+    mask: state.inpaint.mask,
+    strength: state.inpaint.strength,
+    noise: state.inpaint.noise,
+    filter: state.inpaint.filter,
+    tileOrder: state.inpaint.tileOrder,
+    fillColor: state.inpaint.fillColor,
+  };
 }
 
 export function selectHighres(state: OnnxState): HighresParams {

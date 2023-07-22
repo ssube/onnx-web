@@ -5,6 +5,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
 import { HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../../client/types.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext, TabState } from '../../state.js';
@@ -32,19 +33,10 @@ export function Txt2Img() {
   });
 
   const state = mustExist(useContext(StateContext));
-  const height = useStore(state, (s) => s.txt2img.height);
-  const width = useStore(state, (s) => s.txt2img.width);
+  const { pushHistory, setHighres, setModel, setParams, setUpscale } = useStore(state, selectActions, shallow);
+  const { height, width } = useStore(state, selectReactParams, shallow);
   const model = useStore(state, selectModel);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setParams = useStore(state, (s) => s.setTxt2Img);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setHighres = useStore(state, (s) => s.setTxt2ImgHighres);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setUpscale = useStore(state, (s) => s.setTxt2ImgUpscale);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setModel = useStore(state, (s) => s.setTxt2ImgModel);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const pushHistory = useStore(state, (s) => s.pushHistory);
+
   const { t } = useTranslation();
 
   return <Box>
@@ -95,12 +87,34 @@ export function Txt2Img() {
   </Box>;
 }
 
+export function selectActions(state: OnnxState) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    pushHistory: state.pushHistory,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setHighres: state.setTxt2ImgHighres,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setModel: state.setTxt2ImgModel,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setParams: state.setTxt2Img,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setUpscale: state.setTxt2ImgUpscale,
+  };
+}
+
 export function selectModel(state: OnnxState): ModelParams {
   return state.txt2imgModel;
 }
 
 export function selectParams(state: OnnxState): TabState<Txt2ImgParams> {
   return state.txt2img;
+}
+
+export function selectReactParams(state: OnnxState) {
+  return {
+    height: state.txt2img.height,
+    width: state.txt2img.width,
+  };
 }
 
 export function selectHighres(state: OnnxState): HighresParams {

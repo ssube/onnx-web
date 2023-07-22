@@ -5,6 +5,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
+import { shallow} from 'zustand/shallow';
 
 import { HighresParams, Img2ImgParams, ModelParams, UpscaleParams } from '../../client/types.js';
 import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
@@ -47,21 +48,10 @@ export function Img2Img() {
   });
 
   const state = mustExist(useContext(StateContext));
+  const { pushHistory, setHighres, setImg2Img, setModel, setUpscale } = useStore(state, selectActions, shallow);
+  const { loopback, source, sourceFilter, strength } = useStore(state, selectReactParams, shallow);
   const model = useStore(state, selectModel);
-  const source = useStore(state, (s) => s.img2img.source);
-  const sourceFilter = useStore(state, (s) => s.img2img.sourceFilter);
-  const strength = useStore(state, (s) => s.img2img.strength);
-  const loopback = useStore(state, (s) => s.img2img.loopback);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setImg2Img = useStore(state, (s) => s.setImg2Img);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setHighres = useStore(state, (s) => s.setImg2ImgHighres);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setUpscale = useStore(state, (s) => s.setImg2ImgUpscale);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const setModel = useStore(state, (s) => s.setImg2ImgModel);
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const pushHistory = useStore(state, (s) => s.pushHistory);
+
   const { t } = useTranslation();
 
   return <Box>
@@ -155,12 +145,36 @@ export function Img2Img() {
   </Box>;
 }
 
+export function selectActions(state: OnnxState) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    pushHistory: state.pushHistory,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setImg2Img: state.setImg2Img,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setHighres: state.setImg2ImgHighres,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setModel: state.setImg2ImgModel,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setUpscale: state.setImg2ImgUpscale,
+  };
+}
+
 export function selectModel(state: OnnxState): ModelParams {
   return state.img2imgModel;
 }
 
 export function selectParams(state: OnnxState): TabState<Img2ImgParams> {
   return state.img2img;
+}
+
+export function selectReactParams(state: OnnxState) {
+  return {
+    loopback: state.img2img.loopback,
+    source: state.img2img.source,
+    sourceFilter: state.img2img.sourceFilter,
+    strength: state.img2img.strength,
+  };
 }
 
 export function selectHighres(state: OnnxState): HighresParams {

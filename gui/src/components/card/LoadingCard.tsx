@@ -34,7 +34,7 @@ export function LoadingCard(props: LoadingCardProps) {
   const { t } = useTranslation();
 
   const cancel = useMutation(() => client.cancel(image.outputs[index].key));
-  const ready = useQuery([`ready-${image.outputs[index].key}`], () => client.ready(image.outputs[index].key), {
+  const ready = useQuery(['ready', image.outputs[index].key], () => client.ready(image.outputs[index].key), {
     // data will always be ready without this, even if the API says its not
     cacheTime: 0,
     refetchInterval: POLL_TIME,
