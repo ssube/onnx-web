@@ -72,3 +72,7 @@ export interface ExtrasFile {
   networks: Array<ExtraNetwork>;
   sources: Array<ExtraSource>;
 }
+
+export type DeepPartial<T> = T extends object ? {
+  [P in keyof T]?: DeepPartial<T[P]>;
+} : T;

@@ -60,8 +60,8 @@ export interface BaseImgParams {
  * Parameters for txt2img requests.
  */
 export interface Txt2ImgParams extends BaseImgParams {
-  width?: number;
-  height?: number;
+  width: number;
+  height: number;
 }
 
 /**
@@ -71,7 +71,7 @@ export interface Img2ImgParams extends BaseImgParams {
   source: Blob;
 
   loopback: number;
-  sourceFilter?: string;
+  sourceFilter: string;
   strength: number;
 }
 
@@ -265,6 +265,16 @@ export type RetryParams = {
 export interface ImageResponseWithRetry {
   image: ImageResponse;
   retry: RetryParams;
+}
+
+export interface ImageMetadata {
+  highres: HighresParams;
+  outputs: string | Array<string>;
+  params: Txt2ImgParams | Img2ImgParams | InpaintParams;
+  upscale: UpscaleParams;
+
+  input_size: ImageSize;
+  size: ImageSize;
 }
 
 export interface ApiClient {

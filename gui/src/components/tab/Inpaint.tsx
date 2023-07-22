@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
 import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
-import { ClientContext, ConfigContext, StateContext } from '../../state.js';
+import { ClientContext, ConfigContext, OnnxState, StateContext, TabState } from '../../state.js';
 import { HighresControl } from '../control/HighresControl.js';
 import { ImageControl } from '../control/ImageControl.js';
 import { ModelControl } from '../control/ModelControl.js';
@@ -18,6 +18,7 @@ import { MaskCanvas } from '../input/MaskCanvas.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
 import { Profiles } from '../Profiles.js';
+import { ModelParams, InpaintParams, HighresParams, UpscaleParams } from '../../client/types.js';
 
 export function Inpaint() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -35,16 +36,16 @@ export function Inpaint() {
       const { image, retry } = await client.outpaint(model, {
         ...inpaint,
         ...outpaint,
-        mask: mustExist(mask),
-        source: mustExist(source),
+        mask: mustExist(inpaint.mask),
+        source: mustExist(inpaint.source),
       }, upscale, highres);
 
       pushHistory(image, retry);
     } else {
       const { image, retry } = await client.inpaint(model, {
         ...inpaint,
-        mask: mustExist(mask),
-        source: mustExist(source),
+        mask: mustExist(inpaint.mask),
+        source: mustExist(inpaint.source),
       }, upscale, highres);
 
       pushHistory(image, retry);
@@ -52,7 +53,7 @@ export function Inpaint() {
   }
 
   function preventInpaint(): boolean {
-    return doesExist(source) === false || doesExist(mask) === false;
+    return doesExist(inpaint.source) === false || doesExist(inpaint.mask) === false;
   }
 
   function supportsInpaint(): boolean {
@@ -60,15 +61,12 @@ export function Inpaint() {
   }
 
   const state = mustExist(useContext(StateContext));
-  const mask = useStore(state, (s) => s.inpaint.mask);
-  const source = useStore(state, (s) => s.inpaint.source);
-  const inpaint = useStore(state, (s) => s.inpaint);
+  const inpaint = useStore(state, selectParams);
+  const highres = useStore(state, selectHighres);
+  const model = useStore(state, selectModel);
+  const upscale = useStore(state, selectUpscale);
   const outpaint = useStore(state, (s) => s.outpaint);
-
   const brush = useStore(state, (s) => s.inpaintBrush);
-  const highres = useStore(state, (s) => s.inpaintHighres);
-  const model = useStore(state, (s) => s.inpaintModel);
-  const upscale = useStore(state, (s) => s.inpaintUpscale);
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setInpaint = useStore(state, (s) => s.setInpaint);
@@ -100,12 +98,19 @@ export function Inpaint() {
 
   return <Box>
     <Stack spacing={2}>
-      <Profiles params={inpaint} setParams={setInpaint} highres={highres} setHighres={setHighres} upscale={upscale} setUpscale={setUpscale} />
+      <Profiles
+        params={inpaint}
+        setParams={setInpaint}
+        highres={highres}
+        setHighres={setHighres}
+        upscale={upscale}
+        setUpscale={setUpscale}
+      />
       <ModelControl model={model} setModel={setModel} />
       {renderBanner()}
       <ImageInput
         filter={IMAGE_FILTER}
-        image={source}
+        image={inpaint.source}
         label={t('input.image.source')}
         hideSelection={true}
         onChange={(file) => {
@@ -116,7 +121,7 @@ export function Inpaint() {
       />
       <ImageInput
         filter={IMAGE_FILTER}
-        image={mask}
+        image={inpaint.mask}
         label={t('input.image.mask')}
         hideSelection={true}
         onChange={(file) => {
@@ -127,8 +132,8 @@ export function Inpaint() {
       />
       <MaskCanvas
         brush={brush}
-        source={source}
-        mask={mask}
+        source={inpaint.source}
+        mask={inpaint.mask}
         onSave={(file) => {
           setInpaint({
             mask: file,
@@ -231,4 +236,20 @@ export function Inpaint() {
       >{t('generate')}</Button>
     </Stack>
   </Box>;
+}
+
+export function selectModel(state: OnnxState): ModelParams {
+  return state.inpaintModel;
+}
+
+export function selectParams(state: OnnxState): TabState<InpaintParams> {
+  return state.inpaint;
+}
+
+export function selectHighres(state: OnnxState): HighresParams {
+  return state.inpaintHighres;
+}
+
+export function selectUpscale(state: OnnxState): UpscaleParams {
+  return state.inpaintUpscale;
 }

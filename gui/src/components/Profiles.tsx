@@ -1,4 +1,4 @@
-import { InvalidArgumentError, Maybe, doesExist, mustExist } from '@apextoaster/js-utils';
+import { doesExist, InvalidArgumentError, Maybe, mustExist } from '@apextoaster/js-utils';
 import { Delete as DeleteIcon, Download, ImageSearch, Save as SaveIcon } from '@mui/icons-material';
 import {
   Autocomplete,
@@ -20,19 +20,20 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
-import { BaseImgParams, HighresParams, Txt2ImgParams, UpscaleParams } from '../client/types.js';
+import { BaseImgParams, HighresParams, ImageMetadata, Txt2ImgParams, UpscaleParams } from '../client/types.js';
 import { StateContext } from '../state.js';
+import { DeepPartial } from '../types.js';
 
-const { useState, Fragment } = React;
+const { useState } = React;
 
 export interface ProfilesProps {
   highres: HighresParams;
   params: BaseImgParams;
   upscale: UpscaleParams;
 
-  setHighres(params: HighresParams): void;
-  setParams(params: BaseImgParams): void;
-  setUpscale(params: UpscaleParams): void;
+  setHighres(params: Partial<HighresParams>): void;
+  setParams(params: Partial<BaseImgParams>): void;
+  setUpscale(params: Partial<UpscaleParams>): void;
 }
 
 export function Profiles(props: ProfilesProps) {
@@ -50,7 +51,7 @@ export function Profiles(props: ProfilesProps) {
 
   return <Stack direction='row' spacing={2}>
     <Autocomplete
-      id="profile-select"
+      id='profile-select'
       options={profiles}
       sx={{ width: '25em' }}
       getOptionLabel={(option) => option.name}
@@ -59,7 +60,7 @@ export function Profiles(props: ProfilesProps) {
         <ListItem
           {...optionProps}
           secondaryAction={
-            <IconButton edge="end" onClick={(event) => {
+            <IconButton edge='end' onClick={(event) => {
               event.preventDefault();
               removeProfile(option.name);
             }}>
@@ -71,7 +72,7 @@ export function Profiles(props: ProfilesProps) {
         </ListItem>
       )}
       renderInput={(params) => (
-        <Stack direction="row">
+        <Stack direction='row'>
           <TextField
             {...params}
             label={t('profile.load')}
@@ -80,7 +81,7 @@ export function Profiles(props: ProfilesProps) {
               autoComplete: 'new-password', // disable autocomplete and autofill
             }}
           />
-          <Button type="button" variant="contained" onClick={() => setDialogOpen(true)}>
+          <Button type='button' variant='contained' onClick={() => setDialogOpen(true)}>
             <SaveIcon />
           </Button>
         </Stack>
@@ -100,7 +101,7 @@ export function Profiles(props: ProfilesProps) {
       <DialogTitle>{t('profile.saveProfile')}</DialogTitle>
       <DialogContent>
         <TextField
-          variant="standard"
+          variant='standard'
           label={t('profile.name')}
           value={profileName}
           onChange={(event) => setProfileName(event.target.value)}
@@ -118,8 +119,8 @@ export function Profiles(props: ProfilesProps) {
             saveProfile({
               params: props.params,
               name: profileName,
-              highResParams: props.highres,
-              upscaleParams: props.upscale,
+              highres: props.highres,
+              upscale: props.upscale,
             });
             setDialogOpen(false);
             setProfileName('');
@@ -127,7 +128,7 @@ export function Profiles(props: ProfilesProps) {
         >{t('profile.save')}</Button>
       </DialogActions>
     </Dialog>
-    <Button component='label' variant="contained">
+    <Button component='label' variant='contained'>
       <ImageSearch />
       <input
         hidden
@@ -139,11 +140,16 @@ export function Profiles(props: ProfilesProps) {
             const file = mustExist(files[0]);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             loadParamsFromFile(file).then((newParams) => {
-              if (doesExist(newParams)) {
-                props.setParams({
-                  ...props.params,
-                  ...newParams,
-                });
+              if (doesExist(newParams.params)) {
+                props.setParams(newParams.params);
+              }
+
+              if (doesExist(newParams.highres)) {
+                props.setHighres(newParams.highres);
+              }
+
+              if (doesExist(newParams.upscale)) {
+                props.setUpscale(newParams.upscale);
               }
             });
           }
@@ -154,14 +160,14 @@ export function Profiles(props: ProfilesProps) {
       />
     </Button>
     <Button component='label' variant='contained' onClick={() => {
-      downloadParamsAsFile(props.params);
+      downloadParamsAsFile(props);
     }}>
       <Download />
     </Button>
   </Stack>;
 }
 
-export async function loadParamsFromFile(file: File): Promise<Partial<Txt2ImgParams>> {
+export async function loadParamsFromFile(file: File): Promise<DeepPartial<ImageMetadata>> {
   const parts = file.name.toLocaleLowerCase().split('.');
   const ext = parts[parts.length - 1];
 
@@ -182,10 +188,8 @@ export async function loadParamsFromFile(file: File): Promise<Partial<Txt2ImgPar
 /**
  * from https://stackoverflow.com/a/30800715
  */
-export function downloadParamsAsFile(params: Txt2ImgParams): void {
-  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({
-    params,
-  }));
+export function downloadParamsAsFile(data: DeepPartial<ImageMetadata>): void {
+  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
   const elem = document.createElement('a');
   elem.setAttribute('href', dataStr);
   elem.setAttribute('download', 'parameters.json');
@@ -194,7 +198,7 @@ export function downloadParamsAsFile(params: Txt2ImgParams): void {
   elem.remove();
 }
 
-export async function parseImageParams(file: File): Promise<Partial<Txt2ImgParams>> {
+export async function parseImageParams(file: File): Promise<DeepPartial<ImageMetadata>> {
   const tags = await ExifReader.load(file);
 
   // handle lowercase variation from my earlier mistakes
@@ -234,8 +238,8 @@ export function decodeTag(tag: Maybe<ExifReader.XmpTag | (ExifReader.NumberTag &
   throw new InvalidArgumentError('tag value cannot be decoded');
 }
 
-export async function parseJSONParams(json: string): Promise<Partial<Txt2ImgParams>> {
-  const data = JSON.parse(json);
+export async function parseJSONParams(json: string): Promise<DeepPartial<ImageMetadata>> {
+  const data = JSON.parse(json) as DeepPartial<ImageMetadata>;
   const params: Partial<Txt2ImgParams> = {
     ...data.params,
   };
@@ -246,7 +250,11 @@ export async function parseJSONParams(json: string): Promise<Partial<Txt2ImgPara
     params.width = size.width;
   }
 
-  return params;
+  return {
+    params,
+    highres: data.highres,
+    upscale: data.upscale,
+  };
 }
 
 export function isProbablyJSON(maybeJSON: unknown): boolean {
@@ -255,7 +263,7 @@ export function isProbablyJSON(maybeJSON: unknown): boolean {
 
 export const NEGATIVE_PROMPT_TAG = 'Negative prompt:';
 
-export async function parseAutoComment(comment: string): Promise<Partial<Txt2ImgParams>> {
+export async function parseAutoComment(comment: string): Promise<DeepPartial<ImageMetadata>> {
   if (isProbablyJSON(comment)) {
     return parseJSONParams(comment);
   }
@@ -306,5 +314,7 @@ export async function parseAutoComment(comment: string): Promise<Partial<Txt2Img
     }
   }
 
-  return params;
+  return {
+    params,
+  };
 }

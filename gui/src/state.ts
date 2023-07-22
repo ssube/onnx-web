@@ -43,9 +43,9 @@ interface HistoryItem {
 
 interface ProfileItem {
   name: string;
-  params: Txt2ImgParams;
-  highResParams?: Maybe<HighresParams>;
-  upscaleParams?: Maybe<UpscaleParams>;
+  params: BaseImgParams | Txt2ImgParams;
+  highres?: Maybe<HighresParams>;
+  upscale?: Maybe<UpscaleParams>;
 }
 
 interface DefaultSlice {

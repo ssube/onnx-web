@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ModelParams } from '../../client/types.js';
 import { STALE_TIME } from '../../config.js';
-import { ClientContext, StateContext } from '../../state.js';
+import { ClientContext } from '../../state.js';
 import { QueryList } from '../input/QueryList.js';
 
 export interface ModelControlProps {
@@ -20,7 +20,6 @@ export function ModelControl(props: ModelControlProps) {
   const { model, setModel } = props;
 
   const client = mustExist(useContext(ClientContext));
-  const state = mustExist(useContext(StateContext));
   const { t } = useTranslation();
 
   const restart = useMutation(['restart'], async () => client.restart());

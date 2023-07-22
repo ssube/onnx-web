@@ -1,20 +1,21 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Stack } from '@mui/material';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
+import { HighresParams, Img2ImgParams, ModelParams, UpscaleParams } from '../../client/types.js';
 import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
-import { ClientContext, ConfigContext, StateContext } from '../../state.js';
+import { ClientContext, ConfigContext, OnnxState, StateContext, TabState } from '../../state.js';
+import { HighresControl } from '../control/HighresControl.js';
 import { ImageControl } from '../control/ImageControl.js';
+import { ModelControl } from '../control/ModelControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
-import { HighresControl } from '../control/HighresControl.js';
-import { ModelControl } from '../control/ModelControl.js';
 import { Profiles } from '../Profiles.js';
 
 export function Img2Img() {
@@ -43,11 +44,11 @@ export function Img2Img() {
   });
 
   const state = mustExist(useContext(StateContext));
-  const model = useStore(state, (s) => s.img2imgModel);
+  const model = useStore(state, selectModel);
   const source = useStore(state, (s) => s.img2img.source);
-  const img2img = useStore(state, (s) => s.img2img);
-  const highres = useStore(state, (s) => s.img2imgHighres);
-  const upscale = useStore(state, (s) => s.img2imgUpscale);
+  const img2img = useStore(state, selectParams);
+  const highres = useStore(state, selectHighres);
+  const upscale = useStore(state, selectUpscale);
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const setImg2Img = useStore(state, (s) => s.setImg2Img);
   // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -62,7 +63,14 @@ export function Img2Img() {
 
   return <Box>
     <Stack spacing={2}>
-      <Profiles params={img2img} setParams={setImg2Img} highres={highres} setHighres={setHighres} upscale={upscale} setUpscale={setUpscale} />
+      <Profiles
+        params={img2img}
+        setParams={setImg2Img}
+        highres={highres}
+        setHighres={setHighres}
+        upscale={upscale}
+        setUpscale={setUpscale}
+      />
       <ModelControl model={model} setModel={setModel} />
       <ImageInput
         filter={IMAGE_FILTER}
@@ -142,4 +150,20 @@ export function Img2Img() {
       >{t('generate')}</Button>
     </Stack>
   </Box>;
+}
+
+export function selectModel(state: OnnxState): ModelParams {
+  return state.img2imgModel;
+}
+
+export function selectParams(state: OnnxState): TabState<Img2ImgParams> {
+  return state.img2img;
+}
+
+export function selectHighres(state: OnnxState): HighresParams {
+  return state.img2imgHighres;
+}
+
+export function selectUpscale(state: OnnxState): UpscaleParams {
+  return state.img2imgUpscale;
 }
