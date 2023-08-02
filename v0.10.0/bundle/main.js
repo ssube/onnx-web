@@ -1124,7 +1124,7 @@
             return dispatcher;
           }
           __name(resolveDispatcher, "resolveDispatcher");
-          function useContext46(Context2) {
+          function useContext44(Context2) {
             var dispatcher = resolveDispatcher();
             {
               if (Context2._context !== void 0) {
@@ -1138,7 +1138,7 @@
             }
             return dispatcher.useContext(Context2);
           }
-          __name(useContext46, "useContext");
+          __name(useContext44, "useContext");
           function useState31(initialState) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useState(initialState);
@@ -1174,11 +1174,11 @@
             return dispatcher.useCallback(callback, deps);
           }
           __name(useCallback18, "useCallback");
-          function useMemo19(create2, deps) {
+          function useMemo20(create2, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useMemo(create2, deps);
           }
-          __name(useMemo19, "useMemo");
+          __name(useMemo20, "useMemo");
           function useImperativeHandle8(ref, create2, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useImperativeHandle(ref, create2, deps);
@@ -1972,7 +1972,7 @@
           exports.startTransition = startTransition;
           exports.unstable_act = act;
           exports.useCallback = useCallback18;
-          exports.useContext = useContext46;
+          exports.useContext = useContext44;
           exports.useDebugValue = useDebugValue5;
           exports.useDeferredValue = useDeferredValue;
           exports.useEffect = useEffect32;
@@ -1980,7 +1980,7 @@
           exports.useImperativeHandle = useImperativeHandle8;
           exports.useInsertionEffect = useInsertionEffect3;
           exports.useLayoutEffect = useLayoutEffect3;
-          exports.useMemo = useMemo19;
+          exports.useMemo = useMemo20;
           exports.useReducer = useReducer;
           exports.useRef = useRef32;
           exports.useState = useState31;
@@ -2560,7 +2560,7 @@
           var HostPortal = 4;
           var HostComponent = 5;
           var HostText = 6;
-          var Fragment19 = 7;
+          var Fragment18 = 7;
           var Mode = 8;
           var ContextConsumer = 9;
           var ContextProvider = 10;
@@ -3754,7 +3754,7 @@
                 return "DehydratedFragment";
               case ForwardRef2:
                 return getWrappedName$1(type, type.render, "ForwardRef");
-              case Fragment19:
+              case Fragment18:
                 return "Fragment";
               case HostComponent:
                 return type;
@@ -13933,7 +13933,7 @@
             }
             __name(updatePortal, "updatePortal");
             function updateFragment2(returnFiber, current2, fragment, lanes, key) {
-              if (current2 === null || current2.tag !== Fragment19) {
+              if (current2 === null || current2.tag !== Fragment18) {
                 var created = createFiberFromFragment(fragment, returnFiber.mode, lanes, key);
                 created.return = returnFiber;
                 return created;
@@ -14344,7 +14344,7 @@
                 if (child.key === key) {
                   var elementType = element.type;
                   if (elementType === REACT_FRAGMENT_TYPE) {
-                    if (child.tag === Fragment19) {
+                    if (child.tag === Fragment18) {
                       deleteRemainingChildren(returnFiber, child.sibling);
                       var existing = useFiber(child, element.props.children);
                       existing.return = returnFiber;
@@ -18689,7 +18689,7 @@
                 var _resolvedProps2 = workInProgress2.elementType === type ? _unresolvedProps2 : resolveDefaultProps(type, _unresolvedProps2);
                 return updateForwardRef(current2, workInProgress2, type, _resolvedProps2, renderLanes2);
               }
-              case Fragment19:
+              case Fragment18:
                 return updateFragment(current2, workInProgress2, renderLanes2);
               case Mode:
                 return updateMode(current2, workInProgress2, renderLanes2);
@@ -18968,7 +18968,7 @@
               case SimpleMemoComponent:
               case FunctionComponent:
               case ForwardRef2:
-              case Fragment19:
+              case Fragment18:
               case Mode:
               case Profiler:
               case ContextConsumer:
@@ -23377,7 +23377,7 @@
           }
           __name(createFiberFromElement, "createFiberFromElement");
           function createFiberFromFragment(elements, mode, lanes, key) {
-            var fiber = createFiber(Fragment19, elements, key, mode);
+            var fiber = createFiber(Fragment18, elements, key, mode);
             fiber.lanes = lanes;
             return fiber;
           }
@@ -27160,7 +27160,7 @@
           __name(is, "is");
           var objectIs = typeof Object.is === "function" ? Object.is : is;
           var useSyncExternalStore3 = shim.useSyncExternalStore;
-          var useRef32 = React167.useRef, useEffect32 = React167.useEffect, useMemo19 = React167.useMemo, useDebugValue5 = React167.useDebugValue;
+          var useRef32 = React167.useRef, useEffect32 = React167.useEffect, useMemo20 = React167.useMemo, useDebugValue5 = React167.useDebugValue;
           function useSyncExternalStoreWithSelector2(subscribe, getSnapshot, getServerSnapshot, selector, isEqual) {
             var instRef = useRef32(null);
             var inst;
@@ -27173,7 +27173,7 @@
             } else {
               inst = instRef.current;
             }
-            var _useMemo = useMemo19(function() {
+            var _useMemo = useMemo20(function() {
               var hasMemo = false;
               var memoizedSnapshot;
               var memoizedSelection;
@@ -27317,7 +27317,7 @@
           var ContextProvider = REACT_PROVIDER_TYPE;
           var Element2 = REACT_ELEMENT_TYPE;
           var ForwardRef2 = REACT_FORWARD_REF_TYPE;
-          var Fragment19 = REACT_FRAGMENT_TYPE;
+          var Fragment18 = REACT_FRAGMENT_TYPE;
           var Lazy = REACT_LAZY_TYPE;
           var Memo2 = REACT_MEMO_TYPE;
           var Portal3 = REACT_PORTAL_TYPE;
@@ -27389,7 +27389,7 @@
           exports.ContextProvider = ContextProvider;
           exports.Element = Element2;
           exports.ForwardRef = ForwardRef2;
-          exports.Fragment = Fragment19;
+          exports.Fragment = Fragment18;
           exports.Lazy = Lazy;
           exports.Memo = Memo2;
           exports.Portal = Portal3;
@@ -28164,7 +28164,7 @@
           var ContextProvider = REACT_PROVIDER_TYPE;
           var Element2 = REACT_ELEMENT_TYPE;
           var ForwardRef2 = REACT_FORWARD_REF_TYPE;
-          var Fragment19 = REACT_FRAGMENT_TYPE;
+          var Fragment18 = REACT_FRAGMENT_TYPE;
           var Lazy = REACT_LAZY_TYPE;
           var Memo2 = REACT_MEMO_TYPE;
           var Portal3 = REACT_PORTAL_TYPE;
@@ -28246,7 +28246,7 @@
           exports.ContextProvider = ContextProvider;
           exports.Element = Element2;
           exports.ForwardRef = ForwardRef2;
-          exports.Fragment = Fragment19;
+          exports.Fragment = Fragment18;
           exports.Lazy = Lazy;
           exports.Memo = Memo2;
           exports.Portal = Portal3;
@@ -28358,7 +28358,7 @@
           var ContextProvider = REACT_PROVIDER_TYPE;
           var Element2 = REACT_ELEMENT_TYPE;
           var ForwardRef2 = REACT_FORWARD_REF_TYPE;
-          var Fragment19 = REACT_FRAGMENT_TYPE;
+          var Fragment18 = REACT_FRAGMENT_TYPE;
           var Lazy = REACT_LAZY_TYPE;
           var Memo2 = REACT_MEMO_TYPE;
           var Portal3 = REACT_PORTAL_TYPE;
@@ -28430,7 +28430,7 @@
           exports.ContextProvider = ContextProvider;
           exports.Element = Element2;
           exports.ForwardRef = ForwardRef2;
-          exports.Fragment = Fragment19;
+          exports.Fragment = Fragment18;
           exports.Lazy = Lazy;
           exports.Memo = Memo2;
           exports.Portal = Portal3;
@@ -34285,7 +34285,7 @@
           var mergeWith = createAssigner(function(object, source, srcIndex, customizer) {
             baseMerge(object, source, srcIndex, customizer);
           });
-          var omit = flatRest(function(object, paths) {
+          var omit2 = flatRest(function(object, paths) {
             var result2 = {};
             if (object == null) {
               return result2;
@@ -35042,7 +35042,7 @@
           lodash.mixin = mixin;
           lodash.negate = negate;
           lodash.nthArg = nthArg;
-          lodash.omit = omit;
+          lodash.omit = omit2;
           lodash.omitBy = omitBy;
           lodash.once = once;
           lodash.orderBy = orderBy;
@@ -36034,7 +36034,7 @@
       var react_1 = require_react();
       var useLifecycles_1 = tslib_1.__importDefault(require_useLifecycles());
       var util_1 = require_util();
-      var useHash4 = /* @__PURE__ */ __name(function() {
+      var useHash3 = /* @__PURE__ */ __name(function() {
         var _a = react_1.useState(function() {
           return window.location.hash;
         }), hash4 = _a[0], setHash = _a[1];
@@ -36053,7 +36053,7 @@
         }, [hash4]);
         return [hash4, _setHash];
       }, "useHash");
-      exports.useHash = useHash4;
+      exports.useHash = useHash3;
     }
   });
 
@@ -74605,44 +74605,142 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(baseParamsFromServer, "baseParamsFromServer");
   function createStateSlices(server) {
-    const base = baseParamsFromServer(server);
+    const defaultParams = baseParamsFromServer(server);
+    const defaultHighres = {
+      enabled: false,
+      highresIterations: server.highresIterations.default,
+      highresMethod: "",
+      highresSteps: server.highresSteps.default,
+      highresScale: server.highresScale.default,
+      highresStrength: server.highresStrength.default
+    };
+    const defaultModel = {
+      control: server.control.default,
+      correction: server.correction.default,
+      model: server.model.default,
+      pipeline: server.pipeline.default,
+      platform: server.platform.default,
+      upscaling: server.upscaling.default
+    };
+    const defaultUpscale = {
+      denoise: server.denoise.default,
+      enabled: false,
+      faces: false,
+      faceOutscale: server.faceOutscale.default,
+      faceStrength: server.faceStrength.default,
+      outscale: server.outscale.default,
+      scale: server.scale.default,
+      upscaleOrder: server.upscaleOrder.default
+    };
     const createTxt2ImgSlice = /* @__PURE__ */ __name((set) => ({
-      txt2img: Object.assign(Object.assign({}, base), { width: server.width.default, height: server.height.default }),
+      txt2img: Object.assign(Object.assign({}, defaultParams), { width: server.width.default, height: server.height.default }),
+      txt2imgHighres: Object.assign({}, defaultHighres),
+      txt2imgModel: Object.assign({}, defaultModel),
+      txt2imgUpscale: Object.assign({}, defaultUpscale),
       setTxt2Img(params) {
         set((prev2) => ({
           txt2img: Object.assign(Object.assign({}, prev2.txt2img), params)
         }));
       },
+      setTxt2ImgHighres(params) {
+        set((prev2) => ({
+          txt2imgHighres: Object.assign(Object.assign({}, prev2.txt2imgHighres), params)
+        }));
+      },
+      setTxt2ImgModel(params) {
+        set((prev2) => ({
+          txt2imgModel: Object.assign(Object.assign({}, prev2.txt2imgModel), params)
+        }));
+      },
+      setTxt2ImgUpscale(params) {
+        set((prev2) => ({
+          txt2imgUpscale: Object.assign(Object.assign({}, prev2.txt2imgUpscale), params)
+        }));
+      },
       resetTxt2Img() {
         set({
-          txt2img: Object.assign(Object.assign({}, base), { width: server.width.default, height: server.height.default })
+          txt2img: Object.assign(Object.assign({}, defaultParams), { width: server.width.default, height: server.height.default })
         });
       }
     }), "createTxt2ImgSlice");
     const createImg2ImgSlice = /* @__PURE__ */ __name((set) => ({
-      img2img: Object.assign(Object.assign({}, base), { loopback: server.loopback.default, source: null, sourceFilter: "", strength: server.strength.default }),
+      img2img: Object.assign(Object.assign({}, defaultParams), { loopback: server.loopback.default, source: null, sourceFilter: "", strength: server.strength.default }),
+      img2imgHighres: Object.assign({}, defaultHighres),
+      img2imgModel: Object.assign({}, defaultModel),
+      img2imgUpscale: Object.assign({}, defaultUpscale),
+      resetImg2Img() {
+        set({
+          img2img: Object.assign(Object.assign({}, defaultParams), { loopback: server.loopback.default, source: null, sourceFilter: "", strength: server.strength.default })
+        });
+      },
       setImg2Img(params) {
         set((prev2) => ({
           img2img: Object.assign(Object.assign({}, prev2.img2img), params)
         }));
       },
-      resetImg2Img() {
-        set({
-          img2img: Object.assign(Object.assign({}, base), { loopback: server.loopback.default, source: null, sourceFilter: "", strength: server.strength.default })
-        });
+      setImg2ImgHighres(params) {
+        set((prev2) => ({
+          img2imgHighres: Object.assign(Object.assign({}, prev2.img2imgHighres), params)
+        }));
+      },
+      setImg2ImgModel(params) {
+        set((prev2) => ({
+          img2imgModel: Object.assign(Object.assign({}, prev2.img2imgModel), params)
+        }));
+      },
+      setImg2ImgUpscale(params) {
+        set((prev2) => ({
+          img2imgUpscale: Object.assign(Object.assign({}, prev2.img2imgUpscale), params)
+        }));
       }
     }), "createImg2ImgSlice");
     const createInpaintSlice = /* @__PURE__ */ __name((set) => ({
-      inpaint: Object.assign(Object.assign({}, base), { fillColor: server.fillColor.default, filter: server.filter.default, mask: null, noise: server.noise.default, source: null, strength: server.strength.default, tileOrder: server.tileOrder.default }),
+      inpaint: Object.assign(Object.assign({}, defaultParams), { fillColor: server.fillColor.default, filter: server.filter.default, mask: null, noise: server.noise.default, source: null, strength: server.strength.default, tileOrder: server.tileOrder.default }),
+      inpaintBrush: Object.assign({}, DEFAULT_BRUSH),
+      inpaintHighres: Object.assign({}, defaultHighres),
+      inpaintModel: Object.assign({}, defaultModel),
+      inpaintUpscale: Object.assign({}, defaultUpscale),
+      outpaint: {
+        enabled: false,
+        left: server.left.default,
+        right: server.right.default,
+        top: server.top.default,
+        bottom: server.bottom.default
+      },
+      resetInpaint() {
+        set({
+          inpaint: Object.assign(Object.assign({}, defaultParams), { fillColor: server.fillColor.default, filter: server.filter.default, mask: null, noise: server.noise.default, source: null, strength: server.strength.default, tileOrder: server.tileOrder.default })
+        });
+      },
       setInpaint(params) {
         set((prev2) => ({
           inpaint: Object.assign(Object.assign({}, prev2.inpaint), params)
         }));
       },
-      resetInpaint() {
-        set({
-          inpaint: Object.assign(Object.assign({}, base), { fillColor: server.fillColor.default, filter: server.filter.default, mask: null, noise: server.noise.default, source: null, strength: server.strength.default, tileOrder: server.tileOrder.default })
-        });
+      setInpaintBrush(brush) {
+        set((prev2) => ({
+          inpaintBrush: Object.assign(Object.assign({}, prev2.inpaintBrush), brush)
+        }));
+      },
+      setInpaintHighres(params) {
+        set((prev2) => ({
+          inpaintHighres: Object.assign(Object.assign({}, prev2.inpaintHighres), params)
+        }));
+      },
+      setInpaintModel(params) {
+        set((prev2) => ({
+          inpaintModel: Object.assign(Object.assign({}, prev2.inpaintModel), params)
+        }));
+      },
+      setInpaintUpscale(params) {
+        set((prev2) => ({
+          inpaintUpscale: Object.assign(Object.assign({}, prev2.inpaintUpscale), params)
+        }));
+      },
+      setOutpaint(pixels) {
+        set((prev2) => ({
+          outpaint: Object.assign(Object.assign({}, prev2.outpaint), pixels)
+        }));
       }
     }), "createInpaintSlice");
     const createHistorySlice = /* @__PURE__ */ __name((set) => ({
@@ -74676,101 +74774,45 @@ Please use another name.` : formatMuiErrorMessage(18));
         });
       }
     }), "createHistorySlice");
-    const createOutpaintSlice = /* @__PURE__ */ __name((set) => ({
-      outpaint: {
-        enabled: false,
-        left: server.left.default,
-        right: server.right.default,
-        top: server.top.default,
-        bottom: server.bottom.default
-      },
-      setOutpaint(pixels) {
-        set((prev2) => ({
-          outpaint: Object.assign(Object.assign({}, prev2.outpaint), pixels)
-        }));
-      }
-    }), "createOutpaintSlice");
-    const createBrushSlice = /* @__PURE__ */ __name((set) => ({
-      brush: Object.assign({}, DEFAULT_BRUSH),
-      setBrush(brush) {
-        set((prev2) => ({
-          brush: Object.assign(Object.assign({}, prev2.brush), brush)
-        }));
-      }
-    }), "createBrushSlice");
     const createUpscaleSlice = /* @__PURE__ */ __name((set) => ({
-      upscale: {
-        denoise: server.denoise.default,
-        enabled: false,
-        faces: false,
-        faceOutscale: server.faceOutscale.default,
-        faceStrength: server.faceStrength.default,
-        outscale: server.outscale.default,
-        scale: server.scale.default,
-        upscaleOrder: server.upscaleOrder.default
-      },
-      upscaleTab: {
-        negativePrompt: server.negativePrompt.default,
-        prompt: server.prompt.default,
-        source: null
-      },
-      setUpscale(upscale) {
-        set((prev2) => ({
-          upscale: Object.assign(Object.assign({}, prev2.upscale), upscale)
-        }));
-      },
-      setUpscaleTab(source) {
-        set((prev2) => ({
-          upscaleTab: Object.assign(Object.assign({}, prev2.upscaleTab), source)
-        }));
-      },
-      resetUpscaleTab() {
+      upscale: Object.assign(Object.assign({}, defaultParams), { source: null }),
+      upscaleHighres: Object.assign({}, defaultHighres),
+      upscaleModel: Object.assign({}, defaultModel),
+      upscaleUpscale: Object.assign({}, defaultUpscale),
+      resetUpscale() {
         set({
-          upscaleTab: {
-            negativePrompt: server.negativePrompt.default,
-            prompt: server.prompt.default,
-            source: null
-          }
+          upscale: Object.assign(Object.assign({}, defaultParams), { source: null })
         });
+      },
+      setUpscale(source) {
+        set((prev2) => ({
+          upscale: Object.assign(Object.assign({}, prev2.upscale), source)
+        }));
+      },
+      setUpscaleHighres(params) {
+        set((prev2) => ({
+          upscaleHighres: Object.assign(Object.assign({}, prev2.upscaleHighres), params)
+        }));
+      },
+      setUpscaleModel(params) {
+        set((prev2) => ({
+          upscaleModel: Object.assign(Object.assign({}, prev2.upscaleModel), defaultModel)
+        }));
+      },
+      setUpscaleUpscale(params) {
+        set((prev2) => ({
+          upscaleUpscale: Object.assign(Object.assign({}, prev2.upscaleUpscale), params)
+        }));
       }
     }), "createUpscaleSlice");
-    const createHighresSlice = /* @__PURE__ */ __name((set) => ({
-      highres: {
-        enabled: false,
-        highresIterations: server.highresIterations.default,
-        highresMethod: "",
-        highresSteps: server.highresSteps.default,
-        highresScale: server.highresScale.default,
-        highresStrength: server.highresStrength.default
-      },
-      setHighres(params) {
-        set((prev2) => ({
-          highres: Object.assign(Object.assign({}, prev2.highres), params)
-        }));
-      },
-      resetHighres() {
-        set({
-          highres: {
-            enabled: false,
-            highresIterations: server.highresIterations.default,
-            highresMethod: "",
-            highresSteps: server.highresSteps.default,
-            highresScale: server.highresScale.default,
-            highresStrength: server.highresStrength.default
-          }
-        });
-      }
-    }), "createHighresSlice");
     const createBlendSlice = /* @__PURE__ */ __name((set) => ({
       blend: {
         mask: null,
         sources: []
       },
-      setBlend(blend) {
-        set((prev2) => ({
-          blend: Object.assign(Object.assign({}, prev2.blend), blend)
-        }));
-      },
+      blendBrush: Object.assign({}, DEFAULT_BRUSH),
+      blendModel: Object.assign({}, defaultModel),
+      blendUpscale: Object.assign({}, defaultUpscale),
       resetBlend() {
         set({
           blend: {
@@ -74778,10 +74820,30 @@ Please use another name.` : formatMuiErrorMessage(18));
             sources: []
           }
         });
+      },
+      setBlend(blend) {
+        set((prev2) => ({
+          blend: Object.assign(Object.assign({}, prev2.blend), blend)
+        }));
+      },
+      setBlendBrush(brush) {
+        set((prev2) => ({
+          blendBrush: Object.assign(Object.assign({}, prev2.blendBrush), brush)
+        }));
+      },
+      setBlendModel(model) {
+        set((prev2) => ({
+          blendModel: Object.assign(Object.assign({}, prev2.blendModel), model)
+        }));
+      },
+      setBlendUpscale(params) {
+        set((prev2) => ({
+          blendUpscale: Object.assign(Object.assign({}, prev2.blendUpscale), params)
+        }));
       }
     }), "createBlendSlice");
     const createDefaultSlice = /* @__PURE__ */ __name((set) => ({
-      defaults: Object.assign({}, base),
+      defaults: Object.assign({}, defaultParams),
       theme: "",
       setDefaults(params) {
         set((prev2) => ({
@@ -74794,21 +74856,6 @@ Please use another name.` : formatMuiErrorMessage(18));
         }));
       }
     }), "createDefaultSlice");
-    const createModelSlice = /* @__PURE__ */ __name((set) => ({
-      model: {
-        control: server.control.default,
-        correction: server.correction.default,
-        model: server.model.default,
-        pipeline: server.pipeline.default,
-        platform: server.platform.default,
-        upscaling: server.upscaling.default
-      },
-      setModel(params) {
-        set((prev2) => ({
-          model: Object.assign(Object.assign({}, prev2.model), params)
-        }));
-      }
-    }), "createModelSlice");
     const createResetSlice = /* @__PURE__ */ __name((set) => ({
       resetAll() {
         set((prev2) => {
@@ -74816,7 +74863,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           next2.resetImg2Img();
           next2.resetInpaint();
           next2.resetTxt2Img();
-          next2.resetUpscaleTab();
+          next2.resetUpscale();
           next2.resetBlend();
           return next2;
         });
@@ -74847,7 +74894,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         });
       }
     }), "createProfileSlice");
-    const createExtraSlice = /* @__PURE__ */ __name((set) => ({
+    const createModelSlice = /* @__PURE__ */ __name((set) => ({
       extras: {
         correction: [],
         diffusion: [],
@@ -74953,21 +75000,17 @@ Please use another name.` : formatMuiErrorMessage(18));
           return Object.assign(Object.assign({}, prev2), { extras: Object.assign(Object.assign({}, prev2.extras), { upscaling }) });
         });
       }
-    }), "createExtraSlice");
+    }), "createModelSlice");
     return {
-      createBrushSlice,
       createDefaultSlice,
       createHistorySlice,
       createImg2ImgSlice,
       createInpaintSlice,
-      createModelSlice,
-      createOutpaintSlice,
       createTxt2ImgSlice,
       createUpscaleSlice,
-      createHighresSlice,
       createBlendSlice,
       createResetSlice,
-      createExtraSlice,
+      createModelSlice,
       createProfileSlice
     };
   }
@@ -75280,99 +75323,52 @@ Please use another name.` : formatMuiErrorMessage(18));
   // out/src/components/OnnxWeb.js
   var React165 = __toESM(require_react(), 1);
   var import_react41 = __toESM(require_react(), 1);
-  var import_useHash3 = __toESM(require_useHash(), 1);
+  var import_useHash2 = __toESM(require_useHash(), 1);
 
-  // out/src/components/control/ModelControl.js
-  var React138 = __toESM(require_react(), 1);
-  var import_react24 = __toESM(require_react(), 1);
-  var import_useHash = __toESM(require_useHash(), 1);
+  // out/src/components/ImageHistory.js
+  var import_react26 = __toESM(require_react(), 1);
+  var React139 = __toESM(require_react(), 1);
 
-  // out/src/components/input/QueryList.js
-  var React136 = __toESM(require_react(), 1);
-  var import_react23 = __toESM(require_react(), 1);
-  function hasFilter(query) {
-    return Reflect.has(query, "selector");
-  }
-  __name(hasFilter, "hasFilter");
-  function filterQuery(query, showEmpty) {
-    if (hasFilter(query)) {
-      const data = mustExist(query.result.data);
-      const selected = query.selector(data);
-      if (doesExist2(showEmpty)) {
-        return [showEmpty, ...selected];
-      }
-      return selected;
-    } else {
-      const data = Array.from(mustExist(query.result.data));
-      if (doesExist2(showEmpty)) {
-        return [showEmpty, ...data];
-      }
-      return data;
+  // node_modules/zustand/esm/shallow.mjs
+  function shallow(objA, objB) {
+    if (Object.is(objA, objB)) {
+      return true;
     }
-  }
-  __name(filterQuery, "filterQuery");
-  function QueryList(props) {
-    const { labelKey, query, showNone = false, value } = props;
-    const { result } = query;
-    const labelID = `query-list-${props.id}-labels`;
-    const { t: t2 } = useTranslation();
-    function firstValidValue() {
-      if (doesExist2(value) && data.includes(value)) {
-        return value;
-      } else {
-        return data[0];
-      }
+    if (typeof objA !== "object" || objA === null || typeof objB !== "object" || objB === null) {
+      return false;
     }
-    __name(firstValidValue, "firstValidValue");
-    function noneLabel() {
-      if (showNone) {
-        return "none";
-      }
-      return void 0;
-    }
-    __name(noneLabel, "noneLabel");
-    function getLabel(name) {
-      return mustDefault(t2(`${labelKey}.${name}`), name);
-    }
-    __name(getLabel, "getLabel");
-    (0, import_react23.useEffect)(() => {
-      if (result.status === "success" && doesExist2(result.data) && doesExist2(props.onChange)) {
-        const data2 = filterQuery(query, noneLabel());
-        if (data2.includes(value) === false) {
-          props.onChange(data2[0]);
+    if (objA instanceof Map && objB instanceof Map) {
+      if (objA.size !== objB.size)
+        return false;
+      for (const [key, value] of objA) {
+        if (!Object.is(value, objB.get(key))) {
+          return false;
         }
       }
-    }, [result.status]);
-    if (result.status === "error") {
-      if (result.error instanceof Error) {
-        return React136.createElement(Alert_default, { severity: "error" }, t2("input.list.error.specific", {
-          message: result.error.message
-        }));
-      } else {
-        return React136.createElement(Alert_default, { severity: "error" }, t2("input.list.error.unknown"));
+      return true;
+    }
+    if (objA instanceof Set && objB instanceof Set) {
+      if (objA.size !== objB.size)
+        return false;
+      for (const value of objA) {
+        if (!objB.has(value)) {
+          return false;
+        }
+      }
+      return true;
+    }
+    const keysA = Object.keys(objA);
+    if (keysA.length !== Object.keys(objB).length) {
+      return false;
+    }
+    for (let i = 0; i < keysA.length; i++) {
+      if (!Object.prototype.hasOwnProperty.call(objB, keysA[i]) || !Object.is(objA[keysA[i]], objB[keysA[i]])) {
+        return false;
       }
     }
-    if (result.status === "loading") {
-      return React136.createElement(
-        FormControl_default,
-        null,
-        React136.createElement(FormLabel_default, { id: labelID }, props.name),
-        React136.createElement(LinearProgress_default, null)
-      );
-    }
-    const data = filterQuery(query, noneLabel());
-    return React136.createElement(
-      FormControl_default,
-      null,
-      React136.createElement(InputLabel_default, { id: labelID }, props.name),
-      React136.createElement(Select_default, { labelId: labelID, label: props.name, value: firstValidValue(), onChange: (e2) => {
-        if (doesExist2(props.onChange)) {
-          props.onChange(e2.target.value);
-        }
-      } }, data.map((name) => React136.createElement(MenuItem_default, { key: name, value: name }, getLabel(name))))
-    );
+    return true;
   }
-  __name(QueryList, "QueryList");
+  __name(shallow, "shallow");
 
   // node_modules/@mui/icons-material/esm/ArrowLeft.js
   var import_jsx_runtime127 = __toESM(require_jsx_runtime());
@@ -75492,234 +75488,15 @@ Please use another name.` : formatMuiErrorMessage(18));
     d: "m15 3 2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3h-6zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3v6zm6 12-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6h6zm12-6-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6v-6z"
   }), "ZoomOutMap");
 
-  // out/src/components/input/QueryMenu.js
-  var React137 = __toESM(require_react(), 1);
-  function hasFilter2(query) {
-    return Reflect.has(query, "selector");
-  }
-  __name(hasFilter2, "hasFilter");
-  function filterQuery2(query, showEmpty) {
-    if (hasFilter2(query)) {
-      const data = mustExist(query.result.data);
-      const selected = query.selector(data);
-      if (showEmpty) {
-        return ["", ...selected];
-      }
-      return selected;
-    } else {
-      const data = Array.from(mustExist(query.result.data));
-      if (showEmpty) {
-        return ["", ...data];
-      }
-      return data;
-    }
-  }
-  __name(filterQuery2, "filterQuery");
-  function QueryMenu(props) {
-    const { id, labelKey, name, query, showEmpty = false } = props;
-    const { result } = query;
-    const labelID = `query-menu-${props.id}-labels`;
-    const { t: t2 } = useTranslation();
-    const [anchor, setAnchor] = React137.useState(void 0);
-    function closeMenu() {
-      setAnchor(void 0);
-    }
-    __name(closeMenu, "closeMenu");
-    function openMenu(event) {
-      setAnchor(event.currentTarget);
-    }
-    __name(openMenu, "openMenu");
-    function selectItem(value) {
-      closeMenu();
-      if (doesExist2(props.onSelect)) {
-        props.onSelect(value);
-      }
-    }
-    __name(selectItem, "selectItem");
-    function getLabel(key) {
-      return mustDefault(t2(`${labelKey}.${key}`), key);
-    }
-    __name(getLabel, "getLabel");
-    if (result.status === "error") {
-      if (result.error instanceof Error) {
-        return React137.createElement(Alert_default, { severity: "error" }, t2("input.list.error.specific", {
-          message: result.error.message
-        }));
-      } else {
-        return React137.createElement(Alert_default, { severity: "error" }, t2("input.list.error.unknown"));
-      }
-    }
-    if (result.status === "loading") {
-      return React137.createElement(
-        FormControl_default,
-        null,
-        React137.createElement(FormLabel_default, { id: labelID }, props.name),
-        React137.createElement(LinearProgress_default, null)
-      );
-    }
-    const data = filterQuery2(query, showEmpty);
-    const labeledData = data.map((it) => [it, getLabel(it)]).sort((a2, b2) => a2[1].localeCompare(b2[1]));
-    const menuItems = labeledData.map(([key, label]) => React137.createElement(MenuItem_default, { key, onClick: () => selectItem(key) }, label));
-    return React137.createElement(
-      Box_default,
-      null,
-      React137.createElement(Button_default, { id: `${id}-button`, onClick: openMenu, endIcon: React137.createElement(KeyboardArrowDown_default, null), variant: "outlined" }, name),
-      React137.createElement(Menu_default, { id: `${id}-menu`, anchorEl: anchor, open: doesExist2(anchor), onClose: closeMenu, MenuListProps: {
-        "aria-labelledby": `${id}-button`
-      } }, menuItems)
-    );
-  }
-  __name(QueryMenu, "QueryMenu");
-
-  // out/src/components/utils.js
-  var TAB_LABELS = [
-    "txt2img",
-    "img2img",
-    "inpaint",
-    "upscale",
-    "blend",
-    "models",
-    "settings"
-  ];
-  function getTab(hash4) {
-    const route = trimHash(hash4);
-    if (route.length > 0) {
-      return route;
-    }
-    return TAB_LABELS[0];
-  }
-  __name(getTab, "getTab");
-  function getTheme(currentTheme, preferDark) {
-    if (currentTheme === "") {
-      if (preferDark) {
-        return "dark";
-      }
-      return "light";
-    }
-    return currentTheme;
-  }
-  __name(getTheme, "getTheme");
-
-  // out/src/components/control/ModelControl.js
-  function ModelControl() {
-    const client = mustExist((0, import_react24.useContext)(ClientContext));
-    const state = mustExist((0, import_react24.useContext)(StateContext));
-    const params = useStore(state, (s) => s.model);
-    const setModel = useStore(state, (s) => s.setModel);
-    const { t: t2 } = useTranslation();
-    const [hash4, _setHash] = (0, import_useHash.useHash)();
-    const restart = useMutation(["restart"], async () => client.restart());
-    const models = useQuery(["models"], async () => client.models(), {
-      staleTime: STALE_TIME
-    });
-    const pipelines = useQuery(["pipelines"], async () => client.pipelines(), {
-      staleTime: STALE_TIME
-    });
-    const platforms = useQuery(["platforms"], async () => client.platforms(), {
-      staleTime: STALE_TIME
-    });
-    function addToken(type, name, weight = 1) {
-      const tab = getTab(hash4);
-      const current = state.getState();
-      switch (tab) {
-        case "txt2img": {
-          const { prompt } = current.txt2img;
-          current.setTxt2Img({
-            prompt: `<${type}:${name}:1.0> ${prompt}`
-          });
-          break;
-        }
-        case "img2img": {
-          const { prompt } = current.img2img;
-          current.setImg2Img({
-            prompt: `<${type}:${name}:1.0> ${prompt}`
-          });
-          break;
-        }
-        default:
-      }
-    }
-    __name(addToken, "addToken");
-    return React138.createElement(
-      Stack_default2,
-      { direction: "column", spacing: 2 },
-      React138.createElement(
-        Stack_default2,
-        { direction: "row", spacing: 2 },
-        React138.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t2("parameter.platform"), query: {
-          result: platforms
-        }, value: params.platform, onChange: (platform) => {
-          setModel({
-            platform
-          });
-        } }),
-        React138.createElement(QueryList, { id: "pipeline", labelKey: "pipeline", name: t2("parameter.pipeline"), query: {
-          result: pipelines
-        }, value: params.pipeline, onChange: (pipeline) => {
-          setModel({
-            pipeline
-          });
-        } }),
-        React138.createElement(QueryList, { id: "diffusion", labelKey: "model", name: t2("modelType.diffusion", { count: 1 }), query: {
-          result: models,
-          selector: (result) => result.diffusion
-        }, value: params.model, onChange: (model) => {
-          setModel({
-            model
-          });
-        } }),
-        React138.createElement(QueryList, { id: "upscaling", labelKey: "model", name: t2("modelType.upscaling", { count: 1 }), query: {
-          result: models,
-          selector: (result) => result.upscaling
-        }, value: params.upscaling, onChange: (upscaling) => {
-          setModel({
-            upscaling
-          });
-        } }),
-        React138.createElement(QueryList, { id: "correction", labelKey: "model", name: t2("modelType.correction", { count: 1 }), query: {
-          result: models,
-          selector: (result) => result.correction
-        }, value: params.correction, onChange: (correction) => {
-          setModel({
-            correction
-          });
-        } })
-      ),
-      React138.createElement(
-        Stack_default2,
-        { direction: "row", spacing: 2 },
-        React138.createElement(QueryMenu, { id: "inversion", labelKey: "model.inversion", name: t2("modelType.inversion"), query: {
-          result: models,
-          selector: (result) => result.networks.filter((network) => network.type === "inversion").map((network) => network.name)
-        }, onSelect: (name) => {
-          addToken("inversion", name);
-        } }),
-        React138.createElement(QueryMenu, { id: "lora", labelKey: "model.lora", name: t2("modelType.lora"), query: {
-          result: models,
-          selector: (result) => result.networks.filter((network) => network.type === "lora").map((network) => network.name)
-        }, onSelect: (name) => {
-          addToken("lora", name);
-        } }),
-        React138.createElement(Button_default, { variant: "outlined", onClick: () => restart.mutate() }, t2("admin.restart"))
-      )
-    );
-  }
-  __name(ModelControl, "ModelControl");
-
-  // out/src/components/ImageHistory.js
-  var import_react28 = __toESM(require_react(), 1);
-  var React142 = __toESM(require_react(), 1);
-
   // out/src/components/card/ErrorCard.js
-  var React139 = __toESM(require_react(), 1);
-  var import_react25 = __toESM(require_react(), 1);
+  var React136 = __toESM(require_react(), 1);
+  var import_react23 = __toESM(require_react(), 1);
   function ErrorCard(props) {
     const { image, ready, retry: retryParams } = props;
-    const client = mustExist(React139.useContext(ClientContext));
-    const { params } = mustExist((0, import_react25.useContext)(ConfigContext));
-    const state = mustExist((0, import_react25.useContext)(StateContext));
-    const pushHistory = useStore(state, (s) => s.pushHistory);
-    const removeHistory = useStore(state, (s) => s.removeHistory);
+    const client = mustExist((0, import_react23.useContext)(ClientContext));
+    const { params } = mustExist((0, import_react23.useContext)(ConfigContext));
+    const state = mustExist((0, import_react23.useContext)(StateContext));
+    const { pushHistory, removeHistory } = useStore(state, selectActions, shallow);
     const { t: t2 } = useTranslation();
     async function retryImage() {
       removeHistory(image);
@@ -75728,13 +75505,13 @@ Please use another name.` : formatMuiErrorMessage(18));
     }
     __name(retryImage, "retryImage");
     const retry = useMutation(retryImage);
-    return React139.createElement(
+    return React136.createElement(
       Card_default,
       { sx: { maxWidth: params.width.default } },
-      React139.createElement(
+      React136.createElement(
         CardContent_default,
         { sx: { height: params.height.default } },
-        React139.createElement(
+        React136.createElement(
           Box_default,
           { sx: {
             display: "flex",
@@ -75742,32 +75519,32 @@ Please use another name.` : formatMuiErrorMessage(18));
             justifyContent: "center",
             minHeight: params.height.default
           } },
-          React139.createElement(
+          React136.createElement(
             Stack_default,
             { direction: "column", spacing: 2, sx: { alignItems: "center" } },
-            React139.createElement(Alert_default, { severity: "error" }, t2("loading.progress", {
+            React136.createElement(Alert_default, { severity: "error" }, t2("loading.progress", {
               current: ready.progress,
               total: image.params.steps
             })),
-            React139.createElement(
+            React136.createElement(
               Stack_default,
               { direction: "row", spacing: 2 },
-              React139.createElement(
+              React136.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.retry") },
-                React139.createElement(
+                React136.createElement(
                   IconButton_default,
                   { onClick: () => retry.mutate() },
-                  React139.createElement(Replay_default, null)
+                  React136.createElement(Replay_default, null)
                 )
               ),
-              React139.createElement(
+              React136.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.delete") },
-                React139.createElement(
+                React136.createElement(
                   IconButton_default,
                   { onClick: () => removeHistory(image) },
-                  React139.createElement(Delete_default, null)
+                  React136.createElement(Delete_default, null)
                 )
               )
             )
@@ -75777,31 +75554,37 @@ Please use another name.` : formatMuiErrorMessage(18));
     );
   }
   __name(ErrorCard, "ErrorCard");
+  function selectActions(state) {
+    return {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      pushHistory: state.pushHistory,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      removeHistory: state.removeHistory
+    };
+  }
+  __name(selectActions, "selectActions");
 
   // out/src/components/card/ImageCard.js
-  var React140 = __toESM(require_react(), 1);
-  var import_react26 = __toESM(require_react(), 1);
-  var import_useHash2 = __toESM(require_useHash(), 1);
+  var React137 = __toESM(require_react(), 1);
+  var import_react24 = __toESM(require_react(), 1);
+  var import_useHash = __toESM(require_useHash(), 1);
   function GridItem(props) {
-    return React140.createElement(
+    return React137.createElement(
       Grid_default,
       { item: true, xs: props.xs },
-      React140.createElement(Paper_default, { elevation: 0, sx: { padding: 1 } }, props.children)
+      React137.createElement(Paper_default, { elevation: 0, sx: { padding: 1 } }, props.children)
     );
   }
   __name(GridItem, "GridItem");
   function ImageCard(props) {
     const { image } = props;
     const { params, outputs, size } = image;
-    const [_hash, setHash] = (0, import_useHash2.useHash)();
-    const [blendAnchor, setBlendAnchor] = (0, import_react26.useState)();
-    const [saveAnchor, setSaveAnchor] = (0, import_react26.useState)();
-    const config = mustExist((0, import_react26.useContext)(ConfigContext));
-    const state = mustExist((0, import_react26.useContext)(StateContext));
-    const setImg2Img = useStore(state, (s) => s.setImg2Img);
-    const setInpaint = useStore(state, (s) => s.setInpaint);
-    const setUpscale = useStore(state, (s) => s.setUpscaleTab);
-    const setBlend = useStore(state, (s) => s.setBlend);
+    const [_hash, setHash] = (0, import_useHash.useHash)();
+    const [blendAnchor, setBlendAnchor] = (0, import_react24.useState)();
+    const [saveAnchor, setSaveAnchor] = (0, import_react24.useState)();
+    const config = mustExist((0, import_react24.useContext)(ConfigContext));
+    const store = mustExist((0, import_react24.useContext)(StateContext));
+    const { setBlend, setImg2Img, setInpaint, setUpscale } = useStore(store, selectActions2, shallow);
     async function loadSource() {
       const req = await fetch(outputs[index].url);
       return req.blob();
@@ -75833,7 +75616,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     __name(copySourceToUpscale, "copySourceToUpscale");
     async function copySourceToBlend(idx) {
       const blob = await loadSource();
-      const sources = mustDefault(state.getState().blend.sources, []);
+      const sources = mustDefault(store.getState().blend.sources, []);
       const newSources = [...sources];
       newSources[idx] = blob;
       setBlend({
@@ -75863,7 +75646,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       setSaveAnchor(void 0);
     }
     __name(close, "close");
-    const [index, setIndex] = (0, import_react26.useState)(0);
+    const [index, setIndex] = (0, import_react24.useState)(0);
     const { t: t2 } = useTranslation();
     function getLabel(key, name) {
       return mustDefault(t2(`${key}.${name}`), name);
@@ -75871,26 +75654,26 @@ Please use another name.` : formatMuiErrorMessage(18));
     __name(getLabel, "getLabel");
     const model = getLabel("model", params.model);
     const scheduler = getLabel("scheduler", params.scheduler);
-    return React140.createElement(
+    return React137.createElement(
       Card_default,
       { sx: { maxWidth: config.params.width.default }, elevation: 2 },
-      React140.createElement(CardMedia_default, { sx: { height: config.params.height.default }, component: "img", image: outputs[index].url, title: params.prompt }),
-      React140.createElement(
+      React137.createElement(CardMedia_default, { sx: { height: config.params.height.default }, component: "img", image: outputs[index].url, title: params.prompt }),
+      React137.createElement(
         CardContent_default,
         null,
-        React140.createElement(
+        React137.createElement(
           Box_default,
           { textAlign: "center" },
-          React140.createElement(
+          React137.createElement(
             Grid_default,
             { container: true, spacing: 2 },
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 4 },
-              React140.createElement(
+              React137.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.previous") },
-                React140.createElement(
+                React137.createElement(
                   IconButton_default,
                   { onClick: () => {
                     const prevIndex = index - 1;
@@ -75900,68 +75683,68 @@ Please use another name.` : formatMuiErrorMessage(18));
                       setIndex(prevIndex);
                     }
                   } },
-                  React140.createElement(ArrowLeft_default, null)
+                  React137.createElement(ArrowLeft_default, null)
                 )
               )
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 4 },
               visibleIndex(index),
               " of ",
               outputs.length
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 4 },
-              React140.createElement(
+              React137.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.next") },
-                React140.createElement(
+                React137.createElement(
                   IconButton_default,
                   { onClick: () => {
                     setIndex((index + 1) % outputs.length);
                   } },
-                  React140.createElement(ArrowRight_default, null)
+                  React137.createElement(ArrowRight_default, null)
                 )
               )
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 4 },
               t2("modelType.diffusion", { count: 1 }),
               ": ",
               model
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.scheduler"),
               ": ",
               scheduler
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.seed"),
               ": ",
               params.seed
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.cfg"),
               ": ",
               params.cfg
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.steps"),
               ": ",
               params.steps
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 4 },
               t2("parameter.size"),
@@ -75970,101 +75753,101 @@ Please use another name.` : formatMuiErrorMessage(18));
               "x",
               size.height
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 12 },
-              React140.createElement(Box_default, { textAlign: "left" }, params.prompt)
+              React137.createElement(Box_default, { textAlign: "left" }, params.prompt)
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 2 },
-              React140.createElement(
+              React137.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.save") },
-                React140.createElement(
+                React137.createElement(
                   IconButton_default,
                   { onClick: (event) => {
                     setSaveAnchor(event.currentTarget);
                   } },
-                  React140.createElement(Download_default, null)
+                  React137.createElement(Download_default, null)
                 )
               ),
-              React140.createElement(
+              React137.createElement(
                 Menu_default,
                 { anchorEl: saveAnchor, open: doesExist2(saveAnchor), onClose: close },
-                React140.createElement(MenuItem_default, { key: "save-image", onClick: downloadImage }, t2("save.image")),
-                React140.createElement(MenuItem_default, { key: "save-metadata", onClick: downloadMetadata }, t2("save.metadata"))
+                React137.createElement(MenuItem_default, { key: "save-image", onClick: downloadImage }, t2("save.image")),
+                React137.createElement(MenuItem_default, { key: "save-metadata", onClick: downloadMetadata }, t2("save.metadata"))
               )
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 2 },
-              React140.createElement(
+              React137.createElement(
                 Tooltip_default,
                 { title: t2("tab.img2img") },
-                React140.createElement(
+                React137.createElement(
                   IconButton_default,
                   { onClick: copySourceToImg2Img },
-                  React140.createElement(ContentCopy_default, null)
+                  React137.createElement(ContentCopy_default, null)
                 )
               )
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 2 },
-              React140.createElement(
+              React137.createElement(
                 Tooltip_default,
                 { title: t2("tab.inpaint") },
-                React140.createElement(
+                React137.createElement(
                   IconButton_default,
                   { onClick: copySourceToInpaint },
-                  React140.createElement(Brush_default, null)
+                  React137.createElement(Brush_default, null)
                 )
               )
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 2 },
-              React140.createElement(
+              React137.createElement(
                 Tooltip_default,
                 { title: t2("tab.upscale") },
-                React140.createElement(
+                React137.createElement(
                   IconButton_default,
                   { onClick: copySourceToUpscale },
-                  React140.createElement(ZoomOutMap_default, null)
+                  React137.createElement(ZoomOutMap_default, null)
                 )
               )
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 2 },
-              React140.createElement(
+              React137.createElement(
                 Tooltip_default,
                 { title: t2("tab.blend") },
-                React140.createElement(
+                React137.createElement(
                   IconButton_default,
                   { onClick: (event) => {
                     setBlendAnchor(event.currentTarget);
                   } },
-                  React140.createElement(Blender_default, null)
+                  React137.createElement(Blender_default, null)
                 )
               ),
-              React140.createElement(Menu_default, { anchorEl: blendAnchor, open: doesExist2(blendAnchor), onClose: close }, range(BLEND_SOURCES).map((idx) => React140.createElement(MenuItem_default, { key: idx, onClick: () => {
+              React137.createElement(Menu_default, { anchorEl: blendAnchor, open: doesExist2(blendAnchor), onClose: close }, range(BLEND_SOURCES).map((idx) => React137.createElement(MenuItem_default, { key: idx, onClick: () => {
                 copySourceToBlend(idx).catch((err) => {
                 });
                 close();
               } }, visibleIndex(idx))))
             ),
-            React140.createElement(
+            React137.createElement(
               GridItem,
               { xs: 2 },
-              React140.createElement(
+              React137.createElement(
                 Tooltip_default,
                 { title: t2("tooltip.delete") },
-                React140.createElement(
+                React137.createElement(
                   IconButton_default,
                   { onClick: deleteImage },
-                  React140.createElement(Delete_default, null)
+                  React137.createElement(Delete_default, null)
                 )
               )
             )
@@ -76074,23 +75857,35 @@ Please use another name.` : formatMuiErrorMessage(18));
     );
   }
   __name(ImageCard, "ImageCard");
+  function selectActions2(state) {
+    return {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setBlend: state.setBlend,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setImg2Img: state.setImg2Img,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setInpaint: state.setInpaint,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setUpscale: state.setUpscale
+    };
+  }
+  __name(selectActions2, "selectActions");
 
   // out/src/components/card/LoadingCard.js
-  var React141 = __toESM(require_react(), 1);
-  var import_react27 = __toESM(require_react(), 1);
+  var React138 = __toESM(require_react(), 1);
+  var import_react25 = __toESM(require_react(), 1);
   var LOADING_PERCENT = 100;
   var LOADING_OVERAGE = 99;
   function LoadingCard(props) {
     const { image, index } = props;
     const { steps } = props.image.params;
-    const client = mustExist(React141.useContext(ClientContext));
-    const { params } = mustExist((0, import_react27.useContext)(ConfigContext));
-    const state = mustExist((0, import_react27.useContext)(StateContext));
-    const removeHistory = useStore(state, (s) => s.removeHistory);
-    const setReady = useStore(state, (s) => s.setReady);
+    const client = mustExist((0, import_react25.useContext)(ClientContext));
+    const { params } = mustExist((0, import_react25.useContext)(ConfigContext));
+    const store = mustExist((0, import_react25.useContext)(StateContext));
+    const { removeHistory, setReady } = useStore(store, selectActions3, shallow);
     const { t: t2 } = useTranslation();
     const cancel = useMutation(() => client.cancel(image.outputs[index].key));
-    const ready = useQuery([`ready-${image.outputs[index].key}`], () => client.ready(image.outputs[index].key), {
+    const ready = useQuery(["ready", image.outputs[index].key], () => client.ready(image.outputs[index].key), {
       // data will always be ready without this, even if the API says its not
       cacheTime: 0,
       refetchInterval: POLL_TIME
@@ -76126,29 +75921,29 @@ Please use another name.` : formatMuiErrorMessage(18));
     function renderProgress2() {
       const progress = getProgress();
       if (progress > 0 && progress <= steps) {
-        return React141.createElement(CircularProgress_default, { variant: "determinate", value: getPercent() });
+        return React138.createElement(CircularProgress_default, { variant: "determinate", value: getPercent() });
       } else {
-        return React141.createElement(CircularProgress_default, null);
+        return React138.createElement(CircularProgress_default, null);
       }
     }
     __name(renderProgress2, "renderProgress");
-    (0, import_react27.useEffect)(() => {
+    (0, import_react25.useEffect)(() => {
       if (cancel.status === "success") {
         removeHistory(props.image);
       }
     }, [cancel.status]);
-    (0, import_react27.useEffect)(() => {
+    (0, import_react25.useEffect)(() => {
       if (ready.status === "success" && getReady()) {
         setReady(props.image, ready.data);
       }
     }, [ready.status, getReady(), getProgress()]);
-    return React141.createElement(
+    return React138.createElement(
       Card_default,
       { sx: { maxWidth: params.width.default } },
-      React141.createElement(
+      React138.createElement(
         CardContent_default,
         { sx: { height: params.height.default } },
-        React141.createElement(
+        React138.createElement(
           Box_default,
           { sx: {
             display: "flex",
@@ -76156,59 +75951,82 @@ Please use another name.` : formatMuiErrorMessage(18));
             justifyContent: "center",
             minHeight: params.height.default
           } },
-          React141.createElement(
+          React138.createElement(
             Stack_default,
             { direction: "column", spacing: 2, sx: { alignItems: "center" } },
             renderProgress2(),
-            React141.createElement(Typography_default, null, t2("loading.progress", {
+            React138.createElement(Typography_default, null, t2("loading.progress", {
               current: getProgress(),
               total: getTotal()
             })),
-            React141.createElement(Button_default, { onClick: () => cancel.mutate() }, t2("loading.cancel"))
+            React138.createElement(Button_default, { onClick: () => cancel.mutate() }, t2("loading.cancel"))
           )
         )
       )
     );
   }
   __name(LoadingCard, "LoadingCard");
+  function selectActions3(state) {
+    return {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      removeHistory: state.removeHistory,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setReady: state.setReady
+    };
+  }
+  __name(selectActions3, "selectActions");
 
   // out/src/components/ImageHistory.js
   function ImageHistory() {
-    const history = useStore(mustExist((0, import_react28.useContext)(StateContext)), (state) => state.history);
-    const limit = useStore(mustExist((0, import_react28.useContext)(StateContext)), (state) => state.limit);
-    const removeHistory = useStore(mustExist((0, import_react28.useContext)(StateContext)), (state) => state.removeHistory);
+    const store = mustExist((0, import_react26.useContext)(StateContext));
+    const { history, limit } = useStore(store, selectParams, shallow);
+    const { removeHistory } = useStore(store, selectActions4, shallow);
     const { t: t2 } = useTranslation();
     const children = [];
     if (history.length === 0) {
-      children.push(["empty", React142.createElement(Typography_default, null, t2("history.empty"))]);
+      children.push(["empty", React139.createElement(Typography_default, null, t2("history.empty"))]);
     }
     const limited = history.slice(0, limit);
     for (const item of limited) {
       const key = item.image.outputs[0].key;
       if (doesExist2(item.ready) && item.ready.ready) {
         if (item.ready.cancelled || item.ready.failed) {
-          children.push([key, React142.createElement(ErrorCard, { key: `history-${key}`, image: item.image, ready: item.ready, retry: item.retry })]);
+          children.push([key, React139.createElement(ErrorCard, { key: `history-${key}`, image: item.image, ready: item.ready, retry: item.retry })]);
           continue;
         }
-        children.push([key, React142.createElement(ImageCard, { key: `history-${key}`, image: item.image, onDelete: removeHistory })]);
+        children.push([key, React139.createElement(ImageCard, { key: `history-${key}`, image: item.image, onDelete: removeHistory })]);
         continue;
       }
-      children.push([key, React142.createElement(LoadingCard, { key: `history-${key}`, index: 0, image: item.image })]);
+      children.push([key, React139.createElement(LoadingCard, { key: `history-${key}`, index: 0, image: item.image })]);
     }
-    return React142.createElement(Grid_default, { container: true, spacing: 2 }, children.map(([key, child]) => React142.createElement(Grid_default, { item: true, key, xs: 6 }, child)));
+    return React139.createElement(Grid_default, { container: true, spacing: 2 }, children.map(([key, child]) => React139.createElement(Grid_default, { item: true, key, xs: 6 }, child)));
   }
   __name(ImageHistory, "ImageHistory");
+  function selectActions4(state) {
+    return {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      removeHistory: state.removeHistory
+    };
+  }
+  __name(selectActions4, "selectActions");
+  function selectParams(state) {
+    return {
+      history: state.history,
+      limit: state.limit
+    };
+  }
+  __name(selectParams, "selectParams");
 
   // out/src/components/tab/Blend.js
-  var React147 = __toESM(require_react(), 1);
-  var import_react31 = __toESM(require_react(), 1);
-
-  // out/src/components/control/UpscaleControl.js
   var React144 = __toESM(require_react(), 1);
   var import_react29 = __toESM(require_react(), 1);
 
+  // out/src/components/control/UpscaleControl.js
+  var React141 = __toESM(require_react(), 1);
+  var import_react27 = __toESM(require_react(), 1);
+
   // out/src/components/input/NumericField.js
-  var React143 = __toESM(require_react(), 1);
+  var React140 = __toESM(require_react(), 1);
   function parseNumber(num, decimal = false) {
     if (decimal) {
       return parseFloat(num);
@@ -76221,15 +76039,15 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { decimal = false, disabled = false, label, min: min2, max: max2, step, value } = props;
     const error2 = value < min2 || value > max2;
     const { t: t2 } = useTranslation();
-    return React143.createElement(
+    return React140.createElement(
       Stack_default2,
       { spacing: 2 },
-      React143.createElement(TextField_default, { error: error2, label, helperText: error2 && t2("input.numeric.error.range"), disabled, variant: "outlined", type: "number", inputProps: { min: min2, max: max2, step }, value, onChange: (event) => {
+      React140.createElement(TextField_default, { error: error2, label, helperText: error2 && t2("input.numeric.error.range"), disabled, variant: "outlined", type: "number", inputProps: { min: min2, max: max2, step }, value, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange(parseNumber(event.target.value, decimal));
         }
       } }),
-      React143.createElement(Slider_default, { disabled, min: min2, max: max2, step, value, onChange: (_event, newValue) => {
+      React140.createElement(Slider_default, { disabled, min: min2, max: max2, step, value, onChange: (_event, newValue) => {
         if (doesExist2(props.onChange)) {
           if (Array.isArray(newValue)) {
             props.onChange(newValue[0]);
@@ -76243,66 +76061,66 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(NumericField, "NumericField");
 
   // out/src/components/control/UpscaleControl.js
-  function UpscaleControl() {
-    const { params } = mustExist((0, import_react29.useContext)(ConfigContext));
-    const state = mustExist((0, import_react29.useContext)(StateContext));
-    const upscale = useStore(state, (s) => s.upscale);
-    const setUpscale = useStore(state, (s) => s.setUpscale);
+  function UpscaleControl(props) {
+    const { selectUpscale: selectUpscale6, setUpscale } = props;
+    const store = mustExist((0, import_react27.useContext)(StateContext));
+    const upscale = useStore(store, selectUpscale6);
+    const { params } = mustExist((0, import_react27.useContext)(ConfigContext));
     const { t: t2 } = useTranslation();
-    return React144.createElement(
+    return React141.createElement(
       Stack_default2,
       { direction: "row", spacing: 4 },
-      React144.createElement(FormControlLabel_default, { label: t2("parameter.upscale.label"), control: React144.createElement(Checkbox_default, { checked: upscale.enabled, value: "check", onChange: (event) => {
+      React141.createElement(FormControlLabel_default, { label: t2("parameter.upscale.label"), control: React141.createElement(Checkbox_default, { checked: upscale.enabled, value: "check", onChange: (_event) => {
         setUpscale({
           enabled: upscale.enabled === false
         });
       } }) }),
-      React144.createElement(NumericField, { label: t2("parameter.upscale.denoise"), decimal: true, disabled: upscale.enabled === false, min: params.denoise.min, max: params.denoise.max, step: params.denoise.step, value: upscale.denoise, onChange: (denoise) => {
+      React141.createElement(NumericField, { label: t2("parameter.upscale.denoise"), decimal: true, disabled: upscale.enabled === false, min: params.denoise.min, max: params.denoise.max, step: params.denoise.step, value: upscale.denoise, onChange: (denoise) => {
         setUpscale({
           denoise
         });
       } }),
-      React144.createElement(NumericField, { label: t2("parameter.upscale.scale"), disabled: upscale.enabled === false, min: params.scale.min, max: params.scale.max, step: params.scale.step, value: upscale.scale, onChange: (scale) => {
+      React141.createElement(NumericField, { label: t2("parameter.upscale.scale"), disabled: upscale.enabled === false, min: params.scale.min, max: params.scale.max, step: params.scale.step, value: upscale.scale, onChange: (scale) => {
         setUpscale({
           scale
         });
       } }),
-      React144.createElement(NumericField, { label: t2("parameter.upscale.outscale"), disabled: upscale.enabled === false, min: params.outscale.min, max: params.outscale.max, step: params.outscale.step, value: upscale.outscale, onChange: (outscale) => {
+      React141.createElement(NumericField, { label: t2("parameter.upscale.outscale"), disabled: upscale.enabled === false, min: params.outscale.min, max: params.outscale.max, step: params.outscale.step, value: upscale.outscale, onChange: (outscale) => {
         setUpscale({
           outscale
         });
       } }),
-      React144.createElement(FormControlLabel_default, { label: t2("parameter.correction.label"), control: React144.createElement(Checkbox_default, { checked: upscale.faces, value: "check", onChange: (event) => {
+      React141.createElement(FormControlLabel_default, { label: t2("parameter.correction.label"), control: React141.createElement(Checkbox_default, { checked: upscale.faces, value: "check", onChange: (event) => {
         setUpscale({
           faces: upscale.faces === false
         });
       } }) }),
-      React144.createElement(NumericField, { label: t2("parameter.correction.strength"), decimal: true, disabled: upscale.faces === false, min: params.faceStrength.min, max: params.faceStrength.max, step: params.faceStrength.step, value: upscale.faceStrength, onChange: (faceStrength) => {
+      React141.createElement(NumericField, { label: t2("parameter.correction.strength"), decimal: true, disabled: upscale.faces === false, min: params.faceStrength.min, max: params.faceStrength.max, step: params.faceStrength.step, value: upscale.faceStrength, onChange: (faceStrength) => {
         setUpscale({
           faceStrength
         });
       } }),
-      React144.createElement(NumericField, { label: t2("parameter.correction.outscale"), disabled: upscale.faces === false, min: params.faceOutscale.min, max: params.faceOutscale.max, step: params.faceOutscale.step, value: upscale.faceOutscale, onChange: (faceOutscale) => {
+      React141.createElement(NumericField, { label: t2("parameter.correction.outscale"), disabled: upscale.faces === false, min: params.faceOutscale.min, max: params.faceOutscale.max, step: params.faceOutscale.step, value: upscale.faceOutscale, onChange: (faceOutscale) => {
         setUpscale({
           faceOutscale
         });
       } }),
-      React144.createElement(
+      React141.createElement(
         FormControl_default,
         null,
-        React144.createElement(InputLabel_default, { id: "upscale-order" }, t2("parameter.upscale.order")),
-        React144.createElement(Select_default, { labelId: "upscale-order", label: t2("parameter.upscale.order"), value: upscale.upscaleOrder, onChange: (e2) => {
+        React141.createElement(InputLabel_default, { id: "upscale-order" }, t2("parameter.upscale.order")),
+        React141.createElement(Select_default, { labelId: "upscale-order", label: t2("parameter.upscale.order"), value: upscale.upscaleOrder, onChange: (e2) => {
           setUpscale({
             upscaleOrder: e2.target.value
           });
-        } }, Object.entries(params.upscaleOrder.keys).map(([key, name]) => React144.createElement(MenuItem_default, { key, value: name }, t2(`upscaleOrder.${name}`))))
+        } }, Object.entries(params.upscaleOrder.keys).map(([key, name]) => React141.createElement(MenuItem_default, { key, value: name }, t2(`upscaleOrder.${name}`))))
       )
     );
   }
   __name(UpscaleControl, "UpscaleControl");
 
   // out/src/components/input/ImageInput.js
-  var React145 = __toESM(require_react(), 1);
+  var React142 = __toESM(require_react(), 1);
   function ImageInput(props) {
     const { t: t2 } = useTranslation();
     function renderImage() {
@@ -76310,26 +76128,26 @@ Please use another name.` : formatMuiErrorMessage(18));
         if (mustDefault(props.hideSelection, false)) {
           return void 0;
         }
-        return React145.createElement("img", { src: URL.createObjectURL(props.image), style: {
+        return React142.createElement("img", { src: URL.createObjectURL(props.image), style: {
           maxWidth: 512,
           maxHeight: 512
         } });
       } else {
-        return React145.createElement(Typography_default, null, t2("input.image.empty"));
+        return React142.createElement(Typography_default, null, t2("input.image.empty"));
       }
     }
     __name(renderImage, "renderImage");
-    return React145.createElement(
+    return React142.createElement(
       Stack_default2,
       { direction: "row", spacing: 2 },
-      React145.createElement(
+      React142.createElement(
         Stack_default2,
         null,
-        React145.createElement(
+        React142.createElement(
           Button_default,
-          { component: "label", startIcon: React145.createElement(PhotoCamera_default, null), variant: "outlined" },
+          { component: "label", startIcon: React142.createElement(PhotoCamera_default, null), variant: "outlined" },
           props.label,
-          React145.createElement("input", { hidden: true, accept: props.filter, type: "file", onChange: (event) => {
+          React142.createElement("input", { hidden: true, accept: props.filter, type: "file", onChange: (event) => {
             const { files } = event.target;
             if (doesExist2(files) && files.length > 0) {
               const file = mustExist(files[0]);
@@ -76345,7 +76163,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/input/MaskCanvas.js
   var import_lodash2 = __toESM(require_lodash(), 1);
-  var import_react30 = __toESM(require_react(), 1);
+  var import_react28 = __toESM(require_react(), 1);
   var FULL_CIRCLE = 2 * Math.PI;
   var FULL_OPACITY = 1;
   var MASK_OPACITY = 0.75;
@@ -76360,9 +76178,9 @@ Please use another name.` : formatMuiErrorMessage(18));
     upper: 224
   };
   function MaskCanvas(props) {
-    const { source, mask } = props;
-    const { params } = mustExist((0, import_react30.useContext)(ConfigContext));
-    const logger = mustExist((0, import_react30.useContext)(LoggerContext));
+    const { source, mask, brush, setBrush } = props;
+    const { params } = mustExist((0, import_react28.useContext)(ConfigContext));
+    const logger = mustExist((0, import_react28.useContext)(LoggerContext));
     function composite() {
       if (doesExist2(viewRef.current)) {
         const { ctx } = getClearContext(viewRef);
@@ -76476,27 +76294,25 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }
     __name(saveMask, "saveMask");
-    const save = (0, import_react30.useMemo)(() => (0, import_lodash2.throttle)(saveMask, SAVE_TIME), []);
-    const brushRef = (0, import_react30.useRef)(null);
-    const maskRef = (0, import_react30.useRef)(null);
-    const viewRef = (0, import_react30.useRef)(null);
-    const undoRef = (0, import_react30.useRef)(null);
-    const painting = (0, import_react30.useRef)(false);
-    const dirty = (0, import_react30.useRef)(false);
-    const background = (0, import_react30.useRef)({
+    const save = (0, import_react28.useMemo)(() => (0, import_lodash2.throttle)(saveMask, SAVE_TIME), []);
+    const brushRef = (0, import_react28.useRef)(null);
+    const maskRef = (0, import_react28.useRef)(null);
+    const viewRef = (0, import_react28.useRef)(null);
+    const undoRef = (0, import_react28.useRef)(null);
+    const painting = (0, import_react28.useRef)(false);
+    const dirty = (0, import_react28.useRef)(false);
+    const background = (0, import_react28.useRef)({
       name: "",
       url: void 0
     });
-    const state = mustExist((0, import_react30.useContext)(StateContext));
-    const brush = useStore(state, (s) => s.brush);
-    const setBrush = useStore(state, (s) => s.setBrush);
+    const state = mustExist((0, import_react28.useContext)(StateContext));
     const { t: t2 } = useTranslation();
-    (0, import_react30.useEffect)(() => {
+    (0, import_react28.useEffect)(() => {
       if (dirty.current) {
         save();
       }
     }, [dirty.current]);
-    (0, import_react30.useEffect)(() => {
+    (0, import_react28.useEffect)(() => {
       if (doesExist2(maskRef.current) && doesExist2(mask)) {
         drawMask(mask).catch((err) => {
           logger.error(err, "error drawing mask for effect");
@@ -76526,13 +76342,13 @@ Please use another name.` : formatMuiErrorMessage(18));
       backgroundStyle.backgroundImage = `url(${background.current.url})`;
     }
     const hiddenStyle = Object.assign(Object.assign({}, backgroundStyle), { display: "none" });
-    return import_react30.default.createElement(
+    return import_react28.default.createElement(
       Stack_default2,
       { spacing: 2 },
-      import_react30.default.createElement(
+      import_react28.default.createElement(
         Stack_default2,
         { direction: "row", spacing: 2 },
-        import_react30.default.createElement(Button_default, { variant: "outlined", startIcon: import_react30.default.createElement(Download_default, null), onClick: () => {
+        import_react28.default.createElement(Button_default, { variant: "outlined", startIcon: import_react28.default.createElement(Download_default, null), onClick: () => {
           if (doesExist2(maskRef.current)) {
             const data = maskRef.current.toDataURL("image/png");
             const link = document.createElement("a");
@@ -76541,50 +76357,50 @@ Please use another name.` : formatMuiErrorMessage(18));
             link.click();
           }
         } }),
-        import_react30.default.createElement(Button_default, { variant: "outlined", startIcon: import_react30.default.createElement(Undo_default, null), onClick: () => drawUndo() })
+        import_react28.default.createElement(Button_default, { variant: "outlined", startIcon: import_react28.default.createElement(Undo_default, null), onClick: () => drawUndo() })
       ),
-      import_react30.default.createElement("canvas", { ref: brushRef, height: params.height.default, width: params.width.default, style: hiddenStyle }),
-      import_react30.default.createElement("canvas", { ref: maskRef, height: params.height.default, width: params.width.default, style: hiddenStyle }),
-      import_react30.default.createElement("canvas", { ref: undoRef, height: params.height.default, width: params.width.default, style: hiddenStyle }),
-      import_react30.default.createElement("canvas", { ref: viewRef, height: params.height.default, width: params.width.default, style: backgroundStyle, onMouseDown: (event) => {
+      import_react28.default.createElement("canvas", { ref: brushRef, height: params.height.default, width: params.width.default, style: hiddenStyle }),
+      import_react28.default.createElement("canvas", { ref: maskRef, height: params.height.default, width: params.width.default, style: hiddenStyle }),
+      import_react28.default.createElement("canvas", { ref: undoRef, height: params.height.default, width: params.width.default, style: hiddenStyle }),
+      import_react28.default.createElement("canvas", { ref: viewRef, height: params.height.default, width: params.width.default, style: backgroundStyle, onMouseDown: (event) => {
         logger.debug("mouse down", { state: painting.current });
         saveUndo();
         painting.current = true;
         drawMouse(event);
       }, onMouseLeave: finishPainting, onMouseOut: finishPainting, onMouseUp: finishPainting, onMouseMove: drawMouse }),
-      import_react30.default.createElement(Typography_default, { variant: "body1" }, t2("mask.help")),
-      import_react30.default.createElement(
+      import_react28.default.createElement(Typography_default, { variant: "body1" }, t2("mask.help")),
+      import_react28.default.createElement(
         Stack_default2,
         null,
-        import_react30.default.createElement(
+        import_react28.default.createElement(
           Stack_default2,
           { direction: "row", spacing: 4 },
-          import_react30.default.createElement(NumericField, { label: t2("parameter.brush.color"), min: COLORS.black, max: COLORS.white, step: 1, value: brush.color, onChange: (color2) => {
+          import_react28.default.createElement(NumericField, { label: t2("parameter.brush.color"), min: COLORS.black, max: COLORS.white, step: 1, value: brush.color, onChange: (color2) => {
             setBrush({ color: color2 });
           } }),
-          import_react30.default.createElement(NumericField, { label: t2("parameter.brush.size"), min: 1, max: 64, step: 1, value: brush.size, onChange: (size) => {
+          import_react28.default.createElement(NumericField, { label: t2("parameter.brush.size"), min: 1, max: 64, step: 1, value: brush.size, onChange: (size) => {
             setBrush({ size });
           } }),
-          import_react30.default.createElement(NumericField, { decimal: true, label: t2("parameter.brush.strength"), min: 0, max: 1, step: 0.01, value: brush.strength, onChange: (strength) => {
+          import_react28.default.createElement(NumericField, { decimal: true, label: t2("parameter.brush.strength"), min: 0, max: 1, step: 0.01, value: brush.strength, onChange: (strength) => {
             setBrush({ strength });
           } })
         ),
-        import_react30.default.createElement(
+        import_react28.default.createElement(
           Stack_default2,
           { direction: "row", spacing: 2 },
-          import_react30.default.createElement(Button_default, { variant: "outlined", startIcon: import_react30.default.createElement(FormatColorFill_default, null), onClick: () => {
+          import_react28.default.createElement(Button_default, { variant: "outlined", startIcon: import_react28.default.createElement(FormatColorFill_default, null), onClick: () => {
             drawFill(floodBlack);
           } }, t2("mask.fill.black")),
-          import_react30.default.createElement(Button_default, { variant: "outlined", startIcon: import_react30.default.createElement(FormatColorFill_default, null), onClick: () => {
+          import_react28.default.createElement(Button_default, { variant: "outlined", startIcon: import_react28.default.createElement(FormatColorFill_default, null), onClick: () => {
             drawFill(floodWhite);
           } }, t2("mask.fill.white")),
-          import_react30.default.createElement(Button_default, { variant: "outlined", startIcon: import_react30.default.createElement(InvertColors_default, null), onClick: () => {
+          import_react28.default.createElement(Button_default, { variant: "outlined", startIcon: import_react28.default.createElement(InvertColors_default, null), onClick: () => {
             drawFill(floodInvert);
           } }, t2("mask.invert")),
-          import_react30.default.createElement(Button_default, { variant: "outlined", startIcon: import_react30.default.createElement(Gradient_default, null), onClick: () => {
+          import_react28.default.createElement(Button_default, { variant: "outlined", startIcon: import_react28.default.createElement(Gradient_default, null), onClick: () => {
             drawFill(floodBelow);
           } }, t2("mask.gray.black")),
-          import_react30.default.createElement(Button_default, { variant: "outlined", startIcon: import_react30.default.createElement(Gradient_default, null), onClick: () => {
+          import_react28.default.createElement(Button_default, { variant: "outlined", startIcon: import_react28.default.createElement(Gradient_default, null), onClick: () => {
             drawFill(floodAbove);
           } }, t2("mask.gray.white"))
         )
@@ -76664,64 +76480,230 @@ Please use another name.` : formatMuiErrorMessage(18));
   // out/src/components/tab/Blend.js
   function Blend() {
     async function uploadSource() {
-      const { model, blend: blend2, upscale } = state.getState();
-      const { image, retry } = await client.blend(model, Object.assign(Object.assign({}, blend2), { mask: mustExist(blend2.mask), sources: mustExist(blend2.sources) }), upscale);
+      const { blend: blend2, blendModel, blendUpscale } = store.getState();
+      const { image, retry } = await client.blend(blendModel, Object.assign(Object.assign({}, blend2), { mask: mustExist(blend2.mask), sources: mustExist(blend2.sources) }), blendUpscale);
       pushHistory(image, retry);
     }
     __name(uploadSource, "uploadSource");
-    const client = mustExist((0, import_react31.useContext)(ClientContext));
+    const client = mustExist((0, import_react29.useContext)(ClientContext));
     const query = useQueryClient();
     const upload = useMutation(uploadSource, {
       onSuccess: () => query.invalidateQueries(["ready"])
     });
-    const state = mustExist((0, import_react31.useContext)(StateContext));
-    const blend = useStore(state, (s) => s.blend);
-    const setBlend = useStore(state, (s) => s.setBlend);
-    const pushHistory = useStore(state, (s) => s.pushHistory);
+    const store = mustExist((0, import_react29.useContext)(StateContext));
+    const { pushHistory, setBlend, setBrush, setUpscale } = useStore(store, selectActions5, shallow);
+    const brush = useStore(store, selectBrush);
+    const blend = useStore(store, selectParams2);
     const { t: t2 } = useTranslation();
     const sources = mustDefault(blend.sources, []);
-    return React147.createElement(
+    return React144.createElement(
       Box_default,
       null,
-      React147.createElement(
+      React144.createElement(
         Stack_default2,
         { spacing: 2 },
-        range(BLEND_SOURCES).map((idx) => React147.createElement(ImageInput, { key: `source-${idx.toFixed(0)}`, filter: IMAGE_FILTER, image: sources[idx], hideSelection: true, label: t2("input.image.source"), onChange: (file) => {
+        range(BLEND_SOURCES).map((idx) => React144.createElement(ImageInput, { key: `source-${idx.toFixed(0)}`, filter: IMAGE_FILTER, image: sources[idx], hideSelection: true, label: t2("input.image.source"), onChange: (file) => {
           const newSources = [...sources];
           newSources[idx] = file;
           setBlend({
             sources: newSources
           });
         } })),
-        React147.createElement(MaskCanvas, { source: sources[0], mask: blend.mask, onSave: (mask) => {
+        React144.createElement(MaskCanvas, { brush, source: sources[0], mask: blend.mask, onSave: (mask) => {
           setBlend({
             mask
           });
-        } }),
-        React147.createElement(UpscaleControl, null),
-        React147.createElement(Button_default, { disabled: sources.length < 2, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
+        }, setBrush }),
+        React144.createElement(UpscaleControl, { selectUpscale, setUpscale }),
+        React144.createElement(Button_default, { disabled: sources.length < 2, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
       )
     );
   }
   __name(Blend, "Blend");
+  function selectActions5(state) {
+    return {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      pushHistory: state.pushHistory,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setBlend: state.setBlend,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setBrush: state.setBlendBrush,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setUpscale: state.setBlendUpscale
+    };
+  }
+  __name(selectActions5, "selectActions");
+  function selectBrush(state) {
+    return state.blendBrush;
+  }
+  __name(selectBrush, "selectBrush");
+  function selectParams2(state) {
+    return state.blend;
+  }
+  __name(selectParams2, "selectParams");
+  function selectUpscale(state) {
+    return state.blendUpscale;
+  }
+  __name(selectUpscale, "selectUpscale");
 
   // out/src/components/tab/Img2Img.js
   var React152 = __toESM(require_react(), 1);
   var import_react35 = __toESM(require_react(), 1);
 
+  // out/src/components/control/HighresControl.js
+  var React145 = __toESM(require_react(), 1);
+  var import_react30 = __toESM(require_react(), 1);
+  function HighresControl(props) {
+    const { selectHighres: selectHighres5, setHighres } = props;
+    const store = mustExist((0, import_react30.useContext)(StateContext));
+    const highres = useStore(store, selectHighres5);
+    const { params } = mustExist((0, import_react30.useContext)(ConfigContext));
+    const { t: t2 } = useTranslation();
+    return React145.createElement(
+      Stack_default2,
+      { direction: "row", spacing: 4 },
+      React145.createElement(FormControlLabel_default, { label: t2("parameter.highres.label"), control: React145.createElement(Checkbox_default, { checked: highres.enabled, value: "check", onChange: (_event) => {
+        setHighres({
+          enabled: highres.enabled === false
+        });
+      } }) }),
+      React145.createElement(NumericField, { label: t2("parameter.highres.steps"), disabled: highres.enabled === false, min: params.highresSteps.min, max: params.highresSteps.max, step: params.highresSteps.step, value: highres.highresSteps, onChange: (steps) => {
+        setHighres({
+          highresSteps: steps
+        });
+      } }),
+      React145.createElement(NumericField, { label: t2("parameter.highres.scale"), disabled: highres.enabled === false, min: params.highresScale.min, max: params.highresScale.max, step: params.highresScale.step, value: highres.highresScale, onChange: (scale) => {
+        setHighres({
+          highresScale: scale
+        });
+      } }),
+      React145.createElement(NumericField, { label: t2("parameter.highres.strength"), decimal: true, disabled: highres.enabled === false, min: params.highresStrength.min, max: params.highresStrength.max, step: params.highresStrength.step, value: highres.highresStrength, onChange: (strength) => {
+        setHighres({
+          highresStrength: strength
+        });
+      } }),
+      React145.createElement(
+        FormControl_default,
+        null,
+        React145.createElement(InputLabel_default, { id: "highres-method" }, t2("parameter.highres.method")),
+        React145.createElement(Select_default, { disabled: highres.enabled === false, labelId: "highres-method", label: t2("parameter.highres.method"), value: highres.highresMethod, onChange: (e2) => {
+          setHighres({
+            highresMethod: e2.target.value
+          });
+        } }, Object.entries(params.highresMethod.keys).map(([key, name]) => React145.createElement(MenuItem_default, { key, value: name }, t2(`highresMethod.${name}`))))
+      ),
+      React145.createElement(NumericField, { label: t2("parameter.highres.iterations"), disabled: highres.enabled === false, min: params.highresIterations.min, max: params.highresIterations.max, step: params.highresIterations.step, value: highres.highresIterations, onChange: (iterations) => {
+        setHighres({
+          highresIterations: iterations
+        });
+      } })
+    );
+  }
+  __name(HighresControl, "HighresControl");
+
   // out/src/components/control/ImageControl.js
-  var React150 = __toESM(require_react(), 1);
-  var import_react33 = __toESM(require_react(), 1);
+  var import_lodash3 = __toESM(require_lodash(), 1);
+  var React149 = __toESM(require_react(), 1);
+  var import_react32 = __toESM(require_react(), 1);
 
   // out/src/components/input/PromptInput.js
-  var React148 = __toESM(require_react(), 1);
+  var React147 = __toESM(require_react(), 1);
+
+  // out/src/components/input/QueryMenu.js
+  var React146 = __toESM(require_react(), 1);
+  var { useState: useState27 } = React146;
+  function hasFilter(query) {
+    return Reflect.has(query, "selector");
+  }
+  __name(hasFilter, "hasFilter");
+  function filterQuery(query, showEmpty) {
+    if (hasFilter(query)) {
+      const data = mustExist(query.result.data);
+      const selected = query.selector(data);
+      if (showEmpty) {
+        return ["", ...selected];
+      }
+      return selected;
+    } else {
+      const data = Array.from(mustExist(query.result.data));
+      if (showEmpty) {
+        return ["", ...data];
+      }
+      return data;
+    }
+  }
+  __name(filterQuery, "filterQuery");
+  function QueryMenu(props) {
+    const { id, labelKey, name, query, showEmpty = false } = props;
+    const { result } = query;
+    const labelID = `query-menu-${props.id}-labels`;
+    const { t: t2 } = useTranslation();
+    const [anchor, setAnchor] = useState27(void 0);
+    function closeMenu() {
+      setAnchor(void 0);
+    }
+    __name(closeMenu, "closeMenu");
+    function openMenu(event) {
+      setAnchor(event.currentTarget);
+    }
+    __name(openMenu, "openMenu");
+    function selectItem(value) {
+      closeMenu();
+      if (doesExist2(props.onSelect)) {
+        props.onSelect(value);
+      }
+    }
+    __name(selectItem, "selectItem");
+    function getLabel(key) {
+      return mustDefault(t2(`${labelKey}.${key}`), key);
+    }
+    __name(getLabel, "getLabel");
+    if (result.status === "error") {
+      if (result.error instanceof Error) {
+        return React146.createElement(Alert_default, { severity: "error" }, t2("input.list.error.specific", {
+          message: result.error.message
+        }));
+      } else {
+        return React146.createElement(Alert_default, { severity: "error" }, t2("input.list.error.unknown"));
+      }
+    }
+    if (result.status === "loading") {
+      return React146.createElement(
+        FormControl_default,
+        null,
+        React146.createElement(FormLabel_default, { id: labelID }, props.name),
+        React146.createElement(LinearProgress_default, null)
+      );
+    }
+    const data = filterQuery(query, showEmpty);
+    const labeledData = data.map((it) => [it, getLabel(it)]).sort((a2, b2) => a2[1].localeCompare(b2[1]));
+    const menuItems = labeledData.map(([key, label]) => React146.createElement(MenuItem_default, { key, onClick: () => selectItem(key) }, label));
+    return React146.createElement(
+      Box_default,
+      null,
+      React146.createElement(Button_default, { id: `${id}-button`, onClick: openMenu, endIcon: React146.createElement(KeyboardArrowDown_default, null), variant: "outlined" }, name),
+      React146.createElement(Menu_default, { id: `${id}-menu`, anchorEl: anchor, open: doesExist2(anchor), onClose: closeMenu, MenuListProps: {
+        "aria-labelledby": `${id}-button`
+      } }, menuItems)
+    );
+  }
+  __name(QueryMenu, "QueryMenu");
+
+  // out/src/components/input/PromptInput.js
+  var { useContext: useContext31 } = React147;
   var PROMPT_GROUP = 75;
   function splitPrompt(prompt) {
     return prompt.split(",").flatMap((phrase) => phrase.split(" ")).map((word) => word.trim()).filter((word) => word.length > 0);
   }
   __name(splitPrompt, "splitPrompt");
   function PromptInput(props) {
-    const { prompt = "", negativePrompt = "" } = props;
+    const { selector, onChange } = props;
+    const store = mustExist(useContext31(StateContext));
+    const { prompt, negativePrompt } = useStore(store, selector, shallow);
+    const client = mustExist(useContext31(ClientContext));
+    const models = useQuery(["models"], async () => client.models(), {
+      staleTime: STALE_TIME
+    });
     const tokens = splitPrompt(prompt);
     const groups = Math.ceil(tokens.length / PROMPT_GROUP);
     const { t: t2 } = useTranslation();
@@ -76729,28 +76711,275 @@ Please use another name.` : formatMuiErrorMessage(18));
       groups,
       tokens: tokens.length
     });
-    return React148.createElement(
+    function addToken(type, name, weight = 1) {
+      onChange({
+        prompt: `<${type}:${name}:1.0> ${prompt}`,
+        negativePrompt
+      });
+    }
+    __name(addToken, "addToken");
+    return React147.createElement(
       Stack_default,
       { spacing: 2 },
-      React148.createElement(TextField_default, { label: t2("parameter.prompt"), helperText: helper, variant: "outlined", value: prompt, onChange: (event) => {
-        if (doesExist2(props.onChange)) {
-          props.onChange({
-            prompt: event.target.value,
-            negativePrompt
-          });
-        }
+      React147.createElement(TextField_default, { label: t2("parameter.prompt"), helperText: helper, variant: "outlined", value: prompt, onChange: (event) => {
+        props.onChange({
+          prompt: event.target.value,
+          negativePrompt
+        });
       } }),
-      React148.createElement(TextField_default, { label: t2("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
-        if (doesExist2(props.onChange)) {
-          props.onChange({
-            prompt,
-            negativePrompt: event.target.value
-          });
-        }
-      } })
+      React147.createElement(TextField_default, { label: t2("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
+        props.onChange({
+          prompt,
+          negativePrompt: event.target.value
+        });
+      } }),
+      React147.createElement(
+        Stack_default,
+        { direction: "row", spacing: 2 },
+        React147.createElement(QueryMenu, { id: "inversion", labelKey: "model.inversion", name: t2("modelType.inversion"), query: {
+          result: models,
+          selector: (result) => result.networks.filter((network) => network.type === "inversion").map((network) => network.name)
+        }, onSelect: (name) => {
+          addToken("inversion", name);
+        } }),
+        React147.createElement(QueryMenu, { id: "lora", labelKey: "model.lora", name: t2("modelType.lora"), query: {
+          result: models,
+          selector: (result) => result.networks.filter((network) => network.type === "lora").map((network) => network.name)
+        }, onSelect: (name) => {
+          addToken("lora", name);
+        } })
+      )
     );
   }
   __name(PromptInput, "PromptInput");
+
+  // out/src/components/input/QueryList.js
+  var React148 = __toESM(require_react(), 1);
+  var import_react31 = __toESM(require_react(), 1);
+  function hasFilter2(query) {
+    return Reflect.has(query, "selector");
+  }
+  __name(hasFilter2, "hasFilter");
+  function filterQuery2(query, showEmpty) {
+    if (hasFilter2(query)) {
+      const data = mustExist(query.result.data);
+      const selected = query.selector(data);
+      if (doesExist2(showEmpty)) {
+        return [showEmpty, ...selected];
+      }
+      return selected;
+    } else {
+      const data = Array.from(mustExist(query.result.data));
+      if (doesExist2(showEmpty)) {
+        return [showEmpty, ...data];
+      }
+      return data;
+    }
+  }
+  __name(filterQuery2, "filterQuery");
+  function QueryList(props) {
+    const { labelKey, query, showNone = false, value } = props;
+    const { result } = query;
+    const labelID = `query-list-${props.id}-labels`;
+    const { t: t2 } = useTranslation();
+    function firstValidValue() {
+      if (doesExist2(value) && data.includes(value)) {
+        return value;
+      } else {
+        return data[0];
+      }
+    }
+    __name(firstValidValue, "firstValidValue");
+    function noneLabel() {
+      if (showNone) {
+        return "none";
+      }
+      return void 0;
+    }
+    __name(noneLabel, "noneLabel");
+    function getLabel(name) {
+      return mustDefault(t2(`${labelKey}.${name}`), name);
+    }
+    __name(getLabel, "getLabel");
+    (0, import_react31.useEffect)(() => {
+      if (result.status === "success" && doesExist2(result.data) && doesExist2(props.onChange)) {
+        const data2 = filterQuery2(query, noneLabel());
+        if (data2.includes(value) === false) {
+          props.onChange(data2[0]);
+        }
+      }
+    }, [result.status]);
+    if (result.status === "error") {
+      if (result.error instanceof Error) {
+        return React148.createElement(Alert_default, { severity: "error" }, t2("input.list.error.specific", {
+          message: result.error.message
+        }));
+      } else {
+        return React148.createElement(Alert_default, { severity: "error" }, t2("input.list.error.unknown"));
+      }
+    }
+    if (result.status === "loading") {
+      return React148.createElement(
+        FormControl_default,
+        null,
+        React148.createElement(FormLabel_default, { id: labelID }, props.name),
+        React148.createElement(LinearProgress_default, null)
+      );
+    }
+    const data = filterQuery2(query, noneLabel());
+    return React148.createElement(
+      FormControl_default,
+      null,
+      React148.createElement(InputLabel_default, { id: labelID }, props.name),
+      React148.createElement(Select_default, { labelId: labelID, label: props.name, value: firstValidValue(), onChange: (e2) => {
+        if (doesExist2(props.onChange)) {
+          props.onChange(e2.target.value);
+        }
+      } }, data.map((name) => React148.createElement(MenuItem_default, { key: name, value: name }, getLabel(name))))
+    );
+  }
+  __name(QueryList, "QueryList");
+
+  // out/src/components/control/ImageControl.js
+  var { useMemo: useMemo17 } = React149;
+  function omitPrompt(selector) {
+    return (state) => (0, import_lodash3.omit)(selector(state), "prompt", "negativePrompt");
+  }
+  __name(omitPrompt, "omitPrompt");
+  function ImageControl(props) {
+    const { onChange, selector } = props;
+    const selectOmitPrompt = useMemo17(() => omitPrompt(selector), [selector]);
+    const { params } = mustExist((0, import_react32.useContext)(ConfigContext));
+    const store = mustExist((0, import_react32.useContext)(StateContext));
+    const state = useStore(store, selectOmitPrompt, shallow);
+    const { t: t2 } = useTranslation();
+    const client = mustExist((0, import_react32.useContext)(ClientContext));
+    const schedulers = useQuery(["schedulers"], async () => client.schedulers(), {
+      staleTime: STALE_TIME
+    });
+    const maxStride = Math.min(state.tiles, params.stride.max);
+    return React149.createElement(
+      Stack_default2,
+      { spacing: 2 },
+      React149.createElement(
+        Stack_default2,
+        { direction: "row", spacing: 4 },
+        React149.createElement(QueryList, { id: "schedulers", labelKey: "scheduler", name: t2("parameter.scheduler"), query: {
+          result: schedulers
+        }, value: mustDefault(state.scheduler, ""), onChange: (value) => {
+          if (doesExist2(onChange)) {
+            onChange(Object.assign(Object.assign({}, state), { scheduler: value }));
+          }
+        } }),
+        React149.createElement(NumericField, { decimal: true, label: t2("parameter.eta"), min: params.eta.min, max: params.eta.max, step: params.eta.step, value: state.eta, onChange: (eta) => {
+          if (doesExist2(onChange)) {
+            onChange(Object.assign(Object.assign({}, state), { eta }));
+          }
+        } }),
+        React149.createElement(NumericField, { decimal: true, label: t2("parameter.cfg"), min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: state.cfg, onChange: (cfg) => {
+          if (doesExist2(onChange)) {
+            onChange(Object.assign(Object.assign({}, state), { cfg }));
+          }
+        } }),
+        React149.createElement(NumericField, { label: t2("parameter.steps"), min: params.steps.min, max: params.steps.max, step: params.steps.step, value: state.steps, onChange: (steps) => {
+          onChange(Object.assign(Object.assign({}, state), { steps }));
+        } }),
+        React149.createElement(NumericField, { label: t2("parameter.seed"), min: params.seed.min, max: params.seed.max, step: params.seed.step, value: state.seed, onChange: (seed) => {
+          onChange(Object.assign(Object.assign({}, state), { seed }));
+        } }),
+        React149.createElement(Button_default, { variant: "outlined", startIcon: React149.createElement(Casino_default, null), onClick: () => {
+          const seed = Math.floor(Math.random() * params.seed.max);
+          props.onChange(Object.assign(Object.assign({}, state), { seed }));
+        } }, t2("parameter.newSeed"))
+      ),
+      React149.createElement(
+        Stack_default2,
+        { direction: "row", spacing: 4 },
+        React149.createElement(NumericField, { label: t2("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: state.batch, onChange: (batch) => {
+          props.onChange(Object.assign(Object.assign({}, state), { batch }));
+        } }),
+        React149.createElement(NumericField, { label: t2("parameter.tiles"), min: params.tiles.min, max: params.tiles.max, step: params.tiles.step, value: state.tiles, onChange: (tiles) => {
+          props.onChange(Object.assign(Object.assign({}, state), { tiles }));
+        } }),
+        React149.createElement(NumericField, { decimal: true, label: t2("parameter.overlap"), min: params.overlap.min, max: params.overlap.max, step: params.overlap.step, value: state.overlap, onChange: (overlap) => {
+          props.onChange(Object.assign(Object.assign({}, state), { overlap }));
+        } }),
+        React149.createElement(NumericField, { label: t2("parameter.stride"), min: params.stride.min, max: maxStride, step: params.stride.step, value: state.stride, onChange: (stride) => {
+          props.onChange(Object.assign(Object.assign({}, state), { stride }));
+        } }),
+        React149.createElement(FormControlLabel_default, { label: t2("parameter.tiledVAE"), control: React149.createElement(Checkbox_default, { checked: state.tiledVAE, value: "check", onChange: (event) => {
+          props.onChange(Object.assign(Object.assign({}, state), { tiledVAE: state.tiledVAE === false }));
+        } }) })
+      ),
+      React149.createElement(PromptInput, { selector, onChange: (value) => {
+        props.onChange(Object.assign(Object.assign({}, state), value));
+      } })
+    );
+  }
+  __name(ImageControl, "ImageControl");
+
+  // out/src/components/control/ModelControl.js
+  var React150 = __toESM(require_react(), 1);
+  var import_react33 = __toESM(require_react(), 1);
+  function ModelControl(props) {
+    const { model, setModel } = props;
+    const client = mustExist((0, import_react33.useContext)(ClientContext));
+    const { t: t2 } = useTranslation();
+    const restart = useMutation(["restart"], async () => client.restart());
+    const models = useQuery(["models"], async () => client.models(), {
+      staleTime: STALE_TIME
+    });
+    const pipelines = useQuery(["pipelines"], async () => client.pipelines(), {
+      staleTime: STALE_TIME
+    });
+    const platforms = useQuery(["platforms"], async () => client.platforms(), {
+      staleTime: STALE_TIME
+    });
+    return React150.createElement(
+      Stack_default2,
+      { direction: "row", spacing: 2 },
+      React150.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t2("parameter.platform"), query: {
+        result: platforms
+      }, value: model.platform, onChange: (platform) => {
+        setModel({
+          platform
+        });
+      } }),
+      React150.createElement(QueryList, { id: "pipeline", labelKey: "pipeline", name: t2("parameter.pipeline"), query: {
+        result: pipelines
+      }, value: model.pipeline, onChange: (pipeline) => {
+        setModel({
+          pipeline
+        });
+      } }),
+      React150.createElement(QueryList, { id: "diffusion", labelKey: "model", name: t2("modelType.diffusion", { count: 1 }), query: {
+        result: models,
+        selector: (result) => result.diffusion
+      }, value: model.model, onChange: (newModel) => {
+        setModel({
+          model: newModel
+        });
+      } }),
+      React150.createElement(QueryList, { id: "upscaling", labelKey: "model", name: t2("modelType.upscaling", { count: 1 }), query: {
+        result: models,
+        selector: (result) => result.upscaling
+      }, value: model.upscaling, onChange: (upscaling) => {
+        setModel({
+          upscaling
+        });
+      } }),
+      React150.createElement(QueryList, { id: "correction", labelKey: "model", name: t2("modelType.correction", { count: 1 }), query: {
+        result: models,
+        selector: (result) => result.correction
+      }, value: model.correction, onChange: (correction) => {
+        setModel({
+          correction
+        });
+      } }),
+      React150.createElement(Button_default, { variant: "outlined", onClick: () => restart.mutate() }, t2("admin.restart"))
+    );
+  }
+  __name(ModelControl, "ModelControl");
 
   // node_modules/exifreader/src/utils.js
   function getStringFromDataView(dataView, offset2, length2) {
@@ -81651,93 +81880,123 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(hasPngData, "hasPngData");
 
   // out/src/components/Profiles.js
-  var import_lodash3 = __toESM(require_lodash(), 1);
-  var React149 = __toESM(require_react(), 1);
-  var import_react32 = __toESM(require_react(), 1);
+  var import_lodash4 = __toESM(require_lodash(), 1);
+  var React151 = __toESM(require_react(), 1);
+  var import_react34 = __toESM(require_react(), 1);
+  var { useState: useState28 } = React151;
   function Profiles(props) {
-    const state = mustExist((0, import_react32.useContext)(StateContext));
-    const saveProfile = useStore(state, (s) => s.saveProfile);
-    const removeProfile = useStore(state, (s) => s.removeProfile);
-    const profiles = useStore(state, (s) => s.profiles);
-    const highres = useStore(state, (s) => s.highres);
-    const upscale = useStore(state, (s) => s.upscale);
-    const [dialogOpen, setDialogOpen] = React149.useState(false);
-    const [profileName, setProfileName] = React149.useState("");
+    const store = mustExist((0, import_react34.useContext)(StateContext));
+    const { removeProfile, saveProfile } = useStore(store, selectActions6, shallow);
+    const profiles = useStore(store, selectProfiles);
+    const [dialogOpen, setDialogOpen] = useState28(false);
+    const [profileName, setProfileName] = useState28("");
     const { t: t2 } = useTranslation();
-    return React149.createElement(
-      React149.Fragment,
-      null,
-      React149.createElement(Autocomplete_default, { id: "profile-select", options: profiles, sx: { width: 200 }, getOptionLabel: (option) => option.name, clearOnBlur: true, renderOption: (optionProps, option) => React149.createElement(
+    return React151.createElement(
+      Stack_default2,
+      { direction: "row", spacing: 2 },
+      React151.createElement(Autocomplete_default, { id: "profile-select", options: profiles, sx: { width: "25em" }, getOptionLabel: (option) => option.name, clearOnBlur: true, renderOption: (optionProps, option) => React151.createElement(
         ListItem_default,
-        Object.assign({}, optionProps, { secondaryAction: React149.createElement(
+        Object.assign({}, optionProps, { secondaryAction: React151.createElement(
           IconButton_default,
           { edge: "end", onClick: (event) => {
             event.preventDefault();
             removeProfile(option.name);
           } },
-          React149.createElement(Delete_default, null)
+          React151.createElement(Delete_default, null)
         ) }),
-        React149.createElement(ListItemText_default, { primary: option.name })
-      ), renderInput: (params) => React149.createElement(
+        React151.createElement(ListItemText_default, { primary: option.name })
+      ), renderInput: (params) => React151.createElement(
         Stack_default2,
         { direction: "row" },
-        React149.createElement(TextField_default, Object.assign({}, params, { label: t2("profile.load"), inputProps: Object.assign(Object.assign({}, params.inputProps), { autoComplete: "new-password" }) })),
-        React149.createElement(
+        React151.createElement(TextField_default, Object.assign({}, params, { label: t2("profile.load"), inputProps: Object.assign(Object.assign({}, params.inputProps), { autoComplete: "new-password" }) })),
+        React151.createElement(
           Button_default,
           { type: "button", variant: "contained", onClick: () => setDialogOpen(true) },
-          React149.createElement(Save_default, null)
-        ),
-        React149.createElement(
-          Button_default,
-          { component: "label", variant: "contained" },
-          React149.createElement(ImageSearch_default, null),
-          React149.createElement("input", { hidden: true, accept: ".json,.jpg,.jpeg,.png,.txt,.webp", type: "file", onChange: (event) => {
-            const { files } = event.target;
-            if (doesExist2(files) && files.length > 0) {
-              const file = mustExist(files[0]);
-              loadParamsFromFile(file).then((newParams) => {
-                if (doesExist2(props.setParams) && doesExist2(newParams)) {
-                  props.setParams(Object.assign(Object.assign({}, props.params), newParams));
-                }
-              });
-            }
-          }, onClick: (event) => {
-            event.currentTarget.value = "";
-          } })
+          React151.createElement(Save_default, null)
         )
       ), onChange: (event, value) => {
-        if (doesExist2(value) && doesExist2(props.setParams)) {
+        if (doesExist2(value)) {
           props.setParams(Object.assign({}, value.params));
         }
       } }),
-      React149.createElement(
+      React151.createElement(
         Dialog_default,
         { open: dialogOpen, onClose: () => setDialogOpen(false) },
-        React149.createElement(DialogTitle_default, null, t2("profile.saveProfile")),
-        React149.createElement(
+        React151.createElement(DialogTitle_default, null, t2("profile.saveProfile")),
+        React151.createElement(
           DialogContent_default,
           null,
-          React149.createElement(TextField_default, { variant: "standard", label: t2("profile.name"), value: profileName, onChange: (event) => setProfileName(event.target.value), fullWidth: true })
+          React151.createElement(TextField_default, { variant: "standard", label: t2("profile.name"), value: profileName, onChange: (event) => setProfileName(event.target.value), fullWidth: true })
         ),
-        React149.createElement(
+        React151.createElement(
           DialogActions_default,
           null,
-          React149.createElement(Button_default, { variant: "contained", onClick: () => setDialogOpen(false) }, t2("profile.cancel")),
-          React149.createElement(Button_default, { variant: "contained", onClick: () => {
+          React151.createElement(Button_default, { variant: "contained", onClick: () => setDialogOpen(false) }, t2("profile.cancel")),
+          React151.createElement(Button_default, { variant: "contained", onClick: () => {
+            const state = store.getState();
             saveProfile({
-              params: props.params,
+              params: props.selectParams(state),
               name: profileName,
-              highResParams: highres,
-              upscaleParams: upscale
+              highres: props.selectHighres(state),
+              upscale: props.selectUpscale(state)
             });
             setDialogOpen(false);
             setProfileName("");
           } }, t2("profile.save"))
         )
+      ),
+      React151.createElement(
+        Button_default,
+        { component: "label", variant: "contained" },
+        React151.createElement(ImageSearch_default, null),
+        React151.createElement("input", { hidden: true, accept: ".json,.jpg,.jpeg,.png,.txt,.webp", type: "file", onChange: (event) => {
+          const { files } = event.target;
+          if (doesExist2(files) && files.length > 0) {
+            const file = mustExist(files[0]);
+            loadParamsFromFile(file).then((newParams) => {
+              if (doesExist2(newParams.params)) {
+                props.setParams(newParams.params);
+              }
+              if (doesExist2(newParams.highres)) {
+                props.setHighres(newParams.highres);
+              }
+              if (doesExist2(newParams.upscale)) {
+                props.setUpscale(newParams.upscale);
+              }
+            });
+          }
+        }, onClick: (event) => {
+          event.currentTarget.value = "";
+        } })
+      ),
+      React151.createElement(
+        Button_default,
+        { component: "label", variant: "contained", onClick: () => {
+          const state = store.getState();
+          downloadParamsAsFile({
+            params: props.selectParams(state),
+            highres: props.selectHighres(state),
+            upscale: props.selectUpscale(state)
+          });
+        } },
+        React151.createElement(Download_default, null)
       )
     );
   }
   __name(Profiles, "Profiles");
+  function selectActions6(state) {
+    return {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      removeProfile: state.removeProfile,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      saveProfile: state.saveProfile
+    };
+  }
+  __name(selectActions6, "selectActions");
+  function selectProfiles(state) {
+    return state.profiles;
+  }
+  __name(selectProfiles, "selectProfiles");
   async function loadParamsFromFile(file) {
     const parts = file.name.toLocaleLowerCase().split(".");
     const ext = parts[parts.length - 1];
@@ -81755,28 +82014,59 @@ Please use another name.` : formatMuiErrorMessage(18));
     }
   }
   __name(loadParamsFromFile, "loadParamsFromFile");
+  function downloadParamsAsFile(data) {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+    const elem = document.createElement("a");
+    elem.setAttribute("href", dataStr);
+    elem.setAttribute("download", "parameters.json");
+    document.body.appendChild(elem);
+    elem.click();
+    elem.remove();
+  }
+  __name(downloadParamsAsFile, "downloadParamsAsFile");
   async function parseImageParams(file) {
     const tags2 = await load(file);
-    const makerNote = tags2.MakerNote || tags2["maker note"];
-    const userComment = tags2.UserComment || tags2["Parameters"] || tags2["parameters"];
-    if (doesExist2(makerNote) && (0, import_lodash3.isString)(makerNote.value) && isProbablyJSON(makerNote.value)) {
-      return parseJSONParams(makerNote.value);
+    const makerNote = decodeTag((0, import_lodash4.defaultTo)(tags2.MakerNote, tags2["maker note"]));
+    const userComment = decodeTag((0, import_lodash4.defaultTo)((0, import_lodash4.defaultTo)(tags2.UserComment, tags2["Parameters"]), tags2["parameters"]));
+    if (doesExist2(makerNote) && isProbablyJSON(makerNote)) {
+      return parseJSONParams(makerNote);
     }
-    if (doesExist2(userComment) && (0, import_lodash3.isString)(userComment.value)) {
-      return parseAutoComment(userComment.value);
+    if (doesExist2(userComment)) {
+      return parseAutoComment(userComment);
     }
     return {};
   }
   __name(parseImageParams, "parseImageParams");
+  function isNumberArray(it) {
+    return Array.isArray(it) && typeof it[0] === "number";
+  }
+  __name(isNumberArray, "isNumberArray");
+  function decodeTag(tag) {
+    if (!doesExist2(tag)) {
+      return void 0;
+    }
+    if ((0, import_lodash4.isString)(tag.value)) {
+      return tag.value;
+    }
+    if (tag.description === "[Unicode encoded text]" && isNumberArray(tag.value)) {
+      return Buffer.from(tag.value).toString("utf-8");
+    }
+    throw new InvalidArgumentError("tag value cannot be decoded");
+  }
+  __name(decodeTag, "decodeTag");
   async function parseJSONParams(json) {
     const data = JSON.parse(json);
     const params = Object.assign({}, data.params);
-    const size = (0, import_lodash3.defaultTo)(data.input_size, data.size);
+    const size = (0, import_lodash4.defaultTo)(data.input_size, data.size);
     if (doesExist2(size)) {
       params.height = size.height;
       params.width = size.width;
     }
-    return params;
+    return {
+      params,
+      highres: data.highres,
+      upscale: data.upscale
+    };
   }
   __name(parseJSONParams, "parseJSONParams");
   function isProbablyJSON(maybeJSON) {
@@ -81825,157 +82115,19 @@ Please use another name.` : formatMuiErrorMessage(18));
         default:
       }
     }
-    return params;
+    return {
+      params
+    };
   }
   __name(parseAutoComment, "parseAutoComment");
-
-  // out/src/components/control/ImageControl.js
-  function ImageControl(props) {
-    const { params } = mustExist((0, import_react33.useContext)(ConfigContext));
-    const state = mustExist((0, import_react33.useContext)(StateContext));
-    const controlState = useStore(state, props.selector);
-    const { t: t2 } = useTranslation();
-    const client = mustExist((0, import_react33.useContext)(ClientContext));
-    const schedulers = useQuery(["schedulers"], async () => client.schedulers(), {
-      staleTime: STALE_TIME
-    });
-    const maxStride = Math.min(controlState.tiles, params.stride.max);
-    return React150.createElement(
-      Stack_default2,
-      { spacing: 2 },
-      React150.createElement(
-        Stack_default2,
-        { direction: "row", spacing: 4 },
-        React150.createElement(Profiles, { params: controlState, setParams: props.onChange }),
-        React150.createElement(QueryList, { id: "schedulers", labelKey: "scheduler", name: t2("parameter.scheduler"), query: {
-          result: schedulers
-        }, value: mustDefault(controlState.scheduler, ""), onChange: (value) => {
-          if (doesExist2(props.onChange)) {
-            props.onChange(Object.assign(Object.assign({}, controlState), { scheduler: value }));
-          }
-        } }),
-        React150.createElement(NumericField, { decimal: true, label: t2("parameter.eta"), min: params.eta.min, max: params.eta.max, step: params.eta.step, value: controlState.eta, onChange: (eta) => {
-          if (doesExist2(props.onChange)) {
-            props.onChange(Object.assign(Object.assign({}, controlState), { eta }));
-          }
-        } }),
-        React150.createElement(NumericField, { decimal: true, label: t2("parameter.cfg"), min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: controlState.cfg, onChange: (cfg) => {
-          if (doesExist2(props.onChange)) {
-            props.onChange(Object.assign(Object.assign({}, controlState), { cfg }));
-          }
-        } }),
-        React150.createElement(NumericField, { label: t2("parameter.steps"), min: params.steps.min, max: params.steps.max, step: params.steps.step, value: controlState.steps, onChange: (steps) => {
-          if (doesExist2(props.onChange)) {
-            props.onChange(Object.assign(Object.assign({}, controlState), { steps }));
-          }
-        } }),
-        React150.createElement(NumericField, { label: t2("parameter.seed"), min: params.seed.min, max: params.seed.max, step: params.seed.step, value: controlState.seed, onChange: (seed) => {
-          if (doesExist2(props.onChange)) {
-            props.onChange(Object.assign(Object.assign({}, controlState), { seed }));
-          }
-        } }),
-        React150.createElement(Button_default, { variant: "outlined", startIcon: React150.createElement(Casino_default, null), onClick: () => {
-          const seed = Math.floor(Math.random() * params.seed.max);
-          if (doesExist2(props.onChange)) {
-            props.onChange(Object.assign(Object.assign({}, controlState), { seed }));
-          }
-        } }, t2("parameter.newSeed"))
-      ),
-      React150.createElement(
-        Stack_default2,
-        { direction: "row", spacing: 4 },
-        React150.createElement(NumericField, { label: t2("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: controlState.batch, onChange: (batch) => {
-          if (doesExist2(props.onChange)) {
-            props.onChange(Object.assign(Object.assign({}, controlState), { batch }));
-          }
-        } }),
-        React150.createElement(NumericField, { label: t2("parameter.tiles"), min: params.tiles.min, max: params.tiles.max, step: params.tiles.step, value: controlState.tiles, onChange: (tiles) => {
-          if (doesExist2(props.onChange)) {
-            props.onChange(Object.assign(Object.assign({}, controlState), { tiles }));
-          }
-        } }),
-        React150.createElement(NumericField, { decimal: true, label: t2("parameter.overlap"), min: params.overlap.min, max: params.overlap.max, step: params.overlap.step, value: controlState.overlap, onChange: (overlap) => {
-          if (doesExist2(props.onChange)) {
-            props.onChange(Object.assign(Object.assign({}, controlState), { overlap }));
-          }
-        } }),
-        React150.createElement(NumericField, { label: t2("parameter.stride"), min: params.stride.min, max: maxStride, step: params.stride.step, value: controlState.stride, onChange: (stride) => {
-          if (doesExist2(props.onChange)) {
-            props.onChange(Object.assign(Object.assign({}, controlState), { stride }));
-          }
-        } }),
-        React150.createElement(FormControlLabel_default, { label: t2("parameter.tiledVAE"), control: React150.createElement(Checkbox_default, { checked: controlState.tiledVAE, value: "check", onChange: (event) => {
-          if (doesExist2(props.onChange)) {
-            props.onChange(Object.assign(Object.assign({}, controlState), { tiledVAE: controlState.tiledVAE === false }));
-          }
-        } }) })
-      ),
-      React150.createElement(PromptInput, { prompt: controlState.prompt, negativePrompt: controlState.negativePrompt, onChange: (value) => {
-        if (doesExist2(props.onChange)) {
-          props.onChange(Object.assign(Object.assign({}, controlState), value));
-        }
-      } })
-    );
-  }
-  __name(ImageControl, "ImageControl");
-
-  // out/src/components/control/HighresControl.js
-  var React151 = __toESM(require_react(), 1);
-  var import_react34 = __toESM(require_react(), 1);
-  function HighresControl() {
-    const { params } = mustExist((0, import_react34.useContext)(ConfigContext));
-    const state = mustExist((0, import_react34.useContext)(StateContext));
-    const highres = useStore(state, (s) => s.highres);
-    const setHighres = useStore(state, (s) => s.setHighres);
-    const { t: t2 } = useTranslation();
-    return React151.createElement(
-      Stack_default2,
-      { direction: "row", spacing: 4 },
-      React151.createElement(FormControlLabel_default, { label: t2("parameter.highres.label"), control: React151.createElement(Checkbox_default, { checked: highres.enabled, value: "check", onChange: (event) => {
-        setHighres({
-          enabled: highres.enabled === false
-        });
-      } }) }),
-      React151.createElement(NumericField, { label: t2("parameter.highres.steps"), disabled: highres.enabled === false, min: params.highresSteps.min, max: params.highresSteps.max, step: params.highresSteps.step, value: highres.highresSteps, onChange: (steps) => {
-        setHighres({
-          highresSteps: steps
-        });
-      } }),
-      React151.createElement(NumericField, { label: t2("parameter.highres.scale"), disabled: highres.enabled === false, min: params.highresScale.min, max: params.highresScale.max, step: params.highresScale.step, value: highres.highresScale, onChange: (scale) => {
-        setHighres({
-          highresScale: scale
-        });
-      } }),
-      React151.createElement(NumericField, { label: t2("parameter.highres.strength"), decimal: true, disabled: highres.enabled === false, min: params.highresStrength.min, max: params.highresStrength.max, step: params.highresStrength.step, value: highres.highresStrength, onChange: (strength) => {
-        setHighres({
-          highresStrength: strength
-        });
-      } }),
-      React151.createElement(
-        FormControl_default,
-        null,
-        React151.createElement(InputLabel_default, { id: "highres-method" }, t2("parameter.highres.method")),
-        React151.createElement(Select_default, { disabled: highres.enabled === false, labelId: "highres-method", label: t2("parameter.highres.method"), value: highres.highresMethod, onChange: (e2) => {
-          setHighres({
-            highresMethod: e2.target.value
-          });
-        } }, Object.entries(params.highresMethod.keys).map(([key, name]) => React151.createElement(MenuItem_default, { key, value: name }, t2(`highresMethod.${name}`))))
-      ),
-      React151.createElement(NumericField, { label: t2("parameter.highres.iterations"), disabled: highres.enabled === false, min: params.highresIterations.min, max: params.highresIterations.max, step: params.highresIterations.step, value: highres.highresIterations, onChange: (iterations) => {
-        setHighres({
-          highresIterations: iterations
-        });
-      } })
-    );
-  }
-  __name(HighresControl, "HighresControl");
 
   // out/src/components/tab/Img2Img.js
   function Img2Img() {
     const { params } = mustExist((0, import_react35.useContext)(ConfigContext));
     async function uploadSource() {
-      const { model, img2img, upscale, highres } = state.getState();
-      const { image, retry } = await client.img2img(model, Object.assign(Object.assign({}, img2img), { source: mustExist(img2img.source) }), upscale, highres);
+      const state = store.getState();
+      const img2img = selectParams3(state);
+      const { image, retry } = await client.img2img(model, Object.assign(Object.assign({}, img2img), { source: mustExist(img2img.source) }), selectUpscale2(state), selectHighres(state));
       pushHistory(image, retry);
     }
     __name(uploadSource, "uploadSource");
@@ -81990,15 +82142,10 @@ Please use another name.` : formatMuiErrorMessage(18));
     const models = useQuery(["models"], async () => client.models(), {
       staleTime: STALE_TIME
     });
-    const state = mustExist((0, import_react35.useContext)(StateContext));
-    const control = useStore(state, (s) => s.model.control);
-    const source = useStore(state, (s) => s.img2img.source);
-    const sourceFilter = useStore(state, (s) => s.img2img.sourceFilter);
-    const strength = useStore(state, (s) => s.img2img.strength);
-    const loopback = useStore(state, (s) => s.img2img.loopback);
-    const setImg2Img = useStore(state, (s) => s.setImg2Img);
-    const setModel = useStore(state, (s) => s.setModel);
-    const pushHistory = useStore(state, (s) => s.pushHistory);
+    const store = mustExist((0, import_react35.useContext)(StateContext));
+    const { pushHistory, setHighres, setImg2Img, setModel, setUpscale } = useStore(store, selectActions7, shallow);
+    const { loopback, source, sourceFilter, strength } = useStore(store, selectReactParams, shallow);
+    const model = useStore(store, selectModel);
     const { t: t2 } = useTranslation();
     return React152.createElement(
       Box_default,
@@ -82006,19 +82153,21 @@ Please use another name.` : formatMuiErrorMessage(18));
       React152.createElement(
         Stack_default2,
         { spacing: 2 },
+        React152.createElement(Profiles, { selectHighres, selectParams: selectParams3, selectUpscale: selectUpscale2, setParams: setImg2Img, setHighres, setUpscale }),
+        React152.createElement(ModelControl, { model, setModel }),
         React152.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), onChange: (file) => {
           setImg2Img({
             source: file
           });
         } }),
-        React152.createElement(ImageControl, { selector: (s) => s.img2img, onChange: setImg2Img }),
+        React152.createElement(ImageControl, { selector: selectParams3, onChange: setImg2Img }),
         React152.createElement(
           Stack_default2,
           { direction: "row", spacing: 2 },
           React152.createElement(QueryList, { id: "control", labelKey: "model.control", name: t2("modelType.control"), query: {
             result: models,
             selector: (result) => result.networks.filter((network) => network.type === "control").map((network) => network.name)
-          }, value: control, onChange: (newControl) => {
+          }, value: model.control, onChange: (newControl) => {
             setModel({
               control: newControl
             });
@@ -82042,13 +82191,53 @@ Please use another name.` : formatMuiErrorMessage(18));
             });
           } })
         ),
-        React152.createElement(HighresControl, null),
-        React152.createElement(UpscaleControl, null),
+        React152.createElement(HighresControl, { selectHighres, setHighres }),
+        React152.createElement(UpscaleControl, { selectUpscale: selectUpscale2, setUpscale }),
         React152.createElement(Button_default, { disabled: doesExist2(source) === false, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
       )
     );
   }
   __name(Img2Img, "Img2Img");
+  function selectActions7(state) {
+    return {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      pushHistory: state.pushHistory,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setImg2Img: state.setImg2Img,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setHighres: state.setImg2ImgHighres,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setModel: state.setImg2ImgModel,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setUpscale: state.setImg2ImgUpscale
+    };
+  }
+  __name(selectActions7, "selectActions");
+  function selectModel(state) {
+    return state.img2imgModel;
+  }
+  __name(selectModel, "selectModel");
+  function selectParams3(state) {
+    return state.img2img;
+  }
+  __name(selectParams3, "selectParams");
+  function selectReactParams(state) {
+    return {
+      loopback: state.img2img.loopback,
+      source: state.img2img.source,
+      sourceFilter: state.img2img.sourceFilter,
+      strength: state.img2img.strength
+    };
+  }
+  __name(selectReactParams, "selectReactParams");
+  function selectHighres(state) {
+    return state.img2imgHighres;
+  }
+  __name(selectHighres, "selectHighres");
+  function selectUpscale2(state) {
+    return state.img2imgUpscale;
+  }
+  __name(selectUpscale2, "selectUpscale");
 
   // out/src/components/tab/Inpaint.js
   var React154 = __toESM(require_react(), 1);
@@ -82059,9 +82248,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var import_react36 = __toESM(require_react(), 1);
   function OutpaintControl() {
     const { params } = mustExist((0, import_react36.useContext)(ConfigContext));
-    const state = mustExist((0, import_react36.useContext)(StateContext));
-    const outpaint = useStore(state, (s) => s.outpaint);
-    const setOutpaint = useStore(state, (s) => s.setOutpaint);
+    const store = mustExist((0, import_react36.useContext)(StateContext));
+    const { setOutpaint } = useStore(store, selectActions8, shallow);
+    const outpaint = useStore(store, selectOutpaint);
     const { t: t2 } = useTranslation();
     return React153.createElement(
       Stack_default2,
@@ -82094,6 +82283,17 @@ Please use another name.` : formatMuiErrorMessage(18));
     );
   }
   __name(OutpaintControl, "OutpaintControl");
+  function selectActions8(state) {
+    return {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setOutpaint: state.setOutpaint
+    };
+  }
+  __name(selectActions8, "selectActions");
+  function selectOutpaint(state) {
+    return state.outpaint;
+  }
+  __name(selectOutpaint, "selectOutpaint");
 
   // out/src/components/tab/Inpaint.js
   function Inpaint() {
@@ -82106,12 +82306,14 @@ Please use another name.` : formatMuiErrorMessage(18));
       staleTime: STALE_TIME
     });
     async function uploadSource() {
-      const { model, inpaint, outpaint, upscale, highres } = state.getState();
+      const state = store.getState();
+      const { outpaint } = state;
+      const inpaint = selectParams4(state);
       if (outpaint.enabled) {
-        const { image, retry } = await client.outpaint(model, Object.assign(Object.assign(Object.assign({}, inpaint), outpaint), { mask: mustExist(mask), source: mustExist(source) }), upscale, highres);
+        const { image, retry } = await client.outpaint(model, Object.assign(Object.assign(Object.assign({}, inpaint), outpaint), { mask: mustExist(mask), source: mustExist(source) }), selectUpscale3(state), selectHighres2(state));
         pushHistory(image, retry);
       } else {
-        const { image, retry } = await client.inpaint(model, Object.assign(Object.assign({}, inpaint), { mask: mustExist(mask), source: mustExist(source) }), upscale, highres);
+        const { image, retry } = await client.inpaint(model, Object.assign(Object.assign({}, inpaint), { mask: mustExist(mask), source: mustExist(source) }), selectUpscale3(state), selectHighres2(state));
         pushHistory(image, retry);
       }
     }
@@ -82121,20 +82323,14 @@ Please use another name.` : formatMuiErrorMessage(18));
     }
     __name(preventInpaint, "preventInpaint");
     function supportsInpaint() {
-      return diffusionModel.includes("inpaint");
+      return model.model.includes("inpaint");
     }
     __name(supportsInpaint, "supportsInpaint");
-    const state = mustExist((0, import_react37.useContext)(StateContext));
-    const fillColor = useStore(state, (s) => s.inpaint.fillColor);
-    const filter = useStore(state, (s) => s.inpaint.filter);
-    const noise = useStore(state, (s) => s.inpaint.noise);
-    const mask = useStore(state, (s) => s.inpaint.mask);
-    const source = useStore(state, (s) => s.inpaint.source);
-    const strength = useStore(state, (s) => s.inpaint.strength);
-    const tileOrder = useStore(state, (s) => s.inpaint.tileOrder);
-    const diffusionModel = useStore(state, (s) => s.model.model);
-    const setInpaint = useStore(state, (s) => s.setInpaint);
-    const pushHistory = useStore(state, (s) => s.pushHistory);
+    const store = mustExist((0, import_react37.useContext)(StateContext));
+    const { pushHistory, setBrush, setHighres, setModel, setInpaint, setUpscale } = useStore(store, selectActions9, shallow);
+    const { source, mask, strength, noise, filter, tileOrder, fillColor } = useStore(store, selectReactParams2, shallow);
+    const model = useStore(store, selectModel2);
+    const brush = useStore(store, selectBrush2);
     const { t: t2 } = useTranslation();
     const query = useQueryClient();
     const upload = useMutation(uploadSource, {
@@ -82154,6 +82350,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       React154.createElement(
         Stack_default2,
         { spacing: 2 },
+        React154.createElement(Profiles, { selectHighres: selectHighres2, selectParams: selectParams4, selectUpscale: selectUpscale3, setParams: setInpaint, setHighres, setUpscale }),
+        React154.createElement(ModelControl, { model, setModel }),
         renderBanner(),
         React154.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), hideSelection: true, onChange: (file) => {
           setInpaint({
@@ -82165,12 +82363,12 @@ Please use another name.` : formatMuiErrorMessage(18));
             mask: file
           });
         } }),
-        React154.createElement(MaskCanvas, { source, mask, onSave: (file) => {
+        React154.createElement(MaskCanvas, { brush, source, mask, onSave: (file) => {
           setInpaint({
             mask: file
           });
-        } }),
-        React154.createElement(ImageControl, { selector: (s) => s.inpaint, onChange: (newParams) => {
+        }, setBrush }),
+        React154.createElement(ImageControl, { selector: selectParams4, onChange: (newParams) => {
           setInpaint(newParams);
         } }),
         React154.createElement(NumericField, { label: t2("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
@@ -82217,29 +82415,78 @@ Please use another name.` : formatMuiErrorMessage(18));
           )
         ),
         React154.createElement(OutpaintControl, null),
-        React154.createElement(HighresControl, null),
-        React154.createElement(UpscaleControl, null),
+        React154.createElement(HighresControl, { selectHighres: selectHighres2, setHighres }),
+        React154.createElement(UpscaleControl, { selectUpscale: selectUpscale3, setUpscale }),
         React154.createElement(Button_default, { disabled: preventInpaint(), variant: "contained", onClick: () => upload.mutate(), color: supportsInpaint() ? void 0 : "warning" }, t2("generate"))
       )
     );
   }
   __name(Inpaint, "Inpaint");
+  function selectActions9(state) {
+    return {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      pushHistory: state.pushHistory,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setBrush: state.setInpaintBrush,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setHighres: state.setInpaintHighres,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setModel: state.setInpaintModel,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setInpaint: state.setInpaint,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setUpscale: state.setInpaintUpscale
+    };
+  }
+  __name(selectActions9, "selectActions");
+  function selectBrush2(state) {
+    return state.inpaintBrush;
+  }
+  __name(selectBrush2, "selectBrush");
+  function selectModel2(state) {
+    return state.inpaintModel;
+  }
+  __name(selectModel2, "selectModel");
+  function selectParams4(state) {
+    return state.inpaint;
+  }
+  __name(selectParams4, "selectParams");
+  function selectReactParams2(state) {
+    return {
+      source: state.inpaint.source,
+      mask: state.inpaint.mask,
+      strength: state.inpaint.strength,
+      noise: state.inpaint.noise,
+      filter: state.inpaint.filter,
+      tileOrder: state.inpaint.tileOrder,
+      fillColor: state.inpaint.fillColor
+    };
+  }
+  __name(selectReactParams2, "selectReactParams");
+  function selectHighres2(state) {
+    return state.inpaintHighres;
+  }
+  __name(selectHighres2, "selectHighres");
+  function selectUpscale3(state) {
+    return state.inpaintUpscale;
+  }
+  __name(selectUpscale3, "selectUpscale");
 
   // out/src/components/tab/Models.js
-  var import_lodash4 = __toESM(require_lodash(), 1);
+  var import_lodash5 = __toESM(require_lodash(), 1);
   var React161 = __toESM(require_react(), 1);
 
   // out/src/components/input/EditableList.js
   var React155 = __toESM(require_react(), 1);
-  var { useContext: useContext39, useState: useState29, memo: memo2, useMemo: useMemo17 } = React155;
+  var { useContext: useContext38, useState: useState29, memo: memo2, useMemo: useMemo18 } = React155;
   function EditableList(props) {
     const { newItem, removeItem, renderItem, setItem, selector } = props;
     const { t: t2 } = useTranslation();
-    const state = mustExist(useContext39(StateContext));
-    const items = useStore(state, selector);
+    const store = mustExist(useContext38(StateContext));
+    const items = useStore(store, selector);
     const [nextLabel, setNextLabel] = useState29("");
     const [nextSource, setNextSource] = useState29("");
-    const RenderMemo = useMemo17(() => memo2(renderItem), [renderItem]);
+    const RenderMemo = useMemo18(() => memo2(renderItem), [renderItem]);
     return React155.createElement(
       Stack_default2,
       { spacing: 2 },
@@ -82438,8 +82685,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(UpscalingModelInput, "UpscalingModelInput");
 
   // out/src/components/tab/Models.js
-  var { useContext: useContext41, useEffect: useEffect31 } = React161;
-  var { kebabCase } = import_lodash4.default;
+  var { useContext: useContext39, useEffect: useEffect31 } = React161;
+  var { kebabCase } = import_lodash5.default;
   function mergeModelLists(local, server = []) {
     const localNames = new Set(local.map((it) => it.name));
     const merged = [...local];
@@ -82477,19 +82724,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(selectExtraSources, "selectExtraSources");
   function Models() {
-    const state = mustExist(React161.useContext(StateContext));
-    const setExtras = useStore(state, (s) => s.setExtras);
-    const setCorrectionModel = useStore(state, (s) => s.setCorrectionModel);
-    const setDiffusionModel = useStore(state, (s) => s.setDiffusionModel);
-    const setExtraNetwork = useStore(state, (s) => s.setExtraNetwork);
-    const setExtraSource = useStore(state, (s) => s.setExtraSource);
-    const setUpscalingModel = useStore(state, (s) => s.setUpscalingModel);
-    const removeCorrectionModel = useStore(state, (s) => s.removeCorrectionModel);
-    const removeDiffusionModel = useStore(state, (s) => s.removeDiffusionModel);
-    const removeExtraNetwork = useStore(state, (s) => s.removeExtraNetwork);
-    const removeExtraSource = useStore(state, (s) => s.removeExtraSource);
-    const removeUpscalingModel = useStore(state, (s) => s.removeUpscalingModel);
-    const client = mustExist(useContext41(ClientContext));
+    const store = mustExist(useContext39(StateContext));
+    const { setCorrectionModel, setDiffusionModel, setExtraNetwork, setExtraSource, setExtras, setUpscalingModel, removeCorrectionModel, removeDiffusionModel, removeExtraNetwork, removeExtraSource, removeUpscalingModel } = useStore(store, selectActions10, shallow);
+    const client = mustExist(useContext39(ClientContext));
     const result = useQuery(["extras"], async () => client.extras(), {
       staleTime: STALE_TIME
     });
@@ -82500,7 +82737,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { t: t2 } = useTranslation();
     useEffect31(() => {
       if (result.status === "success" && doesExist2(result.data)) {
-        setExtras(mergeModels(state.getState().extras, result.data));
+        setExtras(mergeModels(store.getState().extras, result.data));
       }
     }, [result.status]);
     if (result.status === "error") {
@@ -82518,7 +82755,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       );
     }
     async function writeExtras() {
-      const resp = await client.writeExtras(state.getState().extras);
+      const resp = await client.writeExtras(store.getState().extras);
     }
     __name(writeExtras, "writeExtras");
     return React161.createElement(
@@ -82606,10 +82843,68 @@ Please use another name.` : formatMuiErrorMessage(18));
     );
   }
   __name(Models, "Models");
+  function selectActions10(state) {
+    return {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setExtras: state.setExtras,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setCorrectionModel: state.setCorrectionModel,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setDiffusionModel: state.setDiffusionModel,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setExtraNetwork: state.setExtraNetwork,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setExtraSource: state.setExtraSource,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setUpscalingModel: state.setUpscalingModel,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      removeCorrectionModel: state.removeCorrectionModel,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      removeDiffusionModel: state.removeDiffusionModel,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      removeExtraNetwork: state.removeExtraNetwork,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      removeExtraSource: state.removeExtraSource,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      removeUpscalingModel: state.removeUpscalingModel
+    };
+  }
+  __name(selectActions10, "selectActions");
 
   // out/src/components/tab/Settings.js
   var React162 = __toESM(require_react(), 1);
   var import_react38 = __toESM(require_react(), 1);
+
+  // out/src/components/utils.js
+  var TAB_LABELS = [
+    "txt2img",
+    "img2img",
+    "inpaint",
+    "upscale",
+    "blend",
+    "models",
+    "settings"
+  ];
+  function getTab(hash4) {
+    const route = trimHash(hash4);
+    if (route.length > 0) {
+      return route;
+    }
+    return TAB_LABELS[0];
+  }
+  __name(getTab, "getTab");
+  function getTheme(currentTheme, preferDark) {
+    if (currentTheme === "") {
+      if (preferDark) {
+        return "dark";
+      }
+      return "light";
+    }
+    return currentTheme;
+  }
+  __name(getTheme, "getTheme");
+
+  // out/src/components/tab/Settings.js
   function removeBlobs(key, value) {
     if (value instanceof Blob || value instanceof File) {
       return void 0;
@@ -82694,8 +82989,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   function Txt2Img() {
     const { params } = mustExist((0, import_react39.useContext)(ConfigContext));
     async function generateImage() {
-      const { model, txt2img, upscale, highres } = state.getState();
-      const { image, retry } = await client.txt2img(model, txt2img, upscale, highres);
+      const state = store.getState();
+      const { image, retry } = await client.txt2img(model, selectParams5(state), selectUpscale4(state), selectHighres3(state));
       pushHistory(image, retry);
     }
     __name(generateImage, "generateImage");
@@ -82704,11 +82999,10 @@ Please use another name.` : formatMuiErrorMessage(18));
     const generate = useMutation(generateImage, {
       onSuccess: () => query.invalidateQueries(["ready"])
     });
-    const state = mustExist((0, import_react39.useContext)(StateContext));
-    const height2 = useStore(state, (s) => s.txt2img.height);
-    const width2 = useStore(state, (s) => s.txt2img.width);
-    const setTxt2Img = useStore(state, (s) => s.setTxt2Img);
-    const pushHistory = useStore(state, (s) => s.pushHistory);
+    const store = mustExist((0, import_react39.useContext)(StateContext));
+    const { pushHistory, setHighres, setModel, setParams, setUpscale } = useStore(store, selectActions11, shallow);
+    const { height: height2, width: width2 } = useStore(store, selectReactParams3, shallow);
+    const model = useStore(store, selectModel3);
     const { t: t2 } = useTranslation();
     return React163.createElement(
       Box_default,
@@ -82716,36 +83010,76 @@ Please use another name.` : formatMuiErrorMessage(18));
       React163.createElement(
         Stack_default2,
         { spacing: 2 },
-        React163.createElement(ImageControl, { selector: (s) => s.txt2img, onChange: setTxt2Img }),
+        React163.createElement(Profiles, { selectParams: selectParams5, selectHighres: selectHighres3, selectUpscale: selectUpscale4, setParams, setHighres, setUpscale }),
+        React163.createElement(ModelControl, { model, setModel }),
+        React163.createElement(ImageControl, { selector: selectParams5, onChange: setParams }),
         React163.createElement(
           Stack_default2,
           { direction: "row", spacing: 4 },
           React163.createElement(NumericField, { label: t2("parameter.width"), min: params.width.min, max: params.width.max, step: params.width.step, value: width2, onChange: (value) => {
-            setTxt2Img({
+            setParams({
               width: value
             });
           } }),
           React163.createElement(NumericField, { label: t2("parameter.height"), min: params.height.min, max: params.height.max, step: params.height.step, value: height2, onChange: (value) => {
-            setTxt2Img({
+            setParams({
               height: value
             });
           } })
         ),
-        React163.createElement(HighresControl, null),
-        React163.createElement(UpscaleControl, null),
+        React163.createElement(HighresControl, { selectHighres: selectHighres3, setHighres }),
+        React163.createElement(UpscaleControl, { selectUpscale: selectUpscale4, setUpscale }),
         React163.createElement(Button_default, { variant: "contained", onClick: () => generate.mutate() }, t2("generate"))
       )
     );
   }
   __name(Txt2Img, "Txt2Img");
+  function selectActions11(state) {
+    return {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      pushHistory: state.pushHistory,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setHighres: state.setTxt2ImgHighres,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setModel: state.setTxt2ImgModel,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setParams: state.setTxt2Img,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setUpscale: state.setTxt2ImgUpscale
+    };
+  }
+  __name(selectActions11, "selectActions");
+  function selectModel3(state) {
+    return state.txt2imgModel;
+  }
+  __name(selectModel3, "selectModel");
+  function selectParams5(state) {
+    return state.txt2img;
+  }
+  __name(selectParams5, "selectParams");
+  function selectReactParams3(state) {
+    return {
+      height: state.txt2img.height,
+      width: state.txt2img.width
+    };
+  }
+  __name(selectReactParams3, "selectReactParams");
+  function selectHighres3(state) {
+    return state.txt2imgHighres;
+  }
+  __name(selectHighres3, "selectHighres");
+  function selectUpscale4(state) {
+    return state.txt2imgUpscale;
+  }
+  __name(selectUpscale4, "selectUpscale");
 
   // out/src/components/tab/Upscale.js
   var React164 = __toESM(require_react(), 1);
   var import_react40 = __toESM(require_react(), 1);
   function Upscale() {
     async function uploadSource() {
-      const { highres, model, upscale } = state.getState();
-      const { image, retry } = await client.upscale(model, Object.assign(Object.assign({}, params), { source: mustExist(params.source) }), upscale, highres);
+      const { upscaleHighres, upscaleUpscale, upscaleModel, upscale } = store.getState();
+      const { image, retry } = await client.upscale(upscaleModel, Object.assign(Object.assign({}, upscale), { source: mustExist(upscale.source) }), upscaleUpscale, upscaleHighres);
       pushHistory(image, retry);
     }
     __name(uploadSource, "uploadSource");
@@ -82754,10 +83088,10 @@ Please use another name.` : formatMuiErrorMessage(18));
     const upload = useMutation(uploadSource, {
       onSuccess: () => query.invalidateQueries(["ready"])
     });
-    const state = mustExist((0, import_react40.useContext)(StateContext));
-    const params = useStore(state, (s) => s.upscaleTab);
-    const setSource = useStore(state, (s) => s.setUpscaleTab);
-    const pushHistory = useStore(state, (s) => s.pushHistory);
+    const store = mustExist((0, import_react40.useContext)(StateContext));
+    const { pushHistory, setHighres, setModel, setParams, setUpscale } = useStore(store, selectActions12, shallow);
+    const model = useStore(store, selectModel4);
+    const params = useStore(store, selectParams6);
     const { t: t2 } = useTranslation();
     return React164.createElement(
       Box_default,
@@ -82765,32 +83099,66 @@ Please use another name.` : formatMuiErrorMessage(18));
       React164.createElement(
         Stack_default2,
         { spacing: 2 },
+        React164.createElement(Profiles, { selectHighres: selectHighres4, selectParams: selectParams6, selectUpscale: selectUpscale5, setParams, setHighres, setUpscale }),
+        React164.createElement(ModelControl, { model, setModel }),
         React164.createElement(ImageInput, { filter: IMAGE_FILTER, image: params.source, label: t2("input.image.source"), onChange: (file) => {
-          setSource({
+          setParams({
             source: file
           });
         } }),
-        React164.createElement(PromptInput, { prompt: params.prompt, negativePrompt: params.negativePrompt, onChange: (value) => {
-          setSource(value);
+        React164.createElement(PromptInput, { selector: selectParams6, onChange: (value) => {
+          setParams(value);
         } }),
-        React164.createElement(HighresControl, null),
-        React164.createElement(UpscaleControl, null),
+        React164.createElement(HighresControl, { selectHighres: selectHighres4, setHighres }),
+        React164.createElement(UpscaleControl, { selectUpscale: selectUpscale5, setUpscale }),
         React164.createElement(Button_default, { disabled: doesExist2(params.source) === false, variant: "contained", onClick: () => upload.mutate() }, t2("generate"))
       )
     );
   }
   __name(Upscale, "Upscale");
+  function selectActions12(state) {
+    return {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      pushHistory: state.pushHistory,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setHighres: state.setUpscaleHighres,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setModel: state.setUpscaleModel,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setParams: state.setUpscale,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      setUpscale: state.setUpscaleUpscale
+    };
+  }
+  __name(selectActions12, "selectActions");
+  function selectModel4(state) {
+    return state.upscaleModel;
+  }
+  __name(selectModel4, "selectModel");
+  function selectParams6(state) {
+    return state.upscale;
+  }
+  __name(selectParams6, "selectParams");
+  function selectHighres4(state) {
+    return state.upscaleHighres;
+  }
+  __name(selectHighres4, "selectHighres");
+  function selectUpscale5(state) {
+    return state.upscaleUpscale;
+  }
+  __name(selectUpscale5, "selectUpscale");
 
   // out/src/components/OnnxWeb.js
   function OnnxWeb() {
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-    const stateTheme = useStore(mustExist((0, import_react41.useContext)(StateContext)), (s) => s.theme);
+    const store = mustExist((0, import_react41.useContext)(StateContext));
+    const stateTheme = useStore(store, selectTheme);
     const theme = (0, import_react41.useMemo)(() => createTheme_default2({
       palette: {
         mode: getTheme(stateTheme, prefersDarkMode)
       }
     }), [prefersDarkMode, stateTheme]);
-    const [hash4, setHash] = (0, import_useHash3.useHash)();
+    const [hash4, setHash] = (0, import_useHash2.useHash)();
     return React165.createElement(
       ThemeProvider4,
       { theme },
@@ -82802,11 +83170,6 @@ Please use another name.` : formatMuiErrorMessage(18));
           Box_default,
           { sx: { my: 4 } },
           React165.createElement(Logo, null)
-        ),
-        React165.createElement(
-          Box_default,
-          { sx: { mx: 4, my: 4 } },
-          React165.createElement(ModelControl, null)
         ),
         React165.createElement(
           TabContext,
@@ -82864,6 +83227,10 @@ Please use another name.` : formatMuiErrorMessage(18));
     );
   }
   __name(OnnxWeb, "OnnxWeb");
+  function selectTheme(state) {
+    return state.theme;
+  }
+  __name(selectTheme, "selectTheme");
 
   // out/src/strings/de.js
   var I18N_STRINGS_DE = {
@@ -83967,11 +84334,11 @@ Please use another name.` : formatMuiErrorMessage(18));
         instance.addResourceBundle(lang, namespace, data, true);
       }
     }
-    const { createBrushSlice, createDefaultSlice, createHistorySlice, createImg2ImgSlice, createInpaintSlice, createModelSlice, createOutpaintSlice, createTxt2ImgSlice, createUpscaleSlice, createHighresSlice, createBlendSlice, createResetSlice, createExtraSlice, createProfileSlice } = createStateSlices(params);
-    const state = createStore(persist((...slice3) => Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, createBrushSlice(...slice3)), createDefaultSlice(...slice3)), createHistorySlice(...slice3)), createImg2ImgSlice(...slice3)), createInpaintSlice(...slice3)), createModelSlice(...slice3)), createTxt2ImgSlice(...slice3)), createOutpaintSlice(...slice3)), createUpscaleSlice(...slice3)), createHighresSlice(...slice3)), createBlendSlice(...slice3)), createResetSlice(...slice3)), createExtraSlice(...slice3)), createProfileSlice(...slice3)), {
+    const { createDefaultSlice, createHistorySlice, createImg2ImgSlice, createInpaintSlice, createModelSlice, createTxt2ImgSlice, createUpscaleSlice, createBlendSlice, createResetSlice, createProfileSlice } = createStateSlices(params);
+    const state = createStore(persist((...slice3) => Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, createDefaultSlice(...slice3)), createHistorySlice(...slice3)), createImg2ImgSlice(...slice3)), createInpaintSlice(...slice3)), createModelSlice(...slice3)), createTxt2ImgSlice(...slice3)), createUpscaleSlice(...slice3)), createBlendSlice(...slice3)), createResetSlice(...slice3)), createProfileSlice(...slice3)), {
       name: STATE_KEY,
       partialize(s) {
-        return Object.assign(Object.assign({}, s), { img2img: Object.assign(Object.assign({}, s.img2img), { source: void 0 }), inpaint: Object.assign(Object.assign({}, s.inpaint), { mask: void 0, source: void 0 }), upscaleTab: Object.assign(Object.assign({}, s.upscaleTab), { source: void 0 }), blend: Object.assign(Object.assign({}, s.blend), { mask: void 0, sources: [] }) });
+        return Object.assign(Object.assign({}, s), { img2img: Object.assign(Object.assign({}, s.img2img), { source: void 0 }), inpaint: Object.assign(Object.assign({}, s.inpaint), { mask: void 0, source: void 0 }), upscale: Object.assign(Object.assign({}, s.upscale), { source: void 0 }), blend: Object.assign(Object.assign({}, s.blend), { mask: void 0, sources: [] }) });
       },
       storage: createJSONStorage(() => localStorage),
       version: STATE_VERSION
