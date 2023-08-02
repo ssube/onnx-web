@@ -217,7 +217,7 @@ export function downloadParamsAsFile(data: DeepPartial<ImageMetadata>): void {
 export async function parseImageParams(file: File): Promise<DeepPartial<ImageMetadata>> {
   const tags = await ExifReader.load(file);
 
-  // handle lowercase variation from my earlier mistakes
+  // some parsers expect uppercase, some use lowercase, read both
   const makerNote = decodeTag(defaultTo(tags.MakerNote, tags['maker note']));
   // eslint-disable-next-line dot-notation, @typescript-eslint/strict-boolean-expressions
   const userComment = decodeTag(defaultTo(defaultTo(tags.UserComment, tags['Parameters']), tags['parameters']));
