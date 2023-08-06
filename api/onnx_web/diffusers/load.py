@@ -3,7 +3,10 @@ from os import path
 from typing import Any, List, Optional, Tuple
 
 from onnx import load_model
-from optimum import ORTStableDiffusionXLPipeline, ORTStableDiffusionXLImg2ImgPipeline
+from optimum.onnxruntime import (
+    ORTStableDiffusionXLImg2ImgPipeline,
+    ORTStableDiffusionXLPipeline,
+)
 from transformers import CLIPTokenizer
 
 from ..constants import ONNX_MODEL
