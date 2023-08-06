@@ -7,10 +7,12 @@ accelerate==0.16.0
 coloredlogs==15.0.1
 controlnet_aux==0.0.2
 diffusers==0.15.1
+imwatermark
 mediapipe==0.9.2.1
 omegaconf==2.3.0
 onnx==1.13.0
 # onnxruntime has many platform-specific packages
+optimum
 safetensors==0.2.8
 timm==0.6.13
 transformers==4.26.1

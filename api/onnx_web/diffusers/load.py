@@ -3,6 +3,7 @@ from os import path
 from typing import Any, List, Optional, Tuple
 
 from onnx import load_model
+from optimum import ORTStableDiffusionXLPipeline, ORTStableDiffusionXLImg2ImgPipeline
 from transformers import CLIPTokenizer
 
 from ..constants import ONNX_MODEL
@@ -47,10 +48,12 @@ logger = getLogger(__name__)
 available_pipelines = {
     "controlnet": OnnxStableDiffusionControlNetPipeline,
     "img2img": OnnxStableDiffusionImg2ImgPipeline,
+    "img2img-sdxl": ORTStableDiffusionXLImg2ImgPipeline,
     "inpaint": OnnxStableDiffusionInpaintPipeline,
     "lpw": OnnxStableDiffusionLongPromptWeightingPipeline,
     "panorama": OnnxStableDiffusionPanoramaPipeline,
     "pix2pix": OnnxStableDiffusionInstructPix2PixPipeline,
+    "txt2img-sdxl": ORTStableDiffusionXLPipeline,
     "txt2img": OnnxStableDiffusionPipeline,
     "upscale": OnnxStableDiffusionUpscalePipeline,
 }
