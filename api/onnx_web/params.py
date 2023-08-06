@@ -256,13 +256,13 @@ class ImageParams:
 
         # otherwise, check for additional allowed pipelines
         if group == "img2img":
-            if pipeline in ["controlnet", "lpw", "panorama", "pix2pix"]:
+            if pipeline in ["controlnet", "img2img-sdxl", "lpw", "panorama", "pix2pix"]:
                 return pipeline
         elif group == "inpaint":
             if pipeline in ["controlnet", "lpw", "panorama"]:
                 return pipeline
         elif group == "txt2img":
-            if pipeline in ["lpw", "panorama"]:
+            if pipeline in ["lpw", "panorama", "txt2img-sdxl"]:
                 return pipeline
 
         logger.debug("pipeline %s is not valid for %s", pipeline, group)
