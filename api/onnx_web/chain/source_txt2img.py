@@ -54,6 +54,8 @@ class SourceTxt2ImgStage(BaseStage):
         )
 
         tile_size = params.tiles
+
+        # this works for panorama as well, because tile_size is already max(tile_size, *size)
         latent_size = size.min(tile_size, tile_size)
 
         # generate new latents or slice existing
