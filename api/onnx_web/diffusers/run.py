@@ -42,19 +42,26 @@ def run_txt2img_pipeline(
     upscale: UpscaleParams,
     highres: HighresParams,
 ) -> None:
+    # if using panorama, the pipeline will tile itself (views)
+    pipe_type = params.get_valid_pipeline("txt2img")
+    if pipe_type == "panorama":
+        tile_size = max(params.tiles, size.width, size.height)
+    else:
+        tile_size = params.tiles
+
     # prepare the chain pipeline and first stage
     chain = ChainPipeline()
-    stage = StageParams(
-        tile_size=params.tiles,
-    )
     chain.stage(
         SourceTxt2ImgStage(),
-        stage,
+        StageParams(
+            tile_size=tile_size,
+        ),
         size=size,
         overlap=params.overlap,
     )
 
     # apply upscaling and correction, before highres
+    stage = StageParams(tile_size=params.tiles)
     first_upscale, after_upscale = split_upscale(upscale)
     if first_upscale:
         stage_upscale_correction(
