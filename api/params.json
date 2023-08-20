@@ -68,7 +68,7 @@
   },
   "height": {
     "default": 512,
-    "min": 256,
+    "min": 128,
     "max": 8192,
     "step": 8
   },
@@ -209,7 +209,7 @@
   "tiles": {
     "default": 512,
     "min": 128,
-    "max": 1024,
+    "max": 2048,
     "step": 128
   },
   "tileOrder": {
@@ -239,7 +239,7 @@
   },
   "width": {
     "default": 512,
-    "min": 256,
+    "min": 128,
     "max": 8192,
     "step": 8
   }
