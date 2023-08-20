@@ -86,6 +86,9 @@ class Size:
             border.top + self.height + border.bottom,
         )
 
+    def max(self, width: int, height: int):
+        return Size(max(self.width, width), max(self.height, height))
+
     def min(self, width: int, height: int):
         return Size(min(self.width, width), min(self.height, height))
 
