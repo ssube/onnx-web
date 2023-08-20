@@ -360,6 +360,7 @@ def convert_diffusion_diffusers(
                 source,
                 original_config_file=config_path,
                 pipeline_class=pipe_class,
+                vae_path=replace_vae,
                 **pipe_args,
             ).to(device, torch_dtype=dtype)
     elif hf:
