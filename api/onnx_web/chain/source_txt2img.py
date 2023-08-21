@@ -106,7 +106,7 @@ class SourceTxt2ImgStage(BaseStage):
                 width=latent_size.width,
                 generator=rng,
                 guidance_scale=params.cfg,
-                latents=latents,
+                # latents=latents,
                 negative_prompt=negative_prompt,
                 num_images_per_prompt=params.batch,
                 num_inference_steps=params.steps,
