@@ -16,6 +16,7 @@ from packaging import version
 from torch.onnx import export
 
 from ..constants import ONNX_WEIGHTS
+from ..errors import RequestException
 from ..server import ServerContext
 from ..utils import get_boolean
 
@@ -103,8 +104,8 @@ def download_progress(urls: List[Tuple[str, str]]):
         )
         if req.status_code != 200:
             req.raise_for_status()  # Only works for 4xx errors, per SO answer
-            raise RuntimeError(
-                "Request to %s failed with status code: %s" % (url, req.status_code)
+            raise RequestException(
+                "request to %s failed with status code: %s" % (url, req.status_code)
             )
 
         total = int(req.headers.get("Content-Length", 0))

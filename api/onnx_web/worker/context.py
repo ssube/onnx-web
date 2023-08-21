@@ -4,6 +4,7 @@ from typing import Any, Callable, Optional
 
 from torch.multiprocessing import Queue, Value
 
+from ..errors import CancelledException
 from ..params import DeviceParams
 from .command import JobCommand, ProgressCommand
 
@@ -102,7 +103,7 @@ class WorkerContext:
             raise RuntimeError("no job on which to set progress")
 
         if self.is_cancelled():
-            raise RuntimeError("job has been cancelled")
+            raise CancelledException("job has been cancelled")
 
         logger.debug("setting progress for job %s to %s", self.job, progress)
         self.last_progress = ProgressCommand(
