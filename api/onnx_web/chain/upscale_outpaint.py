@@ -81,7 +81,7 @@ class UpscaleOutpaintStage(BaseStage):
             else:
                 latents = get_tile_latents(latents, params.seed, latent_size, dims)
 
-            if params.lpw():
+            if params.is_lpw():
                 logger.debug("using LPW pipeline for inpaint")
                 rng = torch.manual_seed(params.seed)
                 result = pipe.inpaint(
