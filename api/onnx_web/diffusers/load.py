@@ -171,7 +171,7 @@ def load_pipeline(
         unet_type = "unet"
 
         # ControlNet component
-        if pipeline == "controlnet" and params.control is not None:
+        if params.is_control() and params.control is not None:
             cnet_path = path.join(
                 server.model_path, "control", f"{params.control.name}.onnx"
             )
@@ -282,7 +282,7 @@ def load_pipeline(
             )
 
         # make sure a UNet has been loaded
-        if "unet" not in components:
+        if not params.is_xl() and "unet" not in components:
             unet = path.join(model, unet_type, ONNX_MODEL)
             logger.debug("loading UNet (%s) from %s", unet_type, unet)
             components["unet"] = OnnxRuntimeModel(
@@ -298,7 +298,7 @@ def load_pipeline(
         vae_decoder = path.join(model, "vae_decoder", ONNX_MODEL)
         vae_encoder = path.join(model, "vae_encoder", ONNX_MODEL)
 
-        if path.exists(vae):
+        if not params.is_xl() and path.exists(vae):
             logger.debug("loading VAE from %s", vae)
             components["vae"] = OnnxRuntimeModel(
                 OnnxRuntimeModel.load_model(
@@ -307,7 +307,9 @@ def load_pipeline(
                     sess_options=device.sess_options(),
                 )
             )
-        elif path.exists(vae_decoder) and path.exists(vae_encoder):
+        elif (
+            not params.is_xl() and path.exists(vae_decoder) and path.exists(vae_encoder)
+        ):
             logger.debug("loading VAE decoder from %s", vae_decoder)
             components["vae_decoder"] = OnnxRuntimeModel(
                 OnnxRuntimeModel.load_model(
@@ -327,7 +329,7 @@ def load_pipeline(
             )
 
         # additional options for panorama pipeline
-        if pipeline == "panorama":
+        if params.is_panorama():
             components["window"] = params.tiles // 8
             components["stride"] = params.stride // 8
 
@@ -346,18 +348,21 @@ def load_pipeline(
             pipe.set_progress_bar_config(disable=True)
 
         optimize_pipeline(server, pipe)
-        patch_pipeline(server, pipe, pipeline, pipeline_class, params)
+
+        if not params.is_xl():
+            patch_pipeline(server, pipe, pipeline, pipeline_class, params)
 
         server.cache.set(ModelTypes.diffusion, pipe_key, pipe)
         server.cache.set(ModelTypes.scheduler, scheduler_key, components["scheduler"])
 
-    if hasattr(pipe, "vae_decoder"):
+    if not params.is_xl() and hasattr(pipe, "vae_decoder"):
         pipe.vae_decoder.set_tiled(tiled=params.tiled_vae)
-    if hasattr(pipe, "vae_encoder"):
+
+    if not params.is_xl() and hasattr(pipe, "vae_encoder"):
         pipe.vae_encoder.set_tiled(tiled=params.tiled_vae)
 
     # update panorama params
-    if pipeline == "panorama":
+    if params.is_panorama():
         latent_window = params.tiles // 8
         latent_stride = params.stride // 8
 

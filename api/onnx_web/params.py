@@ -271,8 +271,17 @@ class ImageParams:
         logger.debug("pipeline %s is not valid for %s", pipeline, group)
         return group
 
-    def lpw(self):
+    def is_control(self):
+        return self.pipeline == "controlnet"
+
+    def is_lpw(self):
         return self.pipeline == "lpw"
+
+    def is_panorama(self):
+        return self.pipeline == "panorama"
+
+    def is_xl(self):
+        return self.pipeline.endswith("-sdxl")
 
     def tojson(self) -> Dict[str, Optional[Param]]:
         return {

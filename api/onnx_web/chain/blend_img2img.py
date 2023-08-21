@@ -51,20 +51,20 @@ class BlendImg2ImgStage(BaseStage):
         )
 
         pipe_params = {}
-        if pipe_type == "controlnet":
+        if params.is_control():
             pipe_params["controlnet_conditioning_scale"] = strength
+        elif params.is_lpw():
+            pipe_params["strength"] = strength
+        elif params.is_panorama():
+            pipe_params["strength"] = strength
         elif pipe_type == "img2img":
-            pipe_params["strength"] = strength
-        elif pipe_type == "lpw":
-            pipe_params["strength"] = strength
-        elif pipe_type == "panorama":
             pipe_params["strength"] = strength
         elif pipe_type == "pix2pix":
             pipe_params["image_guidance_scale"] = strength
 
         outputs = []
         for source in sources:
-            if params.lpw():
+            if params.is_lpw():
                 logger.debug("using LPW pipeline for img2img")
                 rng = torch.manual_seed(params.seed)
                 result = pipe.img2img(
@@ -82,7 +82,9 @@ class BlendImg2ImgStage(BaseStage):
                 prompt_embeds = encode_prompt(
                     pipe, prompt_pairs, params.batch, params.do_cfg()
                 )
-                pipe.unet.set_prompts(prompt_embeds)
+
+                if not params.xl():
+                    pipe.unet.set_prompts(prompt_embeds)
 
                 rng = np.random.RandomState(params.seed)
                 result = pipe(

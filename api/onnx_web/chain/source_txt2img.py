@@ -74,7 +74,7 @@ class SourceTxt2ImgStage(BaseStage):
             loras=loras,
         )
 
-        if params.lpw():
+        if params.is_lpw():
             logger.debug("using LPW pipeline for txt2img")
             rng = torch.manual_seed(params.seed)
             result = pipe.text2img(
@@ -95,7 +95,9 @@ class SourceTxt2ImgStage(BaseStage):
             prompt_embeds = encode_prompt(
                 pipe, prompt_pairs, params.batch, params.do_cfg()
             )
-            pipe.unet.set_prompts(prompt_embeds)
+
+            if not params.is_xl():
+                pipe.unet.set_prompts(prompt_embeds)
 
             rng = np.random.RandomState(params.seed)
             result = pipe(
