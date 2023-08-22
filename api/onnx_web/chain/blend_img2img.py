@@ -57,7 +57,7 @@ class BlendImg2ImgStage(BaseStage):
             pipe_params["strength"] = strength
         elif params.is_panorama():
             pipe_params["strength"] = strength
-        elif pipe_type == "img2img":
+        elif pipe_type == "img2img" or pipe_type == "img2img-sdxl":
             pipe_params["strength"] = strength
         elif pipe_type == "pix2pix":
             pipe_params["image_guidance_scale"] = strength
@@ -83,7 +83,7 @@ class BlendImg2ImgStage(BaseStage):
                     pipe, prompt_pairs, params.batch, params.do_cfg()
                 )
 
-                if not params.xl():
+                if not params.is_xl():
                     pipe.unet.set_prompts(prompt_embeds)
 
                 rng = np.random.RandomState(params.seed)

@@ -43,7 +43,7 @@ def run_txt2img_pipeline(
     highres: HighresParams,
 ) -> None:
     # if using panorama, the pipeline will tile itself (views)
-    if params.is_panorama():
+    if params.is_panorama() or params.is_xl():
         tile_size = max(params.tiles, size.width, size.height)
     else:
         tile_size = params.tiles

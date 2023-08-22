@@ -261,6 +261,8 @@ class ImageParams:
         if group == "img2img":
             if pipeline in ["controlnet", "img2img-sdxl", "lpw", "panorama", "pix2pix"]:
                 return pipeline
+            elif pipeline == "txt2img-sdxl":
+                return "img2img-sdxl"
         elif group == "inpaint":
             if pipeline in ["controlnet", "lpw", "panorama"]:
                 return pipeline
