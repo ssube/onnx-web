@@ -57,16 +57,12 @@ class BlendImg2ImgStage(BaseStage):
         )
 
         pipe_params = {}
-        if params.is_control():
-            pipe_params["controlnet_conditioning_scale"] = strength
-        elif params.is_lpw():
-            pipe_params["strength"] = strength
-        elif params.is_panorama():
-            pipe_params["strength"] = strength
-        elif pipe_type == "img2img" or pipe_type == "img2img-sdxl":
-            pipe_params["strength"] = strength
-        elif pipe_type == "pix2pix":
+        if params.is_pix2pix():
             pipe_params["image_guidance_scale"] = strength
+        elif params.is_control():
+            pipe_params["controlnet_conditioning_scale"] = strength
+        else:
+            pipe_params["strength"] = strength
 
         outputs = []
         for source in sources:

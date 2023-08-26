@@ -45,6 +45,7 @@ from .version_safe_diffusers import (
     StableDiffusionPipeline,
     UniPCMultistepScheduler,
 )
+from ..torch_before_ort import InferenceSession
 
 logger = getLogger(__name__)
 
@@ -95,6 +96,7 @@ def get_scheduler_name(scheduler: Any) -> Optional[str]:
 
     return None
 
+from optimum.onnxruntime.modeling_diffusion import ORTModelUnet, ORTModelTextEncoder
 
 def load_pipeline(
     server: ServerContext,
@@ -244,6 +246,7 @@ def load_pipeline(
                 text_encoder,
                 list(zip(lora_models, lora_weights)),
                 "text_encoder",
+                1 if params.is_xl() else None,
             )
             (text_encoder, text_encoder_data) = buffer_external_data_tensors(
                 text_encoder
@@ -253,13 +256,49 @@ def load_pipeline(
             text_encoder_opts.add_external_initializers(
                 list(text_encoder_names), list(text_encoder_values)
             )
-            components["text_encoder"] = OnnxRuntimeModel(
-                OnnxRuntimeModel.load_model(
+
+            if params.is_xl():
+                text_encoder_session = InferenceSession(
                     text_encoder.SerializeToString(),
-                    provider=device.ort_provider("text-encoder"),
+                    providers=[device.ort_provider("text-encoder")],
                     sess_options=text_encoder_opts,
                 )
-            )
+                text_encoder_session._model_path = path.join(model, "text_encoder")
+                components["text_encoder"] = ORTModelTextEncoder(text_encoder_session, text_encoder)
+            else:
+                components["text_encoder"] = OnnxRuntimeModel(
+                    OnnxRuntimeModel.load_model(
+                        text_encoder.SerializeToString(),
+                        provider=device.ort_provider("text-encoder"),
+                        sess_options=text_encoder_opts,
+                    )
+                )
+
+            if params.is_xl():
+                 text_encoder2 = path.join(model, "text_encoder_2", ONNX_MODEL)
+                 text_encoder2 = blend_loras(
+                     server,
+                     text_encoder2,
+                     list(zip(lora_models, lora_weights)),
+                     "text_encoder",
+                     2,
+                 )
+                 (text_encoder2, text_encoder2_data) = buffer_external_data_tensors(
+                     text_encoder2
+                 )
+                 text_encoder2_names, text_encoder2_values = zip(*text_encoder2_data)
+                 text_encoder2_opts = device.sess_options(cache=False)
+                 text_encoder2_opts.add_external_initializers(
+                     list(text_encoder2_names), list(text_encoder2_values)
+                 )
+
+                 text_encoder2_session = InferenceSession(
+                    text_encoder2.SerializeToString(),
+                    providers=[device.ort_provider("text-encoder")],
+                    sess_options=text_encoder2_opts,
+                 )
+                 text_encoder2_session._model_path = path.join(model, "text_encoder_2")
+                 components["text_encoder_2"] = ORTModelTextEncoder(text_encoder2_session, text_encoder2)
 
             # blend and load unet
             unet = path.join(model, unet_type, ONNX_MODEL)
@@ -273,13 +312,23 @@ def load_pipeline(
             unet_names, unet_values = zip(*unet_data)
             unet_opts = device.sess_options(cache=False)
             unet_opts.add_external_initializers(list(unet_names), list(unet_values))
-            components["unet"] = OnnxRuntimeModel(
-                OnnxRuntimeModel.load_model(
+
+            if params.is_xl():
+                unet_session = InferenceSession(
                     unet_model.SerializeToString(),
-                    provider=device.ort_provider("unet"),
+                    providers=[device.ort_provider("unet")],
                     sess_options=unet_opts,
                 )
-            )
+                unet_session._model_path = path.join(model, "unet")
+                components["unet"] = ORTModelUnet(unet_session, unet_model)
+            else:
+                components["unet"] = OnnxRuntimeModel(
+                    OnnxRuntimeModel.load_model(
+                        unet_model.SerializeToString(),
+                        provider=device.ort_provider("unet"),
+                        sess_options=unet_opts,
+                    )
+                )
 
         # make sure a UNet has been loaded
         if not params.is_xl() and "unet" not in components:
@@ -343,6 +392,15 @@ def load_pipeline(
             torch_dtype=torch_dtype,
             **components,
         )
+
+        # make sure XL models are actually being used
+        # TODO: why is this needed?
+        logger.info("text encoder matches: %s, %s", pipe.text_encoder == components["text_encoder"], type(pipe.text_encoder))
+        pipe.text_encoder = components["text_encoder"]
+        logger.info("text encoder 2 matches: %s, %s", pipe.text_encoder_2 == components["text_encoder_2"], type(pipe.text_encoder_2))
+        pipe.text_encoder_2 = components["text_encoder_2"]
+        logger.info("unet matches: %s, %s", pipe.unet == components["unet"], type(pipe.unet))
+        pipe.unet = components["unet"]
 
         if not server.show_progress:
             pipe.set_progress_bar_config(disable=True)

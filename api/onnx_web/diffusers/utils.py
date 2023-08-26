@@ -436,3 +436,11 @@ def repair_nan(tile: np.ndarray) -> np.ndarray:
         return np.reshape(flat_tile[indices], tile.shape)
     else:
         return tile
+
+
+def slice_prompt(prompt: str, slice: int) -> str:
+    if "||" in prompt:
+        parts = prompt.split("||")
+        return parts[min(slice, len(parts) - 1)]
+    else:
+        return prompt

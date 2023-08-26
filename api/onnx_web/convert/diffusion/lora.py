@@ -1,17 +1,19 @@
 from argparse import ArgumentParser
 from logging import getLogger
 from os import path
-from typing import Dict, List, Literal, Tuple, Union
+from re import sub
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 import numpy as np
 import torch
-from onnx import ModelProto, load, numpy_helper
+from onnx import ModelProto, load, numpy_helper, save_model
 from onnx.checker import check_model
 from onnx.external_data_helper import (
     convert_model_to_external_data,
     set_external_data,
     write_external_data_tensors,
 )
+from onnx.helper import tensor_dtype_to_np_dtype
 from onnxruntime import InferenceSession, OrtValue, SessionOptions
 
 from ...server.context import ServerContext
@@ -77,6 +79,67 @@ def fix_node_name(key: str):
         return fixed_name
 
 
+def fix_xl_names(keys: Dict[str, Any], nodes: List[Any]):
+    fixed = {}
+
+    for key, value in keys.items():
+        root, *rest = key.split(".")
+        logger.debug("fixing XL node name: %s -> %s", key, root) # TODO: move to trace
+
+        if root.startswith("input"):
+            block = "down_blocks"
+        elif root.startswith("middle"):
+            block = "mid_block" # not plural
+        elif root.startswith("output"):
+            block = "up_blocks"
+        elif root.startswith("text_model"):
+            block = "text_model"
+        else:
+            logger.warning("unknown XL key name: %s", key)
+            fixed[key] = value
+            continue
+
+        suffix = None
+        for s in ["fc1", "fc2", "ff_net_0_proj", "ff_net_2", "proj", "proj_in", "proj_out", "to_k", "to_out_0", "to_q", "to_v"]:
+            if root.endswith(s):
+                suffix = s
+
+        if suffix is None:
+            logger.warning("new XL key type: %s", root)
+            continue
+
+        logger.debug("searching for XL node: /%s/*/%s", block, suffix)
+        if block == "text_model":
+            matches = [
+                node for node in nodes
+                if fix_node_name(node.name) == f"{root}_MatMul"
+            ]
+        else:
+            matches = [
+                node for node in nodes
+                if node.name.startswith(f"/{block}")
+                and fix_node_name(node.name).endswith(f"{suffix}_MatMul") # needs to be fixed because some places use to_out.0
+            ]
+
+        if len(matches) == 0:
+            logger.warning("no matches for XL key: %s", root)
+            continue
+
+        name: str = matches[0].name
+        name = fix_node_name(name.rstrip("/MatMul"))
+
+        if name.endswith("proj_o"):
+            # wtf
+            name = f"{name}ut"
+
+        logger.debug("matching XL key with node: %s -> %s", key, matches[0].name)
+
+        fixed[name] = value
+        nodes.remove(matches[0])
+
+    return fixed
+
+
 def kernel_slice(x: int, y: int, shape: Tuple[int, int, int, int]) -> Tuple[int, int]:
     return (
         min(x, shape[2] - 1),
@@ -84,11 +147,13 @@ def kernel_slice(x: int, y: int, shape: Tuple[int, int, int, int]) -> Tuple[int,
     )
 
 
+
 def blend_loras(
     _conversion: ServerContext,
     base_name: Union[str, ModelProto],
     loras: List[Tuple[str, float]],
     model_type: Literal["text_encoder", "unet"],
+    model_index: Optional[int] = None,
 ):
     # always load to CPU for blending
     device = torch.device("cpu")
@@ -98,7 +163,10 @@ def blend_loras(
     lora_models = [load_tensor(name, map_location=device) for name, _weight in loras]
 
     if model_type == "text_encoder":
-        lora_prefix = "lora_te_"
+        if model_index is None:
+            lora_prefix = "lora_te_"
+        else:
+            lora_prefix = f"lora_te{model_index}_"
     else:
         lora_prefix = f"lora_{model_type}_"
 
@@ -313,11 +381,15 @@ def blend_loras(
                 else:
                     blended[base_key] = np_weights
 
+    # rewrite node names for XL
+    nodes = list(base_model.graph.node)
+    blended = fix_xl_names(blended, nodes)
+
     logger.trace(
-        "updating %s of %s initializers: %s",
+        "updating %s of %s initializers, %s missed",
         len(blended.keys()),
         len(base_model.graph.initializer),
-        list(blended.keys()),
+        len(nodes)
     )
 
     fixed_initializer_names = [
@@ -419,8 +491,13 @@ def blend_loras(
                 onnx_weights.shape,
             )
 
-            blended = onnx_weights + weights.transpose()
-            logger.trace("blended weight shape: %s", blended.shape)
+            t_weights = weights.transpose()
+            if weights.shape != onnx_weights.shape and t_weights.shape != onnx_weights.shape:
+                logger.warning("weight shapes do not match for %s: %s vs %s", matmul_key, weights.shape, onnx_weights.shape)
+                t_weights = interp_to_match(weights, onnx_weights).transpose()
+
+            blended = onnx_weights + t_weights
+            logger.debug("blended weight shape: %s, %s", blended.shape, onnx_weights.dtype)
 
             # replace the original initializer
             updated_node = numpy_helper.from_array(
@@ -442,7 +519,27 @@ def blend_loras(
     if len(unmatched_keys) > 0:
         logger.warning("could not find nodes for some keys: %s", unmatched_keys)
 
+    # if model_type == "unet":
+    #     save_model(base_model, f"/tmp/lora_blend_{model_type}.onnx", save_as_external_data=True, all_tensors_to_one_file=True, location="weights.pb")
+
     return base_model
+
+
+from scipy import interpolate
+
+def interp_to_match(ref: np.ndarray, resize: np.ndarray) -> np.ndarray:
+    res_x = np.linspace(0, 1, resize.shape[0])
+    res_y = np.linspace(0, 1, resize.shape[1])
+    ref_x = np.linspace(0, 1, ref.shape[0])
+    ref_y = np.linspace(0, 1, ref.shape[1])
+    logger.debug("dims: %s, %s, %s, %s", resize.shape[0], resize.shape[1], ref.shape[0], ref.shape[1])
+
+    f = interpolate.RegularGridInterpolator((ref_x, ref_y), ref, method='linear')
+    xg, yg = np.meshgrid(res_x, res_y)
+    output = f((xg, yg))
+    logger.debug("weights after interpolation: %s", output.shape)
+
+    return output
 
 
 if __name__ == "__main__":

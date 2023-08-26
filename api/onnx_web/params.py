@@ -282,6 +282,9 @@ class ImageParams:
     def is_panorama(self):
         return self.pipeline == "panorama"
 
+    def is_pix2pix(self):
+        return self.pipeline == "pix2pix"
+
     def is_xl(self):
         return self.pipeline.endswith("-sdxl")
 

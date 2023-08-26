@@ -48,6 +48,12 @@ def run_txt2img_pipeline(
     else:
         tile_size = params.tiles
 
+    # split prompts for each stage
+    if "||" in params.prompt:
+        txt_prompt, img_prompt = params.prompt.split("||")
+    else:
+        txt_prompt = img_prompt = params.prompt
+
     # prepare the chain pipeline and first stage
     chain = ChainPipeline()
     chain.stage(

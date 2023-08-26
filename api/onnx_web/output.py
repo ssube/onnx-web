@@ -4,7 +4,7 @@ from logging import getLogger
 from os import path
 from struct import pack
 from time import time
-from typing import Any, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from piexif import ExifIFD, ImageIFD, dump
 from piexif.helper import UserComment
@@ -57,8 +57,10 @@ def json_params(
     upscale: Optional[UpscaleParams] = None,
     border: Optional[Border] = None,
     highres: Optional[HighresParams] = None,
+    parent: Dict = None,
 ) -> Any:
     json = {
+        "input_size": size.tojson(),
         "outputs": outputs,
         "params": params.tojson(),
     }
@@ -66,6 +68,7 @@ def json_params(
     json["params"]["model"] = path.basename(params.model)
     json["params"]["scheduler"] = params.scheduler
 
+    # calculate final output size
     output_size = size
     if border is not None:
         json["border"] = border.tojson()
@@ -79,7 +82,6 @@ def json_params(
         json["upscale"] = upscale.tojson()
         output_size = upscale.resize(output_size)
 
-    json["input_size"] = size.tojson()
     json["size"] = output_size.tojson()
 
     return json
