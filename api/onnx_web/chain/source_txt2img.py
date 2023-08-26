@@ -11,6 +11,7 @@ from ..diffusers.utils import (
     get_latents_from_seed,
     get_tile_latents,
     parse_prompt,
+    slice_prompt,
 )
 from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
@@ -39,6 +40,11 @@ class SourceTxt2ImgStage(BaseStage):
     ) -> Image.Image:
         params = params.with_args(**kwargs)
         size = size.with_args(**kwargs)
+
+        # highres hax
+        params = params.with_args(
+            prompt = slice_prompt(params.prompt, 0)
+        )
 
         logger.info(
             "generating image using txt2img, %s steps: %s", params.steps, params.prompt

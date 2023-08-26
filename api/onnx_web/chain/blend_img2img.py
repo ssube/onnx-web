@@ -6,7 +6,7 @@ import torch
 from PIL import Image
 
 from ..diffusers.load import load_pipeline
-from ..diffusers.utils import encode_prompt, parse_prompt
+from ..diffusers.utils import encode_prompt, parse_prompt, slice_prompt
 from ..params import ImageParams, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
@@ -32,6 +32,12 @@ class BlendImg2ImgStage(BaseStage):
         **kwargs,
     ) -> List[Image.Image]:
         params = params.with_args(**kwargs)
+
+        # highres hax
+        params = params.with_args(
+            prompt = slice_prompt(params.prompt, 1)
+        )
+
         logger.info(
             "blending image using img2img, %s steps: %s", params.steps, params.prompt
         )
