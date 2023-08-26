@@ -140,7 +140,7 @@ class DeviceParams:
         if self.options is None:
             return self.provider
         else:
-            return self.provider # (self.provider, self.options)
+            return self.provider  # (self.provider, self.options)
 
     def sess_options(self, cache=True) -> SessionOptions:
         if cache and self.sess_options_cache is not None:

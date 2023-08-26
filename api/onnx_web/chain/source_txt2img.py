@@ -42,9 +42,7 @@ class SourceTxt2ImgStage(BaseStage):
         size = size.with_args(**kwargs)
 
         # highres hax
-        params = params.with_args(
-            prompt = slice_prompt(params.prompt, 0)
-        )
+        params = params.with_args(prompt=slice_prompt(params.prompt, 0))
 
         logger.info(
             "generating image using txt2img, %s steps: %s", params.steps, params.prompt

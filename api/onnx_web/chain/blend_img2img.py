@@ -34,9 +34,7 @@ class BlendImg2ImgStage(BaseStage):
         params = params.with_args(**kwargs)
 
         # highres hax
-        params = params.with_args(
-            prompt = slice_prompt(params.prompt, 1)
-        )
+        params = params.with_args(prompt=slice_prompt(params.prompt, 1))
 
         logger.info(
             "blending image using img2img, %s steps: %s", params.steps, params.prompt

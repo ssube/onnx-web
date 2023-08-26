@@ -1,20 +1,19 @@
 from argparse import ArgumentParser
 from logging import getLogger
 from os import path
-from re import sub
 from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 import numpy as np
 import torch
-from onnx import ModelProto, load, numpy_helper, save_model
+from onnx import ModelProto, load, numpy_helper
 from onnx.checker import check_model
 from onnx.external_data_helper import (
     convert_model_to_external_data,
     set_external_data,
     write_external_data_tensors,
 )
-from onnx.helper import tensor_dtype_to_np_dtype
 from onnxruntime import InferenceSession, OrtValue, SessionOptions
+from scipy import interpolate
 
 from ...server.context import ServerContext
 from ..utils import ConversionContext, load_tensor
@@ -84,12 +83,12 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[Any]):
 
     for key, value in keys.items():
         root, *rest = key.split(".")
-        logger.debug("fixing XL node name: %s -> %s", key, root) # TODO: move to trace
+        logger.debug("fixing XL node name: %s -> %s", key, root)  # TODO: move to trace
 
         if root.startswith("input"):
             block = "down_blocks"
         elif root.startswith("middle"):
-            block = "mid_block" # not plural
+            block = "mid_block"  # not plural
         elif root.startswith("output"):
             block = "up_blocks"
         elif root.startswith("text_model"):
@@ -100,7 +99,19 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[Any]):
             continue
 
         suffix = None
-        for s in ["fc1", "fc2", "ff_net_0_proj", "ff_net_2", "proj", "proj_in", "proj_out", "to_k", "to_out_0", "to_q", "to_v"]:
+        for s in [
+            "fc1",
+            "fc2",
+            "ff_net_0_proj",
+            "ff_net_2",
+            "proj",
+            "proj_in",
+            "proj_out",
+            "to_k",
+            "to_out_0",
+            "to_q",
+            "to_v",
+        ]:
             if root.endswith(s):
                 suffix = s
 
@@ -111,14 +122,16 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[Any]):
         logger.debug("searching for XL node: /%s/*/%s", block, suffix)
         if block == "text_model":
             matches = [
-                node for node in nodes
-                if fix_node_name(node.name) == f"{root}_MatMul"
+                node for node in nodes if fix_node_name(node.name) == f"{root}_MatMul"
             ]
         else:
             matches = [
-                node for node in nodes
+                node
+                for node in nodes
                 if node.name.startswith(f"/{block}")
-                and fix_node_name(node.name).endswith(f"{suffix}_MatMul") # needs to be fixed because some places use to_out.0
+                and fix_node_name(node.name).endswith(
+                    f"{suffix}_MatMul"
+                )  # needs to be fixed because some places use to_out.0
             ]
 
         if len(matches) == 0:
@@ -145,7 +158,6 @@ def kernel_slice(x: int, y: int, shape: Tuple[int, int, int, int]) -> Tuple[int,
         min(x, shape[2] - 1),
         min(y, shape[3] - 1),
     )
-
 
 
 def blend_loras(
@@ -389,7 +401,7 @@ def blend_loras(
         "updating %s of %s initializers, %s missed",
         len(blended.keys()),
         len(base_model.graph.initializer),
-        len(nodes)
+        len(nodes),
     )
 
     fixed_initializer_names = [
@@ -492,12 +504,22 @@ def blend_loras(
             )
 
             t_weights = weights.transpose()
-            if weights.shape != onnx_weights.shape and t_weights.shape != onnx_weights.shape:
-                logger.warning("weight shapes do not match for %s: %s vs %s", matmul_key, weights.shape, onnx_weights.shape)
+            if (
+                weights.shape != onnx_weights.shape
+                and t_weights.shape != onnx_weights.shape
+            ):
+                logger.warning(
+                    "weight shapes do not match for %s: %s vs %s",
+                    matmul_key,
+                    weights.shape,
+                    onnx_weights.shape,
+                )
                 t_weights = interp_to_match(weights, onnx_weights).transpose()
 
             blended = onnx_weights + t_weights
-            logger.debug("blended weight shape: %s, %s", blended.shape, onnx_weights.dtype)
+            logger.debug(
+                "blended weight shape: %s, %s", blended.shape, onnx_weights.dtype
+            )
 
             # replace the original initializer
             updated_node = numpy_helper.from_array(
@@ -525,16 +547,20 @@ def blend_loras(
     return base_model
 
 
-from scipy import interpolate
-
 def interp_to_match(ref: np.ndarray, resize: np.ndarray) -> np.ndarray:
     res_x = np.linspace(0, 1, resize.shape[0])
     res_y = np.linspace(0, 1, resize.shape[1])
     ref_x = np.linspace(0, 1, ref.shape[0])
     ref_y = np.linspace(0, 1, ref.shape[1])
-    logger.debug("dims: %s, %s, %s, %s", resize.shape[0], resize.shape[1], ref.shape[0], ref.shape[1])
+    logger.debug(
+        "dims: %s, %s, %s, %s",
+        resize.shape[0],
+        resize.shape[1],
+        ref.shape[0],
+        ref.shape[1],
+    )
 
-    f = interpolate.RegularGridInterpolator((ref_x, ref_y), ref, method='linear')
+    f = interpolate.RegularGridInterpolator((ref_x, ref_y), ref, method="linear")
     xg, yg = np.meshgrid(res_x, res_y)
     output = f((xg, yg))
     logger.debug("weights after interpolation: %s", output.shape)
