@@ -166,6 +166,7 @@ def blend_loras(
     loras: List[Tuple[str, float]],
     model_type: Literal["text_encoder", "unet"],
     model_index: Optional[int] = None,
+    xl: Optional[bool] = False,
 ):
     # always load to CPU for blending
     device = torch.device("cpu")
@@ -394,14 +395,14 @@ def blend_loras(
                     blended[base_key] = np_weights
 
     # rewrite node names for XL
-    nodes = list(base_model.graph.node)
-    blended = fix_xl_names(blended, nodes)
+    if xl:
+        nodes = list(base_model.graph.node)
+        blended = fix_xl_names(blended, nodes)
 
     logger.trace(
-        "updating %s of %s initializers, %s missed",
+        "updating %s of %s initializers",
         len(blended.keys()),
         len(base_model.graph.initializer),
-        len(nodes),
     )
 
     fixed_initializer_names = [

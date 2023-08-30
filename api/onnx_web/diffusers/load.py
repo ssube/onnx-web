@@ -247,6 +247,7 @@ def load_pipeline(
                 list(zip(lora_models, lora_weights)),
                 "text_encoder",
                 1 if params.is_xl() else None,
+                params.is_xl(),
             )
             (text_encoder, text_encoder_data) = buffer_external_data_tensors(
                 text_encoder
@@ -284,6 +285,7 @@ def load_pipeline(
                     list(zip(lora_models, lora_weights)),
                     "text_encoder",
                     2,
+                    params.is_xl()
                 )
                 (text_encoder2, text_encoder2_data) = buffer_external_data_tensors(
                     text_encoder2
@@ -311,6 +313,7 @@ def load_pipeline(
                 unet,
                 list(zip(lora_models, lora_weights)),
                 "unet",
+                xl=params.is_xl(),
             )
             (unet_model, unet_data) = buffer_external_data_tensors(blended_unet)
             unet_names, unet_values = zip(*unet_data)
