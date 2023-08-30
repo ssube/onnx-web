@@ -29,12 +29,14 @@ class BlendImg2ImgStage(BaseStage):
         strength: float,
         callback: Optional[ProgressCallback] = None,
         stage_source: Optional[Image.Image] = None,
+        prompt_index: Optional[int] = None,
         **kwargs,
     ) -> List[Image.Image]:
         params = params.with_args(**kwargs)
 
-        # highres hax
-        params = params.with_args(prompt=slice_prompt(params.prompt, 1))
+        # multi-stage prompting
+        if prompt_index is not None:
+            params = params.with_args(prompt=slice_prompt(params.prompt, prompt_index))
 
         logger.info(
             "blending image using img2img, %s steps: %s", params.steps, params.prompt

@@ -16,6 +16,7 @@ def stage_highres(
     highres: HighresParams,
     upscale: UpscaleParams,
     chain: Optional[ChainPipeline] = None,
+    prompt_index: Optional[int] = None,
 ) -> ChainPipeline:
     logger.info("staging highres pipeline at %s", highres.scale)
 
@@ -30,7 +31,7 @@ def stage_highres(
         logger.debug("no highres iterations, skipping")
         return chain
 
-    for _i in range(highres.iterations):
+    for i in range(highres.iterations):
         if highres.method == "upscale":
             logger.debug("using upscaling pipeline for highres")
             stage_upscale_correction(
@@ -58,6 +59,7 @@ def stage_highres(
             BlendImg2ImgStage(),
             stage,
             overlap=params.overlap,
+            prompt_index=prompt_index + i,
             strength=highres.strength,
         )
 

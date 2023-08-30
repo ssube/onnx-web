@@ -56,6 +56,7 @@ def run_txt2img_pipeline(
             tile_size=tile_size,
         ),
         size=size,
+        prompt_index=0,
         overlap=params.overlap,
     )
 
@@ -66,8 +67,8 @@ def run_txt2img_pipeline(
         stage_upscale_correction(
             stage,
             params,
-            upscale=first_upscale,
             chain=chain,
+            upscale=first_upscale,
         )
 
     # apply highres
@@ -77,14 +78,15 @@ def run_txt2img_pipeline(
         highres,
         upscale,
         chain=chain,
+        prompt_index=1,
     )
 
     # apply upscaling and correction, after highres
     stage_upscale_correction(
         stage,
         params,
-        upscale=after_upscale,
         chain=chain,
+        upscale=after_upscale,
     )
 
     # run and save
@@ -141,6 +143,7 @@ def run_img2img_pipeline(
     chain.stage(
         BlendImg2ImgStage(),
         stage,
+        prompt_index=0,
         strength=strength,
         overlap=params.overlap,
     )
@@ -170,6 +173,7 @@ def run_img2img_pipeline(
         highres,
         upscale,
         chain=chain,
+        prompt_index=1,
     )
 
     # apply upscaling and correction, after highres
@@ -328,6 +332,7 @@ def run_inpaint_pipeline(
         mask_filter=mask_filter,
         noise_source=noise_source,
         overlap=params.overlap,
+        prompt_index=0,
     )
 
     # apply upscaling and correction, before highres
@@ -347,6 +352,7 @@ def run_inpaint_pipeline(
         highres,
         upscale,
         chain=chain,
+        prompt_index=1,
     )
 
     # apply upscaling and correction
@@ -422,6 +428,7 @@ def run_upscale_pipeline(
         highres,
         upscale,
         chain=chain,
+        prompt_index=0,
     )
 
     # apply upscaling and correction, after highres

@@ -36,13 +36,15 @@ class SourceTxt2ImgStage(BaseStage):
         size: Size,
         callback: Optional[ProgressCallback] = None,
         latents: Optional[np.ndarray] = None,
+        prompt_index: Optional[int] = None,
         **kwargs,
     ) -> Image.Image:
         params = params.with_args(**kwargs)
         size = size.with_args(**kwargs)
 
-        # highres hax
-        params = params.with_args(prompt=slice_prompt(params.prompt, 0))
+        # multi-stage prompting
+        if prompt_index is not None:
+            params = params.with_args(prompt=slice_prompt(params.prompt, prompt_index))
 
         logger.info(
             "generating image using txt2img, %s steps: %s", params.steps, params.prompt
