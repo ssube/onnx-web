@@ -5,6 +5,7 @@ from typing import Any, List, Optional, Tuple
 from onnx import load_model
 from optimum.onnxruntime import (
     ORTStableDiffusionXLImg2ImgPipeline,
+    ORTStableDiffusionXLInpaintPipeline,
     ORTStableDiffusionXLPipeline,
 )
 from optimum.onnxruntime.modeling_diffusion import ORTModelTextEncoder, ORTModelUnet
@@ -55,6 +56,7 @@ available_pipelines = {
     "img2img": OnnxStableDiffusionImg2ImgPipeline,
     "img2img-sdxl": ORTStableDiffusionXLImg2ImgPipeline,
     "inpaint": OnnxStableDiffusionInpaintPipeline,
+    "inpaint-sdxl": ORTStableDiffusionXLInpaintPipeline,
     "lpw": OnnxStableDiffusionLongPromptWeightingPipeline,
     "panorama": OnnxStableDiffusionPanoramaPipeline,
     "pix2pix": OnnxStableDiffusionInstructPix2PixPipeline,
