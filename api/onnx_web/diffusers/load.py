@@ -286,7 +286,7 @@ def load_pipeline(
                     list(zip(lora_models, lora_weights)),
                     "text_encoder",
                     2,
-                    params.is_xl()
+                    params.is_xl(),
                 )
                 (text_encoder_2, text_encoder_2_data) = buffer_external_data_tensors(
                     text_encoder_2
@@ -415,7 +415,9 @@ def load_pipeline(
                 pipe.text_encoder_2.session == components["text_encoder_2_session"],
                 type(pipe.text_encoder_2),
             )
-            pipe.text_encoder_2 = ORTModelTextEncoder(text_encoder_2_session, text_encoder_2)
+            pipe.text_encoder_2 = ORTModelTextEncoder(
+                text_encoder_2_session, text_encoder_2
+            )
 
         if "unet_session" in components:
             logger.info(
