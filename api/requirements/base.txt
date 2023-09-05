@@ -15,7 +15,7 @@ omegaconf==2.3.0
 onnx==1.13.0
 # onnxruntime has many platform-specific packages
 optimum==1.12.0
-safetensors==0.2.8
+safetensors==0.3.1
 timm==0.6.13
 transformers==4.32.0
 
