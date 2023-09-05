@@ -28,7 +28,7 @@ class SourceTxt2ImgStage(BaseStage):
         self,
         worker: WorkerContext,
         server: ServerContext,
-        _stage: StageParams,
+        stage: StageParams,
         params: ImageParams,
         _source: Image.Image,
         *,
@@ -59,7 +59,10 @@ class SourceTxt2ImgStage(BaseStage):
             params
         )
 
-        tile_size = params.tiles
+        if params.is_xl():
+            tile_size = max(stage.tile_size, params.tiles)
+        else:
+            tile_size = params.tiles
 
         # this works for panorama as well, because tile_size is already max(tile_size, *size)
         latent_size = size.min(tile_size, tile_size)
