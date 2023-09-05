@@ -3,19 +3,21 @@ numpy==1.23.5
 protobuf==3.20.3
 
 ### SD packages ###
-accelerate==0.16.0
+accelerate==0.22.0
 coloredlogs==15.0.1
 controlnet_aux==0.0.2
-diffusers==0.15.1
-imwatermark
+datasets==2.14.3
+diffusers==0.20.0
+huggingface-hub==0.16.4
+invisible-watermark==0.2.0
 mediapipe==0.9.2.1
 omegaconf==2.3.0
 onnx==1.13.0
 # onnxruntime has many platform-specific packages
-optimum
+optimum==1.12.0
 safetensors==0.2.8
 timm==0.6.13
-transformers==4.26.1
+transformers==4.32.0
 
 #### Upscaling and face correction
 basicsr==1.4.2
