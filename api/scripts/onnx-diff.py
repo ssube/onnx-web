@@ -62,6 +62,18 @@ def diff_models(ref_model: ModelProto, cmp_model: ModelProto):
 
   if diffs > 0:
     logger.warning("models have %s differences", diffs)
+
+    ref_init_names = set([init.name for init in ref_model.graph.initializer])
+    cmp_init_names = set([init.name for init in cmp_model.graph.initializer])
+    ref_node_names = set([node.name for node in ref_model.graph.node])
+    cmp_node_names = set([node.name for node in cmp_model.graph.node])
+
+    logger.info("different names: %s, %s, %s, %s",
+                ref_init_names.difference(cmp_init_names),
+                cmp_init_names.difference(ref_init_names),
+                ref_node_names.difference(cmp_node_names),
+                cmp_node_names.difference(ref_node_names)
+                )
   else:
     logger.info("models have no detectable differences")
 
