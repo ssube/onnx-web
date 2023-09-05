@@ -24,7 +24,7 @@ import torch.nn as nn
 import torch.utils.checkpoint
 from diffusers.configuration_utils import ConfigMixin, register_to_config
 from diffusers.loaders import UNet2DConditionLoadersMixin
-from diffusers.models.cross_attention import AttnProcessor
+from diffusers.models.attention_processor import AttnProcessor
 from diffusers.models.embeddings import (
     GaussianFourierProjection,
     TimestepEmbedding,
