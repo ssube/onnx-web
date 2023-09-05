@@ -3,9 +3,8 @@ from os import path
 from typing import Any, List, Optional, Tuple
 
 from onnx import load_model
-from optimum.onnxruntime import (
+from optimum.onnxruntime import (  # ORTStableDiffusionXLInpaintPipeline,
     ORTStableDiffusionXLImg2ImgPipeline,
-    # ORTStableDiffusionXLInpaintPipeline,
     ORTStableDiffusionXLPipeline,
 )
 from optimum.onnxruntime.modeling_diffusion import ORTModelTextEncoder, ORTModelUnet
