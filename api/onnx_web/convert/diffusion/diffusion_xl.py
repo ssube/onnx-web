@@ -3,10 +3,8 @@ from os import path
 from typing import Dict, Optional, Tuple
 
 import torch
+from diffusers import StableDiffusionXLPipeline
 from optimum.exporters.onnx import main_export
-from optimum.pipelines.diffusers.pipeline_stable_diffusion_xl import (
-    StableDiffusionXLPipeline,
-)
 
 from ..utils import ConversionContext
 
