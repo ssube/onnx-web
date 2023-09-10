@@ -188,6 +188,7 @@ export const I18N_STRINGS_DE = {
         'inpaint-sdxl': '',
         'lpw': '',
         'panorama': '',
+        'panorama-sdxl': '',
         'pix2pix': '',
         'txt2img': '',
         'txt2img-sdxl': '',

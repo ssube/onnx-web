@@ -259,7 +259,7 @@ class ImageParams:
 
         # otherwise, check for additional allowed pipelines
         if group == "img2img":
-            if pipeline in ["controlnet", "img2img-sdxl", "lpw", "panorama", "pix2pix"]:
+            if pipeline in ["controlnet", "img2img-sdxl", "lpw", "panorama", "panorama-sdxl", "pix2pix"]:
                 return pipeline
             elif pipeline == "txt2img-sdxl":
                 return "img2img-sdxl"
@@ -267,7 +267,7 @@ class ImageParams:
             if pipeline in ["controlnet", "lpw", "panorama"]:
                 return pipeline
         elif group == "txt2img":
-            if pipeline in ["lpw", "panorama", "txt2img-sdxl"]:
+            if pipeline in ["lpw", "panorama", "panorama-sdxl", "txt2img-sdxl"]:
                 return pipeline
 
         logger.debug("pipeline %s is not valid for %s", pipeline, group)
@@ -280,7 +280,7 @@ class ImageParams:
         return self.pipeline == "lpw"
 
     def is_panorama(self):
-        return self.pipeline == "panorama"
+        return self.pipeline in ["panorama", "panorama-sdxl"]
 
     def is_pix2pix(self):
         return self.pipeline == "pix2pix"
