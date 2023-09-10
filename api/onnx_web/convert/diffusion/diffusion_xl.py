@@ -3,8 +3,10 @@ from os import path
 from typing import Dict, Optional, Tuple
 
 import torch
-from optimum.pipelines.diffusers.pipeline_stable_diffusion_xl import StableDiffusionXLPipeline
 from optimum.exporters.onnx import main_export
+from optimum.pipelines.diffusers.pipeline_stable_diffusion_xl import (
+    StableDiffusionXLPipeline,
+)
 
 from ..utils import ConversionContext
 
@@ -51,7 +53,9 @@ def convert_diffusion_diffusers_xl(
     temp_path = path.join(conversion.cache_path, f"{name}-torch")
 
     if format == "safetensors":
-        pipeline = StableDiffusionXLPipeline.from_single_file(source, use_safetensors=True)
+        pipeline = StableDiffusionXLPipeline.from_single_file(
+            source, use_safetensors=True
+        )
     else:
         pipeline = StableDiffusionXLPipeline.from_pretrained(source)
 

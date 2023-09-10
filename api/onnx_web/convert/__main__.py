@@ -11,13 +11,12 @@ from jsonschema import ValidationError, validate
 from onnx import load_model, save_model
 from transformers import CLIPTokenizer
 
-from .diffusion.diffusion_xl import convert_diffusion_diffusers_xl
-
 from ..constants import ONNX_MODEL, ONNX_WEIGHTS
 from ..utils import load_config
 from .correction.gfpgan import convert_correction_gfpgan
 from .diffusion.control import convert_diffusion_control
 from .diffusion.diffusion import convert_diffusion_diffusers
+from .diffusion.diffusion_xl import convert_diffusion_diffusers_xl
 from .diffusion.lora import blend_loras
 from .diffusion.textual_inversion import blend_textual_inversions
 from .upscaling.bsrgan import convert_upscaling_bsrgan
