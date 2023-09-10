@@ -39,7 +39,11 @@ class VAEWrapper(object):
         self.tile_overlap_factor = overlap
 
     def __call__(self, latent_sample=None, sample=None, **kwargs):
-        model = self.wrapped.model if hasattr(self.wrapped, "model") else self.wrapped.session
+        model = (
+            self.wrapped.model
+            if hasattr(self.wrapped, "model")
+            else self.wrapped.session
+        )
 
         # set timestep dtype to input type
         sample_dtype = next(

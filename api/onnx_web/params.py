@@ -259,7 +259,14 @@ class ImageParams:
 
         # otherwise, check for additional allowed pipelines
         if group == "img2img":
-            if pipeline in ["controlnet", "img2img-sdxl", "lpw", "panorama", "panorama-sdxl", "pix2pix"]:
+            if pipeline in [
+                "controlnet",
+                "img2img-sdxl",
+                "lpw",
+                "panorama",
+                "panorama-sdxl",
+                "pix2pix",
+            ]:
                 return pipeline
             elif pipeline == "txt2img-sdxl":
                 return "img2img-sdxl"
