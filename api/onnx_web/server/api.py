@@ -1,6 +1,7 @@
 from io import BytesIO
 from logging import getLogger
 from os import path
+from typing import Any, Dict
 
 from flask import Flask, jsonify, make_response, request, url_for
 from jsonschema import validate
@@ -368,7 +369,7 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
 
 
 def chain(server: ServerContext, pool: DevicePoolExecutor):
-    if request.is_json():
+    if request.is_json:
         logger.debug("chain pipeline request with JSON body")
         data = request.get_json()
     else:
@@ -396,8 +397,12 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
     pipeline = ChainPipeline()
     for stage_data in data.get("stages", []):
         stage_class = CHAIN_STAGES[stage_data.get("type")]
-        kwargs = stage_data.get("params", {})
+        kwargs: Dict[str, Any] = stage_data.get("params", {})
         logger.info("request stage: %s, %s", stage_class.__name__, kwargs)
+
+        if "control" in kwargs:
+            logger.warning("TODO: resolve controlnet model")
+            kwargs.pop("control")
 
         stage = StageParams(
             stage_data.get("name", stage_class.__name__),
@@ -443,13 +448,12 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
     logger.info("running chain pipeline with %s stages", len(pipeline.stages))
 
     # build and run chain pipeline
-    empty_source = Image.new("RGB", (size.width, size.height))
     pool.submit(
         job_name,
         pipeline,
         server,
         params,
-        empty_source,
+        [],
         output=output[0],
         size=size,
         needs_device=device,

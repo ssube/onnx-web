@@ -46,8 +46,10 @@ $defs:
           patternProperties:
             "^[-_A-Za-z]+$":
               oneOf:
+                - type: boolean
                 - type: number
                 - type: string
+                - type: "null"
 
   request_chain:
     type: array
