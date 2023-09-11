@@ -48,5 +48,11 @@ export function buildPipelineForTxt2ImgGrid(grid: PipelineGrid, model: ModelPara
     },
   });
 
+  pipeline.stages.push({
+    name: 'save',
+    type: 'persist-disk',
+    params: {},
+  });
+
   return pipeline;
 }

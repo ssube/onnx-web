@@ -183,8 +183,16 @@ export interface GridStage {
   };
 }
 
+export interface OutputStage {
+  name: string;
+  type: 'persist-disk';
+  params: {
+    /* none */
+  };
+}
+
 export interface ChainPipeline {
-  stages: Array<Txt2ImgStage | Img2ImgStage | GridStage>;
+  stages: Array<Txt2ImgStage | Img2ImgStage | GridStage | OutputStage>;
 }
 
 /**

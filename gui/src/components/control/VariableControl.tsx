@@ -89,7 +89,7 @@ export const EXPR_NUMBER_RANGE = /^([0-9]+)-([0-9]+)$/;
 export function expandRanges(range: string): Array<string | number> {
   if (EXPR_STRICT_NUMBER.test(range)) {
     // entirely numeric, return without parsing
-    return [range];
+    return [parseInt(range, 10)];
   }
 
   if (EXPR_NUMBER_RANGE.test(range)) {
