@@ -343,6 +343,9 @@ def process_tile_order(
     filters: List[TileCallback],
     **kwargs,
 ) -> Image.Image:
+    """
+    TODO: needs to handle more than one image
+    """
     if order == TileOrder.grid:
         logger.debug("using grid tile order with tile size: %s", tile)
         return process_tile_grid(source, tile, scale, filters, **kwargs)

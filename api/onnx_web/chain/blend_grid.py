@@ -47,4 +47,4 @@ class BlendGridStage(BaseStage):
             n = order[i]
             output.paste(sources[n], (x * size[0], y * size[1]))
 
-        return [output]
+        return [*sources, output]

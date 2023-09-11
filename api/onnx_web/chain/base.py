@@ -152,6 +152,8 @@ class ChainPipeline:
                         tile,
                     )
 
+                    extra_tiles = []
+
                     def stage_tile(
                         source_tile: Image.Image,
                         tile_mask: Image.Image,
@@ -169,12 +171,19 @@ class ChainPipeline:
                                     callback=callback,
                                     dims=dims,
                                     **kwargs,
-                                )[0]
+                                )
+
+                                if len(output_tile) > 1:
+                                    while len(extra_tiles) < len(output_tile):
+                                        extra_tiles.append([])
+
+                                    for tile, layer in zip(output_tile, extra_tiles):
+                                        layer.append((tile, dims))
 
                                 if is_debug():
-                                    save_image(server, "last-tile.png", output_tile)
+                                    save_image(server, "last-tile.png", output_tile[0])
 
-                                return output_tile
+                                return output_tile[0]
                             except Exception:
                                 logger.exception(
                                     "error while running stage pipeline for tile, retry %s of 3",
@@ -194,7 +203,16 @@ class ChainPipeline:
                         [stage_tile],
                         **kwargs,
                     )
+
                     stage_outputs.append(output)
+
+                    if len(extra_tiles) > 1:
+                        for layer in extra_tiles:
+                            layer_output = Image.new("RGB", output.size)
+                            for tile, dims in layer:
+                                layer_output.paste(tile, (dims[0], dims[1]))
+
+                            stage_outputs.append(layer_output)
 
                 stage_sources = stage_outputs
             else:
@@ -208,6 +226,7 @@ class ChainPipeline:
                             per_stage_params,
                             stage_sources,
                             callback=callback,
+                            dims=(0, 0, tile),
                             **kwargs,
                         )
                         # doing this on the same line as stage_pipe.run can leave sources as None, which the pipeline
