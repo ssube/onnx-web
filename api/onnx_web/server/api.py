@@ -395,6 +395,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
         kwargs: Dict[str, Any] = stage_data.get("params", {})
         logger.info("request stage: %s, %s", stage_class.__name__, kwargs)
 
+        # TODO: combine base params with stage params
         _device, params, size = pipeline_from_request(server, data=kwargs)
         replace_wildcards(params, get_wildcard_data())
 
