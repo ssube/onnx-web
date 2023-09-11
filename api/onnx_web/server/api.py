@@ -455,7 +455,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
         server,
         params,
         [],
-        output=output[0],
+        output=output,
         size=size,
         needs_device=device,
     )
