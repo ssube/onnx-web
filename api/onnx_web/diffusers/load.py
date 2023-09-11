@@ -24,6 +24,7 @@ from .patches.vae import VAEWrapper
 from .pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
 from .pipelines.lpw import OnnxStableDiffusionLongPromptWeightingPipeline
 from .pipelines.panorama import OnnxStableDiffusionPanoramaPipeline
+from .pipelines.panorama_xl import ORTStableDiffusionXLPanoramaPipeline
 from .pipelines.pix2pix import OnnxStableDiffusionInstructPix2PixPipeline
 from .version_safe_diffusers import (
     DDIMScheduler,
@@ -58,6 +59,7 @@ available_pipelines = {
     # "inpaint-sdxl": ORTStableDiffusionXLInpaintPipeline,
     "lpw": OnnxStableDiffusionLongPromptWeightingPipeline,
     "panorama": OnnxStableDiffusionPanoramaPipeline,
+    "panorama-sdxl": ORTStableDiffusionXLPanoramaPipeline,
     "pix2pix": OnnxStableDiffusionInstructPix2PixPipeline,
     "txt2img-sdxl": ORTStableDiffusionXLPipeline,
     "txt2img": OnnxStableDiffusionPipeline,
@@ -399,7 +401,6 @@ def load_pipeline(
         )
 
         # make sure XL models are actually being used
-        # TODO: why is this needed?
         if "text_encoder_session" in components:
             logger.info(
                 "text encoder matches: %s, %s",
@@ -424,23 +425,23 @@ def load_pipeline(
                 pipe.unet.session == components["unet_session"],
                 type(pipe.unet),
             )
+            pipe.unet = None
+            run_gc([device])
             pipe.unet = ORTModelUnet(unet_session, unet_model)
 
         if not server.show_progress:
             pipe.set_progress_bar_config(disable=True)
 
         optimize_pipeline(server, pipe)
-
-        if not params.is_xl():
-            patch_pipeline(server, pipe, pipeline, pipeline_class, params)
+        patch_pipeline(server, pipe, pipeline_class, params)
 
         server.cache.set(ModelTypes.diffusion, pipe_key, pipe)
         server.cache.set(ModelTypes.scheduler, scheduler_key, components["scheduler"])
 
-    if not params.is_xl() and hasattr(pipe, "vae_decoder"):
+    if hasattr(pipe, "vae_decoder"):
         pipe.vae_decoder.set_tiled(tiled=params.tiled_vae)
 
-    if not params.is_xl() and hasattr(pipe, "vae_encoder"):
+    if hasattr(pipe, "vae_encoder"):
         pipe.vae_encoder.set_tiled(tiled=params.tiled_vae)
 
     # update panorama params
@@ -514,17 +515,18 @@ def optimize_pipeline(
 def patch_pipeline(
     server: ServerContext,
     pipe: StableDiffusionPipeline,
-    pipe_type: str,
     pipeline: Any,
     params: ImageParams,
 ) -> None:
     logger.debug("patching SD pipeline")
 
-    if pipe_type != "lpw":
+    if params.is_lpw():
         pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
 
-    original_unet = pipe.unet
-    pipe.unet = UNetWrapper(server, original_unet)
+    if not params.is_xl():
+        original_unet = pipe.unet
+        pipe.unet = UNetWrapper(server, original_unet)
+        logger.debug("patched UNet with wrapper")
 
     if hasattr(pipe, "vae_decoder"):
         original_decoder = pipe.vae_decoder
@@ -535,6 +537,9 @@ def patch_pipeline(
             window=params.tiles,
             overlap=params.overlap,
         )
+        logger.debug("patched VAE decoder with wrapper")
+
+    if hasattr(pipe, "vae_encoder"):
         original_encoder = pipe.vae_encoder
         pipe.vae_encoder = VAEWrapper(
             server,
@@ -543,7 +548,7 @@ def patch_pipeline(
             window=params.tiles,
             overlap=params.overlap,
         )
-    elif hasattr(pipe, "vae"):
-        pass  # TODO: current wrapper does not work with upscaling VAE
-    else:
-        logger.debug("no VAE found to patch")
+        logger.debug("patched VAE encoder with wrapper")
+
+    if hasattr(pipe, "vae"):
+        logger.warning("not patching single VAE, tiled VAE may not work")

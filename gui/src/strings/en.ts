@@ -242,6 +242,7 @@ export const I18N_STRINGS_EN = {
         'inpaint-sdxl': 'SDXL Inpaint',
         'lpw': 'Long Prompt Weighting',
         'panorama': 'Panorama',
+        'panorama-sdxl': 'SDXL Panorama',
         'pix2pix': 'Instruct Pix2Pix',
         'txt2img': 'Txt2Img',
         'txt2img-sdxl': 'SDXL Txt2Img',
