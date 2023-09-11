@@ -37,8 +37,10 @@ class BlendGridStage(BaseStage):
         output = Image.new("RGB", (size[0] * width, size[1] * height))
 
         # TODO: labels
-        order = order or range(len(sources))
-        for i in len(order):
+        if order is None:
+            order = range(len(sources))
+
+        for i in range(len(order)):
             x = i % width
             y = i // width
 
