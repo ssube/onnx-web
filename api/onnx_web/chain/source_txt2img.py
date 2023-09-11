@@ -32,7 +32,7 @@ class SourceTxt2ImgStage(BaseStage):
         params: ImageParams,
         sources: List[Image.Image],
         *,
-        dims: Tuple[int, int, int],
+        dims: Tuple[int, int, int] = None,
         size: Size,
         callback: Optional[ProgressCallback] = None,
         latents: Optional[np.ndarray] = None,

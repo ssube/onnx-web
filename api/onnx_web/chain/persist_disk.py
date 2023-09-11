@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import List
+from typing import List, Optional
 
 from PIL import Image
 
@@ -21,13 +21,12 @@ class PersistDiskStage(BaseStage):
         params: ImageParams,
         sources: List[Image.Image],
         *,
-        outputs: List[str],
-        stage_source: Image.Image,
+        output: List[str],
+        stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> List[Image.Image]:
-        for source, output in zip(sources, outputs):
-            # TODO: append index to output name
-            dest = save_image(server, output, source, params=params)
+        for source, name in zip(sources, output):
+            dest = save_image(server, name, source, params=params)
             logger.info("saved image to %s", dest)
 
         return sources

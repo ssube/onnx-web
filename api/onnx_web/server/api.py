@@ -387,7 +387,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
     validate(data, schema)
 
     # get defaults from the regular parameters
-    device, _params, _size = pipeline_from_request(server)
+    device, _params, _size = pipeline_from_request(server, data=data)
     pipeline = ChainPipeline()
     for stage_data in data.get("stages", []):
         stage_class = CHAIN_STAGES[stage_data.get("type")]
