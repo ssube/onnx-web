@@ -21,11 +21,11 @@ class PersistDiskStage(BaseStage):
         params: ImageParams,
         sources: List[Image.Image],
         *,
-        output: str,
+        outputs: List[str],
         stage_source: Image.Image,
         **kwargs,
     ) -> List[Image.Image]:
-        for source in sources:
+        for source, output in zip(sources, outputs):
             # TODO: append index to output name
             dest = save_image(server, output, source, params=params)
             logger.info("saved image to %s", dest)
