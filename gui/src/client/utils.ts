@@ -30,6 +30,8 @@ export function buildPipelineForTxt2ImgGrid(grid: PipelineGrid, model: ModelPara
           ...model,
           [grid.columns.parameter]: column,
           [grid.rows.parameter]: row,
+          // eslint-disable-next-line camelcase
+          tile_size: 8192,
         },
       });
 
@@ -45,13 +47,18 @@ export function buildPipelineForTxt2ImgGrid(grid: PipelineGrid, model: ModelPara
       ...model,
       height: grid.rows.values.length,
       width: grid.columns.values.length,
+      // eslint-disable-next-line camelcase
+      tile_size: 8192,
     },
   });
 
   pipeline.stages.push({
     name: 'save',
     type: 'persist-disk',
-    params: {},
+    params: {
+      // eslint-disable-next-line camelcase
+      tile_size: 8192,
+    },
   });
 
   return pipeline;

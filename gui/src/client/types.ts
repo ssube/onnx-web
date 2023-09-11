@@ -165,7 +165,9 @@ export interface HighresParams {
 export interface Txt2ImgStage {
   name: string;
   type: 'source-txt2img';
-  params: Txt2ImgParams;
+  params: Txt2ImgParams & {
+    tile_size: number;
+  };
 }
 
 export interface Img2ImgStage {
@@ -180,6 +182,7 @@ export interface GridStage {
   params: {
     height: number;
     width: number;
+    tile_size: number;
   };
 }
 
@@ -187,7 +190,7 @@ export interface OutputStage {
   name: string;
   type: 'persist-disk';
   params: {
-    /* none */
+    tile_size: number;
   };
 }
 
