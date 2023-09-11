@@ -1,7 +1,8 @@
+import { doesExist } from '@apextoaster/js-utils';
 import { ChainPipeline, HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from './types.js';
 
 export interface PipelineVariable {
-  parameter: 'prompt' | 'cfg' | 'seed' | 'steps';
+  parameter: 'prompt' | 'cfg' | 'seed' | 'steps' | 'eta' | 'scheduler' | 'token';
   input: string;
   values: Array<number | string>;
 }
