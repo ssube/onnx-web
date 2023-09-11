@@ -13,6 +13,31 @@ export interface PipelineGrid {
   rows: PipelineVariable;
 }
 
+export function replacePromptTokens(grid: PipelineGrid, params: Txt2ImgParams, columnValue: string | number, rowValue: string | number): {prompt: string} {
+  const result = {
+    negativePrompt: params.negativePrompt,
+    prompt: params.prompt,
+  };
+
+  if (grid.columns.parameter === 'token') {
+    result.prompt = result.prompt.replace('__column__', columnValue.toString());
+
+    if (doesExist(result.negativePrompt)) {
+      result.negativePrompt = result.negativePrompt.replace('__column__', columnValue.toString());
+    }
+  }
+
+  if (grid.rows.parameter === 'token') {
+    result.prompt = result.prompt.replace('__row__', rowValue.toString());
+
+    if (doesExist(result.negativePrompt)) {
+      result.negativePrompt = result.negativePrompt.replace('__row__', rowValue.toString());
+    }
+  }
+
+  return result;
+}
+
 // eslint-disable-next-line max-params
 export function buildPipelineForTxt2ImgGrid(grid: PipelineGrid, model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): ChainPipeline {
   const pipeline: ChainPipeline = {
@@ -21,13 +46,16 @@ export function buildPipelineForTxt2ImgGrid(grid: PipelineGrid, model: ModelPara
 
   let i = 0;
 
-  for (const column of grid.columns.values) {
-    for (const row of grid.rows.values) {
+  for (const row of grid.rows.values) {
+    for (const column of grid.columns.values) {
+      const prompt = replacePromptTokens(grid, params, column, row);
+
       pipeline.stages.push({
         name: `cell-${i}`,
         type: 'source-txt2img',
         params: {
           ...params,
+          ...prompt,
           ...model,
           [grid.columns.parameter]: column,
           [grid.rows.parameter]: row,
