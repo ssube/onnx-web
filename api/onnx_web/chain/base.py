@@ -209,8 +209,8 @@ class ChainPipeline:
                     if len(extra_tiles) > 1:
                         for layer in extra_tiles:
                             layer_output = Image.new("RGB", output.size)
-                            for tile, dims in layer:
-                                layer_output.paste(tile, (dims[0], dims[1]))
+                            for layer_tile, dims in layer:
+                                layer_output.paste(layer_tile, (dims[0], dims[1]))
 
                             stage_outputs.append(layer_output)
 
