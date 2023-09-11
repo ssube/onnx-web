@@ -30,7 +30,7 @@ export function Txt2Img() {
 
     if (grid.enabled) {
       const chain = buildPipelineForTxt2ImgGrid(grid, model, params2, upscale, highres);
-      const image = await client.chain(chain);
+      const image = await client.chain(model, chain);
       pushHistory(image);
     } else {
       const { image, retry } = await client.txt2img(model, params2, upscale, highres);

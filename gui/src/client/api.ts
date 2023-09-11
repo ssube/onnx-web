@@ -431,9 +431,12 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
         }
       };
     },
-    async chain(chain: ChainPipeline): Promise<ImageResponse> {
+    async chain(model: ModelParams, chain: ChainPipeline): Promise<ImageResponse> {
       const url = makeApiUrl(root, 'chain');
-      const body = JSON.stringify(chain);
+      const body = JSON.stringify({
+        ...chain,
+        platform: model.platform,
+      });
 
       // eslint-disable-next-line no-return-await
       return await parseRequest(url, {

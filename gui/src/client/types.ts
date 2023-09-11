@@ -387,7 +387,7 @@ export interface ApiClient {
    */
   blend(model: ModelParams, params: BlendParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
 
-  chain(chain: ChainPipeline): Promise<ImageResponse>;
+  chain(model: ModelParams, chain: ChainPipeline): Promise<ImageResponse>;
 
   /**
    * Check whether job has finished and its output is ready.

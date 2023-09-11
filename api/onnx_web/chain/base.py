@@ -108,7 +108,6 @@ class ChainPipeline:
                 len(sources),
             )
         else:
-            sources = [None]
             logger.info("running pipeline without source images")
 
         stage_sources = sources

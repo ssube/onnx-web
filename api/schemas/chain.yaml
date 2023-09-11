@@ -60,5 +60,7 @@ type: object
 additionalProperties: False
 required: [stages]
 properties:
+  platform:
+    type: string
   stages:
     $ref: "#/$defs/request_chain"

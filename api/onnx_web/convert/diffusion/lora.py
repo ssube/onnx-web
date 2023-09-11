@@ -519,7 +519,7 @@ def blend_loras(
                 t_weights = interp_to_match(weights, onnx_weights).transpose()
 
             blended = onnx_weights + t_weights
-            logger.debug(
+            logger.trace(
                 "blended weight shape: %s, %s", blended.shape, onnx_weights.dtype
             )
 
