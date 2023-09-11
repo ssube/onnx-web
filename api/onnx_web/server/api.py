@@ -398,9 +398,14 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
         _device, params, size = pipeline_from_request(server, data=kwargs)
         replace_wildcards(params, get_wildcard_data())
 
+        if "model" in kwargs:
+            kwargs.pop("model")
+
         if "control" in kwargs:
             logger.warning("TODO: resolve controlnet model")
             kwargs.pop("control")
+
+        kwargs["params"] = params
 
         stage = StageParams(
             stage_data.get("name", stage_class.__name__),

@@ -36,8 +36,8 @@ logger = getLogger(__name__)
 
 def pipeline_from_request(
     server: ServerContext,
-    data: Dict[str, str] = None,
     default_pipeline: str = "txt2img",
+    data: Dict[str, str] = None,
 ) -> Tuple[DeviceParams, ImageParams, Size]:
     user = request.remote_addr
 

@@ -159,7 +159,7 @@ class ChainPipeline:
                                     worker,
                                     server,
                                     stage_params,
-                                    params,
+                                    kwargs["params"] if "params" in kwargs else params,
                                     [source_tile],
                                     tile_mask=tile_mask,
                                     callback=callback,
