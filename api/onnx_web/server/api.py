@@ -52,7 +52,6 @@ from .load import (
 from .params import (
     border_from_request,
     highres_from_request,
-    pipeline_from_json,
     pipeline_from_request,
     upscale_from_request,
 )

@@ -28,7 +28,12 @@ def is_debug() -> bool:
 
 
 def get_boolean(args: Any, key: str, default_value: bool) -> bool:
-    return args.get(key, str(default_value)).lower() in ("1", "t", "true", "y", "yes")
+    val = args.get(key, str(default_value))
+
+    if type(val) == bool:
+        return val
+
+    return val.lower() in ("1", "t", "true", "y", "yes")
 
 
 def get_and_clamp_float(
