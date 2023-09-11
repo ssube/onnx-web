@@ -27,6 +27,7 @@ export function buildPipelineForTxt2ImgGrid(grid: PipelineGrid, model: ModelPara
         type: 'source-txt2img',
         params: {
           ...params,
+          ...model,
           [grid.columns.parameter]: column,
           [grid.rows.parameter]: row,
         },
@@ -36,7 +37,16 @@ export function buildPipelineForTxt2ImgGrid(grid: PipelineGrid, model: ModelPara
     }
   }
 
-  // TODO: add final grid stage
+  pipeline.stages.push({
+    name: 'grid',
+    type: 'blend-grid',
+    params: {
+      ...params,
+      ...model,
+      height: grid.rows.values.length,
+      width: grid.columns.values.length,
+    },
+  });
 
   return pipeline;
 }

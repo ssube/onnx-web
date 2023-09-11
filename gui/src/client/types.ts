@@ -174,8 +174,17 @@ export interface Img2ImgStage {
   params: Img2ImgParams;
 }
 
+export interface GridStage {
+  name: string;
+  type: 'blend-grid';
+  params: {
+    height: number;
+    width: number;
+  };
+}
+
 export interface ChainPipeline {
-  stages: Array<Txt2ImgStage | Img2ImgStage>;
+  stages: Array<Txt2ImgStage | Img2ImgStage | GridStage>;
 }
 
 /**
