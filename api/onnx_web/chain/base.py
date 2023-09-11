@@ -123,6 +123,11 @@ class ChainPipeline:
                 kwargs.keys(),
             )
 
+            per_stage_params = params
+            if "params" in kwargs:
+                per_stage_params = kwargs["params"]
+                kwargs.pop("params")
+
             # the stage must be split and tiled if any image is larger than the selected/max tile size
             must_tile = any(
                 [
@@ -159,7 +164,7 @@ class ChainPipeline:
                                     worker,
                                     server,
                                     stage_params,
-                                    kwargs["params"] if "params" in kwargs else params,
+                                    per_stage_params,
                                     [source_tile],
                                     tile_mask=tile_mask,
                                     callback=callback,
@@ -201,7 +206,7 @@ class ChainPipeline:
                             worker,
                             server,
                             stage_params,
-                            params,
+                            per_stage_params,
                             stage_sources,
                             callback=callback,
                             **kwargs,
