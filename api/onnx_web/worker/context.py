@@ -36,6 +36,7 @@ class WorkerContext:
         progress: "Queue[ProgressCommand]",
         active_pid: "Value[int]",
         idle: "Value[bool]",
+        retries: int,
     ):
         self.job = None
         self.name = name
@@ -47,8 +48,8 @@ class WorkerContext:
         self.active_pid = active_pid
         self.last_progress = None
         self.idle = idle
+        self.retries = retries
         self.timeout = 1.0
-        self.retries = 3  # TODO: get from env
 
     def start(self, job: str) -> None:
         self.job = job

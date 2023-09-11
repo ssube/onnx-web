@@ -37,6 +37,7 @@ class ServerContext:
         memory_limit: Optional[int] = None,
         admin_token: Optional[str] = None,
         server_version: Optional[str] = DEFAULT_SERVER_VERSION,
+        worker_retries: Optional[int] = 3,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -56,6 +57,7 @@ class ServerContext:
         self.memory_limit = memory_limit
         self.admin_token = admin_token or token_urlsafe()
         self.server_version = server_version
+        self.worker_retries = worker_retries
 
         self.cache = ModelCache(self.cache_limit)
 
@@ -88,6 +90,7 @@ class ServerContext:
             server_version=environ.get(
                 "ONNX_WEB_SERVER_VERSION", DEFAULT_SERVER_VERSION
             ),
+            worker_retries=int(environ.get("ONNX_WEB_WORKER_RETRIES", 3)),
         )
 
     def torch_dtype(self):
