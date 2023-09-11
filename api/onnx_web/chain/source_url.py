@@ -29,11 +29,11 @@ class SourceURLStage(BaseStage):
         logger.info("loading image from URL source")
 
         if len(sources) > 0:
-            logger.warning(
-                "a source image was passed to a source stage, and will be discarded"
+            logger.info(
+                "source images were passed to a source stage, new images will be appended"
             )
 
-        outputs = []
+        outputs = list(sources)
         for url in source_urls:
             response = requests.get(url)
             output = Image.open(BytesIO(response.content))

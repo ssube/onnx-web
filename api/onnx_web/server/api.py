@@ -368,16 +368,21 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
 
 
 def chain(server: ServerContext, pool: DevicePoolExecutor):
-    logger.debug(
-        "chain pipeline request: %s, %s", request.form.keys(), request.files.keys()
-    )
-    body = request.form.get("chain") or request.files.get("chain")
-    if body is None:
-        return error_reply("chain pipeline must have a body")
+    if request.is_json():
+        logger.debug("chain pipeline request with JSON body")
+        data = request.get_json()
+    else:
+        logger.debug(
+            "chain pipeline request: %s, %s", request.form.keys(), request.files.keys()
+        )
 
-    data = load_config_str(body)
+        body = request.form.get("chain") or request.files.get("chain")
+        if body is None:
+            return error_reply("chain pipeline must have a body")
+
+        data = load_config_str(body)
+
     schema = load_config("./schemas/chain.yaml")
-
     logger.debug("validating chain request: %s against %s", data, schema)
     validate(data, schema)
 
@@ -513,61 +518,6 @@ def txt2txt(server: ServerContext, pool: DevicePoolExecutor):
     )
 
     return jsonify(json_params(output, params, size))
-
-
-def generate(server: ServerContext, pool: DevicePoolExecutor):
-    if not request.is_json():
-        return error_reply("generate endpoint requires JSON parameters")
-
-    # TODO: should this accept YAML as well?
-    data = request.get_json()
-    schema = load_config("./schemas/generate.yaml")
-
-    logger.debug("validating generate request: %s against %s", data, schema)
-    validate(data, schema)
-
-    jobs = []
-
-    if "txt2img" in data:
-        for job in data.get("txt2img"):
-            device, params, size = pipeline_from_json(server, job, "txt2img")
-            jobs.append((
-                f"generate-txt2img-{len(jobs)}",
-                run_txt2img_pipeline,
-                server,
-                params,
-                size,
-                make_output_name(server, "txt2img", params, size, offset=len(jobs)),
-                None,
-                None,
-                device,
-            ))
-
-    if "img2img" in data:
-        for job in data.get("img2img"):
-            device, params, size = pipeline_from_json(server, job, "img2img")
-            jobs.append((
-                f"generate-img2img-{len(jobs)}",
-                run_img2img_pipeline,
-                server,
-                params,
-                size,
-                make_output_name(server, "img2img", params, size, offset=len(jobs))
-                None,
-                None,
-                device,
-            ))
-
-    for job in jobs:
-        pool.submit(*job)
-
-    # TODO: collect results
-    # this is the hard part. once all of the jobs are done, the last job or some dedicated job
-    # needs to collect the previous outputs and put them on a grid. jobs write their own
-    # output to disk and do not return it, so that may need to read the images based on the
-    # output names assigned to each job. knowing when the jobs are done is the first problem.
-
-    # TODO: assemble grid
 
 
 def cancel(server: ServerContext, pool: DevicePoolExecutor):

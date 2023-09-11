@@ -20,7 +20,7 @@ class SourceS3Stage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        _sources: List[Image.Image],
+        sources: List[Image.Image],
         *,
         source_keys: List[str],
         bucket: str,
@@ -31,7 +31,12 @@ class SourceS3Stage(BaseStage):
         session = Session(profile_name=profile_name)
         s3 = session.client("s3", endpoint_url=endpoint_url)
 
-        outputs = []
+        if len(sources) > 0:
+            logger.info(
+                "source images were passed to a source stage, new images will be appended"
+            )
+
+        outputs = list(sources)
         for key in source_keys:
             try:
                 logger.info("loading image from s3://%s/%s", bucket, key)

@@ -28,11 +28,13 @@ class SourceNoiseStage(BaseStage):
         logger.info("generating image from noise source")
 
         if len(sources) > 0:
-            logger.warning(
-                "source images were passed to a noise stage and will be discarded"
+            logger.info(
+                "source images were passed to a source stage, new images will be appended"
             )
 
-        outputs = []
+        outputs = list(sources)
+
+        # TODO: looping over sources and ignoring params does not make much sense for a source stage
         for source in sources:
             output = noise_source(source, (size.width, size.height), (0, 0))
 

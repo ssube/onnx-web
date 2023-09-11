@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -30,7 +30,7 @@ class SourceTxt2ImgStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         params: ImageParams,
-        _source: Image.Image,
+        sources: List[Image.Image],
         *,
         dims: Tuple[int, int, int],
         size: Size,
@@ -50,9 +50,9 @@ class SourceTxt2ImgStage(BaseStage):
             "generating image using txt2img, %s steps: %s", params.steps, params.prompt
         )
 
-        if "stage_source" in kwargs:
-            logger.warning(
-                "a source image was passed to a txt2img stage, and will be discarded"
+        if len(sources):
+            logger.info(
+                "source images were passed to a source stage, new images will be appended"
             )
 
         prompt_pairs, loras, inversions, (prompt, negative_prompt) = parse_prompt(
@@ -123,4 +123,6 @@ class SourceTxt2ImgStage(BaseStage):
                 callback=callback,
             )
 
-        return result.images
+        output = list(sources)
+        output.extend(result.images)
+        return output
