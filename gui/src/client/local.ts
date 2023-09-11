@@ -39,6 +39,9 @@ export const LOCAL_CLIENT = {
   async outpaint(model, params, upscale) {
     throw new NoServerError();
   },
+  async chain(chain) {
+    throw new NoServerError();
+  },
   async noises() {
     throw new NoServerError();
   },

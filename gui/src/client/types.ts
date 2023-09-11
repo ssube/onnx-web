@@ -162,6 +162,22 @@ export interface HighresParams {
   highresStrength: number;
 }
 
+export interface Txt2ImgStage {
+  name: string;
+  type: 'source-txt2img';
+  params: Txt2ImgParams;
+}
+
+export interface Img2ImgStage {
+  name: string;
+  type: 'blend-img2img';
+  params: Img2ImgParams;
+}
+
+export interface ChainPipeline {
+  stages: Array<Txt2ImgStage | Img2ImgStage>;
+}
+
 /**
  * Output image data within the response.
  */
@@ -353,6 +369,8 @@ export interface ApiClient {
    * Start a blending pipeline.
    */
   blend(model: ModelParams, params: BlendParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
+
+  chain(chain: ChainPipeline): Promise<ImageResponse>;
 
   /**
    * Check whether job has finished and its output is ready.

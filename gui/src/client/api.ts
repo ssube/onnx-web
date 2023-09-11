@@ -7,6 +7,7 @@ import {
   ApiClient,
   BaseImgParams,
   BlendParams,
+  ChainPipeline,
   FilterResponse,
   HighresParams,
   ImageResponse,
@@ -429,6 +430,16 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
           upscale,
         }
       };
+    },
+    async chain(chain: ChainPipeline): Promise<ImageResponse> {
+      const url = makeApiUrl(root, 'chain');
+      const body = JSON.stringify(chain);
+
+      // eslint-disable-next-line no-return-await
+      return await parseRequest(url, {
+        body,
+        method: 'POST',
+      });
     },
     async ready(key: string): Promise<ReadyResponse> {
       const path = makeApiUrl(root, 'ready');
