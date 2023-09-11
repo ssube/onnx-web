@@ -74,7 +74,7 @@ export function VariableControl(props: VariableControlProps) {
   </Stack>;
 }
 
-export function rangeSplit(parameter: string, value: string): Array<string> {
+export function rangeSplit(parameter: string, value: string): Array<number | string> {
   // string values
   if (parameter === 'prompt') {
     return value.split('\n');
@@ -86,7 +86,7 @@ export function rangeSplit(parameter: string, value: string): Array<string> {
 export const EXPR_STRICT_NUMBER = /^[0-9]+$/;
 export const EXPR_NUMBER_RANGE = /^([0-9]+)-([0-9]+)$/;
 
-export function expandRanges(range: string): Array<string> {
+export function expandRanges(range: string): Array<string | number> {
   if (EXPR_STRICT_NUMBER.test(range)) {
     // entirely numeric, return without parsing
     return [range];
@@ -99,7 +99,7 @@ export function expandRanges(range: string): Array<string> {
       const start = parseInt(startStr, 10);
       const end = parseInt(endStr, 10);
 
-      return new Array(end - start).fill(0).map((_value, idx) => (idx + start).toFixed(0));
+      return new Array(end - start).fill(0).map((_value, idx) => idx + start);
     }
   }
 

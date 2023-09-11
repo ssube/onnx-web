@@ -438,6 +438,9 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
       // eslint-disable-next-line no-return-await
       return await parseRequest(url, {
         body,
+        headers: {
+          'Content-Type': 'application/json',
+        },
         method: 'POST',
       });
     },

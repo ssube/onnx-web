@@ -3,7 +3,7 @@ import { ChainPipeline, HighresParams, ModelParams, Txt2ImgParams, UpscaleParams
 export interface PipelineVariable {
   parameter: 'prompt' | 'cfg' | 'seed' | 'steps';
   input: string;
-  values: Array<string>;
+  values: Array<number | string>;
 }
 
 export interface PipelineGrid {
