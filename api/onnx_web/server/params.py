@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Any, Dict, Tuple
+from typing import Dict, Tuple
 
 import numpy as np
 from flask import request
