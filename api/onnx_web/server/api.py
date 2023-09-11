@@ -388,17 +388,15 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
     validate(data, schema)
 
     # get defaults from the regular parameters
-    device, params, size = pipeline_from_request(server)
-    output = make_output_name(server, "chain", params, size)
-    job_name = output[0]
-
-    replace_wildcards(params, get_wildcard_data())
-
+    device, _params, _size = pipeline_from_request(server)
     pipeline = ChainPipeline()
     for stage_data in data.get("stages", []):
         stage_class = CHAIN_STAGES[stage_data.get("type")]
         kwargs: Dict[str, Any] = stage_data.get("params", {})
         logger.info("request stage: %s, %s", stage_class.__name__, kwargs)
+
+        _device, params, size = pipeline_from_request(server, data=kwargs)
+        replace_wildcards(params, get_wildcard_data())
 
         if "control" in kwargs:
             logger.warning("TODO: resolve controlnet model")
@@ -446,6 +444,9 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
         pipeline.append((stage_class(), stage, kwargs))
 
     logger.info("running chain pipeline with %s stages", len(pipeline.stages))
+
+    output = make_output_name(server, "chain", params, size, count=len(pipeline.stages))
+    job_name = output[0]
 
     # build and run chain pipeline
     pool.submit(
