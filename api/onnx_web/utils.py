@@ -30,7 +30,7 @@ def is_debug() -> bool:
 def get_boolean(args: Any, key: str, default_value: bool) -> bool:
     val = args.get(key, str(default_value))
 
-    if type(val) == bool:
+    if isinstance(val, bool):
         return val
 
     return val.lower() in ("1", "t", "true", "y", "yes")
