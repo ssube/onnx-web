@@ -62,10 +62,11 @@ def convert_diffusion_diffusers_xl(
         pipeline = StableDiffusionXLPipeline.from_pretrained(source)
 
     if replace_vae is not None:
+        vae_path = path.join(conversion.model_path, replace_vae)
         if replace_vae.endswith(".safetensors"):
-            pipeline.vae = AutoencoderKL.from_single_file(replace_vae)
+            pipeline.vae = AutoencoderKL.from_single_file(vae_path)
         else:
-            pipeline.vae = AutoencoderKL.from_pretrained(replace_vae)
+            pipeline.vae = AutoencoderKL.from_pretrained(vae_path)
 
     pipeline.save_pretrained(temp_path)
 
