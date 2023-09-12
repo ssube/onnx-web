@@ -376,6 +376,7 @@ def load_pipeline(
                     provider=device.ort_provider("vae"),
                     sess_options=device.sess_options(),
                 )
+                components["vae_decoder_session"]._model_path = vae_decoder
 
                 logger.debug("loading VAE encoder from %s", vae_encoder)
                 components["vae_encoder_session"] = OnnxRuntimeModel.load_model(
@@ -383,6 +384,7 @@ def load_pipeline(
                     provider=device.ort_provider("vae"),
                     sess_options=device.sess_options(),
                 )
+                components["vae_encoder_session"]._model_path = vae_encoder
 
             else:
                 logger.debug("loading VAE decoder from %s", vae_decoder)
