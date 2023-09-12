@@ -105,7 +105,9 @@ class ChainPipeline:
         """
         DEPRECATED: use `run` instead
         """
-        if callback is not None:
+        if callback is None:
+            callback = worker.get_progress_callback()
+        else:
             callback = ChainProgress.from_progress(callback)
 
         start = monotonic()
