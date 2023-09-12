@@ -126,3 +126,17 @@ class SourceTxt2ImgStage(BaseStage):
         output = list(sources)
         output.extend(result.images)
         return output
+
+    def steps(
+        self,
+        params: ImageParams,
+        size: Size,
+    ) -> int:
+        return params.steps
+
+    def outputs(
+        self,
+        params: ImageParams,
+        sources: int,
+    ) -> int:
+        return sources + 1

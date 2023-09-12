@@ -48,3 +48,10 @@ class BlendGridStage(BaseStage):
             output.paste(sources[n], (x * size[0], y * size[1]))
 
         return [*sources, output]
+
+    def outputs(
+            self,
+            params: ImageParams,
+            sources: int,
+    ) -> int:
+        return sources + 1

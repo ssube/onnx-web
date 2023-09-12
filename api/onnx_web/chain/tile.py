@@ -50,6 +50,7 @@ def needs_tile(
     source: Optional[Image.Image] = None,
 ) -> bool:
     tile = min(max_tile, stage_tile)
+    logger.debug("")
 
     if source is not None:
         return source.width > tile or source.height > tile

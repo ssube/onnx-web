@@ -25,7 +25,14 @@ class BaseStage:
 
     def steps(
         self,
-        _params: ImageParams,
+        params: ImageParams,
         size: Size,
     ) -> int:
-        raise NotImplementedError()
+        return 1
+
+    def outputs(
+        self,
+        params: ImageParams,
+        sources: int,
+    ) -> int:
+        return sources

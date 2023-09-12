@@ -376,7 +376,7 @@ def load_pipeline(
                     provider=device.ort_provider("vae"),
                     sess_options=device.sess_options(),
                 )
-                components["vae_decoder_session"]._model_path = vae_decoder
+                components["vae_decoder_session"]._model_path = vae_decoder # "#\\not a real path on any system"
 
                 logger.debug("loading VAE encoder from %s", vae_encoder)
                 components["vae_encoder_session"] = OnnxRuntimeModel.load_model(
@@ -384,7 +384,7 @@ def load_pipeline(
                     provider=device.ort_provider("vae"),
                     sess_options=device.sess_options(),
                 )
-                components["vae_encoder_session"]._model_path = vae_encoder
+                components["vae_encoder_session"]._model_path = vae_encoder # "#\\not a real path on any system"
 
             else:
                 logger.debug("loading VAE decoder from %s", vae_decoder)
@@ -439,12 +439,14 @@ def load_pipeline(
 
         if "vae_decoder_session" in components:
             pipe.vae_decoder = ORTModelVaeDecoder(
-                components["vae_decoder_session"], vae_decoder
+                components["vae_decoder_session"],
+                pipe, # TODO: find the right class to provide here. ORTModel is missing the dict json method
             )
 
         if "vae_encoder_session" in components:
             pipe.vae_encoder = ORTModelVaeEncoder(
-                components["vae_encoder_session"], vae_encoder
+                components["vae_encoder_session"],
+                pipe, # TODO: find the right class to provide here. ORTModel is missing the dict json method
             )
 
         if not server.show_progress:

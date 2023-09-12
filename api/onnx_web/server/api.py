@@ -387,7 +387,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
     validate(data, schema)
 
     # get defaults from the regular parameters
-    device, _params, _size = pipeline_from_request(server, data=data)
+    device, base_params, base_size = pipeline_from_request(server, data=data)
     pipeline = ChainPipeline()
     for stage_data in data.get("stages", []):
         stage_class = CHAIN_STAGES[stage_data.get("type")]
@@ -450,7 +450,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("running chain pipeline with %s stages", len(pipeline.stages))
 
-    output = make_output_name(server, "chain", params, size, count=len(pipeline.stages))
+    output = make_output_name(server, "chain", base_params, base_size, count=len(pipeline.stages))
     job_name = output[0]
 
     # build and run chain pipeline
@@ -458,14 +458,15 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
         job_name,
         pipeline,
         server,
-        params,
+        base_params,
         [],
         output=output,
-        size=size,
+        size=base_size,
         needs_device=device,
     )
 
-    return jsonify(json_params(output, params, size))
+    step_params = params.with_args(steps=pipeline.steps(base_params, base_size))
+    return jsonify(json_params(output, step_params, base_size))
 
 
 def blend(server: ServerContext, pool: DevicePoolExecutor):

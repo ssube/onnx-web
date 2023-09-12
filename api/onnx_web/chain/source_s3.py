@@ -49,3 +49,10 @@ class SourceS3Stage(BaseStage):
                 logger.exception("error loading image from S3")
 
         return outputs
+
+    def outputs(
+            self,
+            params: ImageParams,
+            sources: int,
+    ) -> int:
+        return sources + 1 # TODO: len(source_keys)

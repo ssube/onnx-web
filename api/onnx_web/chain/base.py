@@ -7,7 +7,7 @@ from PIL import Image
 
 from ..errors import RetryException
 from ..output import save_image
-from ..params import ImageParams, StageParams
+from ..params import ImageParams, Size, StageParams
 from ..server import ServerContext
 from ..utils import is_debug, run_gc
 from ..worker import ProgressCallback, WorkerContext
@@ -84,6 +84,14 @@ class ChainPipeline:
     def stage(self, callback: BaseStage, params: StageParams, **kwargs):
         self.stages.append((callback, params, kwargs))
         return self
+
+    def steps(self, params: ImageParams, size: Size):
+        steps = 0
+        for callback, _params, _kwargs in self.stages:
+            steps += callback.steps(params, size)
+
+        return steps
+
 
     def __call__(
         self,
