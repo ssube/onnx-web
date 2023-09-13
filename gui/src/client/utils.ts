@@ -42,7 +42,8 @@ export function replacePromptTokens(grid: PipelineGrid, params: Txt2ImgParams, c
 export function buildPipelineForTxt2ImgGrid(grid: PipelineGrid, model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): ChainPipeline {
   const pipeline: ChainPipeline = {
     defaults: {
-      txt2img: params,
+      ...model,
+      ...params,
     },
     stages: [],
   };

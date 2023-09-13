@@ -194,10 +194,12 @@ export interface OutputStage {
 }
 
 export interface ChainPipeline {
-  defaults?: {
+  /* defaults?: {
     txt2img?: Txt2ImgParams;
     img2img?: Img2ImgParams;
-  };
+  }; */
+
+  defaults?: Txt2ImgParams & ModelParams;
 
   stages: Array<Txt2ImgStage | Img2ImgStage | GridStage | OutputStage>;
 }
