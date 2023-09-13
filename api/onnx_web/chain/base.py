@@ -92,7 +92,6 @@ class ChainPipeline:
 
         return steps
 
-
     def __call__(
         self,
         worker: WorkerContext,

@@ -105,15 +105,15 @@ class BlendImg2ImgStage(BaseStage):
         return outputs
 
     def steps(
-            self,
-            params: ImageParams,
-            *args,
+        self,
+        params: ImageParams,
+        *args,
     ) -> int:
-        return params.steps # TODO: multiply by strength
+        return params.steps  # TODO: multiply by strength
 
     def outputs(
-            self,
-            params: ImageParams,
-            sources: int,
+        self,
+        params: ImageParams,
+        sources: int,
     ) -> int:
         return sources + 1

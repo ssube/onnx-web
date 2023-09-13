@@ -387,7 +387,9 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
     validate(data, schema)
 
     # get defaults from the regular parameters
-    device, base_params, base_size = pipeline_from_request(server, data=data.get("defaults", None))
+    device, base_params, base_size = pipeline_from_request(
+        server, data=data.get("defaults", None)
+    )
 
     # start building the pipeline
     pipeline = ChainPipeline()
@@ -452,7 +454,9 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("running chain pipeline with %s stages", len(pipeline.stages))
 
-    output = make_output_name(server, "chain", base_params, base_size, count=len(pipeline.stages))
+    output = make_output_name(
+        server, "chain", base_params, base_size, count=len(pipeline.stages)
+    )
     job_name = output[0]
 
     # build and run chain pipeline

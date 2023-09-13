@@ -44,8 +44,8 @@ class SourceNoiseStage(BaseStage):
         return outputs
 
     def outputs(
-            self,
-            params: ImageParams,
-            sources: int,
+        self,
+        params: ImageParams,
+        sources: int,
     ) -> int:
         return sources + 1
