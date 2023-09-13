@@ -175,7 +175,7 @@ class ChainPipeline:
                         tile_mask: Image.Image,
                         dims: Tuple[int, int, int],
                     ) -> Image.Image:
-                        for i in range(worker.retries):
+                        for _i in range(worker.retries):
                             try:
                                 output_tile = stage_pipe.run(
                                     worker,
@@ -201,13 +201,13 @@ class ChainPipeline:
 
                                 return output_tile[0]
                             except Exception:
+                                worker.retries = worker.retries - 1
                                 logger.exception(
-                                    "error while running stage pipeline for tile, retry %s of 3",
-                                    i,
+                                    "error while running stage pipeline for tile, %s retries left",
+                                    worker.retries,
                                 )
                                 server.cache.clear()
                                 run_gc([worker.get_device()])
-                                worker.retries = worker.retries - (i + 1)
 
                         raise RetryException("exhausted retries on tile")
 
