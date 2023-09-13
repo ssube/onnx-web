@@ -56,10 +56,20 @@ $defs:
     items:
       $ref: "#/$defs/request_stage"
 
+  request_defaults:
+    type: object
+    properties:
+      txt2img:
+        $ref: "#/$defs/image_params"
+      img2img:
+        $ref: "#/$defs/image_params"
+
 type: object
 additionalProperties: False
 required: [stages]
 properties:
+  defaults:
+    $ref: "#/$defs/request_defaults"
   platform:
     type: string
   stages:

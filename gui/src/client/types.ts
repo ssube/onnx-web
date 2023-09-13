@@ -162,39 +162,43 @@ export interface HighresParams {
   highresStrength: number;
 }
 
+export interface ChainStageParams {
+  tile_size: number;
+}
+
 export interface Txt2ImgStage {
   name: string;
   type: 'source-txt2img';
-  params: Txt2ImgParams & {
-    tile_size: number;
-  };
+  params: Partial<Txt2ImgParams & ChainStageParams>;
 }
 
 export interface Img2ImgStage {
   name: string;
   type: 'blend-img2img';
-  params: Img2ImgParams;
+  params: Partial<Img2ImgParams & ChainStageParams>;
 }
 
 export interface GridStage {
   name: string;
   type: 'blend-grid';
-  params: {
+  params: Partial<{
     height: number;
     width: number;
-    tile_size: number;
-  };
+  } & ChainStageParams>;
 }
 
 export interface OutputStage {
   name: string;
   type: 'persist-disk';
-  params: {
-    tile_size: number;
-  };
+  params: Partial<ChainStageParams>;
 }
 
 export interface ChainPipeline {
+  defaults?: {
+    txt2img?: Txt2ImgParams;
+    img2img?: Img2ImgParams;
+  };
+
   stages: Array<Txt2ImgStage | Img2ImgStage | GridStage | OutputStage>;
 }
 
