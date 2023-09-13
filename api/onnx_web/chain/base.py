@@ -92,6 +92,13 @@ class ChainPipeline:
 
         return steps
 
+    def outputs(self, params: ImageParams, sources: int):
+        outputs = sources
+        for callback, _params, _kwargs in self.stages:
+            outputs += callback.outputs(params, outputs)
+
+        return outputs
+
     def __call__(
         self,
         worker: WorkerContext,
