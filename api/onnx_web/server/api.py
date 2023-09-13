@@ -455,7 +455,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
     logger.info("running chain pipeline with %s stages", len(pipeline.stages))
 
     output = make_output_name(
-        server, "chain", base_params, base_size, count=pipeline.outputs(base_params, 0))
+        server, "chain", base_params, base_size, count=pipeline.outputs(base_params, 0)
     )
     job_name = output[0]
 
