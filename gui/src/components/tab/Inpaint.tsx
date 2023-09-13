@@ -7,9 +7,10 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { BrushParams, HighresParams, InpaintParams, ModelParams, UpscaleParams } from '../../client/types.js';
 import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext, TabState } from '../../state.js';
+import { BrushParams, HighresParams, InpaintParams, ModelParams, UpscaleParams } from '../../types/params.js';
+import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';
 import { ImageControl } from '../control/ImageControl.js';
 import { ModelControl } from '../control/ModelControl.js';
@@ -19,7 +20,6 @@ import { ImageInput } from '../input/ImageInput.js';
 import { MaskCanvas } from '../input/MaskCanvas.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
-import { Profiles } from '../Profiles.js';
 
 export function Inpaint() {
   const { params } = mustExist(useContext(ConfigContext));

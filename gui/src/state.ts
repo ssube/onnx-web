@@ -8,24 +8,24 @@ import { StateCreator, StoreApi } from 'zustand';
 
 import {
   ApiClient,
+} from './client/base.js';
+import { PipelineGrid } from './client/utils.js';
+import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
+import { CorrectionModel, DiffusionModel, ExtraNetwork, ExtraSource, ExtrasFile, UpscalingModel } from './types/model.js';
+import { ImageResponse, ReadyResponse, RetryParams } from './types/api.js';
+import {
   BaseImgParams,
   BlendParams,
   BrushParams,
   HighresParams,
-  ImageResponse,
   Img2ImgParams,
   InpaintParams,
   ModelParams,
   OutpaintPixels,
-  ReadyResponse,
-  RetryParams,
   Txt2ImgParams,
   UpscaleParams,
   UpscaleReqParams,
-} from './client/types.js';
-import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
-import { CorrectionModel, DiffusionModel, ExtraNetwork, ExtraSource, ExtrasFile, UpscalingModel } from './types.js';
-import { PipelineGrid } from './client/utils.js';
+} from './types/params.js';
 
 export const MISSING_INDEX = -1;
 

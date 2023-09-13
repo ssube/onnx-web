@@ -10,7 +10,7 @@ import {
   OutpaintParams,
   Txt2ImgParams,
   UpscaleParams,
-} from './client/types.js';
+} from './types/params.js';
 
 export interface ConfigBoolean {
   default: boolean;

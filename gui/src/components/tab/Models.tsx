@@ -19,7 +19,7 @@ import {
   NetworkType,
   SafetensorFormat,
   UpscalingModel,
-} from '../../types.js';
+} from '../../types/model.js';
 import { EditableList } from '../input/EditableList';
 import { CorrectionModelInput } from '../input/model/CorrectionModel.js';
 import { DiffusionModelInput } from '../input/model/DiffusionModel.js';

@@ -2,29 +2,31 @@
 import { doesExist, InvalidArgumentError, Maybe } from '@apextoaster/js-utils';
 
 import { ServerParams } from '../config.js';
-import { range } from '../utils.js';
 import {
-  ApiClient,
-  BaseImgParams,
-  BlendParams,
-  ChainPipeline,
   FilterResponse,
-  HighresParams,
   ImageResponse,
   ImageResponseWithRetry,
+  ModelResponse,
+  ReadyResponse,
+  RetryParams,
+  WriteExtrasResponse,
+} from '../types/api.js';
+import { ChainPipeline } from '../types/chain.js';
+import { ExtrasFile } from '../types/model.js';
+import {
+  BaseImgParams,
+  BlendParams,
+  HighresParams,
   Img2ImgParams,
   InpaintParams,
   ModelParams,
-  ModelResponse,
   OutpaintParams,
-  ReadyResponse,
-  RetryParams,
   Txt2ImgParams,
   UpscaleParams,
   UpscaleReqParams,
-  WriteExtrasResponse,
-} from './types.js';
-import { ExtrasFile } from '../types.js';
+} from '../types/params.js';
+import { range } from '../utils.js';
+import { ApiClient } from './base.js';
 
 /**
  * Fixed precision for integer parameters.

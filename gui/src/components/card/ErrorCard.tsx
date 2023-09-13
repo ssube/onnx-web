@@ -9,8 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { ImageResponse, ReadyResponse, RetryParams } from '../../client/types.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
+import { ImageResponse, ReadyResponse, RetryParams } from '../../types/api.js';
 
 export interface ErrorCardProps {
   image: ImageResponse;

@@ -5,8 +5,8 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
-import { UpscaleParams } from '../../client/types.js';
 import { ConfigContext, OnnxState, StateContext } from '../../state.js';
+import { UpscaleParams } from '../../types/params.js';
 import { NumericField } from '../input/NumericField.js';
 
 export interface UpscaleControlProps {

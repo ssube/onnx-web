@@ -2,7 +2,7 @@ import { Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ModelFormat, UpscalingArch, UpscalingModel } from '../../../types.js';
+import { ModelFormat, UpscalingArch, UpscalingModel } from '../../../types/model.js';
 import { NumericField } from '../NumericField.js';
 
 export interface UpscalingModelInputProps {

@@ -7,15 +7,15 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { HighresParams, ModelParams, UpscaleParams, UpscaleReqParams } from '../../client/types.js';
 import { IMAGE_FILTER } from '../../config.js';
 import { ClientContext, OnnxState, StateContext, TabState } from '../../state.js';
+import { HighresParams, ModelParams, UpscaleParams, UpscaleReqParams } from '../../types/params.js';
+import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';
 import { ModelControl } from '../control/ModelControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { PromptInput } from '../input/PromptInput.js';
-import { Profiles } from '../Profiles.js';
 
 export function Upscale() {
   async function uploadSource() {

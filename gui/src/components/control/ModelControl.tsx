@@ -5,9 +5,9 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ModelParams } from '../../client/types.js';
 import { STALE_TIME } from '../../config.js';
 import { ClientContext } from '../../state.js';
+import { ModelParams } from '../../types/params.js';
 import { QueryList } from '../input/QueryList.js';
 
 export interface ModelControlProps {

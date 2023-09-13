@@ -1,6 +1,6 @@
 import { BaseError } from 'noicejs';
 
-import { ApiClient } from './types.js';
+import { ApiClient } from './base.js';
 
 export class NoServerError extends BaseError {
   constructor() {

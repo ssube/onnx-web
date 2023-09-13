@@ -7,16 +7,16 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../../client/types.js';
+import { PipelineGrid, makeTxt2ImgGridPipeline } from '../../client/utils.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext, TabState } from '../../state.js';
+import { HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../../types/params.js';
+import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';
 import { ImageControl } from '../control/ImageControl.js';
 import { ModelControl } from '../control/ModelControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
-import { NumericField } from '../input/NumericField.js';
-import { Profiles } from '../Profiles.js';
 import { VariableControl } from '../control/VariableControl.js';
-import { PipelineGrid, buildPipelineForTxt2ImgGrid } from '../../client/utils.js';
+import { NumericField } from '../input/NumericField.js';
 
 export function Txt2Img() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -29,7 +29,7 @@ export function Txt2Img() {
     const highres = selectHighres(state);
 
     if (grid.enabled) {
-      const chain = buildPipelineForTxt2ImgGrid(grid, model, params2, upscale, highres);
+      const chain = makeTxt2ImgGridPipeline(grid, model, params2, upscale, highres);
       const image = await client.chain(model, chain);
       pushHistory(image);
     } else {

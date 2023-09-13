@@ -1,5 +1,6 @@
 import { doesExist } from '@apextoaster/js-utils';
-import { ChainPipeline, HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from './types.js';
+import { HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../types/params.js';
+import { ChainPipeline } from '../types/chain.js';
 
 export interface PipelineVariable {
   parameter: 'prompt' | 'cfg' | 'seed' | 'steps' | 'eta' | 'scheduler' | 'token';
@@ -39,7 +40,7 @@ export function replacePromptTokens(grid: PipelineGrid, params: Txt2ImgParams, c
 }
 
 // eslint-disable-next-line max-params
-export function buildPipelineForTxt2ImgGrid(grid: PipelineGrid, model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): ChainPipeline {
+export function makeTxt2ImgGridPipeline(grid: PipelineGrid, model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): ChainPipeline {
   const pipeline: ChainPipeline = {
     defaults: {
       ...model,
