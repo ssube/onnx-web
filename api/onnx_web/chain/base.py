@@ -87,15 +87,15 @@ class ChainPipeline:
 
     def steps(self, params: ImageParams, size: Size):
         steps = 0
-        for callback, _params, _kwargs in self.stages:
-            steps += callback.steps(params, size)
+        for callback, _params, kwargs in self.stages:
+            steps += callback.steps(kwargs.get("params", params), size)
 
         return steps
 
     def outputs(self, params: ImageParams, sources: int):
         outputs = sources
-        for callback, _params, _kwargs in self.stages:
-            outputs += callback.outputs(params, outputs)
+        for callback, _params, kwargs in self.stages:
+            outputs += callback.outputs(kwargs.get("params", params), outputs)
 
         return outputs
 

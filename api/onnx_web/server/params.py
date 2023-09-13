@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 
 import numpy as np
 from flask import request
@@ -34,16 +34,10 @@ from .utils import get_model_path
 logger = getLogger(__name__)
 
 
-def pipeline_from_request(
+def build_device(
     server: ServerContext,
-    default_pipeline: str = "txt2img",
-    data: Dict[str, str] = None,
-) -> Tuple[DeviceParams, ImageParams, Size]:
-    user = request.remote_addr
-
-    if data is None:
-        data = request.args
-
+    data: Dict[str, str],
+) -> Optional[DeviceParams]:
     # platform stuff
     device = None
     device_name = data.get("platform")
@@ -53,6 +47,14 @@ def pipeline_from_request(
             if platform.device == device_name:
                 device = platform
 
+    return device
+
+
+def build_params(
+    server: ServerContext,
+    default_pipeline: str,
+    data: Dict[str, str],
+) -> ImageParams:
     # diffusion model
     model = get_not_empty(data, "model", get_config_value("model"))
     model_path = get_model_path(server, model)
@@ -115,20 +117,6 @@ def pipeline_from_request(
         get_config_value("steps", "max"),
         get_config_value("steps", "min"),
     )
-    height = get_and_clamp_int(
-        data,
-        "height",
-        get_config_value("height"),
-        get_config_value("height", "max"),
-        get_config_value("height", "min"),
-    )
-    width = get_and_clamp_int(
-        data,
-        "width",
-        get_config_value("width"),
-        get_config_value("width", "max"),
-        get_config_value("width", "min"),
-    )
     tiled_vae = get_boolean(data, "tiledVAE", get_config_value("tiledVAE"))
     tiles = get_and_clamp_int(
         data,
@@ -161,21 +149,6 @@ def pipeline_from_request(
         # this one can safely use np.random because it produces a single value
         seed = np.random.randint(np.iinfo(np.int32).max)
 
-    logger.info(
-        "request from %s: %s steps of %s using %s in %s on %s, %sx%s, %s, %s - %s",
-        user,
-        steps,
-        scheduler,
-        model_path,
-        pipeline,
-        device or "any device",
-        width,
-        height,
-        cfg,
-        seed,
-        prompt,
-    )
-
     params = ImageParams(
         model_path,
         pipeline,
@@ -194,34 +167,60 @@ def pipeline_from_request(
         overlap=overlap,
         stride=stride,
     )
-    size = Size(width, height)
-    return (device, params, size)
+
+    return params
 
 
-def border_from_request() -> Border:
+def build_size(
+    server: ServerContext,
+    data: Dict[str, str],
+) -> Size:
+    height = get_and_clamp_int(
+        data,
+        "height",
+        get_config_value("height"),
+        get_config_value("height", "max"),
+        get_config_value("height", "min"),
+    )
+    width = get_and_clamp_int(
+        data,
+        "width",
+        get_config_value("width"),
+        get_config_value("width", "max"),
+        get_config_value("width", "min"),
+    )
+    return Size(width, height)
+
+
+def build_border(
+    data: Dict[str, str] = None,
+) -> Border:
+    if data is None:
+        data = request.args
+
     left = get_and_clamp_int(
-        request.args,
+        data,
         "left",
         get_config_value("left"),
         get_config_value("left", "max"),
         get_config_value("left", "min"),
     )
     right = get_and_clamp_int(
-        request.args,
+        data,
         "right",
         get_config_value("right"),
         get_config_value("right", "max"),
         get_config_value("right", "min"),
     )
     top = get_and_clamp_int(
-        request.args,
+        data,
         "top",
         get_config_value("top"),
         get_config_value("top", "max"),
         get_config_value("top", "min"),
     )
     bottom = get_and_clamp_int(
-        request.args,
+        data,
         "bottom",
         get_config_value("bottom"),
         get_config_value("bottom", "max"),
@@ -231,46 +230,51 @@ def border_from_request() -> Border:
     return Border(left, right, top, bottom)
 
 
-def upscale_from_request() -> UpscaleParams:
+def build_upscale(
+    data: Dict[str, str] = None,
+) -> UpscaleParams:
+    if data is None:
+        data = request.args
+
     denoise = get_and_clamp_float(
-        request.args,
+        data,
         "denoise",
         get_config_value("denoise"),
         get_config_value("denoise", "max"),
         get_config_value("denoise", "min"),
     )
     scale = get_and_clamp_int(
-        request.args,
+        data,
         "scale",
         get_config_value("scale"),
         get_config_value("scale", "max"),
         get_config_value("scale", "min"),
     )
     outscale = get_and_clamp_int(
-        request.args,
+        data,
         "outscale",
         get_config_value("outscale"),
         get_config_value("outscale", "max"),
         get_config_value("outscale", "min"),
     )
-    upscaling = get_from_list(request.args, "upscaling", get_upscaling_models())
-    correction = get_from_list(request.args, "correction", get_correction_models())
-    faces = get_not_empty(request.args, "faces", "false") == "true"
+    upscaling = get_from_list(data, "upscaling", get_upscaling_models())
+    correction = get_from_list(data, "correction", get_correction_models())
+    faces = get_not_empty(data, "faces", "false") == "true"
     face_outscale = get_and_clamp_int(
-        request.args,
+        data,
         "faceOutscale",
         get_config_value("faceOutscale"),
         get_config_value("faceOutscale", "max"),
         get_config_value("faceOutscale", "min"),
     )
     face_strength = get_and_clamp_float(
-        request.args,
+        data,
         "faceStrength",
         get_config_value("faceStrength"),
         get_config_value("faceStrength", "max"),
         get_config_value("faceStrength", "min"),
     )
-    upscale_order = request.args.get("upscaleOrder", "correction-first")
+    upscale_order = data.get("upscaleOrder", "correction-first")
 
     return UpscaleParams(
         upscaling,
@@ -286,37 +290,43 @@ def upscale_from_request() -> UpscaleParams:
     )
 
 
-def highres_from_request() -> HighresParams:
-    enabled = get_boolean(request.args, "highres", get_config_value("highres"))
+def build_highres(
+    data: Dict[str, str] = None,
+) -> HighresParams:
+    if data is None:
+        data = request.args
+
+    enabled = get_boolean(data, "highres", get_config_value("highres"))
     iterations = get_and_clamp_int(
-        request.args,
+        data,
         "highresIterations",
         get_config_value("highresIterations"),
         get_config_value("highresIterations", "max"),
         get_config_value("highresIterations", "min"),
     )
-    method = get_from_list(request.args, "highresMethod", get_highres_methods())
+    method = get_from_list(data, "highresMethod", get_highres_methods())
     scale = get_and_clamp_int(
-        request.args,
+        data,
         "highresScale",
         get_config_value("highresScale"),
         get_config_value("highresScale", "max"),
         get_config_value("highresScale", "min"),
     )
     steps = get_and_clamp_int(
-        request.args,
+        data,
         "highresSteps",
         get_config_value("highresSteps"),
         get_config_value("highresSteps", "max"),
         get_config_value("highresSteps", "min"),
     )
     strength = get_and_clamp_float(
-        request.args,
+        data,
         "highresStrength",
         get_config_value("highresStrength"),
         get_config_value("highresStrength", "max"),
         get_config_value("highresStrength", "min"),
     )
+
     return HighresParams(
         enabled,
         scale,
@@ -325,3 +335,50 @@ def highres_from_request() -> HighresParams:
         method=method,
         iterations=iterations,
     )
+
+
+PipelineParams = Tuple[Optional[DeviceParams], ImageParams, Size]
+
+
+def pipeline_from_json(
+    server: ServerContext,
+    data: Dict[str, str],
+    default_pipeline: str = "txt2img",
+) -> PipelineParams:
+    """
+    Like pipeline_from_request but expects a nested structure.
+    """
+
+    device = build_device(server, data.get("device", data))
+    params = build_params(server, default_pipeline, data.get("params", data))
+    size = build_size(server, data.get("params", data))
+
+    return (device, params, size)
+
+
+def pipeline_from_request(
+    server: ServerContext,
+    default_pipeline: str = "txt2img",
+) -> PipelineParams:
+    user = request.remote_addr
+
+    device = build_device(server, request.args)
+    params = build_params(server, default_pipeline, request.args)
+    size = build_size(server, request.args)
+
+    logger.info(
+        "request from %s: %s steps of %s using %s in %s on %s, %sx%s, %s, %s - %s",
+        user,
+        params.steps,
+        params.scheduler,
+        params.model_path,
+        params.pipeline,
+        device or "any device",
+        params.width,
+        params.height,
+        params.cfg,
+        params.seed,
+        params.prompt,
+    )
+
+    return (device, params, size)

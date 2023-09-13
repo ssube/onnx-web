@@ -21,14 +21,14 @@ class BaseStage:
         stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> List[Image.Image]:
-        raise NotImplementedError()
+        raise NotImplementedError()  # noqa
 
     def steps(
         self,
         params: ImageParams,
         size: Size,
     ) -> int:
-        return 1
+        return 1  # noqa
 
     def outputs(
         self,

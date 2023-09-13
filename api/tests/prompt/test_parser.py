@@ -1,6 +1,8 @@
 import unittest
+
 from onnx_web.prompt.grammar import PromptPhrase
 from onnx_web.prompt.parser import parse_prompt_onnx
+
 
 class ParserTests(unittest.TestCase):
     def test_single_word_phrase(self):
