@@ -53,8 +53,8 @@ def needs_tile(
     logger.trace(
         "checking image tile dimensions: %s, %s, %s",
         tile,
-        source.width > tile or source.height > tile,
-        size.width > tile or size.height > tile,
+        source.width > tile or source.height > tile if source is not None else False,
+        size.width > tile or size.height > tile if size is not None else False,
     )
 
     if source is not None:
