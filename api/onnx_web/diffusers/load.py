@@ -544,7 +544,7 @@ def patch_pipeline(
 ) -> None:
     logger.debug("patching SD pipeline")
 
-    if not params.is_lpw():
+    if not params.is_lpw() and not params.is_xl():
         pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
 
     if not params.is_xl():
