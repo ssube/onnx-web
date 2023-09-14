@@ -1,7 +1,12 @@
 import unittest
 
-from onnx_web.diffusers.load import get_available_pipelines, get_pipeline_schedulers, get_scheduler_name
 from diffusers import DDIMScheduler
+
+from onnx_web.diffusers.load import (
+    get_available_pipelines,
+    get_pipeline_schedulers,
+    get_scheduler_name,
+)
 
 
 class TestAvailablePipelines(unittest.TestCase):

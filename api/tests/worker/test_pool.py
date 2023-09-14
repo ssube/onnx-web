@@ -1,9 +1,9 @@
-from typing import Optional
-from multiprocessing import Event
 import unittest
-from onnx_web.params import DeviceParams
+from multiprocessing import Event
 from time import sleep
+from typing import Optional
 
+from onnx_web.params import DeviceParams
 from onnx_web.server.context import ServerContext
 from onnx_web.worker.pool import DevicePoolExecutor
 
