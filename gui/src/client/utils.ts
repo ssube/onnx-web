@@ -1,6 +1,6 @@
 import { doesExist } from '@apextoaster/js-utils';
 import { HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../types/params.js';
-import { ChainPipeline } from '../types/chain.js';
+import { ChainPipeline, ChainStageParams } from '../types/chain.js';
 
 export interface PipelineVariable {
   parameter: 'prompt' | 'cfg' | 'seed' | 'steps' | 'eta' | 'scheduler' | 'token';
@@ -49,9 +49,8 @@ export function makeTxt2ImgGridPipeline(grid: PipelineGrid, model: ModelParams, 
     stages: [],
   };
 
-  const tiles = {
-    // eslint-disable-next-line camelcase
-    tile_size: 8192,
+  const tiles: ChainStageParams = {
+    tiles: 8192,
   };
 
   let i = 0;

@@ -1,7 +1,7 @@
 import { ImageSize, Img2ImgParams, ModelParams, Txt2ImgParams } from './params.js';
 
 export interface ChainStageParams {
-  tile_size: number;
+  tiles: number;
 }
 
 export interface Txt2ImgStage {
