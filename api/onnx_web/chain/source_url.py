@@ -1,6 +1,6 @@
 from io import BytesIO
 from logging import getLogger
-from typing import List
+from typing import List, Optional
 
 import requests
 from PIL import Image
@@ -23,7 +23,7 @@ class SourceURLStage(BaseStage):
         sources: List[Image.Image],
         *,
         source_urls: List[str],
-        stage_source: Image.Image,
+        stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> List[Image.Image]:
         logger.info("loading image from URL source")

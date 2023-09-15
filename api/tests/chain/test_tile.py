@@ -2,7 +2,12 @@ import unittest
 
 from PIL import Image
 
-from onnx_web.chain.tile import complete_tile, generate_tile_spiral, get_tile_grads, needs_tile
+from onnx_web.chain.tile import (
+    complete_tile,
+    generate_tile_spiral,
+    get_tile_grads,
+    needs_tile,
+)
 from onnx_web.params import Size
 
 

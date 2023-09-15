@@ -21,6 +21,7 @@ test:
 	python -m coverage run -m unittest discover -v -s tests/
 	python -m coverage html -i
 	python -m coverage xml -i
+	python -m coverage report -i
 
 package: package-dist package-upload
 

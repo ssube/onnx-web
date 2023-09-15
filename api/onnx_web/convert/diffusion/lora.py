@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 import numpy as np
 import torch
-from onnx import ModelProto, load, numpy_helper
+from onnx import ModelProto, NodeProto, load, numpy_helper
 from onnx.checker import check_model
 from onnx.external_data_helper import (
     convert_model_to_external_data,
@@ -39,7 +39,7 @@ def sum_weights(a: np.ndarray, b: np.ndarray) -> np.ndarray:
         lr = a
 
     if kernel == (1, 1):
-        lr = np.expand_dims(lr, axis=(2, 3))
+        lr = np.expand_dims(lr, axis=(2, 3))  # TODO: generate axis
 
     return hr + lr
 
@@ -78,7 +78,7 @@ def fix_node_name(key: str):
         return fixed_name
 
 
-def fix_xl_names(keys: Dict[str, Any], nodes: List[Any]):
+def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]):
     fixed = {}
 
     for key, value in keys.items():

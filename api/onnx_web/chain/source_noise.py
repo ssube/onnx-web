@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 from PIL import Image
 
@@ -22,7 +22,7 @@ class SourceNoiseStage(BaseStage):
         *,
         size: Size,
         noise_source: Callable,
-        stage_source: Image.Image,
+        stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> List[Image.Image]:
         logger.info("generating image from noise source")

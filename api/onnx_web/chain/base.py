@@ -95,7 +95,7 @@ class ChainPipeline:
     def outputs(self, params: ImageParams, sources: int):
         outputs = sources
         for callback, _params, kwargs in self.stages:
-            outputs += callback.outputs(kwargs.get("params", params), outputs)
+            outputs = callback.outputs(kwargs.get("params", params), outputs)
 
         return outputs
 

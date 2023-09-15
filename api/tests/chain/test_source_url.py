@@ -1,14 +1,12 @@
 import unittest
 
-from PIL import Image
-
-from onnx_web.chain.blend_mask import BlendMaskStage
-from onnx_web.params import HighresParams, UpscaleParams
+from onnx_web.chain.source_url import SourceURLStage
+from onnx_web.params import HighresParams, Size, UpscaleParams
 
 
-class BlendMaskStageTests(unittest.TestCase):
+class SourceURLStageTests(unittest.TestCase):
     def test_empty(self):
-        stage = BlendMaskStage()
+        stage = SourceURLStage()
         sources = []
         result = stage.run(
             None,
@@ -18,7 +16,9 @@ class BlendMaskStageTests(unittest.TestCase):
             sources,
             highres=HighresParams(False, 1, 0, 0),
             upscale=UpscaleParams(""),
-            stage_mask=Image.new("RGBA", (64, 64)),
+            origin=Size(0, 0),
+            size=Size(128, 128),
+            source_urls=[],
         )
 
         self.assertEqual(len(result), 0)
