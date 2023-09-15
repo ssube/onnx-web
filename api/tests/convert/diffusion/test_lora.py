@@ -126,14 +126,14 @@ class FixXLNameTests(unittest.TestCase):
 
     def test_output_projection(self):
         nodes = {
-            "output_block_proj_o.lora_down.weight": {},
+            "output_block_proj_out.lora_down.weight": {},
         }
         fixed = fix_xl_names(nodes, [
-            NodeProto(name="/up_blocks_proj_o/MatMul"),
+            NodeProto(name="/up_blocks_proj_out/MatMul"),
         ])
 
         self.assertEqual(fixed, {
-            "up_blocks_proj_out": nodes["output_block_proj_o.lora_down.weight"],
+            "up_blocks_proj_out": nodes["output_block_proj_out.lora_down.weight"],
         })
 
 
