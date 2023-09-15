@@ -543,9 +543,6 @@ def blend_loras(
     if len(unmatched_keys) > 0:
         logger.warning("could not find nodes for some keys: %s", unmatched_keys)
 
-    # if model_type == "unet":
-    #     save_model(base_model, f"/tmp/lora_blend_{model_type}.onnx", save_as_external_data=True, all_tensors_to_one_file=True, location="weights.pb")
-
     return base_model
 
 

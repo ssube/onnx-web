@@ -150,8 +150,17 @@ class KernelSliceTests(unittest.TestCase):
             (2, 2),
         )
 
+
 class BlendLoRATests(unittest.TestCase):
-    pass
+    def test_blend_unet(self):
+        pass
+
+    def test_blend_text_encoder(self):
+        pass
+
+    def test_blend_text_encoder_index(self):
+        pass
+
 
 class InterpToMatchTests(unittest.TestCase):
     def test_same_shape(self):

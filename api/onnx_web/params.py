@@ -24,7 +24,7 @@ class SizeChart(IntEnum):
     hd16k = 2**14
     hd32k = 2**15
     hd64k = 2**16
-    unlimited = 2**32  # sort of
+    max = 2**32  # should be a reasonable upper limit for now
 
 
 class TileOrder:

@@ -22,7 +22,7 @@ logger = getLogger(__name__)
 
 
 class SourceTxt2ImgStage(BaseStage):
-    max_tile = SizeChart.unlimited
+    max_tile = SizeChart.max
 
     def run(
         self,
