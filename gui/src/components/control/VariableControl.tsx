@@ -19,7 +19,7 @@ export function VariableControl(props: VariableControlProps) {
   const grid = useStore(store, props.selectGrid);
 
   const stack = [
-    <Stack direction='row' spacing={2}>
+    <Stack direction='row' spacing={2} key='variable-enable'>
       <FormControl>
         <FormControlLabel
           label='Grid Mode'
@@ -36,7 +36,7 @@ export function VariableControl(props: VariableControlProps) {
 
   if (grid.enabled) {
     stack.push(
-      <Stack direction='row' spacing={2}>
+      <Stack direction='row' spacing={2} key='variable-row'>
         <FormControl>
           <InputLabel id='TODO'>Columns</InputLabel>
           <Select onChange={(event) => props.setGrid({
@@ -57,7 +57,7 @@ export function VariableControl(props: VariableControlProps) {
           },
         })} />
       </Stack>,
-      <Stack direction='row' spacing={2}>
+      <Stack direction='row' spacing={2} key='variable-column'>
         <FormControl>
           <InputLabel id='TODO'>Rows</InputLabel>
           <Select onChange={(event) => props.setGrid({
@@ -94,8 +94,8 @@ export function rangeSplit(parameter: string, value: string): Array<number | str
   return csv.flatMap((it) => expandRanges(it));
 }
 
-export const EXPR_STRICT_NUMBER = /^-?[0-9]+$/;
-export const EXPR_NUMBER_RANGE = /^([0-9]+)-([0-9]+)$/;
+export const EXPR_STRICT_NUMBER = /^-?\d+$/;
+export const EXPR_NUMBER_RANGE = /^(\d+)-(\d+)$/;
 
 export function expandRanges(range: string): Array<string | number> {
   if (EXPR_STRICT_NUMBER.test(range)) {

@@ -444,13 +444,13 @@ def load_pipeline(
         if "vae_decoder_session" in components:
             pipe.vae_decoder = ORTModelVaeDecoder(
                 components["vae_decoder_session"],
-                pipe,  # TODO: find the right class to provide here. ORTModel is missing the dict json method
+                pipe,
             )
 
         if "vae_encoder_session" in components:
             pipe.vae_encoder = ORTModelVaeEncoder(
                 components["vae_encoder_session"],
-                pipe,  # TODO: find the right class to provide here. ORTModel is missing the dict json method
+                pipe,
             )
 
         if not server.show_progress:
