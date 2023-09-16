@@ -3,15 +3,16 @@ import unittest
 import numpy as np
 
 from onnx_web.diffusers.utils import (
-  expand_interval_ranges,
-  expand_alternative_ranges,
-  get_inversions_from_prompt,
-  get_latents_from_seed,
-  get_loras_from_prompt,
-  get_scaled_latents,
-  get_tokens_from_prompt,
+    expand_alternative_ranges,
+    expand_interval_ranges,
+    get_inversions_from_prompt,
+    get_latents_from_seed,
+    get_loras_from_prompt,
+    get_scaled_latents,
+    get_tokens_from_prompt,
 )
 from onnx_web.params import Size
+
 
 class TestExpandIntervalRanges(unittest.TestCase):
   def test_prompt_with_no_ranges(self):
