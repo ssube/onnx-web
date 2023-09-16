@@ -153,12 +153,33 @@ class KernelSliceTests(unittest.TestCase):
 
 class BlendLoRATests(unittest.TestCase):
     def test_blend_unet(self):
+        """
+        blend_loras(None, "test", [], "unet")
+        """
         pass
 
     def test_blend_text_encoder(self):
+        """
+        blend_loras(None, "test", [], "text_encoder")
+        """
         pass
 
     def test_blend_text_encoder_index(self):
+        """
+        blend_loras(None, "test", [], "text_encoder", model_index=2)
+        """
+        pass
+
+    def test_unmatched_keys(self):
+        pass
+
+    def test_xl_keys(self):
+        """
+        blend_loras(None, "test", [], "unet", xl=True)
+        """
+        pass
+
+    def test_node_dtype(self):
         pass
 
 

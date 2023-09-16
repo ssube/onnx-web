@@ -35,7 +35,7 @@ logger = getLogger(__name__)
 
 
 def build_device(
-    server: ServerContext,
+    _server: ServerContext,
     data: Dict[str, str],
 ) -> Optional[DeviceParams]:
     # platform stuff
@@ -172,7 +172,7 @@ def build_params(
 
 
 def build_size(
-    server: ServerContext,
+    _server: ServerContext,
     data: Dict[str, str],
 ) -> Size:
     height = get_and_clamp_int(

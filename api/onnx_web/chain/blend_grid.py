@@ -22,12 +22,12 @@ class BlendGridStage(BaseStage):
         *,
         height: int,
         width: int,
-        rows: Optional[List[str]] = None,
-        columns: Optional[List[str]] = None,
-        title: Optional[str] = None,
+        # rows: Optional[List[str]] = None,
+        # columns: Optional[List[str]] = None,
+        # title: Optional[str] = None,
         order: Optional[int] = None,
         stage_source: Optional[Image.Image] = None,
-        _callback: Optional[ProgressCallback] = None,
+        callback: Optional[ProgressCallback] = None,
         **kwargs,
     ) -> List[Image.Image]:
         logger.info("combining source images using grid layout")
@@ -51,7 +51,7 @@ class BlendGridStage(BaseStage):
 
     def outputs(
         self,
-        params: ImageParams,
+        _params: ImageParams,
         sources: int,
     ) -> int:
         return sources + 1

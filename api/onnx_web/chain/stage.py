@@ -12,11 +12,11 @@ class BaseStage:
 
     def run(
         self,
-        worker: WorkerContext,
-        server: ServerContext,
-        stage: StageParams,
+        _worker: WorkerContext,
+        _server: ServerContext,
+        _stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        _sources: List[Image.Image],
         *args,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
@@ -25,14 +25,14 @@ class BaseStage:
 
     def steps(
         self,
-        params: ImageParams,
-        size: Size,
+        _params: ImageParams,
+        _size: Size,
     ) -> int:
         return 1  # noqa
 
     def outputs(
         self,
-        params: ImageParams,
+        _params: ImageParams,
         sources: int,
     ) -> int:
         return sources
