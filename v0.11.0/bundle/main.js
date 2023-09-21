@@ -76585,437 +76585,6 @@ Please use another name.` : formatMuiErrorMessage(18));
   var React152 = __toESM(require_react(), 1);
   var import_react35 = __toESM(require_react(), 1);
 
-  // out/src/components/control/HighresControl.js
-  var React145 = __toESM(require_react(), 1);
-  var import_react30 = __toESM(require_react(), 1);
-  function HighresControl(props) {
-    const { selectHighres: selectHighres5, setHighres } = props;
-    const store = mustExist((0, import_react30.useContext)(StateContext));
-    const highres = useStore(store, selectHighres5);
-    const { params } = mustExist((0, import_react30.useContext)(ConfigContext));
-    const { t: t2 } = useTranslation();
-    return React145.createElement(
-      Stack_default2,
-      { direction: "row", spacing: 4 },
-      React145.createElement(FormControlLabel_default, { label: t2("parameter.highres.label"), control: React145.createElement(Checkbox_default, { checked: highres.enabled, value: "check", onChange: (_event) => {
-        setHighres({
-          enabled: highres.enabled === false
-        });
-      } }) }),
-      React145.createElement(NumericField, { label: t2("parameter.highres.steps"), disabled: highres.enabled === false, min: params.highresSteps.min, max: params.highresSteps.max, step: params.highresSteps.step, value: highres.highresSteps, onChange: (steps) => {
-        setHighres({
-          highresSteps: steps
-        });
-      } }),
-      React145.createElement(NumericField, { label: t2("parameter.highres.scale"), disabled: highres.enabled === false, min: params.highresScale.min, max: params.highresScale.max, step: params.highresScale.step, value: highres.highresScale, onChange: (scale) => {
-        setHighres({
-          highresScale: scale
-        });
-      } }),
-      React145.createElement(NumericField, { label: t2("parameter.highres.strength"), decimal: true, disabled: highres.enabled === false, min: params.highresStrength.min, max: params.highresStrength.max, step: params.highresStrength.step, value: highres.highresStrength, onChange: (strength) => {
-        setHighres({
-          highresStrength: strength
-        });
-      } }),
-      React145.createElement(
-        FormControl_default,
-        null,
-        React145.createElement(InputLabel_default, { id: "highres-method" }, t2("parameter.highres.method")),
-        React145.createElement(Select_default, { disabled: highres.enabled === false, labelId: "highres-method", label: t2("parameter.highres.method"), value: highres.highresMethod, onChange: (e2) => {
-          setHighres({
-            highresMethod: e2.target.value
-          });
-        } }, Object.entries(params.highresMethod.keys).map(([key, name]) => React145.createElement(MenuItem_default, { key, value: name }, t2(`highresMethod.${name}`))))
-      ),
-      React145.createElement(NumericField, { label: t2("parameter.highres.iterations"), disabled: highres.enabled === false, min: params.highresIterations.min, max: params.highresIterations.max, step: params.highresIterations.step, value: highres.highresIterations, onChange: (iterations) => {
-        setHighres({
-          highresIterations: iterations
-        });
-      } })
-    );
-  }
-  __name(HighresControl, "HighresControl");
-
-  // out/src/components/control/ImageControl.js
-  var import_lodash3 = __toESM(require_lodash(), 1);
-  var React149 = __toESM(require_react(), 1);
-  var import_react32 = __toESM(require_react(), 1);
-
-  // out/src/components/input/PromptInput.js
-  var React147 = __toESM(require_react(), 1);
-
-  // out/src/components/input/QueryMenu.js
-  var React146 = __toESM(require_react(), 1);
-  var { useState: useState27 } = React146;
-  function hasFilter(query) {
-    return Reflect.has(query, "selector");
-  }
-  __name(hasFilter, "hasFilter");
-  function filterQuery(query, showEmpty) {
-    if (hasFilter(query)) {
-      const data = mustExist(query.result.data);
-      const selected = query.selector(data);
-      if (showEmpty) {
-        return ["", ...selected];
-      }
-      return selected;
-    } else {
-      const data = Array.from(mustExist(query.result.data));
-      if (showEmpty) {
-        return ["", ...data];
-      }
-      return data;
-    }
-  }
-  __name(filterQuery, "filterQuery");
-  function QueryMenu(props) {
-    const { id, labelKey, name, query, showEmpty = false } = props;
-    const { result } = query;
-    const labelID = `query-menu-${props.id}-labels`;
-    const { t: t2 } = useTranslation();
-    const [anchor, setAnchor] = useState27(void 0);
-    function closeMenu() {
-      setAnchor(void 0);
-    }
-    __name(closeMenu, "closeMenu");
-    function openMenu(event) {
-      setAnchor(event.currentTarget);
-    }
-    __name(openMenu, "openMenu");
-    function selectItem(value) {
-      closeMenu();
-      if (doesExist2(props.onSelect)) {
-        props.onSelect(value);
-      }
-    }
-    __name(selectItem, "selectItem");
-    function getLabel(key) {
-      return mustDefault(t2(`${labelKey}.${key}`), key);
-    }
-    __name(getLabel, "getLabel");
-    if (result.status === "error") {
-      if (result.error instanceof Error) {
-        return React146.createElement(Alert_default, { severity: "error" }, t2("input.list.error.specific", {
-          message: result.error.message
-        }));
-      } else {
-        return React146.createElement(Alert_default, { severity: "error" }, t2("input.list.error.unknown"));
-      }
-    }
-    if (result.status === "loading") {
-      return React146.createElement(
-        FormControl_default,
-        null,
-        React146.createElement(FormLabel_default, { id: labelID }, props.name),
-        React146.createElement(LinearProgress_default, null)
-      );
-    }
-    const data = filterQuery(query, showEmpty);
-    const labeledData = data.map((it) => [it, getLabel(it)]).sort((a2, b2) => a2[1].localeCompare(b2[1]));
-    const menuItems = labeledData.map(([key, label]) => React146.createElement(MenuItem_default, { key, onClick: () => selectItem(key) }, label));
-    return React146.createElement(
-      Box_default,
-      null,
-      React146.createElement(Button_default, { id: `${id}-button`, onClick: openMenu, endIcon: React146.createElement(KeyboardArrowDown_default, null), variant: "outlined" }, name),
-      React146.createElement(Menu_default, { id: `${id}-menu`, anchorEl: anchor, open: doesExist2(anchor), onClose: closeMenu, MenuListProps: {
-        "aria-labelledby": `${id}-button`
-      } }, menuItems)
-    );
-  }
-  __name(QueryMenu, "QueryMenu");
-
-  // out/src/components/input/PromptInput.js
-  var { useContext: useContext31 } = React147;
-  var PROMPT_GROUP = 75;
-  function splitPrompt(prompt) {
-    return prompt.split(",").flatMap((phrase) => phrase.split(" ")).map((word) => word.trim()).filter((word) => word.length > 0);
-  }
-  __name(splitPrompt, "splitPrompt");
-  function PromptInput(props) {
-    const { selector, onChange } = props;
-    const store = mustExist(useContext31(StateContext));
-    const { prompt, negativePrompt } = useStore(store, selector, shallow);
-    const client = mustExist(useContext31(ClientContext));
-    const models = useQuery(["models"], async () => client.models(), {
-      staleTime: STALE_TIME
-    });
-    const tokens = splitPrompt(prompt);
-    const groups = Math.ceil(tokens.length / PROMPT_GROUP);
-    const { t: t2 } = useTranslation();
-    const helper = t2("input.prompt.tokens", {
-      groups,
-      tokens: tokens.length
-    });
-    function addToken(type, name, weight = 1) {
-      onChange({
-        prompt: `<${type}:${name}:1.0> ${prompt}`,
-        negativePrompt
-      });
-    }
-    __name(addToken, "addToken");
-    return React147.createElement(
-      Stack_default,
-      { spacing: 2 },
-      React147.createElement(TextField_default, { label: t2("parameter.prompt"), helperText: helper, variant: "outlined", value: prompt, onChange: (event) => {
-        props.onChange({
-          prompt: event.target.value,
-          negativePrompt
-        });
-      } }),
-      React147.createElement(TextField_default, { label: t2("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
-        props.onChange({
-          prompt,
-          negativePrompt: event.target.value
-        });
-      } }),
-      React147.createElement(
-        Stack_default,
-        { direction: "row", spacing: 2 },
-        React147.createElement(QueryMenu, { id: "inversion", labelKey: "model.inversion", name: t2("modelType.inversion"), query: {
-          result: models,
-          selector: (result) => result.networks.filter((network) => network.type === "inversion").map((network) => network.name)
-        }, onSelect: (name) => {
-          addToken("inversion", name);
-        } }),
-        React147.createElement(QueryMenu, { id: "lora", labelKey: "model.lora", name: t2("modelType.lora"), query: {
-          result: models,
-          selector: (result) => result.networks.filter((network) => network.type === "lora").map((network) => network.name)
-        }, onSelect: (name) => {
-          addToken("lora", name);
-        } })
-      )
-    );
-  }
-  __name(PromptInput, "PromptInput");
-
-  // out/src/components/input/QueryList.js
-  var React148 = __toESM(require_react(), 1);
-  var import_react31 = __toESM(require_react(), 1);
-  function hasFilter2(query) {
-    return Reflect.has(query, "selector");
-  }
-  __name(hasFilter2, "hasFilter");
-  function filterQuery2(query, showEmpty) {
-    if (hasFilter2(query)) {
-      const data = mustExist(query.result.data);
-      const selected = query.selector(data);
-      if (doesExist2(showEmpty)) {
-        return [showEmpty, ...selected];
-      }
-      return selected;
-    } else {
-      const data = Array.from(mustExist(query.result.data));
-      if (doesExist2(showEmpty)) {
-        return [showEmpty, ...data];
-      }
-      return data;
-    }
-  }
-  __name(filterQuery2, "filterQuery");
-  function QueryList(props) {
-    const { labelKey, query, showNone = false, value } = props;
-    const { result } = query;
-    const labelID = `query-list-${props.id}-labels`;
-    const { t: t2 } = useTranslation();
-    function firstValidValue() {
-      if (doesExist2(value) && data.includes(value)) {
-        return value;
-      } else {
-        return data[0];
-      }
-    }
-    __name(firstValidValue, "firstValidValue");
-    function noneLabel() {
-      if (showNone) {
-        return "none";
-      }
-      return void 0;
-    }
-    __name(noneLabel, "noneLabel");
-    function getLabel(name) {
-      return mustDefault(t2(`${labelKey}.${name}`), name);
-    }
-    __name(getLabel, "getLabel");
-    (0, import_react31.useEffect)(() => {
-      if (result.status === "success" && doesExist2(result.data) && doesExist2(props.onChange)) {
-        const data2 = filterQuery2(query, noneLabel());
-        if (data2.includes(value) === false) {
-          props.onChange(data2[0]);
-        }
-      }
-    }, [result.status]);
-    if (result.status === "error") {
-      if (result.error instanceof Error) {
-        return React148.createElement(Alert_default, { severity: "error" }, t2("input.list.error.specific", {
-          message: result.error.message
-        }));
-      } else {
-        return React148.createElement(Alert_default, { severity: "error" }, t2("input.list.error.unknown"));
-      }
-    }
-    if (result.status === "loading") {
-      return React148.createElement(
-        FormControl_default,
-        null,
-        React148.createElement(FormLabel_default, { id: labelID }, props.name),
-        React148.createElement(LinearProgress_default, null)
-      );
-    }
-    const data = filterQuery2(query, noneLabel());
-    return React148.createElement(
-      FormControl_default,
-      null,
-      React148.createElement(InputLabel_default, { id: labelID }, props.name),
-      React148.createElement(Select_default, { labelId: labelID, label: props.name, value: firstValidValue(), onChange: (e2) => {
-        if (doesExist2(props.onChange)) {
-          props.onChange(e2.target.value);
-        }
-      } }, data.map((name) => React148.createElement(MenuItem_default, { key: name, value: name }, getLabel(name))))
-    );
-  }
-  __name(QueryList, "QueryList");
-
-  // out/src/components/control/ImageControl.js
-  var { useMemo: useMemo17 } = React149;
-  function omitPrompt(selector) {
-    return (state) => (0, import_lodash3.omit)(selector(state), "prompt", "negativePrompt");
-  }
-  __name(omitPrompt, "omitPrompt");
-  function ImageControl(props) {
-    const { onChange, selector } = props;
-    const selectOmitPrompt = useMemo17(() => omitPrompt(selector), [selector]);
-    const { params } = mustExist((0, import_react32.useContext)(ConfigContext));
-    const store = mustExist((0, import_react32.useContext)(StateContext));
-    const state = useStore(store, selectOmitPrompt, shallow);
-    const { t: t2 } = useTranslation();
-    const client = mustExist((0, import_react32.useContext)(ClientContext));
-    const schedulers = useQuery(["schedulers"], async () => client.schedulers(), {
-      staleTime: STALE_TIME
-    });
-    const maxStride = Math.min(state.tiles, params.stride.max);
-    return React149.createElement(
-      Stack_default2,
-      { spacing: 2 },
-      React149.createElement(
-        Stack_default2,
-        { direction: "row", spacing: 4 },
-        React149.createElement(QueryList, { id: "schedulers", labelKey: "scheduler", name: t2("parameter.scheduler"), query: {
-          result: schedulers
-        }, value: mustDefault(state.scheduler, ""), onChange: (value) => {
-          if (doesExist2(onChange)) {
-            onChange(Object.assign(Object.assign({}, state), { scheduler: value }));
-          }
-        } }),
-        React149.createElement(NumericField, { decimal: true, label: t2("parameter.eta"), min: params.eta.min, max: params.eta.max, step: params.eta.step, value: state.eta, onChange: (eta) => {
-          if (doesExist2(onChange)) {
-            onChange(Object.assign(Object.assign({}, state), { eta }));
-          }
-        } }),
-        React149.createElement(NumericField, { decimal: true, label: t2("parameter.cfg"), min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: state.cfg, onChange: (cfg) => {
-          if (doesExist2(onChange)) {
-            onChange(Object.assign(Object.assign({}, state), { cfg }));
-          }
-        } }),
-        React149.createElement(NumericField, { label: t2("parameter.steps"), min: params.steps.min, max: params.steps.max, step: params.steps.step, value: state.steps, onChange: (steps) => {
-          onChange(Object.assign(Object.assign({}, state), { steps }));
-        } }),
-        React149.createElement(NumericField, { label: t2("parameter.seed"), min: params.seed.min, max: params.seed.max, step: params.seed.step, value: state.seed, onChange: (seed) => {
-          onChange(Object.assign(Object.assign({}, state), { seed }));
-        } }),
-        React149.createElement(Button_default, { variant: "outlined", startIcon: React149.createElement(Casino_default, null), onClick: () => {
-          const seed = Math.floor(Math.random() * params.seed.max);
-          props.onChange(Object.assign(Object.assign({}, state), { seed }));
-        } }, t2("parameter.newSeed"))
-      ),
-      React149.createElement(
-        Stack_default2,
-        { direction: "row", spacing: 4 },
-        React149.createElement(NumericField, { label: t2("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: state.batch, onChange: (batch) => {
-          props.onChange(Object.assign(Object.assign({}, state), { batch }));
-        } }),
-        React149.createElement(NumericField, { label: t2("parameter.tiles"), min: params.tiles.min, max: params.tiles.max, step: params.tiles.step, value: state.tiles, onChange: (tiles) => {
-          props.onChange(Object.assign(Object.assign({}, state), { tiles }));
-        } }),
-        React149.createElement(NumericField, { decimal: true, label: t2("parameter.overlap"), min: params.overlap.min, max: params.overlap.max, step: params.overlap.step, value: state.overlap, onChange: (overlap) => {
-          props.onChange(Object.assign(Object.assign({}, state), { overlap }));
-        } }),
-        React149.createElement(NumericField, { label: t2("parameter.stride"), min: params.stride.min, max: maxStride, step: params.stride.step, value: state.stride, onChange: (stride) => {
-          props.onChange(Object.assign(Object.assign({}, state), { stride }));
-        } }),
-        React149.createElement(FormControlLabel_default, { label: t2("parameter.tiledVAE"), control: React149.createElement(Checkbox_default, { checked: state.tiledVAE, value: "check", onChange: (event) => {
-          props.onChange(Object.assign(Object.assign({}, state), { tiledVAE: state.tiledVAE === false }));
-        } }) })
-      ),
-      React149.createElement(PromptInput, { selector, onChange: (value) => {
-        props.onChange(Object.assign(Object.assign({}, state), value));
-      } })
-    );
-  }
-  __name(ImageControl, "ImageControl");
-
-  // out/src/components/control/ModelControl.js
-  var React150 = __toESM(require_react(), 1);
-  var import_react33 = __toESM(require_react(), 1);
-  function ModelControl(props) {
-    const { model, setModel } = props;
-    const client = mustExist((0, import_react33.useContext)(ClientContext));
-    const { t: t2 } = useTranslation();
-    const restart = useMutation(["restart"], async () => client.restart());
-    const models = useQuery(["models"], async () => client.models(), {
-      staleTime: STALE_TIME
-    });
-    const pipelines = useQuery(["pipelines"], async () => client.pipelines(), {
-      staleTime: STALE_TIME
-    });
-    const platforms = useQuery(["platforms"], async () => client.platforms(), {
-      staleTime: STALE_TIME
-    });
-    return React150.createElement(
-      Stack_default2,
-      { direction: "row", spacing: 2 },
-      React150.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t2("parameter.platform"), query: {
-        result: platforms
-      }, value: model.platform, onChange: (platform) => {
-        setModel({
-          platform
-        });
-      } }),
-      React150.createElement(QueryList, { id: "pipeline", labelKey: "pipeline", name: t2("parameter.pipeline"), query: {
-        result: pipelines
-      }, value: model.pipeline, onChange: (pipeline) => {
-        setModel({
-          pipeline
-        });
-      } }),
-      React150.createElement(QueryList, { id: "diffusion", labelKey: "model", name: t2("modelType.diffusion", { count: 1 }), query: {
-        result: models,
-        selector: (result) => result.diffusion
-      }, value: model.model, onChange: (newModel) => {
-        setModel({
-          model: newModel
-        });
-      } }),
-      React150.createElement(QueryList, { id: "upscaling", labelKey: "model", name: t2("modelType.upscaling", { count: 1 }), query: {
-        result: models,
-        selector: (result) => result.upscaling
-      }, value: model.upscaling, onChange: (upscaling) => {
-        setModel({
-          upscaling
-        });
-      } }),
-      React150.createElement(QueryList, { id: "correction", labelKey: "model", name: t2("modelType.correction", { count: 1 }), query: {
-        result: models,
-        selector: (result) => result.correction
-      }, value: model.correction, onChange: (correction) => {
-        setModel({
-          correction
-        });
-      } }),
-      React150.createElement(Button_default, { variant: "outlined", onClick: () => restart.mutate() }, t2("admin.restart"))
-    );
-  }
-  __name(ModelControl, "ModelControl");
-
   // node_modules/exifreader/src/utils.js
   function getStringFromDataView(dataView, offset2, length2) {
     const chars2 = [];
@@ -81915,59 +81484,59 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(hasPngData, "hasPngData");
 
   // out/src/components/Profiles.js
-  var import_lodash4 = __toESM(require_lodash(), 1);
-  var React151 = __toESM(require_react(), 1);
-  var import_react34 = __toESM(require_react(), 1);
-  var { useState: useState28 } = React151;
+  var import_lodash3 = __toESM(require_lodash(), 1);
+  var React145 = __toESM(require_react(), 1);
+  var import_react30 = __toESM(require_react(), 1);
+  var { useState: useState27 } = React145;
   function Profiles(props) {
-    const store = mustExist((0, import_react34.useContext)(StateContext));
+    const store = mustExist((0, import_react30.useContext)(StateContext));
     const { removeProfile, saveProfile } = useStore(store, selectActions6, shallow);
     const profiles = useStore(store, selectProfiles);
-    const [dialogOpen, setDialogOpen] = useState28(false);
-    const [profileName, setProfileName] = useState28("");
+    const [dialogOpen, setDialogOpen] = useState27(false);
+    const [profileName, setProfileName] = useState27("");
     const { t: t2 } = useTranslation();
-    return React151.createElement(
+    return React145.createElement(
       Stack_default2,
       { direction: "row", spacing: 2 },
-      React151.createElement(Autocomplete_default, { id: "profile-select", options: profiles, sx: { width: "25em" }, getOptionLabel: (option) => option.name, clearOnBlur: true, renderOption: (optionProps, option) => React151.createElement(
+      React145.createElement(Autocomplete_default, { id: "profile-select", options: profiles, sx: { width: "25em" }, getOptionLabel: (option) => option.name, clearOnBlur: true, renderOption: (optionProps, option) => React145.createElement(
         ListItem_default,
-        Object.assign({}, optionProps, { secondaryAction: React151.createElement(
+        Object.assign({}, optionProps, { secondaryAction: React145.createElement(
           IconButton_default,
           { edge: "end", onClick: (event) => {
             event.preventDefault();
             removeProfile(option.name);
           } },
-          React151.createElement(Delete_default, null)
+          React145.createElement(Delete_default, null)
         ) }),
-        React151.createElement(ListItemText_default, { primary: option.name })
-      ), renderInput: (params) => React151.createElement(
+        React145.createElement(ListItemText_default, { primary: option.name })
+      ), renderInput: (params) => React145.createElement(
         Stack_default2,
         { direction: "row" },
-        React151.createElement(TextField_default, Object.assign({}, params, { label: t2("profile.load"), inputProps: Object.assign(Object.assign({}, params.inputProps), { autoComplete: "new-password" }) })),
-        React151.createElement(
+        React145.createElement(TextField_default, Object.assign({}, params, { label: t2("profile.load"), inputProps: Object.assign(Object.assign({}, params.inputProps), { autoComplete: "new-password" }) })),
+        React145.createElement(
           Button_default,
           { type: "button", variant: "contained", onClick: () => setDialogOpen(true) },
-          React151.createElement(Save_default, null)
+          React145.createElement(Save_default, null)
         )
       ), onChange: (event, value) => {
         if (doesExist2(value)) {
           props.setParams(Object.assign({}, value.params));
         }
       } }),
-      React151.createElement(
+      React145.createElement(
         Dialog_default,
         { open: dialogOpen, onClose: () => setDialogOpen(false) },
-        React151.createElement(DialogTitle_default, null, t2("profile.saveProfile")),
-        React151.createElement(
+        React145.createElement(DialogTitle_default, null, t2("profile.saveProfile")),
+        React145.createElement(
           DialogContent_default,
           null,
-          React151.createElement(TextField_default, { variant: "standard", label: t2("profile.name"), value: profileName, onChange: (event) => setProfileName(event.target.value), fullWidth: true })
+          React145.createElement(TextField_default, { variant: "standard", label: t2("profile.name"), value: profileName, onChange: (event) => setProfileName(event.target.value), fullWidth: true })
         ),
-        React151.createElement(
+        React145.createElement(
           DialogActions_default,
           null,
-          React151.createElement(Button_default, { variant: "contained", onClick: () => setDialogOpen(false) }, t2("profile.cancel")),
-          React151.createElement(Button_default, { variant: "contained", onClick: () => {
+          React145.createElement(Button_default, { variant: "contained", onClick: () => setDialogOpen(false) }, t2("profile.cancel")),
+          React145.createElement(Button_default, { variant: "contained", onClick: () => {
             const state = store.getState();
             saveProfile({
               params: props.selectParams(state),
@@ -81980,11 +81549,11 @@ Please use another name.` : formatMuiErrorMessage(18));
           } }, t2("profile.save"))
         )
       ),
-      React151.createElement(
+      React145.createElement(
         Button_default,
         { component: "label", variant: "contained" },
-        React151.createElement(ImageSearch_default, null),
-        React151.createElement("input", { hidden: true, accept: ".json,.jpg,.jpeg,.png,.txt,.webp", type: "file", onChange: (event) => {
+        React145.createElement(ImageSearch_default, null),
+        React145.createElement("input", { hidden: true, accept: ".json,.jpg,.jpeg,.png,.txt,.webp", type: "file", onChange: (event) => {
           const { files } = event.target;
           if (doesExist2(files) && files.length > 0) {
             const file = mustExist(files[0]);
@@ -82004,7 +81573,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           event.currentTarget.value = "";
         } })
       ),
-      React151.createElement(
+      React145.createElement(
         Button_default,
         { component: "label", variant: "contained", onClick: () => {
           const state = store.getState();
@@ -82014,7 +81583,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             upscale: props.selectUpscale(state)
           });
         } },
-        React151.createElement(Download_default, null)
+        React145.createElement(Download_default, null)
       )
     );
   }
@@ -82061,8 +81630,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(downloadParamsAsFile, "downloadParamsAsFile");
   async function parseImageParams(file) {
     const tags2 = await load(file);
-    const makerNote = decodeTag((0, import_lodash4.defaultTo)(tags2.MakerNote, tags2["maker note"]));
-    const userComment = decodeTag((0, import_lodash4.defaultTo)((0, import_lodash4.defaultTo)(tags2.UserComment, tags2["Parameters"]), tags2["parameters"]));
+    const makerNote = decodeTag((0, import_lodash3.defaultTo)(tags2.MakerNote, tags2["maker note"]));
+    const userComment = decodeTag((0, import_lodash3.defaultTo)((0, import_lodash3.defaultTo)(tags2.UserComment, tags2["Parameters"]), tags2["parameters"]));
     if (doesExist2(makerNote) && isProbablyJSON(makerNote)) {
       return parseJSONParams(makerNote);
     }
@@ -82080,7 +81649,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     if (!doesExist2(tag)) {
       return void 0;
     }
-    if ((0, import_lodash4.isString)(tag.value)) {
+    if ((0, import_lodash3.isString)(tag.value)) {
       return tag.value;
     }
     if (tag.description === "[Unicode encoded text]" && isNumberArray(tag.value)) {
@@ -82092,7 +81661,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   async function parseJSONParams(json) {
     const data = JSON.parse(json);
     const params = Object.assign({}, data.params);
-    const size = (0, import_lodash4.defaultTo)(data.input_size, data.size);
+    const size = (0, import_lodash3.defaultTo)(data.input_size, data.size);
     if (doesExist2(size)) {
       params.height = size.height;
       params.width = size.width;
@@ -82155,6 +81724,437 @@ Please use another name.` : formatMuiErrorMessage(18));
     };
   }
   __name(parseAutoComment, "parseAutoComment");
+
+  // out/src/components/control/HighresControl.js
+  var React146 = __toESM(require_react(), 1);
+  var import_react31 = __toESM(require_react(), 1);
+  function HighresControl(props) {
+    const { selectHighres: selectHighres5, setHighres } = props;
+    const store = mustExist((0, import_react31.useContext)(StateContext));
+    const highres = useStore(store, selectHighres5);
+    const { params } = mustExist((0, import_react31.useContext)(ConfigContext));
+    const { t: t2 } = useTranslation();
+    return React146.createElement(
+      Stack_default2,
+      { direction: "row", spacing: 4 },
+      React146.createElement(FormControlLabel_default, { label: t2("parameter.highres.label"), control: React146.createElement(Checkbox_default, { checked: highres.enabled, value: "check", onChange: (_event) => {
+        setHighres({
+          enabled: highres.enabled === false
+        });
+      } }) }),
+      React146.createElement(NumericField, { label: t2("parameter.highres.steps"), disabled: highres.enabled === false, min: params.highresSteps.min, max: params.highresSteps.max, step: params.highresSteps.step, value: highres.highresSteps, onChange: (steps) => {
+        setHighres({
+          highresSteps: steps
+        });
+      } }),
+      React146.createElement(NumericField, { label: t2("parameter.highres.scale"), disabled: highres.enabled === false, min: params.highresScale.min, max: params.highresScale.max, step: params.highresScale.step, value: highres.highresScale, onChange: (scale) => {
+        setHighres({
+          highresScale: scale
+        });
+      } }),
+      React146.createElement(NumericField, { label: t2("parameter.highres.strength"), decimal: true, disabled: highres.enabled === false, min: params.highresStrength.min, max: params.highresStrength.max, step: params.highresStrength.step, value: highres.highresStrength, onChange: (strength) => {
+        setHighres({
+          highresStrength: strength
+        });
+      } }),
+      React146.createElement(
+        FormControl_default,
+        null,
+        React146.createElement(InputLabel_default, { id: "highres-method" }, t2("parameter.highres.method")),
+        React146.createElement(Select_default, { disabled: highres.enabled === false, labelId: "highres-method", label: t2("parameter.highres.method"), value: highres.highresMethod, onChange: (e2) => {
+          setHighres({
+            highresMethod: e2.target.value
+          });
+        } }, Object.entries(params.highresMethod.keys).map(([key, name]) => React146.createElement(MenuItem_default, { key, value: name }, t2(`highresMethod.${name}`))))
+      ),
+      React146.createElement(NumericField, { label: t2("parameter.highres.iterations"), disabled: highres.enabled === false, min: params.highresIterations.min, max: params.highresIterations.max, step: params.highresIterations.step, value: highres.highresIterations, onChange: (iterations) => {
+        setHighres({
+          highresIterations: iterations
+        });
+      } })
+    );
+  }
+  __name(HighresControl, "HighresControl");
+
+  // out/src/components/control/ImageControl.js
+  var import_lodash4 = __toESM(require_lodash(), 1);
+  var React150 = __toESM(require_react(), 1);
+  var import_react33 = __toESM(require_react(), 1);
+
+  // out/src/components/input/PromptInput.js
+  var React148 = __toESM(require_react(), 1);
+
+  // out/src/components/input/QueryMenu.js
+  var React147 = __toESM(require_react(), 1);
+  var { useState: useState28 } = React147;
+  function hasFilter(query) {
+    return Reflect.has(query, "selector");
+  }
+  __name(hasFilter, "hasFilter");
+  function filterQuery(query, showEmpty) {
+    if (hasFilter(query)) {
+      const data = mustExist(query.result.data);
+      const selected = query.selector(data);
+      if (showEmpty) {
+        return ["", ...selected];
+      }
+      return selected;
+    } else {
+      const data = Array.from(mustExist(query.result.data));
+      if (showEmpty) {
+        return ["", ...data];
+      }
+      return data;
+    }
+  }
+  __name(filterQuery, "filterQuery");
+  function QueryMenu(props) {
+    const { id, labelKey, name, query, showEmpty = false } = props;
+    const { result } = query;
+    const labelID = `query-menu-${props.id}-labels`;
+    const { t: t2 } = useTranslation();
+    const [anchor, setAnchor] = useState28(void 0);
+    function closeMenu() {
+      setAnchor(void 0);
+    }
+    __name(closeMenu, "closeMenu");
+    function openMenu(event) {
+      setAnchor(event.currentTarget);
+    }
+    __name(openMenu, "openMenu");
+    function selectItem(value) {
+      closeMenu();
+      if (doesExist2(props.onSelect)) {
+        props.onSelect(value);
+      }
+    }
+    __name(selectItem, "selectItem");
+    function getLabel(key) {
+      return mustDefault(t2(`${labelKey}.${key}`), key);
+    }
+    __name(getLabel, "getLabel");
+    if (result.status === "error") {
+      if (result.error instanceof Error) {
+        return React147.createElement(Alert_default, { severity: "error" }, t2("input.list.error.specific", {
+          message: result.error.message
+        }));
+      } else {
+        return React147.createElement(Alert_default, { severity: "error" }, t2("input.list.error.unknown"));
+      }
+    }
+    if (result.status === "loading") {
+      return React147.createElement(
+        FormControl_default,
+        null,
+        React147.createElement(FormLabel_default, { id: labelID }, props.name),
+        React147.createElement(LinearProgress_default, null)
+      );
+    }
+    const data = filterQuery(query, showEmpty);
+    const labeledData = data.map((it) => [it, getLabel(it)]).sort((a2, b2) => a2[1].localeCompare(b2[1]));
+    const menuItems = labeledData.map(([key, label]) => React147.createElement(MenuItem_default, { key, onClick: () => selectItem(key) }, label));
+    return React147.createElement(
+      Box_default,
+      null,
+      React147.createElement(Button_default, { id: `${id}-button`, onClick: openMenu, endIcon: React147.createElement(KeyboardArrowDown_default, null), variant: "outlined" }, name),
+      React147.createElement(Menu_default, { id: `${id}-menu`, anchorEl: anchor, open: doesExist2(anchor), onClose: closeMenu, MenuListProps: {
+        "aria-labelledby": `${id}-button`
+      } }, menuItems)
+    );
+  }
+  __name(QueryMenu, "QueryMenu");
+
+  // out/src/components/input/PromptInput.js
+  var { useContext: useContext32 } = React148;
+  var PROMPT_GROUP = 75;
+  function splitPrompt(prompt) {
+    return prompt.split(",").flatMap((phrase) => phrase.split(" ")).map((word) => word.trim()).filter((word) => word.length > 0);
+  }
+  __name(splitPrompt, "splitPrompt");
+  function PromptInput(props) {
+    const { selector, onChange } = props;
+    const store = mustExist(useContext32(StateContext));
+    const { prompt, negativePrompt } = useStore(store, selector, shallow);
+    const client = mustExist(useContext32(ClientContext));
+    const models = useQuery(["models"], async () => client.models(), {
+      staleTime: STALE_TIME
+    });
+    const tokens = splitPrompt(prompt);
+    const groups = Math.ceil(tokens.length / PROMPT_GROUP);
+    const { t: t2 } = useTranslation();
+    const helper = t2("input.prompt.tokens", {
+      groups,
+      tokens: tokens.length
+    });
+    function addToken(type, name, weight = 1) {
+      onChange({
+        prompt: `<${type}:${name}:1.0> ${prompt}`,
+        negativePrompt
+      });
+    }
+    __name(addToken, "addToken");
+    return React148.createElement(
+      Stack_default,
+      { spacing: 2 },
+      React148.createElement(TextField_default, { label: t2("parameter.prompt"), helperText: helper, variant: "outlined", value: prompt, onChange: (event) => {
+        props.onChange({
+          prompt: event.target.value,
+          negativePrompt
+        });
+      } }),
+      React148.createElement(TextField_default, { label: t2("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
+        props.onChange({
+          prompt,
+          negativePrompt: event.target.value
+        });
+      } }),
+      React148.createElement(
+        Stack_default,
+        { direction: "row", spacing: 2 },
+        React148.createElement(QueryMenu, { id: "inversion", labelKey: "model.inversion", name: t2("modelType.inversion"), query: {
+          result: models,
+          selector: (result) => result.networks.filter((network) => network.type === "inversion").map((network) => network.name)
+        }, onSelect: (name) => {
+          addToken("inversion", name);
+        } }),
+        React148.createElement(QueryMenu, { id: "lora", labelKey: "model.lora", name: t2("modelType.lora"), query: {
+          result: models,
+          selector: (result) => result.networks.filter((network) => network.type === "lora").map((network) => network.name)
+        }, onSelect: (name) => {
+          addToken("lora", name);
+        } })
+      )
+    );
+  }
+  __name(PromptInput, "PromptInput");
+
+  // out/src/components/input/QueryList.js
+  var React149 = __toESM(require_react(), 1);
+  var import_react32 = __toESM(require_react(), 1);
+  function hasFilter2(query) {
+    return Reflect.has(query, "selector");
+  }
+  __name(hasFilter2, "hasFilter");
+  function filterQuery2(query, showEmpty) {
+    if (hasFilter2(query)) {
+      const data = mustExist(query.result.data);
+      const selected = query.selector(data);
+      if (doesExist2(showEmpty)) {
+        return [showEmpty, ...selected];
+      }
+      return selected;
+    } else {
+      const data = Array.from(mustExist(query.result.data));
+      if (doesExist2(showEmpty)) {
+        return [showEmpty, ...data];
+      }
+      return data;
+    }
+  }
+  __name(filterQuery2, "filterQuery");
+  function QueryList(props) {
+    const { labelKey, query, showNone = false, value } = props;
+    const { result } = query;
+    const labelID = `query-list-${props.id}-labels`;
+    const { t: t2 } = useTranslation();
+    function firstValidValue() {
+      if (doesExist2(value) && data.includes(value)) {
+        return value;
+      } else {
+        return data[0];
+      }
+    }
+    __name(firstValidValue, "firstValidValue");
+    function noneLabel() {
+      if (showNone) {
+        return "none";
+      }
+      return void 0;
+    }
+    __name(noneLabel, "noneLabel");
+    function getLabel(name) {
+      return mustDefault(t2(`${labelKey}.${name}`), name);
+    }
+    __name(getLabel, "getLabel");
+    (0, import_react32.useEffect)(() => {
+      if (result.status === "success" && doesExist2(result.data) && doesExist2(props.onChange)) {
+        const data2 = filterQuery2(query, noneLabel());
+        if (data2.includes(value) === false) {
+          props.onChange(data2[0]);
+        }
+      }
+    }, [result.status]);
+    if (result.status === "error") {
+      if (result.error instanceof Error) {
+        return React149.createElement(Alert_default, { severity: "error" }, t2("input.list.error.specific", {
+          message: result.error.message
+        }));
+      } else {
+        return React149.createElement(Alert_default, { severity: "error" }, t2("input.list.error.unknown"));
+      }
+    }
+    if (result.status === "loading") {
+      return React149.createElement(
+        FormControl_default,
+        null,
+        React149.createElement(FormLabel_default, { id: labelID }, props.name),
+        React149.createElement(LinearProgress_default, null)
+      );
+    }
+    const data = filterQuery2(query, noneLabel());
+    return React149.createElement(
+      FormControl_default,
+      null,
+      React149.createElement(InputLabel_default, { id: labelID }, props.name),
+      React149.createElement(Select_default, { labelId: labelID, label: props.name, value: firstValidValue(), onChange: (e2) => {
+        if (doesExist2(props.onChange)) {
+          props.onChange(e2.target.value);
+        }
+      } }, data.map((name) => React149.createElement(MenuItem_default, { key: name, value: name }, getLabel(name))))
+    );
+  }
+  __name(QueryList, "QueryList");
+
+  // out/src/components/control/ImageControl.js
+  var { useMemo: useMemo17 } = React150;
+  function omitPrompt(selector) {
+    return (state) => (0, import_lodash4.omit)(selector(state), "prompt", "negativePrompt");
+  }
+  __name(omitPrompt, "omitPrompt");
+  function ImageControl(props) {
+    const { onChange, selector } = props;
+    const selectOmitPrompt = useMemo17(() => omitPrompt(selector), [selector]);
+    const { params } = mustExist((0, import_react33.useContext)(ConfigContext));
+    const store = mustExist((0, import_react33.useContext)(StateContext));
+    const state = useStore(store, selectOmitPrompt, shallow);
+    const { t: t2 } = useTranslation();
+    const client = mustExist((0, import_react33.useContext)(ClientContext));
+    const schedulers = useQuery(["schedulers"], async () => client.schedulers(), {
+      staleTime: STALE_TIME
+    });
+    const maxStride = Math.min(state.tiles, params.stride.max);
+    return React150.createElement(
+      Stack_default2,
+      { spacing: 2 },
+      React150.createElement(
+        Stack_default2,
+        { direction: "row", spacing: 4 },
+        React150.createElement(QueryList, { id: "schedulers", labelKey: "scheduler", name: t2("parameter.scheduler"), query: {
+          result: schedulers
+        }, value: mustDefault(state.scheduler, ""), onChange: (value) => {
+          if (doesExist2(onChange)) {
+            onChange(Object.assign(Object.assign({}, state), { scheduler: value }));
+          }
+        } }),
+        React150.createElement(NumericField, { decimal: true, label: t2("parameter.eta"), min: params.eta.min, max: params.eta.max, step: params.eta.step, value: state.eta, onChange: (eta) => {
+          if (doesExist2(onChange)) {
+            onChange(Object.assign(Object.assign({}, state), { eta }));
+          }
+        } }),
+        React150.createElement(NumericField, { decimal: true, label: t2("parameter.cfg"), min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: state.cfg, onChange: (cfg) => {
+          if (doesExist2(onChange)) {
+            onChange(Object.assign(Object.assign({}, state), { cfg }));
+          }
+        } }),
+        React150.createElement(NumericField, { label: t2("parameter.steps"), min: params.steps.min, max: params.steps.max, step: params.steps.step, value: state.steps, onChange: (steps) => {
+          onChange(Object.assign(Object.assign({}, state), { steps }));
+        } }),
+        React150.createElement(NumericField, { label: t2("parameter.seed"), min: params.seed.min, max: params.seed.max, step: params.seed.step, value: state.seed, onChange: (seed) => {
+          onChange(Object.assign(Object.assign({}, state), { seed }));
+        } }),
+        React150.createElement(Button_default, { variant: "outlined", startIcon: React150.createElement(Casino_default, null), onClick: () => {
+          const seed = Math.floor(Math.random() * params.seed.max);
+          props.onChange(Object.assign(Object.assign({}, state), { seed }));
+        } }, t2("parameter.newSeed"))
+      ),
+      React150.createElement(
+        Stack_default2,
+        { direction: "row", spacing: 4 },
+        React150.createElement(NumericField, { label: t2("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: state.batch, onChange: (batch) => {
+          props.onChange(Object.assign(Object.assign({}, state), { batch }));
+        } }),
+        React150.createElement(NumericField, { label: t2("parameter.tiles"), min: params.tiles.min, max: params.tiles.max, step: params.tiles.step, value: state.tiles, onChange: (tiles) => {
+          props.onChange(Object.assign(Object.assign({}, state), { tiles }));
+        } }),
+        React150.createElement(NumericField, { decimal: true, label: t2("parameter.overlap"), min: params.overlap.min, max: params.overlap.max, step: params.overlap.step, value: state.overlap, onChange: (overlap) => {
+          props.onChange(Object.assign(Object.assign({}, state), { overlap }));
+        } }),
+        React150.createElement(NumericField, { label: t2("parameter.stride"), min: params.stride.min, max: maxStride, step: params.stride.step, value: state.stride, onChange: (stride) => {
+          props.onChange(Object.assign(Object.assign({}, state), { stride }));
+        } }),
+        React150.createElement(FormControlLabel_default, { label: t2("parameter.tiledVAE"), control: React150.createElement(Checkbox_default, { checked: state.tiledVAE, value: "check", onChange: (event) => {
+          props.onChange(Object.assign(Object.assign({}, state), { tiledVAE: state.tiledVAE === false }));
+        } }) })
+      ),
+      React150.createElement(PromptInput, { selector, onChange: (value) => {
+        props.onChange(Object.assign(Object.assign({}, state), value));
+      } })
+    );
+  }
+  __name(ImageControl, "ImageControl");
+
+  // out/src/components/control/ModelControl.js
+  var React151 = __toESM(require_react(), 1);
+  var import_react34 = __toESM(require_react(), 1);
+  function ModelControl(props) {
+    const { model, setModel } = props;
+    const client = mustExist((0, import_react34.useContext)(ClientContext));
+    const { t: t2 } = useTranslation();
+    const restart = useMutation(["restart"], async () => client.restart());
+    const models = useQuery(["models"], async () => client.models(), {
+      staleTime: STALE_TIME
+    });
+    const pipelines = useQuery(["pipelines"], async () => client.pipelines(), {
+      staleTime: STALE_TIME
+    });
+    const platforms = useQuery(["platforms"], async () => client.platforms(), {
+      staleTime: STALE_TIME
+    });
+    return React151.createElement(
+      Stack_default2,
+      { direction: "row", spacing: 2 },
+      React151.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t2("parameter.platform"), query: {
+        result: platforms
+      }, value: model.platform, onChange: (platform) => {
+        setModel({
+          platform
+        });
+      } }),
+      React151.createElement(QueryList, { id: "pipeline", labelKey: "pipeline", name: t2("parameter.pipeline"), query: {
+        result: pipelines
+      }, value: model.pipeline, onChange: (pipeline) => {
+        setModel({
+          pipeline
+        });
+      } }),
+      React151.createElement(QueryList, { id: "diffusion", labelKey: "model", name: t2("modelType.diffusion", { count: 1 }), query: {
+        result: models,
+        selector: (result) => result.diffusion
+      }, value: model.model, onChange: (newModel) => {
+        setModel({
+          model: newModel
+        });
+      } }),
+      React151.createElement(QueryList, { id: "upscaling", labelKey: "model", name: t2("modelType.upscaling", { count: 1 }), query: {
+        result: models,
+        selector: (result) => result.upscaling
+      }, value: model.upscaling, onChange: (upscaling) => {
+        setModel({
+          upscaling
+        });
+      } }),
+      React151.createElement(QueryList, { id: "correction", labelKey: "model", name: t2("modelType.correction", { count: 1 }), query: {
+        result: models,
+        selector: (result) => result.correction
+      }, value: model.correction, onChange: (correction) => {
+        setModel({
+          correction
+        });
+      } }),
+      React151.createElement(Button_default, { variant: "outlined", onClick: () => restart.mutate() }, t2("admin.restart"))
+    );
+  }
+  __name(ModelControl, "ModelControl");
 
   // out/src/components/tab/Img2Img.js
   function Img2Img() {
@@ -83022,6 +83022,81 @@ Please use another name.` : formatMuiErrorMessage(18));
   var React164 = __toESM(require_react(), 1);
   var import_react40 = __toESM(require_react(), 1);
 
+  // out/src/client/utils.js
+  function replacePromptTokens(grid2, params, columnValue, rowValue) {
+    const result = {
+      negativePrompt: params.negativePrompt,
+      prompt: params.prompt
+    };
+    if (grid2.columns.parameter === "token") {
+      result.prompt = result.prompt.replace("__column__", columnValue.toString());
+      if (doesExist2(result.negativePrompt)) {
+        result.negativePrompt = result.negativePrompt.replace("__column__", columnValue.toString());
+      }
+    }
+    if (grid2.rows.parameter === "token") {
+      result.prompt = result.prompt.replace("__row__", rowValue.toString());
+      if (doesExist2(result.negativePrompt)) {
+        result.negativePrompt = result.negativePrompt.replace("__row__", rowValue.toString());
+      }
+    }
+    return result;
+  }
+  __name(replacePromptTokens, "replacePromptTokens");
+  var MAX_SEED_SIZE = 32;
+  var MAX_SEED = 2 ** MAX_SEED_SIZE - 1;
+  function newSeed() {
+    return Math.floor(Math.random() * MAX_SEED);
+  }
+  __name(newSeed, "newSeed");
+  function replaceRandomSeeds(key, values3) {
+    if (key !== "seed") {
+      return values3;
+    }
+    return values3.map((it) => {
+      if (it === "-1" || it === -1) {
+        return newSeed();
+      }
+      return it;
+    });
+  }
+  __name(replaceRandomSeeds, "replaceRandomSeeds");
+  function makeTxt2ImgGridPipeline(grid2, model, params, upscale, highres) {
+    const pipeline = {
+      defaults: Object.assign(Object.assign({}, model), params),
+      stages: []
+    };
+    const tiles = {
+      tiles: 8192
+    };
+    const rows = replaceRandomSeeds(grid2.rows.parameter, grid2.rows.values);
+    const columns = replaceRandomSeeds(grid2.columns.parameter, grid2.columns.values);
+    let i = 0;
+    for (const row of rows) {
+      for (const column2 of columns) {
+        const prompt = replacePromptTokens(grid2, params, column2, row);
+        pipeline.stages.push({
+          name: `cell-${i}`,
+          type: "source-txt2img",
+          params: Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, params), prompt), model), tiles), { [grid2.columns.parameter]: column2, [grid2.rows.parameter]: row })
+        });
+        i += 1;
+      }
+    }
+    pipeline.stages.push({
+      name: "grid",
+      type: "blend-grid",
+      params: Object.assign(Object.assign(Object.assign(Object.assign({}, params), model), tiles), { height: grid2.rows.values.length, width: grid2.columns.values.length })
+    });
+    pipeline.stages.push({
+      name: "save",
+      type: "persist-disk",
+      params: tiles
+    });
+    return pipeline;
+  }
+  __name(makeTxt2ImgGridPipeline, "makeTxt2ImgGridPipeline");
+
   // out/src/components/control/VariableControl.js
   var React163 = __toESM(require_react(), 1);
   var import_react39 = __toESM(require_react(), 1);
@@ -83031,7 +83106,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const stack = [
       React163.createElement(
         Stack_default2,
-        { direction: "row", spacing: 2 },
+        { direction: "row", spacing: 2, key: "variable-enable" },
         React163.createElement(
           FormControl_default,
           null,
@@ -83044,7 +83119,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     if (grid2.enabled) {
       stack.push(React163.createElement(
         Stack_default2,
-        { direction: "row", spacing: 2 },
+        { direction: "row", spacing: 2, key: "variable-row" },
         React163.createElement(
           FormControl_default,
           null,
@@ -83066,7 +83141,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         }) })
       ), React163.createElement(
         Stack_default2,
-        { direction: "row", spacing: 2 },
+        { direction: "row", spacing: 2, key: "variable-column" },
         React163.createElement(
           FormControl_default,
           null,
@@ -83099,14 +83174,11 @@ Please use another name.` : formatMuiErrorMessage(18));
     return csv.flatMap((it) => expandRanges(it));
   }
   __name(rangeSplit, "rangeSplit");
-  var EXPR_STRICT_NUMBER = /^-?[0-9]+$/;
-  var EXPR_NUMBER_RANGE = /^([0-9]+)-([0-9]+)$/;
+  var EXPR_STRICT_NUMBER = /^-?\d+$/;
+  var EXPR_NUMBER_RANGE = /^(\d+)-(\d+)$/;
   function expandRanges(range2) {
     if (EXPR_STRICT_NUMBER.test(range2)) {
       const val = parseInt(range2, 10);
-      if (val === -1) {
-        return [newSeed()];
-      }
       return [val];
     }
     if (EXPR_NUMBER_RANGE.test(range2)) {
@@ -83121,12 +83193,6 @@ Please use another name.` : formatMuiErrorMessage(18));
     return [];
   }
   __name(expandRanges, "expandRanges");
-  var MAX_SEED_SIZE = 32;
-  var MAX_SEED = 2 ** MAX_SEED_SIZE - 1;
-  function newSeed() {
-    return Math.floor(Math.random() * MAX_SEED);
-  }
-  __name(newSeed, "newSeed");
   var VARIABLE_PARAMETERS = ["prompt", "negativePrompt", "seed", "steps", "cfg", "scheduler", "eta", "token"];
   var STRING_PARAMETERS = ["prompt", "negativePrompt", "scheduler", "token"];
   function parameterList(exclude) {
@@ -83141,70 +83207,6 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(parameterList, "parameterList");
 
-  // out/src/client/utils.js
-  function replacePromptTokens(grid2, params, columnValue, rowValue) {
-    const result = {
-      negativePrompt: params.negativePrompt,
-      prompt: params.prompt
-    };
-    if (grid2.columns.parameter === "token") {
-      result.prompt = result.prompt.replace("__column__", columnValue.toString());
-      if (doesExist2(result.negativePrompt)) {
-        result.negativePrompt = result.negativePrompt.replace("__column__", columnValue.toString());
-      }
-    }
-    if (grid2.rows.parameter === "token") {
-      result.prompt = result.prompt.replace("__row__", rowValue.toString());
-      if (doesExist2(result.negativePrompt)) {
-        result.negativePrompt = result.negativePrompt.replace("__row__", rowValue.toString());
-      }
-    }
-    return result;
-  }
-  __name(replacePromptTokens, "replacePromptTokens");
-  function buildPipelineForTxt2ImgGrid(grid2, model, params, upscale, highres) {
-    const pipeline = {
-      stages: []
-    };
-    let i = 0;
-    for (const row of grid2.rows.values) {
-      for (const column2 of grid2.columns.values) {
-        const prompt = replacePromptTokens(grid2, params, column2, row);
-        pipeline.stages.push({
-          name: `cell-${i}`,
-          type: "source-txt2img",
-          params: Object.assign(Object.assign(Object.assign(Object.assign({}, params), prompt), model), {
-            [grid2.columns.parameter]: column2,
-            [grid2.rows.parameter]: row,
-            // eslint-disable-next-line camelcase
-            tile_size: 8192
-          })
-        });
-        i += 1;
-      }
-    }
-    pipeline.stages.push({
-      name: "grid",
-      type: "blend-grid",
-      params: Object.assign(Object.assign(Object.assign({}, params), model), {
-        height: grid2.rows.values.length,
-        width: grid2.columns.values.length,
-        // eslint-disable-next-line camelcase
-        tile_size: 8192
-      })
-    });
-    pipeline.stages.push({
-      name: "save",
-      type: "persist-disk",
-      params: {
-        // eslint-disable-next-line camelcase
-        tile_size: 8192
-      }
-    });
-    return pipeline;
-  }
-  __name(buildPipelineForTxt2ImgGrid, "buildPipelineForTxt2ImgGrid");
-
   // out/src/components/tab/Txt2Img.js
   function Txt2Img() {
     const { params } = mustExist((0, import_react40.useContext)(ConfigContext));
@@ -83215,7 +83217,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       const upscale = selectUpscale4(state);
       const highres = selectHighres3(state);
       if (grid2.enabled) {
-        const chain = buildPipelineForTxt2ImgGrid(grid2, model, params2, upscale, highres);
+        const chain = makeTxt2ImgGridPipeline(grid2, model, params2, upscale, highres);
         const image = await client.chain(model, chain);
         pushHistory(image);
       } else {
