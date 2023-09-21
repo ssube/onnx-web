@@ -123,7 +123,7 @@ class TestPatchPipeline(unittest.TestCase):
     server = ServerContext()
     pipeline = MockPipeline()
     patch_pipeline(server, pipeline, None, ImageParams("test", "txt2img-sdxl", "ddim", "test", 1.0, 10, 1))
-    self.assertFalse(isinstance(pipeline.unet, UNetWrapper))
+    self.assertTrue(isinstance(pipeline.unet, UNetWrapper))
 
   def test_vae_wrapper(self):
     server = ServerContext()
