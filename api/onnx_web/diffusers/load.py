@@ -547,10 +547,9 @@ def patch_pipeline(
     if not params.is_lpw() and not params.is_xl():
         pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
 
-    if not params.is_xl():
-        original_unet = pipe.unet
-        pipe.unet = UNetWrapper(server, original_unet)
-        logger.debug("patched UNet with wrapper")
+    original_unet = pipe.unet
+    pipe.unet = UNetWrapper(server, original_unet, params.is_xl())
+    logger.debug("patched UNet with wrapper")
 
     if hasattr(pipe, "vae_decoder"):
         original_decoder = pipe.vae_decoder
