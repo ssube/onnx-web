@@ -39,6 +39,28 @@ export function replacePromptTokens(grid: PipelineGrid, params: Txt2ImgParams, c
   return result;
 }
 
+export const MAX_SEED_SIZE = 32;
+export const MAX_SEED = (2**MAX_SEED_SIZE) - 1;
+
+export function newSeed(): number {
+  return Math.floor(Math.random() * MAX_SEED);
+}
+
+export function replaceRandomSeeds(key: string, values: Array<number | string>): Array<number | string> {
+  if (key !== 'seed') {
+    return values;
+  }
+
+  return values.map((it) => {
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    if (it === '-1' || it === -1) {
+      return newSeed();
+    }
+
+    return it;
+  });
+}
+
 // eslint-disable-next-line max-params
 export function makeTxt2ImgGridPipeline(grid: PipelineGrid, model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): ChainPipeline {
   const pipeline: ChainPipeline = {
@@ -53,10 +75,13 @@ export function makeTxt2ImgGridPipeline(grid: PipelineGrid, model: ModelParams, 
     tiles: 8192,
   };
 
+  const rows = replaceRandomSeeds(grid.rows.parameter, grid.rows.values);
+  const columns = replaceRandomSeeds(grid.columns.parameter, grid.columns.values);
+
   let i = 0;
 
-  for (const row of grid.rows.values) {
-    for (const column of grid.columns.values) {
+  for (const row of rows) {
+    for (const column of columns) {
       const prompt = replacePromptTokens(grid, params, column, row);
 
       pipeline.stages.push({

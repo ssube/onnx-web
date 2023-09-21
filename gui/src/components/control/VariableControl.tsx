@@ -99,14 +99,8 @@ export const EXPR_NUMBER_RANGE = /^(\d+)-(\d+)$/;
 
 export function expandRanges(range: string): Array<string | number> {
   if (EXPR_STRICT_NUMBER.test(range)) {
-    // entirely numeric, return without parsing
+    // entirely numeric, return after parsing
     const val = parseInt(range, 10);
-
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    if (val === -1) {
-      return [newSeed()];
-    }
-
     return [val];
   }
 
@@ -122,13 +116,6 @@ export function expandRanges(range: string): Array<string | number> {
   }
 
   return [];
-}
-
-export const MAX_SEED_SIZE = 32;
-export const MAX_SEED = (2**MAX_SEED_SIZE) - 1;
-
-export function newSeed(): number {
-  return Math.floor(Math.random() * MAX_SEED);
 }
 
 export const VARIABLE_PARAMETERS = ['prompt', 'negativePrompt', 'seed', 'steps', 'cfg', 'scheduler', 'eta', 'token'];
