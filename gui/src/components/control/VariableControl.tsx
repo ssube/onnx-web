@@ -6,6 +6,7 @@ import { useStore } from 'zustand';
 
 import { PipelineGrid } from '../../client/utils.js';
 import { OnnxState, StateContext } from '../../state.js';
+import { VARIABLE_PARAMETERS } from '../../types/chain.js';
 
 export interface VariableControlProps {
   selectGrid: (state: OnnxState) => PipelineGrid;
@@ -42,18 +43,16 @@ export function VariableControl(props: VariableControlProps) {
           <Select onChange={(event) => props.setGrid({
             columns: {
               parameter: event.target.value as VariableKey,
-              input: '',
-              values: [],
+              value: '',
             },
           })} value={grid.columns.parameter}>
             {...parameterList([grid.rows.parameter])}
           </Select>
         </FormControl>
-        <TextField label={grid.columns.parameter} value={grid.columns.input} onChange={(event) => props.setGrid({
+        <TextField label={grid.columns.parameter} value={grid.columns.value} onChange={(event) => props.setGrid({
           columns: {
             parameter: grid.columns.parameter,
-            input: event.target.value,
-            values: rangeSplit(grid.columns.parameter, event.target.value),
+            value: event.target.value,
           },
         })} />
       </Stack>,
@@ -63,18 +62,16 @@ export function VariableControl(props: VariableControlProps) {
           <Select onChange={(event) => props.setGrid({
             rows: {
               parameter: event.target.value as VariableKey,
-              input: '',
-              values: [],
+              value: '',
             }
           })} value={grid.rows.parameter}>
             {...parameterList([grid.columns.parameter])}
           </Select>
         </FormControl>
-        <TextField label={grid.rows.parameter} value={grid.rows.input} onChange={(event) => props.setGrid({
+        <TextField label={grid.rows.parameter} value={grid.rows.value} onChange={(event) => props.setGrid({
           rows: {
             parameter: grid.rows.parameter,
-            input: event.target.value,
-            values: rangeSplit(grid.rows.parameter, event.target.value),
+            value: event.target.value,
           }
         })} />
       </Stack>
@@ -83,43 +80,6 @@ export function VariableControl(props: VariableControlProps) {
 
   return <Stack direction='column' spacing={2}>{...stack}</Stack>;
 }
-
-export function rangeSplit(parameter: string, value: string): Array<number | string> {
-  const csv = value.split(',').map((it) => it.trim());
-
-  if (STRING_PARAMETERS.includes(parameter)) {
-    return csv;
-  }
-
-  return csv.flatMap((it) => expandRanges(it));
-}
-
-export const EXPR_STRICT_NUMBER = /^-?\d+$/;
-export const EXPR_NUMBER_RANGE = /^(\d+)-(\d+)$/;
-
-export function expandRanges(range: string): Array<string | number> {
-  if (EXPR_STRICT_NUMBER.test(range)) {
-    // entirely numeric, return after parsing
-    const val = parseInt(range, 10);
-    return [val];
-  }
-
-  if (EXPR_NUMBER_RANGE.test(range)) {
-    const match = EXPR_NUMBER_RANGE.exec(range);
-    if (doesExist(match)) {
-      const [_full, startStr, endStr] = Array.from(match);
-      const start = parseInt(startStr, 10);
-      const end = parseInt(endStr, 10);
-
-      return new Array(end - start).fill(0).map((_value, idx) => idx + start);
-    }
-  }
-
-  return [];
-}
-
-export const VARIABLE_PARAMETERS = ['prompt', 'negativePrompt', 'seed', 'steps', 'cfg', 'scheduler', 'eta', 'token'];
-export const STRING_PARAMETERS = ['prompt', 'negativePrompt', 'scheduler', 'token'];
 
 export function parameterList(exclude?: Array<string>) {
   const items = [];

@@ -38,3 +38,6 @@ export interface ChainPipeline {
 
   stages: Array<Txt2ImgStage | Img2ImgStage | GridStage | OutputStage>;
 }
+
+export const VARIABLE_PARAMETERS = ['prompt', 'negativePrompt', 'seed', 'steps', 'cfg', 'scheduler', 'eta', 'token'];
+export const STRING_PARAMETERS = ['prompt', 'negativePrompt', 'scheduler', 'token'];
