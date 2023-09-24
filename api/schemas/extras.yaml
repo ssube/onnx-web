@@ -100,6 +100,7 @@ $defs:
               panorama,
               pix2pix,
               txt2img,
+              txt2img-sdxl,
               upscale,
             ]
           vae:
