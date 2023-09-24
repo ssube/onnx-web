@@ -380,6 +380,10 @@ def convert_diffusion_diffusers(
         else:
             pipeline.vae = AutoencoderKL.from_pretrained(vae_path)
 
+    if is_torch_2_0:
+        pipeline.unet.set_attn_processor(AttnProcessor())
+        pipeline.vae.set_attn_processor(AttnProcessor())
+
     optimize_pipeline(conversion, pipeline)
 
     output_path = Path(dest_path)
@@ -429,9 +433,6 @@ def convert_diffusion_diffusers(
     else:
         unet_inputs = ["sample", "timestep", "encoder_hidden_states", "return_dict"]
         unet_scale = torch.tensor(False).to(device=device, dtype=torch.bool)
-
-    if is_torch_2_0:
-        pipeline.unet.set_attn_processor(AttnProcessor())
 
     unet_in_channels = pipeline.unet.config.in_channels
     unet_sample_size = pipeline.unet.config.sample_size
