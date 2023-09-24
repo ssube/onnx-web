@@ -411,6 +411,9 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
             if pop_key in kwargs:
                 kwargs.pop(pop_key)
 
+        if "seed" in kwargs and kwargs["seed"] == -1:
+            kwargs.pop("seed")
+
         # replace kwargs with parsed versions
         kwargs["params"] = params
         kwargs["size"] = size
