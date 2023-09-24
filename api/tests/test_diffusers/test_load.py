@@ -11,7 +11,6 @@ from onnx_web.diffusers.load import (
 )
 from onnx_web.diffusers.patches.unet import UNetWrapper
 from onnx_web.diffusers.patches.vae import VAEWrapper
-from onnx_web.diffusers.utils import expand_prompt
 from onnx_web.params import ImageParams
 from onnx_web.server.context import ServerContext
 from tests.mocks import MockPipeline
