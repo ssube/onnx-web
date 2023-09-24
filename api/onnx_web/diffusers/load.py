@@ -424,7 +424,7 @@ def load_unet(server, device, model, loras, unet_type, params):
         logger.info("blending base model %s with LoRA models: %s", model, lora_models)
 
         # blend and load unet
-        blended_unet = blend_loras(
+        unet = blend_loras(
             server,
             unet,
             list(zip(lora_models, lora_weights)),
@@ -432,7 +432,7 @@ def load_unet(server, device, model, loras, unet_type, params):
             xl=params.is_xl(),
         )
 
-    (unet_model, unet_data) = buffer_external_data_tensors(blended_unet)
+    (unet_model, unet_data) = buffer_external_data_tensors(unet)
     unet_names, unet_values = zip(*unet_data)
     unet_opts = device.sess_options(cache=False)
     unet_opts.add_external_initializers(list(unet_names), list(unet_values))
