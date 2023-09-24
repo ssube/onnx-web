@@ -200,7 +200,7 @@ def load_pipeline(
         )
         components.update(unet_components)
 
-        vae_components = load_vae(server, device, model)
+        vae_components = load_vae(server, device, model, params)
         components.update(vae_components)
 
         # additional options for panorama pipeline
@@ -338,6 +338,16 @@ def load_text_encoders(
                 sess_options=device.sess_options(),
             )
         )
+
+        if params.is_xl():
+            text_encoder_2_session = InferenceSession(
+                text_encoder_2.SerializeToString(),
+                providers=[device.ort_provider("text-encoder")],
+                sess_options=text_encoder_2_opts,
+            )
+            text_encoder_2_session._model_path = path.join(model, "text_encoder_2")
+            components["text_encoder_2_session"] = text_encoder_2_session
+
     else:
         # blend and load text encoder
         lora_names, lora_weights = zip(*loras)

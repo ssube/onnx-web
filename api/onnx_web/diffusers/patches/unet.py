@@ -47,11 +47,12 @@ class UNetWrapper(object):
             self.prompt_index += 1
 
         if self.xl:
-            logger.trace(
-                "converting UNet sample to hidden state dtype for XL: %s",
-                encoder_hidden_states.dtype,
-            )
-            sample = sample.astype(encoder_hidden_states.dtype)
+            if sample.dtype != encoder_hidden_states.dtype:
+                logger.trace(
+                    "converting UNet sample to hidden state dtype for XL: %s",
+                    encoder_hidden_states.dtype,
+                )
+                sample = sample.astype(encoder_hidden_states.dtype)
         else:
             if sample.dtype != timestep.dtype:
                 logger.trace("converting UNet sample to timestep dtype")
