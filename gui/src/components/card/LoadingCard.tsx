@@ -8,9 +8,9 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { ImageResponse } from '../../client/types.js';
 import { POLL_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
+import { ImageResponse } from '../../types/api.js';
 
 const LOADING_PERCENT = 100;
 const LOADING_OVERAGE = 99;

@@ -1,4 +1,4 @@
-import { mustExist } from '@apextoaster/js-utils';
+import { Maybe, doesExist, mustExist } from '@apextoaster/js-utils';
 import { Delete, Replay } from '@mui/icons-material';
 import { Alert, Box, Card, CardContent, IconButton, Tooltip } from '@mui/material';
 import { Stack } from '@mui/system';
@@ -9,13 +9,13 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { ImageResponse, ReadyResponse, RetryParams } from '../../client/types.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
+import { ImageResponse, ReadyResponse, RetryParams } from '../../types/api.js';
 
 export interface ErrorCardProps {
   image: ImageResponse;
   ready: ReadyResponse;
-  retry: RetryParams;
+  retry: Maybe<RetryParams>;
 }
 
 export function ErrorCard(props: ErrorCardProps) {
@@ -30,8 +30,11 @@ export function ErrorCard(props: ErrorCardProps) {
 
   async function retryImage() {
     removeHistory(image);
-    const { image: nextImage, retry: nextRetry } = await client.retry(retryParams);
-    pushHistory(nextImage, nextRetry);
+
+    if (doesExist(retryParams)) {
+      const { image: nextImage, retry: nextRetry } = await client.retry(retryParams);
+      pushHistory(nextImage, nextRetry);
+    }
   }
 
   const retry = useMutation(retryImage);

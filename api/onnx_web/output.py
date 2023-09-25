@@ -158,6 +158,7 @@ def make_output_name(
     size: Size,
     extras: Optional[List[Optional[Param]]] = None,
     count: Optional[int] = None,
+    offset: int = 0,
 ) -> List[str]:
     count = count or params.batch
     now = int(time())
@@ -183,7 +184,7 @@ def make_output_name(
 
     return [
         f"{mode}_{params.seed}_{sha.hexdigest()}_{now}_{i}.{server.image_format}"
-        for i in range(count)
+        for i in range(offset, count + offset)
     ]
 
 

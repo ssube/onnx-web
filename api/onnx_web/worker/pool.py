@@ -124,6 +124,7 @@ class DevicePoolExecutor:
             pending=self.pending[name],
             active_pid=current,
             idle=self.worker_idle[name],
+            retries=self.server.worker_retries,
         )
         self.context[name] = context
 

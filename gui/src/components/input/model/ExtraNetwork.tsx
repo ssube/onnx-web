@@ -2,7 +2,7 @@ import { Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ExtraNetwork, ModelFormat, NetworkModel, NetworkType } from '../../../types.js';
+import { ExtraNetwork, ModelFormat, NetworkModel, NetworkType } from '../../../types/model.js';
 
 export interface ExtraNetworkInputProps {
   key?: number | string;

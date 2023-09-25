@@ -12,20 +12,27 @@ class BaseStage:
 
     def run(
         self,
-        worker: WorkerContext,
-        server: ServerContext,
-        stage: StageParams,
+        _worker: WorkerContext,
+        _server: ServerContext,
+        _stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        _sources: List[Image.Image],
         *args,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> List[Image.Image]:
-        raise NotImplementedError()
+        raise NotImplementedError()  # noqa
 
     def steps(
         self,
         _params: ImageParams,
-        size: Size,
+        _size: Size,
     ) -> int:
-        raise NotImplementedError()
+        return 1  # noqa
+
+    def outputs(
+        self,
+        _params: ImageParams,
+        sources: int,
+    ) -> int:
+        return sources

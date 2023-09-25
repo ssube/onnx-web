@@ -50,6 +50,12 @@ def needs_tile(
     source: Optional[Image.Image] = None,
 ) -> bool:
     tile = min(max_tile, stage_tile)
+    logger.trace(
+        "checking image tile dimensions: %s, %s, %s",
+        tile,
+        source.width > tile or source.height > tile if source is not None else False,
+        size.width > tile or size.height > tile if size is not None else False,
+    )
 
     if source is not None:
         return source.width > tile or source.height > tile
@@ -343,6 +349,9 @@ def process_tile_order(
     filters: List[TileCallback],
     **kwargs,
 ) -> Image.Image:
+    """
+    TODO: needs to handle more than one image
+    """
     if order == TileOrder.grid:
         logger.debug("using grid tile order with tile size: %s", tile)
         return process_tile_grid(source, tile, scale, filters, **kwargs)

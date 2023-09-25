@@ -1,6 +1,6 @@
 import { BaseError } from 'noicejs';
 
-import { ApiClient } from './types.js';
+import { ApiClient } from './base.js';
 
 export class NoServerError extends BaseError {
   constructor() {
@@ -37,6 +37,9 @@ export const LOCAL_CLIENT = {
     throw new NoServerError();
   },
   async outpaint(model, params, upscale) {
+    throw new NoServerError();
+  },
+  async chain(model, chain) {
     throw new NoServerError();
   },
   async noises() {

@@ -23,14 +23,14 @@
         "prompt": "a magical wizard in a robe fighting a dragon",
         "scale": 4,
         "outscale": 4,
-        "tile_size": "mini"
+        "tiles": "mini"
       }
     },
     {
       "name": "save-local",
       "type": "persist-disk",
       "params": {
-        "tile_size": "hd8k"
+        "tiles": "hd8k"
       }
     },
     {
@@ -40,7 +40,7 @@
         "bucket": "storage-stable-diffusion",
         "endpoint_url": "http://scylla.home.holdmyran.ch:8000",
         "profile_name": "ceph",
-        "tile_size": "hd8k"
+        "tiles": "hd8k"
       }
     }
   ]

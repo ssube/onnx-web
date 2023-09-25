@@ -9,9 +9,9 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { BaseImgParams } from '../../client/types.js';
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
+import { BaseImgParams } from '../../types/params.js';
 import { NumericField } from '../input/NumericField.js';
 import { PromptInput } from '../input/PromptInput.js';
 import { QueryList } from '../input/QueryList.js';

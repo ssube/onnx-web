@@ -103,6 +103,7 @@
 			"virtualenv",
 			"VRAM",
 			"webp",
+			"xformers",
 			"zustand"
 		]
 	}

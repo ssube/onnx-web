@@ -8,23 +8,24 @@ import { StateCreator, StoreApi } from 'zustand';
 
 import {
   ApiClient,
+} from './client/base.js';
+import { PipelineGrid } from './client/utils.js';
+import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
+import { CorrectionModel, DiffusionModel, ExtraNetwork, ExtraSource, ExtrasFile, UpscalingModel } from './types/model.js';
+import { ImageResponse, ReadyResponse, RetryParams } from './types/api.js';
+import {
   BaseImgParams,
   BlendParams,
   BrushParams,
   HighresParams,
-  ImageResponse,
   Img2ImgParams,
   InpaintParams,
   ModelParams,
   OutpaintPixels,
-  ReadyResponse,
-  RetryParams,
   Txt2ImgParams,
   UpscaleParams,
   UpscaleReqParams,
-} from './client/types.js';
-import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
-import { CorrectionModel, DiffusionModel, ExtraNetwork, ExtraSource, ExtrasFile, UpscalingModel } from './types.js';
+} from './types/params.js';
 
 export const MISSING_INDEX = -1;
 
@@ -38,7 +39,7 @@ export type TabState<TabParams> = ConfigFiles<Required<TabParams>> & ConfigState
 export interface HistoryItem {
   image: ImageResponse;
   ready: Maybe<ReadyResponse>;
-  retry: RetryParams;
+  retry: Maybe<RetryParams>;
 }
 
 export interface ProfileItem {
@@ -60,7 +61,7 @@ interface HistorySlice {
   history: Array<HistoryItem>;
   limit: number;
 
-  pushHistory(image: ImageResponse, retry: RetryParams): void;
+  pushHistory(image: ImageResponse, retry?: RetryParams): void;
   removeHistory(image: ImageResponse): void;
   setLimit(limit: number): void;
   setReady(image: ImageResponse, ready: ReadyResponse): void;
@@ -90,6 +91,7 @@ interface Txt2ImgSlice {
   txt2imgModel: ModelParams;
   txt2imgHighres: HighresParams;
   txt2imgUpscale: UpscaleParams;
+  txt2imgVariable: PipelineGrid;
 
   resetTxt2Img(): void;
 
@@ -97,6 +99,7 @@ interface Txt2ImgSlice {
   setTxt2ImgModel(params: Partial<ModelParams>): void;
   setTxt2ImgHighres(params: Partial<HighresParams>): void;
   setTxt2ImgUpscale(params: Partial<UpscaleParams>): void;
+  setTxt2ImgVariable(params: Partial<PipelineGrid>): void;
 }
 
 interface Img2ImgSlice {
@@ -305,6 +308,19 @@ export function createStateSlices(server: ServerParams) {
     scale: server.scale.default,
     upscaleOrder: server.upscaleOrder.default,
   };
+  const defaultGrid: PipelineGrid = {
+    enabled: false,
+    columns: {
+      input: '',
+      parameter: 'seed',
+      values: [],
+    },
+    rows: {
+      input: '',
+      parameter: 'seed',
+      values: [],
+    },
+  };
 
   const createTxt2ImgSlice: Slice<Txt2ImgSlice> = (set) => ({
     txt2img: {
@@ -320,6 +336,9 @@ export function createStateSlices(server: ServerParams) {
     },
     txt2imgUpscale: {
       ...defaultUpscale,
+    },
+    txt2imgVariable: {
+      ...defaultGrid,
     },
     setTxt2Img(params) {
       set((prev) => ({
@@ -349,6 +368,14 @@ export function createStateSlices(server: ServerParams) {
       set((prev) => ({
         txt2imgUpscale: {
           ...prev.txt2imgUpscale,
+          ...params,
+        },
+      }));
+    },
+    setTxt2ImgVariable(params) {
+      set((prev) => ({
+        txt2imgVariable: {
+          ...prev.txt2imgVariable,
           ...params,
         },
       }));

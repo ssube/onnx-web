@@ -2,7 +2,8 @@ import unittest
 
 from onnx_web.server.model_cache import ModelCache
 
-class TestStringMethods(unittest.TestCase):
+
+class TestModelCache(unittest.TestCase):
   def test_drop_existing(self):
     cache = ModelCache(10)
     cache.clear()
@@ -32,3 +33,31 @@ class TestStringMethods(unittest.TestCase):
     cache.set("foo", ("bar",), value)
     self.assertGreater(cache.size, 0)
     self.assertIs(cache.get("foo", ("bin",)), None)
+
+  """
+  def test_set_existing(self):
+    cache = ModelCache(10)
+    cache.clear()
+    cache.set("foo", ("bar",), {
+      "value": 1,
+    })
+    value = {
+      "value": 2,
+    }
+    cache.set("foo", ("bar",), value)
+    self.assertIs(cache.get("foo", ("bar",)), value)
+  """
+
+  def test_set_missing(self):
+    cache = ModelCache(10)
+    cache.clear()
+    value = {}
+    cache.set("foo", ("bar",), value)
+    self.assertIs(cache.get("foo", ("bar",)), value)
+
+  def test_set_zero(self):
+    cache = ModelCache(0)
+    cache.clear()
+    value = {}
+    cache.set("foo", ("bar",), value)
+    self.assertEqual(cache.size, 0)

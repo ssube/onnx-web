@@ -16,7 +16,7 @@ logger = getLogger(__name__)
 
 
 class BlendImg2ImgStage(BaseStage):
-    max_tile = SizeChart.unlimited
+    max_tile = SizeChart.max
 
     def run(
         self,
@@ -103,3 +103,17 @@ class BlendImg2ImgStage(BaseStage):
             outputs.extend(result.images)
 
         return outputs
+
+    def steps(
+        self,
+        params: ImageParams,
+        *args,
+    ) -> int:
+        return params.steps  # TODO: multiply by strength
+
+    def outputs(
+        self,
+        params: ImageParams,
+        sources: int,
+    ) -> int:
+        return sources + 1

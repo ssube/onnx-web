@@ -7,23 +7,35 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../../client/types.js';
+import { PipelineGrid, makeTxt2ImgGridPipeline } from '../../client/utils.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext, TabState } from '../../state.js';
+import { HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../../types/params.js';
+import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';
 import { ImageControl } from '../control/ImageControl.js';
 import { ModelControl } from '../control/ModelControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
+import { VariableControl } from '../control/VariableControl.js';
 import { NumericField } from '../input/NumericField.js';
-import { Profiles } from '../Profiles.js';
 
 export function Txt2Img() {
   const { params } = mustExist(useContext(ConfigContext));
 
   async function generateImage() {
     const state = store.getState();
-    const { image, retry } = await client.txt2img(model, selectParams(state), selectUpscale(state), selectHighres(state));
+    const grid = selectVariable(state);
+    const params2 = selectParams(state);
+    const upscale = selectUpscale(state);
+    const highres = selectHighres(state);
 
-    pushHistory(image, retry);
+    if (grid.enabled) {
+      const chain = makeTxt2ImgGridPipeline(grid, model, params2, upscale, highres);
+      const image = await client.chain(model, chain);
+      pushHistory(image);
+    } else {
+      const { image, retry } = await client.txt2img(model, params2, upscale, highres);
+      pushHistory(image, retry);
+    }
   }
 
   const client = mustExist(useContext(ClientContext));
@@ -33,7 +45,7 @@ export function Txt2Img() {
   });
 
   const store = mustExist(useContext(StateContext));
-  const { pushHistory, setHighres, setModel, setParams, setUpscale } = useStore(store, selectActions, shallow);
+  const { pushHistory, setHighres, setModel, setParams, setUpscale, setVariable } = useStore(store, selectActions, shallow);
   const { height, width } = useStore(store, selectReactParams, shallow);
   const model = useStore(store, selectModel);
 
@@ -79,6 +91,7 @@ export function Txt2Img() {
       </Stack>
       <HighresControl selectHighres={selectHighres} setHighres={setHighres} />
       <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
+      <VariableControl selectGrid={selectVariable} setGrid={setVariable} />
       <Button
         variant='contained'
         onClick={() => generate.mutate()}
@@ -99,6 +112,8 @@ export function selectActions(state: OnnxState) {
     setParams: state.setTxt2Img,
     // eslint-disable-next-line @typescript-eslint/unbound-method
     setUpscale: state.setTxt2ImgUpscale,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setVariable: state.setTxt2ImgVariable,
   };
 }
 
@@ -123,4 +138,8 @@ export function selectHighres(state: OnnxState): HighresParams {
 
 export function selectUpscale(state: OnnxState): UpscaleParams {
   return state.txt2imgUpscale;
+}
+
+export function selectVariable(state: OnnxState): PipelineGrid {
+  return state.txt2imgVariable;
 }

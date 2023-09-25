@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -22,7 +22,7 @@ logger = getLogger(__name__)
 
 
 class SourceTxt2ImgStage(BaseStage):
-    max_tile = SizeChart.unlimited
+    max_tile = SizeChart.max
 
     def run(
         self,
@@ -30,9 +30,9 @@ class SourceTxt2ImgStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         params: ImageParams,
-        _source: Image.Image,
+        sources: List[Image.Image],
         *,
-        dims: Tuple[int, int, int],
+        dims: Tuple[int, int, int] = None,
         size: Size,
         callback: Optional[ProgressCallback] = None,
         latents: Optional[np.ndarray] = None,
@@ -50,9 +50,9 @@ class SourceTxt2ImgStage(BaseStage):
             "generating image using txt2img, %s steps: %s", params.steps, params.prompt
         )
 
-        if "stage_source" in kwargs:
-            logger.warning(
-                "a source image was passed to a txt2img stage, and will be discarded"
+        if len(sources):
+            logger.info(
+                "source images were passed to a source stage, new images will be appended"
             )
 
         prompt_pairs, loras, inversions, (prompt, negative_prompt) = parse_prompt(
@@ -69,9 +69,9 @@ class SourceTxt2ImgStage(BaseStage):
 
         # generate new latents or slice existing
         if latents is None:
-            latents = get_latents_from_seed(params.seed, latent_size, params.batch)
+            latents = get_latents_from_seed(int(params.seed), latent_size, params.batch)
         else:
-            latents = get_tile_latents(latents, params.seed, latent_size, dims)
+            latents = get_tile_latents(latents, int(params.seed), latent_size, dims)
 
         pipe_type = params.get_valid_pipeline("txt2img")
         pipe = load_pipeline(
@@ -123,4 +123,20 @@ class SourceTxt2ImgStage(BaseStage):
                 callback=callback,
             )
 
-        return result.images
+        output = list(sources)
+        output.extend(result.images)
+        return output
+
+    def steps(
+        self,
+        params: ImageParams,
+        size: Size,
+    ) -> int:
+        return params.steps
+
+    def outputs(
+        self,
+        params: ImageParams,
+        sources: int,
+    ) -> int:
+        return sources + 1

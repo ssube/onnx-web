@@ -16,22 +16,14 @@ from shutil import rmtree
 from typing import Any, Dict, Optional, Tuple, Union
 
 import torch
-from diffusers import (
-    AutoencoderKL,
-    OnnxRuntimeModel,
-    OnnxStableDiffusionPipeline,
-    StableDiffusionControlNetPipeline,
-    StableDiffusionInstructPix2PixPipeline,
-    StableDiffusionPipeline,
-    StableDiffusionUpscalePipeline,
-)
+from diffusers import AutoencoderKL, OnnxRuntimeModel, OnnxStableDiffusionPipeline
 from diffusers.pipelines.stable_diffusion.convert_from_ckpt import (
     download_from_original_stable_diffusion_ckpt,
 )
 from onnx import load_model, save_model
 
 from ...constants import ONNX_MODEL, ONNX_WEIGHTS
-from ...diffusers.load import optimize_pipeline
+from ...diffusers.load import available_pipelines, optimize_pipeline
 from ...diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
 from ...diffusers.version_safe_diffusers import AttnProcessor
 from ...models.cnet import UNet2DConditionModel_CNet
@@ -40,17 +32,6 @@ from ..utils import ConversionContext, is_torch_2_0, load_tensor, onnx_export
 from .checkpoint import convert_extract_checkpoint
 
 logger = getLogger(__name__)
-
-available_pipelines = {
-    "controlnet": StableDiffusionControlNetPipeline,
-    "img2img": StableDiffusionPipeline,
-    "inpaint": StableDiffusionPipeline,
-    "lpw": StableDiffusionPipeline,
-    "panorama": StableDiffusionPipeline,
-    "pix2pix": StableDiffusionInstructPix2PixPipeline,
-    "txt2img": StableDiffusionPipeline,
-    "upscale": StableDiffusionUpscalePipeline,
-}
 
 
 def get_model_version(

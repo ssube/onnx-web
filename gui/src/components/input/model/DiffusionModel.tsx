@@ -2,7 +2,7 @@ import { Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { DiffusionModel, ModelFormat } from '../../../types.js';
+import { DiffusionModel, ModelFormat } from '../../../types/model.js';
 
 export interface DiffusionModelInputProps {
   key?: number | string;

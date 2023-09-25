@@ -12,7 +12,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { makeClient } from './client/api.js';
 import { LOCAL_CLIENT } from './client/local.js';
-import { ApiClient } from './client/types.js';
+import { ApiClient } from './client/base.js';
 import { ParamsVersionError } from './components/error/ParamsVersion.js';
 import { ServerParamsError } from './components/error/ServerParams.js';
 import { LoadingScreen } from './components/LoadingScreen.js';

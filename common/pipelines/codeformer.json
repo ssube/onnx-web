@@ -9,7 +9,7 @@
       "name": "save-local",
       "type": "persist-disk",
       "params": {
-        "tile_size": "hd8k"
+        "tiles": "hd8k"
       }
     }
   ]
