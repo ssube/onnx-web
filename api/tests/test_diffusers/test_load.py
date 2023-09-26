@@ -172,7 +172,7 @@ class TestLoadControlNet(unittest.TestCase):
 
 
 class TestLoadTextEncoders(unittest.TestCase):
-  @unittest.skipUnless(lambda: path.exists("../models/stable-diffusion-onnx-v1-5/text_encoder/model.onnx"), "model does not exist")
+  @unittest.skipUnless(path.exists("../models/stable-diffusion-onnx-v1-5/text_encoder/model.onnx"), "model does not exist")
   def test_load_embeddings(self):
     """
     Should add the token to tokenizer
@@ -194,7 +194,7 @@ class TestLoadTextEncoders(unittest.TestCase):
   def test_load_embeddings_xl(self):
     pass
 
-  @unittest.skipUnless(lambda: path.exists("../models/stable-diffusion-onnx-v1-5/text_encoder/model.onnx"), "model does not exist")
+  @unittest.skipUnless(path.exists("../models/stable-diffusion-onnx-v1-5/text_encoder/model.onnx"), "model does not exist")
   def test_load_loras(self):
     components = load_text_encoders(
       ServerContext(model_path="../models"),
@@ -213,7 +213,7 @@ class TestLoadTextEncoders(unittest.TestCase):
     pass
 
 class TestLoadUnet(unittest.TestCase):
-  @unittest.skipUnless(lambda: path.exists("../models/stable-diffusion-onnx-v1-5/unet/model.onnx"), "model does not exist")
+  @unittest.skipUnless(path.exists("../models/stable-diffusion-onnx-v1-5/unet/model.onnx"), "model does not exist")
   def test_load_unet_loras(self):
     components = load_unet(
       ServerContext(model_path="../models"),
@@ -230,7 +230,7 @@ class TestLoadUnet(unittest.TestCase):
   def test_load_unet_loras_xl(self):
     pass
 
-  @unittest.skipUnless(lambda: path.exists("../models/stable-diffusion-onnx-v1-5/cnet/model.onnx"), "model does not exist")
+  @unittest.skipUnless(path.exists("../models/stable-diffusion-onnx-v1-5/cnet/model.onnx"), "model does not exist")
   def test_load_cnet_loras(self):
     components = load_unet(
       ServerContext(model_path="../models"),
@@ -246,7 +246,7 @@ class TestLoadUnet(unittest.TestCase):
 
 
 class TestLoadVae(unittest.TestCase):
-  @unittest.skipUnless(lambda: path.exists("../models/upscaling-stable-diffusion-x4/vae/model.onnx"), "model does not exist")
+  @unittest.skipUnless(path.exists("../models/upscaling-stable-diffusion-x4/vae/model.onnx"), "model does not exist")
   def test_load_single(self):
     """
     Should return single component
@@ -261,7 +261,7 @@ class TestLoadVae(unittest.TestCase):
     self.assertNotIn("vae_decoder", components)
     self.assertNotIn("vae_encoder", components)
 
-  @unittest.skipUnless(lambda: path.exists("../models/stable-diffusion-onnx-v1-5/vae_encoder/model.onnx"), "model does not exist")
+  @unittest.skipUnless(path.exists("../models/stable-diffusion-onnx-v1-5/vae_encoder/model.onnx"), "model does not exist")
   def test_load_split(self):
     """
     Should return split encoder/decoder
