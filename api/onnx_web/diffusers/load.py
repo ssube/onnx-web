@@ -169,14 +169,15 @@ def load_pipeline(
             run_gc([device])
 
         logger.debug("loading new diffusion pipeline from %s", model)
+        scheduler = scheduler_type.from_pretrained(
+            model,
+            provider=device.ort_provider(),
+            sess_options=device.sess_options(),
+            subfolder="scheduler",
+            torch_dtype=torch_dtype,
+        )
         components = {
-            "scheduler": scheduler_type.from_pretrained(
-                model,
-                provider=device.ort_provider(),
-                sess_options=device.sess_options(),
-                subfolder="scheduler",
-                torch_dtype=torch_dtype,
-            )
+            "scheduler": scheduler,
         }
 
         # shared components
@@ -257,7 +258,7 @@ def load_pipeline(
         patch_pipeline(server, pipe, pipeline_class, params)
 
         server.cache.set(ModelTypes.diffusion, pipe_key, pipe)
-        server.cache.set(ModelTypes.scheduler, scheduler_key, components["scheduler"])
+        server.cache.set(ModelTypes.scheduler, scheduler_key, scheduler)
 
     for vae in VAE_COMPONENTS:
         if hasattr(pipe, vae):
