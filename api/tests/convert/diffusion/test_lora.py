@@ -1,11 +1,16 @@
 import unittest
 
 import numpy as np
+import torch
 from onnx import GraphProto, ModelProto, NodeProto
 from onnx.numpy_helper import from_array
 
 from onnx_web.convert.diffusion.lora import (
     blend_loras,
+    blend_node_conv_gemm,
+    blend_node_matmul,
+    blend_weights_loha,
+    blend_weights_lora,
     buffer_external_data_tensors,
     fix_initializer_name,
     fix_node_name,
@@ -151,6 +156,23 @@ class KernelSliceTests(unittest.TestCase):
         )
 
 
+class InterpToMatchTests(unittest.TestCase):
+    def test_same_shape(self):
+        ref = np.zeros((4, 4))
+        resize = np.zeros((4, 4))
+        self.assertEqual(interp_to_match(ref, resize).shape, (4, 4))
+
+    def test_different_one_dim(self):
+        ref = np.zeros((4, 2))
+        resize = np.zeros((4, 4))
+        self.assertEqual(interp_to_match(ref, resize).shape, (4, 4))
+
+    def test_different_both_dims(self):
+        ref = np.zeros((2, 2))
+        resize = np.zeros((4, 4))
+        self.assertEqual(interp_to_match(ref, resize).shape, (4, 4))
+
+
 class BlendLoRATests(unittest.TestCase):
     def test_blend_unet(self):
         """
@@ -183,18 +205,131 @@ class BlendLoRATests(unittest.TestCase):
         pass
 
 
-class InterpToMatchTests(unittest.TestCase):
-    def test_same_shape(self):
-        ref = np.zeros((4, 4))
-        resize = np.zeros((4, 4))
-        self.assertEqual(interp_to_match(ref, resize).shape, (4, 4))
+class BlendWeightsLoHATests(unittest.TestCase):
+    def test_blend_t1_t2(self):
+        # blend einsum: i j k l, j r, i p -> p r k l
+        i = 32
+        j = 4
+        k = 1
+        l = 1
+        p = 2
+        r = 4
 
-    def test_different_one_dim(self):
-        ref = np.zeros((4, 2))
-        resize = np.zeros((4, 4))
-        self.assertEqual(interp_to_match(ref, resize).shape, (4, 4))
+        model = {
+            "foo.hada_t1": torch.from_numpy(np.ones((i, j, k, l))),
+            "foo.hada_t2": torch.from_numpy(np.ones((i, j, k, l))),
+            "foo.hada_w1_a": torch.from_numpy(np.ones((i, p))),
+            "foo.hada_w1_b": torch.from_numpy(np.ones((j, r))),
+            "foo.hada_w2_a": torch.from_numpy(np.ones((i, p))),
+            "foo.hada_w2_b": torch.from_numpy(np.ones((j, r))),
+            "foo.alpha": torch.tensor(1),
+        }
+        key, result = blend_weights_loha("foo.hada_w1_a", "", model, torch.float32)
+        self.assertEqual(result.shape, (p, r, k, l))
 
-    def test_different_both_dims(self):
-        ref = np.zeros((2, 2))
-        resize = np.zeros((4, 4))
-        self.assertEqual(interp_to_match(ref, resize).shape, (4, 4))
+    def test_blend_w1_w2(self):
+        model = {
+            "foo.hada_w1_a": torch.from_numpy(np.ones((4, 1))),
+            "foo.hada_w1_b": torch.from_numpy(np.ones((1, 4))),
+            "foo.hada_w2_a": torch.from_numpy(np.ones((4, 1))),
+            "foo.hada_w2_b": torch.from_numpy(np.ones((1, 4))),
+            "foo.alpha": torch.tensor(1),
+        }
+        key, result = blend_weights_loha("foo.hada_w1_a", "", model, torch.float32)
+        self.assertEqual(result.shape, (4, 4))
+
+    def test_blend_no_dim(self):
+        """
+        model = {
+            "foo.hada_w1_a": torch.from_numpy(np.ones((1, 4))),
+            "foo.hada_w1_b": torch.from_numpy(np.ones((4, 1))),
+            "foo.hada_w2_a": torch.from_numpy(np.ones((1, 4))),
+            "foo.hada_w2_b": torch.from_numpy(np.ones((4, 1))),
+        }
+        result = blend_weights_loha("foo.hada_w1_a", "", model, torch.float32)
+        self.assertEqual(result.shape, (4, 4))
+        """
+
+class BlendWeightsLoRATests(unittest.TestCase):
+    def test_blend_kernel_none(self):
+        model = {
+            "foo.lora_down": torch.from_numpy(np.ones((1, 4))),
+            "foo.lora_up": torch.from_numpy(np.ones((4, 1))),
+            "foo.alpha": 1,
+        }
+        key, result = blend_weights_lora("foo.lora_down", "", model, torch.float32)
+        self.assertEqual(result.shape, (4, 4))
+
+
+    def test_blend_kernel_1x1(self):
+        model = {
+            "foo.lora_down": torch.from_numpy(np.ones((1, 4, 1, 1))),
+            "foo.lora_up": torch.from_numpy(np.ones((4, 1, 1, 1))),
+            "foo.alpha": 1,
+        }
+        key, result = blend_weights_lora("foo.lora_down", "", model, torch.float32)
+        self.assertEqual(result.shape, (4, 4, 1, 1))
+
+    def test_blend_kernel_3x3(self):
+        model = {
+            "foo.lora_down": torch.from_numpy(np.ones((1, 4, 3, 3))),
+            "foo.lora_up": torch.from_numpy(np.ones((4, 1, 3, 3))),
+            "foo.alpha": 1,
+        }
+        key, result = blend_weights_lora("foo.lora_down", "", model, torch.float32)
+        self.assertEqual(result.shape, (4, 4, 3, 3))
+
+    def test_blend_kernel_3x3_cp_decomp(self):
+        model = {
+            "foo.lora_down": torch.from_numpy(np.ones((2, 4, 1, 1))),
+            "foo.lora_mid": torch.from_numpy(np.ones((2, 2, 3, 3))),
+            "foo.lora_up": torch.from_numpy(np.ones((4, 2, 1, 1))),
+            "foo.alpha": 1,
+        }
+        key, result = blend_weights_lora("foo.lora_down", "", model, torch.float32)
+        self.assertEqual(result.shape, (4, 4, 3, 3))
+
+    def test_blend_unknown(self):
+        pass
+
+
+class BlendNodeConvGemmTests(unittest.TestCase):
+    def test_blend_kernel_1x1_and_1x1(self):
+        node = from_array(np.ones((4, 4, 1, 1)))
+        result = blend_node_conv_gemm(node, np.ones((4, 4, 1, 1)))
+
+        self.assertEqual(result.dims, [4, 4, 1, 1])
+        self.assertEqual(len(result.raw_data), 4 * 4 * 8)
+
+    def test_blend_kernel_1x1_and_none(self):
+        node = from_array(np.ones((4, 4, 1, 1)))
+        result = blend_node_conv_gemm(node, np.ones((4, 4)))
+
+        self.assertEqual(result.dims, [4, 4, 1, 1])
+        self.assertEqual(len(result.raw_data), 4 * 4 * 8)
+
+    def test_blend_other_matching(self):
+        node = from_array(np.ones((4, 4)))
+        result = blend_node_conv_gemm(node, np.ones((4, 4)))
+
+        self.assertEqual(result.dims, [4, 4])
+        self.assertEqual(len(result.raw_data), 4 * 4 * 8)
+
+    def test_blend_other_mismatched(self):
+        pass
+
+
+class BlendNodeMatMulTests(unittest.TestCase):
+    def test_blend_matching(self):
+        node = from_array(np.ones((4, 4)))
+        result = blend_node_matmul(node, np.ones((4, 4)), "test")
+
+        self.assertEqual(result.dims, [4, 4])
+        self.assertEqual(len(result.raw_data), 4 * 4 * 8)
+
+    def test_blend_mismatched(self):
+        node = from_array(np.ones((4, 4)))
+        result = blend_node_matmul(node, np.ones((2, 2)), "test")
+
+        self.assertEqual(result.dims, [4, 4])
+        self.assertEqual(len(result.raw_data), 4 * 4 * 8)

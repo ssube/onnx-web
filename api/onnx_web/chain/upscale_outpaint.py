@@ -56,7 +56,7 @@ class UpscaleOutpaintStage(BaseStage):
             params,
             pipe_type,
             worker.get_device(),
-            inversions=inversions,
+            embeddings=inversions,
             loras=loras,
         )
 

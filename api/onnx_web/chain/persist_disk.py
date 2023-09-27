@@ -4,7 +4,7 @@ from typing import List, Optional
 from PIL import Image
 
 from ..output import save_image
-from ..params import ImageParams, Size, StageParams
+from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 from .stage import BaseStage
@@ -13,6 +13,8 @@ logger = getLogger(__name__)
 
 
 class PersistDiskStage(BaseStage):
+    max_tile = SizeChart.max
+
     def run(
         self,
         _worker: WorkerContext,

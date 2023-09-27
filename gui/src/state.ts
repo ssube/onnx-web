@@ -311,14 +311,12 @@ export function createStateSlices(server: ServerParams) {
   const defaultGrid: PipelineGrid = {
     enabled: false,
     columns: {
-      input: '',
       parameter: 'seed',
-      values: [],
+      value: '',
     },
     rows: {
-      input: '',
       parameter: 'seed',
-      values: [],
+      value: '',
     },
   };
 

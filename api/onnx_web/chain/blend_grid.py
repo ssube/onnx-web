@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from PIL import Image
 
-from ..params import ImageParams, StageParams
+from ..params import ImageParams, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
 from .stage import BaseStage
@@ -12,6 +12,8 @@ logger = getLogger(__name__)
 
 
 class BlendGridStage(BaseStage):
+    max_tile = SizeChart.max
+
     def run(
         self,
         _worker: WorkerContext,
