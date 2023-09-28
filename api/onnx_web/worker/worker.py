@@ -27,7 +27,7 @@ MEMORY_ERRORS = [
 ]
 
 
-def worker_main(worker: WorkerContext, server: ServerContext):
+def worker_main(worker: WorkerContext, server: ServerContext, *args):
     apply_patches(server)
     setproctitle("onnx-web worker: %s" % (worker.device.device))
 

@@ -133,9 +133,9 @@ def tuple_to_source(model: Union[ModelDict, LegacyModel]):
 def tuple_to_correction(model: Union[ModelDict, LegacyModel]):
     if isinstance(model, list) or isinstance(model, tuple):
         name, source, *rest = model
-        scale = rest[0] if len(rest) > 0 else 1
-        half = rest[0] if len(rest) > 0 else False
-        opset = rest[0] if len(rest) > 0 else None
+        scale = rest.pop(0) if len(rest) > 0 else 1
+        half = rest.pop(0) if len(rest) > 0 else False
+        opset = rest.pop(0) if len(rest) > 0 else None
 
         return {
             "name": name,
@@ -151,9 +151,9 @@ def tuple_to_correction(model: Union[ModelDict, LegacyModel]):
 def tuple_to_diffusion(model: Union[ModelDict, LegacyModel]):
     if isinstance(model, list) or isinstance(model, tuple):
         name, source, *rest = model
-        single_vae = rest[0] if len(rest) > 0 else False
-        half = rest[0] if len(rest) > 0 else False
-        opset = rest[0] if len(rest) > 0 else None
+        single_vae = rest.pop(0) if len(rest) > 0 else False
+        half = rest.pop(0) if len(rest) > 0 else False
+        opset = rest.pop(0) if len(rest) > 0 else None
 
         return {
             "name": name,
@@ -169,9 +169,9 @@ def tuple_to_diffusion(model: Union[ModelDict, LegacyModel]):
 def tuple_to_upscaling(model: Union[ModelDict, LegacyModel]):
     if isinstance(model, list) or isinstance(model, tuple):
         name, source, *rest = model
-        scale = rest[0] if len(rest) > 0 else 1
-        half = rest[0] if len(rest) > 0 else False
-        opset = rest[0] if len(rest) > 0 else None
+        scale = rest.pop(0) if len(rest) > 0 else 1
+        half = rest.pop(0) if len(rest) > 0 else False
+        opset = rest.pop(0) if len(rest) > 0 else None
 
         return {
             "name": name,
@@ -298,6 +298,7 @@ def onnx_export(
     half=False,
     external_data=False,
     v2=False,
+    op_block_list=None,
 ):
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
@@ -316,8 +317,7 @@ def onnx_export(
         opset_version=opset,
     )
 
-    op_block_list = None
-    if v2:
+    if v2 and op_block_list is None:
         op_block_list = ["Attention", "MultiHeadAttention"]
 
     if half:

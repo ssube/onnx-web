@@ -9,16 +9,22 @@ from onnx_web.worker.pool import DevicePoolExecutor
 
 TEST_JOIN_TIMEOUT = 0.2
 
-def test_job(*args, lock: Event, **kwargs):
+lock = Event()
+
+
+def test_job(*args, **kwargs):
   lock.wait()
 
 
+def wait_job(*args, **kwargs):
+  sleep(0.5)
+
+
 class TestWorkerPool(unittest.TestCase):
-  lock: Optional[Event]
+  # lock: Optional[Event]
   pool: Optional[DevicePoolExecutor]
 
   def setUp(self) -> None:
-    self.lock = Event()
     self.pool = None
 
   def tearDown(self) -> None:
@@ -38,7 +44,17 @@ class TestWorkerPool(unittest.TestCase):
     self.assertEqual(len(self.pool.workers), 1)
 
   def test_cancel_pending(self):
-    pass
+    device = DeviceParams("cpu", "CPUProvider")
+    server = ServerContext()
+
+    self.pool = DevicePoolExecutor(server, [device], join_timeout=TEST_JOIN_TIMEOUT)
+    self.pool.start()
+
+    self.pool.submit("test", wait_job, lock=lock)
+    self.assertEqual(self.pool.done("test"), (True, None))
+
+    self.assertTrue(self.pool.cancel("test"))
+    self.assertEqual(self.pool.done("test"), (False, None))
 
   def test_cancel_running(self):
     pass
@@ -61,48 +77,46 @@ class TestWorkerPool(unittest.TestCase):
     self.assertEqual(self.pool.get_next_device(needs_device=device2), 1)
 
   def test_done_running(self):
-    """
     device = DeviceParams("cpu", "CPUProvider")
     server = ServerContext()
 
-    self.pool = DevicePoolExecutor(server, [device], join_timeout=TEST_JOIN_TIMEOUT)
-    self.pool.start()
+    self.pool = DevicePoolExecutor(server, [device], join_timeout=TEST_JOIN_TIMEOUT, progress_interval=0.1)
+    self.pool.start(lock)
+    sleep(2.0)
 
-    self.pool.submit("test", test_job, lock=self.lock)
-    sleep(5.0)
-    self.assertEqual(self.pool.done("test"), (False, None))
-    """
-    pass
+    self.pool.submit("test", test_job)
+    sleep(2.0)
+
+    pending, _progress = self.pool.done("test")
+    self.assertFalse(pending)
 
   def test_done_pending(self):
     device = DeviceParams("cpu", "CPUProvider")
     server = ServerContext()
 
     self.pool = DevicePoolExecutor(server, [device], join_timeout=TEST_JOIN_TIMEOUT)
-    self.pool.start()
+    self.pool.start(lock)
 
-    self.pool.submit("test1", test_job, lock=self.lock)
-    self.pool.submit("test2", test_job, lock=self.lock)
+    self.pool.submit("test1", test_job)
+    self.pool.submit("test2", test_job)
     self.assertTrue(self.pool.done("test2"), (True, None))
 
-    self.lock.set()
+    lock.set()
 
   def test_done_finished(self):
-    """
     device = DeviceParams("cpu", "CPUProvider")
     server = ServerContext()
 
-    self.pool = DevicePoolExecutor(server, [device], join_timeout=TEST_JOIN_TIMEOUT)
+    self.pool = DevicePoolExecutor(server, [device], join_timeout=TEST_JOIN_TIMEOUT, progress_interval=0.1)
     self.pool.start()
+    sleep(2.0)
 
-    self.pool.submit("test", test_job, lock=self.lock)
+    self.pool.submit("test", wait_job)
     self.assertEqual(self.pool.done("test"), (True, None))
 
-    self.lock.set()
-    sleep(5.0)
-    self.assertEqual(self.pool.done("test"), (False, None))
-    """
-    pass
+    sleep(2.0)
+    pending, _progress = self.pool.done("test")
+    self.assertFalse(pending)
 
   def test_recycle_live(self):
     pass

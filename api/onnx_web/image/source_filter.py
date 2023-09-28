@@ -47,7 +47,7 @@ def source_filter_noise(
     source: Image.Image,
     strength: float = 0.5,
 ):
-    noise = noise_source_histogram(source, source.size)
+    noise = noise_source_histogram(source, source.size, (0, 0))
     return ImageChops.blend(source, noise, strength)
 
 
