@@ -97,6 +97,7 @@ def run_txt2img_pipeline(
     _pairs, loras, inversions, _rest = parse_prompt(params)
 
     for image, output in zip(images, outputs):
+        logger.trace("saving output image %s: %s", output, image.size)
         dest = save_image(
             server,
             output,

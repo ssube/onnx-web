@@ -7,6 +7,8 @@ from onnx_web.chain.tile import (
     generate_tile_spiral,
     get_tile_grads,
     needs_tile,
+    process_tile_grid,
+    process_tile_spiral,
 )
 from onnx_web.params import Size
 
@@ -95,3 +97,31 @@ class TestGenerateTileSpiral(unittest.TestCase):
     self.assertEqual(len(tiles), 225)
     self.assertEqual(tiles[0:4], [(0, 0), (4, 0), (8, 0), (12, 0)])
     self.assertEqual(tiles[-5:-1], [(32, 32), (28, 32), (24, 32), (24, 28)])
+
+
+class TestProcessTileGrid(unittest.TestCase):
+  def test_grid_full(self):
+    source = Image.new("RGB", (64, 64))
+    blend = process_tile_grid(source, 32, 1, [])
+
+    self.assertEqual(blend.size, (64, 64))
+
+  def test_grid_partial(self):
+    source = Image.new("RGB", (72, 72))
+    blend = process_tile_grid(source, 32, 1, [])
+
+    self.assertEqual(blend.size, (72, 72))
+
+
+class TestProcessTileSpiral(unittest.TestCase):
+  def test_grid_full(self):
+    source = Image.new("RGB", (64, 64))
+    blend = process_tile_spiral(source, 32, 1, [])
+
+    self.assertEqual(blend.size, (64, 64))
+
+  def test_grid_partial(self):
+    source = Image.new("RGB", (72, 72))
+    blend = process_tile_spiral(source, 32, 1, [])
+
+    self.assertEqual(blend.size, (72, 72))

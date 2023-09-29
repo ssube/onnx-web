@@ -86,15 +86,15 @@ class DevicePoolExecutor:
         self.logs = Queue(self.max_pending_per_worker)
         self.rlock = Lock()
 
-    def start(self) -> None:
+    def start(self, *args) -> None:
         self.create_health_worker()
         self.create_logger_worker()
         self.create_progress_worker()
 
         for device in self.devices:
-            self.create_device_worker(device)
+            self.create_device_worker(device, *args)
 
-    def create_device_worker(self, device: DeviceParams) -> None:
+    def create_device_worker(self, device: DeviceParams, *args) -> None:
         name = device.device
 
         # always recreate queues
@@ -125,15 +125,16 @@ class DevicePoolExecutor:
             active_pid=current,
             idle=self.worker_idle[name],
             retries=self.server.worker_retries,
+            timeout=self.progress_interval,
         )
         self.context[name] = context
 
         worker = Process(
             name=f"onnx-web worker: {name}",
             target=worker_main,
-            args=(context, self.server),
+            args=(context, self.server, *args),
+            daemon=True,
         )
-        worker.daemon = True
         self.workers[name] = worker
 
         logger.debug("starting worker for device %s", device)

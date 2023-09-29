@@ -17,10 +17,9 @@ from onnx_web.diffusers.load import (
 )
 from onnx_web.diffusers.patches.unet import UNetWrapper
 from onnx_web.diffusers.patches.vae import VAEWrapper
-from onnx_web.models.meta import NetworkModel, NetworkType
+from onnx_web.models.meta import NetworkModel
 from onnx_web.params import DeviceParams, ImageParams
 from onnx_web.server.context import ServerContext
-from tests.helpers import test_with_models
 from tests.mocks import MockPipeline
 
 

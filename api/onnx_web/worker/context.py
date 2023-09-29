@@ -25,6 +25,7 @@ class WorkerContext:
     idle: "Value[bool]"
     timeout: float
     retries: int
+    initial_retries: int
 
     def __init__(
         self,
@@ -37,6 +38,7 @@ class WorkerContext:
         active_pid: "Value[int]",
         idle: "Value[bool]",
         retries: int,
+        timeout: float,
     ):
         self.job = None
         self.name = name
@@ -48,12 +50,13 @@ class WorkerContext:
         self.active_pid = active_pid
         self.last_progress = None
         self.idle = idle
+        self.initial_retries = retries
         self.retries = retries
-        self.timeout = 1.0
+        self.timeout = timeout
 
     def start(self, job: str) -> None:
         self.job = job
-        self.retries = 3
+        self.retries = self.initial_retries
         self.set_cancel(cancel=False)
         self.set_idle(idle=False)
 
