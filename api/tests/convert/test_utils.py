@@ -4,10 +4,18 @@ from onnx_web.convert.utils import (
     DEFAULT_OPSET,
     ConversionContext,
     download_progress,
+    remove_prefix,
+    resolve_tensor,
+    source_format,
     tuple_to_correction,
     tuple_to_diffusion,
     tuple_to_source,
     tuple_to_upscaling,
+)
+from tests.helpers import (
+    TEST_MODEL_DIFFUSION_SD15,
+    TEST_MODEL_UPSCALING_SWINIR,
+    test_needs_models,
 )
 
 
@@ -182,3 +190,51 @@ class TupleToUpscalingTests(unittest.TestCase):
       self.assertEqual(source["scale"], 2)
       self.assertEqual(source["half"], True)
       self.assertEqual(source["opset"], 14)
+
+
+class SourceFormatTests(unittest.TestCase):
+   def test_with_format(self):
+      result = source_format({
+         "format": "foo",
+      })
+      self.assertEqual(result, "foo")
+
+   def test_source_known_extension(self):
+      result = source_format({
+         "source": "foo.safetensors",
+      })
+      self.assertEqual(result, "safetensors")
+
+   def test_source_unknown_extension(self):
+      result = source_format({
+         "source": "foo.none"
+      })
+      self.assertEqual(result, None)
+
+   def test_incomplete_model(self):
+      self.assertIsNone(source_format({}))
+
+
+class RemovePrefixTests(unittest.TestCase):
+   def test_with_prefix(self):
+      self.assertEqual(remove_prefix("foo.bar", "foo"), ".bar")
+
+   def test_without_prefix(self):
+      self.assertEqual(remove_prefix("foo.bar", "bin"), "foo.bar")
+
+
+class LoadTorchTests(unittest.TestCase):
+   pass
+
+
+class LoadTensorTests(unittest.TestCase):
+   pass
+
+
+class ResolveTensorTests(unittest.TestCase):
+   @test_needs_models([TEST_MODEL_UPSCALING_SWINIR])
+   def test_resolve_existing(self):
+      self.assertEqual(resolve_tensor("../models/.cache/upscaling-swinir"), TEST_MODEL_UPSCALING_SWINIR)
+
+   def test_resolve_missing(self):
+      self.assertIsNone(resolve_tensor("missing"))

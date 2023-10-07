@@ -2,8 +2,16 @@ import sys
 from functools import partial
 from logging import getLogger
 from os import path
+from pathlib import Path
+from typing import Dict, Optional, Union
 from urllib.parse import urlparse
 
+from optimum.onnxruntime.modeling_diffusion import (
+    ORTModel,
+    ORTStableDiffusionPipelineBase,
+)
+
+from ..torch_before_ort import SessionOptions
 from ..utils import run_gc
 from .context import ServerContext
 
