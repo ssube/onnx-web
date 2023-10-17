@@ -14,3 +14,4 @@ def test_device() -> DeviceParams:
 
 
 TEST_MODEL_DIFFUSION_SD15 = "../models/stable-diffusion-onnx-v1-5"
+TEST_MODEL_UPSCALING_SWINIR = "../models/.cache/upscaling-swinir.pth"

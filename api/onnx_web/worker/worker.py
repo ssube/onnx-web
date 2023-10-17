@@ -27,9 +27,13 @@ MEMORY_ERRORS = [
 ]
 
 
-def worker_main(worker: WorkerContext, server: ServerContext, *args):
-    apply_patches(server)
+def worker_main(
+    worker: WorkerContext, server: ServerContext, *args, exit=exit, patch=True
+):
     setproctitle("onnx-web worker: %s" % (worker.device.device))
+
+    if patch:
+        apply_patches(server)
 
     logger.trace(
         "checking in from worker with providers: %s", get_available_providers()
