@@ -167,6 +167,7 @@ export function ImageControl(props: ImageControlProps) {
         }}
       />
       <NumericField
+        decimal
         label={t('parameter.unet_overlap')}
         min={params.unet_overlap.min}
         max={params.unet_overlap.max}
@@ -193,22 +194,6 @@ export function ImageControl(props: ImageControlProps) {
         />}
       />
       <NumericField
-        decimal
-        disabled={state.tiled_vae === false}
-        label={t('parameter.vae_overlap')}
-        min={params.vae_overlap.min}
-        max={params.vae_overlap.max}
-        step={params.vae_overlap.step}
-        value={state.vae_overlap}
-        onChange={(vae_tile) => {
-          props.onChange({
-            ...state,
-            vae_tile,
-          });
-        }}
-      />
-      <NumericField
-        decimal
         disabled={state.tiled_vae === false}
         label={t('parameter.vae_tile')}
         min={params.vae_tile.min}
@@ -219,6 +204,21 @@ export function ImageControl(props: ImageControlProps) {
           props.onChange({
             ...state,
             vae_tile,
+          });
+        }}
+      />
+      <NumericField
+        decimal
+        disabled={state.tiled_vae === false}
+        label={t('parameter.vae_overlap')}
+        min={params.vae_overlap.min}
+        max={params.vae_overlap.max}
+        step={params.vae_overlap.step}
+        value={state.vae_overlap}
+        onChange={(vae_overlap) => {
+          props.onChange({
+            ...state,
+            vae_overlap,
           });
         }}
       />
