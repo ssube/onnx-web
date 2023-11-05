@@ -76,7 +76,7 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]):
 
     for key, value in keys.items():
         root, *rest = key.split(".")
-        logger.debug("fixing XL node name: %s -> %s", key, root)  # TODO: move to trace
+        logger.trace("fixing XL node name: %s -> %s", key, root)
 
         if root.startswith("input"):
             block = "down_blocks"
