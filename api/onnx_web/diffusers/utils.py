@@ -21,7 +21,7 @@ CLIP_TOKEN = compile(r"\<clip:([-\w]+):(\d+)\>")
 INVERSION_TOKEN = compile(r"\<inversion:([^:\>]+):(-?[\.|\d]+)\>")
 LORA_TOKEN = compile(r"\<lora:([^:\>]+):(-?[\.|\d]+)\>")
 WILDCARD_TOKEN = compile(r"__([-/\\\w]+)__")
-REGION_TOKEN = compile(r"\<region:(\d+):(\d+):(\d+):(\d+):(add|replace):([^\>])\>")
+REGION_TOKEN = compile(r"\<region:(\d+):(\d+):(\d+):(\d+):(add|replace):([^\>]+)\>")
 
 INTERVAL_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
 ALTERNATIVE_RANGE = compile(r"\(([^\)]+)\)")
