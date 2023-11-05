@@ -458,5 +458,10 @@ def slice_prompt(prompt: str, slice: int) -> str:
 Region = Tuple[int, int, int, int, Literal["add", "replace"], str]
 
 
+def parse_region_group(group) -> Region:
+    top, left, bottom, right, mode, prompt = group
+    return (int(top), int(left), int(bottom), int(right), mode, prompt)
+
+
 def parse_regions(prompt: str) -> Tuple[str, List[Region]]:
-    return get_tokens_from_prompt(prompt, REGION_TOKEN, lambda it: it)
+    return get_tokens_from_prompt(prompt, REGION_TOKEN, parser=parse_region_group)
