@@ -444,3 +444,9 @@ def slice_prompt(prompt: str, slice: int) -> str:
         return parts[min(slice, len(parts) - 1)]
     else:
         return prompt
+
+
+Region = Tuple[int, int, int, int, bool, str]
+
+def parse_regions(prompt: str) -> List[Region]:
+    return []
