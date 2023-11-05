@@ -112,7 +112,7 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]):
             logger.warning("new XL key type: %s", root)
             continue
 
-        logger.debug("searching for XL node: /%s/*/%s", block, suffix)
+        logger.trace("searching for XL node: /%s/*/%s", block, suffix)
         match = None
         if block == "text_model":
             match = next(
@@ -139,7 +139,7 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]):
             # wtf
             name = f"{name}ut"
 
-        logger.debug("matching XL key with node: %s -> %s", key, match.name)
+        logger.trace("matching XL key with node: %s -> %s", key, match.name)
 
         fixed[name] = value
         nodes.remove(match)
