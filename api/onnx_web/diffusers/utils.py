@@ -455,12 +455,12 @@ def slice_prompt(prompt: str, slice: int) -> str:
         return prompt
 
 
-Region = Tuple[int, int, int, int, Literal["add", "replace"], str]
+Region = Tuple[int, int, int, int, float, str]
 
 
 def parse_region_group(group) -> Region:
     top, left, bottom, right, mode, prompt = group
-    return (int(top), int(left), int(bottom), int(right), mode, prompt)
+    return (int(top), int(left), int(bottom), int(right), float(mode), prompt)
 
 
 def parse_regions(prompt: str) -> Tuple[str, List[Region]]:

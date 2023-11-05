@@ -446,8 +446,8 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 count[:, :, h_start:h_end, w_start:w_end] += 1
 
             for i in range(len(regions)):
-                top, left, bottom, right, mode, prompt = regions[i]
-                logger.debug("running region prompt: %s, %s, %s, %s, %s, %s", top, left, bottom, right, mode, prompt)
+                top, left, bottom, right, mult, prompt = regions[i]
+                logger.debug("running region prompt: %s, %s, %s, %s, %s, %s", top, left, bottom, right, mult, prompt)
 
                 # convert coordinates to latent space
                 h_start = top // 8
@@ -469,18 +469,13 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 )
                 latent_model_input = latent_model_input.cpu().numpy()
 
-                # fetch region embeds
-                region_1 = region_embeds[i]
-                region_2 = add_region_embeds[i]
-                logger.debug("region embeds shape: %s, %s", region_1.shape, region_2.shape)
-
                 # predict the noise residual
                 timestep = np.array([t], dtype=timestep_dtype)
                 noise_pred = self.unet(
                     sample=latent_model_input,
                     timestep=timestep,
-                    encoder_hidden_states=region_1,
-                    text_embeds=region_2,
+                    encoder_hidden_states=region_embeds[i],
+                    text_embeds=add_region_embeds[i],
                     time_ids=add_time_ids,
                 )
                 noise_pred = noise_pred[0]
@@ -508,12 +503,8 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 )
                 latents_view_denoised = scheduler_output.prev_sample.numpy()
 
-                if mode == "replace":
-                    value[:, :, h_start:h_end, w_start:w_end] = latents_view_denoised
-                    count[:, :, h_start:h_end, w_start:w_end] = 1
-                else:
-                    value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
-                    count[:, :, h_start:h_end, w_start:w_end] += 1
+                value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised * mult
+                count[:, :, h_start:h_end, w_start:w_end] += mult
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
