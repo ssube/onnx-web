@@ -71,7 +71,7 @@ class UpscaleOutpaintStage(BaseStage):
                 outputs.append(source)
                 continue
 
-            tile_size = params.tiles
+            tile_size = params.unet_tile
             size = Size(*source.size)
             latent_size = size.min(tile_size, tile_size)
 

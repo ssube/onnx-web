@@ -60,9 +60,9 @@ class SourceTxt2ImgStage(BaseStage):
         )
 
         if params.is_xl():
-            tile_size = max(stage.tile_size, params.tiles)
+            tile_size = max(stage.tile_size, params.unet_tile)
         else:
-            tile_size = params.tiles
+            tile_size = params.unet_tile
 
         # this works for panorama as well, because tile_size is already max(tile_size, *size)
         latent_size = size.min(tile_size, tile_size)

@@ -305,12 +305,12 @@ TEST_DATA = [
     ),
     TestCase(
         "txt2img-panorama-1024x768-muffin",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=1024&height=768&pipeline=panorama&tiledVAE=true",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=1024&height=768&pipeline=panorama&tiled_vae=true",
         max_attempts=VERY_SLOW_TEST,
     ),
     TestCase(
         "img2img-panorama-1024x768-pumpkin",
-        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none&pipeline=panorama&tiledVAE=true",
+        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none&pipeline=panorama&tiled_vae=true",
         source="txt2img-panorama-1024x768-muffin-0",
         max_attempts=VERY_SLOW_TEST,
     ),

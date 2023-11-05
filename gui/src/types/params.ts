@@ -50,10 +50,11 @@ export interface BaseImgParams {
   negativePrompt?: string;
 
   batch: number;
-  tiledVAE: boolean;
-  tiles: number;
-  overlap: number;
-  stride: number;
+  tiled_vae: boolean;
+  vae_overlap: number;
+  vae_tile: number;
+  unet_overlap: number;
+  unet_tile: number;
 
   cfg: number;
   steps: number;

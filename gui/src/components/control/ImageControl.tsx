@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Casino } from '@mui/icons-material';
 import { Button, Checkbox, FormControlLabel, Stack } from '@mui/material';
@@ -46,9 +47,6 @@ export function ImageControl(props: ImageControlProps) {
   const schedulers = useQuery(['schedulers'], async () => client.schedulers(), {
     staleTime: STALE_TIME,
   });
-
-  // max stride is the lesser of tile size and server's max stride
-  const maxStride = Math.min(state.tiles, params.stride.max);
 
   return <Stack spacing={2}>
     <Stack direction='row' spacing={4}>
@@ -156,57 +154,73 @@ export function ImageControl(props: ImageControlProps) {
         }}
       />
       <NumericField
-        label={t('parameter.tiles')}
-        min={params.tiles.min}
-        max={params.tiles.max}
-        step={params.tiles.step}
-        value={state.tiles}
-        onChange={(tiles) => {
+        label={t('parameter.unet_tile')}
+        min={params.unet_tile.min}
+        max={params.unet_tile.max}
+        step={params.unet_tile.step}
+        value={state.unet_tile}
+        onChange={(unet_tile) => {
           props.onChange({
             ...state,
-            tiles,
+            unet_tile,
+          });
+        }}
+      />
+      <NumericField
+        label={t('parameter.unet_overlap')}
+        min={params.unet_overlap.min}
+        max={params.unet_overlap.max}
+        step={params.unet_overlap.step}
+        value={state.unet_overlap}
+        onChange={(unet_overlap) => {
+          props.onChange({
+            ...state,
+            unet_overlap,
+          });
+        }}
+      />
+      <FormControlLabel
+        label={t('parameter.tiled_vae')}
+        control={<Checkbox
+          checked={state.tiled_vae}
+          value='check'
+          onChange={(event) => {
+            props.onChange({
+              ...state,
+              tiled_vae: state.tiled_vae === false,
+            });
+          }}
+        />}
+      />
+      <NumericField
+        decimal
+        disabled={state.tiled_vae === false}
+        label={t('parameter.vae_overlap')}
+        min={params.vae_overlap.min}
+        max={params.vae_overlap.max}
+        step={params.vae_overlap.step}
+        value={state.vae_overlap}
+        onChange={(vae_tile) => {
+          props.onChange({
+            ...state,
+            vae_tile,
           });
         }}
       />
       <NumericField
         decimal
-        label={t('parameter.overlap')}
-        min={params.overlap.min}
-        max={params.overlap.max}
-        step={params.overlap.step}
-        value={state.overlap}
-        onChange={(overlap) => {
+        disabled={state.tiled_vae === false}
+        label={t('parameter.vae_tile')}
+        min={params.vae_tile.min}
+        max={params.vae_tile.max}
+        step={params.vae_tile.step}
+        value={state.vae_tile}
+        onChange={(vae_tile) => {
           props.onChange({
             ...state,
-            overlap,
+            vae_tile,
           });
         }}
-      />
-      <NumericField
-        label={t('parameter.stride')}
-        min={params.stride.min}
-        max={maxStride}
-        step={params.stride.step}
-        value={state.stride}
-        onChange={(stride) => {
-          props.onChange({
-            ...state,
-            stride,
-          });
-        }}
-      />
-      <FormControlLabel
-        label={t('parameter.tiledVAE')}
-        control={<Checkbox
-          checked={state.tiledVAE}
-          value='check'
-          onChange={(event) => {
-            props.onChange({
-              ...state,
-              tiledVAE: state.tiledVAE === false,
-            });
-          }}
-        />}
       />
     </Stack>
     <PromptInput

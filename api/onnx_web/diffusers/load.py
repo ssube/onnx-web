@@ -266,14 +266,13 @@ def load_pipeline(
 
     # update panorama params
     if params.is_panorama():
-        latent_window = params.tiles // 8
-        latent_stride = params.stride // 8
-
-        pipe.set_window_size(latent_window, latent_stride)
+        unet_stride = (params.unet_tile * (1 - params.unet_overlap)) // 8
+        logger.debug("setting panorama window parameters: %s/%s for UNet, %s/%s for VAE", params.unet_tile, unet_stride, params.vae_tile, params.vae_overlap)
+        pipe.set_window_size(params.unet_tile // 8, unet_stride)
 
         for vae in VAE_COMPONENTS:
             if hasattr(pipe, vae):
-                getattr(pipe, vae).set_window_size(latent_window, params.overlap)
+                getattr(pipe, vae).set_window_size(params.vae_tile // 8, params.vae_overlap)
 
     run_gc([device])
 
@@ -626,8 +625,8 @@ def patch_pipeline(
             server,
             original_decoder,
             decoder=True,
-            window=params.tiles,
-            overlap=params.overlap,
+            window=params.unet_tile,
+            overlap=params.vae_overlap,
         )
         logger.debug("patched VAE decoder with wrapper")
 
@@ -637,8 +636,8 @@ def patch_pipeline(
             server,
             original_encoder,
             decoder=False,
-            window=params.tiles,
-            overlap=params.overlap,
+            window=params.unet_tile,
+            overlap=params.vae_overlap,
         )
         logger.debug("patched VAE encoder with wrapper")
 

@@ -215,10 +215,10 @@ export const I18N_STRINGS_EN = {
         sourceFilter: 'Source Filter',
         steps: 'Steps',
         strength: 'Strength',
-        stride: 'UNet Stride',
-        tiledVAE: 'Tiled VAE',
-        tiles: 'Tile Size',
+        tiled_vae: 'Tiled VAE',
         tileOrder: 'Tile Order',
+        unet_overlap: 'UNet Overlap',
+        unet_tile: 'UNet Tile Size',
         upscale: {
           label: 'Upscale',
           denoise: 'Denoise',
@@ -226,6 +226,8 @@ export const I18N_STRINGS_EN = {
           order: 'Upscale Order',
           outscale: 'Outscale',
         },
+        vae_overlap: 'UNet Overlap',
+        vae_tile: 'VAE Tile Size',
         width: 'Width',
         correction: {
           label: 'Face Correction',

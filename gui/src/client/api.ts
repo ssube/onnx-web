@@ -70,10 +70,11 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
   url.searchParams.append('cfg', params.cfg.toFixed(FIXED_FLOAT));
   url.searchParams.append('eta', params.eta.toFixed(FIXED_FLOAT));
   url.searchParams.append('steps', params.steps.toFixed(FIXED_INTEGER));
-  url.searchParams.append('tiledVAE', String(params.tiledVAE));
-  url.searchParams.append('tiles', params.tiles.toFixed(FIXED_INTEGER));
-  url.searchParams.append('overlap', params.overlap.toFixed(FIXED_FLOAT));
-  url.searchParams.append('stride', params.stride.toFixed(FIXED_INTEGER));
+  url.searchParams.append('tiled_vae', String(params.tiled_vae));
+  url.searchParams.append('unet_overlap', params.unet_overlap.toFixed(FIXED_FLOAT));
+  url.searchParams.append('unet_tile', params.unet_tile.toFixed(FIXED_INTEGER));
+  url.searchParams.append('vae_overlap', params.vae_overlap.toFixed(FIXED_FLOAT));
+  url.searchParams.append('vae_tile', params.vae_tile.toFixed(FIXED_INTEGER));
 
   if (doesExist(params.scheduler)) {
     url.searchParams.append('scheduler', params.scheduler);

@@ -117,32 +117,35 @@ def build_params(
         get_config_value("steps", "max"),
         get_config_value("steps", "min"),
     )
-    tiled_vae = get_boolean(data, "tiledVAE", get_config_value("tiledVAE"))
-    tiles = get_and_clamp_int(
+    tiled_vae = get_boolean(data, "tiled_vae", get_config_value("tiled_vae"))
+    unet_overlap = get_and_clamp_float(
         data,
-        "tiles",
-        get_config_value("tiles"),
-        get_config_value("tiles", "max"),
-        get_config_value("tiles", "min"),
+        "unet_overlap",
+        get_config_value("unet_overlap"),
+        get_config_value("unet_overlap", "max"),
+        get_config_value("unet_overlap", "min"),
     )
-    overlap = get_and_clamp_float(
+    unet_tile = get_and_clamp_int(
         data,
-        "overlap",
-        get_config_value("overlap"),
-        get_config_value("overlap", "max"),
-        get_config_value("overlap", "min"),
+        "unet_tile",
+        get_config_value("unet_tile"),
+        get_config_value("unet_tile", "max"),
+        get_config_value("unet_tile", "min"),
     )
-    stride = get_and_clamp_int(
+    vae_overlap = get_and_clamp_float(
         data,
-        "stride",
-        get_config_value("stride"),
-        get_config_value("stride", "max"),
-        get_config_value("stride", "min"),
+        "vae_overlap",
+        get_config_value("vae_overlap"),
+        get_config_value("vae_overlap", "max"),
+        get_config_value("vae_overlap", "min"),
     )
-
-    if stride > tiles:
-        logger.info("limiting stride to tile size, %s > %s", stride, tiles)
-        stride = tiles
+    vae_tile = get_and_clamp_int(
+        data,
+        "vae_tile",
+        get_config_value("vae_tile"),
+        get_config_value("vae_tile", "max"),
+        get_config_value("vae_tile", "min"),
+    )
 
     seed = int(data.get("seed", -1))
     if seed == -1:
@@ -163,9 +166,10 @@ def build_params(
         control=control,
         loopback=loopback,
         tiled_vae=tiled_vae,
-        tiles=tiles,
-        overlap=overlap,
-        stride=stride,
+        unet_overlap=unet_overlap,
+        unet_tile=unet_tile,
+        vae_overlap=vae_overlap,
+        vae_tile=vae_tile,
     )
 
     return params

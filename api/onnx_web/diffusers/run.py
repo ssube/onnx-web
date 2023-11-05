@@ -44,9 +44,9 @@ def run_txt2img_pipeline(
 ) -> None:
     # if using panorama, the pipeline will tile itself (views)
     if params.is_panorama() or params.is_xl():
-        tile_size = max(params.tiles, size.width, size.height)
+        tile_size = max(params.unet_tile, size.width, size.height)
     else:
-        tile_size = params.tiles
+        tile_size = params.unet_tile
 
     # prepare the chain pipeline and first stage
     chain = ChainPipeline()
@@ -57,11 +57,11 @@ def run_txt2img_pipeline(
         ),
         size=size,
         prompt_index=0,
-        overlap=params.overlap,
+        overlap=params.vae_overlap,
     )
 
     # apply upscaling and correction, before highres
-    stage = StageParams(tile_size=params.tiles)
+    stage = StageParams(tile_size=params.unet_tile)
     first_upscale, after_upscale = split_upscale(upscale)
     if first_upscale:
         stage_upscale_correction(
@@ -139,14 +139,14 @@ def run_img2img_pipeline(
     # prepare the chain pipeline and first stage
     chain = ChainPipeline()
     stage = StageParams(
-        tile_size=params.tiles,
+        tile_size=params.unet_tile,
     )
     chain.stage(
         BlendImg2ImgStage(),
         stage,
         prompt_index=0,
         strength=strength,
-        overlap=params.overlap,
+        overlap=params.vae_overlap,
     )
 
     # apply upscaling and correction, before highres
@@ -236,7 +236,7 @@ def run_inpaint_pipeline(
     full_res_inpaint_padding: float,
 ) -> None:
     logger.debug("building inpaint pipeline")
-    tile_size = params.tiles
+    tile_size = params.unet_tile
 
     if mask is None:
         # if no mask was provided, keep the full source image
@@ -332,7 +332,7 @@ def run_inpaint_pipeline(
         fill_color=fill_color,
         mask_filter=mask_filter,
         noise_source=noise_source,
-        overlap=params.overlap,
+        overlap=params.vae_overlap,
         prompt_index=0,
     )
 
@@ -410,7 +410,7 @@ def run_upscale_pipeline(
 ) -> None:
     # set up the chain pipeline, no base stage for upscaling
     chain = ChainPipeline()
-    stage = StageParams(tile_size=params.tiles)
+    stage = StageParams(tile_size=params.unet_tile)
 
     # apply upscaling and correction, before highres
     first_upscale, after_upscale = split_upscale(upscale)

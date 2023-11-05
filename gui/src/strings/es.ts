@@ -162,9 +162,11 @@ export const I18N_STRINGS_ES = {
         steps: 'Pasos',
         strength: 'Fuerza',
         stride: '',
-        tiledVAE: '',
+        tiled_vae: '',
         tiles: '',
         tileOrder: 'Orden de secciones',
+        unet_overlap: '',
+        unet_tile: '',
         upscale: {
           label: 'Aumento',
           denoise: '',
@@ -172,6 +174,8 @@ export const I18N_STRINGS_ES = {
           order: '',
           outscale: 'Escala de producción',
         },
+        vae_overlap: '',
+        vae_tile: '',
         width: 'Anchura',
         correction: {
           label: 'Corrección facial',
