@@ -226,7 +226,7 @@ export const I18N_STRINGS_EN = {
           order: 'Upscale Order',
           outscale: 'Outscale',
         },
-        vae_overlap: 'UNet Overlap',
+        vae_overlap: 'VAE Overlap',
         vae_tile: 'VAE Tile Size',
         width: 'Width',
         correction: {
