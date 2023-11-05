@@ -267,12 +267,20 @@ def load_pipeline(
     # update panorama params
     if params.is_panorama():
         unet_stride = (params.unet_tile * (1 - params.unet_overlap)) // 8
-        logger.debug("setting panorama window parameters: %s/%s for UNet, %s/%s for VAE", params.unet_tile, unet_stride, params.vae_tile, params.vae_overlap)
+        logger.debug(
+            "setting panorama window parameters: %s/%s for UNet, %s/%s for VAE",
+            params.unet_tile,
+            unet_stride,
+            params.vae_tile,
+            params.vae_overlap,
+        )
         pipe.set_window_size(params.unet_tile // 8, unet_stride)
 
         for vae in VAE_COMPONENTS:
             if hasattr(pipe, vae):
-                getattr(pipe, vae).set_window_size(params.vae_tile // 8, params.vae_overlap)
+                getattr(pipe, vae).set_window_size(
+                    params.vae_tile // 8, params.vae_overlap
+                )
 
     run_gc([device])
 

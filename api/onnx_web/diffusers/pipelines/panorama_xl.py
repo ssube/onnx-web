@@ -303,7 +303,14 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
         # 3.b. Encode region prompts
         regions = parse_regions(prompt)
-        region_embeds: List[Tuple[List[np.ndarray], Optional[np.ndarray], Optional[np.ndarray], Optional[np.ndarray]]] = []
+        region_embeds: List[
+            Tuple[
+                List[np.ndarray],
+                Optional[np.ndarray],
+                Optional[np.ndarray],
+                Optional[np.ndarray],
+            ]
+        ] = []
         add_region_embeds: List[np.ndarray] = []
 
         for _top, _left, _bottom, _right, _mode, region_prompt in regions:
@@ -322,9 +329,11 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 current_region_embeds[0] = np.concatenate(
                     (current_region_embeds[1], current_region_embeds[0]), axis=0
                 )
-                add_region_embeds.append(np.concatenate(
-                    (current_region_embeds[3], current_region_embeds[2]), axis=0
-                ))
+                add_region_embeds.append(
+                    np.concatenate(
+                        (current_region_embeds[3], current_region_embeds[2]), axis=0
+                    )
+                )
 
             region_embeds.append(current_region_embeds)
 
@@ -492,7 +501,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 )
                 latents_view_denoised = scheduler_output.prev_sample.numpy()
 
-                if mode:
+                if mode == "replace":
                     value[:, :, h_start:h_end, w_start:w_end] = latents_view_denoised
                     count[:, :, h_start:h_end, w_start:w_end] = 1
                 else:
