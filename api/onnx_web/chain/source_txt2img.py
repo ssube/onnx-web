@@ -47,7 +47,10 @@ class SourceTxt2ImgStage(BaseStage):
             params = params.with_args(prompt=slice_prompt(params.prompt, prompt_index))
 
         logger.info(
-            "generating image using txt2img, %s steps: %s", params.steps, params.prompt
+            "generating image using txt2img, %s steps of %s: %s",
+            params.steps,
+            params.model,
+            params.prompt,
         )
 
         if len(sources):
@@ -125,6 +128,7 @@ class SourceTxt2ImgStage(BaseStage):
 
         output = list(sources)
         output.extend(result.images)
+        logger.debug("produced %s outputs", len(output))
         return output
 
     def steps(

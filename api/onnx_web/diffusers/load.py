@@ -264,9 +264,7 @@ def load_pipeline(
         if hasattr(pipe, vae):
             vae_model = getattr(pipe, vae)
             vae_model.set_tiled(tiled=params.tiled_vae)
-            vae_model.set_window_size(
-                params.vae_tile // 8, params.vae_overlap
-            )
+            vae_model.set_window_size(params.vae_tile // 8, params.vae_overlap)
 
     # update panorama params
     if params.is_panorama():

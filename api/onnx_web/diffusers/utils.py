@@ -228,7 +228,7 @@ def parse_float_group(group: Tuple[str, str]) -> Tuple[str, float]:
 def get_tokens_from_prompt(
     prompt: str,
     pattern: Pattern,
-    parser = parse_float_group,
+    parser=parse_float_group,
 ) -> Tuple[str, List[Tuple[str, float]]]:
     """
     TODO: replace with Arpeggio

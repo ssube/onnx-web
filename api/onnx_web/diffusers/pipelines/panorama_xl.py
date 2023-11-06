@@ -330,7 +330,11 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 )
                 add_region_embeds.append(
                     np.concatenate(
-                        (region_negative_pooled_prompt_embeds, region_pooled_prompt_embeds), axis=0
+                        (
+                            region_negative_pooled_prompt_embeds,
+                            region_pooled_prompt_embeds,
+                        ),
+                        axis=0,
                     )
                 )
 
@@ -440,7 +444,15 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
             for r in range(len(regions)):
                 top, left, bottom, right, mult, prompt = regions[r]
-                logger.debug("running region prompt: %s, %s, %s, %s, %s, %s", top, left, bottom, right, mult, prompt)
+                logger.debug(
+                    "running region prompt: %s, %s, %s, %s, %s, %s",
+                    top,
+                    left,
+                    bottom,
+                    right,
+                    mult,
+                    prompt,
+                )
 
                 # convert coordinates to latent space
                 h_start = top // 8
@@ -476,7 +488,9 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
                 # perform guidance
                 if do_classifier_free_guidance:
-                    region_noise_pred_uncond, region_noise_pred_text = np.split(region_noise_pred, 2)
+                    region_noise_pred_uncond, region_noise_pred_text = np.split(
+                        region_noise_pred, 2
+                    )
                     region_noise_pred = region_noise_pred_uncond + guidance_scale * (
                         region_noise_pred_text - region_noise_pred_uncond
                     )
@@ -501,7 +515,9 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                     value[:, :, h_start:h_end, w_start:w_end] = latents_region_denoised
                     count[:, :, h_start:h_end, w_start:w_end] = 1
                 else:
-                    value[:, :, h_start:h_end, w_start:w_end] += latents_region_denoised * mult
+                    value[:, :, h_start:h_end, w_start:w_end] += (
+                        latents_region_denoised * mult
+                    )
                     count[:, :, h_start:h_end, w_start:w_end] += mult
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
