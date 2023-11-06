@@ -250,12 +250,12 @@ class ChainPipeline:
                         stage_sources = stage_outputs
                         break
                     except Exception:
+                        worker.retries = worker.retries - 1
                         logger.exception(
                             "error while running stage pipeline, %s retries left", worker.retries
                         )
                         server.cache.clear()
                         run_gc([worker.get_device()])
-                        worker.retries = worker.retries - 1
 
                 if worker.retries <= 0:
                     raise RetryException("exhausted retries on stage")

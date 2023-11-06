@@ -445,8 +445,8 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
                 count[:, :, h_start:h_end, w_start:w_end] += 1
 
-            for i in range(len(regions)):
-                top, left, bottom, right, mult, prompt = regions[i]
+            for r in range(len(regions)):
+                top, left, bottom, right, mult, prompt = regions[r]
                 logger.debug("running region prompt: %s, %s, %s, %s, %s, %s", top, left, bottom, right, mult, prompt)
 
                 # convert coordinates to latent space
@@ -475,8 +475,8 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 noise_pred = self.unet(
                     sample=latent_region_input,
                     timestep=timestep,
-                    encoder_hidden_states=region_embeds[i],
-                    text_embeds=add_region_embeds[i],
+                    encoder_hidden_states=region_embeds[r],
+                    text_embeds=add_region_embeds[r],
                     time_ids=add_time_ids,
                 )
                 noise_pred = noise_pred[0]
@@ -504,8 +504,12 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 )
                 latents_region_denoised = scheduler_output.prev_sample.numpy()
 
-                value[:, :, h_start:h_end, w_start:w_end] += latents_region_denoised * mult
-                count[:, :, h_start:h_end, w_start:w_end] += mult
+                if mult > 1000.0:
+                    value[:, :, h_start:h_end, w_start:w_end] = latents_region_denoised * mult
+                    count[:, :, h_start:h_end, w_start:w_end] = mult
+                else:
+                    value[:, :, h_start:h_end, w_start:w_end] += latents_region_denoised * mult
+                    count[:, :, h_start:h_end, w_start:w_end] += mult
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
