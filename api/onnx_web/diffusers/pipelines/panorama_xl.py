@@ -304,14 +304,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         )
 
         # 3.b. Encode region prompts
-        region_embeds: List[
-            Tuple[
-                List[np.ndarray],
-                Optional[np.ndarray],
-                Optional[np.ndarray],
-                Optional[np.ndarray],
-            ]
-        ] = []
+        region_embeds: List[np.ndarray] = []
         add_region_embeds: List[np.ndarray] = []
 
         for _top, _left, _bottom, _right, _mode, region_prompt in regions:
@@ -450,10 +443,10 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 logger.debug("running region prompt: %s, %s, %s, %s, %s, %s", top, left, bottom, right, mult, prompt)
 
                 # convert coordinates to latent space
-                h_start = left // 8
-                h_end = right // 8
-                w_start = top // 8
-                w_end = bottom // 8
+                h_start = top // 8
+                h_end = bottom // 8
+                w_start = left // 8
+                w_end = right // 8
 
                 # get the latents corresponding to the current view coordinates
                 latents_for_region = latents[:, :, h_start:h_end, w_start:w_end]
@@ -504,7 +497,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 )
                 latents_region_denoised = scheduler_output.prev_sample.numpy()
 
-                if mult > 1000.0:
+                if mult >= 1000.0:
                     value[:, :, h_start:h_end, w_start:w_end] = latents_region_denoised * mult
                     count[:, :, h_start:h_end, w_start:w_end] = mult
                 else:
