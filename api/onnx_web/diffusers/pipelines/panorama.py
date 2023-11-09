@@ -619,7 +619,14 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
                 # get the latents corresponding to the current view coordinates
                 latents_for_region = latents[:, :, h_start:h_end, w_start:w_end]
-                logger.trace("region latent shape: [:,:,%s:%s,%s:%s] -> %s", h_start, h_end, w_start, w_end, latents_for_region.shape)
+                logger.trace(
+                    "region latent shape: [:,:,%s:%s,%s:%s] -> %s",
+                    h_start,
+                    h_end,
+                    w_start,
+                    w_end,
+                    latents_for_region.shape,
+                )
 
                 # expand the latents if we are doing classifier free guidance
                 latent_region_input = (
@@ -660,14 +667,19 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 latents_region_denoised = scheduler_output.prev_sample.numpy()
 
                 if feather > 0.0:
-                    mask = make_tile_mask((h_end - h_start, w_end - w_start), self.window, feather)
+                    mask = make_tile_mask(
+                        (h_end - h_start, w_end - w_start), self.window, feather
+                    )
+                    mask = np.expand_dims(mask, axis=0)
                     mask = np.repeat(mask, 4, axis=0)
                     mask = np.expand_dims(mask, axis=0)
                 else:
                     mask = 1
 
                 if weight >= 10.0:
-                    value[:, :, h_start:h_end, w_start:w_end] = latents_region_denoised * mask
+                    value[:, :, h_start:h_end, w_start:w_end] = (
+                        latents_region_denoised * mask
+                    )
                     count[:, :, h_start:h_end, w_start:w_end] = mask
                 else:
                     value[:, :, h_start:h_end, w_start:w_end] += (

@@ -36,7 +36,14 @@ from ...diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
 from ...diffusers.version_safe_diffusers import AttnProcessor
 from ...models.cnet import UNet2DConditionModel_CNet
 from ...utils import run_gc
-from ..utils import RESOLVE_FORMATS, ConversionContext, check_ext, is_torch_2_0, load_tensor, onnx_export
+from ..utils import (
+    RESOLVE_FORMATS,
+    ConversionContext,
+    check_ext,
+    is_torch_2_0,
+    load_tensor,
+    onnx_export,
+)
 from .checkpoint import convert_extract_checkpoint
 
 logger = getLogger(__name__)
