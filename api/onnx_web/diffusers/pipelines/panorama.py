@@ -26,6 +26,8 @@ from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMSchedu
 from diffusers.utils import PIL_INTERPOLATION, deprecate, logging
 from transformers import CLIPImageProcessor, CLIPTokenizer
 
+from ..utils import parse_regions
+
 logger = logging.get_logger(__name__)
 
 
@@ -479,6 +481,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         # corresponds to doing no classifier free guidance.
         do_classifier_free_guidance = guidance_scale > 1.0
 
+        prompt, regions = parse_regions(prompt)
+
         prompt_embeds = self._encode_prompt(
             prompt,
             num_images_per_prompt,
@@ -487,6 +491,22 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             prompt_embeds=prompt_embeds,
             negative_prompt_embeds=negative_prompt_embeds,
         )
+
+        # 3.b. Encode region prompts
+        region_embeds: List[np.ndarray] = []
+
+        for _top, _left, _bottom, _right, _mult, region_prompt in regions:
+            if region_prompt.endswith("+"):
+                region_prompt = region_prompt[:-1] + " " + prompt
+
+            region_prompt_embeds = self._encode_prompt(
+                region_prompt,
+                num_images_per_prompt,
+                do_classifier_free_guidance,
+                negative_prompt,
+            )
+
+            region_embeds.append(region_prompt_embeds)
 
         # get the initial random noise unless the user supplied it
         latents_dtype = prompt_embeds.dtype
@@ -575,6 +595,75 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
                 count[:, :, h_start:h_end, w_start:w_end] += 1
+
+            for r in range(len(regions)):
+                top, left, bottom, right, mult, prompt = regions[r]
+                logger.debug(
+                    "running region prompt: %s, %s, %s, %s, %s, %s",
+                    top,
+                    left,
+                    bottom,
+                    right,
+                    mult,
+                    prompt,
+                )
+
+                # convert coordinates to latent space
+                h_start = top // 8
+                h_end = bottom // 8
+                w_start = left // 8
+                w_end = right // 8
+
+                # get the latents corresponding to the current view coordinates
+                latents_for_region = latents[:, :, h_start:h_end, w_start:w_end]
+                logger.trace("region latent shape: [:,:,%s:%s,%s:%s] -> %s", h_start, h_end, w_start, w_end, latents_for_region.shape)
+
+                # expand the latents if we are doing classifier free guidance
+                latent_region_input = (
+                    np.concatenate([latents_for_region] * 2)
+                    if do_classifier_free_guidance
+                    else latents_for_region
+                )
+                latent_region_input = self.scheduler.scale_model_input(
+                    torch.from_numpy(latent_region_input), t
+                )
+                latent_region_input = latent_region_input.cpu().numpy()
+
+                # predict the noise residual
+                timestep = np.array([t], dtype=timestep_dtype)
+                region_noise_pred = self.unet(
+                    sample=latent_region_input,
+                    timestep=timestep,
+                    encoder_hidden_states=region_embeds[r],
+                )
+                region_noise_pred = region_noise_pred[0]
+
+                # perform guidance
+                if do_classifier_free_guidance:
+                    region_noise_pred_uncond, region_noise_pred_text = np.split(
+                        region_noise_pred, 2
+                    )
+                    region_noise_pred = region_noise_pred_uncond + guidance_scale * (
+                        region_noise_pred_text - region_noise_pred_uncond
+                    )
+
+                # compute the previous noisy sample x_t -> x_t-1
+                scheduler_output = self.scheduler.step(
+                    torch.from_numpy(region_noise_pred),
+                    t,
+                    torch.from_numpy(latents_for_region),
+                    **extra_step_kwargs,
+                )
+                latents_region_denoised = scheduler_output.prev_sample.numpy()
+
+                if mult >= 10.0:
+                    value[:, :, h_start:h_end, w_start:w_end] = latents_region_denoised
+                    count[:, :, h_start:h_end, w_start:w_end] = 1
+                else:
+                    value[:, :, h_start:h_end, w_start:w_end] += (
+                        latents_region_denoised * mult
+                    )
+                    count[:, :, h_start:h_end, w_start:w_end] += mult
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)

@@ -91,6 +91,31 @@ def get_tile_grads(
     return (grad_x, grad_y)
 
 
+def make_tile_mask(
+    shape: np.ndarray,
+    tile: int,
+    overlap: float,
+) -> np.ndarray:
+    mask = np.ones_like(shape[:, :, 0])
+    adj_tile = int(float(tile) * (1.0 - overlap))
+
+    # sort gradient points
+    p1 = adj_tile
+    p2 = (tile - adj_tile)
+    points = [0, min(p1, p2), max(p1, p2), tile]
+
+    # build gradients
+    grad_x, grad_y = [0, 1, 1, 0], [0, 1, 1, 0]
+    logger.debug("tile gradients: %s, %s, %s", points, grad_x, grad_y)
+
+    mult_x = [np.interp(i, points, grad_x) for i in range(tile)]
+    mult_y = [np.interp(i, points, grad_y) for i in range(tile)]
+
+    mask = ((mask * mult_x).T * mult_y).T
+
+    return mask
+
+
 def blend_tiles(
     tiles: List[Tuple[int, int, Image.Image]],
     scale: int,
@@ -109,7 +134,7 @@ def blend_tiles(
     value = np.zeros(scaled_size)
 
     for left, top, tile_image in tiles:
-        # histogram equalization
+        # TODO: histogram equalization
         equalized = np.array(tile_image).astype(np.float32)
         mask = np.ones_like(equalized[:, :, 0])
 

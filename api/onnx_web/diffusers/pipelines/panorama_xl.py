@@ -12,6 +12,8 @@ from optimum.pipelines.diffusers.pipeline_stable_diffusion_xl_img2img import (
 )
 from optimum.pipelines.diffusers.pipeline_utils import preprocess, rescale_noise_cfg
 
+from onnx_web.chain.tile import make_tile_mask
+
 from ..utils import parse_regions
 
 logger = logging.getLogger(__name__)
@@ -307,7 +309,10 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         region_embeds: List[np.ndarray] = []
         add_region_embeds: List[np.ndarray] = []
 
-        for _top, _left, _bottom, _right, _mode, region_prompt in regions:
+        for _top, _left, _bottom, _right, _mult, region_prompt in regions:
+            if region_prompt.endswith("+"):
+                region_prompt = region_prompt[:-1] + " " + prompt
+
             (
                 region_prompt_embeds,
                 region_negative_prompt_embeds,
@@ -318,10 +323,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 num_images_per_prompt,
                 do_classifier_free_guidance,
                 negative_prompt,
-                prompt_embeds=prompt_embeds,
-                negative_prompt_embeds=negative_prompt_embeds,
-                pooled_prompt_embeds=pooled_prompt_embeds,
-                negative_pooled_prompt_embeds=negative_pooled_prompt_embeds,
             )
 
             if do_classifier_free_guidance:
@@ -462,7 +463,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
                 # get the latents corresponding to the current view coordinates
                 latents_for_region = latents[:, :, h_start:h_end, w_start:w_end]
-                logger.trace("region latent shape: %s", latents_for_region.shape)
+                logger.trace("region latent shape: [:,:,%s:%s,%s:%s] -> %s", h_start, h_end, w_start, w_end, latents_for_region.shape)
 
                 # expand the latents if we are doing classifier free guidance
                 latent_region_input = (
@@ -511,14 +512,23 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 )
                 latents_region_denoised = scheduler_output.prev_sample.numpy()
 
-                if mult >= 1000.0:
-                    value[:, :, h_start:h_end, w_start:w_end] = latents_region_denoised
-                    count[:, :, h_start:h_end, w_start:w_end] = 1
+                # TODO: get feather settings from prompt
+                feather = 0.25
+                tile = 1024
+
+                if feather > 0.0:
+                    mask = make_tile_mask(latents_region_denoised, tile, feather)
+                else:
+                    mask = 1
+
+                if mult >= 10.0:
+                    value[:, :, h_start:h_end, w_start:w_end] = latents_region_denoised * mask
+                    count[:, :, h_start:h_end, w_start:w_end] = mask
                 else:
                     value[:, :, h_start:h_end, w_start:w_end] += (
-                        latents_region_denoised * mult
+                        latents_region_denoised * mult * mask
                     )
-                    count[:, :, h_start:h_end, w_start:w_end] += mult
+                    count[:, :, h_start:h_end, w_start:w_end] += mult * mask
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
