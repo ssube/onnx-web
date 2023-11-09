@@ -309,7 +309,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         region_embeds: List[np.ndarray] = []
         add_region_embeds: List[np.ndarray] = []
 
-        for _top, _left, _bottom, _right, _weight, region_prompt in regions:
+        for _top, _left, _bottom, _right, _weight, _feather, region_prompt in regions:
             if region_prompt.endswith("+"):
                 region_prompt = region_prompt[:-1] + " " + prompt
 
