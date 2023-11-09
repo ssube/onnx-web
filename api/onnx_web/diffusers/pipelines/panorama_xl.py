@@ -514,10 +514,12 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
                 # TODO: get feather settings from prompt
                 feather = 0.25
-                tile = 1024
+                tile = 128
 
                 if feather > 0.0:
-                    mask = make_tile_mask(latents_region_denoised, tile, feather)
+                    mask = make_tile_mask(latents_region_denoised, (tile, tile), feather)
+                    mask = np.repeat(mask, 4, axis=0)
+                    mask = np.expand_dims(mask, axis=0)
                 else:
                     mask = 1
 

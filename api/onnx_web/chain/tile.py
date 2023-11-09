@@ -96,7 +96,7 @@ def make_tile_mask(
     tile: int,
     overlap: float,
 ) -> np.ndarray:
-    mask = np.ones_like(shape[:, :, 0])
+    mask = np.ones(shape)
     adj_tile = int(float(tile) * (1.0 - overlap))
 
     # sort gradient points
