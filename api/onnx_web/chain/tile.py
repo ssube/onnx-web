@@ -2,7 +2,7 @@ import itertools
 from enum import Enum
 from logging import getLogger
 from math import ceil
-from typing import List, Optional, Protocol, Tuple
+from typing import Any, List, Optional, Protocol, Tuple
 
 import numpy as np
 from PIL import Image
@@ -92,7 +92,7 @@ def get_tile_grads(
 
 
 def make_tile_mask(
-    shape: np.ndarray,
+    shape: Any,
     tile: int,
     overlap: float,
 ) -> np.ndarray:

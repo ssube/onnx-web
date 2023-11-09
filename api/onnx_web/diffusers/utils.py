@@ -21,7 +21,7 @@ CLIP_TOKEN = compile(r"\<clip:([-\w]+):(\d+)\>")
 INVERSION_TOKEN = compile(r"\<inversion:([^:\>]+):(-?[\.|\d]+)\>")
 LORA_TOKEN = compile(r"\<lora:([^:\>]+):(-?[\.|\d]+)\>")
 WILDCARD_TOKEN = compile(r"__([-/\\\w]+)__")
-REGION_TOKEN = compile(r"\<region:(\d+):(\d+):(\d+):(\d+):(-?[\.|\d]+):([^\>]+)\>")
+REGION_TOKEN = compile(r"\<region:(\d+):(\d+):(\d+):(\d+):(\d+):(-?[\.|\d]+):([^\>]+)\>")
 
 INTERVAL_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
 ALTERNATIVE_RANGE = compile(r"\(([^\)]+)\)")
@@ -459,8 +459,8 @@ Region = Tuple[int, int, int, int, float, str]
 
 
 def parse_region_group(group) -> Region:
-    top, left, bottom, right, mult, prompt = group
-    return (int(top), int(left), int(bottom), int(right), float(mult), prompt)
+    top, left, bottom, right, weight, feather, prompt = group
+    return (int(top), int(left), int(bottom), int(right), float(weight), float(feather), prompt)
 
 
 def parse_regions(prompt: str) -> Tuple[str, List[Region]]:

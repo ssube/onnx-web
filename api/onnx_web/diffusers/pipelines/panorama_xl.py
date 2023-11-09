@@ -309,7 +309,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         region_embeds: List[np.ndarray] = []
         add_region_embeds: List[np.ndarray] = []
 
-        for _top, _left, _bottom, _right, _mult, region_prompt in regions:
+        for _top, _left, _bottom, _right, _weight, region_prompt in regions:
             if region_prompt.endswith("+"):
                 region_prompt = region_prompt[:-1] + " " + prompt
 
@@ -444,14 +444,15 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 count[:, :, h_start:h_end, w_start:w_end] += 1
 
             for r in range(len(regions)):
-                top, left, bottom, right, mult, prompt = regions[r]
+                top, left, bottom, right, weight, feather, prompt = regions[r]
                 logger.debug(
-                    "running region prompt: %s, %s, %s, %s, %s, %s",
+                    "running region prompt: %s, %s, %s, %s, %s, %s, %s",
                     top,
                     left,
                     bottom,
                     right,
-                    mult,
+                    weight,
+                    feather,
                     prompt,
                 )
 
@@ -512,25 +513,21 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 )
                 latents_region_denoised = scheduler_output.prev_sample.numpy()
 
-                # TODO: get feather settings from prompt
-                feather = 0.25
-                tile = 128
-
                 if feather > 0.0:
-                    mask = make_tile_mask(latents_region_denoised, (tile, tile), feather)
+                    mask = make_tile_mask((h_end - h_start, w_end - w_start), self.window, feather)
                     mask = np.repeat(mask, 4, axis=0)
                     mask = np.expand_dims(mask, axis=0)
                 else:
                     mask = 1
 
-                if mult >= 10.0:
+                if weight >= 10.0:
                     value[:, :, h_start:h_end, w_start:w_end] = latents_region_denoised * mask
                     count[:, :, h_start:h_end, w_start:w_end] = mask
                 else:
                     value[:, :, h_start:h_end, w_start:w_end] += (
-                        latents_region_denoised * mult * mask
+                        latents_region_denoised * weight * mask
                     )
-                    count[:, :, h_start:h_end, w_start:w_end] += mult * mask
+                    count[:, :, h_start:h_end, w_start:w_end] += weight * mask
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
