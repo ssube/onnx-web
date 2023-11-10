@@ -34,6 +34,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Textual Inversion tokens](#textual-inversion-tokens)
       - [Region tokens](#region-tokens)
       - [CLIP skip tokens](#clip-skip-tokens)
+      - [Prompt stages](#prompt-stages)
     - [Long prompt weighting syntax](#long-prompt-weighting-syntax)
   - [Pipelines](#pipelines)
     - [ControlNet pipeline](#controlnet-pipeline)
@@ -424,14 +425,28 @@ than the other tokens and have more parameters, which may change in the future.
 <region:top:left:bottom:right:strength:feather:prompt>
 ```
 
-- the prompt can end with +
-- top/left/bottom/right are integer pixels
-  - will be rounded down to nearest 8
-- strength and feather are floats
-  - strength > 10 replaces other prompt
-  - strength < 0 does weird things
-  - feather can be 0.0 to 0.5, reasonably
-- prompt can end with + to append the regular prompt
+- `top`, `left`, `bottom`, and `right` define the four corners of a rectangle
+  - must be integers
+  - will be rounded down to the nearest multiple of 8
+- `strength` defines the ratio between the two prompts
+  - must be a float or integer
+  - strength should be between 0.0 and 10.0
+    - 2.0 to 5.0 generally works
+    - 10.0 completely replaces the base prompt
+    - < 0 does weird things
+- `feather` defines the blending between the two prompts
+  - must be a float or integer
+  - this is similar to UNet and VAE overlap
+  - feather should be between 0.0 and 0.5
+    - 0.0 will cause hard edges
+    - 0.25 is a good default
+- the region has its own `prompt`
+  - any characters _except_ `>`
+  - if the region prompt ends with `+`, the base prompt will be appended to it
+    - this can help the region blend with the rest of the image better
+    - `<region:0:0:1024:1024:5.0:0.25:small dog,+> autumn forest, detailed background, 4k, HDR` will use two prompts:
+      - `small dog, autumn forest, detailed background, 4k, HDR` for the region
+      - `autumn forest, detailed background, 4k, HDR` for the rest of the image
 
 #### CLIP skip tokens
 
@@ -442,6 +457,10 @@ You can skip the last layers of the CLIP text encoder using the `clip` token:
 ```
 
 This makes your prompt less specific and some models have been trained to work better with some amount of skipping.
+
+#### Prompt stages
+
+TODO: explain `first stage || hires prompt` syntax
 
 ### Long prompt weighting syntax
 
