@@ -668,7 +668,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
                 if feather > 0.0:
                     mask = make_tile_mask(
-                        (h_end - h_start, w_end - w_start), self.window, feather
+                        (h_end - h_start, w_end - w_start),
+                        (h_end - h_start, w_end - w_start),
+                        feather,
                     )
                     mask = np.expand_dims(mask, axis=0)
                     mask = np.repeat(mask, 4, axis=0)
