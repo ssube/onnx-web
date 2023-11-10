@@ -22,7 +22,7 @@ INVERSION_TOKEN = compile(r"\<inversion:([^:\>]+):(-?[\.|\d]+)\>")
 LORA_TOKEN = compile(r"\<lora:([^:\>]+):(-?[\.|\d]+)\>")
 WILDCARD_TOKEN = compile(r"__([-/\\\w]+)__")
 REGION_TOKEN = compile(
-    r"\<region:(\d+):(\d+):(\d+):(\d+):(\d+):(-?[\.|\d]+):([^\>]+)\>"
+    r"\<region:(\d+):(\d+):(\d+):(\d+):(-?[\.|\d]+):(-?[\.|\d]+):([^\>]+)\>"
 )
 
 INTERVAL_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
