@@ -23,6 +23,7 @@ details](https://github.com/ssube/onnx-web/blob/main/docs/user-guide.md).
 
 This is an incomplete list of new and interesting features, with links to the user guide:
 
+- SDXL support
 - hardware acceleration on both AMD and Nvidia
   - tested on CUDA, DirectML, and ROCm
   - [half-precision support for low-memory GPUs](docs/user-guide.md#optimizing-models-for-lower-memory-usage) on both
@@ -37,6 +38,7 @@ This is an incomplete list of new and interesting features, with links to the us
   - [txt2img](docs/user-guide.md#txt2img-tab)
   - [img2img](docs/user-guide.md#img2img-tab)
   - [inpainting](docs/user-guide.md#inpaint-tab), with mask drawing and upload
+  - [panorama](docs/user-guide.md#panorama-pipeline)
   - [upscaling](docs/user-guide.md#upscale-tab), with ONNX acceleration
 - [add and use your own models](docs/user-guide.md#adding-your-own-models)
   - [convert models from diffusers and SD checkpoints](docs/converting-models.md)
@@ -45,20 +47,24 @@ This is an incomplete list of new and interesting features, with links to the us
   - [permanent and prompt-based blending](docs/user-guide.md#permanently-blending-additional-networks)
   - [supports LoRA and LyCORIS weights](docs/user-guide.md#lora-tokens)
   - [supports Textual Inversion concepts and embeddings](docs/user-guide.md#textual-inversion-tokens)
+    - each layer of the embeddings can be controlled and used individually
 - ControlNet
   - image filters for edge detection and other methods
   - with ONNX acceleration
 - highres mode
   - runs img2img on the results of the other pipelines
   - multiple iterations can produce 8k images and larger
+- [multi-stage](docs/user-guide.md#prompt-stages) and [region prompts](docs/user-guide.md#region-tokens)
+  - combine multiple prompts in the same image
+  - provide prompts for different areas in the image and blend them together
+  - change the prompt for highres mode and refine details without recursion
 - infinite prompt length
   - [with long prompt weighting](docs/user-guide.md#long-prompt-weighting)
-  - expand and control Textual Inversions per-layer
 - [image blending mode](docs/user-guide.md#blend-tab)
   - combine images from history
-- upscaling and face correction
-  - upscaling with Real ESRGAN or Stable Diffusion
-  - face correction with CodeFormer or GFPGAN
+- upscaling and correction
+  - upscaling with Real ESRGAN, SwinIR, and Stable Diffusion
+  - face correction with CodeFormer and GFPGAN
 - [API server can be run remotely](docs/server-admin.md)
   - REST API can be served over HTTPS or HTTP
   - background processing for all image pipelines

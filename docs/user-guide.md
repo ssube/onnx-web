@@ -460,7 +460,19 @@ This makes your prompt less specific and some models have been trained to work b
 
 #### Prompt stages
 
-TODO: explain `first stage || hires prompt` syntax
+You can provide a different prompt for the highres and upscaling stages of an image using prompt stages. Each stage
+of a prompt is separated by `||` and can include its own LoRAs, embeddings, and regions. If you are using multiple
+iterations of highres, each iteration can have its own prompt stage. This can help you avoid recursive body parts
+and some other weird mutations that can be caused by iterating over a subject prompt.
+
+For example, a prompt like `human being sitting on wet grass, outdoors, bright sunny day` is likely to produce many
+small people mixed in with the grass when used with highres. This becomes even worse with 2+ iterations. However,
+changing that prompt to `human being sitting on wet grass, outdoors, bright sunny day || outdoors, bright sunny day, detailed, intricate, HDR`
+will use the second stage as the prompt for highres: `outdoors, bright sunny day, detailed, intricate, HDR`.
+
+This allows you to add and refine details, textures, and even the style of the image during the highres pass.
+
+Prompt stages are only used during upscaling if you are using the Stable Diffusion upscaling model.
 
 ### Long prompt weighting syntax
 
