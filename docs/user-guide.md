@@ -32,6 +32,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Prompt tokens](#prompt-tokens)
       - [LoRA and LyCORIS tokens](#lora-and-lycoris-tokens)
       - [Textual Inversion tokens](#textual-inversion-tokens)
+      - [Region tokens](#region-tokens)
       - [CLIP skip tokens](#clip-skip-tokens)
     - [Long prompt weighting syntax](#long-prompt-weighting-syntax)
   - [Pipelines](#pipelines)
@@ -413,6 +414,24 @@ much less useful. For a concept called `cubex` with the token `<cube>`, the avai
 - `cubex`
 - `<cube>`
 - `cubex-0`
+
+#### Region tokens
+
+You can use a different prompt for part of the image using `<region:...>` tokens. Region tokens are more complicated
+than the other tokens and have more parameters, which may change in the future.
+
+```none
+<region:top:left:bottom:right:strength:feather:prompt>
+```
+
+- the prompt can end with +
+- top/left/bottom/right are integer pixels
+  - will be rounded down to nearest 8
+- strength and feather are floats
+  - strength > 10 replaces other prompt
+  - strength < 0 does weird things
+  - feather can be 0.0 to 0.5, reasonably
+- prompt can end with + to append the regular prompt
 
 #### CLIP skip tokens
 
