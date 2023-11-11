@@ -11,6 +11,7 @@ from ..diffusers.utils import (
     get_latents_from_seed,
     get_tile_latents,
     parse_prompt,
+    parse_reseed,
     slice_prompt,
 )
 from ..params import ImageParams, Size, SizeChart, StageParams
@@ -75,6 +76,21 @@ class SourceTxt2ImgStage(BaseStage):
             latents = get_latents_from_seed(int(params.seed), latent_size, params.batch)
         else:
             latents = get_tile_latents(latents, int(params.seed), latent_size, dims)
+
+        # reseed latents as needed
+        prompt, reseed = parse_reseed(prompt)
+        for top, left, bottom, right, region_seed in reseed:
+            logger.debug(
+                "reseed latent region: [:, :, %s:%s, %s:%s] with %s",
+                top,
+                left,
+                bottom,
+                right,
+                region_seed,
+            )
+            latents[
+                :, :, top // 8 : bottom // 8, left // 8 : right // 8
+            ] = get_latents_from_seed(region_seed, latent_size, params.batch)
 
         pipe_type = params.get_valid_pipeline("txt2img")
         pipe = load_pipeline(

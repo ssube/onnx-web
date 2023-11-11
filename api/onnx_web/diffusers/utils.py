@@ -24,6 +24,7 @@ WILDCARD_TOKEN = compile(r"__([-/\\\w]+)__")
 REGION_TOKEN = compile(
     r"\<region:(\d+):(\d+):(\d+):(\d+):(-?[\.|\d]+):(-?[\.|\d]+):([^\>]+)\>"
 )
+RESEED_TOKEN = compile(r"\<reseed:(\d+):(\d+):(\d+):(\d+):(\d+)\>")
 
 INTERVAL_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
 ALTERNATIVE_RANGE = compile(r"\(([^\)]+)\)")
@@ -475,3 +476,21 @@ def parse_region_group(group) -> Region:
 
 def parse_regions(prompt: str) -> Tuple[str, List[Region]]:
     return get_tokens_from_prompt(prompt, REGION_TOKEN, parser=parse_region_group)
+
+
+Reseed = Tuple[int, int, int, int, int]
+
+
+def parse_reseed_group(group) -> Region:
+    top, left, bottom, right, seed = group
+    return (
+        int(top),
+        int(left),
+        int(bottom),
+        int(right),
+        int(seed),
+    )
+
+
+def parse_reseed(prompt: str) -> Tuple[str, List[Reseed]]:
+    return get_tokens_from_prompt(prompt, RESEED_TOKEN, parser=parse_reseed_group)
