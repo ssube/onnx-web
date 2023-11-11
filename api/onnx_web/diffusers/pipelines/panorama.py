@@ -28,7 +28,7 @@ from transformers import CLIPImageProcessor, CLIPTokenizer
 
 from onnx_web.chain.tile import make_tile_mask
 
-from ..utils import parse_regions
+from ..utils import LATENT_CHANNELS, LATENT_FACTOR, parse_regions
 
 logger = logging.get_logger(__name__)
 
@@ -512,7 +512,12 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # get the initial random noise unless the user supplied it
         latents_dtype = prompt_embeds.dtype
-        latents_shape = (batch_size * num_images_per_prompt, 4, height // 8, width // 8)
+        latents_shape = (
+            batch_size * num_images_per_prompt,
+            LATENT_CHANNELS,
+            height // LATENT_FACTOR,
+            width // LATENT_FACTOR,
+        )
         if latents is None:
             latents = generator.randn(*latents_shape).astype(latents_dtype)
         elif latents.shape != latents_shape:
@@ -612,10 +617,10 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 )
 
                 # convert coordinates to latent space
-                h_start = top // 8
-                h_end = bottom // 8
-                w_start = left // 8
-                w_end = right // 8
+                h_start = top // LATENT_FACTOR
+                h_end = bottom // LATENT_FACTOR
+                w_start = left // LATENT_FACTOR
+                w_end = right // LATENT_FACTOR
 
                 # get the latents corresponding to the current view coordinates
                 latents_for_region = latents[:, :, h_start:h_end, w_start:w_end]
@@ -1170,8 +1175,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         latents_shape = (
             batch_size * num_images_per_prompt,
             num_channels_latents,
-            height // 8,
-            width // 8,
+            height // LATENT_FACTOR,
+            width // LATENT_FACTOR,
         )
         latents_dtype = prompt_embeds.dtype
         if latents is None:

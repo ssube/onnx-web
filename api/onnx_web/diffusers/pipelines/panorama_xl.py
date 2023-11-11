@@ -14,7 +14,7 @@ from optimum.pipelines.diffusers.pipeline_utils import preprocess, rescale_noise
 
 from onnx_web.chain.tile import make_tile_mask
 
-from ..utils import parse_regions
+from ..utils import LATENT_FACTOR, parse_regions
 
 logger = logging.getLogger(__name__)
 
@@ -457,10 +457,10 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 )
 
                 # convert coordinates to latent space
-                h_start = top // 8
-                h_end = bottom // 8
-                w_start = left // 8
-                w_end = right // 8
+                h_start = top // LATENT_FACTOR
+                h_end = bottom // LATENT_FACTOR
+                w_start = left // LATENT_FACTOR
+                w_end = right // LATENT_FACTOR
 
                 # get the latents corresponding to the current view coordinates
                 latents_for_region = latents[:, :, h_start:h_end, w_start:w_end]

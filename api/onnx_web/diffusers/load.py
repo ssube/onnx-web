@@ -19,7 +19,7 @@ from ..constants import ONNX_MODEL
 from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
 from ..convert.diffusion.textual_inversion import blend_textual_inversions
 from ..diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
-from ..diffusers.utils import expand_prompt
+from ..diffusers.utils import LATENT_FACTOR, expand_prompt
 from ..params import DeviceParams, ImageParams
 from ..server import ModelTypes, ServerContext
 from ..torch_before_ort import InferenceSession
@@ -264,11 +264,13 @@ def load_pipeline(
         if hasattr(pipe, vae):
             vae_model = getattr(pipe, vae)
             vae_model.set_tiled(tiled=params.tiled_vae)
-            vae_model.set_window_size(params.vae_tile // 8, params.vae_overlap)
+            vae_model.set_window_size(
+                params.vae_tile // LATENT_FACTOR, params.vae_overlap
+            )
 
     # update panorama params
     if params.is_panorama():
-        unet_stride = (params.unet_tile * (1 - params.unet_overlap)) // 8
+        unet_stride = (params.unet_tile * (1 - params.unet_overlap)) // LATENT_FACTOR
         logger.debug(
             "setting panorama window parameters: %s/%s for UNet, %s/%s for VAE",
             params.unet_tile,
@@ -276,7 +278,7 @@ def load_pipeline(
             params.vae_tile,
             params.vae_overlap,
         )
-        pipe.set_window_size(params.unet_tile // 8, unet_stride)
+        pipe.set_window_size(params.unet_tile // LATENT_FACTOR, unet_stride)
 
     run_gc([device])
 

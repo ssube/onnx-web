@@ -7,6 +7,7 @@ from PIL import Image
 
 from ..diffusers.load import load_pipeline
 from ..diffusers.utils import (
+    LATENT_FACTOR,
     encode_prompt,
     get_latents_from_seed,
     get_tile_latents,
@@ -78,8 +79,12 @@ class SourceTxt2ImgStage(BaseStage):
             latents = get_tile_latents(latents, int(params.seed), latent_size, dims)
 
         # reseed latents as needed
+        reseed_rng = np.random.default_rng(params.seed)
         prompt, reseed = parse_reseed(prompt)
         for top, left, bottom, right, region_seed in reseed:
+            if region_seed == -1:
+                region_seed = reseed_rng.integers(2**32)
+
             logger.debug(
                 "reseed latent region: [:, :, %s:%s, %s:%s] with %s",
                 top,
@@ -89,8 +94,13 @@ class SourceTxt2ImgStage(BaseStage):
                 region_seed,
             )
             latents[
-                :, :, top // 8 : bottom // 8, left // 8 : right // 8
-            ] = get_latents_from_seed(region_seed, Size(right - left, bottom - top), params.batch)
+                :,
+                :,
+                top // LATENT_FACTOR : bottom // LATENT_FACTOR,
+                left // LATENT_FACTOR : right // LATENT_FACTOR,
+            ] = get_latents_from_seed(
+                region_seed, Size(right - left, bottom - top), params.batch
+            )
 
         pipe_type = params.get_valid_pipeline("txt2img")
         pipe = load_pipeline(
