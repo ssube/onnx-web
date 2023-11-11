@@ -79,11 +79,11 @@ class SourceTxt2ImgStage(BaseStage):
             latents = get_tile_latents(latents, int(params.seed), latent_size, dims)
 
         # reseed latents as needed
-        reseed_rng = np.random.default_rng(params.seed)
+        reseed_rng = np.random.RandomState(params.seed)
         prompt, reseed = parse_reseed(prompt)
         for top, left, bottom, right, region_seed in reseed:
             if region_seed == -1:
-                region_seed = reseed_rng.integers(2**32)
+                region_seed = reseed_rng.random_integers(2**32 - 1)
 
             logger.debug(
                 "reseed latent region: [:, :, %s:%s, %s:%s] with %s",

@@ -62,7 +62,12 @@ def run_txt2img_pipeline(
     )
 
     # apply upscaling and correction, before highres
-    stage = StageParams(tile_size=params.unet_tile)
+    if params.is_panorama() and server.panorama_tiles:
+        highres_size = tile_size * highres.scale
+    else:
+        highres_size = params.unet_tile
+
+    stage = StageParams(tile_size=highres_size)
     first_upscale, after_upscale = split_upscale(upscale)
     if first_upscale:
         stage_upscale_correction(

@@ -233,9 +233,6 @@ def get_tokens_from_prompt(
     pattern: Pattern,
     parser=parse_float_group,
 ) -> Tuple[str, List[Tuple[str, float]]]:
-    """
-    TODO: replace with Arpeggio
-    """
     remaining_prompt = prompt
 
     tokens = []
