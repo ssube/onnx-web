@@ -32,9 +32,10 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Prompt tokens](#prompt-tokens)
       - [LoRA and LyCORIS tokens](#lora-and-lycoris-tokens)
       - [Textual Inversion tokens](#textual-inversion-tokens)
-      - [Region tokens](#region-tokens)
-      - [CLIP skip tokens](#clip-skip-tokens)
       - [Prompt stages](#prompt-stages)
+      - [Region tokens](#region-tokens)
+      - [Reseed tokens (region seeds)](#reseed-tokens-region-seeds)
+      - [CLIP skip tokens](#clip-skip-tokens)
     - [Long prompt weighting syntax](#long-prompt-weighting-syntax)
   - [Pipelines](#pipelines)
     - [ControlNet pipeline](#controlnet-pipeline)
@@ -416,6 +417,22 @@ much less useful. For a concept called `cubex` with the token `<cube>`, the avai
 - `<cube>`
 - `cubex-0`
 
+#### Prompt stages
+
+You can provide a different prompt for the highres and upscaling stages of an image using prompt stages. Each stage
+of a prompt is separated by `||` and can include its own LoRAs, embeddings, and regions. If you are using multiple
+iterations of highres, each iteration can have its own prompt stage. This can help you avoid recursive body parts
+and some other weird mutations that can be caused by iterating over a subject prompt.
+
+For example, a prompt like `human being sitting on wet grass, outdoors, bright sunny day` is likely to produce many
+small people mixed in with the grass when used with highres. This becomes even worse with 2+ iterations. However,
+changing that prompt to `human being sitting on wet grass, outdoors, bright sunny day || outdoors, bright sunny day, detailed, intricate, HDR`
+will use the second stage as the prompt for highres: `outdoors, bright sunny day, detailed, intricate, HDR`.
+
+This allows you to add and refine details, textures, and even the style of the image during the highres pass.
+
+Prompt stages are only used during upscaling if you are using the Stable Diffusion upscaling model.
+
 #### Region tokens
 
 You can use a different prompt for part of the image using `<region:...>` tokens. Region tokens are more complicated
@@ -448,6 +465,22 @@ than the other tokens and have more parameters, which may change in the future.
       - `small dog, autumn forest, detailed background, 4k, HDR` for the region
       - `autumn forest, detailed background, 4k, HDR` for the rest of the image
 
+#### Reseed tokens (region seeds)
+
+You can use a different seed for part of the image using `<reseed:...>` tokens. Reseed tokens will replace the initial
+latents in the selected rectangle. There will be some small differences between images due to how the latents
+interpreted by the UNet, but the seeded area should be similar to an image of the same size and seed.
+
+```none
+<reseed:top:left:bottom:right:seed>
+```
+
+- `top`, `left`, `bottom`, and `right` define the four corners of a rectangle
+  - must be integers
+  - will be rounded down to the nearest multiple of 8
+- the region has its own `seed`
+  - must be an integer
+
 #### CLIP skip tokens
 
 You can skip the last layers of the CLIP text encoder using the `clip` token:
@@ -457,22 +490,6 @@ You can skip the last layers of the CLIP text encoder using the `clip` token:
 ```
 
 This makes your prompt less specific and some models have been trained to work better with some amount of skipping.
-
-#### Prompt stages
-
-You can provide a different prompt for the highres and upscaling stages of an image using prompt stages. Each stage
-of a prompt is separated by `||` and can include its own LoRAs, embeddings, and regions. If you are using multiple
-iterations of highres, each iteration can have its own prompt stage. This can help you avoid recursive body parts
-and some other weird mutations that can be caused by iterating over a subject prompt.
-
-For example, a prompt like `human being sitting on wet grass, outdoors, bright sunny day` is likely to produce many
-small people mixed in with the grass when used with highres. This becomes even worse with 2+ iterations. However,
-changing that prompt to `human being sitting on wet grass, outdoors, bright sunny day || outdoors, bright sunny day, detailed, intricate, HDR`
-will use the second stage as the prompt for highres: `outdoors, bright sunny day, detailed, intricate, HDR`.
-
-This allows you to add and refine details, textures, and even the style of the image during the highres pass.
-
-Prompt stages are only used during upscaling if you are using the Stable Diffusion upscaling model.
 
 ### Long prompt weighting syntax
 
