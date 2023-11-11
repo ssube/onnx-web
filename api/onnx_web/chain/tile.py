@@ -106,11 +106,11 @@ def make_tile_mask(
     # sort gradient points
     p1_h = adj_tile_h
     p2_h = tile_h - adj_tile_h
-    points_h = [0, min(p1_h, p2_h), max(p1_h, p2_h), tile]
+    points_h = [0, min(p1_h, p2_h), max(p1_h, p2_h), tile_h]
 
     p1_w = adj_tile_w
     p2_w = tile_w - adj_tile_w
-    points_w = [0, min(p1_w, p2_w), max(p1_w, p2_w), tile]
+    points_w = [0, min(p1_w, p2_w), max(p1_w, p2_w), tile_w]
 
     # build gradients
     grad_x, grad_y = [0, 1, 1, 0], [0, 1, 1, 0]

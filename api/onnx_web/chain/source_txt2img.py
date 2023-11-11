@@ -90,7 +90,7 @@ class SourceTxt2ImgStage(BaseStage):
             )
             latents[
                 :, :, top // 8 : bottom // 8, left // 8 : right // 8
-            ] = get_latents_from_seed(region_seed, latent_size, params.batch)
+            ] = get_latents_from_seed(region_seed, Size(right - left, bottom - top), params.batch)
 
         pipe_type = params.get_valid_pipeline("txt2img")
         pipe = load_pipeline(
