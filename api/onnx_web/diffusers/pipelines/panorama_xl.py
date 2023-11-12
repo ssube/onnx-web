@@ -520,11 +520,12 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 )
                 latents_region_denoised = scheduler_output.prev_sample.numpy()
 
-                if feather > 0.0:
+                if feather[0] > 0.0:
                     mask = make_tile_mask(
                         (h_end - h_start, w_end - w_start),
                         (h_end - h_start, w_end - w_start),
-                        feather,
+                        feather[0],
+                        feather[1],
                     )
                     mask = np.expand_dims(mask, axis=0)
                     mask = np.repeat(mask, 4, axis=0)

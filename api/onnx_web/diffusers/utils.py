@@ -22,7 +22,7 @@ INVERSION_TOKEN = compile(r"\<inversion:([^:\>]+):(-?[\.|\d]+)\>")
 LORA_TOKEN = compile(r"\<lora:([^:\>]+):(-?[\.|\d]+)\>")
 WILDCARD_TOKEN = compile(r"__([-/\\\w]+)__")
 REGION_TOKEN = compile(
-    r"\<region:(\d+):(\d+):(\d+):(\d+):(-?[\.|\d]+):(-?[\.|\d]+):([^\>]+)\>"
+    r"\<region:(\d+):(\d+):(\d+):(\d+):(-?[\.|\d]+):(-?[\.|\d]+_?[TLBR]*):([^\>]+)\>"
 )
 RESEED_TOKEN = compile(r"\<reseed:(\d+):(\d+):(\d+):(\d+):(-?\d+)\>")
 
@@ -455,18 +455,28 @@ def slice_prompt(prompt: str, slice: int) -> str:
         return prompt
 
 
-Region = Tuple[int, int, int, int, float, str]
+Region = Tuple[int, int, int, int, float, Tuple[float, Tuple[bool, bool, bool, bool]], str]
 
 
-def parse_region_group(group) -> Region:
+def parse_region_group(group: Tuple[str, ...]) -> Region:
     top, left, bottom, right, weight, feather, prompt = group
+
+    # break down the feather section
+    feather_radius, *feather_edges = feather.split("_")
+    feather_edges = "".join(feather_edges)
+
     return (
         int(top),
         int(left),
         int(bottom),
         int(right),
         float(weight),
-        float(feather),
+        (float(feather_radius), (
+            "T" in feather_edges,
+            "L" in feather_edges,
+            "B" in feather_edges,
+            "R" in feather_edges,
+        )),
         prompt,
     )
 
