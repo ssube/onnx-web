@@ -463,7 +463,10 @@ def parse_region_group(group: Tuple[str, ...]) -> Region:
 
     # break down the feather section
     feather_radius, *feather_edges = feather.split("_")
-    feather_edges = "".join(feather_edges)
+    if len(feather_edges) == 0:
+        feather_edges = "TLBR"
+    else:
+        feather_edges = "".join(feather_edges)
 
     return (
         int(top),
