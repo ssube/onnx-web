@@ -19,7 +19,7 @@ $defs:
     required: [name, source]
     properties:
       format:
-        $ref: "#/defs/tensor_format"
+        $ref: "#/$defs/tensor_format"
       label:
         type: string
       model:
@@ -65,7 +65,7 @@ $defs:
     required: [name, source]
     properties:
       format:
-        $ref: "#/defs/tensor_format"
+        $ref: "#/$defs/tensor_format"
       half:
         type: boolean
       label:
