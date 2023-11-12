@@ -79,7 +79,13 @@ export function PromptInput(props: PromptInputProps) {
         });
       }}
     />
-    {tokens.map(([token, _weight]) => <Chip label={token} onClick={() => addToken(token)} />)}
+    <Stack direction='row' spacing={2}>
+      {tokens.map(([token, _weight]) => <Chip
+        color={prompt.includes(token) ? 'primary' : 'default'}
+        label={token}
+        onClick={() => addToken(token)}
+      />)}
+    </Stack>
     <TextField
       label={t('parameter.negativePrompt')}
       variant='outlined'
