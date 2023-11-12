@@ -55,7 +55,7 @@ This is an incomplete list of new and interesting features, with links to the us
   - runs img2img on the results of the other pipelines
   - multiple iterations can produce 8k images and larger
 - [multi-stage](docs/user-guide.md#prompt-stages) and [region prompts](docs/user-guide.md#region-tokens)
-  - combine multiple prompts in the same image
+  - seamlessly combine multiple prompts in the same image
   - provide prompts for different areas in the image and blend them together
   - change the prompt for highres mode and refine details without recursion
 - infinite prompt length
