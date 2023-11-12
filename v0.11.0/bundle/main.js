@@ -43484,10 +43484,11 @@
     url.searchParams.append("cfg", params.cfg.toFixed(FIXED_FLOAT));
     url.searchParams.append("eta", params.eta.toFixed(FIXED_FLOAT));
     url.searchParams.append("steps", params.steps.toFixed(FIXED_INTEGER));
-    url.searchParams.append("tiledVAE", String(params.tiledVAE));
-    url.searchParams.append("tiles", params.tiles.toFixed(FIXED_INTEGER));
-    url.searchParams.append("overlap", params.overlap.toFixed(FIXED_FLOAT));
-    url.searchParams.append("stride", params.stride.toFixed(FIXED_INTEGER));
+    url.searchParams.append("tiled_vae", String(params.tiled_vae));
+    url.searchParams.append("unet_overlap", params.unet_overlap.toFixed(FIXED_FLOAT));
+    url.searchParams.append("unet_tile", params.unet_tile.toFixed(FIXED_INTEGER));
+    url.searchParams.append("vae_overlap", params.vae_overlap.toFixed(FIXED_FLOAT));
+    url.searchParams.append("vae_tile", params.vae_tile.toFixed(FIXED_INTEGER));
     if (doesExist2(params.scheduler)) {
       url.searchParams.append("scheduler", params.scheduler);
     }
@@ -74611,10 +74612,11 @@ Please use another name.` : formatMuiErrorMessage(18));
       scheduler: defaults2.scheduler.default,
       steps: defaults2.steps.default,
       seed: defaults2.seed.default,
-      tiledVAE: defaults2.tiledVAE.default,
-      tiles: defaults2.tiles.default,
-      overlap: defaults2.overlap.default,
-      stride: defaults2.stride.default
+      tiled_vae: defaults2.tiled_vae.default,
+      unet_overlap: defaults2.unet_overlap.default,
+      unet_tile: defaults2.unet_tile.default,
+      vae_overlap: defaults2.vae_overlap.default,
+      vae_tile: defaults2.vae_tile.default
     };
   }
   __name(baseParamsFromServer, "baseParamsFromServer");
@@ -74649,14 +74651,12 @@ Please use another name.` : formatMuiErrorMessage(18));
     const defaultGrid = {
       enabled: false,
       columns: {
-        input: "",
         parameter: "seed",
-        values: []
+        value: ""
       },
       rows: {
-        input: "",
         parameter: "seed",
-        values: []
+        value: ""
       }
     };
     const createTxt2ImgSlice = /* @__PURE__ */ __name((set) => ({
@@ -81866,11 +81866,6 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/input/PromptInput.js
   var { useContext: useContext32 } = React148;
-  var PROMPT_GROUP = 75;
-  function splitPrompt(prompt) {
-    return prompt.split(",").flatMap((phrase) => phrase.split(" ")).map((word) => word.trim()).filter((word) => word.length > 0);
-  }
-  __name(splitPrompt, "splitPrompt");
   function PromptInput(props) {
     const { selector, onChange } = props;
     const store = mustExist(useContext32(StateContext));
@@ -81879,29 +81874,32 @@ Please use another name.` : formatMuiErrorMessage(18));
     const models = useQuery(["models"], async () => client.models(), {
       staleTime: STALE_TIME
     });
-    const tokens = splitPrompt(prompt);
-    const groups = Math.ceil(tokens.length / PROMPT_GROUP);
     const { t: t2 } = useTranslation();
-    const helper = t2("input.prompt.tokens", {
-      groups,
-      tokens: tokens.length
-    });
-    function addToken(type, name, weight = 1) {
+    function addNetwork(type, name, weight = 1) {
       onChange({
         prompt: `<${type}:${name}:1.0> ${prompt}`,
         negativePrompt
       });
     }
+    __name(addNetwork, "addNetwork");
+    function addToken(name) {
+      onChange({
+        prompt: `${prompt}, ${name}`
+      });
+    }
     __name(addToken, "addToken");
+    const networks = extractNetworks(prompt);
+    const tokens = getNetworkTokens(models.data, networks);
     return React148.createElement(
       Stack_default,
       { spacing: 2 },
-      React148.createElement(TextField_default, { label: t2("parameter.prompt"), helperText: helper, variant: "outlined", value: prompt, onChange: (event) => {
+      React148.createElement(TextField_default, { label: t2("parameter.prompt"), variant: "outlined", value: prompt, onChange: (event) => {
         props.onChange({
           prompt: event.target.value,
           negativePrompt
         });
       } }),
+      React148.createElement(Stack_default, { direction: "row", spacing: 2 }, tokens.map(([token2, _weight]) => React148.createElement(Chip_default, { color: prompt.includes(token2) ? "primary" : "default", label: token2, onClick: () => addToken(token2) }))),
       React148.createElement(TextField_default, { label: t2("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
         props.onChange({
           prompt,
@@ -81915,18 +81913,62 @@ Please use another name.` : formatMuiErrorMessage(18));
           result: models,
           selector: (result) => result.networks.filter((network) => network.type === "inversion").map((network) => network.name)
         }, onSelect: (name) => {
-          addToken("inversion", name);
+          addNetwork("inversion", name);
         } }),
         React148.createElement(QueryMenu, { id: "lora", labelKey: "model.lora", name: t2("modelType.lora"), query: {
           result: models,
           selector: (result) => result.networks.filter((network) => network.type === "lora").map((network) => network.name)
         }, onSelect: (name) => {
-          addToken("lora", name);
+          addNetwork("lora", name);
         } })
       )
     );
   }
   __name(PromptInput, "PromptInput");
+  var ANY_TOKEN = /<([^>]+)>/g;
+  function extractNetworks(prompt) {
+    const inversion = [];
+    const lora = [];
+    for (const token2 of prompt.matchAll(ANY_TOKEN)) {
+      const [_whole, match2] = Array.from(token2);
+      const [type, name, weight, ..._rest] = match2.split(":");
+      switch (type) {
+        case "inversion":
+          inversion.push([name, parseFloat(weight)]);
+          break;
+        case "lora":
+          lora.push([name, parseFloat(weight)]);
+          break;
+        default:
+      }
+    }
+    return {
+      inversion,
+      lora
+    };
+  }
+  __name(extractNetworks, "extractNetworks");
+  function getNetworkTokens(models, networks) {
+    const tokens = [];
+    if (doesExist2(models)) {
+      for (const [name, weight] of networks.inversion) {
+        const model = models.networks.find((it) => it.type === "inversion" && it.name === name);
+        if (doesExist2(model) && model.type === "inversion") {
+          tokens.push([model.token, weight]);
+        }
+      }
+      for (const [name, weight] of networks.lora) {
+        const model = models.networks.find((it) => it.type === "lora" && it.name === name);
+        if (doesExist2(model) && model.type === "lora") {
+          for (const token2 of mustDefault(model.tokens, [])) {
+            tokens.push([token2, weight]);
+          }
+        }
+      }
+    }
+    return tokens;
+  }
+  __name(getNetworkTokens, "getNetworkTokens");
 
   // out/src/components/input/QueryList.js
   var React149 = __toESM(require_react(), 1);
@@ -82032,7 +82074,6 @@ Please use another name.` : formatMuiErrorMessage(18));
     const schedulers = useQuery(["schedulers"], async () => client.schedulers(), {
       staleTime: STALE_TIME
     });
-    const maxStride = Math.min(state.tiles, params.stride.max);
     return React150.createElement(
       Stack_default2,
       { spacing: 2 },
@@ -82073,18 +82114,21 @@ Please use another name.` : formatMuiErrorMessage(18));
         React150.createElement(NumericField, { label: t2("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: state.batch, onChange: (batch) => {
           props.onChange(Object.assign(Object.assign({}, state), { batch }));
         } }),
-        React150.createElement(NumericField, { label: t2("parameter.tiles"), min: params.tiles.min, max: params.tiles.max, step: params.tiles.step, value: state.tiles, onChange: (tiles) => {
-          props.onChange(Object.assign(Object.assign({}, state), { tiles }));
+        React150.createElement(NumericField, { label: t2("parameter.unet_tile"), min: params.unet_tile.min, max: params.unet_tile.max, step: params.unet_tile.step, value: state.unet_tile, onChange: (unet_tile) => {
+          props.onChange(Object.assign(Object.assign({}, state), { unet_tile }));
         } }),
-        React150.createElement(NumericField, { decimal: true, label: t2("parameter.overlap"), min: params.overlap.min, max: params.overlap.max, step: params.overlap.step, value: state.overlap, onChange: (overlap) => {
-          props.onChange(Object.assign(Object.assign({}, state), { overlap }));
+        React150.createElement(NumericField, { decimal: true, label: t2("parameter.unet_overlap"), min: params.unet_overlap.min, max: params.unet_overlap.max, step: params.unet_overlap.step, value: state.unet_overlap, onChange: (unet_overlap) => {
+          props.onChange(Object.assign(Object.assign({}, state), { unet_overlap }));
         } }),
-        React150.createElement(NumericField, { label: t2("parameter.stride"), min: params.stride.min, max: maxStride, step: params.stride.step, value: state.stride, onChange: (stride) => {
-          props.onChange(Object.assign(Object.assign({}, state), { stride }));
+        React150.createElement(FormControlLabel_default, { label: t2("parameter.tiled_vae"), control: React150.createElement(Checkbox_default, { checked: state.tiled_vae, value: "check", onChange: (event) => {
+          props.onChange(Object.assign(Object.assign({}, state), { tiled_vae: state.tiled_vae === false }));
+        } }) }),
+        React150.createElement(NumericField, { disabled: state.tiled_vae === false, label: t2("parameter.vae_tile"), min: params.vae_tile.min, max: params.vae_tile.max, step: params.vae_tile.step, value: state.vae_tile, onChange: (vae_tile) => {
+          props.onChange(Object.assign(Object.assign({}, state), { vae_tile }));
         } }),
-        React150.createElement(FormControlLabel_default, { label: t2("parameter.tiledVAE"), control: React150.createElement(Checkbox_default, { checked: state.tiledVAE, value: "check", onChange: (event) => {
-          props.onChange(Object.assign(Object.assign({}, state), { tiledVAE: state.tiledVAE === false }));
-        } }) })
+        React150.createElement(NumericField, { decimal: true, disabled: state.tiled_vae === false, label: t2("parameter.vae_overlap"), min: params.vae_overlap.min, max: params.vae_overlap.max, step: params.vae_overlap.step, value: state.vae_overlap, onChange: (vae_overlap) => {
+          props.onChange(Object.assign(Object.assign({}, state), { vae_overlap }));
+        } })
       ),
       React150.createElement(PromptInput, { selector, onChange: (value) => {
         props.onChange(Object.assign(Object.assign({}, state), value));
@@ -83022,7 +83066,15 @@ Please use another name.` : formatMuiErrorMessage(18));
   var React164 = __toESM(require_react(), 1);
   var import_react40 = __toESM(require_react(), 1);
 
+  // out/src/types/chain.js
+  var VARIABLE_PARAMETERS = ["prompt", "negativePrompt", "seed", "steps", "cfg", "scheduler", "eta", "token"];
+  var STRING_PARAMETERS = ["prompt", "negativePrompt", "scheduler", "token"];
+
   // out/src/client/utils.js
+  var EXPR_STRICT_NUMBER = /^-?\d+$/;
+  var EXPR_NUMBER_RANGE = /^(-?\d+)-(-?\d+)$/;
+  var MAX_SEED_SIZE = 32;
+  var MAX_SEED = 2 ** MAX_SEED_SIZE - 1;
   function replacePromptTokens(grid2, params, columnValue, rowValue) {
     const result = {
       negativePrompt: params.negativePrompt,
@@ -83043,8 +83095,6 @@ Please use another name.` : formatMuiErrorMessage(18));
     return result;
   }
   __name(replacePromptTokens, "replacePromptTokens");
-  var MAX_SEED_SIZE = 32;
-  var MAX_SEED = 2 ** MAX_SEED_SIZE - 1;
   function newSeed() {
     return Math.floor(Math.random() * MAX_SEED);
   }
@@ -83061,6 +83111,31 @@ Please use another name.` : formatMuiErrorMessage(18));
     });
   }
   __name(replaceRandomSeeds, "replaceRandomSeeds");
+  function rangeSplit(parameter, value) {
+    const csv = value.split(",").map((it) => it.trim());
+    if (STRING_PARAMETERS.includes(parameter)) {
+      return csv;
+    }
+    return csv.flatMap((it) => expandRanges(it));
+  }
+  __name(rangeSplit, "rangeSplit");
+  function expandRanges(range2) {
+    if (EXPR_STRICT_NUMBER.test(range2)) {
+      const val = parseInt(range2, 10);
+      return [val];
+    }
+    if (EXPR_NUMBER_RANGE.test(range2)) {
+      const match2 = EXPR_NUMBER_RANGE.exec(range2);
+      if (doesExist2(match2)) {
+        const [_full, startStr, endStr] = Array.from(match2);
+        const start2 = parseInt(startStr, 10);
+        const end2 = parseInt(endStr, 10);
+        return new Array(end2 - start2).fill(0).map((_value, idx) => idx + start2);
+      }
+    }
+    return [];
+  }
+  __name(expandRanges, "expandRanges");
   function makeTxt2ImgGridPipeline(grid2, model, params, upscale, highres) {
     const pipeline = {
       defaults: Object.assign(Object.assign({}, model), params),
@@ -83069,8 +83144,8 @@ Please use another name.` : formatMuiErrorMessage(18));
     const tiles = {
       tiles: 8192
     };
-    const rows = replaceRandomSeeds(grid2.rows.parameter, grid2.rows.values);
-    const columns = replaceRandomSeeds(grid2.columns.parameter, grid2.columns.values);
+    const rows = replaceRandomSeeds(grid2.rows.parameter, rangeSplit(grid2.rows.parameter, grid2.rows.value));
+    const columns = replaceRandomSeeds(grid2.columns.parameter, rangeSplit(grid2.columns.parameter, grid2.columns.value));
     let i = 0;
     for (const row of rows) {
       for (const column2 of columns) {
@@ -83086,7 +83161,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     pipeline.stages.push({
       name: "grid",
       type: "blend-grid",
-      params: Object.assign(Object.assign(Object.assign(Object.assign({}, params), model), tiles), { height: grid2.rows.values.length, width: grid2.columns.values.length })
+      params: Object.assign(Object.assign(Object.assign(Object.assign({}, params), model), tiles), { height: rows.length, width: columns.length })
     });
     pipeline.stages.push({
       name: "save",
@@ -83127,16 +83202,14 @@ Please use another name.` : formatMuiErrorMessage(18));
           React163.createElement(Select_default, { onChange: (event) => props.setGrid({
             columns: {
               parameter: event.target.value,
-              input: "",
-              values: []
+              value: ""
             }
           }), value: grid2.columns.parameter }, ...parameterList([grid2.rows.parameter]))
         ),
-        React163.createElement(TextField_default, { label: grid2.columns.parameter, value: grid2.columns.input, onChange: (event) => props.setGrid({
+        React163.createElement(TextField_default, { label: grid2.columns.parameter, value: grid2.columns.value, onChange: (event) => props.setGrid({
           columns: {
             parameter: grid2.columns.parameter,
-            input: event.target.value,
-            values: rangeSplit(grid2.columns.parameter, event.target.value)
+            value: event.target.value
           }
         }) })
       ), React163.createElement(
@@ -83149,16 +83222,14 @@ Please use another name.` : formatMuiErrorMessage(18));
           React163.createElement(Select_default, { onChange: (event) => props.setGrid({
             rows: {
               parameter: event.target.value,
-              input: "",
-              values: []
+              value: ""
             }
           }), value: grid2.rows.parameter }, ...parameterList([grid2.columns.parameter]))
         ),
-        React163.createElement(TextField_default, { label: grid2.rows.parameter, value: grid2.rows.input, onChange: (event) => props.setGrid({
+        React163.createElement(TextField_default, { label: grid2.rows.parameter, value: grid2.rows.value, onChange: (event) => props.setGrid({
           rows: {
             parameter: grid2.rows.parameter,
-            input: event.target.value,
-            values: rangeSplit(grid2.rows.parameter, event.target.value)
+            value: event.target.value
           }
         }) })
       ));
@@ -83166,35 +83237,6 @@ Please use another name.` : formatMuiErrorMessage(18));
     return React163.createElement(Stack_default2, { direction: "column", spacing: 2 }, ...stack);
   }
   __name(VariableControl, "VariableControl");
-  function rangeSplit(parameter, value) {
-    const csv = value.split(",").map((it) => it.trim());
-    if (STRING_PARAMETERS.includes(parameter)) {
-      return csv;
-    }
-    return csv.flatMap((it) => expandRanges(it));
-  }
-  __name(rangeSplit, "rangeSplit");
-  var EXPR_STRICT_NUMBER = /^-?\d+$/;
-  var EXPR_NUMBER_RANGE = /^(\d+)-(\d+)$/;
-  function expandRanges(range2) {
-    if (EXPR_STRICT_NUMBER.test(range2)) {
-      const val = parseInt(range2, 10);
-      return [val];
-    }
-    if (EXPR_NUMBER_RANGE.test(range2)) {
-      const match2 = EXPR_NUMBER_RANGE.exec(range2);
-      if (doesExist2(match2)) {
-        const [_full, startStr, endStr] = Array.from(match2);
-        const start2 = parseInt(startStr, 10);
-        const end2 = parseInt(endStr, 10);
-        return new Array(end2 - start2).fill(0).map((_value, idx) => idx + start2);
-      }
-    }
-    return [];
-  }
-  __name(expandRanges, "expandRanges");
-  var VARIABLE_PARAMETERS = ["prompt", "negativePrompt", "seed", "steps", "cfg", "scheduler", "eta", "token"];
-  var STRING_PARAMETERS = ["prompt", "negativePrompt", "scheduler", "token"];
   function parameterList(exclude) {
     const items = [];
     for (const variable of VARIABLE_PARAMETERS) {
@@ -83630,9 +83672,11 @@ Please use another name.` : formatMuiErrorMessage(18));
           steps: "Schritte",
           strength: "St\xE4rke",
           stride: "",
-          tiledVAE: "",
+          tiled_vae: "",
           tiles: "",
           tileOrder: "",
+          unet_overlap: "",
+          unet_tile: "",
           upscale: {
             label: "",
             denoise: "Entrauschen",
@@ -83640,6 +83684,8 @@ Please use another name.` : formatMuiErrorMessage(18));
             order: "",
             outscale: "Ausgangsskala"
           },
+          vae_overlap: "",
+          vae_tile: "",
           width: "Breite",
           correction: {
             label: "Gesichtskorrektur",
@@ -83942,10 +83988,10 @@ Please use another name.` : formatMuiErrorMessage(18));
           sourceFilter: "Source Filter",
           steps: "Steps",
           strength: "Strength",
-          stride: "UNet Stride",
-          tiledVAE: "Tiled VAE",
-          tiles: "Tile Size",
+          tiled_vae: "Tiled VAE",
           tileOrder: "Tile Order",
+          unet_overlap: "UNet Overlap",
+          unet_tile: "UNet Tile Size",
           upscale: {
             label: "Upscale",
             denoise: "Denoise",
@@ -83953,6 +83999,8 @@ Please use another name.` : formatMuiErrorMessage(18));
             order: "Upscale Order",
             outscale: "Outscale"
           },
+          vae_overlap: "VAE Overlap",
+          vae_tile: "VAE Tile Size",
           width: "Width",
           correction: {
             label: "Face Correction",
@@ -84225,9 +84273,11 @@ Please use another name.` : formatMuiErrorMessage(18));
           steps: "Pasos",
           strength: "Fuerza",
           stride: "",
-          tiledVAE: "",
+          tiled_vae: "",
           tiles: "",
           tileOrder: "Orden de secciones",
+          unet_overlap: "",
+          unet_tile: "",
           upscale: {
             label: "Aumento",
             denoise: "",
@@ -84235,6 +84285,8 @@ Please use another name.` : formatMuiErrorMessage(18));
             order: "",
             outscale: "Escala de producci\xF3n"
           },
+          vae_overlap: "",
+          vae_tile: "",
           width: "Anchura",
           correction: {
             label: "Correcci\xF3n facial",
@@ -84479,9 +84531,11 @@ Please use another name.` : formatMuiErrorMessage(18));
           steps: "",
           strength: "",
           stride: "",
-          tiledVAE: "",
+          tiled_vae: "",
           tiles: "",
           tileOrder: "",
+          unet_overlap: "",
+          unet_tile: "",
           upscale: {
             label: "",
             denoise: "",
@@ -84489,6 +84543,8 @@ Please use another name.` : formatMuiErrorMessage(18));
             order: "",
             outscale: ""
           },
+          vae_overlap: "",
+          vae_tile: "",
           width: "",
           correction: {
             label: "",
