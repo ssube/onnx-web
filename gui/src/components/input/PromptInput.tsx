@@ -1,4 +1,4 @@
-import { Maybe, doesExist, mustExist } from '@apextoaster/js-utils';
+import { Maybe, doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Chip, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useQuery } from '@tanstack/react-query';
@@ -120,7 +120,7 @@ export function PromptInput(props: PromptInputProps) {
   </Stack>;
 }
 
-export const ANY_TOKEN = /<([^>])+>/g;
+export const ANY_TOKEN = /<([^>]+)>/g;
 
 export type TokenList = Array<[string, number]>;
 
@@ -167,10 +167,10 @@ export function getNetworkTokens(models: Maybe<ModelResponse>, networks: PromptN
       }
     }
 
-    for (const [name, weight] of networks.inversion) {
+    for (const [name, weight] of networks.lora) {
       const model = models.networks.find((it) => it.type === 'lora' && it.name === name);
       if (doesExist(model) && model.type === 'lora') {
-        for (const token of model.tokens) {
+        for (const token of mustDefault(model.tokens, [])) {
           tokens.push([token, weight]);
         }
       }

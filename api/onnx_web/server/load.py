@@ -96,6 +96,7 @@ wildcard_data: Dict[str, List[str]] = defaultdict(list)
 # Loaded from extra_models
 extra_hashes: Dict[str, str] = {}
 extra_strings: Dict[str, Any] = {}
+extra_tokens: Dict[str, List[str]] = {}
 
 
 def get_config_params():
@@ -160,6 +161,7 @@ def load_extras(server: ServerContext):
     """
     global extra_hashes
     global extra_strings
+    global extra_tokens
 
     labels = {}
     strings = {}
@@ -209,6 +211,10 @@ def load_extras(server: ServerContext):
                                     ]
                                 else:
                                     labels[model_name] = model["label"]
+
+                            if "tokens" in model:
+                                logger.debug("collecting tokens for model %s from %s", model_name, file)
+                                extra_tokens[model_name] = model["tokens"]
 
                             if "inversions" in model:
                                 for inversion in model["inversions"]:
@@ -353,7 +359,7 @@ def load_models(server: ServerContext) -> None:
     )
     logger.debug("loaded Textual Inversion models from disk: %s", inversion_models)
     network_models.extend(
-        [NetworkModel(model, "inversion") for model in inversion_models]
+        [NetworkModel(model, "inversion", tokens=extra_tokens.get(model, [])) for model in inversion_models]
     )
 
     lora_models = list_model_globs(
@@ -364,7 +370,7 @@ def load_models(server: ServerContext) -> None:
         base_path=path.join(server.model_path, "lora"),
     )
     logger.debug("loaded LoRA models from disk: %s", lora_models)
-    network_models.extend([NetworkModel(model, "lora") for model in lora_models])
+    network_models.extend([NetworkModel(model, "lora", tokens=extra_tokens.get(model, [])) for model in lora_models])
 
 
 def load_params(server: ServerContext) -> None:
