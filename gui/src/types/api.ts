@@ -39,12 +39,27 @@ export interface ReadyResponse {
   ready: boolean;
 }
 
-export interface NetworkModel {
+export interface ControlNetwork {
   name: string;
-  type: 'control' | 'inversion' | 'lora';
-  // TODO: add token
-  // TODO: add layer/token count
+  type: 'control';
 }
+
+export interface EmbeddingNetwork {
+  label: string;
+  name: string;
+  token: string;
+  type: 'inversion';
+  // TODO: add layer count
+}
+
+export interface LoraNetwork {
+  name: string;
+  label: string;
+  tokens: Array<string>;
+  type: 'lora';
+}
+
+export type NetworkModel = EmbeddingNetwork | LoraNetwork | ControlNetwork;
 
 export interface FilterResponse {
   mask: Array<string>;

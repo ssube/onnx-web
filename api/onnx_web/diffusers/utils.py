@@ -379,6 +379,9 @@ def encode_prompt(
     num_images_per_prompt: int = 1,
     do_classifier_free_guidance: bool = True,
 ) -> List[np.ndarray]:
+    """
+    TODO: does not work with SDXL, fix or turn into a pipeline patch
+    """
     return [
         pipe._encode_prompt(
             remove_tokens(prompt),
