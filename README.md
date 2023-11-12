@@ -38,7 +38,7 @@ This is an incomplete list of new and interesting features, with links to the us
   - [txt2img](docs/user-guide.md#txt2img-tab)
   - [img2img](docs/user-guide.md#img2img-tab)
   - [inpainting](docs/user-guide.md#inpaint-tab), with mask drawing and upload
-  - [panorama](docs/user-guide.md#panorama-pipeline)
+  - [panorama](docs/user-guide.md#panorama-pipeline), for both SD v1.5 and SDXL
   - [upscaling](docs/user-guide.md#upscale-tab), with ONNX acceleration
 - [add and use your own models](docs/user-guide.md#adding-your-own-models)
   - [convert models from diffusers and SD checkpoints](docs/converting-models.md)
@@ -72,7 +72,7 @@ This is an incomplete list of new and interesting features, with links to the us
 - OCI containers provided
   - for all supported hardware accelerators
   - includes both the API and GUI bundle in a single container
-  - runs well on [RunPod](https://www.runpod.io/) and other GPU container hosting services
+  - runs well on [RunPod](https://www.runpod.io/), [Vast.ai](https://vast.ai/), and other GPU container hosting services
 
 ## Contents
 
