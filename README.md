@@ -17,7 +17,7 @@ with a CPU fallback capable of running on laptop-class machines.
 Please check out [the setup guide to get started](docs/setup-guide.md) and [the user guide for more
 details](https://github.com/ssube/onnx-web/blob/main/docs/user-guide.md).
 
-![txt2img with detailed knollingcase renders of a soldier in a cloudy alien jungle](./docs/readme-preview.png)
+![preview of txt2img tab using SDXL to generate ghostly astronauts eating weird hamburgers on an abandoned space station](./docs/readme-sdxl.png)
 
 ## Features
 
