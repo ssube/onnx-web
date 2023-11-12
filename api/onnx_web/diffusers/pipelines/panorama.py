@@ -660,8 +660,10 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                         region_noise_pred_uncond, region_noise_pred_text = np.split(
                             region_noise_pred, 2
                         )
-                        region_noise_pred = region_noise_pred_uncond + guidance_scale * (
-                            region_noise_pred_text - region_noise_pred_uncond
+                        region_noise_pred = (
+                            region_noise_pred_uncond
+                            + guidance_scale
+                            * (region_noise_pred_text - region_noise_pred_uncond)
                         )
 
                     # compute the previous noisy sample x_t -> x_t-1

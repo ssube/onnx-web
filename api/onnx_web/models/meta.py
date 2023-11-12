@@ -8,7 +8,7 @@ class NetworkModel:
     tokens: List[str]
     type: NetworkType
 
-    def __init__(self, name: str, type: NetworkType, tokens = None) -> None:
+    def __init__(self, name: str, type: NetworkType, tokens=None) -> None:
         self.name = name
         self.tokens = tokens or []
         self.type = type

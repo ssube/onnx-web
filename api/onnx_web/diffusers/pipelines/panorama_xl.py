@@ -502,8 +502,10 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                         region_noise_pred_uncond, region_noise_pred_text = np.split(
                             region_noise_pred, 2
                         )
-                        region_noise_pred = region_noise_pred_uncond + guidance_scale * (
-                            region_noise_pred_text - region_noise_pred_uncond
+                        region_noise_pred = (
+                            region_noise_pred_uncond
+                            + guidance_scale
+                            * (region_noise_pred_text - region_noise_pred_uncond)
                         )
                         if guidance_rescale > 0.0:
                             # Based on 3.4. in https://arxiv.org/pdf/2305.08891.pdf

@@ -213,7 +213,11 @@ def load_extras(server: ServerContext):
                                     labels[model_name] = model["label"]
 
                             if "tokens" in model:
-                                logger.debug("collecting tokens for model %s from %s", model_name, file)
+                                logger.debug(
+                                    "collecting tokens for model %s from %s",
+                                    model_name,
+                                    file,
+                                )
                                 extra_tokens[model_name] = model["tokens"]
 
                             if "inversions" in model:
@@ -359,7 +363,10 @@ def load_models(server: ServerContext) -> None:
     )
     logger.debug("loaded Textual Inversion models from disk: %s", inversion_models)
     network_models.extend(
-        [NetworkModel(model, "inversion", tokens=extra_tokens.get(model, [])) for model in inversion_models]
+        [
+            NetworkModel(model, "inversion", tokens=extra_tokens.get(model, []))
+            for model in inversion_models
+        ]
     )
 
     lora_models = list_model_globs(
@@ -370,7 +377,12 @@ def load_models(server: ServerContext) -> None:
         base_path=path.join(server.model_path, "lora"),
     )
     logger.debug("loaded LoRA models from disk: %s", lora_models)
-    network_models.extend([NetworkModel(model, "lora", tokens=extra_tokens.get(model, [])) for model in lora_models])
+    network_models.extend(
+        [
+            NetworkModel(model, "lora", tokens=extra_tokens.get(model, []))
+            for model in lora_models
+        ]
+    )
 
 
 def load_params(server: ServerContext) -> None:

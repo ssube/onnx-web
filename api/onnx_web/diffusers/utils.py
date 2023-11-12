@@ -459,7 +459,9 @@ def slice_prompt(prompt: str, slice: int) -> str:
         return prompt
 
 
-Region = Tuple[int, int, int, int, float, Tuple[float, Tuple[bool, bool, bool, bool]], str]
+Region = Tuple[
+    int, int, int, int, float, Tuple[float, Tuple[bool, bool, bool, bool]], str
+]
 
 
 def parse_region_group(group: Tuple[str, ...]) -> Region:
@@ -478,12 +480,15 @@ def parse_region_group(group: Tuple[str, ...]) -> Region:
         int(bottom),
         int(right),
         float(weight),
-        (float(feather_radius), (
-            "T" in feather_edges,
-            "L" in feather_edges,
-            "B" in feather_edges,
-            "R" in feather_edges,
-        )),
+        (
+            float(feather_radius),
+            (
+                "T" in feather_edges,
+                "L" in feather_edges,
+                "B" in feather_edges,
+                "R" in feather_edges,
+            ),
+        ),
         prompt,
     )
 
