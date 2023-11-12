@@ -114,7 +114,8 @@ def make_tile_mask(
     points_w = [0, min(p1_w, p2_w), max(p1_w, p2_w), tile_w]
 
     # build gradients
-    grad_x, grad_y = [int(edges[0]), 1, 1, int(edges[2])], [int(edges[1]), 1, 1, int(edges[3])]
+    edge_t, edge_l, edge_b, edge_r = edges
+    grad_x, grad_y = [int(edge_l), 1, 1, int(edge_r)], [int(edge_t), 1, 1, int(edge_b)]
     logger.debug("tile gradients: %s, %s, %s, %s", points_w, points_h, grad_x, grad_y)
 
     mult_x = [np.interp(i, points_w, grad_x) for i in range(tile_w)]
