@@ -24,7 +24,7 @@ class BlendDenoiseStage(BaseStage):
         _params: ImageParams,
         sources: List[Image.Image],
         *,
-        strength: int = 10,
+        strength: int = 3,
         stage_source: Optional[Image.Image] = None,
         callback: Optional[ProgressCallback] = None,
         **kwargs,
