@@ -14,7 +14,7 @@ from optimum.pipelines.diffusers.pipeline_utils import preprocess, rescale_noise
 
 from onnx_web.chain.tile import make_tile_mask
 
-from ..utils import LATENT_FACTOR, parse_regions
+from ..utils import LATENT_FACTOR, parse_regions, repair_nan
 
 logger = logging.getLogger(__name__)
 
@@ -550,6 +550,8 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
+            latents = repair_nan(latents)
+            latents = np.clip(latents, -4, +4)
 
             # call the callback, if provided
             if i == len(timesteps) - 1 or (
