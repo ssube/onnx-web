@@ -24,6 +24,7 @@ class BlendDenoiseStage(BaseStage):
         _params: ImageParams,
         sources: List[Image.Image],
         *,
+        strength: int = 10,
         stage_source: Optional[Image.Image] = None,
         callback: Optional[ProgressCallback] = None,
         **kwargs,
@@ -33,7 +34,7 @@ class BlendDenoiseStage(BaseStage):
         results = []
         for source in sources:
             data = cv2.cvtColor(np.array(source), cv2.COLOR_RGB2BGR)
-            data = cv2.fastNlMeansDenoisingColored(data)
+            data = cv2.fastNlMeansDenoisingColored(data, None, strength, strength)
             results.append(Image.fromarray(cv2.cvtColor(data, cv2.COLOR_BGR2RGB)))
 
         return results
