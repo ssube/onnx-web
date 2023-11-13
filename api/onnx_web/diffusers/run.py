@@ -4,15 +4,15 @@ from typing import Any, List, Optional
 
 from PIL import Image, ImageOps
 
-from onnx_web.chain.highres import stage_highres
-
 from ..chain import (
+    BlendDenoiseStage,
     BlendImg2ImgStage,
     BlendMaskStage,
     ChainPipeline,
     SourceTxt2ImgStage,
     UpscaleOutpaintStage,
 )
+from ..chain.highres import stage_highres
 from ..chain.upscale import split_upscale, stage_upscale_correction
 from ..image import expand_image
 from ..output import save_image
@@ -68,6 +68,11 @@ def run_txt2img_pipeline(
         highres_size = params.unet_tile
 
     stage = StageParams(tile_size=highres_size)
+    chain.stage(
+        BlendDenoiseStage(),
+        stage,
+    )
+
     first_upscale, after_upscale = split_upscale(upscale)
     if first_upscale:
         stage_upscale_correction(

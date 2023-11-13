@@ -551,7 +551,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
             latents = repair_nan(latents)
-            latents = np.clip(latents, -4, +4)
 
             # call the callback, if provided
             if i == len(timesteps) - 1 or (
@@ -563,6 +562,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         if output_type == "latent":
             image = latents
         else:
+            latents = np.clip(latents, -4, +4)
             latents = latents / self.vae_decoder.config.get("scaling_factor", 0.18215)
             # it seems likes there is a strange result for using half-precision vae decoder if batchsize>1
             image = np.concatenate(
