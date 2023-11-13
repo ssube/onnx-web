@@ -70,7 +70,7 @@ def run_txt2img_pipeline(
             stage,
         )
 
-        if server.panorama_tiles:
+        if server.has_feature("panorama-highres"):
             highres_size = tile_size * highres.scale
 
     first_upscale, after_upscale = split_upscale(upscale)
