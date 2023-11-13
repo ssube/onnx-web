@@ -447,10 +447,11 @@ than the other tokens and have more parameters, which may change in the future.
   - will be rounded down to the nearest multiple of 8
 - `strength` defines the ratio between the two prompts
   - must be a float or integer
-  - strength should be between 0.0 and 10.0
+  - strength should be between 0.0 and 100.0
     - 2.0 to 5.0 generally works
-    - 10.0 completely replaces the base prompt
+    - 100.0 completely replaces the base prompt
     - < 0 does weird things
+  - more UNet overlap will require greater strength
 - `feather` defines the blending between the two prompts
   - must be a float or integer
   - this is similar to UNet and VAE overlap

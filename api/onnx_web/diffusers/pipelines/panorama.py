@@ -688,7 +688,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                     else:
                         mask = 1
 
-                    if weight >= 10.0:
+                    if weight >= 100.0:
                         value[:, :, h_start:h_end, w_start:w_end] = (
                             latents_region_denoised * mask
                         )
