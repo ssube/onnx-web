@@ -64,7 +64,7 @@ class SourceTxt2ImgStage(BaseStage):
             params
         )
 
-        if params.is_xl():
+        if params.is_panorama() or params.is_xl():
             tile_size = max(stage.tile_size, params.unet_tile)
         else:
             tile_size = params.unet_tile
