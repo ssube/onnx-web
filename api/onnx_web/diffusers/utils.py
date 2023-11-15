@@ -515,6 +515,9 @@ def parse_reseed(prompt: str) -> Tuple[str, List[Reseed]]:
     return get_tokens_from_prompt(prompt, RESEED_TOKEN, parser=parse_reseed_group)
 
 
-def remove_tokens(prompt: str) -> str:
+def remove_tokens(prompt: Optional[str]) -> Optional[str]:
+    if prompt is None:
+        return prompt
+
     remainder, tokens = get_tokens_from_prompt(prompt, ANY_TOKEN)
     return remainder
