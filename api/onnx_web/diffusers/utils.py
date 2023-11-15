@@ -3,7 +3,7 @@ from copy import deepcopy
 from logging import getLogger
 from math import ceil
 from re import Pattern, compile
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -515,9 +515,13 @@ def parse_reseed(prompt: str) -> Tuple[str, List[Reseed]]:
     return get_tokens_from_prompt(prompt, RESEED_TOKEN, parser=parse_reseed_group)
 
 
+def skip_group(group) -> Any:
+    return group
+
+
 def remove_tokens(prompt: Optional[str]) -> Optional[str]:
     if prompt is None:
         return prompt
 
-    remainder, tokens = get_tokens_from_prompt(prompt, ANY_TOKEN)
+    remainder, tokens = get_tokens_from_prompt(prompt, ANY_TOKEN, parser=skip_group)
     return remainder
