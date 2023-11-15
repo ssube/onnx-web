@@ -232,7 +232,10 @@ class ChainPipeline:
 
                 stage_sources = stage_outputs
             else:
-                logger.debug("image does not contain sources and is within tile size of %s, running stage", tile)
+                logger.debug(
+                    "image does not contain sources and is within tile size of %s, running stage",
+                    tile,
+                )
                 for i in range(worker.retries):
                     try:
                         stage_outputs = stage_pipe.run(

@@ -28,7 +28,7 @@ from transformers import CLIPImageProcessor, CLIPTokenizer
 
 from onnx_web.chain.tile import make_tile_mask
 
-from ..utils import LATENT_CHANNELS, LATENT_FACTOR, parse_regions
+from ..utils import LATENT_CHANNELS, LATENT_FACTOR, parse_regions, repair_nan
 
 logger = logging.get_logger(__name__)
 
@@ -688,7 +688,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                     else:
                         mask = 1
 
-                    if weight >= 10.0:
+                    if weight >= 100.0:
                         value[:, :, h_start:h_end, w_start:w_end] = (
                             latents_region_denoised * mask
                         )
@@ -701,11 +701,13 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
+            latents = repair_nan(latents)
 
             # call the callback, if provided
             if callback is not None and i % callback_steps == 0:
                 callback(i, t, latents)
 
+        latents = np.clip(latents, -4, +4)
         latents = 1 / 0.18215 * latents
         # image = self.vae_decoder(latent_sample=latents)[0]
         # it seems likes there is a strange result for using half-precision vae decoder if batchsize>1

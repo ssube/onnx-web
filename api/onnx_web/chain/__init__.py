@@ -1,4 +1,5 @@
 from .base import ChainPipeline, PipelineStage, StageParams
+from .blend_denoise import BlendDenoiseStage
 from .blend_img2img import BlendImg2ImgStage
 from .blend_grid import BlendGridStage
 from .blend_linear import BlendLinearStage
@@ -22,6 +23,7 @@ from .upscale_stable_diffusion import UpscaleStableDiffusionStage
 from .upscale_swinir import UpscaleSwinIRStage
 
 CHAIN_STAGES = {
+    "blend-denoise": BlendDenoiseStage,
     "blend-img2img": BlendImg2ImgStage,
     "blend-inpaint": UpscaleOutpaintStage,
     "blend-grid": BlendGridStage,

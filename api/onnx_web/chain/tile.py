@@ -105,13 +105,13 @@ def make_tile_mask(
     adj_tile_w = int(float(tile_w) * (1.0 - overlap))
 
     # sort gradient points
-    p1_h = adj_tile_h
+    p1_h = adj_tile_h - 1
     p2_h = tile_h - adj_tile_h
-    points_h = [0, min(p1_h, p2_h), max(p1_h, p2_h), tile_h]
+    points_h = [-1, min(p1_h, p2_h), max(p1_h, p2_h), tile_h]
 
-    p1_w = adj_tile_w
+    p1_w = adj_tile_w - 1
     p2_w = tile_w - adj_tile_w
-    points_w = [0, min(p1_w, p2_w), max(p1_w, p2_w), tile_w]
+    points_w = [-1, min(p1_w, p2_w), max(p1_w, p2_w), tile_w]
 
     # build gradients
     edge_t, edge_l, edge_b, edge_r = edges
@@ -155,9 +155,9 @@ def blend_tiles(
 
         if adj_tile < tile:
             # sort gradient points
-            p1 = adj_tile * scale
-            p2 = (tile - adj_tile) * scale
-            points = [0, min(p1, p2), max(p1, p2), tile * scale]
+            p1 = (adj_tile * scale) - 1
+            p2 = (tile - adj_tile - 1) * scale
+            points = [-1, min(p1, p2), max(p1, p2), (tile * scale)]
 
             # gradient blending
             grad_x, grad_y = get_tile_grads(left, top, adj_tile, width, height)
