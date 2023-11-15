@@ -204,8 +204,10 @@ class ImageParams:
     input_negative_prompt: str
     loopback: int
     tiled_vae: bool
-    tiles: int
-    overlap: float
+    unet_tile: int
+    unet_overlap: float
+    vae_tile: int
+    vae_overlap: float
 
     def __init__(
         self,
@@ -224,9 +226,10 @@ class ImageParams:
         input_negative_prompt: Optional[str] = None,
         loopback: int = 0,
         tiled_vae: bool = False,
-        tiles: int = 512,
-        overlap: float = 0.25,
-        stride: int = 64,
+        unet_overlap: float = 0.25,
+        unet_tile: int = 512,
+        vae_overlap: float = 0.25,
+        vae_tile: int = 512,
     ) -> None:
         self.model = model
         self.pipeline = pipeline
@@ -243,9 +246,10 @@ class ImageParams:
         self.input_negative_prompt = input_negative_prompt or negative_prompt
         self.loopback = loopback
         self.tiled_vae = tiled_vae
-        self.tiles = tiles
-        self.overlap = overlap
-        self.stride = stride
+        self.unet_overlap = unet_overlap
+        self.unet_tile = unet_tile
+        self.vae_overlap = vae_overlap
+        self.vae_tile = vae_tile
 
     def do_cfg(self):
         return self.cfg > 1.0
@@ -312,9 +316,10 @@ class ImageParams:
             "input_negative_prompt": self.input_negative_prompt,
             "loopback": self.loopback,
             "tiled_vae": self.tiled_vae,
-            "tiles": self.tiles,
-            "overlap": self.overlap,
-            "stride": self.stride,
+            "unet_overlap": self.unet_overlap,
+            "unet_tile": self.unet_tile,
+            "vae_overlap": self.vae_overlap,
+            "vae_tile": self.vae_tile,
         }
 
     def with_args(self, **kwargs):
@@ -334,9 +339,10 @@ class ImageParams:
             kwargs.get("input_negative_prompt", self.input_negative_prompt),
             kwargs.get("loopback", self.loopback),
             kwargs.get("tiled_vae", self.tiled_vae),
-            kwargs.get("tiles", self.tiles),
-            kwargs.get("overlap", self.overlap),
-            kwargs.get("stride", self.stride),
+            kwargs.get("unet_overlap", self.unet_overlap),
+            kwargs.get("unet_tile", self.unet_tile),
+            kwargs.get("vae_overlap", self.vae_overlap),
+            kwargs.get("vae_tile", self.vae_tile),
         )
 
 

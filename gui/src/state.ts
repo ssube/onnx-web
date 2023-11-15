@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable max-lines */
 /* eslint-disable no-null/no-null */
 import { Maybe } from '@apextoaster/js-utils';
@@ -267,10 +268,11 @@ export function baseParamsFromServer(defaults: ServerParams): Required<BaseImgPa
     scheduler: defaults.scheduler.default,
     steps: defaults.steps.default,
     seed: defaults.seed.default,
-    tiledVAE: defaults.tiledVAE.default,
-    tiles: defaults.tiles.default,
-    overlap: defaults.overlap.default,
-    stride: defaults.stride.default,
+    tiled_vae: defaults.tiled_vae.default,
+    unet_overlap: defaults.unet_overlap.default,
+    unet_tile: defaults.unet_tile.default,
+    vae_overlap: defaults.vae_overlap.default,
+    vae_tile: defaults.vae_tile.default,
   };
 }
 

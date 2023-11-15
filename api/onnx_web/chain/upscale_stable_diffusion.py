@@ -48,13 +48,14 @@ class UpscaleStableDiffusionStage(BaseStage):
         )
         generator = torch.manual_seed(params.seed)
 
-        prompt_embeds = encode_prompt(
-            pipeline,
-            prompt_pairs,
-            num_images_per_prompt=params.batch,
-            do_classifier_free_guidance=params.do_cfg(),
-        )
-        pipeline.unet.set_prompts(prompt_embeds)
+        if not params.is_xl():
+            prompt_embeds = encode_prompt(
+                pipeline,
+                prompt_pairs,
+                num_images_per_prompt=params.batch,
+                do_classifier_free_guidance=params.do_cfg(),
+            )
+            pipeline.unet.set_prompts(prompt_embeds)
 
         outputs = []
         for source in sources:

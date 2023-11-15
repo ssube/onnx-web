@@ -160,11 +160,11 @@ class ChainPipeline:
             if stage_pipe.max_tile > 0:
                 tile = min(stage_pipe.max_tile, stage_params.tile_size)
 
-            if must_tile:
+            if stage_sources or must_tile:
                 stage_outputs = []
                 for source in stage_sources:
                     logger.info(
-                        "image larger than tile size of %s, tiling stage",
+                        "image contains sources or is larger than tile size of %s, tiling stage",
                         tile,
                     )
 
@@ -232,7 +232,7 @@ class ChainPipeline:
 
                 stage_sources = stage_outputs
             else:
-                logger.debug("image within tile size of %s, running stage", tile)
+                logger.debug("image does not contain sources and is within tile size of %s, running stage", tile)
                 for i in range(worker.retries):
                     try:
                         stage_outputs = stage_pipe.run(
@@ -250,12 +250,13 @@ class ChainPipeline:
                         stage_sources = stage_outputs
                         break
                     except Exception:
+                        worker.retries = worker.retries - 1
                         logger.exception(
-                            "error while running stage pipeline, retry %s of 3", i
+                            "error while running stage pipeline, %s retries left",
+                            worker.retries,
                         )
                         server.cache.clear()
                         run_gc([worker.get_device()])
-                        worker.retries = worker.retries - (i + 1)
 
                 if worker.retries <= 0:
                     raise RetryException("exhausted retries on stage")

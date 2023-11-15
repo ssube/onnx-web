@@ -69,7 +69,11 @@ def convert_diffusion_diffusers_xl(
         else:
             pipeline.vae = AutoencoderKL.from_pretrained(vae_path)
 
-    pipeline.save_pretrained(temp_path)
+    if path.exists(temp_path):
+        logger.debug("torch model already exists for %s: %s", source, temp_path)
+    else:
+        logger.debug("exporting torch model for %s: %s", source, temp_path)
+        pipeline.save_pretrained(temp_path)
 
     # directory -> onnx using optimum exporters
     main_export(

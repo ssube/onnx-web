@@ -12,6 +12,10 @@ from optimum.pipelines.diffusers.pipeline_stable_diffusion_xl_img2img import (
 )
 from optimum.pipelines.diffusers.pipeline_utils import preprocess, rescale_noise_cfg
 
+from onnx_web.chain.tile import make_tile_mask
+
+from ..utils import LATENT_FACTOR, parse_regions
+
 logger = logging.getLogger(__name__)
 
 
@@ -282,6 +286,8 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         # corresponds to doing no classifier free guidance.
         do_classifier_free_guidance = guidance_scale > 1.0
 
+        prompt, regions = parse_regions(prompt)
+
         # 3. Encode input prompt
         (
             prompt_embeds,
@@ -298,6 +304,42 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
             pooled_prompt_embeds=pooled_prompt_embeds,
             negative_pooled_prompt_embeds=negative_pooled_prompt_embeds,
         )
+
+        # 3.b. Encode region prompts
+        region_embeds: List[np.ndarray] = []
+        add_region_embeds: List[np.ndarray] = []
+
+        for _top, _left, _bottom, _right, _weight, _feather, region_prompt in regions:
+            if region_prompt.endswith("+"):
+                region_prompt = region_prompt[:-1] + " " + prompt
+
+            (
+                region_prompt_embeds,
+                region_negative_prompt_embeds,
+                region_pooled_prompt_embeds,
+                region_negative_pooled_prompt_embeds,
+            ) = self._encode_prompt(
+                region_prompt,
+                num_images_per_prompt,
+                do_classifier_free_guidance,
+                negative_prompt,
+            )
+
+            if do_classifier_free_guidance:
+                region_prompt_embeds = np.concatenate(
+                    (region_negative_prompt_embeds, region_prompt_embeds), axis=0
+                )
+                add_region_embeds.append(
+                    np.concatenate(
+                        (
+                            region_negative_pooled_prompt_embeds,
+                            region_pooled_prompt_embeds,
+                        ),
+                        axis=0,
+                    )
+                )
+
+            region_embeds.append(region_prompt_embeds)
 
         # 4. Prepare timesteps
         self.scheduler.set_timesteps(num_inference_steps)
@@ -330,6 +372,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 (negative_pooled_prompt_embeds, add_text_embeds), axis=0
             )
             add_time_ids = np.concatenate((add_time_ids, add_time_ids), axis=0)
+
         add_time_ids = np.repeat(
             add_time_ids, batch_size * num_images_per_prompt, axis=0
         )
@@ -345,6 +388,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         # 8. Denoising loop
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
         for i, t in enumerate(self.progress_bar(timesteps)):
+            last = i == (len(timesteps) - 1)
             count.fill(0)
             value.fill(0)
 
@@ -399,6 +443,110 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
                 count[:, :, h_start:h_end, w_start:w_end] += 1
+
+            if not last:
+                for r, region in enumerate(regions):
+                    top, left, bottom, right, weight, feather, prompt = region
+                    logger.debug(
+                        "running region prompt: %s, %s, %s, %s, %s, %s, %s",
+                        top,
+                        left,
+                        bottom,
+                        right,
+                        weight,
+                        feather,
+                        prompt,
+                    )
+
+                    # convert coordinates to latent space
+                    h_start = top // LATENT_FACTOR
+                    h_end = bottom // LATENT_FACTOR
+                    w_start = left // LATENT_FACTOR
+                    w_end = right // LATENT_FACTOR
+
+                    # get the latents corresponding to the current view coordinates
+                    latents_for_region = latents[:, :, h_start:h_end, w_start:w_end]
+                    logger.trace(
+                        "region latent shape: [:,:,%s:%s,%s:%s] -> %s",
+                        h_start,
+                        h_end,
+                        w_start,
+                        w_end,
+                        latents_for_region.shape,
+                    )
+
+                    # expand the latents if we are doing classifier free guidance
+                    latent_region_input = (
+                        np.concatenate([latents_for_region] * 2)
+                        if do_classifier_free_guidance
+                        else latents_for_region
+                    )
+                    latent_region_input = self.scheduler.scale_model_input(
+                        torch.from_numpy(latent_region_input), t
+                    )
+                    latent_region_input = latent_region_input.cpu().numpy()
+
+                    # predict the noise residual
+                    timestep = np.array([t], dtype=timestep_dtype)
+                    region_noise_pred = self.unet(
+                        sample=latent_region_input,
+                        timestep=timestep,
+                        encoder_hidden_states=region_embeds[r],
+                        text_embeds=add_region_embeds[r],
+                        time_ids=add_time_ids,
+                    )
+                    region_noise_pred = region_noise_pred[0]
+
+                    # perform guidance
+                    if do_classifier_free_guidance:
+                        region_noise_pred_uncond, region_noise_pred_text = np.split(
+                            region_noise_pred, 2
+                        )
+                        region_noise_pred = (
+                            region_noise_pred_uncond
+                            + guidance_scale
+                            * (region_noise_pred_text - region_noise_pred_uncond)
+                        )
+                        if guidance_rescale > 0.0:
+                            # Based on 3.4. in https://arxiv.org/pdf/2305.08891.pdf
+                            region_noise_pred = rescale_noise_cfg(
+                                region_noise_pred,
+                                region_noise_pred_text,
+                                guidance_rescale=guidance_rescale,
+                            )
+
+                    # compute the previous noisy sample x_t -> x_t-1
+                    scheduler_output = self.scheduler.step(
+                        torch.from_numpy(region_noise_pred),
+                        t,
+                        torch.from_numpy(latents_for_region),
+                        **extra_step_kwargs,
+                    )
+                    latents_region_denoised = scheduler_output.prev_sample.numpy()
+
+                    if feather[0] > 0.0:
+                        mask = make_tile_mask(
+                            (h_end - h_start, w_end - w_start),
+                            (h_end - h_start, w_end - w_start),
+                            feather[0],
+                            feather[1],
+                        )
+                        mask = np.expand_dims(mask, axis=0)
+                        mask = np.repeat(mask, 4, axis=0)
+                        mask = np.expand_dims(mask, axis=0)
+                    else:
+                        mask = 1
+
+                    if weight >= 10.0:
+                        value[:, :, h_start:h_end, w_start:w_end] = (
+                            latents_region_denoised * mask
+                        )
+                        count[:, :, h_start:h_end, w_start:w_end] = mask
+                    else:
+                        value[:, :, h_start:h_end, w_start:w_end] += (
+                            latents_region_denoised * weight * mask
+                        )
+                        count[:, :, h_start:h_end, w_start:w_end] += weight * mask
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)

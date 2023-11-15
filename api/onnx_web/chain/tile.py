@@ -2,7 +2,7 @@ import itertools
 from enum import Enum
 from logging import getLogger
 from math import ceil
-from typing import List, Optional, Protocol, Tuple
+from typing import Any, List, Optional, Protocol, Tuple
 
 import numpy as np
 from PIL import Image
@@ -91,6 +91,46 @@ def get_tile_grads(
     return (grad_x, grad_y)
 
 
+def make_tile_mask(
+    shape: Any,
+    tile: Tuple[int, int],
+    overlap: float,
+    edges: Tuple[bool, bool, bool, bool],
+) -> np.ndarray:
+    mask = np.ones(shape)
+
+    tile_h, tile_w = tile
+
+    adj_tile_h = int(float(tile_h) * (1.0 - overlap))
+    adj_tile_w = int(float(tile_w) * (1.0 - overlap))
+
+    # sort gradient points
+    p1_h = adj_tile_h
+    p2_h = tile_h - adj_tile_h
+    points_h = [0, min(p1_h, p2_h), max(p1_h, p2_h), tile_h]
+
+    p1_w = adj_tile_w
+    p2_w = tile_w - adj_tile_w
+    points_w = [0, min(p1_w, p2_w), max(p1_w, p2_w), tile_w]
+
+    # build gradients
+    edge_t, edge_l, edge_b, edge_r = edges
+    grad_x, grad_y = [int(not edge_l), 1, 1, int(not edge_r)], [
+        int(not edge_t),
+        1,
+        1,
+        int(not edge_b),
+    ]
+    logger.debug("tile gradients: %s, %s, %s, %s", points_w, points_h, grad_x, grad_y)
+
+    mult_x = [np.interp(i, points_w, grad_x) for i in range(tile_w)]
+    mult_y = [np.interp(i, points_h, grad_y) for i in range(tile_h)]
+
+    mask = ((mask * mult_x).T * mult_y).T
+
+    return mask
+
+
 def blend_tiles(
     tiles: List[Tuple[int, int, Image.Image]],
     scale: int,
@@ -109,7 +149,7 @@ def blend_tiles(
     value = np.zeros(scaled_size)
 
     for left, top, tile_image in tiles:
-        # histogram equalization
+        # TODO: histogram equalization
         equalized = np.array(tile_image).astype(np.float32)
         mask = np.ones_like(equalized[:, :, 0])
 

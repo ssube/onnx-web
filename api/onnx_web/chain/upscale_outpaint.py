@@ -71,7 +71,7 @@ class UpscaleOutpaintStage(BaseStage):
                 outputs.append(source)
                 continue
 
-            tile_size = params.tiles
+            tile_size = params.unet_tile
             size = Size(*source.size)
             latent_size = size.min(tile_size, tile_size)
 
@@ -99,10 +99,11 @@ class UpscaleOutpaintStage(BaseStage):
                 )
             else:
                 # encode and record alternative prompts outside of LPW
-                prompt_embeds = encode_prompt(
-                    pipe, prompt_pairs, params.batch, params.do_cfg()
-                )
-                pipe.unet.set_prompts(prompt_embeds)
+                if not params.is_xl():
+                    prompt_embeds = encode_prompt(
+                        pipe, prompt_pairs, params.batch, params.do_cfg()
+                    )
+                    pipe.unet.set_prompts(prompt_embeds)
 
                 rng = np.random.RandomState(params.seed)
                 result = pipe(

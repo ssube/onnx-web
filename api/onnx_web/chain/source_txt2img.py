@@ -7,10 +7,12 @@ from PIL import Image
 
 from ..diffusers.load import load_pipeline
 from ..diffusers.utils import (
+    LATENT_FACTOR,
     encode_prompt,
     get_latents_from_seed,
     get_tile_latents,
     parse_prompt,
+    parse_reseed,
     slice_prompt,
 )
 from ..params import ImageParams, Size, SizeChart, StageParams
@@ -47,7 +49,10 @@ class SourceTxt2ImgStage(BaseStage):
             params = params.with_args(prompt=slice_prompt(params.prompt, prompt_index))
 
         logger.info(
-            "generating image using txt2img, %s steps: %s", params.steps, params.prompt
+            "generating image using txt2img, %s steps of %s: %s",
+            params.steps,
+            params.model,
+            params.prompt,
         )
 
         if len(sources):
@@ -60,9 +65,9 @@ class SourceTxt2ImgStage(BaseStage):
         )
 
         if params.is_xl():
-            tile_size = max(stage.tile_size, params.tiles)
+            tile_size = max(stage.tile_size, params.unet_tile)
         else:
-            tile_size = params.tiles
+            tile_size = params.unet_tile
 
         # this works for panorama as well, because tile_size is already max(tile_size, *size)
         latent_size = size.min(tile_size, tile_size)
@@ -72,6 +77,30 @@ class SourceTxt2ImgStage(BaseStage):
             latents = get_latents_from_seed(int(params.seed), latent_size, params.batch)
         else:
             latents = get_tile_latents(latents, int(params.seed), latent_size, dims)
+
+        # reseed latents as needed
+        reseed_rng = np.random.RandomState(params.seed)
+        prompt, reseed = parse_reseed(prompt)
+        for top, left, bottom, right, region_seed in reseed:
+            if region_seed == -1:
+                region_seed = reseed_rng.random_integers(2**32 - 1)
+
+            logger.debug(
+                "reseed latent region: [:, :, %s:%s, %s:%s] with %s",
+                top,
+                left,
+                bottom,
+                right,
+                region_seed,
+            )
+            latents[
+                :,
+                :,
+                top // LATENT_FACTOR : bottom // LATENT_FACTOR,
+                left // LATENT_FACTOR : right // LATENT_FACTOR,
+            ] = get_latents_from_seed(
+                region_seed, Size(right - left, bottom - top), params.batch
+            )
 
         pipe_type = params.get_valid_pipeline("txt2img")
         pipe = load_pipeline(
@@ -101,11 +130,10 @@ class SourceTxt2ImgStage(BaseStage):
             )
         else:
             # encode and record alternative prompts outside of LPW
-            prompt_embeds = encode_prompt(
-                pipe, prompt_pairs, params.batch, params.do_cfg()
-            )
-
             if not params.is_xl():
+                prompt_embeds = encode_prompt(
+                    pipe, prompt_pairs, params.batch, params.do_cfg()
+                )
                 pipe.unet.set_prompts(prompt_embeds)
 
             rng = np.random.RandomState(params.seed)
@@ -125,6 +153,7 @@ class SourceTxt2ImgStage(BaseStage):
 
         output = list(sources)
         output.extend(result.images)
+        logger.debug("produced %s outputs", len(output))
         return output
 
     def steps(

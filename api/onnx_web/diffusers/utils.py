@@ -17,9 +17,14 @@ LATENT_CHANNELS = 4
 LATENT_FACTOR = 8
 MAX_TOKENS_PER_GROUP = 77
 
+ANY_TOKEN = compile(r"\<([^\>]*)\>")
 CLIP_TOKEN = compile(r"\<clip:([-\w]+):(\d+)\>")
 INVERSION_TOKEN = compile(r"\<inversion:([^:\>]+):(-?[\.|\d]+)\>")
 LORA_TOKEN = compile(r"\<lora:([^:\>]+):(-?[\.|\d]+)\>")
+REGION_TOKEN = compile(
+    r"\<region:(\d+):(\d+):(\d+):(\d+):(-?[\.|\d]+):(-?[\.|\d]+_?[TLBR]*):([^\>]+)\>"
+)
+RESEED_TOKEN = compile(r"\<reseed:(\d+):(\d+):(\d+):(\d+):(-?\d+)\>")
 WILDCARD_TOKEN = compile(r"__([-/\\\w]+)__")
 
 INTERVAL_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
@@ -219,20 +224,25 @@ def expand_prompt(
     return prompt_embeds
 
 
+def parse_float_group(group: Tuple[str, str]) -> Tuple[str, float]:
+    name, weight = group
+    return (name, float(weight))
+
+
 def get_tokens_from_prompt(
-    prompt: str, pattern: Pattern
+    prompt: str,
+    pattern: Pattern,
+    parser=parse_float_group,
 ) -> Tuple[str, List[Tuple[str, float]]]:
-    """
-    TODO: replace with Arpeggio
-    """
     remaining_prompt = prompt
 
     tokens = []
     next_match = pattern.search(remaining_prompt)
     while next_match is not None:
         logger.debug("found token in prompt: %s", next_match)
-        name, weight = next_match.groups()
-        tokens.append((name, float(weight)))
+        group = next_match.groups()
+        tokens.append(parser(group))
+
         # remove this match and look for another
         remaining_prompt = (
             remaining_prompt[: next_match.start()]
@@ -369,12 +379,15 @@ def encode_prompt(
     num_images_per_prompt: int = 1,
     do_classifier_free_guidance: bool = True,
 ) -> List[np.ndarray]:
+    """
+    TODO: does not work with SDXL, fix or turn into a pipeline patch
+    """
     return [
         pipe._encode_prompt(
-            prompt,
+            remove_tokens(prompt),
             num_images_per_prompt=num_images_per_prompt,
             do_classifier_free_guidance=do_classifier_free_guidance,
-            negative_prompt=neg_prompt,
+            negative_prompt=remove_tokens(neg_prompt),
         )
         for prompt, neg_prompt in prompt_pairs
     ]
@@ -444,3 +457,64 @@ def slice_prompt(prompt: str, slice: int) -> str:
         return parts[min(slice, len(parts) - 1)]
     else:
         return prompt
+
+
+Region = Tuple[
+    int, int, int, int, float, Tuple[float, Tuple[bool, bool, bool, bool]], str
+]
+
+
+def parse_region_group(group: Tuple[str, ...]) -> Region:
+    top, left, bottom, right, weight, feather, prompt = group
+
+    # break down the feather section
+    feather_radius, *feather_edges = feather.split("_")
+    if len(feather_edges) == 0:
+        feather_edges = "TLBR"
+    else:
+        feather_edges = "".join(feather_edges)
+
+    return (
+        int(top),
+        int(left),
+        int(bottom),
+        int(right),
+        float(weight),
+        (
+            float(feather_radius),
+            (
+                "T" in feather_edges,
+                "L" in feather_edges,
+                "B" in feather_edges,
+                "R" in feather_edges,
+            ),
+        ),
+        prompt,
+    )
+
+
+def parse_regions(prompt: str) -> Tuple[str, List[Region]]:
+    return get_tokens_from_prompt(prompt, REGION_TOKEN, parser=parse_region_group)
+
+
+Reseed = Tuple[int, int, int, int, int]
+
+
+def parse_reseed_group(group) -> Region:
+    top, left, bottom, right, seed = group
+    return (
+        int(top),
+        int(left),
+        int(bottom),
+        int(right),
+        int(seed),
+    )
+
+
+def parse_reseed(prompt: str) -> Tuple[str, List[Reseed]]:
+    return get_tokens_from_prompt(prompt, RESEED_TOKEN, parser=parse_reseed_group)
+
+
+def remove_tokens(prompt: str) -> str:
+    remainder, tokens = get_tokens_from_prompt(prompt, ANY_TOKEN)
+    return remainder

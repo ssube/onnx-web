@@ -106,5 +106,5 @@ class UpscaleBSRGANStage(BaseStage):
         params: ImageParams,
         size: Size,
     ) -> int:
-        tile = min(params.tiles, self.max_tile)
+        tile = min(params.unet_tile, self.max_tile)
         return size.width // tile * size.height // tile

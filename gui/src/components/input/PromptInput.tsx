@@ -1,5 +1,5 @@
-import { mustExist } from '@apextoaster/js-utils';
-import { TextField } from '@mui/material';
+import { Maybe, doesExist, mustDefault, mustExist } from '@apextoaster/js-utils';
+import { Chip, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
@@ -10,6 +10,7 @@ import { shallow } from 'zustand/shallow';
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, OnnxState, StateContext } from '../../state.js';
 import { QueryMenu } from '../input/QueryMenu.js';
+import { ModelResponse } from '../../types/api.js';
 
 const { useContext } = React;
 
@@ -48,26 +49,27 @@ export function PromptInput(props: PromptInputProps) {
     staleTime: STALE_TIME,
   });
 
-  const tokens = splitPrompt(prompt);
-  const groups = Math.ceil(tokens.length / PROMPT_GROUP);
-
   const { t } = useTranslation();
-  const helper = t('input.prompt.tokens', {
-    groups,
-    tokens: tokens.length,
-  });
 
-  function addToken(type: string, name: string, weight = 1.0) {
+  function addNetwork(type: string, name: string, weight = 1.0) {
     onChange({
       prompt: `<${type}:${name}:1.0> ${prompt}`,
       negativePrompt,
     });
   }
 
+  function addToken(name: string) {
+    onChange({
+      prompt: `${prompt}, ${name}`,
+    });
+  }
+
+  const networks = extractNetworks(prompt);
+  const tokens = getNetworkTokens(models.data, networks);
+
   return <Stack spacing={2}>
     <TextField
       label={t('parameter.prompt')}
-      helperText={helper}
       variant='outlined'
       value={prompt}
       onChange={(event) => {
@@ -77,6 +79,13 @@ export function PromptInput(props: PromptInputProps) {
         });
       }}
     />
+    <Stack direction='row' spacing={2}>
+      {tokens.map(([token, _weight]) => <Chip
+        color={prompt.includes(token) ? 'primary' : 'default'}
+        label={token}
+        onClick={() => addToken(token)}
+      />)}
+    </Stack>
     <TextField
       label={t('parameter.negativePrompt')}
       variant='outlined'
@@ -98,7 +107,7 @@ export function PromptInput(props: PromptInputProps) {
           selector: (result) => result.networks.filter((network) => network.type === 'inversion').map((network) => network.name),
         }}
         onSelect={(name) => {
-          addToken('inversion', name);
+          addNetwork('inversion', name);
         }}
       />
       <QueryMenu
@@ -110,9 +119,69 @@ export function PromptInput(props: PromptInputProps) {
           selector: (result) => result.networks.filter((network) => network.type === 'lora').map((network) => network.name),
         }}
         onSelect={(name) => {
-          addToken('lora', name);
+          addNetwork('lora', name);
         }}
       />
     </Stack>
   </Stack>;
+}
+
+export const ANY_TOKEN = /<([^>]+)>/g;
+
+export type TokenList = Array<[string, number]>;
+
+export interface PromptNetworks {
+  inversion: TokenList;
+  lora: TokenList;
+}
+
+export function extractNetworks(prompt: string): PromptNetworks {
+  const inversion: TokenList = [];
+  const lora: TokenList = [];
+
+  for (const token of prompt.matchAll(ANY_TOKEN)) {
+    const [_whole, match] = Array.from(token);
+    const [type, name, weight, ..._rest] = match.split(':');
+
+    switch (type) {
+      case 'inversion':
+        inversion.push([name, parseFloat(weight)]);
+        break;
+      case 'lora':
+        lora.push([name, parseFloat(weight)]);
+        break;
+      default:
+        // ignore others
+    }
+  }
+
+  return {
+    inversion,
+    lora,
+  };
+}
+
+// eslint-disable-next-line sonarjs/cognitive-complexity
+export function getNetworkTokens(models: Maybe<ModelResponse>, networks: PromptNetworks): TokenList {
+  const tokens: TokenList = [];
+
+  if (doesExist(models)) {
+    for (const [name, weight] of networks.inversion) {
+      const model = models.networks.find((it) => it.type === 'inversion' && it.name === name);
+      if (doesExist(model) && model.type === 'inversion') {
+        tokens.push([model.token, weight]);
+      }
+    }
+
+    for (const [name, weight] of networks.lora) {
+      const model = models.networks.find((it) => it.type === 'lora' && it.name === name);
+      if (doesExist(model) && model.type === 'lora') {
+        for (const token of mustDefault(model.tokens, [])) {
+          tokens.push([token, weight]);
+        }
+      }
+    }
+  }
+
+  return tokens;
 }
