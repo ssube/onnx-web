@@ -130,7 +130,9 @@ class SourceTxt2ImgStage(BaseStage):
             )
         else:
             # encode and record alternative prompts outside of LPW
-            if not params.is_xl():
+            if params.is_panorama() or params.is_xl():
+                logger.debug("prompt alternatives are not supported for panorama or SDXL")
+            else:
                 prompt_embeds = encode_prompt(
                     pipe, prompt_pairs, params.batch, params.do_cfg()
                 )
