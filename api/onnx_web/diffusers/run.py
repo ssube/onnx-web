@@ -63,8 +63,9 @@ def run_txt2img_pipeline(
 
     # apply upscaling and correction, before highres
     highres_size = params.unet_tile
+    stage = StageParams(tile_size=highres_size)
+
     if params.is_panorama():
-        stage = StageParams(tile_size=highres_size)
         chain.stage(
             BlendDenoiseStage(),
             stage,
