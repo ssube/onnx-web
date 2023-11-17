@@ -129,8 +129,11 @@ class ServerContext:
     def has_feature(self, flag: str) -> bool:
         return flag in self.feature_flags
 
+    def has_optimization(self, opt: str) -> bool:
+        return opt in self.optimizations
+
     def torch_dtype(self):
-        if "torch-fp16" in self.optimizations:
+        if self.has_optimization("torch-fp16"):
             return torch.float16
         else:
             return torch.float32

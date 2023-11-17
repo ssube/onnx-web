@@ -599,7 +599,7 @@ def main(args=None) -> int:
     logger.info("CLI arguments: %s", args)
 
     server = ConversionContext.from_environ()
-    server.half = args.half or "onnx-fp16" in server.optimizations
+    server.half = args.half or server.has_optimization("onnx-fp16")
     server.opset = args.opset
     server.token = args.token
     logger.info(

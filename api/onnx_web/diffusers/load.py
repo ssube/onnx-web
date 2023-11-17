@@ -563,8 +563,8 @@ def optimize_pipeline(
     pipe: StableDiffusionPipeline,
 ) -> None:
     if (
-        "diffusers-attention-slicing" in server.optimizations
-        or "diffusers-attention-slicing-auto" in server.optimizations
+        server.has_optimization("diffusers-attention-slicing")
+        or server.has_optimization("diffusers-attention-slicing-auto")
     ):
         logger.debug("enabling auto attention slicing on SD pipeline")
         try:
@@ -572,28 +572,28 @@ def optimize_pipeline(
         except Exception as e:
             logger.warning("error while enabling auto attention slicing: %s", e)
 
-    if "diffusers-attention-slicing-max" in server.optimizations:
+    if server.has_optimization("diffusers-attention-slicing-max"):
         logger.debug("enabling max attention slicing on SD pipeline")
         try:
             pipe.enable_attention_slicing(slice_size="max")
         except Exception as e:
             logger.warning("error while enabling max attention slicing: %s", e)
 
-    if "diffusers-vae-slicing" in server.optimizations:
+    if server.has_optimization("diffusers-vae-slicing"):
         logger.debug("enabling VAE slicing on SD pipeline")
         try:
             pipe.enable_vae_slicing()
         except Exception as e:
             logger.warning("error while enabling VAE slicing: %s", e)
 
-    if "diffusers-cpu-offload-sequential" in server.optimizations:
+    if server.has_optimization("diffusers-cpu-offload-sequential"):
         logger.debug("enabling sequential CPU offload on SD pipeline")
         try:
             pipe.enable_sequential_cpu_offload()
         except Exception as e:
             logger.warning("error while enabling sequential CPU offload: %s", e)
 
-    elif "diffusers-cpu-offload-model" in server.optimizations:
+    elif server.has_optimization("diffusers-cpu-offload-model"):
         # TODO: check for accelerate
         logger.debug("enabling model CPU offload on SD pipeline")
         try:
@@ -601,7 +601,7 @@ def optimize_pipeline(
         except Exception as e:
             logger.warning("error while enabling model CPU offload: %s", e)
 
-    if "diffusers-memory-efficient-attention" in server.optimizations:
+    if server.has_optimization("diffusers-memory-efficient-attention"):
         # TODO: check for xformers
         logger.debug("enabling memory efficient attention for SD pipeline")
         try:
