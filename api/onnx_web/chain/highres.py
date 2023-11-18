@@ -1,7 +1,7 @@
 from logging import getLogger
 from typing import Optional
 
-from ..chain.base import ChainPipeline
+from .pipeline import ChainPipeline
 from ..chain.blend_img2img import BlendImg2ImgStage
 from ..chain.upscale import stage_upscale_correction
 from ..chain.upscale_simple import UpscaleSimpleStage

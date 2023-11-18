@@ -10,7 +10,7 @@ from ..diffusers.utils import encode_prompt, parse_prompt, slice_prompt
 from ..params import ImageParams, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
 
 logger = getLogger(__name__)
 

@@ -8,7 +8,7 @@ from ..params import HighresParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 from ..worker.context import ProgressCallback
-from .stage import BaseStage
+from .base import BaseStage
 
 logger = getLogger(__name__)
 

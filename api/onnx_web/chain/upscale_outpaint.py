@@ -18,7 +18,7 @@ from ..params import Border, ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..utils import is_debug
 from ..worker import ProgressCallback, WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
 
 logger = getLogger(__name__)
 

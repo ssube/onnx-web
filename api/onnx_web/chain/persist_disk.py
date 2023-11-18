@@ -7,7 +7,7 @@ from ..output import save_image
 from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
 
 logger = getLogger(__name__)
 

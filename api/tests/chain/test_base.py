@@ -1,6 +1,6 @@
 import unittest
 
-from onnx_web.chain.base import ChainProgress
+from onnx_web.chain.pipeline import ChainProgress
 
 
 class ChainProgressTests(unittest.TestCase):

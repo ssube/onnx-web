@@ -10,7 +10,7 @@ from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
 
 logger = getLogger(__name__)
 

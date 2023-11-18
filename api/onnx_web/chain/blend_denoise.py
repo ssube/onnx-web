@@ -8,7 +8,7 @@ from PIL import Image
 from ..params import ImageParams, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
 
 logger = getLogger(__name__)
 
