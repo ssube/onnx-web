@@ -77,6 +77,9 @@ class TestWorkerPool(unittest.TestCase):
     self.assertEqual(self.pool.get_next_device(needs_device=device2), 1)
 
   def test_done_running(self):
+    """
+    TODO: flaky
+    """
     device = DeviceParams("cpu", "CPUProvider")
     server = ServerContext()
 
@@ -104,6 +107,9 @@ class TestWorkerPool(unittest.TestCase):
     lock.set()
 
   def test_done_finished(self):
+    """
+    TODO: flaky
+    """
     device = DeviceParams("cpu", "CPUProvider")
     server = ServerContext()
 

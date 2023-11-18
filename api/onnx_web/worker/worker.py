@@ -50,7 +50,7 @@ def worker_main(
                     getpid(),
                     worker.get_active(),
                 )
-                exit(EXIT_REPLACED)
+                return exit(EXIT_REPLACED)
 
             # wait briefly for the next job
             job = worker.pending.get(timeout=worker.timeout)
@@ -73,15 +73,15 @@ def worker_main(
         except KeyboardInterrupt:
             logger.debug("worker got keyboard interrupt")
             worker.fail()
-            exit(EXIT_INTERRUPT)
+            return exit(EXIT_INTERRUPT)
         except RetryException:
             logger.exception("retry error in worker, exiting")
             worker.fail()
-            exit(EXIT_ERROR)
+            return exit(EXIT_ERROR)
         except ValueError:
             logger.exception("value error in worker, exiting")
             worker.fail()
-            exit(EXIT_ERROR)
+            return exit(EXIT_ERROR)
         except Exception as e:
             e_str = str(e)
             # restart the worker on memory errors
@@ -89,7 +89,7 @@ def worker_main(
                 if e_mem in e_str:
                     logger.error("detected out-of-memory error, exiting: %s", e)
                     worker.fail()
-                    exit(EXIT_MEMORY)
+                    return exit(EXIT_MEMORY)
 
             # carry on for other errors
             logger.exception(
