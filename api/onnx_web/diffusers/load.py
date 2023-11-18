@@ -90,6 +90,18 @@ pipeline_schedulers = {
 }
 
 
+def add_pipeline(name: str, pipeline: Any) -> bool:
+    global available_pipelines
+
+    if name in available_pipelines:
+        # TODO: decide if this should be allowed or not
+        logger.warning("cannot replace existing pipeline: %s", name)
+        return False
+    else:
+        available_pipelines[name] = pipeline
+        return False
+
+
 def get_available_pipelines() -> List[str]:
     return list(available_pipelines.keys())
 

@@ -40,6 +40,7 @@ class ServerContext:
     server_version: str
     worker_retries: int
     feature_flags: List[str]
+    plugins: List[str]
 
     def __init__(
         self,
