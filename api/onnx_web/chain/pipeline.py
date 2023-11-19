@@ -13,6 +13,7 @@ from ..utils import is_debug, run_gc
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
 from .tile import needs_tile, process_tile_order
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -73,26 +74,27 @@ class ChainPipeline:
         worker: WorkerContext,
         server: ServerContext,
         params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         callback: Optional[ProgressCallback],
         **kwargs
-    ) -> List[Image.Image]:
-        return self(
+    ) -> StageResult:
+        result = self(
             worker, server, params, sources=sources, callback=callback, **kwargs
         )
+        return result.as_image()
 
     def stage(self, callback: BaseStage, params: StageParams, **kwargs):
         self.stages.append((callback, params, kwargs))
         return self
 
-    def steps(self, params: ImageParams, size: Size):
+    def steps(self, params: ImageParams, size: Size) -> int:
         steps = 0
         for callback, _params, kwargs in self.stages:
             steps += callback.steps(kwargs.get("params", params), size)
 
         return steps
 
-    def outputs(self, params: ImageParams, sources: int):
+    def outputs(self, params: ImageParams, sources: int) -> int:
         outputs = sources
         for callback, _params, kwargs in self.stages:
             outputs = callback.outputs(kwargs.get("params", params), outputs)
@@ -104,10 +106,10 @@ class ChainPipeline:
         worker: WorkerContext,
         server: ServerContext,
         params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         callback: Optional[ProgressCallback] = None,
         **pipeline_kwargs
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         """
         DEPRECATED: use `run` instead
         """
@@ -161,23 +163,21 @@ class ChainPipeline:
                 tile = min(stage_pipe.max_tile, stage_params.tile_size)
 
             if stage_sources or must_tile:
-                stage_outputs = []
+                stage_results = []
                 for source in stage_sources:
                     logger.info(
                         "image contains sources or is larger than tile size of %s, tiling stage",
                         tile,
                     )
 
-                    extra_tiles = []
-
                     def stage_tile(
                         source_tile: Image.Image,
                         tile_mask: Image.Image,
                         dims: Tuple[int, int, int],
-                    ) -> Image.Image:
+                    ) -> StageResult:
                         for _i in range(worker.retries):
                             try:
-                                output_tile = stage_pipe.run(
+                                tile_result = stage_pipe.run(
                                     worker,
                                     server,
                                     stage_params,
@@ -189,17 +189,11 @@ class ChainPipeline:
                                     **kwargs,
                                 )
 
-                                if len(output_tile) > 1:
-                                    while len(extra_tiles) < len(output_tile):
-                                        extra_tiles.append([])
-
-                                    for tile, layer in zip(output_tile, extra_tiles):
-                                        layer.append((tile, dims))
-
                                 if is_debug():
-                                    save_image(server, "last-tile.png", output_tile[0])
+                                    for j, image in enumerate(tile_result.as_image()):
+                                        save_image(server, f"last-tile-{j}.png", image)
 
-                                return output_tile[0]
+                                return tile_result
                             except Exception:
                                 worker.retries = worker.retries - 1
                                 logger.exception(
@@ -220,17 +214,9 @@ class ChainPipeline:
                         **kwargs,
                     )
 
-                    stage_outputs.append(output)
+                    stage_results.append(output)
 
-                    if len(extra_tiles) > 1:
-                        for layer in extra_tiles:
-                            layer_output = Image.new("RGB", output.size)
-                            for layer_tile, dims in layer:
-                                layer_output.paste(layer_tile, (dims[0], dims[1]))
-
-                            stage_outputs.append(layer_output)
-
-                stage_sources = stage_outputs
+                stage_sources = StageResult(images=stage_results)
             else:
                 logger.debug(
                     "image does not contain sources and is within tile size of %s, running stage",
@@ -238,7 +224,7 @@ class ChainPipeline:
                 )
                 for i in range(worker.retries):
                     try:
-                        stage_outputs = stage_pipe.run(
+                        stage_result = stage_pipe.run(
                             worker,
                             server,
                             stage_params,
@@ -250,7 +236,7 @@ class ChainPipeline:
                         )
                         # doing this on the same line as stage_pipe.run can leave sources as None, which the pipeline
                         # does not like, so it throws
-                        stage_sources = stage_outputs
+                        stage_sources = stage_result
                         break
                     except Exception:
                         worker.retries = worker.retries - 1

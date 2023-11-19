@@ -19,6 +19,7 @@ from ..server import ServerContext
 from ..utils import is_debug
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -32,7 +33,7 @@ class UpscaleOutpaintStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         border: Border,
         dims: Tuple[int, int, int],
@@ -45,7 +46,7 @@ class UpscaleOutpaintStage(BaseStage):
         stage_source: Optional[Image.Image] = None,
         stage_mask: Optional[Image.Image] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         prompt_pairs, loras, inversions, (prompt, negative_prompt) = parse_prompt(
             params
         )
@@ -61,7 +62,7 @@ class UpscaleOutpaintStage(BaseStage):
         )
 
         outputs = []
-        for source in sources:
+        for source in sources.as_image():
             if is_debug():
                 save_image(server, "tile-source.png", source)
                 save_image(server, "tile-mask.png", tile_mask)
@@ -122,4 +123,4 @@ class UpscaleOutpaintStage(BaseStage):
 
             outputs.extend(result.images)
 
-        return outputs
+        return StageResult(images=outputs)

@@ -19,6 +19,7 @@ from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -32,7 +33,7 @@ class SourceTxt2ImgStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         dims: Tuple[int, int, int] = None,
         size: Size,
@@ -153,10 +154,10 @@ class SourceTxt2ImgStage(BaseStage):
                 callback=callback,
             )
 
-        output = list(sources)
-        output.extend(result.images)
-        logger.debug("produced %s outputs", len(output))
-        return output
+        outputs = list(sources)
+        outputs.extend(result.images)
+        logger.debug("produced %s outputs", len(outputs))
+        return StageResult(images=outputs)
 
     def steps(
         self,

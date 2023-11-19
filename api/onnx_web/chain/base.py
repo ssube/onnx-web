@@ -17,7 +17,7 @@ class BaseStage:
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        _sources: List[Image.Image],
+        _sources: StageResult,
         *args,
         stage_source: Optional[Image.Image] = None,
         **kwargs,

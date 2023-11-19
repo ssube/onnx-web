@@ -7,6 +7,7 @@ from ..params import ImageParams, Size, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -18,15 +19,15 @@ class ReduceThumbnailStage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         size: Size,
         stage_source: Image.Image,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         outputs = []
 
-        for source in sources:
+        for source in sources.as_image():
             image = source.copy()
 
             image = image.thumbnail((size.width, size.height))
@@ -37,4 +38,4 @@ class ReduceThumbnailStage(BaseStage):
 
             outputs.append(image)
 
-        return outputs
+        return StageResult(images=outputs)

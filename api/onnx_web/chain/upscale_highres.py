@@ -9,6 +9,7 @@ from ..server import ServerContext
 from ..worker import WorkerContext
 from ..worker.context import ProgressCallback
 from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -20,20 +21,20 @@ class UpscaleHighresStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *args,
         highres: HighresParams,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         callback: Optional[ProgressCallback] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         if highres.scale <= 1:
             return sources
 
         chain = stage_highres(stage, params, highres, upscale)
 
-        return [
+        outputs = [
             chain(
                 worker,
                 server,
@@ -43,3 +44,5 @@ class UpscaleHighresStage(BaseStage):
             )
             for source in sources
         ]
+
+        return StageResult(images=outputs)

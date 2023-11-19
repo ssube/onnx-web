@@ -9,6 +9,7 @@ from PIL import Image
 
 from ..image.noise_source import noise_source_histogram
 from ..params import Size, TileOrder
+from .result import StageResult
 
 # from skimage.exposure import match_histograms
 
@@ -21,7 +22,7 @@ class TileCallback(Protocol):
     Definition for a tile job function.
     """
 
-    def __call__(self, image: Image.Image, dims: Tuple[int, int, int]) -> Image.Image:
+    def __call__(self, image: Image.Image, dims: Tuple[int, int, int]) -> StageResult:
         """
         Run this stage against a single tile.
         """

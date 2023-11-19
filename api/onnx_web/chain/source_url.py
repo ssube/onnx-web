@@ -9,6 +9,7 @@ from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -20,12 +21,12 @@ class SourceURLStage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         source_urls: List[str],
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         logger.info("loading image from URL source")
 
         if len(sources) > 0:
@@ -41,7 +42,7 @@ class SourceURLStage(BaseStage):
             logger.info("final output image size: %sx%s", output.width, output.height)
             outputs.append(output)
 
-        return outputs
+        return StageResult(images=outputs)
 
     def outputs(
         self,

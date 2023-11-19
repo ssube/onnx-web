@@ -11,6 +11,7 @@ from ..params import ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -22,13 +23,13 @@ class UpscaleStableDiffusionStage(BaseStage):
         server: ServerContext,
         _stage: StageParams,
         params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         callback: Optional[ProgressCallback] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         params = params.with_args(**kwargs)
         upscale = upscale.with_args(**kwargs)
         logger.info(
@@ -58,7 +59,7 @@ class UpscaleStableDiffusionStage(BaseStage):
             pipeline.unet.set_prompts(prompt_embeds)
 
         outputs = []
-        for source in sources:
+        for source in sources.as_image():
             result = pipeline(
                 prompt,
                 source,

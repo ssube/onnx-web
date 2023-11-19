@@ -11,6 +11,7 @@ from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
 from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -54,12 +55,12 @@ class UpscaleSwinIRStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         upscale = upscale.with_args(**kwargs)
 
         if upscale.upscale_model is None:
@@ -71,31 +72,27 @@ class UpscaleSwinIRStage(BaseStage):
         swinir = self.load(server, stage, upscale, device)
 
         outputs = []
-        for source in sources:
+        for source in sources.as_numpy():
             # TODO: add support for grayscale (1-channel) images
-            image = np.array(source) / 255.0
+            image = source / 255.0
             image = image[:, :, [2, 1, 0]].astype(np.float32).transpose((2, 0, 1))
             image = np.expand_dims(image, axis=0)
             logger.trace("SwinIR input shape: %s", image.shape)
 
             scale = upscale.outscale
-            dest = np.zeros(
-                (
+            logger.trace("SwinIR output shape: %s", (
                     image.shape[0],
                     image.shape[1],
                     image.shape[2] * scale,
                     image.shape[3] * scale,
-                )
-            )
-            logger.trace("SwinIR output shape: %s", dest.shape)
+                ))
 
-            dest = swinir(image)
-            dest = np.clip(np.squeeze(dest, axis=0), 0, 1)
-            dest = dest[[2, 1, 0], :, :].transpose((1, 2, 0))
-            dest = (dest * 255.0).round().astype(np.uint8)
+            output = swinir(image)
+            output = np.clip(np.squeeze(output, axis=0), 0, 1)
+            output = output[[2, 1, 0], :, :].transpose((1, 2, 0))
+            output = (output * 255.0).round().astype(np.uint8)
 
-            output = Image.fromarray(dest, "RGB")
-            logger.info("output image size: %s x %s", output.width, output.height)
+            logger.info("output image size: %s", output.shape)
             outputs.append(output)
 
-        return outputs
+        return StageResult(images=outputs)

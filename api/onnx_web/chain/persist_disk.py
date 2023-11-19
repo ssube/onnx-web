@@ -8,6 +8,7 @@ from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -21,13 +22,13 @@ class PersistDiskStage(BaseStage):
         server: ServerContext,
         _stage: StageParams,
         params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         output: List[str],
         size: Optional[Size] = None,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         logger.info(
             "persisting images to disk: %s, %s", [s.size for s in sources], output
         )

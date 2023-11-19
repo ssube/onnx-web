@@ -9,6 +9,7 @@ from ..server import ServerContext
 from ..utils import is_debug
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -20,13 +21,13 @@ class BlendMaskStage(BaseStage):
         server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         stage_source: Optional[Image.Image] = None,
         stage_mask: Optional[Image.Image] = None,
         _callback: Optional[ProgressCallback] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         logger.info("blending image using mask")
 
         mult_mask = Image.new("RGBA", stage_mask.size, color="black")
@@ -37,4 +38,4 @@ class BlendMaskStage(BaseStage):
             save_image(server, "last-mask.png", stage_mask)
             save_image(server, "last-mult-mask.png", mult_mask)
 
-        return [Image.composite(stage_source, source, mult_mask) for source in sources]
+        return StageResult(images=[Image.composite(stage_source, source, mult_mask) for source in sources])

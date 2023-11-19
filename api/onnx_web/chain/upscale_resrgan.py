@@ -11,6 +11,7 @@ from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
 from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -77,25 +78,22 @@ class UpscaleRealESRGANStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         logger.info("upscaling image with Real ESRGAN: x%s", upscale.scale)
 
+        upsampler = self.load(
+            server, upscale, worker.get_device(), tile=stage.tile_size
+        )
+
         outputs = []
-        for source in sources:
-            output = np.array(source)
-            upsampler = self.load(
-                server, upscale, worker.get_device(), tile=stage.tile_size
-            )
-
-            output, _ = upsampler.enhance(output, outscale=upscale.outscale)
-
-            output = Image.fromarray(output, "RGB")
-            logger.info("final output image size: %sx%s", output.width, output.height)
+        for source in sources.as_numpy():
+            output, _ = upsampler.enhance(source, outscale=upscale.outscale)
+            logger.info("final output image size: %s", output.shape)
             outputs.append(output)
 
-        return outputs
+        return StageResult(arrays=outputs)

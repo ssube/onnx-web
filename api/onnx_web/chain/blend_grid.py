@@ -7,6 +7,7 @@ from ..params import ImageParams, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -20,7 +21,7 @@ class BlendGridStage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         height: int,
         width: int,
@@ -31,7 +32,7 @@ class BlendGridStage(BaseStage):
         stage_source: Optional[Image.Image] = None,
         callback: Optional[ProgressCallback] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         logger.info("combining source images using grid layout")
 
         size = sources[0].size
@@ -49,7 +50,7 @@ class BlendGridStage(BaseStage):
             n = order[i]
             output.paste(sources[n], (x * size[0], y * size[1]))
 
-        return [*sources, output]
+        return StageResult(images=[*sources, output])
 
     def outputs(
         self,

@@ -486,7 +486,7 @@ def run_blend_pipeline(
     outputs: List[str],
     upscale: UpscaleParams,
     # highres: HighresParams,
-    sources: List[Image.Image],
+    sources: StageResult,
     mask: Image.Image,
 ) -> None:
     # set up the chain pipeline and base stage

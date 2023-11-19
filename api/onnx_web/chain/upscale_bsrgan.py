@@ -11,6 +11,7 @@ from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
 from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -54,12 +55,12 @@ class UpscaleBSRGANStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         upscale = upscale.with_args(**kwargs)
 
         if upscale.upscale_model is None:
@@ -71,8 +72,8 @@ class UpscaleBSRGANStage(BaseStage):
         bsrgan = self.load(server, stage, upscale, device)
 
         outputs = []
-        for source in sources:
-            image = np.array(source) / 255.0
+        for source in sources.as_numpy():
+            image = source / 255.0
             image = image[:, :, [2, 1, 0]].astype(np.float32).transpose((2, 0, 1))
             image = np.expand_dims(image, axis=0)
             logger.trace("BSRGAN input shape: %s", image.shape)
@@ -99,7 +100,7 @@ class UpscaleBSRGANStage(BaseStage):
 
             outputs.append(output)
 
-        return outputs
+        return StageResult(images=outputs)
 
     def steps(
         self,
