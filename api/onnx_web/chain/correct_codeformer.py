@@ -33,4 +33,4 @@ class CorrectCodeformerStage(BaseStage):
 
         device = worker.get_device()
         pipe = CodeFormer(upscale=upscale.face_outscale).to(device.torch_str())
-        return StageResult(images=[pipe(source) for source in sources])
+        return StageResult(images=[pipe(source) for source in sources.as_image()])

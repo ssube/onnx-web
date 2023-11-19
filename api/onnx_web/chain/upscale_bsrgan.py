@@ -79,28 +79,23 @@ class UpscaleBSRGANStage(BaseStage):
             logger.trace("BSRGAN input shape: %s", image.shape)
 
             scale = upscale.outscale
-            dest = np.zeros(
-                (
+            logger.trace("BSRGAN output shape: %s", (
                     image.shape[0],
                     image.shape[1],
                     image.shape[2] * scale,
                     image.shape[3] * scale,
-                )
-            )
-            logger.trace("BSRGAN output shape: %s", dest.shape)
+                ))
 
-            dest = bsrgan(image)
+            output = bsrgan(image)
 
-            dest = np.clip(np.squeeze(dest, axis=0), 0, 1)
-            dest = dest[[2, 1, 0], :, :].transpose((1, 2, 0))
-            dest = (dest * 255.0).round().astype(np.uint8)
+            output = np.clip(np.squeeze(output, axis=0), 0, 1)
+            output = output[[2, 1, 0], :, :].transpose((1, 2, 0))
+            output = (output * 255.0).round().astype(np.uint8)
 
-            output = Image.fromarray(dest, "RGB")
-            logger.debug("output image size: %s x %s", output.width, output.height)
-
+            logger.debug("output image shape: %s", output.shape)
             outputs.append(output)
 
-        return StageResult(images=outputs)
+        return StageResult(arrays=outputs)
 
     def steps(
         self,

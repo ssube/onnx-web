@@ -38,13 +38,11 @@ class UpscaleSimpleStage(BaseStage):
 
             if method == "bilinear":
                 logger.debug("using bilinear interpolation for highres")
-                source = source.resize(scaled_size, resample=Image.Resampling.BILINEAR)
+                outputs.append(source.resize(scaled_size, resample=Image.Resampling.BILINEAR))
             elif method == "lanczos":
                 logger.debug("using Lanczos interpolation for highres")
-                source = source.resize(scaled_size, resample=Image.Resampling.LANCZOS)
+                outputs.append(source.resize(scaled_size, resample=Image.Resampling.LANCZOS))
             else:
                 logger.warning("unknown upscaling method: %s", method)
 
-            outputs.append(source)
-
-        return outputs
+        return StageResult(images=outputs)

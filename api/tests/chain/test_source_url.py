@@ -1,4 +1,5 @@
 import unittest
+from onnx_web.chain.result import StageResult
 
 from onnx_web.chain.source_url import SourceURLStage
 from onnx_web.params import HighresParams, Size, UpscaleParams
@@ -7,7 +8,7 @@ from onnx_web.params import HighresParams, Size, UpscaleParams
 class SourceURLStageTests(unittest.TestCase):
     def test_empty(self):
         stage = SourceURLStage()
-        sources = []
+        sources = StageResult.empty()
         result = stage.run(
             None,
             None,

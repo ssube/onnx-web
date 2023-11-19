@@ -73,4 +73,4 @@ class UpscaleStableDiffusionStage(BaseStage):
             )
             outputs.extend(result.images)
 
-        return outputs
+        return StageResult(images=outputs)

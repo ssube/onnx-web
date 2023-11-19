@@ -30,7 +30,7 @@ class PersistDiskStage(BaseStage):
         **kwargs,
     ) -> StageResult:
         logger.info(
-            "persisting images to disk: %s, %s", [s.size for s in sources], output
+            "persisting %s images to disk: %s", len(sources), output
         )
 
         for source, name in zip(sources, output):

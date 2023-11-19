@@ -3,13 +3,14 @@ import unittest
 from PIL import Image
 
 from onnx_web.chain.blend_mask import BlendMaskStage
+from onnx_web.chain.result import StageResult
 from onnx_web.params import HighresParams, UpscaleParams
 
 
 class BlendMaskStageTests(unittest.TestCase):
     def test_empty(self):
         stage = BlendMaskStage()
-        sources = []
+        sources = StageResult.empty()
         result = stage.run(
             None,
             None,

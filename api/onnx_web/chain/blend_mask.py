@@ -40,6 +40,6 @@ class BlendMaskStage(BaseStage):
 
         return StageResult(
             images=[
-                Image.composite(stage_source, source, mult_mask) for source in sources
+                Image.composite(stage_source, source, mult_mask) for source in sources.as_image()
             ]
         )

@@ -25,7 +25,7 @@ class CorrectCodeformerStageTests(unittest.TestCase):
             0,
         )
         stage = CorrectCodeformerStage()
-        sources = []
+        sources = StageResult.empty()
         result = stage.run(worker, None, None, None, sources, highres=HighresParams(False,1, 0, 0), upscale=UpscaleParams(""))
 
         self.assertEqual(len(result), 0)

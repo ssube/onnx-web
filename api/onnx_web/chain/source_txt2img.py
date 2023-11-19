@@ -156,7 +156,7 @@ class SourceTxt2ImgStage(BaseStage):
                 callback=callback,
             )
 
-        outputs = list(sources)
+        outputs = sources.as_image()
         outputs.extend(result.images)
         logger.debug("produced %s outputs", len(outputs))
         return StageResult(images=outputs)

@@ -35,22 +35,23 @@ class BlendGridStage(BaseStage):
     ) -> StageResult:
         logger.info("combining source images using grid layout")
 
-        size = sources[0].size
+        images = sources.as_image()
+        size = images[0].size
 
         output = Image.new("RGB", (size[0] * width, size[1] * height))
 
         # TODO: labels
         if order is None:
-            order = range(len(sources))
+            order = range(len(images))
 
         for i in range(len(order)):
             x = i % width
             y = i // width
 
             n = order[i]
-            output.paste(sources[n], (x * size[0], y * size[1]))
+            output.paste(images[n], (x * size[0], y * size[1]))
 
-        return StageResult(images=[*sources, output])
+        return StageResult(images=[*images, output])
 
     def outputs(
         self,

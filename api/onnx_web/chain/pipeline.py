@@ -12,8 +12,8 @@ from ..server import ServerContext
 from ..utils import is_debug, run_gc
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
-from .result import StageResult
 from .tile import needs_tile, process_tile_order
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -77,7 +77,7 @@ class ChainPipeline:
         sources: StageResult,
         callback: Optional[ProgressCallback],
         **kwargs,
-    ) -> StageResult:
+    ) -> List[Image.Image]:
         result = self(
             worker, server, params, sources=sources, callback=callback, **kwargs
         )
@@ -136,7 +136,7 @@ class ChainPipeline:
             logger.debug(
                 "running stage %s with %s source images, parameters: %s",
                 name,
-                len(stage_sources) - stage_sources.count(None),
+                len(stage_sources),
                 kwargs.keys(),
             )
 
@@ -154,7 +154,7 @@ class ChainPipeline:
                         size=kwargs.get("size", None),
                         source=source,
                     )
-                    for source in stage_sources
+                    for source in stage_sources.as_image()
                 ]
             )
 
@@ -162,9 +162,10 @@ class ChainPipeline:
             if stage_pipe.max_tile > 0:
                 tile = min(stage_pipe.max_tile, stage_params.tile_size)
 
+            # TODO: stage_sources will always be defined here
             if stage_sources or must_tile:
                 stage_results = []
-                for source in stage_sources:
+                for source in stage_sources.as_image():
                     logger.info(
                         "image contains sources or is larger than tile size of %s, tiling stage",
                         tile,
@@ -182,7 +183,7 @@ class ChainPipeline:
                                     server,
                                     stage_params,
                                     per_stage_params,
-                                    [source_tile],
+                                    StageResult(images=[source_tile]),
                                     tile_mask=tile_mask,
                                     callback=callback,
                                     dims=dims,
@@ -193,7 +194,8 @@ class ChainPipeline:
                                     for j, image in enumerate(tile_result.as_image()):
                                         save_image(server, f"last-tile-{j}.png", image)
 
-                                return tile_result
+                                # TODO: return whole result
+                                return tile_result.as_image()[0]
                             except Exception:
                                 worker.retries = worker.retries - 1
                                 logger.exception(
@@ -257,7 +259,8 @@ class ChainPipeline:
             )
 
             if is_debug():
-                save_image(server, "last-stage.png", stage_sources[0])
+                for j, image in enumerate(stage_sources.as_image()):
+                    save_image(server, f"last-stage-{j}.png", image)
 
         end = monotonic()
         duration = timedelta(seconds=(end - start))
