@@ -13,6 +13,7 @@ from ..chain import (
     UpscaleOutpaintStage,
 )
 from ..chain.highres import stage_highres
+from ..chain.result import StageResult
 from ..chain.upscale import split_upscale, stage_upscale_correction
 from ..image import expand_image
 from ..output import save_image

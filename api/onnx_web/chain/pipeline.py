@@ -12,8 +12,8 @@ from ..server import ServerContext
 from ..utils import is_debug, run_gc
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
-from .tile import needs_tile, process_tile_order
 from .result import StageResult
+from .tile import needs_tile, process_tile_order
 
 logger = getLogger(__name__)
 
@@ -76,7 +76,7 @@ class ChainPipeline:
         params: ImageParams,
         sources: StageResult,
         callback: Optional[ProgressCallback],
-        **kwargs
+        **kwargs,
     ) -> StageResult:
         result = self(
             worker, server, params, sources=sources, callback=callback, **kwargs
@@ -108,10 +108,10 @@ class ChainPipeline:
         params: ImageParams,
         sources: StageResult,
         callback: Optional[ProgressCallback] = None,
-        **pipeline_kwargs
+        **pipeline_kwargs,
     ) -> StageResult:
         """
-        DEPRECATED: use `run` instead
+        DEPRECATED: use `.run()` instead
         """
         if callback is None:
             callback = worker.get_progress_callback()

@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import List, Optional
+from typing import Optional
 
 from PIL import Image
 
@@ -38,4 +38,8 @@ class BlendMaskStage(BaseStage):
             save_image(server, "last-mask.png", stage_mask)
             save_image(server, "last-mult-mask.png", mult_mask)
 
-        return StageResult(images=[Image.composite(stage_source, source, mult_mask) for source in sources])
+        return StageResult(
+            images=[
+                Image.composite(stage_source, source, mult_mask) for source in sources
+            ]
+        )

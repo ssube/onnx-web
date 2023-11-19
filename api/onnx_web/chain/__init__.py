@@ -1,2 +1,2 @@
 from .pipeline import ChainPipeline, PipelineStage, StageParams
-from .stages import *
+from .stages import *  # NOQA

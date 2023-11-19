@@ -1,11 +1,11 @@
-from typing import List, Optional
+from typing import Optional
 
 from PIL import Image
 
-from .result import StageResult
 from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server.context import ServerContext
 from ..worker.context import WorkerContext
+from .result import StageResult
 
 
 class BaseStage:

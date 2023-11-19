@@ -1,6 +1,6 @@
 from logging import getLogger
 from os import path
-from typing import List, Optional
+from typing import Optional
 
 import numpy as np
 from PIL import Image

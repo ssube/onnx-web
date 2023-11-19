@@ -2,8 +2,8 @@ from logging import getLogger
 
 from .base import BaseStage
 from .blend_denoise import BlendDenoiseStage
-from .blend_img2img import BlendImg2ImgStage
 from .blend_grid import BlendGridStage
+from .blend_img2img import BlendImg2ImgStage
 from .blend_linear import BlendLinearStage
 from .blend_mask import BlendMaskStage
 from .correct_codeformer import CorrectCodeformerStage
@@ -54,11 +54,11 @@ CHAIN_STAGES = {
 
 
 def add_stage(name: str, stage: BaseStage) -> bool:
-  global CHAIN_STAGES
+    global CHAIN_STAGES
 
-  if name in CHAIN_STAGES:
-    logger.warning("cannot replace stage: %s", name)
-    return False
-  else:
-    CHAIN_STAGES[name] = stage
-    return True
+    if name in CHAIN_STAGES:
+        logger.warning("cannot replace stage: %s", name)
+        return False
+    else:
+        CHAIN_STAGES[name] = stage
+        return True

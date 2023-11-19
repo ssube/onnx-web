@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import List, Optional
+from typing import Optional
 
 from PIL import Image
 
@@ -28,4 +28,6 @@ class BlendLinearStage(BaseStage):
     ) -> StageResult:
         logger.info("blending source images using linear interpolation")
 
-        return StageResult(images=[Image.blend(source, stage_source, alpha) for source in sources])
+        return StageResult(
+            images=[Image.blend(source, stage_source, alpha) for source in sources]
+        )

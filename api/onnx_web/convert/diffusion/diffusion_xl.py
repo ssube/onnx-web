@@ -81,7 +81,9 @@ def convert_diffusion_diffusers_xl(
         output=dest_path,
         task="stable-diffusion-xl",
         device=device,
-        fp16=conversion.has_optimization("torch-fp16"), # optimum's fp16 mode only works on CUDA or ROCm
+        fp16=conversion.has_optimization(
+            "torch-fp16"
+        ),  # optimum's fp16 mode only works on CUDA or ROCm
         framework="pt",
     )
 

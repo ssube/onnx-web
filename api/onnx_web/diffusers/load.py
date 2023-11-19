@@ -574,10 +574,9 @@ def optimize_pipeline(
     server: ServerContext,
     pipe: StableDiffusionPipeline,
 ) -> None:
-    if (
-        server.has_optimization("diffusers-attention-slicing")
-        or server.has_optimization("diffusers-attention-slicing-auto")
-    ):
+    if server.has_optimization(
+        "diffusers-attention-slicing"
+    ) or server.has_optimization("diffusers-attention-slicing-auto"):
         logger.debug("enabling auto attention slicing on SD pipeline")
         try:
             pipe.enable_attention_slicing(slice_size="auto")

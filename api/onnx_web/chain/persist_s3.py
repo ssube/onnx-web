@@ -1,6 +1,6 @@
 from io import BytesIO
 from logging import getLogger
-from typing import List, Optional
+from typing import Optional
 
 from boto3 import Session
 from PIL import Image

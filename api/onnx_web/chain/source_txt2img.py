@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 import torch
@@ -132,7 +132,9 @@ class SourceTxt2ImgStage(BaseStage):
         else:
             # encode and record alternative prompts outside of LPW
             if params.is_panorama() or params.is_xl():
-                logger.debug("prompt alternatives are not supported for panorama or SDXL")
+                logger.debug(
+                    "prompt alternatives are not supported for panorama or SDXL"
+                )
             else:
                 prompt_embeds = encode_prompt(
                     pipe, prompt_pairs, params.batch, params.do_cfg()

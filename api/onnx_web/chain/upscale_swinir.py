@@ -1,6 +1,6 @@
 from logging import getLogger
 from os import path
-from typing import List, Optional
+from typing import Optional
 
 import numpy as np
 from PIL import Image
@@ -80,12 +80,15 @@ class UpscaleSwinIRStage(BaseStage):
             logger.trace("SwinIR input shape: %s", image.shape)
 
             scale = upscale.outscale
-            logger.trace("SwinIR output shape: %s", (
+            logger.trace(
+                "SwinIR output shape: %s",
+                (
                     image.shape[0],
                     image.shape[1],
                     image.shape[2] * scale,
                     image.shape[3] * scale,
-                ))
+                ),
+            )
 
             output = swinir(image)
             output = np.clip(np.squeeze(output, axis=0), 0, 1)

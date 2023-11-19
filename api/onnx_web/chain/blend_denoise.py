@@ -1,8 +1,7 @@
 from logging import getLogger
-from typing import List, Optional
+from typing import Optional
 
 import cv2
-import numpy as np
 from PIL import Image
 
 from ..params import ImageParams, SizeChart, StageParams

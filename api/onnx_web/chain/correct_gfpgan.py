@@ -1,8 +1,7 @@
 from logging import getLogger
 from os import path
-from typing import List, Optional
+from typing import Optional
 
-import numpy as np
 from PIL import Image
 
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
@@ -74,12 +73,15 @@ class CorrectGFPGANStage(BaseStage):
         device = worker.get_device()
         gfpgan = self.load(server, stage, upscale, device)
 
-        outputs = [gfpgan.enhance(
+        outputs = [
+            gfpgan.enhance(
                 source,
                 has_aligned=False,
                 only_center_face=False,
                 paste_back=True,
                 weight=upscale.face_strength,
-            ) for source in sources.as_numpy()]
+            )
+            for source in sources.as_numpy()
+        ]
 
         return StageResult(images=outputs)
