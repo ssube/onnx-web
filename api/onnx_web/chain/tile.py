@@ -525,5 +525,6 @@ def add_margin(
         )
         tile_image = noise_source(base_image, (tile, tile), (0, 0), fill=fill_color)
         tile_image.paste(base_image, (left_margin, top_margin))
+        results.append(tile_image)
 
     return results
