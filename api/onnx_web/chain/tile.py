@@ -2,7 +2,7 @@ import itertools
 from enum import Enum
 from logging import getLogger
 from math import ceil
-from typing import Any, List, Optional, Protocol, Tuple
+from typing import Any, Callable, List, Optional, Protocol, Tuple
 
 import numpy as np
 from PIL import Image
@@ -17,12 +17,17 @@ from .result import StageResult
 logger = getLogger(__name__)
 
 
+TileGenerator = Callable[[int, int, int, Optional[float]], List[Tuple[int, int]]]
+
+
 class TileCallback(Protocol):
     """
     Definition for a tile job function.
     """
 
-    def __call__(self, image: Image.Image, dims: Tuple[int, int, int]) -> StageResult:
+    def __call__(
+        self, image: Image.Image, dims: Tuple[int, int, int]
+    ) -> List[Image.Image]:
         """
         Run this stage against a single tile.
         """
@@ -33,6 +38,9 @@ def complete_tile(
     source: Image.Image,
     tile: int,
 ) -> Image.Image:
+    """
+    TODO: clean up
+    """
     if source is None:
         return source
 
@@ -67,7 +75,7 @@ def needs_tile(
     return False
 
 
-def get_tile_grads(
+def make_tile_grads(
     left: int,
     top: int,
     tile: int,
@@ -161,7 +169,7 @@ def blend_tiles(
             points = [-1, min(p1, p2), max(p1, p2), (tile * scale)]
 
             # gradient blending
-            grad_x, grad_y = get_tile_grads(left, top, adj_tile, width, height)
+            grad_x, grad_y = make_tile_grads(left, top, adj_tile, width, height)
             logger.debug("tile gradients: %s, %s, %s", points, grad_x, grad_y)
 
             mult_x = [np.interp(i, points, grad_x) for i in range(tile * scale)]
@@ -225,60 +233,18 @@ def blend_tiles(
     return Image.fromarray(np.uint8(pixels))
 
 
-def process_tile_grid(
-    source: Image.Image,
+def process_tile_stack(
+    stack: StageResult,
     tile: int,
     scale: int,
     filters: List[TileCallback],
-    overlap: float = 0.0,
-    **kwargs,
-) -> Image.Image:
-    width, height = kwargs.get("size", source.size if source else None)
-
-    adj_tile = int(float(tile) * (1.0 - overlap))
-    tiles_x = ceil(width / adj_tile)
-    tiles_y = ceil(height / adj_tile)
-    total = tiles_x * tiles_y
-    logger.debug(
-        "processing %s tiles (%s x %s) with adjusted size of %s, %s overlap",
-        total,
-        tiles_x,
-        tiles_y,
-        adj_tile,
-        overlap,
-    )
-
-    tiles: List[Tuple[int, int, Image.Image]] = []
-
-    for y in range(tiles_y):
-        for x in range(tiles_x):
-            idx = (y * tiles_x) + x
-            left = x * adj_tile
-            top = y * adj_tile
-            logger.info("processing tile %s of %s, %s.%s", idx + 1, total, y, x)
-
-            tile_image = (
-                source.crop((left, top, left + tile, top + tile)) if source else None
-            )
-            tile_image = complete_tile(tile_image, tile)
-
-            for filter in filters:
-                tile_image = filter(tile_image, (left, top, tile))
-
-            tiles.append((left, top, tile_image))
-
-    return blend_tiles(tiles, scale, width, height, tile, overlap)
-
-
-def process_tile_spiral(
-    source: Image.Image,
-    tile: int,
-    scale: int,
-    filters: List[TileCallback],
+    tile_generator: TileGenerator,
     overlap: float = 0.5,
     **kwargs,
-) -> Image.Image:
-    width, height = kwargs.get("size", source.size if source else None)
+) -> List[Image.Image]:
+    sources = stack.as_image()
+
+    width, height = kwargs.get("size", sources[0].size if len(sources) > 0 else None)
     mask = kwargs.get("mask", None)
     noise_source = kwargs.get("noise_source", noise_source_histogram)
     fill_color = kwargs.get("fill_color", None)
@@ -286,18 +252,9 @@ def process_tile_spiral(
         tile_mask = None
 
     tiles: List[Tuple[int, int, Image.Image]] = []
+    tile_coords = tile_generator(width, height, tile, overlap)
 
-    # tile tuples is source, multiply by scale for dest
-    counter = 0
-    tile_coords = generate_tile_spiral(width, height, tile, overlap=overlap)
-
-    if len(tile_coords) == 1:
-        single_tile = True
-    else:
-        single_tile = False
-
-    for left, top in tile_coords:
-        counter += 1
+    for counter, (left, top) in enumerate(tile_coords):
         logger.info(
             "processing tile %s of %s, %sx%s", counter, len(tile_coords), left, top
         )
@@ -321,26 +278,31 @@ def process_tile_spiral(
             needs_margin = True
             bottom_margin = height - bottom
 
-        # if no source given, we don't have a source image
-        if not source:
-            tile_image = None
-        elif needs_margin:
-            # in the special case where the image is smaller than the specified tile size, just use the image
-            if single_tile:
-                logger.debug("creating and processing single-tile subtile")
-                tile_image = source
-                if mask:
-                    tile_mask = mask
-            # otherwise use add histogram noise outside of the image border
-            else:
-                logger.debug(
-                    "tiling and adding margins: %s, %s, %s, %s",
-                    left_margin,
-                    top_margin,
-                    right_margin,
-                    bottom_margin,
-                )
-                base_image = source.crop(
+        if needs_margin:
+            logger.debug(
+                "tiling with added margins: %s, %s, %s, %s",
+                left_margin,
+                top_margin,
+                right_margin,
+                bottom_margin,
+            )
+            tile_stack = add_margin(
+                stack,
+                left,
+                top,
+                right,
+                bottom,
+                left_margin,
+                top_margin,
+                right_margin,
+                bottom_margin,
+                tile,
+                noise_source,
+                fill_color,
+            )
+
+            if mask:
+                base_mask = mask.crop(
                     (
                         left + left_margin,
                         top + top_margin,
@@ -348,43 +310,35 @@ def process_tile_spiral(
                         bottom + bottom_margin,
                     )
                 )
-                tile_image = noise_source(
-                    base_image, (tile, tile), (0, 0), fill=fill_color
-                )
-                tile_image.paste(base_image, (left_margin, top_margin))
-
-                if mask:
-                    base_mask = mask.crop(
-                        (
-                            left + left_margin,
-                            top + top_margin,
-                            right + right_margin,
-                            bottom + bottom_margin,
-                        )
-                    )
-                    tile_mask = Image.new("L", (tile, tile), color=0)
-                    tile_mask.paste(base_mask, (left_margin, top_margin))
+                tile_mask = Image.new("L", (tile, tile), color=0)
+                tile_mask.paste(base_mask, (left_margin, top_margin))
 
         else:
             logger.debug("tiling normally")
-            tile_image = source.crop((left, top, right, bottom))
+            tile_stack = get_result_tile(stack, (left, top), Size(tile, tile))
             if mask:
                 tile_mask = mask.crop((left, top, right, bottom))
 
         for image_filter in filters:
-            tile_image = image_filter(tile_image, tile_mask, (left, top, tile))
+            tile_stack = image_filter(tile_stack, tile_mask, (left, top, tile))
 
-        tiles.append((left, top, tile_image))
+        tiles.append((left, top, tile_stack))
 
-    if single_tile:
-        return tile_image
-    else:
-        return blend_tiles(tiles, scale, width, height, tile, overlap)
+    lefts, tops, stacks = list(zip(*tiles))
+    coords = list(zip(lefts, tops))
+    stacks = list(zip(*stacks))
+
+    result = []
+    for stack in stacks:
+        stack_tiles = zip(coords, stack)
+        result.append(blend_tiles(stack_tiles, scale, width, height, tile, overlap))
+
+    return result
 
 
 def process_tile_order(
     order: TileOrder,
-    source: Image.Image,
+    stack: StageResult,
     tile: int,
     scale: int,
     filters: List[TileCallback],
@@ -395,13 +349,17 @@ def process_tile_order(
     """
     if order == TileOrder.grid:
         logger.debug("using grid tile order with tile size: %s", tile)
-        return process_tile_grid(source, tile, scale, filters, **kwargs)
+        return process_tile_stack(
+            stack, tile, scale, filters, generate_tile_grid, **kwargs
+        )
     elif order == TileOrder.kernel:
         logger.debug("using kernel tile order with tile size: %s", tile)
         raise NotImplementedError()
     elif order == TileOrder.spiral:
         logger.debug("using spiral tile order with tile size: %s", tile)
-        return process_tile_spiral(source, tile, scale, filters, **kwargs)
+        return process_tile_stack(
+            stack, tile, scale, filters, generate_tile_spiral, **kwargs
+        )
     else:
         logger.warning("unknown tile order: %s", order)
         raise ValueError()
@@ -495,3 +453,76 @@ def generate_tile_spiral(
         height_tile_target -= abs(state.value[1])
 
     return tile_coords
+
+
+def generate_tile_grid(
+    width: int,
+    height: int,
+    tile: int,
+    overlap: float = 0.0,
+) -> List[Tuple[int, int]]:
+    adj_tile = int(float(tile) * (1.0 - overlap))
+    tiles_x = ceil(width / adj_tile)
+    tiles_y = ceil(height / adj_tile)
+    total = tiles_x * tiles_y
+    logger.debug(
+        "processing %s tiles (%s x %s) with adjusted size of %s, %s overlap",
+        total,
+        tiles_x,
+        tiles_y,
+        adj_tile,
+        overlap,
+    )
+
+    tiles: List[Tuple[int, int, Image.Image]] = []
+
+    for y in range(tiles_y):
+        for x in range(tiles_x):
+            left = x * adj_tile
+            top = y * adj_tile
+
+            tiles.append((int(left), int(top)))
+
+    return tiles
+
+
+def get_result_tile(
+    result: StageResult,
+    origin: Tuple[int, int],
+    tile: Size,
+) -> List[Image.Image]:
+    top, left = origin
+    return [
+        layer.crop((top, left, top + tile.height, left + tile.width))
+        for layer in result.as_image()
+    ]
+
+
+def add_margin(
+    stack: List[Image.Image],
+    left: int,
+    top: int,
+    right: int,
+    bottom: int,
+    left_margin: int,
+    top_margin: int,
+    right_margin: int,
+    bottom_margin: int,
+    tile: int,
+    noise_source,
+    fill_color,
+) -> List[Image.Image]:
+    results = []
+    for source in stack:
+        base_image = source.crop(
+            (
+                left + left_margin,
+                top + top_margin,
+                right + right_margin,
+                bottom + bottom_margin,
+            )
+        )
+        tile_image = noise_source(base_image, (tile, tile), (0, 0), fill=fill_color)
+        tile_image.paste(base_image, (left_margin, top_margin))
+
+    return results

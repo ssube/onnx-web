@@ -105,7 +105,9 @@ def run_txt2img_pipeline(
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     progress = worker.get_progress_callback()
-    images = chain.run(worker, server, params, StageResult.empty(), callback=progress, latents=latents)
+    images = chain.run(
+        worker, server, params, StageResult.empty(), callback=progress, latents=latents
+    )
 
     _pairs, loras, inversions, _rest = parse_prompt(params)
 
@@ -200,7 +202,9 @@ def run_img2img_pipeline(
 
     # run and append the filtered source
     progress = worker.get_progress_callback()
-    images = chain.run(worker, server, params, StageResult(images=[source]), callback=progress)
+    images = chain.run(
+        worker, server, params, StageResult(images=[source]), callback=progress
+    )
 
     if source_filter is not None and source_filter != "none":
         images.append(source)
@@ -380,7 +384,9 @@ def run_inpaint_pipeline(
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     progress = worker.get_progress_callback()
-    images = chain.run(worker, server, params, [source], callback=progress, latents=latents)
+    images = chain.run(
+        worker, server, params, [source], callback=progress, latents=latents
+    )
 
     _pairs, loras, inversions, _rest = parse_prompt(params)
     for image, output in zip(images, outputs):
@@ -455,7 +461,9 @@ def run_upscale_pipeline(
 
     # run and save
     progress = worker.get_progress_callback()
-    images = chain.run(worker, server, params, StageResult(images=[source]), callback=progress)
+    images = chain.run(
+        worker, server, params, StageResult(images=[source]), callback=progress
+    )
 
     _pairs, loras, inversions, _rest = parse_prompt(params)
     for image, output in zip(images, outputs):
@@ -505,7 +513,9 @@ def run_blend_pipeline(
 
     # run and save
     progress = worker.get_progress_callback()
-    images = chain.run(worker, server, params, StageResult(images=sources), callback=progress)
+    images = chain.run(
+        worker, server, params, StageResult(images=sources), callback=progress
+    )
 
     for image, output in zip(images, outputs):
         dest = save_image(server, output, image, params, size, upscale=upscale)

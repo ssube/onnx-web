@@ -1,6 +1,6 @@
 import unittest
-from onnx_web.chain.result import StageResult
 
+from onnx_web.chain.result import StageResult
 from onnx_web.chain.upscale_highres import UpscaleHighresStage
 from onnx_web.params import HighresParams, UpscaleParams
 

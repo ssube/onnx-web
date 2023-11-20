@@ -1,6 +1,6 @@
 import unittest
-from onnx_web.chain.result import StageResult
 
+from onnx_web.chain.result import StageResult
 from onnx_web.chain.source_s3 import SourceS3Stage
 from onnx_web.params import HighresParams, Size, UpscaleParams
 

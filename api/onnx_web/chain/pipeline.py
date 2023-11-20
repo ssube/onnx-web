@@ -12,8 +12,8 @@ from ..server import ServerContext
 from ..utils import is_debug, run_gc
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
-from .tile import needs_tile, process_tile_order
 from .result import StageResult
+from .tile import needs_tile, process_tile_order
 
 logger = getLogger(__name__)
 
@@ -163,60 +163,55 @@ class ChainPipeline:
                 tile = min(stage_pipe.max_tile, stage_params.tile_size)
 
             # TODO: stage_sources will always be defined here
-            if stage_sources or must_tile:
-                stage_results = []
-                for source in stage_sources.as_image():
-                    logger.info(
-                        "image contains sources or is larger than tile size of %s, tiling stage",
-                        tile,
-                    )
+            if must_tile:
+                logger.info(
+                    "image contains sources or is larger than tile size of %s, tiling stage",
+                    tile,
+                )
 
-                    def stage_tile(
-                        source_tile: Image.Image,
-                        tile_mask: Image.Image,
-                        dims: Tuple[int, int, int],
-                    ) -> StageResult:
-                        for _i in range(worker.retries):
-                            try:
-                                tile_result = stage_pipe.run(
-                                    worker,
-                                    server,
-                                    stage_params,
-                                    per_stage_params,
-                                    StageResult(images=[source_tile]),
-                                    tile_mask=tile_mask,
-                                    callback=callback,
-                                    dims=dims,
-                                    **kwargs,
-                                )
+                def stage_tile(
+                    source_tile: List[Image.Image],
+                    tile_mask: Image.Image,
+                    dims: Tuple[int, int, int],
+                ) -> List[Image.Image]:
+                    for _i in range(worker.retries):
+                        try:
+                            tile_result = stage_pipe.run(
+                                worker,
+                                server,
+                                stage_params,
+                                per_stage_params,
+                                StageResult(images=[source_tile]),
+                                tile_mask=tile_mask,
+                                callback=callback,
+                                dims=dims,
+                                **kwargs,
+                            )
 
-                                if is_debug():
-                                    for j, image in enumerate(tile_result.as_image()):
-                                        save_image(server, f"last-tile-{j}.png", image)
+                            if is_debug():
+                                for j, image in enumerate(tile_result.as_image()):
+                                    save_image(server, f"last-tile-{j}.png", image)
 
-                                # TODO: return whole result
-                                return tile_result.as_image()[0]
-                            except Exception:
-                                worker.retries = worker.retries - 1
-                                logger.exception(
-                                    "error while running stage pipeline for tile, %s retries left",
-                                    worker.retries,
-                                )
-                                server.cache.clear()
-                                run_gc([worker.get_device()])
+                            return tile_result.as_image()
+                        except Exception:
+                            worker.retries = worker.retries - 1
+                            logger.exception(
+                                "error while running stage pipeline for tile, %s retries left",
+                                worker.retries,
+                            )
+                            server.cache.clear()
+                            run_gc([worker.get_device()])
 
-                        raise RetryException("exhausted retries on tile")
+                    raise RetryException("exhausted retries on tile")
 
-                    output = process_tile_order(
-                        stage_params.tile_order,
-                        source,
-                        tile,
-                        stage_params.outscale,
-                        [stage_tile],
-                        **kwargs,
-                    )
-
-                    stage_results.append(output)
+                stage_results = process_tile_order(
+                    stage_params.tile_order,
+                    stage_sources,
+                    tile,
+                    stage_params.outscale,
+                    [stage_tile],
+                    **kwargs,
+                )
 
                 stage_sources = StageResult(images=stage_results)
             else:

@@ -29,5 +29,8 @@ class BlendLinearStage(BaseStage):
         logger.info("blending source images using linear interpolation")
 
         return StageResult(
-            images=[Image.blend(source, stage_source, alpha) for source in sources.as_image()]
+            images=[
+                Image.blend(source, stage_source, alpha)
+                for source in sources.as_image()
+            ]
         )

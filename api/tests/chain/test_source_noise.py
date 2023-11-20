@@ -1,6 +1,6 @@
 import unittest
-from onnx_web.chain.result import StageResult
 
+from onnx_web.chain.result import StageResult
 from onnx_web.chain.source_noise import SourceNoiseStage
 from onnx_web.image.noise_source import noise_source_fill_edge
 from onnx_web.params import HighresParams, Size, UpscaleParams

@@ -79,12 +79,15 @@ class UpscaleBSRGANStage(BaseStage):
             logger.trace("BSRGAN input shape: %s", image.shape)
 
             scale = upscale.outscale
-            logger.trace("BSRGAN output shape: %s", (
+            logger.trace(
+                "BSRGAN output shape: %s",
+                (
                     image.shape[0],
                     image.shape[1],
                     image.shape[2] * scale,
                     image.shape[3] * scale,
-                ))
+                ),
+            )
 
             output = bsrgan(image)
 
