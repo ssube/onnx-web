@@ -25,9 +25,7 @@ class TileCallback(Protocol):
     Definition for a tile job function.
     """
 
-    def __call__(
-        self, image: Image.Image, dims: Tuple[int, int, int]
-    ) -> StageResult:
+    def __call__(self, image: Image.Image, dims: Tuple[int, int, int]) -> StageResult:
         """
         Run this stage against a single tile.
         """
@@ -318,6 +316,9 @@ def process_tile_stack(
             tile_stack = get_result_tile(stack, (left, top), Size(tile, tile))
             if mask:
                 tile_mask = mask.crop((left, top, right, bottom))
+
+        if isinstance(tile_stack, list):
+            tile_stack = StageResult.from_images(tile_stack)
 
         for image_filter in filters:
             tile_stack = image_filter(tile_stack, tile_mask, (left, top, tile))

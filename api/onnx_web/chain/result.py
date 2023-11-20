@@ -19,6 +19,14 @@ class StageResult:
     def empty():
         return StageResult(images=[])
 
+    @staticmethod
+    def from_arrays(arrays: List[np.ndarray]):
+        return StageResult(arrays=arrays)
+
+    @staticmethod
+    def from_images(images: List[Image.Image]):
+        return StageResult(images=images)
+
     def __init__(self, arrays=None, images=None) -> None:
         if arrays is not None and images is not None:
             raise ValueError("stages must only return one type of result")

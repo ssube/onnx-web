@@ -48,6 +48,7 @@ def main():
     # debug options
     if server.debug:
         import debugpy
+
         debugpy.listen(5678)
         logger.warning("waiting for debugger")
         debugpy.wait_for_client()

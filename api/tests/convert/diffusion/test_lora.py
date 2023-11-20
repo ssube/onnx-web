@@ -6,7 +6,6 @@ from onnx import GraphProto, ModelProto, NodeProto
 from onnx.numpy_helper import from_array
 
 from onnx_web.convert.diffusion.lora import (
-    blend_loras,
     blend_node_conv_gemm,
     blend_node_matmul,
     blend_weights_loha,
@@ -33,7 +32,6 @@ class SumWeightsTests(unittest.TestCase):
         weights = sum_weights(np.zeros((4, 4)), np.ones((4, 4, 1, 1)))
         self.assertEqual(weights.shape, (4, 4, 1, 1))
 
-
     def test_3x3_kernel(self):
         """
         weights = sum_weights(np.zeros((4, 4, 3, 3)), np.ones((4, 4)))
@@ -53,14 +51,20 @@ class BufferExternalDataTensorTests(unittest.TestCase):
         )
         (slim_model, external_weights) = buffer_external_data_tensors(model)
 
-        self.assertEqual(len(slim_model.graph.initializer), len(model.graph.initializer))
+        self.assertEqual(
+            len(slim_model.graph.initializer), len(model.graph.initializer)
+        )
         self.assertEqual(len(external_weights), 1)
 
 
 class FixInitializerKeyTests(unittest.TestCase):
     def test_fix_name(self):
-        inputs = ["lora_unet_up_blocks_3_attentions_2_transformer_blocks_0_attn2_to_out_0.lora_down.weight"]
-        outputs = ["lora_unet_up_blocks_3_attentions_2_transformer_blocks_0_attn2_to_out_0_lora_down_weight"]
+        inputs = [
+            "lora_unet_up_blocks_3_attentions_2_transformer_blocks_0_attn2_to_out_0.lora_down.weight"
+        ]
+        outputs = [
+            "lora_unet_up_blocks_3_attentions_2_transformer_blocks_0_attn2_to_out_0_lora_down_weight"
+        ]
 
         for input, output in zip(inputs, outputs):
             self.assertEqual(fix_initializer_name(input), output)
@@ -92,25 +96,37 @@ class FixXLNameTests(unittest.TestCase):
         nodes = {
             "input_block_proj.lora_down.weight": {},
         }
-        fixed = fix_xl_names(nodes, [
-            NodeProto(name="/down_blocks_proj/MatMul"),
-        ])
+        fixed = fix_xl_names(
+            nodes,
+            [
+                NodeProto(name="/down_blocks_proj/MatMul"),
+            ],
+        )
 
-        self.assertEqual(fixed, {
-            "down_blocks_proj": nodes["input_block_proj.lora_down.weight"],
-        })
+        self.assertEqual(
+            fixed,
+            {
+                "down_blocks_proj": nodes["input_block_proj.lora_down.weight"],
+            },
+        )
 
     def test_middle_block(self):
         nodes = {
             "middle_block_proj.lora_down.weight": {},
         }
-        fixed = fix_xl_names(nodes, [
-            NodeProto(name="/mid_blocks_proj/MatMul"),
-        ])
+        fixed = fix_xl_names(
+            nodes,
+            [
+                NodeProto(name="/mid_blocks_proj/MatMul"),
+            ],
+        )
 
-        self.assertEqual(fixed, {
-            "mid_blocks_proj": nodes["middle_block_proj.lora_down.weight"],
-        })
+        self.assertEqual(
+            fixed,
+            {
+                "mid_blocks_proj": nodes["middle_block_proj.lora_down.weight"],
+            },
+        )
 
     def test_output_block(self):
         pass
@@ -133,13 +149,19 @@ class FixXLNameTests(unittest.TestCase):
         nodes = {
             "output_block_proj_out.lora_down.weight": {},
         }
-        fixed = fix_xl_names(nodes, [
-            NodeProto(name="/up_blocks_proj_out/MatMul"),
-        ])
+        fixed = fix_xl_names(
+            nodes,
+            [
+                NodeProto(name="/up_blocks_proj_out/MatMul"),
+            ],
+        )
 
-        self.assertEqual(fixed, {
-            "up_blocks_proj_out": nodes["output_block_proj_out.lora_down.weight"],
-        })
+        self.assertEqual(
+            fixed,
+            {
+                "up_blocks_proj_out": nodes["output_block_proj_out.lora_down.weight"],
+            },
+        )
 
 
 class KernelSliceTests(unittest.TestCase):
@@ -250,6 +272,7 @@ class BlendWeightsLoHATests(unittest.TestCase):
         self.assertEqual(result.shape, (4, 4))
         """
 
+
 class BlendWeightsLoRATests(unittest.TestCase):
     def test_blend_kernel_none(self):
         model = {
@@ -259,7 +282,6 @@ class BlendWeightsLoRATests(unittest.TestCase):
         }
         key, result = blend_weights_lora("foo.lora_down", "", model, torch.float32)
         self.assertEqual(result.shape, (4, 4))
-
 
     def test_blend_kernel_1x1(self):
         model = {

@@ -33,13 +33,17 @@ package-upload:
 
 lint-check:
 	black --check onnx_web/
+	black --check tests/
 	flake8 onnx_web
+	flake8 tests
 	isort --check-only --skip __init__.py --filter-files onnx_web
 	isort --check-only --skip __init__.py --filter-files tests
 
 lint-fix:
 	black onnx_web/
+	black tests/
 	flake8 onnx_web
+	flake8 tests
 	isort --skip __init__.py --filter-files onnx_web
 	isort --skip __init__.py --filter-files tests
 

@@ -18,119 +18,194 @@ from tests.helpers import test_device
 
 
 def main_memory(_worker):
-  raise Exception(MEMORY_ERRORS[0])
+    raise Exception(MEMORY_ERRORS[0])
+
 
 def main_retry(_worker):
-  raise RetryException()
+    raise RetryException()
+
 
 def main_interrupt(_worker):
-  raise KeyboardInterrupt()
+    raise KeyboardInterrupt()
 
 
 class WorkerMainTests(unittest.TestCase):
-  def test_pending_exception_empty(self):
-    pass
+    def test_pending_exception_empty(self):
+        pass
 
-  def test_pending_exception_interrupt(self):
-    status = None
+    def test_pending_exception_interrupt(self):
+        status = None
 
-    def exit(exit_status):
-      nonlocal status
-      status = exit_status
+        def exit(exit_status):
+            nonlocal status
+            status = exit_status
 
-    job = JobCommand("test", "test", main_interrupt, [], {})
-    cancel = Value("L", False)
-    logs = Queue()
-    pending = Queue()
-    progress = Queue()
-    pid = Value("L", getpid())
-    idle = Value("L", False)
+        job = JobCommand("test", "test", main_interrupt, [], {})
+        cancel = Value("L", False)
+        logs = Queue()
+        pending = Queue()
+        progress = Queue()
+        pid = Value("L", getpid())
+        idle = Value("L", False)
 
-    pending.put(job)
-    worker_main(WorkerContext("test", test_device(), cancel, logs, pending, progress, pid, idle, 0, 0.0), ServerContext(), exit=exit)
+        pending.put(job)
+        worker_main(
+            WorkerContext(
+                "test",
+                test_device(),
+                cancel,
+                logs,
+                pending,
+                progress,
+                pid,
+                idle,
+                0,
+                0.0,
+            ),
+            ServerContext(),
+            exit=exit,
+        )
 
-    self.assertEqual(status, EXIT_INTERRUPT)
-    pass
+        self.assertEqual(status, EXIT_INTERRUPT)
+        pass
 
-  def test_pending_exception_retry(self):
-    status = None
+    def test_pending_exception_retry(self):
+        status = None
 
-    def exit(exit_status):
-      nonlocal status
-      status = exit_status
+        def exit(exit_status):
+            nonlocal status
+            status = exit_status
 
-    job = JobCommand("test", "test", main_retry, [], {})
-    cancel = Value("L", False)
-    logs = Queue()
-    pending = Queue()
-    progress = Queue()
-    pid = Value("L", getpid())
-    idle = Value("L", False)
+        job = JobCommand("test", "test", main_retry, [], {})
+        cancel = Value("L", False)
+        logs = Queue()
+        pending = Queue()
+        progress = Queue()
+        pid = Value("L", getpid())
+        idle = Value("L", False)
 
-    pending.put(job)
-    worker_main(WorkerContext("test", test_device(), cancel, logs, pending, progress, pid, idle, 0, 0.0), ServerContext(), exit=exit)
+        pending.put(job)
+        worker_main(
+            WorkerContext(
+                "test",
+                test_device(),
+                cancel,
+                logs,
+                pending,
+                progress,
+                pid,
+                idle,
+                0,
+                0.0,
+            ),
+            ServerContext(),
+            exit=exit,
+        )
 
-    self.assertEqual(status, EXIT_ERROR)
-    pass
+        self.assertEqual(status, EXIT_ERROR)
+        pass
 
-  def test_pending_exception_value(self):
-    status = None
+    def test_pending_exception_value(self):
+        status = None
 
-    def exit(exit_status):
-      nonlocal status
-      status = exit_status
+        def exit(exit_status):
+            nonlocal status
+            status = exit_status
 
-    cancel = Value("L", False)
-    logs = Queue()
-    pending = Queue()
-    progress = Queue()
-    pid = Value("L", getpid())
-    idle = Value("L", False)
+        cancel = Value("L", False)
+        logs = Queue()
+        pending = Queue()
+        progress = Queue()
+        pid = Value("L", getpid())
+        idle = Value("L", False)
 
-    pending.close()
-    worker_main(WorkerContext("test", test_device(), cancel, logs, pending, progress, pid, idle, 0, 0.0), ServerContext(), exit=exit)
+        pending.close()
+        worker_main(
+            WorkerContext(
+                "test",
+                test_device(),
+                cancel,
+                logs,
+                pending,
+                progress,
+                pid,
+                idle,
+                0,
+                0.0,
+            ),
+            ServerContext(),
+            exit=exit,
+        )
 
-    self.assertEqual(status, EXIT_ERROR)
+        self.assertEqual(status, EXIT_ERROR)
 
-  def test_pending_exception_other_memory(self):
-    status = None
+    def test_pending_exception_other_memory(self):
+        status = None
 
-    def exit(exit_status):
-      nonlocal status
-      status = exit_status
+        def exit(exit_status):
+            nonlocal status
+            status = exit_status
 
-    job = JobCommand("test", "test", main_memory, [], {})
-    cancel = Value("L", False)
-    logs = Queue()
-    pending = Queue()
-    progress = Queue()
-    pid = Value("L", getpid())
-    idle = Value("L", False)
+        job = JobCommand("test", "test", main_memory, [], {})
+        cancel = Value("L", False)
+        logs = Queue()
+        pending = Queue()
+        progress = Queue()
+        pid = Value("L", getpid())
+        idle = Value("L", False)
 
-    pending.put(job)
-    worker_main(WorkerContext("test", test_device(), cancel, logs, pending, progress, pid, idle, 0, 0.0), ServerContext(), exit=exit)
+        pending.put(job)
+        worker_main(
+            WorkerContext(
+                "test",
+                test_device(),
+                cancel,
+                logs,
+                pending,
+                progress,
+                pid,
+                idle,
+                0,
+                0.0,
+            ),
+            ServerContext(),
+            exit=exit,
+        )
 
-    self.assertEqual(status, EXIT_MEMORY)
+        self.assertEqual(status, EXIT_MEMORY)
 
+    def test_pending_exception_other_unknown(self):
+        pass
 
-  def test_pending_exception_other_unknown(self):
-    pass
+    def test_pending_replaced(self):
+        status = None
 
-  def test_pending_replaced(self):
-    status = None
+        def exit(exit_status):
+            nonlocal status
+            status = exit_status
 
-    def exit(exit_status):
-      nonlocal status
-      status = exit_status
+        cancel = Value("L", False)
+        logs = Queue()
+        pending = Queue()
+        progress = Queue()
+        pid = Value("L", 0)
+        idle = Value("L", False)
 
-    cancel = Value("L", False)
-    logs = Queue()
-    pending = Queue()
-    progress = Queue()
-    pid = Value("L", 0)
-    idle = Value("L", False)
+        worker_main(
+            WorkerContext(
+                "test",
+                test_device(),
+                cancel,
+                logs,
+                pending,
+                progress,
+                pid,
+                idle,
+                0,
+                0.0,
+            ),
+            ServerContext(),
+            exit=exit,
+        )
 
-    worker_main(WorkerContext("test", test_device(), cancel, logs, pending, progress, pid, idle, 0, 0.0), ServerContext(), exit=exit)
-
-    self.assertEqual(status, EXIT_REPLACED)
-
+        self.assertEqual(status, EXIT_REPLACED)

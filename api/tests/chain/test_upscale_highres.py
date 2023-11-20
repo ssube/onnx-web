@@ -9,6 +9,14 @@ class UpscaleHighresStageTests(unittest.TestCase):
     def test_empty(self):
         stage = UpscaleHighresStage()
         sources = StageResult.empty()
-        result = stage.run(None, None, None, None, sources, highres=HighresParams(False,1, 0, 0), upscale=UpscaleParams(""))
+        result = stage.run(
+            None,
+            None,
+            None,
+            None,
+            sources,
+            highres=HighresParams(False, 1, 0, 0),
+            upscale=UpscaleParams(""),
+        )
 
         self.assertEqual(len(result), 0)
