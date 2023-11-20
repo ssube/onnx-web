@@ -27,7 +27,7 @@ class TileCallback(Protocol):
 
     def __call__(
         self, image: Image.Image, dims: Tuple[int, int, int]
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         """
         Run this stage against a single tile.
         """
@@ -287,7 +287,7 @@ def process_tile_stack(
                 bottom_margin,
             )
             tile_stack = add_margin(
-                stack,
+                stack.as_image(),
                 left,
                 top,
                 right,
@@ -322,7 +322,7 @@ def process_tile_stack(
         for image_filter in filters:
             tile_stack = image_filter(tile_stack, tile_mask, (left, top, tile))
 
-        tiles.append((left, top, tile_stack))
+        tiles.append((left, top, tile_stack.as_image()))
 
     lefts, tops, stacks = list(zip(*tiles))
     coords = list(zip(lefts, tops))
@@ -331,6 +331,7 @@ def process_tile_stack(
     result = []
     for stack in stacks:
         stack_tiles = zip(coords, stack)
+        stack_tiles = [(left, top, tile) for (left, top), tile in stack_tiles]
         result.append(blend_tiles(stack_tiles, scale, width, height, tile, overlap))
 
     return result

@@ -181,7 +181,7 @@ class ChainPipeline:
                                 server,
                                 stage_params,
                                 per_stage_params,
-                                StageResult(images=[source_tile]),
+                                StageResult(images=source_tile),
                                 tile_mask=tile_mask,
                                 callback=callback,
                                 dims=dims,
@@ -192,7 +192,7 @@ class ChainPipeline:
                                 for j, image in enumerate(tile_result.as_image()):
                                     save_image(server, f"last-tile-{j}.png", image)
 
-                            return tile_result.as_image()
+                            return tile_result
                         except Exception:
                             worker.retries = worker.retries - 1
                             logger.exception(
