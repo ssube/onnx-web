@@ -64,6 +64,7 @@ class ServerContext:
         server_version: Optional[str] = DEFAULT_SERVER_VERSION,
         worker_retries: Optional[int] = DEFAULT_WORKER_RETRIES,
         feature_flags: Optional[List[str]] = None,
+        plugins: Optional[List[str]] = None,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -85,6 +86,7 @@ class ServerContext:
         self.server_version = server_version
         self.worker_retries = worker_retries
         self.feature_flags = feature_flags or []
+        self.plugins = plugins or []
 
         self.cache = ModelCache(self.cache_limit)
 
@@ -125,6 +127,7 @@ class ServerContext:
                 environ.get("ONNX_WEB_WORKER_RETRIES", DEFAULT_WORKER_RETRIES)
             ),
             feature_flags=environ.get("ONNX_WEB_FEATURE_FLAGS", "").split(","),
+            plugins=environ.get("ONNX_WEB_PLUGINS", "").split(","),
         )
 
     def has_feature(self, flag: str) -> bool:
