@@ -317,11 +317,11 @@ def process_tile_stack(
             if mask:
                 tile_mask = mask.crop((left, top, right, bottom))
 
-        if isinstance(tile_stack, list):
-            tile_stack = StageResult.from_images(tile_stack)
-
         for image_filter in filters:
             tile_stack = image_filter(tile_stack, tile_mask, (left, top, tile))
+
+        if isinstance(tile_stack, list):
+            tile_stack = StageResult.from_images(tile_stack)
 
         tiles.append((left, top, tile_stack.as_image()))
 
