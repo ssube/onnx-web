@@ -41,6 +41,7 @@ class ServerContext:
     worker_retries: int
     feature_flags: List[str]
     plugins: List[str]
+    debug: bool
 
     def __init__(
         self,
@@ -65,6 +66,7 @@ class ServerContext:
         worker_retries: Optional[int] = DEFAULT_WORKER_RETRIES,
         feature_flags: Optional[List[str]] = None,
         plugins: Optional[List[str]] = None,
+        debug: bool = False,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -87,6 +89,7 @@ class ServerContext:
         self.worker_retries = worker_retries
         self.feature_flags = feature_flags or []
         self.plugins = plugins or []
+        self.debug = debug
 
         self.cache = ModelCache(self.cache_limit)
 
@@ -128,6 +131,7 @@ class ServerContext:
             ),
             feature_flags=environ.get("ONNX_WEB_FEATURE_FLAGS", "").split(","),
             plugins=environ.get("ONNX_WEB_PLUGINS", "").split(","),
+            debug=get_boolean(environ, "ONNX_WEB_DEBUG", False),
         )
 
     def has_feature(self, flag: str) -> bool:

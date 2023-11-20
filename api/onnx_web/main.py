@@ -45,6 +45,14 @@ def main():
     apply_patches(server)
     check_paths(server)
 
+    # debug options
+    if server.debug:
+        import debugpy
+        debugpy.listen(5678)
+        logger.warning("waiting for debugger")
+        debugpy.wait_for_client()
+        gc.set_debug(gc.DEBUG_STATS)
+
     # register plugins
     exports = load_plugins(server)
     success = register_plugins(exports)
@@ -60,10 +68,7 @@ def main():
     load_platforms(server)
     load_wildcards(server)
 
-    # debug and misc server options
-    if is_debug():
-        gc.set_debug(gc.DEBUG_STATS)
-
+    # misc server options
     if not server.show_progress:
         disable_progress_bar()
         disable_progress_bars()
