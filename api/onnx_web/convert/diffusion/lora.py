@@ -86,6 +86,15 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]):
             block = "up_blocks"
         elif root.startswith("text_model"):
             block = "text_model"
+        elif root.startswith("down_blocks"):
+            fixed[fix_node_name(key)] = value
+            continue
+        elif root.startswith("mid_blocks"):
+            fixed[fix_node_name(key)] = value
+            continue
+        elif root.startswith("up_blocks"):
+            fixed[fix_node_name(key)] = value
+            continue
         else:
             logger.warning("unknown XL key name: %s", key)
             fixed[key] = value
