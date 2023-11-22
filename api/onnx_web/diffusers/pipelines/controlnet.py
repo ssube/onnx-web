@@ -13,7 +13,7 @@ import numpy as np
 import PIL
 import torch
 from diffusers.configuration_utils import FrozenDict
-from diffusers.pipeline_utils import DiffusionPipeline
+from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.onnx_utils import ORT_TO_NP_TYPE, OnnxRuntimeModel
 from diffusers.pipelines.stable_diffusion import StableDiffusionPipelineOutput
 from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMScheduler

@@ -11,7 +11,7 @@ from typing import Any, Callable, List, Optional, Union
 import numpy as np
 import PIL
 import torch
-from diffusers.pipeline_utils import ImagePipelineOutput
+from diffusers.pipelines.pipeline_utils import ImagePipelineOutput
 from diffusers.pipelines.onnx_utils import ORT_TO_NP_TYPE, OnnxRuntimeModel
 from diffusers.pipelines.stable_diffusion import StableDiffusionUpscalePipeline
 from diffusers.schedulers import DDPMScheduler
