@@ -44,6 +44,7 @@ from .version_safe_diffusers import (
     KarrasVeScheduler,
     KDPM2AncestralDiscreteScheduler,
     KDPM2DiscreteScheduler,
+    LCMScheduler,
     LMSDiscreteScheduler,
     OnnxRuntimeModel,
     OnnxStableDiffusionImg2ImgPipeline,
