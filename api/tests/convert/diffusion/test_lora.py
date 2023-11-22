@@ -233,7 +233,7 @@ class BlendWeightsLoHATests(unittest.TestCase):
         i = 32
         j = 4
         k = 1
-        l = 1
+        l = 1  # NOQA
         p = 2
         r = 4
 

@@ -12,10 +12,7 @@ from onnx_web.convert.utils import (
     tuple_to_source,
     tuple_to_upscaling,
 )
-from tests.helpers import (
-    TEST_MODEL_UPSCALING_SWINIR,
-    test_needs_models,
-)
+from tests.helpers import TEST_MODEL_UPSCALING_SWINIR, test_needs_models
 
 
 class ConversionContextTests(unittest.TestCase):
