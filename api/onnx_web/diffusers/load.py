@@ -85,6 +85,7 @@ pipeline_schedulers = {
     "k-dpm-2-a": KDPM2AncestralDiscreteScheduler,
     "k-dpm-2": KDPM2DiscreteScheduler,
     "karras-ve": KarrasVeScheduler,
+    "lcm": LCMScheduler,
     "lms-discrete": LMSDiscreteScheduler,
     "pndm": PNDMScheduler,
     "unipc-multi": UniPCMultistepScheduler,
