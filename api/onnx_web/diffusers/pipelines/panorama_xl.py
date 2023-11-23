@@ -10,7 +10,8 @@ from optimum.onnxruntime.modeling_diffusion import ORTStableDiffusionXLPipelineB
 from optimum.pipelines.diffusers.pipeline_stable_diffusion_xl_img2img import (
     StableDiffusionXLImg2ImgPipelineMixin,
 )
-from optimum.pipelines.diffusers.pipeline_utils import preprocess, rescale_noise_cfg
+from optimum.pipelines.diffusers.pipeline_utils import rescale_noise_cfg
+from diffusers.image_processor import VaeImageProcessor
 
 from onnx_web.chain.tile import make_tile_mask
 
@@ -728,7 +729,8 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         )
 
         # 3. Preprocess image
-        image = preprocess(image)
+        processor = VaeImageProcessor()
+        image = processor.preprocess(image)
 
         # 4. Prepare timesteps
         self.scheduler.set_timesteps(num_inference_steps)
