@@ -89,10 +89,8 @@ class TestWorkerPool(unittest.TestCase):
             server, [device], join_timeout=TEST_JOIN_TIMEOUT, progress_interval=0.1
         )
         self.pool.start(lock)
-        sleep(2.0)
-
         self.pool.submit("test", test_job)
-        sleep(2.0)
+        sleep(5.0)
 
         pending, _progress = self.pool.done("test")
         self.assertFalse(pending)
@@ -121,12 +119,10 @@ class TestWorkerPool(unittest.TestCase):
             server, [device], join_timeout=TEST_JOIN_TIMEOUT, progress_interval=0.1
         )
         self.pool.start()
-        sleep(2.0)
-
         self.pool.submit("test", wait_job)
         self.assertEqual(self.pool.done("test"), (True, None))
 
-        sleep(2.0)
+        sleep(5.0)
         pending, _progress = self.pool.done("test")
         self.assertFalse(pending)
 

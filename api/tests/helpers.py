@@ -11,6 +11,12 @@ def test_needs_models(models: List[str]):
     )
 
 
+def test_needs_onnx_models(models: List[str]):
+    return skipUnless(
+        all([path.exists(f"{model}.onnx") for model in models]), "model does not exist"
+    )
+
+
 def test_device() -> DeviceParams:
     return DeviceParams("cpu", "CPUExecutionProvider")
 

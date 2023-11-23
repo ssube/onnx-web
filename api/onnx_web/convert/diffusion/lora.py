@@ -139,7 +139,9 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]) -> Dict[str, Any]
             )
         elif block == "text_model" or simple:
             match = next(
-                node for node in remaining if fix_node_name(node.name) == f"{root}_MatMul"
+                node
+                for node in remaining
+                if fix_node_name(node.name) == f"{root}_MatMul"
             )
         else:
             # search in order. one side has sparse indices, so they will not match.
@@ -171,6 +173,12 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]) -> Dict[str, Any]
 
         fixed[name] = value
         remaining.remove(match)
+
+    logger.debug(
+        "SDXL LoRA key fixup matched %s keys, %s remaining",
+        len(fixed.keys()),
+        len(remaining),
+    )
 
     return fixed
 

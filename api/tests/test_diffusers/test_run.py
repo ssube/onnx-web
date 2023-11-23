@@ -64,6 +64,55 @@ class TestTxt2ImgPipeline(unittest.TestCase):
         # TODO: test contents of image
 
     @test_needs_models([TEST_MODEL_DIFFUSION_SD15])
+    def test_batch(self):
+        cancel = Value("L", 0)
+        logs = Queue()
+        pending = Queue()
+        progress = Queue()
+        active = Value("L", 0)
+        idle = Value("L", 0)
+
+        worker = WorkerContext(
+            "test",
+            test_device(),
+            cancel,
+            logs,
+            pending,
+            progress,
+            active,
+            idle,
+            3,
+            0.1,
+        )
+        worker.start("test")
+
+        run_txt2img_pipeline(
+            worker,
+            ServerContext(model_path="../models", output_path="../outputs"),
+            ImageParams(
+                TEST_MODEL_DIFFUSION_SD15,
+                "txt2img",
+                "ddim",
+                "an astronaut eating a hamburger",
+                3.0,
+                1,
+                1,
+                batch=2,
+            ),
+            Size(256, 256),
+            ["test-txt2img-batch-0.png", "test-txt2img-batch-1.png"],
+            UpscaleParams("test"),
+            HighresParams(False, 1, 0, 0),
+        )
+
+        self.assertTrue(path.exists("../outputs/test-txt2img-batch-0.png"))
+        self.assertTrue(path.exists("../outputs/test-txt2img-batch-1.png"))
+
+        output = Image.open("../outputs/test-txt2img-batch-0.png")
+        self.assertEqual(output.size, (256, 256))
+        # TODO: test contents of image
+
+    @test_needs_models([TEST_MODEL_DIFFUSION_SD15])
     def test_highres(self):
         cancel = Value("L", 0)
         logs = Queue()
@@ -106,6 +155,54 @@ class TestTxt2ImgPipeline(unittest.TestCase):
 
         self.assertTrue(path.exists("../outputs/test-txt2img-highres.png"))
         output = Image.open("../outputs/test-txt2img-highres.png")
+        self.assertEqual(output.size, (512, 512))
+
+    @test_needs_models([TEST_MODEL_DIFFUSION_SD15])
+    def test_highres_batch(self):
+        cancel = Value("L", 0)
+        logs = Queue()
+        pending = Queue()
+        progress = Queue()
+        active = Value("L", 0)
+        idle = Value("L", 0)
+
+        worker = WorkerContext(
+            "test",
+            test_device(),
+            cancel,
+            logs,
+            pending,
+            progress,
+            active,
+            idle,
+            3,
+            0.1,
+        )
+        worker.start("test")
+
+        run_txt2img_pipeline(
+            worker,
+            ServerContext(model_path="../models", output_path="../outputs"),
+            ImageParams(
+                TEST_MODEL_DIFFUSION_SD15,
+                "txt2img",
+                "ddim",
+                "an astronaut eating a hamburger",
+                3.0,
+                1,
+                1,
+                batch=2,
+            ),
+            Size(256, 256),
+            ["test-txt2img-highres-batch-0.png", "test-txt2img-highres-batch-1.png"],
+            UpscaleParams("test"),
+            HighresParams(True, 2, 0, 0),
+        )
+
+        self.assertTrue(path.exists("../outputs/test-txt2img-highres-batch-0.png"))
+        self.assertTrue(path.exists("../outputs/test-txt2img-highres-batch-1.png"))
+
+        output = Image.open("../outputs/test-txt2img-highres-batch-0.png")
         self.assertEqual(output.size, (512, 512))
 
 
