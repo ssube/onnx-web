@@ -162,8 +162,7 @@ class ChainPipeline:
             if stage_pipe.max_tile > 0:
                 tile = min(stage_pipe.max_tile, stage_params.tile_size)
 
-            # TODO: stage_sources will always be defined here
-            if must_tile:
+            if must_tile or len(stage_sources) > 0:
                 logger.info(
                     "image contains sources or is larger than tile size of %s, tiling stage",
                     tile,
