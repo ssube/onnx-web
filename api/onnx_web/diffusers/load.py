@@ -227,6 +227,9 @@ def load_pipeline(
             **components,
         )
 
+        if pipe.scheduler != scheduler:
+            pipe.scheduler = scheduler
+
         # make sure XL models are actually being used
         if "text_encoder_session" in components:
             pipe.text_encoder = ORTModelTextEncoder(
