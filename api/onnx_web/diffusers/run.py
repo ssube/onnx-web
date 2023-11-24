@@ -385,7 +385,12 @@ def run_inpaint_pipeline(
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     progress = worker.get_progress_callback()
     images = chain.run(
-        worker, server, params, StageResult(images=[source]), callback=progress, latents=latents
+        worker,
+        server,
+        params,
+        StageResult(images=[source]),
+        callback=progress,
+        latents=latents,
     )
 
     _pairs, loras, inversions, _rest = parse_prompt(params)

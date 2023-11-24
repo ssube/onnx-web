@@ -5,13 +5,13 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 import numpy as np
 import PIL
 import torch
+from diffusers.image_processor import VaeImageProcessor
 from diffusers.pipelines.stable_diffusion_xl import StableDiffusionXLPipelineOutput
 from optimum.onnxruntime.modeling_diffusion import ORTStableDiffusionXLPipelineBase
 from optimum.pipelines.diffusers.pipeline_stable_diffusion_xl_img2img import (
     StableDiffusionXLImg2ImgPipelineMixin,
 )
 from optimum.pipelines.diffusers.pipeline_utils import rescale_noise_cfg
-from diffusers.image_processor import VaeImageProcessor
 
 from onnx_web.chain.tile import make_tile_mask
 
@@ -730,7 +730,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
         # 3. Preprocess image
         processor = VaeImageProcessor()
-        image = processor.preprocess(image)
+        image = processor.preprocess(image).cpu().numpy()
 
         # 4. Prepare timesteps
         self.scheduler.set_timesteps(num_inference_steps)
