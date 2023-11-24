@@ -476,11 +476,12 @@ def run_test(
         ref = Image.open(ref_name) if path.exists(ref_name) else None
 
         mse = find_mse(result, ref)
+        threshold = test.mse_threshold * mse_mult
 
-        if mse < (test.mse_threshold * mse_mult):
-            logger.info("MSE within threshold: %.5f < %.5f", mse, test.mse_threshold)
+        if mse < threshold:
+            logger.info("MSE within threshold: %.5f < %.5f", mse, threshold)
         else:
-            logger.warning("MSE above threshold: %.5f > %.5f", mse, test.mse_threshold)
+            logger.warning("MSE above threshold: %.5f > %.5f", mse, threshold)
             passed = False
 
     return passed
