@@ -41,8 +41,8 @@ def get_boolean(args: Any, key: str, default_value: bool) -> bool:
     return val.lower() in ("1", "t", "true", "y", "yes")
 
 
-def get_list(args: Any, key: str) -> List[str]:
-    return split_list(args.get(key, ""))
+def get_list(args: Any, key: str, default = "") -> List[str]:
+    return split_list(args.get(key, default))
 
 
 def get_and_clamp_float(
