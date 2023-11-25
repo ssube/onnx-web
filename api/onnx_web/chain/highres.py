@@ -57,7 +57,7 @@ def stage_highres(
 
         chain.stage(
             BlendImg2ImgStage(),
-            stage,
+            stage.with_args(outscale=1),
             overlap=params.vae_overlap,
             prompt_index=prompt_index + i,
             strength=highres.strength,

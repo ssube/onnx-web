@@ -64,21 +64,20 @@ def run_txt2img_pipeline(
 
     # apply upscaling and correction, before highres
     highres_size = params.unet_tile
-    stage = StageParams(tile_size=highres_size)
-
     if params.is_panorama():
+        if server.has_feature("panorama-highres"):
+            # run the whole highres pass with one panorama call
+            highres_size = tile_size * highres.scale
+
         chain.stage(
             BlendDenoiseStage(),
-            stage,
+            StageParams(tile_size=highres_size),
         )
-
-        if server.has_feature("panorama-highres"):
-            highres_size = tile_size * highres.scale
 
     first_upscale, after_upscale = split_upscale(upscale)
     if first_upscale:
         stage_upscale_correction(
-            stage,
+            StageParams(outscale=first_upscale.outscale, tile_size=highres_size),
             params,
             chain=chain,
             upscale=first_upscale,
@@ -86,7 +85,7 @@ def run_txt2img_pipeline(
 
     # apply highres
     stage_highres(
-        stage,
+        StageParams(outscale=highres.scale, tile_size=highres_size),
         params,
         highres,
         upscale,
@@ -96,7 +95,7 @@ def run_txt2img_pipeline(
 
     # apply upscaling and correction, after highres
     stage_upscale_correction(
-        stage,
+        StageParams(outscale=after_upscale.outscale, tile_size=highres_size),
         params,
         chain=chain,
         upscale=after_upscale,

@@ -369,6 +369,17 @@ class StageParams:
         self.tile_order = tile_order
         self.tile_size = tile_size
 
+    def with_args(
+        self,
+        **kwargs,
+    ):
+        return StageParams(
+            name=kwargs.get("name", self.name),
+            outscale=kwargs.get("outscale", self.outscale),
+            tile_order=kwargs.get("tile_order", self.tile_order),
+            tile_size=kwargs.get("tile_size", self.tile_size),
+        )
+
 
 class UpscaleParams:
     def __init__(

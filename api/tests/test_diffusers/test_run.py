@@ -149,10 +149,11 @@ class TestTxt2ImgPipeline(unittest.TestCase):
                 3.0,
                 1,
                 1,
+                unet_tile=256,
             ),
             Size(256, 256),
             ["test-txt2img-highres.png"],
-            UpscaleParams("test"),
+            UpscaleParams("test", scale=2, outscale=2),
             HighresParams(True, 2, 0, 0),
         )
 

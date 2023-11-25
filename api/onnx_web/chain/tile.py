@@ -156,7 +156,6 @@ def blend_tiles(
     value = np.zeros(scaled_size)
 
     for left, top, tile_image in tiles:
-        # TODO: histogram equalization
         equalized = np.array(tile_image).astype(np.float32)
         mask = np.ones_like(equalized[:, :, 0])
 
