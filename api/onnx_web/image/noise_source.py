@@ -94,7 +94,7 @@ def noise_source_normal(
 def noise_source_histogram(
     source: Image.Image, dims: Point, _origin: Point, **kw
 ) -> Image.Image:
-    r, g, b = source.split()
+    r, g, b, *_a = source.split()
     width, height = dims
     size = width * height
 
