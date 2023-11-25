@@ -18,7 +18,7 @@ from tests.helpers import test_device
 
 
 def main_memory(_worker):
-    raise Exception(MEMORY_ERRORS[0])
+    raise MemoryError(MEMORY_ERRORS[0])
 
 
 def main_retry(_worker):

@@ -28,9 +28,7 @@ class UpscaleSwinIRStageTests(unittest.TestCase):
                 3,
                 0.1,
             ),
-            ServerContext(
-                # model_path="../models",
-            ),
+            ServerContext(),
             None,
             None,
             sources,

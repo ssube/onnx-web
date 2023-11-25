@@ -28,9 +28,7 @@ class UpscaleOutpaintStageTests(unittest.TestCase):
                 3,
                 0.1,
             ),
-            ServerContext(
-                # model_path="../models",
-            ),
+            ServerContext(),
             None,
             ImageParams(
                 "../models/stable-diffusion-onnx-v1-inpainting",
