@@ -218,7 +218,10 @@ def load_pipeline(
                 components["vae_decoder_session"],
                 components["text_encoder_session"],
                 components["unet_session"],
-                {},  # empty config
+                {
+                    "force_zeros_for_empty_prompt": True,
+                    "requires_aesthetics_score": False,
+                },
                 components["tokenizer"],
                 scheduler,
                 vae_encoder_session=components.get("vae_encoder_session", None),
