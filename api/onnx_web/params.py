@@ -488,10 +488,14 @@ class HighresParams:
         self.method = method
         self.iterations = iterations
 
+    def outscale(self) -> int:
+        return self.scale**self.iterations
+
     def resize(self, size: Size) -> Size:
+        outscale = self.outscale()
         return Size(
-            size.width * (self.scale**self.iterations),
-            size.height * (self.scale**self.iterations),
+            size.width * outscale,
+            size.height * outscale,
         )
 
     def tojson(self):
