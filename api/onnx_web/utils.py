@@ -18,6 +18,11 @@ logger = getLogger(__name__)
 SAFE_CHARS = "._-"
 
 
+def split_list(val: str) -> List[str]:
+    parts = [part.strip() for part in val.split(",")]
+    return [part for part in parts if len(part.strip()) > 0]
+
+
 def base_join(base: str, tail: str) -> str:
     tail_path = path.relpath(path.normpath(path.join("/", tail)), "/")
     return path.join(base, tail_path)
@@ -34,6 +39,10 @@ def get_boolean(args: Any, key: str, default_value: bool) -> bool:
         return val
 
     return val.lower() in ("1", "t", "true", "y", "yes")
+
+
+def get_list(args: Any, key: str) -> List[str]:
+    return split_list(args.get(key, ""))
 
 
 def get_and_clamp_float(
