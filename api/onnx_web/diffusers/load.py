@@ -7,12 +7,6 @@ from optimum.onnxruntime import (  # ORTStableDiffusionXLInpaintPipeline,
     ORTStableDiffusionXLImg2ImgPipeline,
     ORTStableDiffusionXLPipeline,
 )
-from optimum.onnxruntime.modeling_diffusion import (
-    ORTModelTextEncoder,
-    ORTModelUnet,
-    ORTModelVaeDecoder,
-    ORTModelVaeEncoder,
-)
 from transformers import CLIPTokenizer
 
 from ..constants import ONNX_MODEL
@@ -224,7 +218,7 @@ def load_pipeline(
                 components["vae_decoder_session"],
                 components["text_encoder_session"],
                 components["unet_session"],
-                {}, # empty config
+                {},  # empty config
                 components["tokenizer"],
                 scheduler,
                 vae_encoder_session=components.get("vae_encoder_session", None),
@@ -232,7 +226,9 @@ def load_pipeline(
                 tokenizer_2=components.get("tokenizer_2", None),
             )
         else:
-            logger.debug("loading pretrained SD pipeline for %s", pipeline_class.__name__)
+            logger.debug(
+                "loading pretrained SD pipeline for %s", pipeline_class.__name__
+            )
             pipe = pipeline_class.from_pretrained(
                 model,
                 provider=device.ort_provider(),
