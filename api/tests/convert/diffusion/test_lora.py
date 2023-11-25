@@ -141,7 +141,7 @@ class FixXLNameTests(unittest.TestCase):
         nodes = {
             "lora_unet.input_block.lora_down.weight": {},
         }
-        fixed = fix_xl_names(nodes, [""])
+        fixed = fix_xl_names(nodes, [NodeProto(name="test")])
 
         self.assertEqual(fixed, nodes)
 

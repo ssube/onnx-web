@@ -67,7 +67,6 @@ class WorkerMainTests(unittest.TestCase):
         )
 
         self.assertEqual(status, EXIT_INTERRUPT)
-        pass
 
     def test_pending_exception_retry(self):
         status = None
@@ -103,7 +102,6 @@ class WorkerMainTests(unittest.TestCase):
         )
 
         self.assertEqual(status, EXIT_ERROR)
-        pass
 
     def test_pending_exception_value(self):
         status = None

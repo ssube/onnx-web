@@ -95,7 +95,7 @@ def add_pipeline(name: str, pipeline: Any) -> bool:
         return False
     else:
         available_pipelines[name] = pipeline
-        return False
+        return True
 
 
 def get_available_pipelines() -> List[str]:

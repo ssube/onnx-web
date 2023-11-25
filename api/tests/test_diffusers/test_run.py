@@ -15,6 +15,9 @@ from onnx_web.server.context import ServerContext
 from onnx_web.worker.context import WorkerContext
 from tests.helpers import TEST_MODEL_DIFFUSION_SD15, test_device, test_needs_models
 
+TEST_PROMPT = "an astronaut eating a hamburger"
+TEST_SCHEDULER = "ddim"
+
 
 class TestTxt2ImgPipeline(unittest.TestCase):
     @test_needs_models([TEST_MODEL_DIFFUSION_SD15])
@@ -46,8 +49,8 @@ class TestTxt2ImgPipeline(unittest.TestCase):
             ImageParams(
                 TEST_MODEL_DIFFUSION_SD15,
                 "txt2img",
-                "ddim",
-                "an astronaut eating a hamburger",
+                TEST_SCHEDULER,
+                TEST_PROMPT,
                 3.0,
                 1,
                 1,
@@ -92,8 +95,8 @@ class TestTxt2ImgPipeline(unittest.TestCase):
             ImageParams(
                 TEST_MODEL_DIFFUSION_SD15,
                 "txt2img",
-                "ddim",
-                "an astronaut eating a hamburger",
+                TEST_SCHEDULER,
+                TEST_PROMPT,
                 3.0,
                 1,
                 1,
@@ -141,8 +144,8 @@ class TestTxt2ImgPipeline(unittest.TestCase):
             ImageParams(
                 TEST_MODEL_DIFFUSION_SD15,
                 "txt2img",
-                "ddim",
-                "an astronaut eating a hamburger",
+                TEST_SCHEDULER,
+                TEST_PROMPT,
                 3.0,
                 1,
                 1,
@@ -186,8 +189,8 @@ class TestTxt2ImgPipeline(unittest.TestCase):
             ImageParams(
                 TEST_MODEL_DIFFUSION_SD15,
                 "txt2img",
-                "ddim",
-                "an astronaut eating a hamburger",
+                TEST_SCHEDULER,
+                TEST_PROMPT,
                 3.0,
                 1,
                 1,
@@ -237,8 +240,8 @@ class TestImg2ImgPipeline(unittest.TestCase):
             ImageParams(
                 TEST_MODEL_DIFFUSION_SD15,
                 "txt2img",
-                "ddim",
-                "an astronaut eating a hamburger",
+                TEST_SCHEDULER,
+                TEST_PROMPT,
                 3.0,
                 1,
                 1,
@@ -284,8 +287,8 @@ class TestUpscalePipeline(unittest.TestCase):
             ImageParams(
                 "../models/upscaling-stable-diffusion-x4",
                 "txt2img",
-                "ddim",
-                "an astronaut eating a hamburger",
+                TEST_SCHEDULER,
+                TEST_PROMPT,
                 3.0,
                 1,
                 1,
@@ -331,8 +334,8 @@ class TestBlendPipeline(unittest.TestCase):
             ImageParams(
                 TEST_MODEL_DIFFUSION_SD15,
                 "txt2img",
-                "ddim",
-                "an astronaut eating a hamburger",
+                TEST_SCHEDULER,
+                TEST_PROMPT,
                 3.0,
                 1,
                 1,

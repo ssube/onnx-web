@@ -218,7 +218,7 @@ class ChainPipeline:
                     "image does not contain sources and is within tile size of %s, running stage",
                     tile,
                 )
-                for i in range(worker.retries):
+                for _i in range(worker.retries):
                     try:
                         stage_result = stage_pipe.run(
                             worker,
