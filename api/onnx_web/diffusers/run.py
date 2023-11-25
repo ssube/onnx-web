@@ -297,8 +297,12 @@ def run_inpaint_pipeline(
     logger.debug("border zero: %s", border.isZero())
     full_res_inpaint = full_res_inpaint and border.isZero()
     if full_res_inpaint:
-        mask_left, mask_top, mask_right, mask_bottom = mask.getbbox()
-        logger.debug("mask bbox: %s", mask.getbbox())
+        bbox = mask.getbbox()
+        if bbox is None:
+            bbox = (0, 0, source.width, source.height)
+
+        logger.debug("mask bounding box: %s", bbox)
+        mask_left, mask_top, mask_right, mask_bottom = bbox
         mask_width = mask_right - mask_left
         mask_height = mask_bottom - mask_top
         # ensure we have some padding around the mask when we do the inpaint (and that the region size is even)
