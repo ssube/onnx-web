@@ -230,16 +230,31 @@ def load_pipeline(
             )
         else:
             logger.debug(
-                "loading pretrained SD pipeline for %s", pipeline_class.__name__
+                "assembling SD pipeline for %s", pipeline_class.__name__
             )
-            pipe = pipeline_class.from_pretrained(
-                model,
-                provider=device.ort_provider(),
-                sess_options=device.sess_options(),
-                safety_checker=None,
-                torch_dtype=torch_dtype,
-                **components,
-            )
+
+            if pipeline_class == OnnxStableDiffusionUpscalePipeline:
+                # upscale uses a single VAE
+                pipe = pipeline_class(
+                    components["vae"],
+                    components["text_encoder"],
+                    components["tokenizer"],
+                    components["unet"],
+                    scheduler,
+                    scheduler,
+                )
+            else:
+                pipe = pipeline_class(
+                    components["vae_encoder"],
+                    components["vae_decoder"],
+                    components["text_encoder"],
+                    components["tokenizer"],
+                    components["unet"],
+                    scheduler,
+                    None,
+                    None,
+                    requires_safety_checker=False,
+                )
 
         if not server.show_progress:
             pipe.set_progress_bar_config(disable=True)
