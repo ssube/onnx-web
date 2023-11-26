@@ -52,4 +52,16 @@ class StageResult:
         if self.images is not None:
             return self.images
 
-        return [Image.fromarray(np.uint8(i), "RGB") for i in self.arrays]
+        return [Image.fromarray(np.uint8(i), shape_mode(i)) for i in self.arrays]
+
+
+def shape_mode(arr: np.ndarray) -> str:
+    if len(arr.shape) != 3:
+        raise ValueError("unknown array format")
+
+    if arr.shape[-1] == 3:
+        return "RGB"
+    elif arr.shape[-1] == 4:
+        return "RGBA"
+
+    raise ValueError("unknown image format")

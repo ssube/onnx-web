@@ -30,7 +30,8 @@ class BlendMaskStage(BaseStage):
     ) -> StageResult:
         logger.info("blending image using mask")
 
-        mult_mask = Image.new("RGBA", stage_mask.size, color="black")
+        # TODO: does this need an alpha channel?
+        mult_mask = Image.new(stage_mask.mode, stage_mask.size, color="black")
         mult_mask.alpha_composite(stage_mask)
         mult_mask = mult_mask.convert("L")
 

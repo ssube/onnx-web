@@ -3,7 +3,7 @@ from typing import Optional
 
 from PIL import Image
 
-from ..params import ImageParams, SizeChart, StageParams
+from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
@@ -36,9 +36,10 @@ class BlendGridStage(BaseStage):
         logger.info("combining source images using grid layout")
 
         images = sources.as_image()
-        size = images[0].size
+        ref_image = images[0]
+        size = Size(*ref_image.size)
 
-        output = Image.new("RGB", (size[0] * width, size[1] * height))
+        output = Image.new(ref_image.mode, (size.width * width, size.height * height))
 
         # TODO: labels
         if order is None:
@@ -49,7 +50,7 @@ class BlendGridStage(BaseStage):
             y = i // width
 
             n = order[i]
-            output.paste(images[n], (x * size[0], y * size[1]))
+            output.paste(images[n], (x * size.width, y * size.height))
 
         return StageResult(images=[*images, output])
 

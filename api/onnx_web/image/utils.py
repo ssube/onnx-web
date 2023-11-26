@@ -20,7 +20,7 @@ def expand_image(
     size = tuple(size)
     origin = (expand.left, expand.top)
 
-    full_source = Image.new("RGB", size, fill)
+    full_source = Image.new(source.mode, size, fill)
     full_source.paste(source, origin)
 
     # new mask pixels need to be filled with white so they will be replaced

@@ -151,7 +151,9 @@ def blend_tiles(
         "adjusting tile size from %s to %s based on %s overlap", tile, adj_tile, overlap
     )
 
-    scaled_size = (height * scale, width * scale, 3)
+    channels = max([4 if tile_image.mode == "RGBA" else 3 for _left, _top, tile_image in tiles])
+    scaled_size = (height * scale, width * scale, channels)
+
     count = np.zeros(scaled_size)
     value = np.zeros(scaled_size)
 
@@ -221,7 +223,7 @@ def blend_tiles(
                 margin_left : equalized.shape[1] + margin_right,
                 np.newaxis,
             ],
-            3,
+            channels,
             axis=2,
         )
 
