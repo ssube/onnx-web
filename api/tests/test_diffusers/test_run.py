@@ -7,13 +7,29 @@ from PIL import Image
 from onnx_web.diffusers.run import (
     run_blend_pipeline,
     run_img2img_pipeline,
+    run_inpaint_pipeline,
     run_txt2img_pipeline,
     run_upscale_pipeline,
 )
-from onnx_web.params import HighresParams, ImageParams, Size, UpscaleParams
+from onnx_web.image.mask_filter import mask_filter_none
+from onnx_web.image.noise_source import noise_source_uniform
+from onnx_web.params import (
+    Border,
+    HighresParams,
+    ImageParams,
+    Size,
+    TileOrder,
+    UpscaleParams,
+)
 from onnx_web.server.context import ServerContext
 from onnx_web.worker.context import WorkerContext
-from tests.helpers import TEST_MODEL_DIFFUSION_SD15, test_device, test_needs_models
+from tests.helpers import (
+    TEST_MODEL_DIFFUSION_SD15,
+    TEST_MODEL_DIFFUSION_SD15_INPAINT,
+    test_device,
+    test_needs_models,
+    test_worker,
+)
 
 TEST_PROMPT = "an astronaut eating a hamburger"
 TEST_SCHEDULER = "ddim"
@@ -213,25 +229,7 @@ class TestTxt2ImgPipeline(unittest.TestCase):
 class TestImg2ImgPipeline(unittest.TestCase):
     @test_needs_models([TEST_MODEL_DIFFUSION_SD15])
     def test_basic(self):
-        cancel = Value("L", 0)
-        logs = Queue()
-        pending = Queue()
-        progress = Queue()
-        active = Value("L", 0)
-        idle = Value("L", 0)
-
-        worker = WorkerContext(
-            "test",
-            test_device(),
-            cancel,
-            logs,
-            pending,
-            progress,
-            active,
-            idle,
-            3,
-            0.1,
-        )
+        worker = test_worker()
         worker.start("test")
 
         source = Image.new("RGB", (64, 64), "black")
@@ -255,6 +253,80 @@ class TestImg2ImgPipeline(unittest.TestCase):
         )
 
         self.assertTrue(path.exists("../outputs/test-img2img.png"))
+
+
+class TestInpaintPipeline(unittest.TestCase):
+    @test_needs_models([TEST_MODEL_DIFFUSION_SD15_INPAINT])
+    def test_basic_white(self):
+        worker = test_worker()
+        worker.start("test")
+
+        source = Image.new("RGB", (64, 64), "black")
+        mask = Image.new("RGB", (64, 64), "white")
+        run_inpaint_pipeline(
+            worker,
+            ServerContext(model_path="../models", output_path="../outputs"),
+            ImageParams(
+                TEST_MODEL_DIFFUSION_SD15_INPAINT,
+                "txt2img",
+                TEST_SCHEDULER,
+                TEST_PROMPT,
+                3.0,
+                1,
+                1,
+            ),
+            Size(*source.size),
+            ["test-inpaint-white.png"],
+            UpscaleParams("test"),
+            HighresParams(False, 1, 0, 0),
+            source,
+            mask,
+            Border.even(0),
+            noise_source_uniform,
+            mask_filter_none,
+            "white",
+            TileOrder.spiral,
+            False,
+            0.0,
+        )
+
+        self.assertTrue(path.exists("../outputs/test-inpaint-white.png"))
+
+    @test_needs_models([TEST_MODEL_DIFFUSION_SD15_INPAINT])
+    def test_basic_black(self):
+        worker = test_worker()
+        worker.start("test")
+
+        source = Image.new("RGB", (64, 64), "black")
+        mask = Image.new("RGB", (64, 64), "black")
+        run_inpaint_pipeline(
+            worker,
+            ServerContext(model_path="../models", output_path="../outputs"),
+            ImageParams(
+                TEST_MODEL_DIFFUSION_SD15_INPAINT,
+                "txt2img",
+                TEST_SCHEDULER,
+                TEST_PROMPT,
+                3.0,
+                1,
+                1,
+            ),
+            Size(*source.size),
+            ["test-inpaint-black.png"],
+            UpscaleParams("test"),
+            HighresParams(False, 1, 0, 0),
+            source,
+            mask,
+            Border.even(0),
+            noise_source_uniform,
+            mask_filter_none,
+            "black",
+            TileOrder.spiral,
+            False,
+            0.0,
+        )
+
+        self.assertTrue(path.exists("../outputs/test-inpaint-black.png"))
 
 
 class TestUpscalePipeline(unittest.TestCase):
