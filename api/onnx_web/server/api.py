@@ -252,7 +252,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     if mask_file is None:
         return error_reply("mask image is required")
 
-    source = Image.open(BytesIO(source_file.read())).convert("RGB")
+    source = Image.open(BytesIO(source_file.read())).convert("RGBA")
     size = Size(source.width, source.height)
 
     mask_top_layer = Image.open(BytesIO(mask_file.read())).convert("RGBA")
