@@ -55,11 +55,7 @@ class FakeConfig:
     scaling_factor: float
 
     def __init__(self) -> None:
-        self.block_out_channels = [
-            128,
-            256,
-            512
-        ]
+        self.block_out_channels = [128, 256, 512]
         self.scaling_factor = 0.08333
 
 

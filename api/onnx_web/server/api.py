@@ -8,6 +8,7 @@ from jsonschema import validate
 from PIL import Image
 
 from ..chain import CHAIN_STAGES, ChainPipeline
+from ..chain.result import StageResult
 from ..diffusers.load import get_available_pipelines, get_pipeline_schedulers
 from ..diffusers.run import (
     run_blend_pipeline,
@@ -472,7 +473,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
         pipeline,
         server,
         base_params,
-        [],
+        StageResult.empty(),
         output=output,
         size=base_size,
         needs_device=device,
