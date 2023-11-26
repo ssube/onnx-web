@@ -2,7 +2,7 @@ from logging import getLogger
 from os import path
 from typing import Optional
 
-import torch
+import numpy as np
 from PIL import Image
 
 from ..diffusers.load import load_pipeline
@@ -47,7 +47,7 @@ class UpscaleStableDiffusionStage(BaseStage):
             worker.get_device(),
             model=path.join(server.model_path, upscale.upscale_model),
         )
-        generator = torch.manual_seed(params.seed)
+        rng = np.random.RandomState(params.seed)
 
         if not params.is_xl():
             prompt_embeds = encode_prompt(
@@ -63,7 +63,7 @@ class UpscaleStableDiffusionStage(BaseStage):
             result = pipeline(
                 prompt,
                 source,
-                generator=generator,
+                generator=rng,
                 guidance_scale=params.cfg,
                 negative_prompt=negative_prompt,
                 num_inference_steps=params.steps,
