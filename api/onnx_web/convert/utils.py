@@ -192,7 +192,7 @@ def check_ext(name: str, exts: List[str]) -> Tuple[bool, str]:
     _name, ext = path.splitext(name)
     ext = ext.strip(".")
 
-    return (name in exts, ext)
+    return (ext in exts, ext)
 
 
 def source_format(model: Dict) -> Optional[str]:
