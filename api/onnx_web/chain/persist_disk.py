@@ -31,7 +31,7 @@ class PersistDiskStage(BaseStage):
     ) -> StageResult:
         logger.info("persisting %s images to disk: %s", len(sources), output)
 
-        for source, name in zip(sources, output):
+        for source, name in zip(sources.as_image(), output):
             dest = save_image(server, name, source, params=params, size=size)
             logger.info("saved image to %s", dest)
 
