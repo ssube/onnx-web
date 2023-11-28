@@ -266,6 +266,7 @@ def process_tile_stack(
 
     tiles: List[Tuple[int, int, Image.Image]] = []
     tile_coords = tile_generator(width, height, tile, overlap)
+    single_tile = len(tile_coords) == 1
 
     for counter, (left, top) in enumerate(tile_coords):
         logger.info(
@@ -291,7 +292,12 @@ def process_tile_stack(
             needs_margin = True
             bottom_margin = height - bottom
 
-        if needs_margin:
+        if single_tile:
+            logger.debug("using single tile")
+            tile_stack = sources
+            if mask:
+                tile_mask = mask
+        elif needs_margin:
             logger.debug(
                 "tiling with added margins: %s, %s, %s, %s",
                 left_margin,

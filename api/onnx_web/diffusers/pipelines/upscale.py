@@ -2,7 +2,9 @@ from logging import getLogger
 from typing import Any, List
 
 from diffusers.pipelines.onnx_utils import OnnxRuntimeModel
-from diffusers.pipelines.stable_diffusion import OnnxStableDiffusionUpscalePipeline as BasePipeline
+from diffusers.pipelines.stable_diffusion import (
+    OnnxStableDiffusionUpscalePipeline as BasePipeline,
+)
 from diffusers.schedulers import DDPMScheduler
 
 logger = getLogger(__name__)

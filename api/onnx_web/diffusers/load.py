@@ -229,9 +229,7 @@ def load_pipeline(
                 tokenizer_2=components.get("tokenizer_2", None),
             )
         else:
-            logger.debug(
-                "assembling SD pipeline for %s", pipeline_class.__name__
-            )
+            logger.debug("assembling SD pipeline for %s", pipeline_class.__name__)
 
             if pipeline_class == OnnxStableDiffusionUpscalePipeline:
                 # upscale uses a single VAE
