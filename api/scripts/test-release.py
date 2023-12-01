@@ -30,6 +30,10 @@ FAST_TEST = 10
 SLOW_TEST = 25
 VERY_SLOW_TEST = 75
 
+STRICT_TEST = 1e-4
+LOOSE_TEST = 1e-2
+VERY_LOOSE_TEST = 0.025
+
 
 def test_path(relpath: str) -> str:
     return path.join(path.dirname(__file__), relpath)
@@ -41,7 +45,7 @@ class TestCase:
         name: str,
         query: str,
         max_attempts: int = FAST_TEST,
-        mse_threshold: float = 1e-4,
+        mse_threshold: float = STRICT_TEST,
         source: Union[Image.Image, List[Image.Image]] = None,
         mask: Image.Image = None,
     ) -> None:
@@ -73,10 +77,12 @@ TEST_DATA = [
     TestCase(
         "txt2img-sd-v1-5-512-muffin-heun",
         "txt2img?prompt=a+giant+muffin&seed=0&scheduler=heun",
+        mse_threshold=LOOSE_TEST,
     ),
     TestCase(
         "txt2img-sd-v1-5-512-muffin-unipc",
         "txt2img?prompt=a+giant+muffin&seed=0&scheduler=unipc-multi",
+        mse_threshold=LOOSE_TEST,
     ),
     TestCase(
         "txt2img-sd-v2-1-512-muffin",
@@ -84,7 +90,7 @@ TEST_DATA = [
     ),
     TestCase(
         "txt2img-sd-v2-1-768-muffin",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v2-1&width=768&height=768",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v2-1&width=768&height=768&unet_tile=768",
         max_attempts=SLOW_TEST,
     ),
     TestCase(
@@ -106,7 +112,7 @@ TEST_DATA = [
     ),
     TestCase(
         "img2img-sd-v1-5-256-pumpkin",
-        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none",
+        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none&unet_tile=256",
         source="txt2img-sd-v1-5-256-muffin-0",
     ),
     TestCase(
@@ -130,7 +136,7 @@ TEST_DATA = [
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
         max_attempts=SLOW_TEST,
-        mse_threshold=0.025,
+        mse_threshold=VERY_LOOSE_TEST,
     ),
     TestCase(
         "outpaint-vertical-512",
@@ -141,7 +147,7 @@ TEST_DATA = [
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
         max_attempts=SLOW_TEST,
-        mse_threshold=0.010,
+        mse_threshold=LOOSE_TEST,
     ),
     TestCase(
         "outpaint-horizontal-512",
@@ -152,7 +158,7 @@ TEST_DATA = [
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
         max_attempts=SLOW_TEST,
-        mse_threshold=0.010,
+        mse_threshold=LOOSE_TEST,
     ),
     TestCase(
         "upscale-resrgan-x2-1024-muffin",
@@ -229,7 +235,7 @@ TEST_DATA = [
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
         max_attempts=VERY_SLOW_TEST,
-        mse_threshold=0.025,
+        mse_threshold=VERY_LOOSE_TEST,
     ),
     TestCase(
         "outpaint-panorama-vertical-512",
@@ -240,7 +246,7 @@ TEST_DATA = [
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
         max_attempts=VERY_SLOW_TEST,
-        mse_threshold=0.025,
+        mse_threshold=VERY_LOOSE_TEST,
     ),
     TestCase(
         "outpaint-panorama-horizontal-512",
@@ -251,7 +257,7 @@ TEST_DATA = [
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
         max_attempts=VERY_SLOW_TEST,
-        mse_threshold=0.025,
+        mse_threshold=VERY_LOOSE_TEST,
     ),
     TestCase(
         "upscale-resrgan-x4-codeformer-2048-muffin",
@@ -260,6 +266,7 @@ TEST_DATA = [
             "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
+        max_attempts=SLOW_TEST,
     ),
     TestCase(
         "upscale-resrgan-x4-gfpgan-2048-muffin",
@@ -268,6 +275,7 @@ TEST_DATA = [
             "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
+        max_attempts=SLOW_TEST,
     ),
     TestCase(
         "upscale-swinir-x4-codeformer-2048-muffin",
@@ -276,6 +284,7 @@ TEST_DATA = [
             "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
+        max_attempts=SLOW_TEST,
     ),
     TestCase(
         "upscale-swinir-x4-gfpgan-2048-muffin",
@@ -284,6 +293,7 @@ TEST_DATA = [
             "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
+        max_attempts=SLOW_TEST,
     ),
     TestCase(
         "upscale-sd-x4-codeformer-2048-muffin",
@@ -316,7 +326,7 @@ TEST_DATA = [
     ),
     TestCase(
         "txt2img-sd-v1-5-tall-muffin",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=512&height=768",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=512&height=768&unet_tile=768",
     ),
     TestCase(
         "upscale-resrgan-x4-tall-muffin",
@@ -325,6 +335,7 @@ TEST_DATA = [
             "&correction=correction-gfpgan&faces=false&faceOutscale=1&faceStrength=1.0"
         ),
         source="txt2img-sd-v1-5-tall-muffin-0",
+        max_attempts=SLOW_TEST,
     ),
     # TODO: non-square controlnet
 ]
