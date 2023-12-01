@@ -1174,11 +1174,11 @@
             return dispatcher.useCallback(callback, deps);
           }
           __name(useCallback18, "useCallback");
-          function useMemo20(create2, deps) {
+          function useMemo21(create2, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useMemo(create2, deps);
           }
-          __name(useMemo20, "useMemo");
+          __name(useMemo21, "useMemo");
           function useImperativeHandle8(ref, create2, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useImperativeHandle(ref, create2, deps);
@@ -1980,7 +1980,7 @@
           exports.useImperativeHandle = useImperativeHandle8;
           exports.useInsertionEffect = useInsertionEffect3;
           exports.useLayoutEffect = useLayoutEffect3;
-          exports.useMemo = useMemo20;
+          exports.useMemo = useMemo21;
           exports.useReducer = useReducer;
           exports.useRef = useRef32;
           exports.useState = useState31;
@@ -27160,7 +27160,7 @@
           __name(is, "is");
           var objectIs = typeof Object.is === "function" ? Object.is : is;
           var useSyncExternalStore3 = shim.useSyncExternalStore;
-          var useRef32 = React168.useRef, useEffect32 = React168.useEffect, useMemo20 = React168.useMemo, useDebugValue5 = React168.useDebugValue;
+          var useRef32 = React168.useRef, useEffect32 = React168.useEffect, useMemo21 = React168.useMemo, useDebugValue5 = React168.useDebugValue;
           function useSyncExternalStoreWithSelector2(subscribe, getSnapshot, getServerSnapshot, selector, isEqual) {
             var instRef = useRef32(null);
             var inst;
@@ -27173,7 +27173,7 @@
             } else {
               inst = instRef.current;
             }
-            var _useMemo = useMemo20(function() {
+            var _useMemo = useMemo21(function() {
               var hasMemo = false;
               var memoizedSnapshot;
               var memoizedSelection;
@@ -81865,7 +81865,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(QueryMenu, "QueryMenu");
 
   // out/src/components/input/PromptInput.js
-  var { useContext: useContext32 } = React148;
+  var { useContext: useContext32, useMemo: useMemo17 } = React148;
   function PromptInput(props) {
     const { selector, onChange } = props;
     const store = mustExist(useContext32(StateContext));
@@ -81888,8 +81888,10 @@ Please use another name.` : formatMuiErrorMessage(18));
       });
     }
     __name(addToken, "addToken");
-    const networks = extractNetworks(prompt);
-    const tokens = getNetworkTokens(models.data, networks);
+    const tokens = useMemo17(() => {
+      const networks = extractNetworks(prompt);
+      return getNetworkTokens(models.data, networks);
+    }, [prompt, models.data]);
     return React148.createElement(
       Stack_default,
       { spacing: 2 },
@@ -81899,7 +81901,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           negativePrompt
         });
       } }),
-      React148.createElement(Stack_default, { direction: "row", spacing: 2 }, tokens.map(([token2, _weight]) => React148.createElement(Chip_default, { color: prompt.includes(token2) ? "primary" : "default", label: token2, onClick: () => addToken(token2) }))),
+      React148.createElement(Stack_default, { direction: "row", spacing: 2 }, tokens.map((token2) => React148.createElement(Chip_default, { color: prompt.includes(token2) ? "primary" : "default", label: token2, onClick: () => addToken(token2) }))),
       React148.createElement(TextField_default, { label: t2("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
         props.onChange({
           prompt,
@@ -81949,24 +81951,24 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(extractNetworks, "extractNetworks");
   function getNetworkTokens(models, networks) {
-    const tokens = [];
+    const tokens = /* @__PURE__ */ new Set();
     if (doesExist2(models)) {
-      for (const [name, weight] of networks.inversion) {
+      for (const [name, _weight] of networks.inversion) {
         const model = models.networks.find((it) => it.type === "inversion" && it.name === name);
         if (doesExist2(model) && model.type === "inversion") {
-          tokens.push([model.token, weight]);
+          tokens.add(model.token);
         }
       }
-      for (const [name, weight] of networks.lora) {
+      for (const [name, _weight] of networks.lora) {
         const model = models.networks.find((it) => it.type === "lora" && it.name === name);
         if (doesExist2(model) && model.type === "lora") {
           for (const token2 of mustDefault(model.tokens, [])) {
-            tokens.push([token2, weight]);
+            tokens.add(token2);
           }
         }
       }
     }
-    return tokens;
+    return Array.from(tokens).sort();
   }
   __name(getNetworkTokens, "getNetworkTokens");
 
@@ -82058,14 +82060,14 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(QueryList, "QueryList");
 
   // out/src/components/control/ImageControl.js
-  var { useMemo: useMemo17 } = React150;
+  var { useMemo: useMemo18 } = React150;
   function omitPrompt(selector) {
     return (state) => (0, import_lodash4.omit)(selector(state), "prompt", "negativePrompt");
   }
   __name(omitPrompt, "omitPrompt");
   function ImageControl(props) {
     const { onChange, selector } = props;
-    const selectOmitPrompt = useMemo17(() => omitPrompt(selector), [selector]);
+    const selectOmitPrompt = useMemo18(() => omitPrompt(selector), [selector]);
     const { params } = mustExist((0, import_react33.useContext)(ConfigContext));
     const store = mustExist((0, import_react33.useContext)(StateContext));
     const state = useStore(store, selectOmitPrompt, shallow);
@@ -82557,7 +82559,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/input/EditableList.js
   var React155 = __toESM(require_react(), 1);
-  var { useContext: useContext38, useState: useState29, memo: memo2, useMemo: useMemo18 } = React155;
+  var { useContext: useContext38, useState: useState29, memo: memo2, useMemo: useMemo19 } = React155;
   function EditableList(props) {
     const { newItem, removeItem, renderItem, setItem, selector } = props;
     const { t: t2 } = useTranslation();
@@ -82565,7 +82567,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const items = useStore(store, selector);
     const [nextLabel, setNextLabel] = useState29("");
     const [nextSource, setNextSource] = useState29("");
-    const RenderMemo = useMemo18(() => memo2(renderItem), [renderItem]);
+    const RenderMemo = useMemo19(() => memo2(renderItem), [renderItem]);
     return React155.createElement(
       Stack_default2,
       { spacing: 2 },
@@ -83136,13 +83138,14 @@ Please use another name.` : formatMuiErrorMessage(18));
     return [];
   }
   __name(expandRanges, "expandRanges");
+  var GRID_TILE_SIZE = 8192;
   function makeTxt2ImgGridPipeline(grid2, model, params, upscale, highres) {
     const pipeline = {
       defaults: Object.assign(Object.assign({}, model), params),
       stages: []
     };
     const tiles = {
-      tiles: 8192
+      tiles: GRID_TILE_SIZE
     };
     const rows = replaceRandomSeeds(grid2.rows.parameter, rangeSplit(grid2.rows.parameter, grid2.rows.value));
     const columns = replaceRandomSeeds(grid2.columns.parameter, rangeSplit(grid2.columns.parameter, grid2.columns.value));
@@ -84068,6 +84071,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           "k-dpm-2": "KDPM2",
           "karras-ve": "Karras Ve",
           "ipndm": "iPNDM",
+          "lcm": "LCM",
           "lms-discrete": "LMS",
           "pndm": "PNDM",
           "unipc-multi": "UniPC Multistep"
