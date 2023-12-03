@@ -42,7 +42,7 @@ class StageResult:
         elif self.images is not None:
             return len(self.images)
         else:
-            raise ValueError("empty stage result")
+            return 0
 
     def as_numpy(self) -> List[np.ndarray]:
         if self.arrays is not None:
@@ -50,7 +50,7 @@ class StageResult:
         elif self.images is not None:
             return [np.array(i) for i in self.images]
         else:
-            raise ValueError("empty stage result")
+            return []
 
     def as_image(self) -> List[Image.Image]:
         if self.images is not None:
@@ -58,7 +58,7 @@ class StageResult:
         elif self.arrays is not None:
             return [Image.fromarray(np.uint8(i), shape_mode(i)) for i in self.arrays]
         else:
-            raise ValueError("empty stage result")
+            return []
 
 
 def shape_mode(arr: np.ndarray) -> str:

@@ -75,13 +75,13 @@ def get_from_list(
 
 
 def get_from_map(
-    args: Any, key: str, values: Dict[str, TElem], defaultKey: str
+    args: Any, key: str, values: Dict[str, TElem], default_key: str
 ) -> TElem:
-    selected = args.get(key, defaultKey)
+    selected = args.get(key, default_key)
     if selected in values:
         return values[selected]
     else:
-        return values[defaultKey]
+        return values[default_key]
 
 
 def get_not_empty(args: Any, key: str, default: TElem) -> TElem:
