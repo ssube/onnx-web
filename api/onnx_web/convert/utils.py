@@ -36,7 +36,7 @@ DEFAULT_OPSET = 14
 class ConversionContext(ServerContext):
     def __init__(
         self,
-        model_path: Optional[str] = None,
+        model_path: str = ".",
         cache_path: Optional[str] = None,
         device: Optional[str] = None,
         half: bool = False,
@@ -120,7 +120,7 @@ def download_progress(urls: List[Tuple[str, str]]):
 
 def tuple_to_source(model: Union[ModelDict, LegacyModel]):
     if isinstance(model, list) or isinstance(model, tuple):
-        name, source, *rest = model
+        name, source, *_rest = model
 
         return {
             "name": name,

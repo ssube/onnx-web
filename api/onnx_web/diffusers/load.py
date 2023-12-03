@@ -505,7 +505,7 @@ def load_unet(
 
 
 def load_vae(
-    server: ServerContext, device: DeviceParams, model: str, params: ImageParams
+    _server: ServerContext, device: DeviceParams, model: str, params: ImageParams
 ):
     # one or more VAE models need to be loaded
     vae = path.join(model, "vae", ONNX_MODEL)

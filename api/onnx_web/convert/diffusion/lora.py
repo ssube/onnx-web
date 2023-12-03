@@ -76,7 +76,7 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]) -> Dict[str, Any]
     names = [fix_node_name(node.name) for node in nodes]
 
     for key, value in keys.items():
-        root, *rest = key.split(".")
+        root, *_rest = key.split(".")
         logger.trace("fixing XL node name: %s -> %s", key, root)
 
         simple = False

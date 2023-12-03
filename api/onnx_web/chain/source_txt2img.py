@@ -3,7 +3,6 @@ from typing import Optional, Tuple
 
 import numpy as np
 import torch
-from PIL import Image
 
 from ..constants import LATENT_FACTOR
 from ..diffusers.load import load_pipeline
@@ -41,7 +40,7 @@ class SourceTxt2ImgStage(BaseStage):
         latents: Optional[np.ndarray] = None,
         prompt_index: Optional[int] = None,
         **kwargs,
-    ) -> Image.Image:
+    ) -> StageResult:
         params = params.with_args(**kwargs)
         size = size.with_args(**kwargs)
 

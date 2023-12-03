@@ -71,6 +71,7 @@ module = [
     "realesrgan",
     "realesrgan.archs.srvgg_arch",
     "safetensors",
+    "scipy",
     "timm.models.layers",
     "transformers",
     "win10toast"

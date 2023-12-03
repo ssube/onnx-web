@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Optional
+from typing import List, Optional
 
 from PIL import Image
 
@@ -28,7 +28,7 @@ class BlendGridStage(BaseStage):
         # rows: Optional[List[str]] = None,
         # columns: Optional[List[str]] = None,
         # title: Optional[str] = None,
-        order: Optional[int] = None,
+        order: Optional[List[int]] = None,
         stage_source: Optional[Image.Image] = None,
         callback: Optional[ProgressCallback] = None,
         **kwargs,

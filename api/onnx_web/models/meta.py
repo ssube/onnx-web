@@ -1,6 +1,6 @@
 from typing import List, Literal
 
-NetworkType = Literal["inversion", "lora"]
+NetworkType = Literal["control", "inversion", "lora"]
 
 
 class NetworkModel:

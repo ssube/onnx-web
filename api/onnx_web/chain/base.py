@@ -18,7 +18,7 @@ class BaseStage:
         _stage: StageParams,
         _params: ImageParams,
         _sources: StageResult,
-        *args,
+        *,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> StageResult:
