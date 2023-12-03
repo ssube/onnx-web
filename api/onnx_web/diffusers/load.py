@@ -231,7 +231,10 @@ def load_pipeline(
         else:
             if "vae" in components:
                 # upscale uses a single VAE
-                logger.debug("assembling SD pipeline for %s with single VAE", pipeline_class.__name__)
+                logger.debug(
+                    "assembling SD pipeline for %s with single VAE",
+                    pipeline_class.__name__,
+                )
                 pipe = pipeline_class(
                     components["vae"],
                     components["text_encoder"],
@@ -241,7 +244,10 @@ def load_pipeline(
                     scheduler,
                 )
             else:
-                logger.debug("assembling SD pipeline for %s with VAE codec", pipeline_class.__name__)
+                logger.debug(
+                    "assembling SD pipeline for %s with VAE codec",
+                    pipeline_class.__name__,
+                )
                 pipe = pipeline_class(
                     components["vae_encoder"],
                     components["vae_decoder"],
