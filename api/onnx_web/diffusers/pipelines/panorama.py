@@ -13,7 +13,8 @@
 # limitations under the License.
 
 import inspect
-from typing import Callable, List, Optional, Union
+from math import ceil
+from typing import Callable, List, Optional, Tuple, Union
 
 import numpy as np
 import PIL
@@ -356,13 +357,16 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                     f" {negative_prompt_embeds.shape}."
                 )
 
-    def get_views(self, panorama_height, panorama_width, window_size, stride):
+    def get_views(
+        self, panorama_height: int, panorama_width: int, window_size: int, stride: int
+    ) -> Tuple[List[Tuple[int, int, int, int]], Tuple[int, int]]:
         # Here, we define the mappings F_i (see Eq. 7 in the MultiDiffusion paper https://arxiv.org/abs/2302.08113)
         panorama_height /= 8
         panorama_width /= 8
 
-        num_blocks_height = abs((panorama_height - window_size) // stride) + 1
-        num_blocks_width = abs((panorama_width - window_size) // stride) + 1
+        num_blocks_height = ceil(abs((panorama_height - window_size) / stride)) + 1
+        num_blocks_width = ceil(abs((panorama_width - window_size) / stride)) + 1
+
         total_num_blocks = int(num_blocks_height * num_blocks_width)
         logger.debug(
             "panorama generated %s views, %s by %s blocks",
