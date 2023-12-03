@@ -563,8 +563,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros_like((latents.shape[0], latents.shape[1], *resize))
-        value = np.zeros_like((latents.shape[0], latents.shape[1], *resize))
+        count = np.zeros((latents.shape[0], latents.shape[1], *resize))
+        value = np.zeros((latents.shape[0], latents.shape[1], *resize))
 
         latents = expand_latents(
             latents,
