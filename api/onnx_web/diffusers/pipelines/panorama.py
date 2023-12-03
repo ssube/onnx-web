@@ -379,7 +379,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             w_end = w_start + window_size
             views.append((h_start, h_end, w_start, w_end))
 
-        return (views, (h_end, w_end))
+        return (views, (h_end * 8, w_end * 8))
 
     @torch.no_grad()
     def text2img(
@@ -559,13 +559,13 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros_like(latents)
-        value = np.zeros_like(latents)
+        count = np.zeros_like((latents[0], latents[1], *resize))
+        value = np.zeros_like((latents[0], latents[1], *resize))
 
         latents = expand_latents(
             latents,
-            generator.randint(),
-            Size(width, height),
+            generator.randint(np.iinfo(np.int32).max),
+            Size(resize[1], resize[0]),
             sigma=self.scheduler.init_noise_sigma,
         )
 

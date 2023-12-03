@@ -68,7 +68,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
             w_end = w_start + window_size
             views.append((h_start, h_end, w_start, w_end))
 
-        return (views, (h_end, w_end))
+        return (views, (h_end * 8, w_end * 8))
 
     # Adapted from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline.prepare_latents
     def prepare_latents_img2img(
@@ -393,8 +393,8 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         # adjust latents
         latents = expand_latents(
             latents,
-            generator.randint(),
-            Size(width, height),
+            generator.randint(np.iinfo(np.int32).max),
+            Size(resize[1], resize[0]),
             sigma=self.scheduler.init_noise_sigma,
         )
 
@@ -574,6 +574,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
         # remove extra margins
         latents = latents[:, :, 0:height, 0:width]
+
         if output_type == "latent":
             image = latents
         else:
