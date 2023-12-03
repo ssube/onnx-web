@@ -296,9 +296,9 @@ def expand_latents(
 
 def resize_latent_shape(
     latents: np.ndarray,
-    size: Size,
+    size: Tuple[int, int],
 ) -> Tuple[int, int, int, int]:
-    return (latents.shape[0], latents.shape[1], size.height, size.width)
+    return (latents.shape[0], latents.shape[1], *size)
 
 
 def get_tile_latents(
