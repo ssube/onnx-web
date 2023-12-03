@@ -280,11 +280,12 @@ def expand_latents(
     latents: np.ndarray,
     seed: int,
     size: Size,
+    sigma: float = 1.0,
 ) -> np.ndarray:
     batch, _channels, height, width = latents.shape
     extra_latents = get_latents_from_seed(seed, size, batch=batch)
     extra_latents[:, :, 0:height, 0:width] = latents
-    return extra_latents
+    return extra_latents * np.float64(sigma)
 
 
 def get_tile_latents(

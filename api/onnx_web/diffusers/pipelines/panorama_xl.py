@@ -391,7 +391,12 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         value = np.zeros_like((latents[0], latents[1], *resize))
 
         # adjust latents
-        latents = expand_latents(latents, generator.randint(), Size(width, height))
+        latents = expand_latents(
+            latents,
+            generator.randint(),
+            Size(width, height),
+            sigma=self.scheduler.init_noise_sigma,
+        )
 
         # 8. Denoising loop
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
