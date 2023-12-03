@@ -563,8 +563,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros_like((latents[0], latents[1], *resize))
-        value = np.zeros_like((latents[0], latents[1], *resize))
+        count = np.zeros_like((latents.shape[0], latents.shape[1], *resize))
+        value = np.zeros_like((latents.shape[0], latents.shape[1], *resize))
 
         latents = expand_latents(
             latents,
@@ -725,7 +725,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 callback(i, t, latents)
 
         # remove extra margins
-        latents = latents[:, :, 0:height, 0:width]
+        latents = latents[:, :, 0:(height // 8), 0:(width // 8)]
 
         latents = np.clip(latents, -4, +4)
         latents = 1 / 0.18215 * latents
