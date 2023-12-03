@@ -563,6 +563,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
+        logger.trace("panorama resized latents to %s", resize)
+
         count = np.zeros(resize_latent_shape(latents, resize))
         value = np.zeros(resize_latent_shape(latents, resize))
 
@@ -977,6 +979,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
+        logger.trace("panorama resized latents to %s", resize)
+
         count = np.zeros(resize_latent_shape(latents, resize))
         value = np.zeros(resize_latent_shape(latents, resize))
 
@@ -1298,6 +1302,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
+        logger.trace("panorama resized latents to %s", resize)
+
         count = np.zeros(resize_latent_shape(latents, resize))
         value = np.zeros(resize_latent_shape(latents, resize))
 

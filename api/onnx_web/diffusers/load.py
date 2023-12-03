@@ -229,10 +229,9 @@ def load_pipeline(
                 tokenizer_2=components.get("tokenizer_2", None),
             )
         else:
-            logger.debug("assembling SD pipeline for %s", pipeline_class.__name__)
-
-            if pipeline_class == OnnxStableDiffusionUpscalePipeline:
+            if "vae" in components:
                 # upscale uses a single VAE
+                logger.debug("assembling SD pipeline for %s with single VAE", pipeline_class.__name__)
                 pipe = pipeline_class(
                     components["vae"],
                     components["text_encoder"],
@@ -242,6 +241,7 @@ def load_pipeline(
                     scheduler,
                 )
             else:
+                logger.debug("assembling SD pipeline for %s with VAE codec", pipeline_class.__name__)
                 pipe = pipeline_class(
                     components["vae_encoder"],
                     components["vae_decoder"],
