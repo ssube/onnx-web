@@ -809,7 +809,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         )
 
         # 8. Panorama additions
-        views = self.get_views(height, width, self.window, self.stride)
+        views, resize = self.get_views(height, width, self.window, self.stride)
         count = np.zeros_like(latents)
         value = np.zeros_like(latents)
 

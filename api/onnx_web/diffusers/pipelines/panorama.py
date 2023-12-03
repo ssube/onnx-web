@@ -973,7 +973,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         timestep_dtype = ORT_TO_NP_TYPE[timestep_dtype]
 
         # panorama additions
-        views = self.get_views(height, width, self.window, self.stride)
+        views, resize = self.get_views(height, width, self.window, self.stride)
         count = np.zeros_like(latents)
         value = np.zeros_like(latents)
 
@@ -1281,7 +1281,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         timestep_dtype = ORT_TO_NP_TYPE[timestep_dtype]
 
         # panorama additions
-        views = self.get_views(height, width, self.window, self.stride)
+        views, resize = self.get_views(height, width, self.window, self.stride)
         count = np.zeros_like(latents)
         value = np.zeros_like(latents)
 
