@@ -12,8 +12,6 @@ from ...server import ServerContext
 
 logger = getLogger(__name__)
 
-LATENT_CHANNELS = 4
-
 
 class VAEWrapper(object):
     def __init__(

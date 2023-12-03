@@ -1,10 +1,10 @@
 from logging import getLogger
 from typing import Dict, Optional, Tuple
 
-import numpy as np
 from flask import request
 
 from ..diffusers.load import get_available_pipelines, get_pipeline_schedulers
+from ..diffusers.utils import random_seed
 from ..params import (
     Border,
     DeviceParams,
@@ -149,8 +149,7 @@ def build_params(
 
     seed = int(data.get("seed", -1))
     if seed == -1:
-        # this one can safely use np.random because it produces a single value
-        seed = np.random.randint(np.iinfo(np.int32).max)
+        seed = random_seed()
 
     params = ImageParams(
         model_path,

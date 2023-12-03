@@ -28,13 +28,14 @@ from diffusers.utils import PIL_INTERPOLATION, deprecate, logging
 from transformers import CLIPImageProcessor, CLIPTokenizer
 
 from ...chain.tile import make_tile_mask
+from ...constants import LATENT_CHANNELS, LATENT_FACTOR
 from ...params import Size
 from ..utils import (
-    LATENT_CHANNELS,
-    LATENT_FACTOR,
     expand_latents,
     parse_regions,
+    random_seed,
     repair_nan,
+    resize_latent_shape,
 )
 
 logger = logging.get_logger(__name__)
@@ -563,13 +564,13 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros((latents.shape[0], latents.shape[1], *resize))
-        value = np.zeros((latents.shape[0], latents.shape[1], *resize))
+        count = np.zeros(resize_latent_shape(latents, resize))
+        value = np.zeros(resize_latent_shape(latents, resize))
 
         # adjust latents
         latents = expand_latents(
             latents,
-            generator.randint(np.iinfo(np.int32).max),
+            random_seed(generator),
             Size(resize[1], resize[0]),
             sigma=self.scheduler.init_noise_sigma,
         )
@@ -726,7 +727,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 callback(i, t, latents)
 
         # remove extra margins
-        latents = latents[:, :, 0:(height // 8), 0:(width // 8)]
+        latents = latents[
+            :, :, 0 : (height // LATENT_FACTOR), 0 : (width // LATENT_FACTOR)
+        ]
 
         latents = np.clip(latents, -4, +4)
         latents = 1 / 0.18215 * latents
@@ -975,13 +978,13 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros((latents.shape[0], latents.shape[1], *resize))
-        value = np.zeros((latents.shape[0], latents.shape[1], *resize))
+        count = np.zeros(resize_latent_shape(latents, resize))
+        value = np.zeros(resize_latent_shape(latents, resize))
 
         # adjust latents
         latents = expand_latents(
             latents,
-            generator.randint(np.iinfo(np.int32).max),
+            random_seed(generator),
             Size(resize[1], resize[0]),
             sigma=self.scheduler.init_noise_sigma,
         )
@@ -1041,7 +1044,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 callback(i, t, latents)
 
         # remove extra margins
-        latents = latents[:, :, 0:(height // 8), 0:(width // 8)]
+        latents = latents[
+            :, :, 0 : (height // LATENT_FACTOR), 0 : (width // LATENT_FACTOR)
+        ]
 
         latents = 1 / 0.18215 * latents
         # image = self.vae_decoder(latent_sample=latents)[0]
@@ -1294,13 +1299,13 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros((latents.shape[0], latents.shape[1], *resize))
-        value = np.zeros((latents.shape[0], latents.shape[1], *resize))
+        count = np.zeros(resize_latent_shape(latents, resize))
+        value = np.zeros(resize_latent_shape(latents, resize))
 
         # adjust latents
         latents = expand_latents(
             latents,
-            generator.randint(np.iinfo(np.int32).max),
+            random_seed(generator),
             Size(resize[1], resize[0]),
             sigma=self.scheduler.init_noise_sigma,
         )
@@ -1367,7 +1372,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 callback(i, t, latents)
 
         # remove extra margins
-        latents = latents[:, :, 0:(height // 8), 0:(width // 8)]
+        latents = latents[
+            :, :, 0 : (height // LATENT_FACTOR), 0 : (width // LATENT_FACTOR)
+        ]
 
         latents = 1 / 0.18215 * latents
         # image = self.vae_decoder(latent_sample=latents)[0]

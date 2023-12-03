@@ -9,11 +9,11 @@ from optimum.onnxruntime import (  # ORTStableDiffusionXLInpaintPipeline,
 )
 from transformers import CLIPTokenizer
 
-from ..constants import ONNX_MODEL
+from ..constants import LATENT_FACTOR, ONNX_MODEL
 from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
 from ..convert.diffusion.textual_inversion import blend_textual_inversions
 from ..diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
-from ..diffusers.utils import LATENT_FACTOR, expand_prompt
+from ..diffusers.utils import expand_prompt
 from ..params import DeviceParams, ImageParams
 from ..server import ModelTypes, ServerContext
 from ..torch_before_ort import InferenceSession

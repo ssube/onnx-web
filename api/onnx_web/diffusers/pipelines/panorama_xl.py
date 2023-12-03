@@ -15,8 +15,15 @@ from optimum.pipelines.diffusers.pipeline_stable_diffusion_xl_img2img import (
 from optimum.pipelines.diffusers.pipeline_utils import rescale_noise_cfg
 
 from ...chain.tile import make_tile_mask
+from ...constants import LATENT_FACTOR
 from ...params import Size
-from ..utils import LATENT_FACTOR, expand_latents, parse_regions, repair_nan
+from ..utils import (
+    expand_latents,
+    parse_regions,
+    random_seed,
+    repair_nan,
+    resize_latent_shape,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -387,13 +394,13 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
         # 8. Panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros((latents.shape[0], latents.shape[1], *resize))
-        value = np.zeros((latents.shape[0], latents.shape[1], *resize))
+        count = np.zeros(resize_latent_shape(latents, resize))
+        value = np.zeros(resize_latent_shape(latents, resize))
 
         # adjust latents
         latents = expand_latents(
             latents,
-            generator.randint(np.iinfo(np.int32).max),
+            random_seed(generator),
             Size(resize[1], resize[0]),
             sigma=self.scheduler.init_noise_sigma,
         )
@@ -573,7 +580,9 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                     callback(i, t, latents)
 
         # remove extra margins
-        latents = latents[:, :, 0:(height // 8), 0:(width // 8)]
+        latents = latents[
+            :, :, 0 : (height // LATENT_FACTOR), 0 : (width // LATENT_FACTOR)
+        ]
 
         if output_type == "latent":
             image = latents
@@ -810,12 +819,12 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
         # 8. Panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros((latents.shape[0], latents.shape[1], *resize))
-        value = np.zeros((latents.shape[0], latents.shape[1], *resize))
+        count = np.zeros(resize_latent_shape(latents, resize))
+        value = np.zeros(resize_latent_shape(latents, resize))
 
         latents = expand_latents(
             latents,
-            generator.randint(np.iinfo(np.int32).max),
+            random_seed(generator),
             Size(resize[1], resize[0]),
             sigma=self.scheduler.init_noise_sigma,
         )
@@ -889,7 +898,9 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                     callback(i, t, latents)
 
         # remove extra margins
-        latents = latents[:, :, 0:(height // 8), 0:(width // 8)]
+        latents = latents[
+            :, :, 0 : (height // LATENT_FACTOR), 0 : (width // LATENT_FACTOR)
+        ]
 
         if output_type == "latent":
             image = latents

@@ -9,12 +9,11 @@ import numpy as np
 import torch
 from diffusers import OnnxStableDiffusionPipeline
 
+from ..constants import LATENT_CHANNELS, LATENT_FACTOR
 from ..params import ImageParams, Size
 
 logger = getLogger(__name__)
 
-LATENT_CHANNELS = 4
-LATENT_FACTOR = 8
 MAX_TOKENS_PER_GROUP = 77
 
 ANY_TOKEN = compile(r"\<([^\>]*)\>")
@@ -261,6 +260,13 @@ def get_inversions_from_prompt(prompt: str) -> Tuple[str, List[Tuple[str, float]
     return get_tokens_from_prompt(prompt, INVERSION_TOKEN)
 
 
+def random_seed(generator=None) -> int:
+    if generator is None:
+        generator = np.random
+
+    return generator.randint(np.iinfo(np.int32).max)
+
+
 def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
     """
     From https://www.travelneil.com/stable-diffusion-updates.html.
@@ -286,6 +292,13 @@ def expand_latents(
     extra_latents = get_latents_from_seed(seed, size, batch=batch)
     extra_latents[:, :, 0:height, 0:width] = latents
     return extra_latents * np.float64(sigma)
+
+
+def resize_latent_shape(
+    latents: np.ndarray,
+    size: Size,
+) -> Tuple[int, int, int, int]:
+    return (latents.shape[0], latents.shape[1], size.height, size.width)
 
 
 def get_tile_latents(

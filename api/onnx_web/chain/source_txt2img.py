@@ -5,9 +5,9 @@ import numpy as np
 import torch
 from PIL import Image
 
+from ..constants import LATENT_FACTOR
 from ..diffusers.load import load_pipeline
 from ..diffusers.utils import (
-    LATENT_FACTOR,
     encode_prompt,
     get_latents_from_seed,
     get_tile_latents,
