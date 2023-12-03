@@ -276,6 +276,17 @@ def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
     return image_latents
 
 
+def expand_latents(
+    latents: np.ndarray,
+    seed: int,
+    size: Size,
+) -> np.ndarray:
+    batch, _channels, height, width = latents.shape
+    extra_latents = get_latents_from_seed(seed, size, batch=batch)
+    extra_latents[:, :, 0:height, 0:width] = latents
+    return extra_latents
+
+
 def get_tile_latents(
     full_latents: np.ndarray,
     seed: int,
@@ -301,11 +312,7 @@ def get_tile_latents(
     tile_latents = full_latents[:, :, y:yt, x:xt]
 
     if tile_latents.shape[2] < t or tile_latents.shape[3] < t:
-        extra_latents = get_latents_from_seed(seed, size, batch=tile_latents.shape[0])
-        extra_latents[
-            :, :, 0 : tile_latents.shape[2], 0 : tile_latents.shape[3]
-        ] = tile_latents
-        tile_latents = extra_latents
+        tile_latents = expand_latents(tile_latents, seed, size)
 
     return tile_latents
 
