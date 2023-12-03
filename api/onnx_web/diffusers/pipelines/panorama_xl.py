@@ -810,8 +810,15 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
         # 8. Panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros_like(latents)
-        value = np.zeros_like(latents)
+        count = np.zeros((latents.shape[0], latents.shape[1], *resize))
+        value = np.zeros((latents.shape[0], latents.shape[1], *resize))
+
+        latents = expand_latents(
+            latents,
+            generator.randint(np.iinfo(np.int32).max),
+            Size(resize[1], resize[0]),
+            sigma=self.scheduler.init_noise_sigma,
+        )
 
         # 8. Denoising loop
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
@@ -880,6 +887,9 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
             ):
                 if callback is not None and i % callback_steps == 0:
                     callback(i, t, latents)
+
+        # remove extra margins
+        latents = latents[:, :, 0:(height // 8), 0:(width // 8)]
 
         if output_type == "latent":
             image = latents

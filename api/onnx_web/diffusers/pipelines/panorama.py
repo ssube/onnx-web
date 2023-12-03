@@ -566,6 +566,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         count = np.zeros((latents.shape[0], latents.shape[1], *resize))
         value = np.zeros((latents.shape[0], latents.shape[1], *resize))
 
+        # adjust latents
         latents = expand_latents(
             latents,
             generator.randint(np.iinfo(np.int32).max),
@@ -974,8 +975,16 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros_like(latents)
-        value = np.zeros_like(latents)
+        count = np.zeros((latents.shape[0], latents.shape[1], *resize))
+        value = np.zeros((latents.shape[0], latents.shape[1], *resize))
+
+        # adjust latents
+        latents = expand_latents(
+            latents,
+            generator.randint(np.iinfo(np.int32).max),
+            Size(resize[1], resize[0]),
+            sigma=self.scheduler.init_noise_sigma,
+        )
 
         for i, t in enumerate(self.progress_bar(timesteps)):
             count.fill(0)
@@ -1030,6 +1039,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             # call the callback, if provided
             if callback is not None and i % callback_steps == 0:
                 callback(i, t, latents)
+
+        # remove extra margins
+        latents = latents[:, :, 0:(height // 8), 0:(width // 8)]
 
         latents = 1 / 0.18215 * latents
         # image = self.vae_decoder(latent_sample=latents)[0]
@@ -1282,8 +1294,16 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         # panorama additions
         views, resize = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros_like(latents)
-        value = np.zeros_like(latents)
+        count = np.zeros((latents.shape[0], latents.shape[1], *resize))
+        value = np.zeros((latents.shape[0], latents.shape[1], *resize))
+
+        # adjust latents
+        latents = expand_latents(
+            latents,
+            generator.randint(np.iinfo(np.int32).max),
+            Size(resize[1], resize[0]),
+            sigma=self.scheduler.init_noise_sigma,
+        )
 
         for i, t in enumerate(self.progress_bar(self.scheduler.timesteps)):
             count.fill(0)
@@ -1345,6 +1365,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             # call the callback, if provided
             if callback is not None and i % callback_steps == 0:
                 callback(i, t, latents)
+
+        # remove extra margins
+        latents = latents[:, :, 0:(height // 8), 0:(width // 8)]
 
         latents = 1 / 0.18215 * latents
         # image = self.vae_decoder(latent_sample=latents)[0]
