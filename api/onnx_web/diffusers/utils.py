@@ -88,8 +88,8 @@ def expand_prompt(
     negative_prompt: Optional[str] = None,
     prompt_embeds: Optional[np.ndarray] = None,
     negative_prompt_embeds: Optional[np.ndarray] = None,
-    skip_clip_states: Optional[int] = 0,
-) -> "np.NDArray":
+    skip_clip_states: int = 0,
+) -> np.ndarray:
     # self provides:
     #   tokenizer: CLIPTokenizer
     #   encoder: OnnxRuntimeModel
@@ -144,6 +144,7 @@ def expand_prompt(
 
         last_state, _pooled_output, *hidden_states = text_result
         if skip_clip_states > 0:
+            # TODO: why is this normalized?
             layer_norm = torch.nn.LayerNorm(last_state.shape[2])
             norm_state = layer_norm(
                 torch.from_numpy(

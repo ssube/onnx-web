@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 
 from ..models.onnx import OnnxModel
-from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
+from ..params import DeviceParams, ImageParams, SizeChart, StageParams, UpscaleParams
 from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
@@ -17,7 +17,7 @@ logger = getLogger(__name__)
 
 
 class UpscaleSwinIRStage(BaseStage):
-    max_tile = 64
+    max_tile = SizeChart.micro
 
     def load(
         self,

@@ -20,7 +20,7 @@ SAFE_CHARS = "._-"
 
 def split_list(val: str) -> List[str]:
     parts = [part.strip() for part in val.split(",")]
-    return [part for part in parts if len(part.strip()) > 0]
+    return [part for part in parts if len(part) > 0]
 
 
 def base_join(base: str, tail: str) -> str:
@@ -75,13 +75,13 @@ def get_from_list(
 
 
 def get_from_map(
-    args: Any, key: str, values: Dict[str, TElem], default: TElem
+    args: Any, key: str, values: Dict[str, TElem], defaultKey: str
 ) -> TElem:
-    selected = args.get(key, default)
+    selected = args.get(key, defaultKey)
     if selected in values:
         return values[selected]
     else:
-        return values[default]
+        return values[defaultKey]
 
 
 def get_not_empty(args: Any, key: str, default: TElem) -> TElem:
@@ -209,6 +209,8 @@ def load_config(file: str) -> Dict:
         return load_yaml(file)
     elif ext in [".json"]:
         return load_json(file)
+    else:
+        raise ValueError("unknown config file extension")
 
 
 def load_config_str(raw: str) -> Dict:

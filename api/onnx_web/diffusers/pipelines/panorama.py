@@ -43,7 +43,6 @@ logger = logging.get_logger(__name__)
 
 # inpaint constants
 NUM_UNET_INPUT_CHANNELS = 9
-NUM_LATENT_CHANNELS = 4
 
 DEFAULT_WINDOW = 32
 DEFAULT_STRIDE = 8
@@ -1215,7 +1214,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             negative_prompt_embeds=negative_prompt_embeds,
         )
 
-        num_channels_latents = NUM_LATENT_CHANNELS
+        num_channels_latents = LATENT_CHANNELS
         latents_shape = (
             batch_size * num_images_per_prompt,
             num_channels_latents,

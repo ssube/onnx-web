@@ -14,6 +14,7 @@ Point = Tuple[int, int]
 
 
 class SizeChart(IntEnum):
+    micro = 64
     mini = 128  # small tile for very expensive models
     half = 256  # half tile for outpainting
     auto = 512  # auto tile size
@@ -201,7 +202,7 @@ class ImageParams:
     batch: int
     control: Optional[NetworkModel]
     input_prompt: str
-    input_negative_prompt: str
+    input_negative_prompt: Optional[str]
     loopback: int
     tiled_vae: bool
     unet_tile: int
@@ -257,7 +258,7 @@ class ImageParams:
     def do_cfg(self):
         return self.cfg > 1.0
 
-    def get_valid_pipeline(self, group: str, pipeline: str = None) -> str:
+    def get_valid_pipeline(self, group: str, pipeline: Optional[str] = None) -> str:
         pipeline = pipeline or self.pipeline
 
         # if the correct pipeline was already requested, simply use that
