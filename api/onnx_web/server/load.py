@@ -163,8 +163,8 @@ def load_extras(server: ServerContext):
     global extra_strings
     global extra_tokens
 
-    labels = {}
-    strings = {}
+    labels: Dict[str, str] = {}
+    strings: Dict[str, Any] = {}
 
     extra_schema = load_config("./schemas/extras.yaml")
 
@@ -415,7 +415,7 @@ def load_platforms(server: ServerContext) -> None:
         ):
             if potential == "cuda" or potential == "rocm":
                 for i in range(torch.cuda.device_count()):
-                    options = {
+                    options: Dict[str, Union[int, str]] = {
                         "device_id": i,
                     }
 

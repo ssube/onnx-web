@@ -1,11 +1,11 @@
 from logging import getLogger
 from typing import Optional
 
-from ..chain.base import ChainPipeline
 from ..chain.blend_img2img import BlendImg2ImgStage
 from ..chain.upscale import stage_upscale_correction
 from ..chain.upscale_simple import UpscaleSimpleStage
 from ..params import HighresParams, ImageParams, StageParams, UpscaleParams
+from .pipeline import ChainPipeline
 
 logger = getLogger(__name__)
 
@@ -57,7 +57,7 @@ def stage_highres(
 
         chain.stage(
             BlendImg2ImgStage(),
-            stage,
+            stage.with_args(outscale=1),
             overlap=params.vae_overlap,
             prompt_index=prompt_index + i,
             strength=highres.strength,

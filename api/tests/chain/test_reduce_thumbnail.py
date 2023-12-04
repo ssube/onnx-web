@@ -2,8 +2,8 @@ import unittest
 
 from PIL import Image
 
-from onnx_web.chain.reduce_crop import ReduceCropStage
 from onnx_web.chain.reduce_thumbnail import ReduceThumbnailStage
+from onnx_web.chain.result import StageResult
 from onnx_web.params import HighresParams, Size, UpscaleParams
 
 
@@ -11,7 +11,7 @@ class ReduceThumbnailStageTests(unittest.TestCase):
     def test_empty(self):
         stage_source = Image.new("RGB", (64, 64))
         stage = ReduceThumbnailStage()
-        sources = []
+        sources = StageResult.empty()
         result = stage.run(
             None,
             None,

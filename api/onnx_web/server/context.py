@@ -5,7 +5,7 @@ from typing import List, Optional
 
 import torch
 
-from ..utils import get_boolean
+from ..utils import get_boolean, get_list
 from .model_cache import ModelCache
 
 logger = getLogger(__name__)
@@ -40,6 +40,8 @@ class ServerContext:
     server_version: str
     worker_retries: int
     feature_flags: List[str]
+    plugins: List[str]
+    debug: bool
 
     def __init__(
         self,
@@ -63,6 +65,8 @@ class ServerContext:
         server_version: Optional[str] = DEFAULT_SERVER_VERSION,
         worker_retries: Optional[int] = DEFAULT_WORKER_RETRIES,
         feature_flags: Optional[List[str]] = None,
+        plugins: Optional[List[str]] = None,
+        debug: bool = False,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -84,6 +88,8 @@ class ServerContext:
         self.server_version = server_version
         self.worker_retries = worker_retries
         self.feature_flags = feature_flags or []
+        self.plugins = plugins or []
+        self.debug = debug
 
         self.cache = ModelCache(self.cache_limit)
 
@@ -100,20 +106,19 @@ class ServerContext:
             model_path=environ.get("ONNX_WEB_MODEL_PATH", path.join("..", "models")),
             output_path=environ.get("ONNX_WEB_OUTPUT_PATH", path.join("..", "outputs")),
             params_path=environ.get("ONNX_WEB_PARAMS_PATH", "."),
-            # others
-            cors_origin=environ.get("ONNX_WEB_CORS_ORIGIN", "*").split(","),
+            cors_origin=get_list(environ, "ONNX_WEB_CORS_ORIGIN", default="*"),
             any_platform=get_boolean(
                 environ, "ONNX_WEB_ANY_PLATFORM", DEFAULT_ANY_PLATFORM
             ),
-            block_platforms=environ.get("ONNX_WEB_BLOCK_PLATFORMS", "").split(","),
+            block_platforms=get_list(environ, "ONNX_WEB_BLOCK_PLATFORMS"),
             default_platform=environ.get("ONNX_WEB_DEFAULT_PLATFORM", None),
-            image_format=environ.get("ONNX_WEB_IMAGE_FORMAT", "png"),
+            image_format=environ.get("ONNX_WEB_IMAGE_FORMAT", DEFAULT_IMAGE_FORMAT),
             cache_limit=int(environ.get("ONNX_WEB_CACHE_MODELS", DEFAULT_CACHE_LIMIT)),
             show_progress=get_boolean(
                 environ, "ONNX_WEB_SHOW_PROGRESS", DEFAULT_SHOW_PROGRESS
             ),
-            optimizations=environ.get("ONNX_WEB_OPTIMIZATIONS", "").split(","),
-            extra_models=environ.get("ONNX_WEB_EXTRA_MODELS", "").split(","),
+            optimizations=get_list(environ, "ONNX_WEB_OPTIMIZATIONS"),
+            extra_models=get_list(environ, "ONNX_WEB_EXTRA_MODELS"),
             job_limit=int(environ.get("ONNX_WEB_JOB_LIMIT", DEFAULT_JOB_LIMIT)),
             memory_limit=memory_limit,
             admin_token=environ.get("ONNX_WEB_ADMIN_TOKEN", None),
@@ -123,7 +128,9 @@ class ServerContext:
             worker_retries=int(
                 environ.get("ONNX_WEB_WORKER_RETRIES", DEFAULT_WORKER_RETRIES)
             ),
-            feature_flags=environ.get("ONNX_WEB_FEATURE_FLAGS", "").split(","),
+            feature_flags=get_list(environ, "ONNX_WEB_FEATURE_FLAGS"),
+            plugins=get_list(environ, "ONNX_WEB_PLUGINS", ""),
+            debug=get_boolean(environ, "ONNX_WEB_DEBUG", False),
         )
 
     def has_feature(self, flag: str) -> bool:

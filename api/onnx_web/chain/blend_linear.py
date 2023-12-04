@@ -1,12 +1,13 @@
 from logging import getLogger
-from typing import List, Optional
+from typing import Optional
 
 from PIL import Image
 
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -18,13 +19,18 @@ class BlendLinearStage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         alpha: float,
         stage_source: Optional[Image.Image] = None,
         _callback: Optional[ProgressCallback] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         logger.info("blending source images using linear interpolation")
 
-        return [Image.blend(source, stage_source, alpha) for source in sources]
+        return StageResult(
+            images=[
+                Image.blend(source, stage_source, alpha)
+                for source in sources.as_image()
+            ]
+        )

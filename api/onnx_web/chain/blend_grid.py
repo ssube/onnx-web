@@ -3,10 +3,11 @@ from typing import List, Optional
 
 from PIL import Image
 
-from ..params import ImageParams, SizeChart, StageParams
+from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -20,36 +21,38 @@ class BlendGridStage(BaseStage):
         _server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         height: int,
         width: int,
         # rows: Optional[List[str]] = None,
         # columns: Optional[List[str]] = None,
         # title: Optional[str] = None,
-        order: Optional[int] = None,
+        order: Optional[List[int]] = None,
         stage_source: Optional[Image.Image] = None,
         callback: Optional[ProgressCallback] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         logger.info("combining source images using grid layout")
 
-        size = sources[0].size
+        images = sources.as_image()
+        ref_image = images[0]
+        size = Size(*ref_image.size)
 
-        output = Image.new("RGB", (size[0] * width, size[1] * height))
+        output = Image.new(ref_image.mode, (size.width * width, size.height * height))
 
         # TODO: labels
         if order is None:
-            order = range(len(sources))
+            order = range(len(images))
 
         for i in range(len(order)):
             x = i % width
             y = i // width
 
             n = order[i]
-            output.paste(sources[n], (x * size[0], y * size[1]))
+            output.paste(images[n], (x * size.width, y * size.height))
 
-        return [*sources, output]
+        return StageResult(images=[*images, output])
 
     def outputs(
         self,

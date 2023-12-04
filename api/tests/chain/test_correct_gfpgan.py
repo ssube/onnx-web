@@ -1,20 +1,18 @@
 import unittest
 
-from onnx_web.chain.correct_codeformer import CorrectCodeformerStage
+from onnx_web.chain.correct_gfpgan import CorrectGFPGANStage
 from onnx_web.chain.result import StageResult
 from onnx_web.params import HighresParams, UpscaleParams
 from onnx_web.server.context import ServerContext
 from onnx_web.server.hacks import apply_patches
 from onnx_web.worker.context import WorkerContext
-from tests.helpers import (
-    TEST_MODEL_CORRECTION_CODEFORMER,
-    test_device,
-    test_needs_models,
-)
+from tests.helpers import test_device, test_needs_onnx_models
+
+TEST_MODEL = "../models/correction-gfpgan-v1-3"
 
 
-class CorrectCodeformerStageTests(unittest.TestCase):
-    @test_needs_models([TEST_MODEL_CORRECTION_CODEFORMER])
+class CorrectGFPGANStageTests(unittest.TestCase):
+    @test_needs_onnx_models([TEST_MODEL])
     def test_empty(self):
         server = ServerContext(model_path="../models", output_path="../outputs")
         apply_patches(server)
@@ -31,7 +29,7 @@ class CorrectCodeformerStageTests(unittest.TestCase):
             0,
             0.1,
         )
-        stage = CorrectCodeformerStage()
+        stage = CorrectGFPGANStage()
         sources = StageResult.empty()
         result = stage.run(
             worker,
@@ -40,7 +38,7 @@ class CorrectCodeformerStageTests(unittest.TestCase):
             None,
             sources,
             highres=HighresParams(False, 1, 0, 0),
-            upscale=UpscaleParams(""),
+            upscale=UpscaleParams(TEST_MODEL),
         )
 
         self.assertEqual(len(result), 0)

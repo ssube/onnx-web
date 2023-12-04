@@ -17,21 +17,21 @@ def noise_source_fill_edge(
     """
     width, height = dims
 
-    noise = Image.new("RGB", (width, height), fill)
+    noise = Image.new(source.mode, (width, height), fill)
     noise.paste(source, origin)
 
     return noise
 
 
 def noise_source_fill_mask(
-    _source: Image.Image, dims: Point, _origin: Point, fill="white", **kw
+    source: Image.Image, dims: Point, _origin: Point, fill="white", **kw
 ) -> Image.Image:
     """
     Fill the whole canvas, no source or noise.
     """
     width, height = dims
 
-    noise = Image.new("RGB", (width, height), fill)
+    noise = Image.new(source.mode, (width, height), fill)
 
     return noise
 
@@ -52,7 +52,7 @@ def noise_source_gaussian(
 
 
 def noise_source_uniform(
-    _source: Image.Image, dims: Point, _origin: Point, **kw
+    source: Image.Image, dims: Point, _origin: Point, **kw
 ) -> Image.Image:
     width, height = dims
     size = width * height
@@ -61,6 +61,7 @@ def noise_source_uniform(
     noise_g = random.uniform(0, 256, size=size)
     noise_b = random.uniform(0, 256, size=size)
 
+    # needs to be RGB for pixel manipulation
     noise = Image.new("RGB", (width, height))
 
     for x in range(width):
@@ -68,11 +69,11 @@ def noise_source_uniform(
             i = get_pixel_index(x, y, width)
             noise.putpixel((x, y), (int(noise_r[i]), int(noise_g[i]), int(noise_b[i])))
 
-    return noise
+    return noise.convert(source.mode)
 
 
 def noise_source_normal(
-    _source: Image.Image, dims: Point, _origin: Point, **kw
+    source: Image.Image, dims: Point, _origin: Point, **kw
 ) -> Image.Image:
     width, height = dims
     size = width * height
@@ -81,6 +82,7 @@ def noise_source_normal(
     noise_g = random.normal(128, 32, size=size)
     noise_b = random.normal(128, 32, size=size)
 
+    # needs to be RGB for pixel manipulation
     noise = Image.new("RGB", (width, height))
 
     for x in range(width):
@@ -88,13 +90,13 @@ def noise_source_normal(
             i = get_pixel_index(x, y, width)
             noise.putpixel((x, y), (int(noise_r[i]), int(noise_g[i]), int(noise_b[i])))
 
-    return noise
+    return noise.convert(source.mode)
 
 
 def noise_source_histogram(
     source: Image.Image, dims: Point, _origin: Point, **kw
 ) -> Image.Image:
-    r, g, b = source.split()
+    r, g, b, *_a = source.split()
     width, height = dims
     size = width * height
 
@@ -112,6 +114,7 @@ def noise_source_histogram(
         256, p=np.divide(np.copy(hist_b), np.sum(hist_b)), size=size
     )
 
+    # needs to be RGB for pixel manipulation
     noise = Image.new("RGB", (width, height))
 
     for x in range(width):
@@ -119,4 +122,4 @@ def noise_source_histogram(
             i = get_pixel_index(x, y, width)
             noise.putpixel((x, y), (noise_r[i], noise_g[i], noise_b[i]))
 
-    return noise
+    return noise.convert(source.mode)

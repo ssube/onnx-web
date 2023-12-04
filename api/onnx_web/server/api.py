@@ -8,6 +8,7 @@ from jsonschema import validate
 from PIL import Image
 
 from ..chain import CHAIN_STAGES, ChainPipeline
+from ..chain.result import StageResult
 from ..diffusers.load import get_available_pipelines, get_pipeline_schedulers
 from ..diffusers.run import (
     run_blend_pipeline,
@@ -252,7 +253,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     if mask_file is None:
         return error_reply("mask image is required")
 
-    source = Image.open(BytesIO(source_file.read())).convert("RGB")
+    source = Image.open(BytesIO(source_file.read())).convert("RGBA")
     size = Size(source.width, source.height)
 
     mask_top_layer = Image.open(BytesIO(mask_file.read())).convert("RGBA")
@@ -472,7 +473,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
         pipeline,
         server,
         base_params,
-        [],
+        StageResult.empty(),
         output=output,
         size=base_size,
         needs_device=device,

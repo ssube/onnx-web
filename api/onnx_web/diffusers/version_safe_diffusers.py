@@ -13,6 +13,11 @@ except ImportError:
     from ..diffusers.stub_scheduler import StubScheduler as DEISMultistepScheduler
 
 try:
+    from diffusers import LCMScheduler
+except ImportError:
+    from ..diffusers.stub_scheduler import StubScheduler as LCMScheduler
+
+try:
     from diffusers import UniPCMultistepScheduler
 except ImportError:
     from ..diffusers.stub_scheduler import StubScheduler as UniPCMultistepScheduler

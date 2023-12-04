@@ -86,7 +86,7 @@ class WorkerContext:
         return 0
 
     def get_progress_callback(self) -> ProgressCallback:
-        from ..chain.base import ChainProgress
+        from ..chain.pipeline import ChainProgress
 
         def on_progress(step: int, timestep: int, latents: Any):
             on_progress.step = step

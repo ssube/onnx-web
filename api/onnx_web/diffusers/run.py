@@ -13,6 +13,7 @@ from ..chain import (
     UpscaleOutpaintStage,
 )
 from ..chain.highres import stage_highres
+from ..chain.result import StageResult
 from ..chain.upscale import split_upscale, stage_upscale_correction
 from ..image import expand_image
 from ..output import save_image
@@ -33,6 +34,24 @@ from .utils import get_latents_from_seed, parse_prompt
 logger = getLogger(__name__)
 
 
+def get_base_tile(params: ImageParams, size: Size) -> int:
+    if params.is_panorama():
+        tile = max(params.unet_tile, size.width, size.height)
+        logger.debug("adjusting tile size for panorama to %s", tile)
+        return tile
+
+    return params.unet_tile
+
+
+def get_highres_tile(
+    server: ServerContext, params: ImageParams, highres: HighresParams, tile: int
+) -> int:
+    if params.is_panorama() and server.has_feature("panorama-highres"):
+        return tile * highres.scale
+
+    return params.unet_tile
+
+
 def run_txt2img_pipeline(
     worker: WorkerContext,
     server: ServerContext,
@@ -43,11 +62,7 @@ def run_txt2img_pipeline(
     highres: HighresParams,
 ) -> None:
     # if using panorama, the pipeline will tile itself (views)
-    if params.is_panorama():
-        tile_size = max(params.unet_tile, size.width, size.height)
-        logger.debug("adjusting tile size for panorama to %s", tile_size)
-    else:
-        tile_size = params.unet_tile
+    tile_size = get_base_tile(params, size)
 
     # prepare the chain pipeline and first stage
     chain = ChainPipeline()
@@ -62,22 +77,17 @@ def run_txt2img_pipeline(
     )
 
     # apply upscaling and correction, before highres
-    highres_size = params.unet_tile
-    stage = StageParams(tile_size=highres_size)
-
+    highres_size = get_highres_tile(server, params, highres, tile_size)
     if params.is_panorama():
         chain.stage(
             BlendDenoiseStage(),
-            stage,
+            StageParams(tile_size=highres_size),
         )
-
-        if server.has_feature("panorama-highres"):
-            highres_size = tile_size * highres.scale
 
     first_upscale, after_upscale = split_upscale(upscale)
     if first_upscale:
         stage_upscale_correction(
-            stage,
+            StageParams(outscale=first_upscale.outscale, tile_size=highres_size),
             params,
             chain=chain,
             upscale=first_upscale,
@@ -85,7 +95,7 @@ def run_txt2img_pipeline(
 
     # apply highres
     stage_highres(
-        stage,
+        StageParams(outscale=highres.scale, tile_size=highres_size),
         params,
         highres,
         upscale,
@@ -95,7 +105,7 @@ def run_txt2img_pipeline(
 
     # apply upscaling and correction, after highres
     stage_upscale_correction(
-        stage,
+        StageParams(outscale=after_upscale.outscale, tile_size=highres_size),
         params,
         chain=chain,
         upscale=after_upscale,
@@ -104,7 +114,9 @@ def run_txt2img_pipeline(
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     progress = worker.get_progress_callback()
-    images = chain.run(worker, server, params, [], callback=progress, latents=latents)
+    images = chain.run(
+        worker, server, params, StageResult.empty(), callback=progress, latents=latents
+    )
 
     _pairs, loras, inversions, _rest = parse_prompt(params)
 
@@ -149,13 +161,13 @@ def run_img2img_pipeline(
             source = f(server, source)
 
     # prepare the chain pipeline and first stage
+    tile_size = get_base_tile(params, Size(*source.size))
     chain = ChainPipeline()
-    stage = StageParams(
-        tile_size=params.unet_tile,
-    )
     chain.stage(
         BlendImg2ImgStage(),
-        stage,
+        StageParams(
+            tile_size=tile_size,
+        ),
         prompt_index=0,
         strength=strength,
         overlap=params.vae_overlap,
@@ -165,7 +177,10 @@ def run_img2img_pipeline(
     first_upscale, after_upscale = split_upscale(upscale)
     if first_upscale:
         stage_upscale_correction(
-            stage,
+            StageParams(
+                outscale=first_upscale.outscale,
+                tile_size=tile_size,
+            ),
             params,
             upscale=first_upscale,
             chain=chain,
@@ -175,13 +190,16 @@ def run_img2img_pipeline(
     for _i in range(params.loopback):
         chain.stage(
             BlendImg2ImgStage(),
-            stage,
+            StageParams(
+                tile_size=tile_size,
+            ),
             strength=strength,
         )
 
     # highres, if selected
+    highres_size = get_highres_tile(server, params, highres, tile_size)
     stage_highres(
-        stage,
+        StageParams(tile_size=highres_size, outscale=highres.scale),
         params,
         highres,
         upscale,
@@ -191,7 +209,7 @@ def run_img2img_pipeline(
 
     # apply upscaling and correction, after highres
     stage_upscale_correction(
-        stage,
+        StageParams(tile_size=tile_size, outscale=after_upscale.scale),
         params,
         upscale=after_upscale,
         chain=chain,
@@ -199,7 +217,9 @@ def run_img2img_pipeline(
 
     # run and append the filtered source
     progress = worker.get_progress_callback()
-    images = chain(worker, server, params, [source], callback=progress)
+    images = chain.run(
+        worker, server, params, StageResult(images=[source]), callback=progress
+    )
 
     if source_filter is not None and source_filter != "none":
         images.append(source)
@@ -248,7 +268,7 @@ def run_inpaint_pipeline(
     full_res_inpaint_padding: float,
 ) -> None:
     logger.debug("building inpaint pipeline")
-    tile_size = params.unet_tile
+    tile_size = get_base_tile(params, size)
 
     if mask is None:
         # if no mask was provided, keep the full source image
@@ -277,8 +297,12 @@ def run_inpaint_pipeline(
     logger.debug("border zero: %s", border.isZero())
     full_res_inpaint = full_res_inpaint and border.isZero()
     if full_res_inpaint:
-        mask_left, mask_top, mask_right, mask_bottom = mask.getbbox()
-        logger.debug("mask bbox: %s", mask.getbbox())
+        bbox = mask.getbbox()
+        if bbox is None:
+            bbox = (0, 0, source.width, source.height)
+
+        logger.debug("mask bounding box: %s", bbox)
+        mask_left, mask_top, mask_right, mask_bottom = bbox
         mask_width = mask_right - mask_left
         mask_height = mask_bottom - mask_top
         # ensure we have some padding around the mask when we do the inpaint (and that the region size is even)
@@ -335,10 +359,9 @@ def run_inpaint_pipeline(
 
     # set up the chain pipeline and base stage
     chain = ChainPipeline()
-    stage = StageParams(tile_order=tile_order, tile_size=tile_size)
     chain.stage(
         UpscaleOutpaintStage(),
-        stage,
+        StageParams(tile_order=tile_order, tile_size=tile_size),
         border=border,
         mask=mask,
         fill_color=fill_color,
@@ -352,15 +375,16 @@ def run_inpaint_pipeline(
     first_upscale, after_upscale = split_upscale(upscale)
     if first_upscale:
         stage_upscale_correction(
-            stage,
+            StageParams(outscale=first_upscale.outscale, tile_size=tile_size),
             params,
             upscale=first_upscale,
             chain=chain,
         )
 
     # apply highres
+    highres_size = get_highres_tile(server, params, highres, tile_size)
     stage_highres(
-        stage,
+        StageParams(outscale=highres.scale, tile_size=highres_size),
         params,
         highres,
         upscale,
@@ -370,7 +394,7 @@ def run_inpaint_pipeline(
 
     # apply upscaling and correction
     stage_upscale_correction(
-        stage,
+        StageParams(outscale=after_upscale.outscale),
         params,
         upscale=after_upscale,
         chain=chain,
@@ -379,7 +403,14 @@ def run_inpaint_pipeline(
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     progress = worker.get_progress_callback()
-    images = chain(worker, server, params, [source], callback=progress, latents=latents)
+    images = chain.run(
+        worker,
+        server,
+        params,
+        StageResult(images=[source]),
+        callback=progress,
+        latents=latents,
+    )
 
     _pairs, loras, inversions, _rest = parse_prompt(params)
     for image, output in zip(images, outputs):
@@ -422,21 +453,22 @@ def run_upscale_pipeline(
 ) -> None:
     # set up the chain pipeline, no base stage for upscaling
     chain = ChainPipeline()
-    stage = StageParams(tile_size=params.unet_tile)
+    tile_size = get_base_tile(params, size)
 
     # apply upscaling and correction, before highres
     first_upscale, after_upscale = split_upscale(upscale)
     if first_upscale:
         stage_upscale_correction(
-            stage,
+            StageParams(outscale=first_upscale.outscale, tile_size=tile_size),
             params,
             upscale=first_upscale,
             chain=chain,
         )
 
     # apply highres
+    highres_size = get_highres_tile(server, params, highres, tile_size)
     stage_highres(
-        stage,
+        StageParams(outscale=highres.scale, tile_size=highres_size),
         params,
         highres,
         upscale,
@@ -446,7 +478,7 @@ def run_upscale_pipeline(
 
     # apply upscaling and correction, after highres
     stage_upscale_correction(
-        stage,
+        StageParams(outscale=after_upscale.outscale, tile_size=tile_size),
         params,
         upscale=after_upscale,
         chain=chain,
@@ -454,7 +486,9 @@ def run_upscale_pipeline(
 
     # run and save
     progress = worker.get_progress_callback()
-    images = chain(worker, server, params, [source], callback=progress)
+    images = chain.run(
+        worker, server, params, StageResult(images=[source]), callback=progress
+    )
 
     _pairs, loras, inversions, _rest = parse_prompt(params)
     for image, output in zip(images, outputs):
@@ -491,12 +525,18 @@ def run_blend_pipeline(
 ) -> None:
     # set up the chain pipeline and base stage
     chain = ChainPipeline()
-    stage = StageParams()
-    chain.stage(BlendMaskStage(), stage, stage_source=sources[1], stage_mask=mask)
+    tile_size = get_base_tile(params, size)
+
+    chain.stage(
+        BlendMaskStage(),
+        StageParams(tile_size=tile_size),
+        stage_source=sources[1],
+        stage_mask=mask,
+    )
 
     # apply upscaling and correction
     stage_upscale_correction(
-        stage,
+        StageParams(outscale=upscale.outscale),
         params,
         upscale=upscale,
         chain=chain,
@@ -504,7 +544,9 @@ def run_blend_pipeline(
 
     # run and save
     progress = worker.get_progress_callback()
-    images = chain(worker, server, params, sources, callback=progress)
+    images = chain.run(
+        worker, server, params, StageResult(images=sources), callback=progress
+    )
 
     for image, output in zip(images, outputs):
         dest = save_image(server, output, image, params, size, upscale=upscale)

@@ -23,6 +23,7 @@ from .server.load import (
     load_platforms,
     load_wildcards,
 )
+from .server.plugin import load_plugins, register_plugins
 from .server.static import register_static_routes
 from .server.utils import check_paths
 from .utils import is_debug
@@ -43,15 +44,32 @@ def main():
     server = ServerContext.from_environ()
     apply_patches(server)
     check_paths(server)
+
+    # debug options
+    if server.debug:
+        import debugpy
+
+        debugpy.listen(5678)
+        logger.warning("waiting for debugger")
+        debugpy.wait_for_client()
+        gc.set_debug(gc.DEBUG_STATS)
+
+    # register plugins
+    exports = load_plugins(server)
+    success = register_plugins(exports)
+    if success:
+        logger.info("all plugins loaded successfully")
+    else:
+        logger.warning("error loading plugins")
+
+    # load additional resources
     load_extras(server)
     load_models(server)
     load_params(server)
     load_platforms(server)
     load_wildcards(server)
 
-    if is_debug():
-        gc.set_debug(gc.DEBUG_STATS)
-
+    # misc server options
     if not server.show_progress:
         disable_progress_bar()
         disable_progress_bars()

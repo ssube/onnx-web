@@ -28,9 +28,9 @@ class UNetWrapper(object):
 
     def __call__(
         self,
-        sample: np.ndarray = None,
-        timestep: np.ndarray = None,
-        encoder_hidden_states: np.ndarray = None,
+        sample: Optional[np.ndarray] = None,
+        timestep: Optional[np.ndarray] = None,
+        encoder_hidden_states: Optional[np.ndarray] = None,
         **kwargs,
     ):
         logger.trace(

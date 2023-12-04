@@ -1,13 +1,12 @@
 from logging import getLogger
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 import numpy as np
 import torch
-from PIL import Image
 
+from ..constants import LATENT_FACTOR
 from ..diffusers.load import load_pipeline
 from ..diffusers.utils import (
-    LATENT_FACTOR,
     encode_prompt,
     get_latents_from_seed,
     get_tile_latents,
@@ -18,7 +17,8 @@ from ..diffusers.utils import (
 from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -32,7 +32,7 @@ class SourceTxt2ImgStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         dims: Tuple[int, int, int] = None,
         size: Size,
@@ -40,7 +40,7 @@ class SourceTxt2ImgStage(BaseStage):
         latents: Optional[np.ndarray] = None,
         prompt_index: Optional[int] = None,
         **kwargs,
-    ) -> Image.Image:
+    ) -> StageResult:
         params = params.with_args(**kwargs)
         size = size.with_args(**kwargs)
 
@@ -131,7 +131,9 @@ class SourceTxt2ImgStage(BaseStage):
         else:
             # encode and record alternative prompts outside of LPW
             if params.is_panorama() or params.is_xl():
-                logger.debug("prompt alternatives are not supported for panorama or SDXL")
+                logger.debug(
+                    "prompt alternatives are not supported for panorama or SDXL"
+                )
             else:
                 prompt_embeds = encode_prompt(
                     pipe, prompt_pairs, params.batch, params.do_cfg()
@@ -153,10 +155,10 @@ class SourceTxt2ImgStage(BaseStage):
                 callback=callback,
             )
 
-        output = list(sources)
-        output.extend(result.images)
-        logger.debug("produced %s outputs", len(output))
-        return output
+        outputs = sources.as_image()
+        outputs.extend(result.images)
+        logger.debug("produced %s outputs", len(outputs))
+        return StageResult(images=outputs)
 
     def steps(
         self,

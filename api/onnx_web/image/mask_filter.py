@@ -8,7 +8,7 @@ def mask_filter_none(
 ) -> Image.Image:
     width, height = dims
 
-    noise = Image.new("RGB", (width, height), fill)
+    noise = Image.new(mask.mode, (width, height), fill)
     noise.paste(mask, origin)
 
     return noise

@@ -180,7 +180,7 @@ def blend_textual_inversions(
             continue
 
         if format is None:
-            format = detect_embedding_format()
+            format = detect_embedding_format(loaded_embeds)
 
         if format == "concept":
             blend_embedding_concept(embeds, loaded_embeds, dtype, base_token, weight)

@@ -57,7 +57,7 @@ def json_params(
     upscale: Optional[UpscaleParams] = None,
     border: Optional[Border] = None,
     highres: Optional[HighresParams] = None,
-    parent: Dict = None,
+    parent: Optional[Dict] = None,
 ) -> Any:
     json = {
         "input_size": size.tojson(),

@@ -36,7 +36,7 @@ DEFAULT_OPSET = 14
 class ConversionContext(ServerContext):
     def __init__(
         self,
-        model_path: Optional[str] = None,
+        model_path: str = ".",
         cache_path: Optional[str] = None,
         device: Optional[str] = None,
         half: bool = False,
@@ -69,7 +69,7 @@ class ConversionContext(ServerContext):
     def from_environ(cls):
         context = super().from_environ()
         context.control = get_boolean(environ, "ONNX_WEB_CONVERT_CONTROL", True)
-        context.extract = get_boolean(environ, "ONNX_WEB_CONVERT_EXTRACT", True)
+        context.extract = get_boolean(environ, "ONNX_WEB_CONVERT_EXTRACT", False)
         context.reload = get_boolean(environ, "ONNX_WEB_CONVERT_RELOAD", True)
         context.share_unet = get_boolean(environ, "ONNX_WEB_CONVERT_SHARE_UNET", True)
         context.opset = int(environ.get("ONNX_WEB_CONVERT_OPSET", DEFAULT_OPSET))
@@ -120,7 +120,7 @@ def download_progress(urls: List[Tuple[str, str]]):
 
 def tuple_to_source(model: Union[ModelDict, LegacyModel]):
     if isinstance(model, list) or isinstance(model, tuple):
-        name, source, *rest = model
+        name, source, *_rest = model
 
         return {
             "name": name,

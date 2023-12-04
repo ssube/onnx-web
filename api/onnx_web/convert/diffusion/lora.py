@@ -71,13 +71,15 @@ def fix_node_name(key: str):
         return fixed_name
 
 
-def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]):
+def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]) -> Dict[str, Any]:
     fixed = {}
+    names = [fix_node_name(node.name) for node in nodes]
 
     for key, value in keys.items():
-        root, *rest = key.split(".")
+        root, *_rest = key.split(".")
         logger.trace("fixing XL node name: %s -> %s", key, root)
 
+        simple = False
         if root.startswith("input"):
             block = "down_blocks"
         elif root.startswith("middle"):
@@ -86,6 +88,15 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]):
             block = "up_blocks"
         elif root.startswith("text_model"):
             block = "text_model"
+        elif root.startswith("down_blocks"):
+            block = "down_blocks"
+            simple = True
+        elif root.startswith("mid_block"):
+            block = "mid_block"
+            simple = True
+        elif root.startswith("up_blocks"):
+            block = "up_blocks"
+            simple = True
         else:
             logger.warning("unknown XL key name: %s", key)
             fixed[key] = value
@@ -93,6 +104,10 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]):
 
         suffix = None
         for s in [
+            "conv",
+            "conv_shortcut",
+            "conv1",
+            "conv2",
             "fc1",
             "fc2",
             "ff_net_0_proj",
@@ -112,18 +127,21 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]):
             logger.warning("new XL key type: %s", root)
             continue
 
-        logger.trace("searching for XL node: /%s/*/%s", block, suffix)
-        match = None
-        if block == "text_model":
-            match = next(
-                node for node in nodes if fix_node_name(node.name) == f"{root}_MatMul"
-            )
+        logger.trace("searching for XL node: %s -> /%s/*/%s", root, block, suffix)
+        match: Optional[str] = None
+        if "conv" in suffix:
+            match = next(node for node in names if node == f"{root}_Conv")
+        elif "time_emb_proj" in root:
+            match = next(node for node in names if node == f"{root}_Gemm")
+        elif block == "text_model" or simple:
+            match = next(node for node in names if node == f"{root}_MatMul")
         else:
+            # search in order. one side has sparse indices, so they will not match.
             match = next(
                 node
-                for node in nodes
-                if node.name.startswith(f"/{block}")
-                and fix_node_name(node.name).endswith(
+                for node in names
+                if node.startswith(block)
+                and node.endswith(
                     f"{suffix}_MatMul"
                 )  # needs to be fixed because some places use to_out.0
             )
@@ -131,18 +149,28 @@ def fix_xl_names(keys: Dict[str, Any], nodes: List[NodeProto]):
         if match is None:
             logger.warning("no matches for XL key: %s", root)
             continue
+        else:
+            logger.trace("matched key: %s -> %s", key, match)
 
-        name: str = match.name
-        name = fix_node_name(name.rstrip("/MatMul"))
+        name = match
+        if name.endswith("_MatMul"):
+            name = name[:-7]
+        elif name.endswith("_Gemm"):
+            name = name[:-5]
+        elif name.endswith("_Conv"):
+            name = name[:-5]
 
-        if name.endswith("proj_o"):
-            # wtf
-            name = f"{name}ut"
-
-        logger.trace("matching XL key with node: %s -> %s", key, match.name)
+        logger.trace("matching XL key with node: %s -> %s, %s", key, match, name)
 
         fixed[name] = value
-        nodes.remove(match)
+        names.remove(match)
+
+    logger.debug(
+        "SDXL LoRA key fixup matched %s of %s keys, %s nodes remaining",
+        len(fixed.keys()),
+        len(keys.keys()),
+        len(names),
+    )
 
     return fixed
 
@@ -416,12 +444,15 @@ def blend_loras(
     else:
         lora_prefix = f"lora_{model_type}_"
 
-    blended: Dict[str, np.ndarray] = {}
+    layers = []
     for (lora_name, lora_weight), lora_model in zip(loras, lora_models):
         logger.debug("blending LoRA from %s with weight of %s", lora_name, lora_weight)
         if lora_model is None:
             logger.warning("unable to load tensor for LoRA")
             continue
+
+        blended: Dict[str, np.ndarray] = {}
+        layers.append(blended)
 
         for key in lora_model.keys():
             if ".hada_w1_a" in key and lora_prefix in key:
@@ -430,57 +461,51 @@ def blend_loras(
                     key, lora_prefix, lora_model, dtype
                 )
                 np_weights = np_weights * lora_weight
-                if base_key in blended:
-                    logger.trace(
-                        "summing LoHA weights: %s + %s",
-                        blended[base_key].shape,
-                        np_weights.shape,
-                    )
-                    blended[base_key] = sum_weights(blended[base_key], np_weights)
-                else:
-                    logger.trace(
-                        "adding LoHA weights: %s",
-                        np_weights.shape,
-                    )
-                    blended[base_key] = np_weights
+                logger.trace(
+                    "adding LoHA weights: %s",
+                    np_weights.shape,
+                )
+                blended[base_key] = np_weights
             elif ".lora_down" in key and lora_prefix in key:
                 # LoRA or LoCON
                 base_key, np_weights = blend_weights_lora(
                     key, lora_prefix, lora_model, dtype
                 )
                 np_weights = np_weights * lora_weight
-                if base_key in blended:
-                    logger.trace(
-                        "summing LoRA weights: %s + %s",
-                        blended[base_key].shape,
-                        np_weights.shape,
-                    )
-                    blended[base_key] = sum_weights(blended[base_key], np_weights)
-                else:
-                    logger.trace(
-                        "adding LoRA weights: %s",
-                        np_weights.shape,
-                    )
-                    blended[base_key] = np_weights
+                logger.trace(
+                    "adding LoRA weights: %s",
+                    np_weights.shape,
+                )
+                blended[base_key] = np_weights
 
-    # rewrite node names for XL
-    if xl:
-        nodes = list(base_model.graph.node)
-        blended = fix_xl_names(blended, nodes)
+    # rewrite node names for XL and flatten layers
+    weights: Dict[str, np.ndarray] = {}
 
-    logger.debug(
-        "updating %s of %s initializers",
-        len(blended.keys()),
-        len(base_model.graph.initializer),
-    )
+    for blended in layers:
+        if xl:
+            nodes = list(base_model.graph.node)
+            blended = fix_xl_names(blended, nodes)
 
+        for key, value in blended.items():
+            if key in weights:
+                weights[key] = sum_weights(weights[key], value)
+            else:
+                weights[key] = value
+
+    # fix node names once
     fixed_initializer_names = [
         fix_initializer_name(node.name) for node in base_model.graph.initializer
     ]
     fixed_node_names = [fix_node_name(node.name) for node in base_model.graph.node]
 
+    logger.debug(
+        "updating %s of %s initializers",
+        len(weights.keys()),
+        len(base_model.graph.initializer),
+    )
+
     unmatched_keys = []
-    for base_key, weights in blended.items():
+    for base_key, weights in weights.items():
         conv_key = base_key + "_Conv"
         gemm_key = base_key + "_Gemm"
         matmul_key = base_key + "_MatMul"
@@ -542,7 +567,7 @@ def blend_loras(
         else:
             unmatched_keys.append(base_key)
 
-    logger.debug(
+    logger.trace(
         "node counts: %s -> %s, %s -> %s",
         len(fixed_initializer_names),
         len(base_model.graph.initializer),
@@ -551,7 +576,7 @@ def blend_loras(
     )
 
     if len(unmatched_keys) > 0:
-        logger.warning("could not find nodes for some keys: %s", unmatched_keys)
+        logger.warning("could not find nodes for some LoRA keys: %s", unmatched_keys)
 
     return base_model
 

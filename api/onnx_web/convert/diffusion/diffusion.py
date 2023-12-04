@@ -103,7 +103,6 @@ def get_model_version(
             opts["prediction_type"] = "epsilon"
     except Exception:
         logger.debug("unable to load tensor for version check")
-        pass
 
     return (v2, opts)
 

@@ -7,19 +7,13 @@ from optimum.onnxruntime import (  # ORTStableDiffusionXLInpaintPipeline,
     ORTStableDiffusionXLImg2ImgPipeline,
     ORTStableDiffusionXLPipeline,
 )
-from optimum.onnxruntime.modeling_diffusion import (
-    ORTModelTextEncoder,
-    ORTModelUnet,
-    ORTModelVaeDecoder,
-    ORTModelVaeEncoder,
-)
 from transformers import CLIPTokenizer
 
-from ..constants import ONNX_MODEL
+from ..constants import LATENT_FACTOR, ONNX_MODEL
 from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
 from ..convert.diffusion.textual_inversion import blend_textual_inversions
 from ..diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
-from ..diffusers.utils import LATENT_FACTOR, expand_prompt
+from ..diffusers.utils import expand_prompt
 from ..params import DeviceParams, ImageParams
 from ..server import ModelTypes, ServerContext
 from ..torch_before_ort import InferenceSession
@@ -44,6 +38,7 @@ from .version_safe_diffusers import (
     KarrasVeScheduler,
     KDPM2AncestralDiscreteScheduler,
     KDPM2DiscreteScheduler,
+    LCMScheduler,
     LMSDiscreteScheduler,
     OnnxRuntimeModel,
     OnnxStableDiffusionImg2ImgPipeline,
@@ -84,10 +79,23 @@ pipeline_schedulers = {
     "k-dpm-2-a": KDPM2AncestralDiscreteScheduler,
     "k-dpm-2": KDPM2DiscreteScheduler,
     "karras-ve": KarrasVeScheduler,
+    "lcm": LCMScheduler,
     "lms-discrete": LMSDiscreteScheduler,
     "pndm": PNDMScheduler,
     "unipc-multi": UniPCMultistepScheduler,
 }
+
+
+def add_pipeline(name: str, pipeline: Any) -> bool:
+    global available_pipelines
+
+    if name in available_pipelines:
+        # TODO: decide if this should be allowed or not
+        logger.warning("cannot replace existing pipeline: %s", name)
+        return False
+    else:
+        available_pipelines[name] = pipeline
+        return True
 
 
 def get_available_pipelines() -> List[str]:
@@ -203,53 +211,54 @@ def load_pipeline(
         components.update(vae_components)
 
         pipeline_class = available_pipelines.get(pipeline, OnnxStableDiffusionPipeline)
-        logger.debug("loading pretrained SD pipeline for %s", pipeline_class.__name__)
-        pipe = pipeline_class.from_pretrained(
-            model,
-            provider=device.ort_provider(),
-            sess_options=device.sess_options(),
-            safety_checker=None,
-            torch_dtype=torch_dtype,
-            **components,
-        )
 
-        # make sure XL models are actually being used
-        if "text_encoder_session" in components:
-            pipe.text_encoder = ORTModelTextEncoder(
-                components["text_encoder_session"], pipe
-            )
-
-        if "text_encoder_2_session" in components:
-            pipe.text_encoder_2 = ORTModelTextEncoder(
-                components["text_encoder_2_session"], pipe
-            )
-
-        if "tokenizer" in components:
-            pipe.tokenizer = components["tokenizer"]
-
-        if "tokenizer_2" in components:
-            pipe.tokenizer_2 = components["tokenizer_2"]
-
-        if "unet_session" in components:
-            # unload old UNet
-            logger.debug("unloading previous Unet")
-            pipe.unet = None
-            run_gc([device])
-
-            # attach correct one
-            pipe.unet = ORTModelUnet(components["unet_session"], pipe)
-
-        if "vae_decoder_session" in components:
-            pipe.vae_decoder = ORTModelVaeDecoder(
+        if params.is_xl():
+            logger.debug("assembling SDXL pipeline for %s", pipeline_class.__name__)
+            pipe = pipeline_class(
                 components["vae_decoder_session"],
-                pipe,
+                components["text_encoder_session"],
+                components["unet_session"],
+                {
+                    "force_zeros_for_empty_prompt": True,
+                    "requires_aesthetics_score": False,
+                },
+                components["tokenizer"],
+                scheduler,
+                vae_encoder_session=components.get("vae_encoder_session", None),
+                text_encoder_2_session=components.get("text_encoder_2_session", None),
+                tokenizer_2=components.get("tokenizer_2", None),
             )
-
-        if "vae_encoder_session" in components:
-            pipe.vae_encoder = ORTModelVaeEncoder(
-                components["vae_encoder_session"],
-                pipe,
-            )
+        else:
+            if "vae" in components:
+                # upscale uses a single VAE
+                logger.debug(
+                    "assembling SD pipeline for %s with single VAE",
+                    pipeline_class.__name__,
+                )
+                pipe = pipeline_class(
+                    components["vae"],
+                    components["text_encoder"],
+                    components["tokenizer"],
+                    components["unet"],
+                    scheduler,
+                    scheduler,
+                )
+            else:
+                logger.debug(
+                    "assembling SD pipeline for %s with VAE codec",
+                    pipeline_class.__name__,
+                )
+                pipe = pipeline_class(
+                    components["vae_encoder"],
+                    components["vae_decoder"],
+                    components["text_encoder"],
+                    components["tokenizer"],
+                    components["unet"],
+                    scheduler,
+                    None,
+                    None,
+                    requires_safety_checker=False,
+                )
 
         if not server.show_progress:
             pipe.set_progress_bar_config(disable=True)
@@ -263,10 +272,11 @@ def load_pipeline(
     for vae in VAE_COMPONENTS:
         if hasattr(pipe, vae):
             vae_model = getattr(pipe, vae)
-            vae_model.set_tiled(tiled=params.tiled_vae)
-            vae_model.set_window_size(
-                params.vae_tile // LATENT_FACTOR, params.vae_overlap
-            )
+            if isinstance(vae_model, VAEWrapper):
+                vae_model.set_tiled(tiled=params.tiled_vae)
+                vae_model.set_window_size(
+                    params.vae_tile // LATENT_FACTOR, params.vae_overlap
+                )
 
     # update panorama params
     if params.is_panorama():
@@ -501,7 +511,7 @@ def load_unet(
 
 
 def load_vae(
-    server: ServerContext, device: DeviceParams, model: str, params: ImageParams
+    _server: ServerContext, device: DeviceParams, model: str, params: ImageParams
 ):
     # one or more VAE models need to be loaded
     vae = path.join(model, "vae", ONNX_MODEL)
@@ -562,10 +572,9 @@ def optimize_pipeline(
     server: ServerContext,
     pipe: StableDiffusionPipeline,
 ) -> None:
-    if (
-        server.has_optimization("diffusers-attention-slicing")
-        or server.has_optimization("diffusers-attention-slicing-auto")
-    ):
+    if server.has_optimization(
+        "diffusers-attention-slicing"
+    ) or server.has_optimization("diffusers-attention-slicing-auto"):
         logger.debug("enabling auto attention slicing on SD pipeline")
         try:
             pipe.enable_attention_slicing(slice_size="auto")

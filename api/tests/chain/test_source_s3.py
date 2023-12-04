@@ -1,5 +1,6 @@
 import unittest
 
+from onnx_web.chain.result import StageResult
 from onnx_web.chain.source_s3 import SourceS3Stage
 from onnx_web.params import HighresParams, Size, UpscaleParams
 
@@ -7,7 +8,7 @@ from onnx_web.params import HighresParams, Size, UpscaleParams
 class SourceS3StageTests(unittest.TestCase):
     def test_empty(self):
         stage = SourceS3Stage()
-        sources = []
+        sources = StageResult.empty()
         result = stage.run(
             None,
             None,

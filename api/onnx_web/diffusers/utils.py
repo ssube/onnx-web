@@ -9,12 +9,11 @@ import numpy as np
 import torch
 from diffusers import OnnxStableDiffusionPipeline
 
+from ..constants import LATENT_CHANNELS, LATENT_FACTOR
 from ..params import ImageParams, Size
 
 logger = getLogger(__name__)
 
-LATENT_CHANNELS = 4
-LATENT_FACTOR = 8
 MAX_TOKENS_PER_GROUP = 77
 
 ANY_TOKEN = compile(r"\<([^\>]*)\>")
@@ -89,8 +88,8 @@ def expand_prompt(
     negative_prompt: Optional[str] = None,
     prompt_embeds: Optional[np.ndarray] = None,
     negative_prompt_embeds: Optional[np.ndarray] = None,
-    skip_clip_states: Optional[int] = 0,
-) -> "np.NDArray":
+    skip_clip_states: int = 0,
+) -> np.ndarray:
     # self provides:
     #   tokenizer: CLIPTokenizer
     #   encoder: OnnxRuntimeModel
@@ -145,6 +144,7 @@ def expand_prompt(
 
         last_state, _pooled_output, *hidden_states = text_result
         if skip_clip_states > 0:
+            # TODO: why is this normalized?
             layer_norm = torch.nn.LayerNorm(last_state.shape[2])
             norm_state = layer_norm(
                 torch.from_numpy(
@@ -261,6 +261,13 @@ def get_inversions_from_prompt(prompt: str) -> Tuple[str, List[Tuple[str, float]
     return get_tokens_from_prompt(prompt, INVERSION_TOKEN)
 
 
+def random_seed(generator=None) -> int:
+    if generator is None:
+        generator = np.random
+
+    return generator.randint(np.iinfo(np.int32).max)
+
+
 def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
     """
     From https://www.travelneil.com/stable-diffusion-updates.html.
@@ -274,6 +281,25 @@ def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
     rng = np.random.default_rng(seed)
     image_latents = rng.standard_normal(latents_shape).astype(np.float32)
     return image_latents
+
+
+def expand_latents(
+    latents: np.ndarray,
+    seed: int,
+    size: Size,
+    sigma: float = 1.0,
+) -> np.ndarray:
+    batch, _channels, height, width = latents.shape
+    extra_latents = get_latents_from_seed(seed, size, batch=batch)
+    extra_latents[:, :, 0:height, 0:width] = latents
+    return extra_latents * np.float64(sigma)
+
+
+def resize_latent_shape(
+    latents: np.ndarray,
+    size: Tuple[int, int],
+) -> Tuple[int, int, int, int]:
+    return (latents.shape[0], latents.shape[1], *size)
 
 
 def get_tile_latents(
@@ -300,14 +326,8 @@ def get_tile_latents(
 
     tile_latents = full_latents[:, :, y:yt, x:xt]
 
-    if tile_latents.shape != full_latents.shape and (
-        tile_latents.shape[2] < t or tile_latents.shape[3] < t
-    ):
-        extra_latents = get_latents_from_seed(seed, size, batch=tile_latents.shape[0])
-        extra_latents[
-            :, :, 0 : tile_latents.shape[2], 0 : tile_latents.shape[3]
-        ] = tile_latents
-        tile_latents = extra_latents
+    if tile_latents.shape[2] < t or tile_latents.shape[3] < t:
+        tile_latents = expand_latents(tile_latents, seed, size)
 
     return tile_latents
 

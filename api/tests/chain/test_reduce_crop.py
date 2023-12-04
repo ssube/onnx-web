@@ -1,13 +1,14 @@
 import unittest
 
 from onnx_web.chain.reduce_crop import ReduceCropStage
+from onnx_web.chain.result import StageResult
 from onnx_web.params import HighresParams, Size, UpscaleParams
 
 
 class ReduceCropStageTests(unittest.TestCase):
     def test_empty(self):
         stage = ReduceCropStage()
-        sources = []
+        sources = StageResult.empty()
         result = stage.run(
             None,
             None,

@@ -295,6 +295,7 @@ export const I18N_STRINGS_EN = {
         'k-dpm-2': 'KDPM2',
         'karras-ve': 'Karras Ve',
         'ipndm': 'iPNDM',
+        'lcm': 'LCM',
         'lms-discrete': 'LMS',
         'pndm': 'PNDM',
         'unipc-multi': 'UniPC Multistep',
