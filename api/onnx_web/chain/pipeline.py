@@ -276,5 +276,6 @@ class ChainPipeline:
 
 MASK_KEYS = ["mask", "stage_mask", "tile_mask"]
 
+
 def has_mask(args: List[str]) -> bool:
     return any([key in args for key in MASK_KEYS])
