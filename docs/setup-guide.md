@@ -16,6 +16,7 @@ This guide covers the setup process for onnx-web, including downloading the Wind
       - [For CPU everywhere: PyTorch CPU and ONNX runtime CPU](#for-cpu-everywhere-pytorch-cpu-and-onnx-runtime-cpu)
       - [For Nvidia everywhere: Install PyTorch GPU and ONNX GPU](#for-nvidia-everywhere-install-pytorch-gpu-and-onnx-gpu)
     - [Test the models](#test-the-models)
+    - [Download the web UI bundle](#download-the-web-ui-bundle)
   - [Windows-specific methods](#windows-specific-methods)
     - [Windows all-in-one bundle](#windows-all-in-one-bundle)
     - [Windows Python installer](#windows-python-installer)
@@ -214,6 +215,24 @@ You should verify that all of the steps up to this point have worked correctly b
 If the script works, there will be an image of an astronaut in `outputs/test.png`.
 
 If you get any errors, check [the known errors section of the user guide](user-guide.md#known-errors).
+
+### Download the web UI bundle
+
+Once the server environment is working, you will need the latest files for the web UI. This is a Javascript bundle and
+you can download a pre-built copy from Github or compile your own.
+
+From [the `gh-pages` branch](https://github.com/ssube/onnx-web/tree/gh-pages), select the version matching your server
+and download all three files:
+
+- `bundle/main.js`
+- `config.json`
+- `index.html`
+
+Copy them into your local `api/gui` folder, making sure to keep the `main.js` bundle in the `bundle` subfolder.
+
+For example, for a v0.11 server, copy the files from https://github.com/ssube/onnx-web/tree/gh-pages/v0.11.0 into your
+local copy of https://github.com/ssube/onnx-web/tree/main/api/gui and
+https://github.com/ssube/onnx-web/tree/main/api/gui/bundle.
 
 ## Windows-specific methods
 
