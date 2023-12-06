@@ -13,25 +13,36 @@
 # limitations under the License.
 
 import inspect
-from typing import Callable, List, Optional, Union
+from math import ceil
+from typing import Callable, List, Optional, Tuple, Union
 
 import numpy as np
 import PIL
 import torch
 from diffusers.configuration_utils import FrozenDict
-from diffusers.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.onnx_utils import ORT_TO_NP_TYPE, OnnxRuntimeModel
+from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.stable_diffusion import StableDiffusionPipelineOutput
 from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMScheduler
 from diffusers.utils import PIL_INTERPOLATION, deprecate, logging
 from transformers import CLIPImageProcessor, CLIPTokenizer
+
+from ...chain.tile import make_tile_mask
+from ...constants import LATENT_CHANNELS, LATENT_FACTOR
+from ...params import Size
+from ..utils import (
+    expand_latents,
+    parse_regions,
+    random_seed,
+    repair_nan,
+    resize_latent_shape,
+)
 
 logger = logging.get_logger(__name__)
 
 
 # inpaint constants
 NUM_UNET_INPUT_CHANNELS = 9
-NUM_LATENT_CHANNELS = 4
 
 DEFAULT_WINDOW = 32
 DEFAULT_STRIDE = 8
@@ -346,13 +357,16 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                     f" {negative_prompt_embeds.shape}."
                 )
 
-    def get_views(self, panorama_height, panorama_width, window_size, stride):
+    def get_views(
+        self, panorama_height: int, panorama_width: int, window_size: int, stride: int
+    ) -> Tuple[List[Tuple[int, int, int, int]], Tuple[int, int]]:
         # Here, we define the mappings F_i (see Eq. 7 in the MultiDiffusion paper https://arxiv.org/abs/2302.08113)
         panorama_height /= 8
         panorama_width /= 8
 
-        num_blocks_height = abs((panorama_height - window_size) // stride) + 1
-        num_blocks_width = abs((panorama_width - window_size) // stride) + 1
+        num_blocks_height = ceil(abs((panorama_height - window_size) / stride)) + 1
+        num_blocks_width = ceil(abs((panorama_width - window_size) / stride)) + 1
+
         total_num_blocks = int(num_blocks_height * num_blocks_width)
         logger.debug(
             "panorama generated %s views, %s by %s blocks",
@@ -369,7 +383,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             w_end = w_start + window_size
             views.append((h_start, h_end, w_start, w_end))
 
-        return views
+        return (views, (h_end * 8, w_end * 8))
 
     @torch.no_grad()
     def text2img(
@@ -479,6 +493,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         # corresponds to doing no classifier free guidance.
         do_classifier_free_guidance = guidance_scale > 1.0
 
+        prompt, regions = parse_regions(prompt)
+
         prompt_embeds = self._encode_prompt(
             prompt,
             num_images_per_prompt,
@@ -488,9 +504,30 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             negative_prompt_embeds=negative_prompt_embeds,
         )
 
+        # 3.b. Encode region prompts
+        region_embeds: List[np.ndarray] = []
+
+        for _top, _left, _bottom, _right, _weight, _feather, region_prompt in regions:
+            if region_prompt.endswith("+"):
+                region_prompt = region_prompt[:-1] + " " + prompt
+
+            region_prompt_embeds = self._encode_prompt(
+                region_prompt,
+                num_images_per_prompt,
+                do_classifier_free_guidance,
+                negative_prompt,
+            )
+
+            region_embeds.append(region_prompt_embeds)
+
         # get the initial random noise unless the user supplied it
         latents_dtype = prompt_embeds.dtype
-        latents_shape = (batch_size * num_images_per_prompt, 4, height // 8, width // 8)
+        latents_shape = (
+            batch_size * num_images_per_prompt,
+            LATENT_CHANNELS,
+            height // LATENT_FACTOR,
+            width // LATENT_FACTOR,
+        )
         if latents is None:
             latents = generator.randn(*latents_shape).astype(latents_dtype)
         elif latents.shape != latents_shape:
@@ -525,11 +562,22 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         timestep_dtype = ORT_TO_NP_TYPE[timestep_dtype]
 
         # panorama additions
-        views = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros_like(latents)
-        value = np.zeros_like(latents)
+        views, resize = self.get_views(height, width, self.window, self.stride)
+        logger.trace("panorama resized latents to %s", resize)
+
+        count = np.zeros(resize_latent_shape(latents, resize))
+        value = np.zeros(resize_latent_shape(latents, resize))
+
+        # adjust latents
+        latents = expand_latents(
+            latents,
+            random_seed(generator),
+            Size(resize[1], resize[0]),
+            sigma=self.scheduler.init_noise_sigma,
+        )
 
         for i, t in enumerate(self.progress_bar(self.scheduler.timesteps)):
+            last = i == (len(self.scheduler.timesteps) - 1)
             count.fill(0)
             value.fill(0)
 
@@ -576,13 +624,115 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
                 count[:, :, h_start:h_end, w_start:w_end] += 1
 
+            if not last:
+                for r, region in enumerate(regions):
+                    top, left, bottom, right, weight, feather, prompt = region
+                    logger.debug(
+                        "running region prompt: %s, %s, %s, %s, %s, %s, %s",
+                        top,
+                        left,
+                        bottom,
+                        right,
+                        weight,
+                        feather,
+                        prompt,
+                    )
+
+                    # convert coordinates to latent space
+                    h_start = top // LATENT_FACTOR
+                    h_end = bottom // LATENT_FACTOR
+                    w_start = left // LATENT_FACTOR
+                    w_end = right // LATENT_FACTOR
+
+                    # get the latents corresponding to the current view coordinates
+                    latents_for_region = latents[:, :, h_start:h_end, w_start:w_end]
+                    logger.trace(
+                        "region latent shape: [:,:,%s:%s,%s:%s] -> %s",
+                        h_start,
+                        h_end,
+                        w_start,
+                        w_end,
+                        latents_for_region.shape,
+                    )
+
+                    # expand the latents if we are doing classifier free guidance
+                    latent_region_input = (
+                        np.concatenate([latents_for_region] * 2)
+                        if do_classifier_free_guidance
+                        else latents_for_region
+                    )
+                    latent_region_input = self.scheduler.scale_model_input(
+                        torch.from_numpy(latent_region_input), t
+                    )
+                    latent_region_input = latent_region_input.cpu().numpy()
+
+                    # predict the noise residual
+                    timestep = np.array([t], dtype=timestep_dtype)
+                    region_noise_pred = self.unet(
+                        sample=latent_region_input,
+                        timestep=timestep,
+                        encoder_hidden_states=region_embeds[r],
+                    )
+                    region_noise_pred = region_noise_pred[0]
+
+                    # perform guidance
+                    if do_classifier_free_guidance:
+                        region_noise_pred_uncond, region_noise_pred_text = np.split(
+                            region_noise_pred, 2
+                        )
+                        region_noise_pred = (
+                            region_noise_pred_uncond
+                            + guidance_scale
+                            * (region_noise_pred_text - region_noise_pred_uncond)
+                        )
+
+                    # compute the previous noisy sample x_t -> x_t-1
+                    scheduler_output = self.scheduler.step(
+                        torch.from_numpy(region_noise_pred),
+                        t,
+                        torch.from_numpy(latents_for_region),
+                        **extra_step_kwargs,
+                    )
+                    latents_region_denoised = scheduler_output.prev_sample.numpy()
+
+                    if feather[0] > 0.0:
+                        mask = make_tile_mask(
+                            (h_end - h_start, w_end - w_start),
+                            (h_end - h_start, w_end - w_start),
+                            feather[0],
+                            feather[1],
+                        )
+                        mask = np.expand_dims(mask, axis=0)
+                        mask = np.repeat(mask, 4, axis=0)
+                        mask = np.expand_dims(mask, axis=0)
+                    else:
+                        mask = 1
+
+                    if weight >= 100.0:
+                        value[:, :, h_start:h_end, w_start:w_end] = (
+                            latents_region_denoised * mask
+                        )
+                        count[:, :, h_start:h_end, w_start:w_end] = mask
+                    else:
+                        value[:, :, h_start:h_end, w_start:w_end] += (
+                            latents_region_denoised * weight * mask
+                        )
+                        count[:, :, h_start:h_end, w_start:w_end] += weight * mask
+
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
+            latents = repair_nan(latents)
 
             # call the callback, if provided
             if callback is not None and i % callback_steps == 0:
                 callback(i, t, latents)
 
+        # remove extra margins
+        latents = latents[
+            :, :, 0 : (height // LATENT_FACTOR), 0 : (width // LATENT_FACTOR)
+        ]
+
+        latents = np.clip(latents, -4, +4)
         latents = 1 / 0.18215 * latents
         # image = self.vae_decoder(latent_sample=latents)[0]
         # it seems likes there is a strange result for using half-precision vae decoder if batchsize>1
@@ -828,9 +978,19 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         timestep_dtype = ORT_TO_NP_TYPE[timestep_dtype]
 
         # panorama additions
-        views = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros_like(latents)
-        value = np.zeros_like(latents)
+        views, resize = self.get_views(height, width, self.window, self.stride)
+        logger.trace("panorama resized latents to %s", resize)
+
+        count = np.zeros(resize_latent_shape(latents, resize))
+        value = np.zeros(resize_latent_shape(latents, resize))
+
+        # adjust latents
+        latents = expand_latents(
+            latents,
+            random_seed(generator),
+            Size(resize[1], resize[0]),
+            sigma=self.scheduler.init_noise_sigma,
+        )
 
         for i, t in enumerate(self.progress_bar(timesteps)):
             count.fill(0)
@@ -885,6 +1045,11 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             # call the callback, if provided
             if callback is not None and i % callback_steps == 0:
                 callback(i, t, latents)
+
+        # remove extra margins
+        latents = latents[
+            :, :, 0 : (height // LATENT_FACTOR), 0 : (width // LATENT_FACTOR)
+        ]
 
         latents = 1 / 0.18215 * latents
         # image = self.vae_decoder(latent_sample=latents)[0]
@@ -1053,12 +1218,12 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             negative_prompt_embeds=negative_prompt_embeds,
         )
 
-        num_channels_latents = NUM_LATENT_CHANNELS
+        num_channels_latents = LATENT_CHANNELS
         latents_shape = (
             batch_size * num_images_per_prompt,
             num_channels_latents,
-            height // 8,
-            width // 8,
+            height // LATENT_FACTOR,
+            width // LATENT_FACTOR,
         )
         latents_dtype = prompt_embeds.dtype
         if latents is None:
@@ -1136,9 +1301,19 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         timestep_dtype = ORT_TO_NP_TYPE[timestep_dtype]
 
         # panorama additions
-        views = self.get_views(height, width, self.window, self.stride)
-        count = np.zeros_like(latents)
-        value = np.zeros_like(latents)
+        views, resize = self.get_views(height, width, self.window, self.stride)
+        logger.trace("panorama resized latents to %s", resize)
+
+        count = np.zeros(resize_latent_shape(latents, resize))
+        value = np.zeros(resize_latent_shape(latents, resize))
+
+        # adjust latents
+        latents = expand_latents(
+            latents,
+            random_seed(generator),
+            Size(resize[1], resize[0]),
+            sigma=self.scheduler.init_noise_sigma,
+        )
 
         for i, t in enumerate(self.progress_bar(self.scheduler.timesteps)):
             count.fill(0)
@@ -1200,6 +1375,11 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             # call the callback, if provided
             if callback is not None and i % callback_steps == 0:
                 callback(i, t, latents)
+
+        # remove extra margins
+        latents = latents[
+            :, :, 0 : (height // LATENT_FACTOR), 0 : (width // LATENT_FACTOR)
+        ]
 
         latents = 1 / 0.18215 * latents
         # image = self.vae_decoder(latent_sample=latents)[0]

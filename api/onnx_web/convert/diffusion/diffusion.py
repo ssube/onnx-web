@@ -20,7 +20,6 @@ from diffusers import (
     AutoencoderKL,
     OnnxRuntimeModel,
     OnnxStableDiffusionPipeline,
-    StableDiffusionControlNetPipeline,
     StableDiffusionInstructPix2PixPipeline,
     StableDiffusionPipeline,
     StableDiffusionUpscalePipeline,
@@ -32,17 +31,25 @@ from onnx import load_model, save_model
 
 from ...constants import ONNX_MODEL, ONNX_WEIGHTS
 from ...diffusers.load import optimize_pipeline
+from ...diffusers.pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
 from ...diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
 from ...diffusers.version_safe_diffusers import AttnProcessor
 from ...models.cnet import UNet2DConditionModel_CNet
 from ...utils import run_gc
-from ..utils import ConversionContext, is_torch_2_0, load_tensor, onnx_export
+from ..utils import (
+    RESOLVE_FORMATS,
+    ConversionContext,
+    check_ext,
+    is_torch_2_0,
+    load_tensor,
+    onnx_export,
+)
 from .checkpoint import convert_extract_checkpoint
 
 logger = getLogger(__name__)
 
-available_pipelines = {
-    "controlnet": StableDiffusionControlNetPipeline,
+CONVERT_PIPELINES = {
+    "controlnet": OnnxStableDiffusionControlNetPipeline,
     "img2img": StableDiffusionPipeline,
     "inpaint": StableDiffusionPipeline,
     "lpw": StableDiffusionPipeline,
@@ -96,7 +103,6 @@ def get_model_version(
             opts["prediction_type"] = "epsilon"
     except Exception:
         logger.debug("unable to load tensor for version check")
-        pass
 
     return (v2, opts)
 
@@ -314,7 +320,7 @@ def convert_diffusion_diffusers(
             logger.info("ONNX model already exists, skipping")
             return (False, dest_path)
 
-    pipe_class = available_pipelines.get(pipe_type)
+    pipe_class = CONVERT_PIPELINES.get(pipe_type)
     v2, pipe_args = get_model_version(
         source, conversion.map_location, size=image_size, version=version
     )
@@ -360,7 +366,6 @@ def convert_diffusion_diffusers(
                 source,
                 original_config_file=config_path,
                 pipeline_class=pipe_class,
-                vae_path=replace_vae,
                 **pipe_args,
             ).to(device, torch_dtype=dtype)
     elif hf:
@@ -373,6 +378,17 @@ def convert_diffusion_diffusers(
     else:
         logger.warning("pipeline source not found or not recognized: %s", source)
         raise ValueError(f"pipeline source not found or not recognized: {source}")
+
+    if replace_vae is not None:
+        vae_path = path.join(conversion.model_path, replace_vae)
+        if check_ext(replace_vae, RESOLVE_FORMATS):
+            pipeline.vae = AutoencoderKL.from_single_file(vae_path)
+        else:
+            pipeline.vae = AutoencoderKL.from_pretrained(vae_path)
+
+    if is_torch_2_0:
+        pipeline.unet.set_attn_processor(AttnProcessor())
+        pipeline.vae.set_attn_processor(AttnProcessor())
 
     optimize_pipeline(conversion, pipeline)
 
@@ -423,9 +439,6 @@ def convert_diffusion_diffusers(
     else:
         unet_inputs = ["sample", "timestep", "encoder_hidden_states", "return_dict"]
         unet_scale = torch.tensor(False).to(device=device, dtype=torch.bool)
-
-    if is_torch_2_0:
-        pipeline.unet.set_attn_processor(AttnProcessor())
 
     unet_in_channels = pipeline.unet.config.in_channels
     unet_sample_size = pipeline.unet.config.sample_size
@@ -525,19 +538,6 @@ def convert_diffusion_diffusers(
 
     del unet
     run_gc()
-
-    # VAE
-    if replace_vae is not None:
-        if replace_vae.startswith("."):
-            logger.debug(
-                "custom VAE appears to be a local path, making it relative to the model path"
-            )
-            replace_vae = path.join(conversion.model_path, replace_vae)
-
-        logger.info("loading custom VAE: %s", replace_vae)
-        vae = AutoencoderKL.from_pretrained(replace_vae)
-        pipeline.vae = vae
-        run_gc()
 
     if single_vae:
         logger.debug("VAE config: %s", pipeline.vae.config)

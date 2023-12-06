@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, Optional, Tuple
 
 import numpy as np
 import torch
@@ -18,13 +18,14 @@ from ..params import Border, ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..utils import is_debug
 from ..worker import ProgressCallback, WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
 
 class UpscaleOutpaintStage(BaseStage):
-    max_tile = SizeChart.unlimited
+    max_tile = SizeChart.max
 
     def run(
         self,
@@ -32,7 +33,7 @@ class UpscaleOutpaintStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         border: Border,
         dims: Tuple[int, int, int],
@@ -45,7 +46,7 @@ class UpscaleOutpaintStage(BaseStage):
         stage_source: Optional[Image.Image] = None,
         stage_mask: Optional[Image.Image] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         prompt_pairs, loras, inversions, (prompt, negative_prompt) = parse_prompt(
             params
         )
@@ -56,12 +57,12 @@ class UpscaleOutpaintStage(BaseStage):
             params,
             pipe_type,
             worker.get_device(),
-            inversions=inversions,
+            embeddings=inversions,
             loras=loras,
         )
 
         outputs = []
-        for source in sources:
+        for source in sources.as_image():
             if is_debug():
                 save_image(server, "tile-source.png", source)
                 save_image(server, "tile-mask.png", tile_mask)
@@ -71,7 +72,7 @@ class UpscaleOutpaintStage(BaseStage):
                 outputs.append(source)
                 continue
 
-            tile_size = params.tiles
+            tile_size = params.unet_tile
             size = Size(*source.size)
             latent_size = size.min(tile_size, tile_size)
 
@@ -99,10 +100,11 @@ class UpscaleOutpaintStage(BaseStage):
                 )
             else:
                 # encode and record alternative prompts outside of LPW
-                prompt_embeds = encode_prompt(
-                    pipe, prompt_pairs, params.batch, params.do_cfg()
-                )
-                pipe.unet.set_prompts(prompt_embeds)
+                if not params.is_xl():
+                    prompt_embeds = encode_prompt(
+                        pipe, prompt_pairs, params.batch, params.do_cfg()
+                    )
+                    pipe.unet.set_prompts(prompt_embeds)
 
                 rng = np.random.RandomState(params.seed)
                 result = pipe(
@@ -121,4 +123,4 @@ class UpscaleOutpaintStage(BaseStage):
 
             outputs.extend(result.images)
 
-        return outputs
+        return StageResult(images=outputs)

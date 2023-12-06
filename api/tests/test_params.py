@@ -2,6 +2,7 @@ import unittest
 
 from onnx_web.params import Border, Size
 
+
 class BorderTests(unittest.TestCase):
     def test_json(self):
         border = Border.even(0)

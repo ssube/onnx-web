@@ -5,11 +5,12 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
-import { shallow} from 'zustand/shallow';
+import { shallow } from 'zustand/shallow';
 
-import { HighresParams, Img2ImgParams, ModelParams, UpscaleParams } from '../../client/types.js';
 import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext, TabState } from '../../state.js';
+import { HighresParams, Img2ImgParams, ModelParams, UpscaleParams } from '../../types/params.js';
+import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';
 import { ImageControl } from '../control/ImageControl.js';
 import { ModelControl } from '../control/ModelControl.js';
@@ -17,7 +18,6 @@ import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
-import { Profiles } from '../Profiles.js';
 
 export function Img2Img() {
   const { params } = mustExist(useContext(ConfigContext));

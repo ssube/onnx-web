@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import List, Optional
+from typing import Optional
 
 import numpy as np
 import torch
@@ -10,13 +10,14 @@ from ..diffusers.utils import encode_prompt, parse_prompt, slice_prompt
 from ..params import ImageParams, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
 
 class BlendImg2ImgStage(BaseStage):
-    max_tile = SizeChart.unlimited
+    max_tile = SizeChart.max
 
     def run(
         self,
@@ -24,14 +25,14 @@ class BlendImg2ImgStage(BaseStage):
         server: ServerContext,
         _stage: StageParams,
         params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         strength: float,
         callback: Optional[ProgressCallback] = None,
         stage_source: Optional[Image.Image] = None,
         prompt_index: Optional[int] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         params = params.with_args(**kwargs)
 
         # multi-stage prompting
@@ -52,7 +53,7 @@ class BlendImg2ImgStage(BaseStage):
             params,
             pipe_type,
             worker.get_device(),
-            inversions=inversions,
+            embeddings=inversions,
             loras=loras,
         )
 
@@ -65,7 +66,7 @@ class BlendImg2ImgStage(BaseStage):
             pipe_params["strength"] = strength
 
         outputs = []
-        for source in sources:
+        for source in sources.as_image():
             if params.is_lpw():
                 logger.debug("using LPW pipeline for img2img")
                 rng = torch.manual_seed(params.seed)
@@ -81,11 +82,10 @@ class BlendImg2ImgStage(BaseStage):
                 )
             else:
                 # encode and record alternative prompts outside of LPW
-                prompt_embeds = encode_prompt(
-                    pipe, prompt_pairs, params.batch, params.do_cfg()
-                )
-
                 if not params.is_xl():
+                    prompt_embeds = encode_prompt(
+                        pipe, prompt_pairs, params.batch, params.do_cfg()
+                    )
                     pipe.unet.set_prompts(prompt_embeds)
 
                 rng = np.random.RandomState(params.seed)
@@ -102,4 +102,18 @@ class BlendImg2ImgStage(BaseStage):
 
             outputs.extend(result.images)
 
-        return outputs
+        return StageResult(images=outputs)
+
+    def steps(
+        self,
+        params: ImageParams,
+        *args,
+    ) -> int:
+        return params.steps  # TODO: multiply by strength
+
+    def outputs(
+        self,
+        params: ImageParams,
+        sources: int,
+    ) -> int:
+        return sources + 1

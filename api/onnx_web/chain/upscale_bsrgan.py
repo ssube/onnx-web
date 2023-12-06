@@ -1,22 +1,30 @@
 from logging import getLogger
 from os import path
-from typing import List, Optional
+from typing import Optional
 
 import numpy as np
 from PIL import Image
 
 from ..models.onnx import OnnxModel
-from ..params import DeviceParams, ImageParams, Size, StageParams, UpscaleParams
+from ..params import (
+    DeviceParams,
+    ImageParams,
+    Size,
+    SizeChart,
+    StageParams,
+    UpscaleParams,
+)
 from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
 
 class UpscaleBSRGANStage(BaseStage):
-    max_tile = 64
+    max_tile = SizeChart.micro
 
     def load(
         self,
@@ -54,12 +62,12 @@ class UpscaleBSRGANStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         upscale = upscale.with_args(**kwargs)
 
         if upscale.upscale_model is None:
@@ -71,40 +79,38 @@ class UpscaleBSRGANStage(BaseStage):
         bsrgan = self.load(server, stage, upscale, device)
 
         outputs = []
-        for source in sources:
-            image = np.array(source) / 255.0
+        for source in sources.as_numpy():
+            image = source / 255.0
             image = image[:, :, [2, 1, 0]].astype(np.float32).transpose((2, 0, 1))
             image = np.expand_dims(image, axis=0)
             logger.trace("BSRGAN input shape: %s", image.shape)
 
             scale = upscale.outscale
-            dest = np.zeros(
+            logger.trace(
+                "BSRGAN output shape: %s",
                 (
                     image.shape[0],
                     image.shape[1],
                     image.shape[2] * scale,
                     image.shape[3] * scale,
-                )
+                ),
             )
-            logger.trace("BSRGAN output shape: %s", dest.shape)
 
-            dest = bsrgan(image)
+            output = bsrgan(image)
 
-            dest = np.clip(np.squeeze(dest, axis=0), 0, 1)
-            dest = dest[[2, 1, 0], :, :].transpose((1, 2, 0))
-            dest = (dest * 255.0).round().astype(np.uint8)
+            output = np.clip(np.squeeze(output, axis=0), 0, 1)
+            output = output[[2, 1, 0], :, :].transpose((1, 2, 0))
+            output = (output * 255.0).round().astype(np.uint8)
 
-            output = Image.fromarray(dest, "RGB")
-            logger.debug("output image size: %s x %s", output.width, output.height)
-
+            logger.debug("output image shape: %s", output.shape)
             outputs.append(output)
 
-        return outputs
+        return StageResult(arrays=outputs)
 
     def steps(
         self,
         params: ImageParams,
         size: Size,
     ) -> int:
-        tile = min(params.tiles, self.max_tile)
+        tile = min(params.unet_tile, self.max_tile)
         return size.width // tile * size.height // tile

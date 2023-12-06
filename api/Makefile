@@ -1,4 +1,4 @@
-.PHONY: ci check-venv pip pip-dev lint-check lint-fix test typecheck package package-dist package-upload
+.PHONY: ci check-venv pip pip-dev lint-check lint-fix test typecheck package package-dist package-upload style
 
 onnx_env: ## create virtual env
 	python -v venv onnx_env
@@ -18,9 +18,10 @@ pip-dev: check-venv
 
 test:
 	python -m coverage erase
-	python -m coverage run -m unittest discover -s tests/
+	python -m coverage run -m unittest discover -v -s tests/
 	python -m coverage html -i
 	python -m coverage xml -i
+	python -m coverage report -i
 
 package: package-dist package-upload
 
@@ -32,13 +33,21 @@ package-upload:
 
 lint-check:
 	black --check onnx_web/
-	isort --check-only --skip __init__.py --filter-files onnx_web
+	black --check tests/
 	flake8 onnx_web
+	flake8 tests
+	isort --check-only --skip __init__.py --filter-files onnx_web
+	isort --check-only --skip __init__.py --filter-files tests
 
 lint-fix:
 	black onnx_web/
-	isort --skip __init__.py --filter-files onnx_web
+	black tests/
 	flake8 onnx_web
+	flake8 tests
+	isort --skip __init__.py --filter-files onnx_web
+	isort --skip __init__.py --filter-files tests
+
+style: lint-fix
 
 typecheck:
 	mypy onnx_web

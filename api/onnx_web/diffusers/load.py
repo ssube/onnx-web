@@ -1,16 +1,15 @@
 from logging import getLogger
 from os import path
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Literal, Optional, Tuple
 
 from onnx import load_model
 from optimum.onnxruntime import (  # ORTStableDiffusionXLInpaintPipeline,
     ORTStableDiffusionXLImg2ImgPipeline,
     ORTStableDiffusionXLPipeline,
 )
-from optimum.onnxruntime.modeling_diffusion import ORTModelTextEncoder, ORTModelUnet
 from transformers import CLIPTokenizer
 
-from ..constants import ONNX_MODEL
+from ..constants import LATENT_FACTOR, ONNX_MODEL
 from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
 from ..convert.diffusion.textual_inversion import blend_textual_inversions
 from ..diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
@@ -24,6 +23,7 @@ from .patches.vae import VAEWrapper
 from .pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
 from .pipelines.lpw import OnnxStableDiffusionLongPromptWeightingPipeline
 from .pipelines.panorama import OnnxStableDiffusionPanoramaPipeline
+from .pipelines.panorama_xl import ORTStableDiffusionXLPanoramaPipeline
 from .pipelines.pix2pix import OnnxStableDiffusionInstructPix2PixPipeline
 from .version_safe_diffusers import (
     DDIMScheduler,
@@ -38,6 +38,7 @@ from .version_safe_diffusers import (
     KarrasVeScheduler,
     KDPM2AncestralDiscreteScheduler,
     KDPM2DiscreteScheduler,
+    LCMScheduler,
     LMSDiscreteScheduler,
     OnnxRuntimeModel,
     OnnxStableDiffusionImg2ImgPipeline,
@@ -58,6 +59,7 @@ available_pipelines = {
     # "inpaint-sdxl": ORTStableDiffusionXLInpaintPipeline,
     "lpw": OnnxStableDiffusionLongPromptWeightingPipeline,
     "panorama": OnnxStableDiffusionPanoramaPipeline,
+    "panorama-sdxl": ORTStableDiffusionXLPanoramaPipeline,
     "pix2pix": OnnxStableDiffusionInstructPix2PixPipeline,
     "txt2img-sdxl": ORTStableDiffusionXLPipeline,
     "txt2img": OnnxStableDiffusionPipeline,
@@ -77,10 +79,23 @@ pipeline_schedulers = {
     "k-dpm-2-a": KDPM2AncestralDiscreteScheduler,
     "k-dpm-2": KDPM2DiscreteScheduler,
     "karras-ve": KarrasVeScheduler,
+    "lcm": LCMScheduler,
     "lms-discrete": LMSDiscreteScheduler,
     "pndm": PNDMScheduler,
     "unipc-multi": UniPCMultistepScheduler,
 }
+
+
+def add_pipeline(name: str, pipeline: Any) -> bool:
+    global available_pipelines
+
+    if name in available_pipelines:
+        # TODO: decide if this should be allowed or not
+        logger.warning("cannot replace existing pipeline: %s", name)
+        return False
+    else:
+        available_pipelines[name] = pipeline
+        return True
 
 
 def get_available_pipelines() -> List[str]:
@@ -99,16 +114,19 @@ def get_scheduler_name(scheduler: Any) -> Optional[str]:
     return None
 
 
+VAE_COMPONENTS = ["vae", "vae_decoder", "vae_encoder"]
+
+
 def load_pipeline(
     server: ServerContext,
     params: ImageParams,
     pipeline: str,
     device: DeviceParams,
-    inversions: Optional[List[Tuple[str, float]]] = None,
+    embeddings: Optional[List[Tuple[str, float]]] = None,
     loras: Optional[List[Tuple[str, float]]] = None,
     model: Optional[str] = None,
 ):
-    inversions = inversions or []
+    embeddings = embeddings or []
     loras = loras or []
     model = model or params.model
 
@@ -122,7 +140,7 @@ def load_pipeline(
         device.device,
         device.provider,
         control_key,
-        inversions,
+        embeddings,
         loras,
     )
     scheduler_key = (params.scheduler, model)
@@ -159,211 +177,376 @@ def load_pipeline(
             run_gc([device])
 
         logger.debug("loading new diffusion pipeline from %s", model)
+        scheduler = scheduler_type.from_pretrained(
+            model,
+            provider=device.ort_provider(),
+            sess_options=device.sess_options(),
+            subfolder="scheduler",
+            torch_dtype=torch_dtype,
+        )
         components = {
-            "scheduler": scheduler_type.from_pretrained(
-                model,
-                provider=device.ort_provider(),
-                sess_options=device.sess_options(),
-                subfolder="scheduler",
-                torch_dtype=torch_dtype,
-            )
+            "scheduler": scheduler,
         }
 
         # shared components
-        text_encoder = None
         unet_type = "unet"
 
         # ControlNet component
         if params.is_control() and params.control is not None:
-            cnet_path = path.join(
-                server.model_path, "control", f"{params.control.name}.onnx"
-            )
-            logger.debug("loading ControlNet weights from %s", cnet_path)
-            components["controlnet"] = OnnxRuntimeModel(
-                OnnxRuntimeModel.load_model(
-                    cnet_path,
-                    provider=device.ort_provider(),
-                    sess_options=device.sess_options(),
-                )
-            )
-
+            logger.debug("loading ControlNet components")
+            control_components = load_controlnet(server, device, params)
+            components.update(control_components)
             unet_type = "cnet"
 
-        # Textual Inversion blending
-        if inversions is not None and len(inversions) > 0:
-            logger.debug("blending Textual Inversions from %s", inversions)
-            inversion_names, inversion_weights = zip(*inversions)
+        # load various pipeline components
+        encoder_components = load_text_encoders(
+            server, device, model, embeddings, loras, torch_dtype, params
+        )
+        components.update(encoder_components)
 
-            inversion_models = [
-                path.join(server.model_path, "inversion", name)
-                for name in inversion_names
-            ]
-            text_encoder = load_model(path.join(model, "text_encoder", ONNX_MODEL))
-            tokenizer = CLIPTokenizer.from_pretrained(
-                model,
-                subfolder="tokenizer",
-                torch_dtype=torch_dtype,
+        unet_components = load_unet(server, device, model, loras, unet_type, params)
+        components.update(unet_components)
+
+        vae_components = load_vae(server, device, model, params)
+        components.update(vae_components)
+
+        pipeline_class = available_pipelines.get(pipeline, OnnxStableDiffusionPipeline)
+
+        if params.is_xl():
+            logger.debug("assembling SDXL pipeline for %s", pipeline_class.__name__)
+            pipe = pipeline_class(
+                components["vae_decoder_session"],
+                components["text_encoder_session"],
+                components["unet_session"],
+                {
+                    "force_zeros_for_empty_prompt": True,
+                    "requires_aesthetics_score": False,
+                },
+                components["tokenizer"],
+                scheduler,
+                vae_encoder_session=components.get("vae_encoder_session", None),
+                text_encoder_2_session=components.get("text_encoder_2_session", None),
+                tokenizer_2=components.get("tokenizer_2", None),
             )
-            text_encoder, tokenizer = blend_textual_inversions(
+        else:
+            if "vae" in components:
+                # upscale uses a single VAE
+                logger.debug(
+                    "assembling SD pipeline for %s with single VAE",
+                    pipeline_class.__name__,
+                )
+                pipe = pipeline_class(
+                    components["vae"],
+                    components["text_encoder"],
+                    components["tokenizer"],
+                    components["unet"],
+                    scheduler,
+                    scheduler,
+                )
+            else:
+                logger.debug(
+                    "assembling SD pipeline for %s with VAE codec",
+                    pipeline_class.__name__,
+                )
+                pipe = pipeline_class(
+                    components["vae_encoder"],
+                    components["vae_decoder"],
+                    components["text_encoder"],
+                    components["tokenizer"],
+                    components["unet"],
+                    scheduler,
+                    None,
+                    None,
+                    requires_safety_checker=False,
+                )
+
+        if not server.show_progress:
+            pipe.set_progress_bar_config(disable=True)
+
+        optimize_pipeline(server, pipe)
+        patch_pipeline(server, pipe, pipeline_class, params)
+
+        server.cache.set(ModelTypes.diffusion, pipe_key, pipe)
+        server.cache.set(ModelTypes.scheduler, scheduler_key, scheduler)
+
+    for vae in VAE_COMPONENTS:
+        if hasattr(pipe, vae):
+            vae_model = getattr(pipe, vae)
+            if isinstance(vae_model, VAEWrapper):
+                vae_model.set_tiled(tiled=params.tiled_vae)
+                vae_model.set_window_size(
+                    params.vae_tile // LATENT_FACTOR, params.vae_overlap
+                )
+
+    # update panorama params
+    if params.is_panorama():
+        unet_stride = (params.unet_tile * (1 - params.unet_overlap)) // LATENT_FACTOR
+        logger.debug(
+            "setting panorama window parameters: %s/%s for UNet, %s/%s for VAE",
+            params.unet_tile,
+            unet_stride,
+            params.vae_tile,
+            params.vae_overlap,
+        )
+        pipe.set_window_size(params.unet_tile // LATENT_FACTOR, unet_stride)
+
+    run_gc([device])
+
+    return pipe
+
+
+def load_controlnet(server: ServerContext, device: DeviceParams, params: ImageParams):
+    cnet_path = path.join(server.model_path, "control", f"{params.control.name}.onnx")
+    logger.debug("loading ControlNet weights from %s", cnet_path)
+    components = {}
+    components["controlnet"] = OnnxRuntimeModel(
+        OnnxRuntimeModel.load_model(
+            cnet_path,
+            provider=device.ort_provider(),
+            sess_options=device.sess_options(),
+        )
+    )
+    return components
+
+
+def load_text_encoders(
+    server: ServerContext,
+    device: DeviceParams,
+    model: str,
+    embeddings: Optional[List[Tuple[str, float]]],
+    loras: Optional[List[Tuple[str, float]]],
+    torch_dtype,
+    params: ImageParams,
+):
+    text_encoder = load_model(path.join(model, "text_encoder", ONNX_MODEL))
+    tokenizer = CLIPTokenizer.from_pretrained(
+        model,
+        subfolder="tokenizer",
+        torch_dtype=torch_dtype,
+    )
+
+    components = {
+        "tokenizer": tokenizer,
+    }
+
+    if params.is_xl():
+        text_encoder_2 = load_model(path.join(model, "text_encoder_2", ONNX_MODEL))
+        tokenizer_2 = CLIPTokenizer.from_pretrained(
+            model,
+            subfolder="tokenizer_2",
+            torch_dtype=torch_dtype,
+        )
+        components["tokenizer_2"] = tokenizer_2
+
+    # blend embeddings, if any
+    if embeddings is not None and len(embeddings) > 0:
+        embedding_names, embedding_weights = zip(*embeddings)
+        embedding_models = [
+            path.join(server.model_path, "inversion", name) for name in embedding_names
+        ]
+        logger.debug(
+            "blending base model %s with embeddings from %s", model, embedding_models
+        )
+
+        # TODO: blend text_encoder_2 as well
+        text_encoder, tokenizer = blend_textual_inversions(
+            server,
+            text_encoder,
+            tokenizer,
+            list(
+                zip(
+                    embedding_models,
+                    embedding_weights,
+                    embedding_names,
+                    [None] * len(embedding_models),
+                )
+            ),
+        )
+        components["tokenizer"] = tokenizer
+
+        if params.is_xl():
+            text_encoder_2, tokenizer_2 = blend_textual_inversions(
                 server,
-                text_encoder,
-                tokenizer,
+                text_encoder_2,
+                tokenizer_2,
                 list(
                     zip(
-                        inversion_models,
-                        inversion_weights,
-                        inversion_names,
-                        [None] * len(inversion_models),
+                        embedding_models,
+                        embedding_weights,
+                        embedding_names,
+                        [None] * len(embedding_models),
                     )
                 ),
             )
+            components["tokenizer_2"] = tokenizer_2
 
-            components["tokenizer"] = tokenizer
+    # blend LoRAs, if any
+    if loras is not None and len(loras) > 0:
+        lora_names, lora_weights = zip(*loras)
+        lora_models = [
+            path.join(server.model_path, "lora", name) for name in lora_names
+        ]
+        logger.info("blending base model %s with LoRAs from %s", model, lora_models)
 
-            # should be pretty small and should not need external data
-            if loras is None or len(loras) == 0:
-                # TODO: handle XL encoders
-                components["text_encoder"] = OnnxRuntimeModel(
-                    OnnxRuntimeModel.load_model(
-                        text_encoder.SerializeToString(),
-                        provider=device.ort_provider("text-encoder"),
-                        sess_options=device.sess_options(),
-                    )
-                )
+        # blend and load text encoder
+        text_encoder = blend_loras(
+            server,
+            text_encoder,
+            list(zip(lora_models, lora_weights)),
+            "text_encoder",
+            1 if params.is_xl() else None,
+            params.is_xl(),
+        )
 
-        # LoRA blending
-        if loras is not None and len(loras) > 0:
-            lora_names, lora_weights = zip(*loras)
-            lora_models = [
-                path.join(server.model_path, "lora", name) for name in lora_names
-            ]
-            logger.info(
-                "blending base model %s with LoRA models: %s", model, lora_models
-            )
-
-            # blend and load text encoder
-            text_encoder = text_encoder or path.join(model, "text_encoder", ONNX_MODEL)
-            text_encoder = blend_loras(
+        if params.is_xl():
+            text_encoder_2 = blend_loras(
                 server,
-                text_encoder,
+                text_encoder_2,
                 list(zip(lora_models, lora_weights)),
                 "text_encoder",
-                1 if params.is_xl() else None,
+                2,
                 params.is_xl(),
             )
-            (text_encoder, text_encoder_data) = buffer_external_data_tensors(
-                text_encoder
+
+    # prepare external data for sessions
+    (text_encoder, text_encoder_data) = buffer_external_data_tensors(text_encoder)
+    text_encoder_names, text_encoder_values = zip(*text_encoder_data)
+    text_encoder_opts = device.sess_options(cache=False)
+    text_encoder_opts.add_external_initializers(
+        list(text_encoder_names), list(text_encoder_values)
+    )
+
+    if params.is_xl():
+        # encoder 2 only exists in XL
+        (text_encoder_2, text_encoder_2_data) = buffer_external_data_tensors(
+            text_encoder_2
+        )
+        text_encoder_2_names, text_encoder_2_values = zip(*text_encoder_2_data)
+        text_encoder_2_opts = device.sess_options(cache=False)
+        text_encoder_2_opts.add_external_initializers(
+            list(text_encoder_2_names), list(text_encoder_2_values)
+        )
+
+        # session for te1
+        text_encoder_session = InferenceSession(
+            text_encoder.SerializeToString(),
+            providers=[device.ort_provider("text-encoder")],
+            sess_options=text_encoder_opts,
+        )
+        text_encoder_session._model_path = path.join(model, "text_encoder")
+        components["text_encoder_session"] = text_encoder_session
+
+        # session for te2
+        text_encoder_2_session = InferenceSession(
+            text_encoder_2.SerializeToString(),
+            providers=[device.ort_provider("text-encoder")],
+            sess_options=text_encoder_2_opts,
+        )
+        text_encoder_2_session._model_path = path.join(model, "text_encoder_2")
+        components["text_encoder_2_session"] = text_encoder_2_session
+    else:
+        # session for te
+        components["text_encoder"] = OnnxRuntimeModel(
+            OnnxRuntimeModel.load_model(
+                text_encoder.SerializeToString(),
+                provider=device.ort_provider("text-encoder"),
+                sess_options=text_encoder_opts,
             )
-            text_encoder_names, text_encoder_values = zip(*text_encoder_data)
-            text_encoder_opts = device.sess_options(cache=False)
-            text_encoder_opts.add_external_initializers(
-                list(text_encoder_names), list(text_encoder_values)
+        )
+
+    return components
+
+
+def load_unet(
+    server: ServerContext,
+    device: DeviceParams,
+    model: str,
+    loras: List[Tuple[str, float]],
+    unet_type: Literal["cnet", "unet"],
+    params: ImageParams,
+):
+    components = {}
+    unet = load_model(path.join(model, unet_type, ONNX_MODEL))
+
+    # LoRA blending
+    if loras is not None and len(loras) > 0:
+        lora_names, lora_weights = zip(*loras)
+        lora_models = [
+            path.join(server.model_path, "lora", name) for name in lora_names
+        ]
+        logger.info("blending base model %s with LoRA models: %s", model, lora_models)
+
+        # blend and load unet
+        unet = blend_loras(
+            server,
+            unet,
+            list(zip(lora_models, lora_weights)),
+            "unet",
+            xl=params.is_xl(),
+        )
+
+    (unet_model, unet_data) = buffer_external_data_tensors(unet)
+    unet_names, unet_values = zip(*unet_data)
+    unet_opts = device.sess_options(cache=False)
+    unet_opts.add_external_initializers(list(unet_names), list(unet_values))
+
+    if params.is_xl():
+        unet_session = InferenceSession(
+            unet_model.SerializeToString(),
+            providers=[device.ort_provider("unet")],
+            sess_options=unet_opts,
+        )
+        unet_session._model_path = path.join(model, "unet")
+        components["unet_session"] = unet_session
+    else:
+        components["unet"] = OnnxRuntimeModel(
+            OnnxRuntimeModel.load_model(
+                unet_model.SerializeToString(),
+                provider=device.ort_provider("unet"),
+                sess_options=unet_opts,
             )
+        )
 
-            if params.is_xl():
-                text_encoder_session = InferenceSession(
-                    text_encoder.SerializeToString(),
-                    providers=[device.ort_provider("text-encoder")],
-                    sess_options=text_encoder_opts,
-                )
-                text_encoder_session._model_path = path.join(model, "text_encoder")
-                components["text_encoder_session"] = text_encoder_session
-            else:
-                components["text_encoder"] = OnnxRuntimeModel(
-                    OnnxRuntimeModel.load_model(
-                        text_encoder.SerializeToString(),
-                        provider=device.ort_provider("text-encoder"),
-                        sess_options=text_encoder_opts,
-                    )
-                )
+    return components
 
-            if params.is_xl():
-                text_encoder_2 = path.join(model, "text_encoder_2", ONNX_MODEL)
-                text_encoder_2 = blend_loras(
-                    server,
-                    text_encoder_2,
-                    list(zip(lora_models, lora_weights)),
-                    "text_encoder",
-                    2,
-                    params.is_xl(),
-                )
-                (text_encoder_2, text_encoder_2_data) = buffer_external_data_tensors(
-                    text_encoder_2
-                )
-                text_encoder_2_names, text_encoder_2_values = zip(*text_encoder_2_data)
-                text_encoder_2_opts = device.sess_options(cache=False)
-                text_encoder_2_opts.add_external_initializers(
-                    list(text_encoder_2_names), list(text_encoder_2_values)
-                )
 
-                text_encoder_2_session = InferenceSession(
-                    text_encoder_2.SerializeToString(),
-                    providers=[device.ort_provider("text-encoder")],
-                    sess_options=text_encoder_2_opts,
-                )
-                text_encoder_2_session._model_path = path.join(model, "text_encoder_2")
-                components["text_encoder_2_session"] = text_encoder_2_session
+def load_vae(
+    _server: ServerContext, device: DeviceParams, model: str, params: ImageParams
+):
+    # one or more VAE models need to be loaded
+    vae = path.join(model, "vae", ONNX_MODEL)
+    vae_decoder = path.join(model, "vae_decoder", ONNX_MODEL)
+    vae_encoder = path.join(model, "vae_encoder", ONNX_MODEL)
 
-            # blend and load unet
-            unet = path.join(model, unet_type, ONNX_MODEL)
-            blended_unet = blend_loras(
-                server,
-                unet,
-                list(zip(lora_models, lora_weights)),
-                "unet",
-                xl=params.is_xl(),
+    components = {}
+    if not params.is_xl() and path.exists(vae):
+        logger.debug("loading VAE from %s", vae)
+        components["vae"] = OnnxRuntimeModel(
+            OnnxRuntimeModel.load_model(
+                vae,
+                provider=device.ort_provider("vae"),
+                sess_options=device.sess_options(),
             )
-            (unet_model, unet_data) = buffer_external_data_tensors(blended_unet)
-            unet_names, unet_values = zip(*unet_data)
-            unet_opts = device.sess_options(cache=False)
-            unet_opts.add_external_initializers(list(unet_names), list(unet_values))
-
-            if params.is_xl():
-                unet_session = InferenceSession(
-                    unet_model.SerializeToString(),
-                    providers=[device.ort_provider("unet")],
-                    sess_options=unet_opts,
-                )
-                unet_session._model_path = path.join(model, "unet")
-                components["unet_session"] = unet_session
-            else:
-                components["unet"] = OnnxRuntimeModel(
-                    OnnxRuntimeModel.load_model(
-                        unet_model.SerializeToString(),
-                        provider=device.ort_provider("unet"),
-                        sess_options=unet_opts,
-                    )
-                )
-
-        # make sure a UNet has been loaded
-        if not params.is_xl() and "unet" not in components:
-            unet = path.join(model, unet_type, ONNX_MODEL)
-            logger.debug("loading UNet (%s) from %s", unet_type, unet)
-            components["unet"] = OnnxRuntimeModel(
-                OnnxRuntimeModel.load_model(
-                    unet,
-                    provider=device.ort_provider("unet"),
-                    sess_options=device.sess_options(),
-                )
+        )
+    elif path.exists(vae_decoder) and path.exists(vae_encoder):
+        if params.is_xl():
+            logger.debug("loading VAE decoder from %s", vae_decoder)
+            components["vae_decoder_session"] = OnnxRuntimeModel.load_model(
+                vae_decoder,
+                provider=device.ort_provider("vae"),
+                sess_options=device.sess_options(),
             )
+            components["vae_decoder_session"]._model_path = vae_decoder
 
-        # one or more VAE models need to be loaded
-        vae = path.join(model, "vae", ONNX_MODEL)
-        vae_decoder = path.join(model, "vae_decoder", ONNX_MODEL)
-        vae_encoder = path.join(model, "vae_encoder", ONNX_MODEL)
-
-        if not params.is_xl() and path.exists(vae):
-            logger.debug("loading VAE from %s", vae)
-            components["vae"] = OnnxRuntimeModel(
-                OnnxRuntimeModel.load_model(
-                    vae,
-                    provider=device.ort_provider("vae"),
-                    sess_options=device.sess_options(),
-                )
+            logger.debug("loading VAE encoder from %s", vae_encoder)
+            components["vae_encoder_session"] = OnnxRuntimeModel.load_model(
+                vae_encoder,
+                provider=device.ort_provider("vae"),
+                sess_options=device.sess_options(),
             )
-        elif (
-            not params.is_xl() and path.exists(vae_decoder) and path.exists(vae_encoder)
-        ):
+            components["vae_encoder_session"]._model_path = vae_encoder
+
+        else:
             logger.debug("loading VAE decoder from %s", vae_decoder)
             components["vae_decoder"] = OnnxRuntimeModel(
                 OnnxRuntimeModel.load_model(
@@ -382,119 +565,44 @@ def load_pipeline(
                 )
             )
 
-        # additional options for panorama pipeline
-        if params.is_panorama():
-            components["window"] = params.tiles // 8
-            components["stride"] = params.stride // 8
-
-        pipeline_class = available_pipelines.get(pipeline, OnnxStableDiffusionPipeline)
-        logger.debug("loading pretrained SD pipeline for %s", pipeline_class.__name__)
-        pipe = pipeline_class.from_pretrained(
-            model,
-            provider=device.ort_provider(),
-            sess_options=device.sess_options(),
-            safety_checker=None,
-            torch_dtype=torch_dtype,
-            **components,
-        )
-
-        # make sure XL models are actually being used
-        # TODO: why is this needed?
-        if "text_encoder_session" in components:
-            logger.info(
-                "text encoder matches: %s, %s",
-                pipe.text_encoder.session == components["text_encoder_session"],
-                type(pipe.text_encoder),
-            )
-            pipe.text_encoder = ORTModelTextEncoder(text_encoder_session, text_encoder)
-
-        if "text_encoder_2_session" in components:
-            logger.info(
-                "text encoder 2 matches: %s, %s",
-                pipe.text_encoder_2.session == components["text_encoder_2_session"],
-                type(pipe.text_encoder_2),
-            )
-            pipe.text_encoder_2 = ORTModelTextEncoder(
-                text_encoder_2_session, text_encoder_2
-            )
-
-        if "unet_session" in components:
-            logger.info(
-                "unet matches: %s, %s",
-                pipe.unet.session == components["unet_session"],
-                type(pipe.unet),
-            )
-            pipe.unet = ORTModelUnet(unet_session, unet_model)
-
-        if not server.show_progress:
-            pipe.set_progress_bar_config(disable=True)
-
-        optimize_pipeline(server, pipe)
-
-        if not params.is_xl():
-            patch_pipeline(server, pipe, pipeline, pipeline_class, params)
-
-        server.cache.set(ModelTypes.diffusion, pipe_key, pipe)
-        server.cache.set(ModelTypes.scheduler, scheduler_key, components["scheduler"])
-
-    if not params.is_xl() and hasattr(pipe, "vae_decoder"):
-        pipe.vae_decoder.set_tiled(tiled=params.tiled_vae)
-
-    if not params.is_xl() and hasattr(pipe, "vae_encoder"):
-        pipe.vae_encoder.set_tiled(tiled=params.tiled_vae)
-
-    # update panorama params
-    if params.is_panorama():
-        latent_window = params.tiles // 8
-        latent_stride = params.stride // 8
-
-        pipe.set_window_size(latent_window, latent_stride)
-        if hasattr(pipe, "vae_decoder"):
-            pipe.vae_decoder.set_window_size(latent_window, params.overlap)
-        if hasattr(pipe, "vae_encoder"):
-            pipe.vae_encoder.set_window_size(latent_window, params.overlap)
-
-    run_gc([device])
-
-    return pipe
+    return components
 
 
 def optimize_pipeline(
     server: ServerContext,
     pipe: StableDiffusionPipeline,
 ) -> None:
-    if (
-        "diffusers-attention-slicing" in server.optimizations
-        or "diffusers-attention-slicing-auto" in server.optimizations
-    ):
+    if server.has_optimization(
+        "diffusers-attention-slicing"
+    ) or server.has_optimization("diffusers-attention-slicing-auto"):
         logger.debug("enabling auto attention slicing on SD pipeline")
         try:
             pipe.enable_attention_slicing(slice_size="auto")
         except Exception as e:
             logger.warning("error while enabling auto attention slicing: %s", e)
 
-    if "diffusers-attention-slicing-max" in server.optimizations:
+    if server.has_optimization("diffusers-attention-slicing-max"):
         logger.debug("enabling max attention slicing on SD pipeline")
         try:
             pipe.enable_attention_slicing(slice_size="max")
         except Exception as e:
             logger.warning("error while enabling max attention slicing: %s", e)
 
-    if "diffusers-vae-slicing" in server.optimizations:
+    if server.has_optimization("diffusers-vae-slicing"):
         logger.debug("enabling VAE slicing on SD pipeline")
         try:
             pipe.enable_vae_slicing()
         except Exception as e:
             logger.warning("error while enabling VAE slicing: %s", e)
 
-    if "diffusers-cpu-offload-sequential" in server.optimizations:
+    if server.has_optimization("diffusers-cpu-offload-sequential"):
         logger.debug("enabling sequential CPU offload on SD pipeline")
         try:
             pipe.enable_sequential_cpu_offload()
         except Exception as e:
             logger.warning("error while enabling sequential CPU offload: %s", e)
 
-    elif "diffusers-cpu-offload-model" in server.optimizations:
+    elif server.has_optimization("diffusers-cpu-offload-model"):
         # TODO: check for accelerate
         logger.debug("enabling model CPU offload on SD pipeline")
         try:
@@ -502,7 +610,7 @@ def optimize_pipeline(
         except Exception as e:
             logger.warning("error while enabling model CPU offload: %s", e)
 
-    if "diffusers-memory-efficient-attention" in server.optimizations:
+    if server.has_optimization("diffusers-memory-efficient-attention"):
         # TODO: check for xformers
         logger.debug("enabling memory efficient attention for SD pipeline")
         try:
@@ -514,17 +622,17 @@ def optimize_pipeline(
 def patch_pipeline(
     server: ServerContext,
     pipe: StableDiffusionPipeline,
-    pipe_type: str,
     pipeline: Any,
     params: ImageParams,
 ) -> None:
     logger.debug("patching SD pipeline")
 
-    if pipe_type != "lpw":
+    if not params.is_lpw() and not params.is_xl():
         pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
 
     original_unet = pipe.unet
-    pipe.unet = UNetWrapper(server, original_unet)
+    pipe.unet = UNetWrapper(server, original_unet, params.is_xl())
+    logger.debug("patched UNet with wrapper")
 
     if hasattr(pipe, "vae_decoder"):
         original_decoder = pipe.vae_decoder
@@ -532,18 +640,21 @@ def patch_pipeline(
             server,
             original_decoder,
             decoder=True,
-            window=params.tiles,
-            overlap=params.overlap,
+            window=params.unet_tile,
+            overlap=params.vae_overlap,
         )
+        logger.debug("patched VAE decoder with wrapper")
+
+    if hasattr(pipe, "vae_encoder"):
         original_encoder = pipe.vae_encoder
         pipe.vae_encoder = VAEWrapper(
             server,
             original_encoder,
             decoder=False,
-            window=params.tiles,
-            overlap=params.overlap,
+            window=params.unet_tile,
+            overlap=params.vae_overlap,
         )
-    elif hasattr(pipe, "vae"):
-        pass  # TODO: current wrapper does not work with upscaling VAE
-    else:
-        logger.debug("no VAE found to patch")
+        logger.debug("patched VAE encoder with wrapper")
+
+    if hasattr(pipe, "vae"):
+        logger.warning("not patching single VAE, tiled VAE may not work")

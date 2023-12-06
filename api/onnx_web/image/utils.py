@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from PIL import Image, ImageChops
 
 from ..params import Border, Size
@@ -13,12 +15,12 @@ def expand_image(
     fill="white",
     noise_source=noise_source_histogram,
     mask_filter=mask_filter_none,
-):
+) -> Tuple[Image.Image, Image.Image, Image.Image, Tuple[int]]:
     size = Size(*source.size).add_border(expand)
     size = tuple(size)
     origin = (expand.left, expand.top)
 
-    full_source = Image.new("RGB", size, fill)
+    full_source = Image.new(source.mode, size, fill)
     full_source.paste(source, origin)
 
     # new mask pixels need to be filled with white so they will be replaced

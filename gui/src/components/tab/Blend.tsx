@@ -7,9 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { BlendParams, BrushParams, ModelParams, UpscaleParams } from '../../client/types.js';
 import { IMAGE_FILTER } from '../../config.js';
 import { BLEND_SOURCES, ClientContext, OnnxState, StateContext, TabState } from '../../state.js';
+import { BlendParams, BrushParams, ModelParams, UpscaleParams } from '../../types/params.js';
 import { range } from '../../utils.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';

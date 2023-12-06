@@ -36,7 +36,7 @@ DEFAULT_OPSET = 14
 class ConversionContext(ServerContext):
     def __init__(
         self,
-        model_path: Optional[str] = None,
+        model_path: str = ".",
         cache_path: Optional[str] = None,
         device: Optional[str] = None,
         half: bool = False,
@@ -69,7 +69,7 @@ class ConversionContext(ServerContext):
     def from_environ(cls):
         context = super().from_environ()
         context.control = get_boolean(environ, "ONNX_WEB_CONVERT_CONTROL", True)
-        context.extract = get_boolean(environ, "ONNX_WEB_CONVERT_EXTRACT", True)
+        context.extract = get_boolean(environ, "ONNX_WEB_CONVERT_EXTRACT", False)
         context.reload = get_boolean(environ, "ONNX_WEB_CONVERT_RELOAD", True)
         context.share_unet = get_boolean(environ, "ONNX_WEB_CONVERT_SHARE_UNET", True)
         context.opset = int(environ.get("ONNX_WEB_CONVERT_OPSET", DEFAULT_OPSET))
@@ -120,7 +120,7 @@ def download_progress(urls: List[Tuple[str, str]]):
 
 def tuple_to_source(model: Union[ModelDict, LegacyModel]):
     if isinstance(model, list) or isinstance(model, tuple):
-        name, source, *rest = model
+        name, source, *_rest = model
 
         return {
             "name": name,
@@ -133,9 +133,9 @@ def tuple_to_source(model: Union[ModelDict, LegacyModel]):
 def tuple_to_correction(model: Union[ModelDict, LegacyModel]):
     if isinstance(model, list) or isinstance(model, tuple):
         name, source, *rest = model
-        scale = rest[0] if len(rest) > 0 else 1
-        half = rest[0] if len(rest) > 0 else False
-        opset = rest[0] if len(rest) > 0 else None
+        scale = rest.pop(0) if len(rest) > 0 else 1
+        half = rest.pop(0) if len(rest) > 0 else False
+        opset = rest.pop(0) if len(rest) > 0 else None
 
         return {
             "name": name,
@@ -151,9 +151,9 @@ def tuple_to_correction(model: Union[ModelDict, LegacyModel]):
 def tuple_to_diffusion(model: Union[ModelDict, LegacyModel]):
     if isinstance(model, list) or isinstance(model, tuple):
         name, source, *rest = model
-        single_vae = rest[0] if len(rest) > 0 else False
-        half = rest[0] if len(rest) > 0 else False
-        opset = rest[0] if len(rest) > 0 else None
+        single_vae = rest.pop(0) if len(rest) > 0 else False
+        half = rest.pop(0) if len(rest) > 0 else False
+        opset = rest.pop(0) if len(rest) > 0 else None
 
         return {
             "name": name,
@@ -169,9 +169,9 @@ def tuple_to_diffusion(model: Union[ModelDict, LegacyModel]):
 def tuple_to_upscaling(model: Union[ModelDict, LegacyModel]):
     if isinstance(model, list) or isinstance(model, tuple):
         name, source, *rest = model
-        scale = rest[0] if len(rest) > 0 else 1
-        half = rest[0] if len(rest) > 0 else False
-        opset = rest[0] if len(rest) > 0 else None
+        scale = rest.pop(0) if len(rest) > 0 else 1
+        half = rest.pop(0) if len(rest) > 0 else False
+        opset = rest.pop(0) if len(rest) > 0 else None
 
         return {
             "name": name,
@@ -185,7 +185,14 @@ def tuple_to_upscaling(model: Union[ModelDict, LegacyModel]):
 
 
 MODEL_FORMATS = ["onnx", "pth", "ckpt", "safetensors"]
-RESOLVE_FORMATS = ["safetensors", "ckpt", "pt", "bin"]
+RESOLVE_FORMATS = ["safetensors", "ckpt", "pt", "pth", "bin"]
+
+
+def check_ext(name: str, exts: List[str]) -> Tuple[bool, str]:
+    _name, ext = path.splitext(name)
+    ext = ext.strip(".")
+
+    return (ext in exts, ext)
 
 
 def source_format(model: Dict) -> Optional[str]:
@@ -193,8 +200,8 @@ def source_format(model: Dict) -> Optional[str]:
         return model["format"]
 
     if "source" in model:
-        _name, ext = path.splitext(model["source"])
-        if ext in MODEL_FORMATS:
+        valid, ext = check_ext(model["source"], MODEL_FORMATS)
+        if valid:
             return ext
 
     return None
@@ -298,6 +305,7 @@ def onnx_export(
     half=False,
     external_data=False,
     v2=False,
+    op_block_list=None,
 ):
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
@@ -316,8 +324,7 @@ def onnx_export(
         opset_version=opset,
     )
 
-    op_block_list = None
-    if v2:
+    if v2 and op_block_list is None:
         op_block_list = ["Attention", "MultiHeadAttention"]
 
     if half:

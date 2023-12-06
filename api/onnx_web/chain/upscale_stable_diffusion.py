@@ -1,8 +1,8 @@
 from logging import getLogger
 from os import path
-from typing import List, Optional
+from typing import Optional
 
-import torch
+import numpy as np
 from PIL import Image
 
 from ..diffusers.load import load_pipeline
@@ -10,7 +10,8 @@ from ..diffusers.utils import encode_prompt, parse_prompt
 from ..params import ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -22,13 +23,13 @@ class UpscaleStableDiffusionStage(BaseStage):
         server: ServerContext,
         _stage: StageParams,
         params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         callback: Optional[ProgressCallback] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         params = params.with_args(**kwargs)
         upscale = upscale.with_args(**kwargs)
         logger.info(
@@ -46,22 +47,23 @@ class UpscaleStableDiffusionStage(BaseStage):
             worker.get_device(),
             model=path.join(server.model_path, upscale.upscale_model),
         )
-        generator = torch.manual_seed(params.seed)
+        rng = np.random.RandomState(params.seed)
 
-        prompt_embeds = encode_prompt(
-            pipeline,
-            prompt_pairs,
-            num_images_per_prompt=params.batch,
-            do_classifier_free_guidance=params.do_cfg(),
-        )
-        pipeline.unet.set_prompts(prompt_embeds)
+        if not params.is_xl():
+            prompt_embeds = encode_prompt(
+                pipeline,
+                prompt_pairs,
+                num_images_per_prompt=params.batch,
+                do_classifier_free_guidance=params.do_cfg(),
+            )
+            pipeline.unet.set_prompts(prompt_embeds)
 
         outputs = []
-        for source in sources:
+        for source in sources.as_image():
             result = pipeline(
                 prompt,
                 source,
-                generator=generator,
+                generator=rng,
                 guidance_scale=params.cfg,
                 negative_prompt=negative_prompt,
                 num_inference_steps=params.steps,
@@ -71,4 +73,4 @@ class UpscaleStableDiffusionStage(BaseStage):
             )
             outputs.extend(result.images)
 
-        return outputs
+        return StageResult(images=outputs)

@@ -10,34 +10,53 @@ $defs:
         - type: number
         - type: string
 
-  lora_network:
+  tensor_format:
+    type: string
+    enum: [bin, ckpt, onnx, pt, pth, safetensors]
+
+  embedding_network:
     type: object
     required: [name, source]
     properties:
-      name:
-        type: string
-      source:
-        type: string
+      format:
+        $ref: "#/$defs/tensor_format"
       label:
         type: string
-      weight:
-        type: number
-
-  textual_inversion_network:
-    type: object
-    required: [name, source]
-    properties:
-      name:
-        type: string
-      source:
-        type: string
-      format:
+      model:
         type: string
         enum: [concept, embeddings]
-      label:
+      name:
+        type: string
+      source:
         type: string
       token:
         type: string
+      type:
+        type: string
+        const: inversion # TODO: add embedding
+      weight:
+        type: number
+
+  lora_network:
+    type: object
+    required: [name, source, type]
+    properties:
+      label:
+        type: string
+      model:
+        type: string
+        enum: [cloneofsimo, sd-scripts]
+      name:
+        type: string
+      source:
+        type: string
+      tokens:
+        type: array
+        items:
+          type: string
+      type:
+        type: string
+        const: lora
       weight:
         type: number
 
@@ -46,8 +65,7 @@ $defs:
     required: [name, source]
     properties:
       format:
-        type: string
-        enum: [bin, ckpt, onnx, pt, pth, safetensors]
+        $ref: "#/$defs/tensor_format"
       half:
         type: boolean
       label:
@@ -85,7 +103,7 @@ $defs:
           inversions:
             type: array
             items:
-              $ref: "#/$defs/textual_inversion_network"
+              $ref: "#/$defs/embedding_network"
           loras:
             type: array
             items:
@@ -100,6 +118,7 @@ $defs:
               panorama,
               pix2pix,
               txt2img,
+              txt2img-sdxl,
               upscale,
             ]
           vae:
@@ -141,31 +160,6 @@ $defs:
       source:
         type: string
 
-  source_network:
-    type: object
-    required: [name, source, type]
-    properties:
-      format:
-        type: string
-        enum: [bin, ckpt, onnx, pt, pth, safetensors]
-      model:
-        type: string
-        enum: [
-          # inversion
-          concept,
-          embeddings,
-          # lora
-          cloneofsimo,
-          sd-scripts
-        ]
-      name:
-        type: string
-      source:
-        type: string
-      type:
-        type: string
-        enum: [inversion, lora]
-
   translation:
     type: object
     additionalProperties: False
@@ -193,7 +187,9 @@ properties:
   networks:
     type: array
     items:
-      $ref: "#/$defs/source_network"
+      oneOf:
+        - $ref: "#/$defs/lora_network"
+        - $ref: "#/$defs/embedding_network"
   sources:
     type: array
     items:

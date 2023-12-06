@@ -1,15 +1,15 @@
 from logging import getLogger
 from os import path
-from typing import List, Optional
+from typing import Optional
 
-import numpy as np
 from PIL import Image
 
 from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
 from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -57,12 +57,12 @@ class CorrectGFPGANStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         _params: ImageParams,
-        sources: List[Image.Image],
+        sources: StageResult,
         *,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         upscale = upscale.with_args(**kwargs)
 
         if upscale.correction_model is None:
@@ -73,16 +73,15 @@ class CorrectGFPGANStage(BaseStage):
         device = worker.get_device()
         gfpgan = self.load(server, stage, upscale, device)
 
-        outputs = []
-        for source in sources:
-            output = np.array(source)
-            _, _, output = gfpgan.enhance(
-                output,
+        outputs = [
+            gfpgan.enhance(
+                source,
                 has_aligned=False,
                 only_center_face=False,
                 paste_back=True,
                 weight=upscale.face_strength,
             )
-            outputs.append(Image.fromarray(output, "RGB"))
+            for source in sources.as_numpy()
+        ]
 
-        return outputs
+        return StageResult(images=outputs)

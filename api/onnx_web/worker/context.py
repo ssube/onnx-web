@@ -25,6 +25,7 @@ class WorkerContext:
     idle: "Value[bool]"
     timeout: float
     retries: int
+    initial_retries: int
 
     def __init__(
         self,
@@ -36,6 +37,8 @@ class WorkerContext:
         progress: "Queue[ProgressCommand]",
         active_pid: "Value[int]",
         idle: "Value[bool]",
+        retries: int,
+        timeout: float,
     ):
         self.job = None
         self.name = name
@@ -47,12 +50,13 @@ class WorkerContext:
         self.active_pid = active_pid
         self.last_progress = None
         self.idle = idle
-        self.timeout = 1.0
-        self.retries = 3  # TODO: get from env
+        self.initial_retries = retries
+        self.retries = retries
+        self.timeout = timeout
 
     def start(self, job: str) -> None:
         self.job = job
-        self.retries = 3
+        self.retries = self.initial_retries
         self.set_cancel(cancel=False)
         self.set_idle(idle=False)
 
@@ -82,7 +86,7 @@ class WorkerContext:
         return 0
 
     def get_progress_callback(self) -> ProgressCallback:
-        from ..chain.base import ChainProgress
+        from ..chain.pipeline import ChainProgress
 
         def on_progress(step: int, timestep: int, latents: Any):
             on_progress.step = step

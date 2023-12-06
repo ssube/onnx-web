@@ -14,7 +14,7 @@ Point = Tuple[int, int]
 
 
 class SizeChart(IntEnum):
-    unlimited = 0
+    micro = 64
     mini = 128  # small tile for very expensive models
     half = 256  # half tile for outpainting
     auto = 512  # auto tile size
@@ -25,6 +25,7 @@ class SizeChart(IntEnum):
     hd16k = 2**14
     hd32k = 2**15
     hd64k = 2**16
+    max = 2**32  # should be a reasonable upper limit for now
 
 
 class TileOrder:
@@ -140,7 +141,7 @@ class DeviceParams:
         if self.options is None:
             return self.provider
         else:
-            return self.provider  # (self.provider, self.options)
+            return (self.provider, self.options)
 
     def sess_options(self, cache=True) -> SessionOptions:
         if cache and self.sess_options_cache is not None:
@@ -201,11 +202,14 @@ class ImageParams:
     batch: int
     control: Optional[NetworkModel]
     input_prompt: str
-    input_negative_prompt: str
+    input_negative_prompt: Optional[str]
     loopback: int
     tiled_vae: bool
-    tiles: int
-    overlap: float
+    unet_tile: int
+    unet_overlap: float
+    vae_tile: int
+    vae_overlap: float
+    denoise: int
 
     def __init__(
         self,
@@ -224,9 +228,11 @@ class ImageParams:
         input_negative_prompt: Optional[str] = None,
         loopback: int = 0,
         tiled_vae: bool = False,
-        tiles: int = 512,
-        overlap: float = 0.25,
-        stride: int = 64,
+        unet_overlap: float = 0.25,
+        unet_tile: int = 512,
+        vae_overlap: float = 0.25,
+        vae_tile: int = 512,
+        denoise: int = 3,
     ) -> None:
         self.model = model
         self.pipeline = pipeline
@@ -243,14 +249,16 @@ class ImageParams:
         self.input_negative_prompt = input_negative_prompt or negative_prompt
         self.loopback = loopback
         self.tiled_vae = tiled_vae
-        self.tiles = tiles
-        self.overlap = overlap
-        self.stride = stride
+        self.unet_overlap = unet_overlap
+        self.unet_tile = unet_tile
+        self.vae_overlap = vae_overlap
+        self.vae_tile = vae_tile
+        self.denoise = denoise
 
     def do_cfg(self):
         return self.cfg > 1.0
 
-    def get_valid_pipeline(self, group: str, pipeline: str = None) -> str:
+    def get_valid_pipeline(self, group: str, pipeline: Optional[str] = None) -> str:
         pipeline = pipeline or self.pipeline
 
         # if the correct pipeline was already requested, simply use that
@@ -259,7 +267,14 @@ class ImageParams:
 
         # otherwise, check for additional allowed pipelines
         if group == "img2img":
-            if pipeline in ["controlnet", "img2img-sdxl", "lpw", "panorama", "pix2pix"]:
+            if pipeline in [
+                "controlnet",
+                "img2img-sdxl",
+                "lpw",
+                "panorama",
+                "panorama-sdxl",
+                "pix2pix",
+            ]:
                 return pipeline
             elif pipeline == "txt2img-sdxl":
                 return "img2img-sdxl"
@@ -267,7 +282,7 @@ class ImageParams:
             if pipeline in ["controlnet", "lpw", "panorama"]:
                 return pipeline
         elif group == "txt2img":
-            if pipeline in ["lpw", "panorama", "txt2img-sdxl"]:
+            if pipeline in ["lpw", "panorama", "panorama-sdxl", "txt2img-sdxl"]:
                 return pipeline
 
         logger.debug("pipeline %s is not valid for %s", pipeline, group)
@@ -280,7 +295,7 @@ class ImageParams:
         return self.pipeline == "lpw"
 
     def is_panorama(self):
-        return self.pipeline == "panorama"
+        return self.pipeline in ["panorama", "panorama-sdxl"]
 
     def is_pix2pix(self):
         return self.pipeline == "pix2pix"
@@ -305,9 +320,11 @@ class ImageParams:
             "input_negative_prompt": self.input_negative_prompt,
             "loopback": self.loopback,
             "tiled_vae": self.tiled_vae,
-            "tiles": self.tiles,
-            "overlap": self.overlap,
-            "stride": self.stride,
+            "unet_overlap": self.unet_overlap,
+            "unet_tile": self.unet_tile,
+            "vae_overlap": self.vae_overlap,
+            "vae_tile": self.vae_tile,
+            "denoise": self.denoise,
         }
 
     def with_args(self, **kwargs):
@@ -327,9 +344,11 @@ class ImageParams:
             kwargs.get("input_negative_prompt", self.input_negative_prompt),
             kwargs.get("loopback", self.loopback),
             kwargs.get("tiled_vae", self.tiled_vae),
-            kwargs.get("tiles", self.tiles),
-            kwargs.get("overlap", self.overlap),
-            kwargs.get("stride", self.stride),
+            kwargs.get("unet_overlap", self.unet_overlap),
+            kwargs.get("unet_tile", self.unet_tile),
+            kwargs.get("vae_overlap", self.vae_overlap),
+            kwargs.get("vae_tile", self.vae_tile),
+            kwargs.get("denoise", self.denoise),
         )
 
 
@@ -350,6 +369,17 @@ class StageParams:
         self.outscale = outscale
         self.tile_order = tile_order
         self.tile_size = tile_size
+
+    def with_args(
+        self,
+        **kwargs,
+    ):
+        return StageParams(
+            name=kwargs.get("name", self.name),
+            outscale=kwargs.get("outscale", self.outscale),
+            tile_order=kwargs.get("tile_order", self.tile_order),
+            tile_size=kwargs.get("tile_size", self.tile_size),
+        )
 
 
 class UpscaleParams:
@@ -459,10 +489,14 @@ class HighresParams:
         self.method = method
         self.iterations = iterations
 
+    def outscale(self) -> int:
+        return self.scale**self.iterations
+
     def resize(self, size: Size) -> Size:
+        outscale = self.outscale()
         return Size(
-            size.width * (self.scale**self.iterations),
-            size.height * (self.scale**self.iterations),
+            size.width * outscale,
+            size.height * outscale,
         )
 
     def tojson(self):

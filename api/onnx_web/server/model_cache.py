@@ -51,7 +51,7 @@ class ModelCache:
             return
 
         for i in range(len(cache)):
-            t, k, v = cache[i]
+            t, k, _v = cache[i]
             if tag == t and key != k:
                 logger.debug("updating model cache: %s %s", tag, key)
                 cache[i] = (tag, key, value)

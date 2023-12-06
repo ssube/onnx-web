@@ -46,17 +46,31 @@ $defs:
           patternProperties:
             "^[-_A-Za-z]+$":
               oneOf:
+                - type: boolean
                 - type: number
                 - type: string
+                - type: "null"
 
   request_chain:
     type: array
     items:
       $ref: "#/$defs/request_stage"
 
+  request_defaults:
+    type: object
+    properties:
+      txt2img:
+        $ref: "#/$defs/image_params"
+      img2img:
+        $ref: "#/$defs/image_params"
+
 type: object
 additionalProperties: False
 required: [stages]
 properties:
+  defaults:
+    $ref: "#/$defs/request_defaults"
+  platform:
+    type: string
   stages:
     $ref: "#/$defs/request_chain"

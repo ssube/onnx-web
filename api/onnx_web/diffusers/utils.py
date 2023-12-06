@@ -3,23 +3,27 @@ from copy import deepcopy
 from logging import getLogger
 from math import ceil
 from re import Pattern, compile
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
 from diffusers import OnnxStableDiffusionPipeline
 
+from ..constants import LATENT_CHANNELS, LATENT_FACTOR
 from ..params import ImageParams, Size
 
 logger = getLogger(__name__)
 
-LATENT_CHANNELS = 4
-LATENT_FACTOR = 8
 MAX_TOKENS_PER_GROUP = 77
 
+ANY_TOKEN = compile(r"\<([^\>]*)\>")
 CLIP_TOKEN = compile(r"\<clip:([-\w]+):(\d+)\>")
 INVERSION_TOKEN = compile(r"\<inversion:([^:\>]+):(-?[\.|\d]+)\>")
 LORA_TOKEN = compile(r"\<lora:([^:\>]+):(-?[\.|\d]+)\>")
+REGION_TOKEN = compile(
+    r"\<region:(\d+):(\d+):(\d+):(\d+):(-?[\.|\d]+):(-?[\.|\d]+_?[TLBR]*):([^\>]+)\>"
+)
+RESEED_TOKEN = compile(r"\<reseed:(\d+):(\d+):(\d+):(\d+):(-?\d+)\>")
 WILDCARD_TOKEN = compile(r"__([-/\\\w]+)__")
 
 INTERVAL_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
@@ -84,8 +88,8 @@ def expand_prompt(
     negative_prompt: Optional[str] = None,
     prompt_embeds: Optional[np.ndarray] = None,
     negative_prompt_embeds: Optional[np.ndarray] = None,
-    skip_clip_states: Optional[int] = 0,
-) -> "np.NDArray":
+    skip_clip_states: int = 0,
+) -> np.ndarray:
     # self provides:
     #   tokenizer: CLIPTokenizer
     #   encoder: OnnxRuntimeModel
@@ -140,6 +144,7 @@ def expand_prompt(
 
         last_state, _pooled_output, *hidden_states = text_result
         if skip_clip_states > 0:
+            # TODO: why is this normalized?
             layer_norm = torch.nn.LayerNorm(last_state.shape[2])
             norm_state = layer_norm(
                 torch.from_numpy(
@@ -219,20 +224,25 @@ def expand_prompt(
     return prompt_embeds
 
 
+def parse_float_group(group: Tuple[str, str]) -> Tuple[str, float]:
+    name, weight = group
+    return (name, float(weight))
+
+
 def get_tokens_from_prompt(
-    prompt: str, pattern: Pattern
+    prompt: str,
+    pattern: Pattern,
+    parser=parse_float_group,
 ) -> Tuple[str, List[Tuple[str, float]]]:
-    """
-    TODO: replace with Arpeggio
-    """
     remaining_prompt = prompt
 
     tokens = []
     next_match = pattern.search(remaining_prompt)
     while next_match is not None:
         logger.debug("found token in prompt: %s", next_match)
-        name, weight = next_match.groups()
-        tokens.append((name, float(weight)))
+        group = next_match.groups()
+        tokens.append(parser(group))
+
         # remove this match and look for another
         remaining_prompt = (
             remaining_prompt[: next_match.start()]
@@ -251,6 +261,13 @@ def get_inversions_from_prompt(prompt: str) -> Tuple[str, List[Tuple[str, float]
     return get_tokens_from_prompt(prompt, INVERSION_TOKEN)
 
 
+def random_seed(generator=None) -> int:
+    if generator is None:
+        generator = np.random
+
+    return generator.randint(np.iinfo(np.int32).max)
+
+
 def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
     """
     From https://www.travelneil.com/stable-diffusion-updates.html.
@@ -264,6 +281,25 @@ def get_latents_from_seed(seed: int, size: Size, batch: int = 1) -> np.ndarray:
     rng = np.random.default_rng(seed)
     image_latents = rng.standard_normal(latents_shape).astype(np.float32)
     return image_latents
+
+
+def expand_latents(
+    latents: np.ndarray,
+    seed: int,
+    size: Size,
+    sigma: float = 1.0,
+) -> np.ndarray:
+    batch, _channels, height, width = latents.shape
+    extra_latents = get_latents_from_seed(seed, size, batch=batch)
+    extra_latents[:, :, 0:height, 0:width] = latents
+    return extra_latents * np.float64(sigma)
+
+
+def resize_latent_shape(
+    latents: np.ndarray,
+    size: Tuple[int, int],
+) -> Tuple[int, int, int, int]:
+    return (latents.shape[0], latents.shape[1], *size)
 
 
 def get_tile_latents(
@@ -290,14 +326,8 @@ def get_tile_latents(
 
     tile_latents = full_latents[:, :, y:yt, x:xt]
 
-    if tile_latents.shape != full_latents.shape and (
-        tile_latents.shape[2] < t or tile_latents.shape[3] < t
-    ):
-        extra_latents = get_latents_from_seed(seed, size, batch=tile_latents.shape[0])
-        extra_latents[
-            :, :, 0 : tile_latents.shape[2], 0 : tile_latents.shape[3]
-        ] = tile_latents
-        tile_latents = extra_latents
+    if tile_latents.shape[2] < t or tile_latents.shape[3] < t:
+        tile_latents = expand_latents(tile_latents, seed, size)
 
     return tile_latents
 
@@ -369,12 +399,15 @@ def encode_prompt(
     num_images_per_prompt: int = 1,
     do_classifier_free_guidance: bool = True,
 ) -> List[np.ndarray]:
+    """
+    TODO: does not work with SDXL, fix or turn into a pipeline patch
+    """
     return [
         pipe._encode_prompt(
-            prompt,
+            remove_tokens(prompt),
             num_images_per_prompt=num_images_per_prompt,
             do_classifier_free_guidance=do_classifier_free_guidance,
-            negative_prompt=neg_prompt,
+            negative_prompt=remove_tokens(neg_prompt),
         )
         for prompt, neg_prompt in prompt_pairs
     ]
@@ -444,3 +477,71 @@ def slice_prompt(prompt: str, slice: int) -> str:
         return parts[min(slice, len(parts) - 1)]
     else:
         return prompt
+
+
+Region = Tuple[
+    int, int, int, int, float, Tuple[float, Tuple[bool, bool, bool, bool]], str
+]
+
+
+def parse_region_group(group: Tuple[str, ...]) -> Region:
+    top, left, bottom, right, weight, feather, prompt = group
+
+    # break down the feather section
+    feather_radius, *feather_edges = feather.split("_")
+    if len(feather_edges) == 0:
+        feather_edges = "TLBR"
+    else:
+        feather_edges = "".join(feather_edges)
+
+    return (
+        int(top),
+        int(left),
+        int(bottom),
+        int(right),
+        float(weight),
+        (
+            float(feather_radius),
+            (
+                "T" in feather_edges,
+                "L" in feather_edges,
+                "B" in feather_edges,
+                "R" in feather_edges,
+            ),
+        ),
+        prompt,
+    )
+
+
+def parse_regions(prompt: str) -> Tuple[str, List[Region]]:
+    return get_tokens_from_prompt(prompt, REGION_TOKEN, parser=parse_region_group)
+
+
+Reseed = Tuple[int, int, int, int, int]
+
+
+def parse_reseed_group(group) -> Region:
+    top, left, bottom, right, seed = group
+    return (
+        int(top),
+        int(left),
+        int(bottom),
+        int(right),
+        int(seed),
+    )
+
+
+def parse_reseed(prompt: str) -> Tuple[str, List[Reseed]]:
+    return get_tokens_from_prompt(prompt, RESEED_TOKEN, parser=parse_reseed_group)
+
+
+def skip_group(group) -> Any:
+    return group
+
+
+def remove_tokens(prompt: Optional[str]) -> Optional[str]:
+    if prompt is None:
+        return prompt
+
+    remainder, tokens = get_tokens_from_prompt(prompt, ANY_TOKEN, parser=skip_group)
+    return remainder

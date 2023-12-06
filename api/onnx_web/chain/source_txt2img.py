@@ -3,26 +3,28 @@ from typing import Optional, Tuple
 
 import numpy as np
 import torch
-from PIL import Image
 
+from ..constants import LATENT_FACTOR
 from ..diffusers.load import load_pipeline
 from ..diffusers.utils import (
     encode_prompt,
     get_latents_from_seed,
     get_tile_latents,
     parse_prompt,
+    parse_reseed,
     slice_prompt,
 )
 from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
-from .stage import BaseStage
+from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
 
 class SourceTxt2ImgStage(BaseStage):
-    max_tile = SizeChart.unlimited
+    max_tile = SizeChart.max
 
     def run(
         self,
@@ -30,15 +32,15 @@ class SourceTxt2ImgStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         params: ImageParams,
-        _source: Image.Image,
+        sources: StageResult,
         *,
-        dims: Tuple[int, int, int],
+        dims: Tuple[int, int, int] = None,
         size: Size,
         callback: Optional[ProgressCallback] = None,
         latents: Optional[np.ndarray] = None,
         prompt_index: Optional[int] = None,
         **kwargs,
-    ) -> Image.Image:
+    ) -> StageResult:
         params = params.with_args(**kwargs)
         size = size.with_args(**kwargs)
 
@@ -47,31 +49,58 @@ class SourceTxt2ImgStage(BaseStage):
             params = params.with_args(prompt=slice_prompt(params.prompt, prompt_index))
 
         logger.info(
-            "generating image using txt2img, %s steps: %s", params.steps, params.prompt
+            "generating image using txt2img, %s steps of %s: %s",
+            params.steps,
+            params.model,
+            params.prompt,
         )
 
-        if "stage_source" in kwargs:
-            logger.warning(
-                "a source image was passed to a txt2img stage, and will be discarded"
+        if len(sources):
+            logger.info(
+                "source images were passed to a source stage, new images will be appended"
             )
 
         prompt_pairs, loras, inversions, (prompt, negative_prompt) = parse_prompt(
             params
         )
 
-        if params.is_xl():
-            tile_size = max(stage.tile_size, params.tiles)
+        if params.is_panorama() or params.is_xl():
+            tile_size = max(stage.tile_size, params.unet_tile)
         else:
-            tile_size = params.tiles
+            tile_size = params.unet_tile
 
         # this works for panorama as well, because tile_size is already max(tile_size, *size)
         latent_size = size.min(tile_size, tile_size)
 
         # generate new latents or slice existing
         if latents is None:
-            latents = get_latents_from_seed(params.seed, latent_size, params.batch)
+            latents = get_latents_from_seed(int(params.seed), latent_size, params.batch)
         else:
-            latents = get_tile_latents(latents, params.seed, latent_size, dims)
+            latents = get_tile_latents(latents, int(params.seed), latent_size, dims)
+
+        # reseed latents as needed
+        reseed_rng = np.random.RandomState(params.seed)
+        prompt, reseed = parse_reseed(prompt)
+        for top, left, bottom, right, region_seed in reseed:
+            if region_seed == -1:
+                region_seed = reseed_rng.random_integers(2**32 - 1)
+
+            logger.debug(
+                "reseed latent region: [:, :, %s:%s, %s:%s] with %s",
+                top,
+                left,
+                bottom,
+                right,
+                region_seed,
+            )
+            latents[
+                :,
+                :,
+                top // LATENT_FACTOR : bottom // LATENT_FACTOR,
+                left // LATENT_FACTOR : right // LATENT_FACTOR,
+            ] = get_latents_from_seed(
+                region_seed, Size(right - left, bottom - top), params.batch
+            )
 
         pipe_type = params.get_valid_pipeline("txt2img")
         pipe = load_pipeline(
@@ -79,7 +108,7 @@ class SourceTxt2ImgStage(BaseStage):
             params,
             pipe_type,
             worker.get_device(),
-            inversions=inversions,
+            embeddings=inversions,
             loras=loras,
         )
 
@@ -101,11 +130,14 @@ class SourceTxt2ImgStage(BaseStage):
             )
         else:
             # encode and record alternative prompts outside of LPW
-            prompt_embeds = encode_prompt(
-                pipe, prompt_pairs, params.batch, params.do_cfg()
-            )
-
-            if not params.is_xl():
+            if params.is_panorama() or params.is_xl():
+                logger.debug(
+                    "prompt alternatives are not supported for panorama or SDXL"
+                )
+            else:
+                prompt_embeds = encode_prompt(
+                    pipe, prompt_pairs, params.batch, params.do_cfg()
+                )
                 pipe.unet.set_prompts(prompt_embeds)
 
             rng = np.random.RandomState(params.seed)
@@ -123,4 +155,21 @@ class SourceTxt2ImgStage(BaseStage):
                 callback=callback,
             )
 
-        return result.images
+        outputs = sources.as_image()
+        outputs.extend(result.images)
+        logger.debug("produced %s outputs", len(outputs))
+        return StageResult(images=outputs)
+
+    def steps(
+        self,
+        params: ImageParams,
+        size: Size,
+    ) -> int:
+        return params.steps
+
+    def outputs(
+        self,
+        params: ImageParams,
+        sources: int,
+    ) -> int:
+        return sources + 1

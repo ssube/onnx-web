@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import List, Optional
+from typing import Optional
 
 from PIL import Image
 
@@ -8,7 +8,8 @@ from ..params import HighresParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 from ..worker.context import ProgressCallback
-from .stage import BaseStage
+from .base import BaseStage
+from .result import StageResult
 
 logger = getLogger(__name__)
 
@@ -20,20 +21,20 @@ class UpscaleHighresStage(BaseStage):
         server: ServerContext,
         stage: StageParams,
         params: ImageParams,
-        sources: List[Image.Image],
-        *args,
+        sources: StageResult,
+        *,
         highres: HighresParams,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
         callback: Optional[ProgressCallback] = None,
         **kwargs,
-    ) -> List[Image.Image]:
+    ) -> StageResult:
         if highres.scale <= 1:
             return sources
 
         chain = stage_highres(stage, params, highres, upscale)
 
-        return [
+        outputs = [
             chain(
                 worker,
                 server,
@@ -41,5 +42,7 @@ class UpscaleHighresStage(BaseStage):
                 source,
                 callback=callback,
             )
-            for source in sources
+            for source in sources.as_image()
         ]
+
+        return StageResult(images=outputs)

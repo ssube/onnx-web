@@ -1,12 +1,14 @@
 from io import BytesIO
 from logging import getLogger
 from os import path
+from typing import Any, Dict
 
 from flask import Flask, jsonify, make_response, request, url_for
 from jsonschema import validate
 from PIL import Image
 
 from ..chain import CHAIN_STAGES, ChainPipeline
+from ..chain.result import StageResult
 from ..diffusers.load import get_available_pipelines, get_pipeline_schedulers
 from ..diffusers.run import (
     run_blend_pipeline,
@@ -17,7 +19,7 @@ from ..diffusers.run import (
 )
 from ..diffusers.utils import replace_wildcards
 from ..output import json_params, make_output_name
-from ..params import Border, Size, StageParams, TileOrder, UpscaleParams
+from ..params import Size, StageParams, TileOrder
 from ..transformers.run import run_txt2txt_pipeline
 from ..utils import (
     base_join,
@@ -49,10 +51,11 @@ from .load import (
     get_wildcard_data,
 )
 from .params import (
-    border_from_request,
-    highres_from_request,
+    build_border,
+    build_highres,
+    build_upscale,
+    pipeline_from_json,
     pipeline_from_request,
-    upscale_from_request,
 )
 from .utils import wrap_route
 
@@ -167,8 +170,8 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
     size = Size(source.width, source.height)
 
     device, params, _size = pipeline_from_request(server, "img2img")
-    upscale = upscale_from_request()
-    highres = highres_from_request()
+    upscale = build_upscale()
+    highres = build_highres()
     source_filter = get_from_list(
         request.args, "sourceFilter", list(get_source_filters().keys())
     )
@@ -216,12 +219,12 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
 def txt2img(server: ServerContext, pool: DevicePoolExecutor):
     device, params, size = pipeline_from_request(server, "txt2img")
-    upscale = upscale_from_request()
-    highres = highres_from_request()
+    upscale = build_upscale()
+    highres = build_highres()
 
     replace_wildcards(params, get_wildcard_data())
 
-    output = make_output_name(server, "txt2img", params, size)
+    output = make_output_name(server, "txt2img", params, size, count=params.batch)
 
     job_name = output[0]
     pool.submit(
@@ -250,7 +253,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     if mask_file is None:
         return error_reply("mask image is required")
 
-    source = Image.open(BytesIO(source_file.read())).convert("RGB")
+    source = Image.open(BytesIO(source_file.read())).convert("RGBA")
     size = Size(source.width, source.height)
 
     mask_top_layer = Image.open(BytesIO(mask_file.read())).convert("RGBA")
@@ -270,9 +273,9 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     )
 
     device, params, _size = pipeline_from_request(server, "inpaint")
-    expand = border_from_request()
-    upscale = upscale_from_request()
-    highres = highres_from_request()
+    expand = build_border()
+    upscale = build_upscale()
+    highres = build_highres()
 
     fill_color = get_not_empty(request.args, "fillColor", "white")
     mask_filter = get_from_map(request.args, "filter", get_mask_filters(), "none")
@@ -340,8 +343,8 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
     device, params, size = pipeline_from_request(server)
-    upscale = upscale_from_request()
-    highres = highres_from_request()
+    upscale = build_upscale()
+    highres = build_highres()
 
     replace_wildcards(params, get_wildcard_data())
 
@@ -366,47 +369,70 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
     return jsonify(json_params(output, params, size, upscale=upscale, highres=highres))
 
 
+# keys that are specially parsed by params and should not show up in with_args
+CHAIN_POP_KEYS = ["model", "control"]
+
+
 def chain(server: ServerContext, pool: DevicePoolExecutor):
-    logger.debug(
-        "chain pipeline request: %s, %s", request.form.keys(), request.files.keys()
-    )
-    body = request.form.get("chain") or request.files.get("chain")
-    if body is None:
-        return error_reply("chain pipeline must have a body")
+    if request.is_json:
+        logger.debug("chain pipeline request with JSON body")
+        data = request.get_json()
+    else:
+        logger.debug(
+            "chain pipeline request: %s, %s", request.form.keys(), request.files.keys()
+        )
 
-    data = load_config_str(body)
+        body = request.form.get("chain") or request.files.get("chain")
+        if body is None:
+            return error_reply("chain pipeline must have a body")
+
+        data = load_config_str(body)
+
     schema = load_config("./schemas/chain.yaml")
-
     logger.debug("validating chain request: %s against %s", data, schema)
     validate(data, schema)
 
-    # get defaults from the regular parameters
-    device, params, size = pipeline_from_request(server)
-    output = make_output_name(server, "chain", params, size)
-    job_name = output[0]
+    device, base_params, base_size = pipeline_from_json(
+        server, data=data.get("defaults")
+    )
 
-    replace_wildcards(params, get_wildcard_data())
-
+    # start building the pipeline
     pipeline = ChainPipeline()
     for stage_data in data.get("stages", []):
         stage_class = CHAIN_STAGES[stage_data.get("type")]
-        kwargs = stage_data.get("params", {})
+        kwargs: Dict[str, Any] = stage_data.get("params", {})
         logger.info("request stage: %s, %s", stage_class.__name__, kwargs)
 
+        # TODO: combine base params with stage params
+        _device, params, size = pipeline_from_json(server, data=kwargs)
+        replace_wildcards(params, get_wildcard_data())
+
+        # remove parsed keys, like model names (which become paths)
+        for pop_key in CHAIN_POP_KEYS:
+            if pop_key in kwargs:
+                kwargs.pop(pop_key)
+
+        if "seed" in kwargs and kwargs["seed"] == -1:
+            kwargs.pop("seed")
+
+        # replace kwargs with parsed versions
+        kwargs["params"] = params
+        kwargs["size"] = size
+
+        border = build_border(kwargs)
+        kwargs["border"] = border
+
+        upscale = build_upscale(kwargs)
+        kwargs["upscale"] = upscale
+
+        # prepare the stage metadata
         stage = StageParams(
             stage_data.get("name", stage_class.__name__),
-            tile_size=get_size(kwargs.get("tile_size")),
+            tile_size=get_size(kwargs.get("tiles")),
             outscale=get_and_clamp_int(kwargs, "outscale", 1, 4),
         )
 
-        if "border" in kwargs:
-            border = Border.even(int(kwargs.get("border")))
-            kwargs["border"] = border
-
-        if "upscale" in kwargs:
-            upscale = UpscaleParams(kwargs.get("upscale"))
-            kwargs["upscale"] = upscale
-
+        # load any images related to this stage
         stage_source_name = "source:%s" % (stage.name)
         stage_mask_name = "mask:%s" % (stage.name)
 
@@ -436,20 +462,25 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("running chain pipeline with %s stages", len(pipeline.stages))
 
+    output = make_output_name(
+        server, "chain", base_params, base_size, count=pipeline.outputs(base_params, 0)
+    )
+    job_name = output[0]
+
     # build and run chain pipeline
-    empty_source = Image.new("RGB", (size.width, size.height))
     pool.submit(
         job_name,
         pipeline,
         server,
-        params,
-        empty_source,
-        output=output[0],
-        size=size,
+        base_params,
+        StageResult.empty(),
+        output=output,
+        size=base_size,
         needs_device=device,
     )
 
-    return jsonify(json_params(output, params, size))
+    step_params = base_params.with_args(steps=pipeline.steps(base_params, base_size))
+    return jsonify(json_params(output, step_params, base_size))
 
 
 def blend(server: ServerContext, pool: DevicePoolExecutor):
@@ -471,7 +502,7 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
             sources.append(source)
 
     device, params, size = pipeline_from_request(server)
-    upscale = upscale_from_request()
+    upscale = build_upscale()
 
     output = make_output_name(server, "upscale", params, size)
     job_name = output[0]

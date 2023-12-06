@@ -1,6 +1,8 @@
 import unittest
+
 from onnx_web.prompt.grammar import PromptPhrase
 from onnx_web.prompt.parser import parse_prompt_onnx
+
 
 class ParserTests(unittest.TestCase):
     def test_single_word_phrase(self):
@@ -11,7 +13,7 @@ class ParserTests(unittest.TestCase):
                 str(["foo"]),
                 str(PromptPhrase(["bar"], weight=1.5)),
                 str(["bin"]),
-            ]
+            ],
         )
 
     def test_multi_word_phrase(self):
@@ -22,7 +24,7 @@ class ParserTests(unittest.TestCase):
                 str(["foo", "bar"]),
                 str(PromptPhrase(["middle", "words"], weight=1.5)),
                 str(["bin", "bun"]),
-            ]
+            ],
         )
 
     def test_nested_phrase(self):
@@ -31,7 +33,7 @@ class ParserTests(unittest.TestCase):
             [str(i) for i in res],
             [
                 str(["foo"]),
-                str(PromptPhrase(["bar"], weight=(1.5 ** 3))),
+                str(PromptPhrase(["bar"], weight=(1.5**3))),
                 str(["bin"]),
-            ]
+            ],
         )

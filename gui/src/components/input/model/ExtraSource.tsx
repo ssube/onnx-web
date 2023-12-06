@@ -2,7 +2,7 @@ import { Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AnyFormat, ExtraSource } from '../../../types.js';
+import { AnyFormat, ExtraSource } from '../../../types/model.js';
 
 export interface ExtraSourceInputProps {
   key?: number | string;

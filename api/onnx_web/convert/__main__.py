@@ -15,7 +15,8 @@ from ..constants import ONNX_MODEL, ONNX_WEIGHTS
 from ..utils import load_config
 from .correction.gfpgan import convert_correction_gfpgan
 from .diffusion.control import convert_diffusion_control
-from .diffusion.diffusers import convert_diffusion_diffusers
+from .diffusion.diffusion import convert_diffusion_diffusers
+from .diffusion.diffusion_xl import convert_diffusion_diffusers_xl
 from .diffusion.lora import blend_loras
 from .diffusion.textual_inversion import blend_textual_inversions
 from .upscaling.bsrgan import convert_upscaling_bsrgan
@@ -357,13 +358,23 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                         conversion, name, model["source"], format=model_format
                     )
 
-                    converted, dest = convert_diffusion_diffusers(
-                        conversion,
-                        model,
-                        source,
-                        model_format,
-                        hf=hf,
-                    )
+                    pipeline = model.get("pipeline", "txt2img")
+                    if pipeline.endswith("-sdxl"):
+                        converted, dest = convert_diffusion_diffusers_xl(
+                            conversion,
+                            model,
+                            source,
+                            model_format,
+                            hf=hf,
+                        )
+                    else:
+                        converted, dest = convert_diffusion_diffusers(
+                            conversion,
+                            model,
+                            source,
+                            model_format,
+                            hf=hf,
+                        )
 
                     # make sure blending only happens once, not every run
                     if converted:
@@ -588,7 +599,7 @@ def main(args=None) -> int:
     logger.info("CLI arguments: %s", args)
 
     server = ConversionContext.from_environ()
-    server.half = args.half or "onnx-fp16" in server.optimizations
+    server.half = args.half or server.has_optimization("onnx-fp16")
     server.opset = args.opset
     server.token = args.token
     logger.info(

@@ -1,0 +1,13 @@
+[Unit]
+Description=onnx-web server
+After=network.target
+
+[Service]
+Type=simple
+# EnvironmentFile=/path/to/your/env
+ExecStart=/opt/onnx-web/api/launch.sh
+ExecStop=/bin/kill -WINCH ${MAINPID}
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

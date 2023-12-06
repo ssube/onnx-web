@@ -66,7 +66,7 @@ and can also save intermediate output, such as the result of a `source-txt2img` 
       "name": "save-local",
       "type": "persist-disk",
       "params": {
-        "tile_size": "hd8k"
+        "tiles": "hd8k"
       }
     }
   ]

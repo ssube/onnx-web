@@ -2,28 +2,31 @@
 import { doesExist, InvalidArgumentError, Maybe } from '@apextoaster/js-utils';
 
 import { ServerParams } from '../config.js';
-import { range } from '../utils.js';
 import {
-  ApiClient,
-  BaseImgParams,
-  BlendParams,
   FilterResponse,
-  HighresParams,
   ImageResponse,
   ImageResponseWithRetry,
+  ModelResponse,
+  ReadyResponse,
+  RetryParams,
+  WriteExtrasResponse,
+} from '../types/api.js';
+import { ChainPipeline } from '../types/chain.js';
+import { ExtrasFile } from '../types/model.js';
+import {
+  BaseImgParams,
+  BlendParams,
+  HighresParams,
   Img2ImgParams,
   InpaintParams,
   ModelParams,
-  ModelResponse,
   OutpaintParams,
-  ReadyResponse,
-  RetryParams,
   Txt2ImgParams,
   UpscaleParams,
   UpscaleReqParams,
-  WriteExtrasResponse,
-} from './types.js';
-import { ExtrasFile } from '../types.js';
+} from '../types/params.js';
+import { range } from '../utils.js';
+import { ApiClient } from './base.js';
 
 /**
  * Fixed precision for integer parameters.
@@ -67,10 +70,11 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
   url.searchParams.append('cfg', params.cfg.toFixed(FIXED_FLOAT));
   url.searchParams.append('eta', params.eta.toFixed(FIXED_FLOAT));
   url.searchParams.append('steps', params.steps.toFixed(FIXED_INTEGER));
-  url.searchParams.append('tiledVAE', String(params.tiledVAE));
-  url.searchParams.append('tiles', params.tiles.toFixed(FIXED_INTEGER));
-  url.searchParams.append('overlap', params.overlap.toFixed(FIXED_FLOAT));
-  url.searchParams.append('stride', params.stride.toFixed(FIXED_INTEGER));
+  url.searchParams.append('tiled_vae', String(params.tiled_vae));
+  url.searchParams.append('unet_overlap', params.unet_overlap.toFixed(FIXED_FLOAT));
+  url.searchParams.append('unet_tile', params.unet_tile.toFixed(FIXED_INTEGER));
+  url.searchParams.append('vae_overlap', params.vae_overlap.toFixed(FIXED_FLOAT));
+  url.searchParams.append('vae_tile', params.vae_tile.toFixed(FIXED_INTEGER));
 
   if (doesExist(params.scheduler)) {
     url.searchParams.append('scheduler', params.scheduler);
@@ -429,6 +433,22 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
           upscale,
         }
       };
+    },
+    async chain(model: ModelParams, chain: ChainPipeline): Promise<ImageResponse> {
+      const url = makeApiUrl(root, 'chain');
+      const body = JSON.stringify({
+        ...chain,
+        platform: model.platform,
+      });
+
+      // eslint-disable-next-line no-return-await
+      return await parseRequest(url, {
+        body,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+      });
     },
     async ready(key: string): Promise<ReadyResponse> {
       const path = makeApiUrl(root, 'ready');

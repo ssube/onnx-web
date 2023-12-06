@@ -12,8 +12,6 @@ from ...server import ServerContext
 
 logger = getLogger(__name__)
 
-LATENT_CHANNELS = 4
-
 
 class VAEWrapper(object):
     def __init__(
@@ -39,11 +37,17 @@ class VAEWrapper(object):
         self.tile_overlap_factor = overlap
 
     def __call__(self, latent_sample=None, sample=None, **kwargs):
+        model = (
+            self.wrapped.model
+            if hasattr(self.wrapped, "model")
+            else self.wrapped.session
+        )
+
         # set timestep dtype to input type
         sample_dtype = next(
             (
                 input.type
-                for input in self.wrapped.model.get_inputs()
+                for input in model.get_inputs()
                 if input.name == "sample" or input.name == "latent_sample"
             ),
             "tensor(float)",
