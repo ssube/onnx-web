@@ -345,3 +345,17 @@ def onnx_export(
             all_tensors_to_one_file=True,
             location=ONNX_WEIGHTS,
         )
+
+
+DIFFUSION_PREFIX = ["diffusion-", "diffusion/", "diffusion\\", "stable-diffusion-", "upscaling-"]
+
+
+def fix_diffusion_name(name: str):
+    if not any([name.startswith(prefix) for prefix in DIFFUSION_PREFIX]):
+        logger.warning(
+            "diffusion models must have names starting with diffusion- to be recognized by the server: %s does not match",
+            name,
+        )
+        return f"diffusion-{name}"
+
+    return name

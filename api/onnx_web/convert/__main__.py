@@ -26,6 +26,7 @@ from .utils import (
     DEFAULT_OPSET,
     ConversionContext,
     download_progress,
+    fix_diffusion_name,
     remove_prefix,
     source_format,
     tuple_to_correction,
@@ -263,20 +264,6 @@ def fetch_model(
     else:
         logger.info("unknown model location, using path as provided: %s", source)
         return source, False
-
-
-DIFFUSION_PREFIX = ["diffusion-", "diffusion/", "diffusion\\", "stable-diffusion-"]
-
-
-def fix_diffusion_name(name: str):
-    if not any([name.startswith(prefix) for prefix in DIFFUSION_PREFIX]):
-        logger.warning(
-            "diffusion models must have names starting with diffusion- to be recognized by the server: %s does not match",
-            name,
-        )
-        return f"diffusion-{name}"
-
-    return name
 
 
 def convert_models(conversion: ConversionContext, args, models: Models):
