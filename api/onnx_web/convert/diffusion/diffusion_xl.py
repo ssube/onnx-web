@@ -64,7 +64,7 @@ def convert_diffusion_diffusers_xl(
 
     if replace_vae is not None:
         vae_path = path.join(conversion.model_path, replace_vae)
-        if check_ext(replace_vae, RESOLVE_FORMATS):
+        if check_ext(vae_path, RESOLVE_FORMATS):
             logger.debug("loading VAE from single tensor file: %s", vae_path)
             pipeline.vae = AutoencoderKL.from_single_file(vae_path)
         else:

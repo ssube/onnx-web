@@ -265,6 +265,20 @@ def fetch_model(
         return source, False
 
 
+DIFFUSION_PREFIX = ["diffusion-", "diffusion/", "diffusion\\", "stable-diffusion-"]
+
+
+def fix_diffusion_name(name: str):
+    if not any([name.startswith(prefix) for prefix in DIFFUSION_PREFIX]):
+        logger.warning(
+            "diffusion models must have names starting with diffusion- to be recognized by the server: %s does not match",
+            name,
+        )
+        return f"diffusion-{name}"
+
+    return name
+
+
 def convert_models(conversion: ConversionContext, args, models: Models):
     model_errors = []
 
@@ -351,6 +365,12 @@ def convert_models(conversion: ConversionContext, args, models: Models):
             if name in args.skip:
                 logger.info("skipping model: %s", name)
             else:
+                # fix up entries with missing prefixes
+                name = fix_diffusion_name(name)
+                if name != model["name"]:
+                    # update the model in-memory if the name changed
+                    model["name"] = name
+
                 model_format = source_format(model)
 
                 try:
