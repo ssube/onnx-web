@@ -69,8 +69,8 @@ def convert_diffusion_diffusers_xl(
             logger.debug("loading VAE from single tensor file: %s", vae_path)
             pipeline.vae = AutoencoderKL.from_single_file(vae_path)
         else:
-            logger.debug("loading pretrained VAE from path: %s", vae_path)
-            pipeline.vae = AutoencoderKL.from_pretrained(vae_path)
+            logger.debug("loading pretrained VAE from path: %s", replace_vae)
+            pipeline.vae = AutoencoderKL.from_pretrained(replace_vae)
 
     if path.exists(temp_path):
         logger.debug("torch model already exists for %s: %s", source, temp_path)
