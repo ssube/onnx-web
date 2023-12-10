@@ -1,7 +1,7 @@
 from logging import getLogger
 from os import environ, path
 from secrets import token_urlsafe
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 import torch
 
@@ -42,7 +42,6 @@ class ServerContext:
     feature_flags: List[str]
     plugins: List[str]
     debug: bool
-    env: Dict[str, str]
 
     def __init__(
         self,
@@ -68,7 +67,6 @@ class ServerContext:
         feature_flags: Optional[List[str]] = None,
         plugins: Optional[List[str]] = None,
         debug: bool = False,
-        env: Dict[str, str] = environ,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -92,7 +90,6 @@ class ServerContext:
         self.feature_flags = feature_flags or []
         self.plugins = plugins or []
         self.debug = debug
-        self.env = env
 
         self.cache = ModelCache(self.cache_limit)
 
@@ -133,7 +130,7 @@ class ServerContext:
         )
 
     def get_setting(self, flag: str, default: str) -> Optional[str]:
-        return self.env.get(f"ONNX_WEB_{flag}", default)
+        return environ.get(f"ONNX_WEB_{flag}", default)
 
     def has_feature(self, flag: str) -> bool:
         return flag in self.feature_flags
