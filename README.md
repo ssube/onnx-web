@@ -23,8 +23,8 @@ details](https://github.com/ssube/onnx-web/blob/main/docs/user-guide.md).
 
 This is an incomplete list of new and interesting features, with links to the user guide:
 
-- supports SDXL and SDXL Turbo support
-- supports most schedulers: DDIM, DEIS, DPM SDE, Euler Ancestral, LCM, UniPC, and more
+- supports SDXL and SDXL Turbo
+- wide variety of schedulers: DDIM, DEIS, DPM SDE, Euler Ancestral, LCM, UniPC, and more
 - hardware acceleration on both AMD and Nvidia
   - tested on CUDA, DirectML, and ROCm
   - [half-precision support for low-memory GPUs](docs/user-guide.md#optimizing-models-for-lower-memory-usage) on both
