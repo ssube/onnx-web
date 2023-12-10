@@ -35,7 +35,7 @@ class HuggingfaceClient(BaseClient):
             return hf_hub_download(
                 repo_id=source,
                 filename="learned_embeds.bin",
-                cache_dir=conversion.cache_path,
+                cache_dir=dest or conversion.cache_path,
                 force_filename=f"{name}.bin",
                 token=self.token,
             )
