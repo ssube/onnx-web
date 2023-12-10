@@ -1,7 +1,6 @@
 from logging import getLogger
 from typing import Optional
 
-from huggingface_hub import snapshot_download
 from huggingface_hub.file_download import hf_hub_download
 
 from ..utils import ConversionContext, remove_prefix

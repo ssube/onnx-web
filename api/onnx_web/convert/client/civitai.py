@@ -16,7 +16,9 @@ CIVITAI_ROOT = "https://civitai.com/api/download/models/%s"
 
 
 class CivitaiClient(BaseClient):
+    name = "civitai"
     protocol = "civitai://"
+
     root: str
     token: Optional[str]
 

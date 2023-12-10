@@ -6,7 +6,6 @@ from ..utils import (
     build_cache_paths,
     download_progress,
     get_first_exists,
-    remove_prefix,
 )
 from .base import BaseClient
 
