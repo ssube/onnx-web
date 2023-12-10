@@ -15,6 +15,8 @@ from onnxruntime.transformers.float16 import convert_float_to_float16
 from packaging import version
 from torch.onnx import export
 
+from onnx_web.convert.client.file import FileClient
+
 from ..constants import ONNX_WEIGHTS
 from ..errors import RequestException
 from ..server import ServerContext
@@ -85,37 +87,36 @@ class ConversionContext(ServerContext):
         return torch.device(self.training_device)
 
 
-def download_progress(urls: List[Tuple[str, str]]):
-    for url, dest in urls:
-        dest_path = Path(dest).expanduser().resolve()
-        dest_path.parent.mkdir(parents=True, exist_ok=True)
+def download_progress(source: str, dest: str):
+    dest_path = Path(dest).expanduser().resolve()
+    dest_path.parent.mkdir(parents=True, exist_ok=True)
 
-        if dest_path.exists():
-            logger.debug("destination already exists: %s", dest_path)
-            return str(dest_path.absolute())
-
-        req = requests.get(
-            url,
-            stream=True,
-            allow_redirects=True,
-            headers={
-                "User-Agent": "onnx-web-api",
-            },
-        )
-        if req.status_code != 200:
-            req.raise_for_status()  # Only works for 4xx errors, per SO answer
-            raise RequestException(
-                "request to %s failed with status code: %s" % (url, req.status_code)
-            )
-
-        total = int(req.headers.get("Content-Length", 0))
-        desc = "unknown" if total == 0 else ""
-        req.raw.read = partial(req.raw.read, decode_content=True)
-        with tqdm.wrapattr(req.raw, "read", total=total, desc=desc) as data:
-            with dest_path.open("wb") as f:
-                shutil.copyfileobj(data, f)
-
+    if dest_path.exists():
+        logger.debug("destination already exists: %s", dest_path)
         return str(dest_path.absolute())
+
+    req = requests.get(
+        source,
+        stream=True,
+        allow_redirects=True,
+        headers={
+            "User-Agent": "onnx-web-api",
+        },
+    )
+    if req.status_code != 200:
+        req.raise_for_status()  # Only works for 4xx errors, per SO answer
+        raise RequestException(
+            "request to %s failed with status code: %s" % (source, req.status_code)
+        )
+
+    total = int(req.headers.get("Content-Length", 0))
+    desc = "unknown" if total == 0 else ""
+    req.raw.read = partial(req.raw.read, decode_content=True)
+    with tqdm.wrapattr(req.raw, "read", total=total, desc=desc) as data:
+        with dest_path.open("wb") as f:
+            shutil.copyfileobj(data, f)
+
+    return str(dest_path.absolute())
 
 
 def tuple_to_source(model: Union[ModelDict, LegacyModel]):
@@ -347,7 +348,13 @@ def onnx_export(
         )
 
 
-DIFFUSION_PREFIX = ["diffusion-", "diffusion/", "diffusion\\", "stable-diffusion-", "upscaling-"]
+DIFFUSION_PREFIX = [
+    "diffusion-",
+    "diffusion/",
+    "diffusion\\",
+    "stable-diffusion-",
+    "upscaling-",
+]
 
 
 def fix_diffusion_name(name: str):
@@ -359,3 +366,61 @@ def fix_diffusion_name(name: str):
         return f"diffusion-{name}"
 
     return name
+
+
+def fetch_model(
+    conversion: ConversionContext,
+    name: str,
+    source: str,
+    format: Optional[str],
+) -> Tuple[str, bool]:
+    # TODO: switch to urlparse's default scheme
+    if source.startswith(path.sep) or source.startswith("."):
+        logger.info("adding file protocol to local path source: %s", source)
+        source = FileClient.protocol + source
+
+    for proto, client_type in model_sources.items():
+        if source.startswith(proto):
+            client = client_type()
+            return client.download(proto)
+
+    logger.warning("unknown model protocol, using path as provided: %s", source)
+    return source, False
+
+
+def build_cache_paths(
+    conversion: ConversionContext,
+    name: str,
+    client: Optional[str] = None,
+    dest: Optional[str] = None,
+    format: Optional[str] = None,
+) -> List[str]:
+    cache_path = dest or conversion.cache_path
+
+    # add an extension if possible, some of the conversion code checks for it
+    if format is not None:
+        basename = path.basename(name)
+        _filename, ext = path.splitext(basename)
+        if ext is None:
+            name = f"{name}.{format}"
+
+    paths = [
+        path.join(cache_path, name),
+    ]
+
+    if client is not None:
+        client_path = path.join(cache_path, client)
+        paths.append(path.join(client_path, name))
+
+    return paths
+
+
+def get_first_exists(
+    paths: List[str],
+) -> Optional[str]:
+    for name in paths:
+        if path.exists(name):
+            logger.debug("model already exists in cache, skipping fetch: %s", name)
+            return name
+
+    return None
