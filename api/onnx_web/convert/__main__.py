@@ -216,24 +216,24 @@ def convert_model_source(conversion: ConversionContext, model):
 
 
 def convert_model_network(conversion: ConversionContext, model):
-    format = source_format(model)
+    model_format = source_format(model)
+    model_type = model["type"]
     name = model["name"]
-    network_type = model["type"]
     source = model["source"]
 
-    if network_type == "control":
+    if model_type == "control":
         dest = fetch_model(
             conversion,
             name,
             source,
-            format=format,
+            format=model_format,
         )
 
         convert_diffusion_control(
             conversion,
             model,
             dest,
-            path.join(conversion.model_path, network_type, name),
+            path.join(conversion.model_path, model_type, name),
         )
     else:
         model = model.get("model", None)
@@ -241,9 +241,9 @@ def convert_model_network(conversion: ConversionContext, model):
             conversion,
             name,
             source,
-            dest=path.join(conversion.model_path, network_type),
-            format=format,
-            embeds=(network_type == "inversion" and model == "concept"),
+            dest=path.join(conversion.model_path, model_type),
+            format=model_format,
+            embeds=(model_type == "inversion" and model == "concept"),
         )
 
     logger.info("finished downloading network: %s -> %s", source, dest)
@@ -256,8 +256,8 @@ def convert_model_diffusion(conversion: ConversionContext, model):
         # update the model in-memory if the name changed
         model["name"] = name
 
-    format = source_format(model)
-    dest = fetch_model(conversion, name, model["source"], format=format)
+    model_format = source_format(model)
+    dest = fetch_model(conversion, name, model["source"], format=model_format)
 
     pipeline = model.get("pipeline", "txt2img")
     converter = model_converters.get(pipeline)
@@ -265,7 +265,7 @@ def convert_model_diffusion(conversion: ConversionContext, model):
         conversion,
         model,
         dest,
-        format,
+        model_format,
     )
 
     # make sure blending only happens once, not every run

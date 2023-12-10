@@ -13,6 +13,9 @@ class FileClient(BaseClient):
     protocol = "file://"
 
     def __init__(self, _conversion: ConversionContext):
+        """
+        Nothing to initialize for this client.
+        """
         pass
 
     def download(
