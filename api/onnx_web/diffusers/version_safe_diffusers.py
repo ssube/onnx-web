@@ -14,7 +14,7 @@ except ImportError:
 
 try:
     from diffusers import DPMSolverSDEScheduler
-except:
+except ImportError:
     from ..diffusers.stub_scheduler import StubScheduler as DPMSolverSDEScheduler
 
 try:
