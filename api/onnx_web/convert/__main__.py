@@ -415,7 +415,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                 logger.info("skipping source: %s", name)
             else:
                 try:
-                    convert_model_source(model)
+                    convert_model_source(conversion, model)
                 except Exception:
                     logger.exception("error fetching source %s", name)
                     model_errors.append(name)
