@@ -45,7 +45,7 @@ def fetch_model(
 
     for proto, client_type in model_sources.items():
         if source.startswith(proto):
-            client = client_type()
+            client = client_type(conversion)
             return client.download(
                 conversion, name, source, format=format, dest=dest, **kwargs
             )
