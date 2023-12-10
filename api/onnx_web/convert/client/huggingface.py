@@ -41,7 +41,4 @@ class HuggingfaceClient(BaseClient):
                 token=self.token,
             )
         else:
-            return snapshot_download(
-                repo_id=source,
-                token=self.token,
-            )
+            return source

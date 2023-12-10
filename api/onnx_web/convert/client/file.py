@@ -12,14 +12,9 @@ logger = getLogger(__name__)
 class FileClient(BaseClient):
     protocol = "file://"
 
-    root: str
-
-    def __init__(self, root: str):
-        self.root = root
-
     def download(
         self,
-        _conversion: ConversionContext,
+        conversion: ConversionContext,
         _name: str,
         uri: str,
         format: Optional[str] = None,
@@ -28,4 +23,4 @@ class FileClient(BaseClient):
     ) -> str:
         parts = urlparse(uri)
         logger.info("loading model from: %s", parts.path)
-        return path.join(self.root, parts.path)
+        return path.join(conversion.model_path, parts.path)
