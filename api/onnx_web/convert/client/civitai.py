@@ -56,6 +56,9 @@ class CivitaiClient(BaseClient):
 
         if self.token:
             logger.debug("adding Civitai token authentication")
-            source = f"{source}?token={self.token}"
+            if "?" in source:
+                source = f"{source}&token={self.token}"
+            else:
+                source = f"{source}?token={self.token}"
 
         return download_progress(source, cache_paths[0])
