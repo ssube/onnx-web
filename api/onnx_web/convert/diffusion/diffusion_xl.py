@@ -10,6 +10,7 @@ from onnxruntime.transformers.float16 import convert_float_to_float16
 from optimum.exporters.onnx import main_export
 
 from ...constants import ONNX_MODEL
+from ..client import fetch_model
 from ..utils import RESOLVE_FORMATS, ConversionContext, check_ext
 
 logger = getLogger(__name__)
@@ -19,14 +20,13 @@ logger = getLogger(__name__)
 def convert_diffusion_diffusers_xl(
     conversion: ConversionContext,
     model: Dict,
-    source: str,
     format: Optional[str],
-    hf: bool = False,
 ) -> Tuple[bool, str]:
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
     """
     name = model.get("name")
+    source = model.get("source")
     replace_vae = model.get("vae", None)
 
     device = conversion.training_device
@@ -52,15 +52,16 @@ def convert_diffusion_diffusers_xl(
 
         return (False, dest_path)
 
+    cache_path = fetch_model(conversion, name, model["source"], format=format)
     # safetensors -> diffusers directory with torch models
     temp_path = path.join(conversion.cache_path, f"{name}-torch")
 
     if format == "safetensors":
         pipeline = StableDiffusionXLPipeline.from_single_file(
-            source, use_safetensors=True
+            cache_path, use_safetensors=True
         )
     else:
-        pipeline = StableDiffusionXLPipeline.from_pretrained(source)
+        pipeline = StableDiffusionXLPipeline.from_pretrained(cache_path)
 
     if replace_vae is not None:
         vae_path = path.join(conversion.model_path, replace_vae)

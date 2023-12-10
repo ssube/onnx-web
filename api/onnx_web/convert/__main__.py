@@ -257,14 +257,12 @@ def convert_model_diffusion(conversion: ConversionContext, model):
         model["name"] = name
 
     model_format = source_format(model)
-    dest = fetch_model(conversion, name, model["source"], format=model_format)
 
     pipeline = model.get("pipeline", "txt2img")
     converter = model_converters.get(pipeline)
     converted, dest = converter(
         conversion,
         model,
-        dest,
         model_format,
     )
 
