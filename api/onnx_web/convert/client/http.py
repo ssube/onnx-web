@@ -27,7 +27,7 @@ class HttpClient(BaseClient):
         self,
         conversion: ConversionContext,
         name: str,
-        uri: str,
+        source: str,
         format: Optional[str] = None,
         dest: Optional[str] = None,
         **kwargs,
@@ -43,11 +43,9 @@ class HttpClient(BaseClient):
         if cached:
             return cached
 
-        if uri.startswith(HttpClient.protocol):
-            source = remove_prefix(uri, HttpClient.protocol)
+        if source.startswith(HttpClient.protocol):
             logger.info("downloading model from: %s", source)
-        elif uri.startswith(HttpClient.insecure_protocol):
-            source = remove_prefix(uri, HttpClient.insecure_protocol)
+        elif source.startswith(HttpClient.insecure_protocol):
             logger.warning("downloading model from insecure source: %s", source)
 
         return download_progress(source, cache_paths[0])
