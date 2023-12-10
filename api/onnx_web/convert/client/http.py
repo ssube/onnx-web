@@ -30,6 +30,7 @@ class HttpClient(BaseClient):
         uri: str,
         format: Optional[str] = None,
         dest: Optional[str] = None,
+        **kwargs,
     ) -> str:
         cache_paths = build_cache_paths(
             conversion,
@@ -46,6 +47,7 @@ class HttpClient(BaseClient):
             source = remove_prefix(uri, HttpClient.protocol)
             logger.info("downloading model from: %s", source)
         elif uri.startswith(HttpClient.insecure_protocol):
+            source = remove_prefix(uri, HttpClient.insecure_protocol)
             logger.warning("downloading model from insecure source: %s", source)
 
         return download_progress(source, cache_paths[0])

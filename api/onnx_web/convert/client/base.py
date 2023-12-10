@@ -11,5 +11,6 @@ class BaseClient:
         source: str,
         format: Optional[str] = None,
         dest: Optional[str] = None,
+        **kwargs,
     ) -> str:
         raise NotImplementedError()

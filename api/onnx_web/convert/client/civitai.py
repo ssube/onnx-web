@@ -31,6 +31,7 @@ class CivitaiClient(BaseClient):
         source: str,
         format: Optional[str] = None,
         dest: Optional[str] = None,
+        **kwargs,
     ) -> str:
         """
         TODO: download with auth token

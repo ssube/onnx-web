@@ -202,7 +202,7 @@ base_models: Models = {
 }
 
 
-def convert_source_model(conversion: ConversionContext, model):
+def convert_model_source(conversion: ConversionContext, model):
     model_format = source_format(model)
     name = model["name"]
     source = model["source"]
@@ -215,9 +215,10 @@ def convert_source_model(conversion: ConversionContext, model):
     logger.info("finished downloading source: %s -> %s", source, dest)
 
 
-def convert_network_model(conversion: ConversionContext, network):
-    network_format = source_format(network)
+def convert_model_network(conversion: ConversionContext, network):
+    format = source_format(network)
     name = network["name"]
+    model = network["model"]
     network_type = network["type"]
     source = network["source"]
 
@@ -226,7 +227,7 @@ def convert_network_model(conversion: ConversionContext, network):
             conversion,
             name,
             source,
-            format=network_format,
+            format=format,
         )
 
         convert_diffusion_control(
@@ -241,13 +242,14 @@ def convert_network_model(conversion: ConversionContext, network):
             name,
             source,
             dest=path.join(conversion.model_path, network_type),
-            format=network_format,
+            format=format,
+            embeds=(network_type == "inversion" and model == "concept"),
         )
 
     logger.info("finished downloading network: %s -> %s", source, dest)
 
 
-def convert_diffusion_model(conversion: ConversionContext, model):
+def convert_model_diffusion(conversion: ConversionContext, model):
     # fix up entries with missing prefixes
     name = fix_diffusion_name(model["name"])
     if name != model["name"]:
@@ -372,7 +374,7 @@ def convert_diffusion_model(conversion: ConversionContext, model):
                 )
 
 
-def convert_upscaling_model(conversion: ConversionContext, model):
+def convert_model_upscaling(conversion: ConversionContext, model):
     model_format = source_format(model)
     name = model["name"]
 
@@ -389,7 +391,7 @@ def convert_upscaling_model(conversion: ConversionContext, model):
         raise ValueError(name)
 
 
-def convert_correction_model(conversion: ConversionContext, model):
+def convert_model_correction(conversion: ConversionContext, model):
     model_format = source_format(model)
     name = model["name"]
     source = fetch_model(conversion, name, model["source"], format=model_format)
@@ -413,7 +415,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                 logger.info("skipping source: %s", name)
             else:
                 try:
-                    convert_source_model(model)
+                    convert_model_source(model)
                 except Exception:
                     logger.exception("error fetching source %s", name)
                     model_errors.append(name)
@@ -426,7 +428,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                 logger.info("skipping network: %s", name)
             else:
                 try:
-                    convert_network_model(conversion, model)
+                    convert_model_network(conversion, model)
                 except Exception:
                     logger.exception("error fetching network %s", name)
                     model_errors.append(name)
@@ -440,7 +442,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                 logger.info("skipping model: %s", name)
             else:
                 try:
-                    convert_diffusion_model(conversion, model)
+                    convert_model_diffusion(conversion, model)
                 except Exception:
                     logger.exception(
                         "error converting diffusion model %s",
@@ -457,7 +459,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                 logger.info("skipping model: %s", name)
             else:
                 try:
-                    convert_upscaling_model(conversion, model)
+                    convert_model_upscaling(conversion, model)
                 except Exception:
                     logger.exception(
                         "error converting upscaling model %s",
@@ -474,7 +476,7 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                 logger.info("skipping model: %s", name)
             else:
                 try:
-                    convert_correction_model(conversion, model)
+                    convert_model_correction(conversion, model)
                 except Exception:
                     logger.exception(
                         "error converting correction model %s",

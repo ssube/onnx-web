@@ -24,6 +24,7 @@ class FileClient(BaseClient):
         uri: str,
         format: Optional[str] = None,
         dest: Optional[str] = None,
+        **kwargs,
     ) -> str:
         parts = urlparse(uri)
         logger.info("loading model from: %s", parts.path)
