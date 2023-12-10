@@ -218,7 +218,6 @@ def convert_model_source(conversion: ConversionContext, model):
 def convert_model_network(conversion: ConversionContext, network):
     format = source_format(network)
     name = network["name"]
-    model = network["model"]
     network_type = network["type"]
     source = network["source"]
 
@@ -237,6 +236,7 @@ def convert_model_network(conversion: ConversionContext, network):
             path.join(conversion.model_path, network_type, name),
         )
     else:
+        model = network.get("model", None)
         dest = fetch_model(
             conversion,
             name,
