@@ -35,6 +35,7 @@ def fetch_model(
     source: str,
     format: Optional[str] = None,
     dest: Optional[str] = None,
+    **kwargs,
 ) -> str:
     # TODO: switch to urlparse's default scheme
     if source.startswith(path.sep) or source.startswith("."):
@@ -45,7 +46,7 @@ def fetch_model(
         if source.startswith(proto):
             # TODO: fix type of client_type
             client: BaseClient = client_type()
-            return client.download(conversion, name, source, format=format, dest=dest)
+            return client.download(conversion, name, source, format=format, dest=dest, **kwargs)
 
     logger.warning("unknown model protocol, using path as provided: %s", source)
     return source
