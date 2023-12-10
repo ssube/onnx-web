@@ -26,7 +26,7 @@ class CivitaiClient(BaseClient):
         self,
         conversion: ConversionContext,
         token: Optional[str] = None,
-        root=CIVITAI_ROOT,
+        root: str = CIVITAI_ROOT,
     ):
         self.root = conversion.get_setting("CIVITAI_ROOT", root)
         self.token = conversion.get_setting("CIVITAI_TOKEN", token)

@@ -29,4 +29,4 @@ class FileClient(BaseClient):
     ) -> str:
         parts = urlparse(uri)
         logger.info("loading model from: %s", parts.path)
-        return path.join(conversion.model_path, parts.path)
+        return path.join(dest or conversion.model_path, parts.path)
