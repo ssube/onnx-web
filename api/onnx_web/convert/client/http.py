@@ -19,7 +19,9 @@ class HttpClient(BaseClient):
 
     headers: Dict[str, str]
 
-    def __init__(self, headers: Optional[Dict[str, str]] = None):
+    def __init__(
+        self, _conversion: ConversionContext, headers: Optional[Dict[str, str]] = None
+    ):
         self.headers = headers or {}
 
     def download(

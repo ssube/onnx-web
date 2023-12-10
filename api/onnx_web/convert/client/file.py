@@ -12,6 +12,9 @@ logger = getLogger(__name__)
 class FileClient(BaseClient):
     protocol = "file://"
 
+    def __init__(self, _conversion: ConversionContext):
+        pass
+
     def download(
         self,
         conversion: ConversionContext,

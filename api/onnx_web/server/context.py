@@ -1,7 +1,7 @@
 from logging import getLogger
 from os import environ, path
 from secrets import token_urlsafe
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import torch
 
@@ -42,6 +42,7 @@ class ServerContext:
     feature_flags: List[str]
     plugins: List[str]
     debug: bool
+    env: Dict[str, str]
 
     def __init__(
         self,
@@ -67,6 +68,7 @@ class ServerContext:
         feature_flags: Optional[List[str]] = None,
         plugins: Optional[List[str]] = None,
         debug: bool = False,
+        env: Dict[str, str] = environ,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -90,48 +92,48 @@ class ServerContext:
         self.feature_flags = feature_flags or []
         self.plugins = plugins or []
         self.debug = debug
+        self.env = env
 
         self.cache = ModelCache(self.cache_limit)
 
     @classmethod
-    def from_environ(cls):
-        memory_limit = environ.get("ONNX_WEB_MEMORY_LIMIT", None)
+    def from_environ(cls, env=environ):
+        memory_limit = env.get("ONNX_WEB_MEMORY_LIMIT", None)
         if memory_limit is not None:
             memory_limit = int(memory_limit)
 
         return cls(
-            bundle_path=environ.get(
-                "ONNX_WEB_BUNDLE_PATH", path.join("..", "gui", "out")
-            ),
-            model_path=environ.get("ONNX_WEB_MODEL_PATH", path.join("..", "models")),
-            output_path=environ.get("ONNX_WEB_OUTPUT_PATH", path.join("..", "outputs")),
-            params_path=environ.get("ONNX_WEB_PARAMS_PATH", "."),
-            cors_origin=get_list(environ, "ONNX_WEB_CORS_ORIGIN", default="*"),
+            bundle_path=env.get("ONNX_WEB_BUNDLE_PATH", path.join("..", "gui", "out")),
+            model_path=env.get("ONNX_WEB_MODEL_PATH", path.join("..", "models")),
+            output_path=env.get("ONNX_WEB_OUTPUT_PATH", path.join("..", "outputs")),
+            params_path=env.get("ONNX_WEB_PARAMS_PATH", "."),
+            cors_origin=get_list(env, "ONNX_WEB_CORS_ORIGIN", default="*"),
             any_platform=get_boolean(
-                environ, "ONNX_WEB_ANY_PLATFORM", DEFAULT_ANY_PLATFORM
+                env, "ONNX_WEB_ANY_PLATFORM", DEFAULT_ANY_PLATFORM
             ),
-            block_platforms=get_list(environ, "ONNX_WEB_BLOCK_PLATFORMS"),
-            default_platform=environ.get("ONNX_WEB_DEFAULT_PLATFORM", None),
-            image_format=environ.get("ONNX_WEB_IMAGE_FORMAT", DEFAULT_IMAGE_FORMAT),
-            cache_limit=int(environ.get("ONNX_WEB_CACHE_MODELS", DEFAULT_CACHE_LIMIT)),
+            block_platforms=get_list(env, "ONNX_WEB_BLOCK_PLATFORMS"),
+            default_platform=env.get("ONNX_WEB_DEFAULT_PLATFORM", None),
+            image_format=env.get("ONNX_WEB_IMAGE_FORMAT", DEFAULT_IMAGE_FORMAT),
+            cache_limit=int(env.get("ONNX_WEB_CACHE_MODELS", DEFAULT_CACHE_LIMIT)),
             show_progress=get_boolean(
-                environ, "ONNX_WEB_SHOW_PROGRESS", DEFAULT_SHOW_PROGRESS
+                env, "ONNX_WEB_SHOW_PROGRESS", DEFAULT_SHOW_PROGRESS
             ),
-            optimizations=get_list(environ, "ONNX_WEB_OPTIMIZATIONS"),
-            extra_models=get_list(environ, "ONNX_WEB_EXTRA_MODELS"),
-            job_limit=int(environ.get("ONNX_WEB_JOB_LIMIT", DEFAULT_JOB_LIMIT)),
+            optimizations=get_list(env, "ONNX_WEB_OPTIMIZATIONS"),
+            extra_models=get_list(env, "ONNX_WEB_EXTRA_MODELS"),
+            job_limit=int(env.get("ONNX_WEB_JOB_LIMIT", DEFAULT_JOB_LIMIT)),
             memory_limit=memory_limit,
-            admin_token=environ.get("ONNX_WEB_ADMIN_TOKEN", None),
-            server_version=environ.get(
-                "ONNX_WEB_SERVER_VERSION", DEFAULT_SERVER_VERSION
-            ),
+            admin_token=env.get("ONNX_WEB_ADMIN_TOKEN", None),
+            server_version=env.get("ONNX_WEB_SERVER_VERSION", DEFAULT_SERVER_VERSION),
             worker_retries=int(
-                environ.get("ONNX_WEB_WORKER_RETRIES", DEFAULT_WORKER_RETRIES)
+                env.get("ONNX_WEB_WORKER_RETRIES", DEFAULT_WORKER_RETRIES)
             ),
-            feature_flags=get_list(environ, "ONNX_WEB_FEATURE_FLAGS"),
-            plugins=get_list(environ, "ONNX_WEB_PLUGINS", ""),
-            debug=get_boolean(environ, "ONNX_WEB_DEBUG", False),
+            feature_flags=get_list(env, "ONNX_WEB_FEATURE_FLAGS"),
+            plugins=get_list(env, "ONNX_WEB_PLUGINS", ""),
+            debug=get_boolean(env, "ONNX_WEB_DEBUG", False),
         )
+
+    def get_setting(self, flag: str, default: str) -> Optional[str]:
+        return self.env.get(f"ONNX_WEB_{flag}", default)
 
     def has_feature(self, flag: str) -> bool:
         return flag in self.feature_flags

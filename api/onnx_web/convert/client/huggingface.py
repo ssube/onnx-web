@@ -15,8 +15,8 @@ class HuggingfaceClient(BaseClient):
 
     token: Optional[str]
 
-    def __init__(self, token: Optional[str] = None):
-        self.token = token
+    def __init__(self, conversion: ConversionContext, token: Optional[str] = None):
+        self.token = conversion.get_setting("HUGGINGFACE_TOKEN", token)
 
     def download(
         self,

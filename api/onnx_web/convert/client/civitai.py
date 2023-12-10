@@ -22,9 +22,14 @@ class CivitaiClient(BaseClient):
     root: str
     token: Optional[str]
 
-    def __init__(self, token: Optional[str] = None, root=CIVITAI_ROOT):
-        self.root = root
-        self.token = token
+    def __init__(
+        self,
+        conversion: ConversionContext,
+        token: Optional[str] = None,
+        root=CIVITAI_ROOT,
+    ):
+        self.root = conversion.get_setting("CIVITAI_ROOT", root)
+        self.token = conversion.get_setting("CIVITAI_TOKEN", token)
 
     def download(
         self,
@@ -35,9 +40,6 @@ class CivitaiClient(BaseClient):
         dest: Optional[str] = None,
         **kwargs,
     ) -> str:
-        """
-        TODO: download with auth token
-        """
         cache_paths = build_cache_paths(
             conversion,
             name,
@@ -51,4 +53,9 @@ class CivitaiClient(BaseClient):
 
         source = self.root % (remove_prefix(source, CivitaiClient.protocol))
         logger.info("downloading model from Civitai: %s -> %s", source, cache_paths[0])
+
+        if self.token:
+            logger.debug("adding Civitai token authentication")
+            source = f"{source}?token={self.token}"
+
         return download_progress(source, cache_paths[0])
