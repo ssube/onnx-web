@@ -384,7 +384,7 @@ def build_cache_paths(
     if format is not None:
         basename = path.basename(name)
         _filename, ext = path.splitext(basename)
-        if ext is None:
+        if ext is None or ext == '':
             name = f"{name}.{format}"
 
     paths = [
