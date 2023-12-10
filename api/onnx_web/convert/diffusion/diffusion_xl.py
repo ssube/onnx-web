@@ -25,7 +25,7 @@ def convert_diffusion_diffusers_xl(
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
     """
-    name = model.get("name")
+    name = str(model.get("name")).strip()
     source = model.get("source")
     replace_vae = model.get("vae", None)
 
