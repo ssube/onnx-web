@@ -215,11 +215,11 @@ def convert_model_source(conversion: ConversionContext, model):
     logger.info("finished downloading source: %s -> %s", source, dest)
 
 
-def convert_model_network(conversion: ConversionContext, network):
-    format = source_format(network)
-    name = network["name"]
-    network_type = network["type"]
-    source = network["source"]
+def convert_model_network(conversion: ConversionContext, model):
+    format = source_format(model)
+    name = model["name"]
+    network_type = model["type"]
+    source = model["source"]
 
     if network_type == "control":
         dest = fetch_model(
@@ -231,12 +231,12 @@ def convert_model_network(conversion: ConversionContext, network):
 
         convert_diffusion_control(
             conversion,
-            network,
+            model,
             dest,
             path.join(conversion.model_path, network_type, name),
         )
     else:
-        model = network.get("model", None)
+        model = model.get("model", None)
         dest = fetch_model(
             conversion,
             name,
@@ -421,8 +421,8 @@ def convert_models(conversion: ConversionContext, args, models: Models):
                     model_errors.append(name)
 
     if args.networks and "networks" in models:
-        for network in models.get("networks", []):
-            name = network["name"]
+        for model in models.get("networks", []):
+            name = model["name"]
 
             if name in args.skip:
                 logger.info("skipping network: %s", name)
