@@ -14,7 +14,7 @@
   },
   "cfg": {
     "default": 6,
-    "min": 1,
+    "min": 0,
     "max": 30,
     "step": 0.1
   },
