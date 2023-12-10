@@ -1,4 +1,5 @@
 from typing import Optional
+
 from ..utils import ConversionContext
 
 
@@ -8,6 +9,7 @@ class BaseClient:
         conversion: ConversionContext,
         name: str,
         source: str,
-        format: Optional[str],
+        format: Optional[str] = None,
+        dest: Optional[str] = None,
     ) -> str:
         raise NotImplementedError()

@@ -1,3 +1,8 @@
+from logging import getLogger
+from typing import Any, Optional
+
+from huggingface_hub.file_download import hf_hub_download
+
 from ..utils import (
     ConversionContext,
     build_cache_paths,
@@ -5,9 +10,6 @@ from ..utils import (
     remove_prefix,
 )
 from .base import BaseClient
-from typing import Optional, Any
-from logging import getLogger
-from huggingface_hub.file_download import hf_hub_download
 
 logger = getLogger(__name__)
 
@@ -28,16 +30,23 @@ class HuggingfaceClient(BaseClient):
         conversion: ConversionContext,
         name: str,
         source: str,
-        format: Optional[str],
+        format: Optional[str] = None,
+        dest: Optional[str] = None,
     ) -> str:
         """
         TODO: download with auth
+        TODO: set fetch and filename
+            if network_type == "inversion" and network_model == "concept":
         """
-        hf_hub_fetch = TODO
-        hf_hub_filename = TODO
+        hf_hub_fetch = True
+        hf_hub_filename = "learned_embeds.bin"
 
         cache_paths = build_cache_paths(
-            conversion, name, client=HuggingfaceClient.name, format=format
+            conversion,
+            name,
+            client=HuggingfaceClient.name,
+            format=format,
+            dest=dest,
         )
         cached = get_first_exists(cache_paths)
         if cached:
@@ -46,7 +55,6 @@ class HuggingfaceClient(BaseClient):
         source = remove_prefix(source, HuggingfaceClient.protocol)
         logger.info("downloading model from Huggingface Hub: %s", source)
 
-        # from_pretrained has a bunch of useful logic that snapshot_download by itself down not
         if hf_hub_fetch:
             return (
                 hf_hub_download(
@@ -58,4 +66,5 @@ class HuggingfaceClient(BaseClient):
                 False,
             )
         else:
+            # TODO: download pretrained because load doesn't call from_pretrained anymore
             return source

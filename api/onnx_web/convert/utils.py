@@ -15,8 +15,6 @@ from onnxruntime.transformers.float16 import convert_float_to_float16
 from packaging import version
 from torch.onnx import export
 
-from onnx_web.convert.client.file import FileClient
-
 from ..constants import ONNX_WEIGHTS
 from ..errors import RequestException
 from ..server import ServerContext
@@ -33,6 +31,15 @@ ModelDict = Dict[str, Union[str, int]]
 LegacyModel = Tuple[str, str, Optional[bool], Optional[bool], Optional[int]]
 
 DEFAULT_OPSET = 14
+DIFFUSION_PREFIX = [
+    "diffusion-",
+    "diffusion/",
+    "diffusion\\",
+    "stable-diffusion-",
+    "upscaling-",  # SD upscaling
+]
+MODEL_FORMATS = ["onnx", "pth", "ckpt", "safetensors"]
+RESOLVE_FORMATS = ["safetensors", "ckpt", "pt", "pth", "bin"]
 
 
 class ConversionContext(ServerContext):
@@ -185,10 +192,6 @@ def tuple_to_upscaling(model: Union[ModelDict, LegacyModel]):
         return model
 
 
-MODEL_FORMATS = ["onnx", "pth", "ckpt", "safetensors"]
-RESOLVE_FORMATS = ["safetensors", "ckpt", "pt", "pth", "bin"]
-
-
 def check_ext(name: str, exts: List[str]) -> Tuple[bool, str]:
     _name, ext = path.splitext(name)
     ext = ext.strip(".")
@@ -216,6 +219,9 @@ def remove_prefix(name: str, prefix: str) -> str:
 
 
 def load_torch(name: str, map_location=None) -> Optional[Dict]:
+    """
+    TODO: move out of convert
+    """
     try:
         logger.debug("loading tensor with Torch: %s", name)
         checkpoint = torch.load(name, map_location=map_location)
@@ -229,6 +235,9 @@ def load_torch(name: str, map_location=None) -> Optional[Dict]:
 
 
 def load_tensor(name: str, map_location=None) -> Optional[Dict]:
+    """
+    TODO: move out of convert
+    """
     logger.debug("loading tensor: %s", name)
     _, extension = path.splitext(name)
     extension = extension[1:].lower()
@@ -286,6 +295,9 @@ def load_tensor(name: str, map_location=None) -> Optional[Dict]:
 
 
 def resolve_tensor(name: str) -> Optional[str]:
+    """
+    TODO: move out of convert
+    """
     logger.debug("searching for tensors with known extensions: %s", name)
     for next_extension in RESOLVE_FORMATS:
         next_name = f"{name}.{next_extension}"
@@ -348,15 +360,6 @@ def onnx_export(
         )
 
 
-DIFFUSION_PREFIX = [
-    "diffusion-",
-    "diffusion/",
-    "diffusion\\",
-    "stable-diffusion-",
-    "upscaling-",
-]
-
-
 def fix_diffusion_name(name: str):
     if not any([name.startswith(prefix) for prefix in DIFFUSION_PREFIX]):
         logger.warning(
@@ -366,26 +369,6 @@ def fix_diffusion_name(name: str):
         return f"diffusion-{name}"
 
     return name
-
-
-def fetch_model(
-    conversion: ConversionContext,
-    name: str,
-    source: str,
-    format: Optional[str],
-) -> Tuple[str, bool]:
-    # TODO: switch to urlparse's default scheme
-    if source.startswith(path.sep) or source.startswith("."):
-        logger.info("adding file protocol to local path source: %s", source)
-        source = FileClient.protocol + source
-
-    for proto, client_type in model_sources.items():
-        if source.startswith(proto):
-            client = client_type()
-            return client.download(proto)
-
-    logger.warning("unknown model protocol, using path as provided: %s", source)
-    return source, False
 
 
 def build_cache_paths(

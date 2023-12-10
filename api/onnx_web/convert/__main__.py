@@ -9,14 +9,10 @@ from jsonschema import ValidationError, validate
 from onnx import load_model, save_model
 from transformers import CLIPTokenizer
 
-from onnx_web.server.plugin import load_plugins
-
 from ..constants import ONNX_MODEL, ONNX_WEIGHTS
+from ..server.plugin import load_plugins
 from ..utils import load_config
-from .client.base import BaseClient
-from .client.civitai import CivitaiClient
-from .client.file import FileClient
-from .client.http import HttpClient
+from .client import add_model_source, fetch_model
 from .client.huggingface import HuggingfaceClient
 from .correction.gfpgan import convert_correction_gfpgan
 from .diffusion.control import convert_diffusion_control
@@ -30,7 +26,6 @@ from .upscaling.swinir import convert_upscaling_swinir
 from .utils import (
     DEFAULT_OPSET,
     ConversionContext,
-    fetch_model,
     fix_diffusion_name,
     source_format,
     tuple_to_correction,
@@ -53,15 +48,6 @@ logger = getLogger(__name__)
 
 ModelDict = Dict[str, Union[float, int, str]]
 Models = Dict[str, List[ModelDict]]
-
-
-model_sources: Dict[str, BaseClient] = {
-    CivitaiClient.protocol: CivitaiClient,
-    FileClient.protocol: FileClient,
-    HttpClient.insecure_protocol: HttpClient,
-    HttpClient.protocol: HttpClient,
-    HuggingfaceClient.protocol: HuggingfaceClient,
-}
 
 model_converters: Dict[str, Any] = {
     "img2img": convert_diffusion_diffusers,
@@ -216,15 +202,6 @@ base_models: Models = {
 }
 
 
-def add_model_source(proto: str, client: BaseClient):
-    global model_sources
-
-    if proto in model_sources:
-        raise ValueError("protocol has already been taken")
-
-    model_sources[proto] = client
-
-
 def convert_source_model(conversion: ConversionContext, model):
     model_format = source_format(model)
     name = model["name"]
@@ -234,21 +211,18 @@ def convert_source_model(conversion: ConversionContext, model):
     if "dest" in model:
         dest_path = path.join(conversion.model_path, model["dest"])
 
-    dest, hf = fetch_model(
-        conversion, name, source, format=model_format, dest=dest_path
-    )
+    dest = fetch_model(conversion, name, source, format=model_format, dest=dest_path)
     logger.info("finished downloading source: %s -> %s", source, dest)
 
 
 def convert_network_model(conversion: ConversionContext, network):
     network_format = source_format(network)
-    network_model = network.get("model", None)
     name = network["name"]
     network_type = network["type"]
     source = network["source"]
 
     if network_type == "control":
-        dest, hf = fetch_model(
+        dest = fetch_model(
             conversion,
             name,
             source,
@@ -261,18 +235,8 @@ def convert_network_model(conversion: ConversionContext, network):
             dest,
             path.join(conversion.model_path, network_type, name),
         )
-    if network_type == "inversion" and network_model == "concept":
-        dest, hf = fetch_model(
-            conversion,
-            name,
-            source,
-            dest=path.join(conversion.model_path, network_type),
-            format=network_format,
-            hf_hub_fetch=True,
-            hf_hub_filename="learned_embeds.bin",
-        )
     else:
-        dest, hf = fetch_model(
+        dest = fetch_model(
             conversion,
             name,
             source,
@@ -290,17 +254,16 @@ def convert_diffusion_model(conversion: ConversionContext, model):
         # update the model in-memory if the name changed
         model["name"] = name
 
-    model_format = source_format(model)
-    source, hf = fetch_model(conversion, name, model["source"], format=model_format)
+    format = source_format(model)
+    dest = fetch_model(conversion, name, model["source"], format=format)
 
     pipeline = model.get("pipeline", "txt2img")
     converter = model_converters.get(pipeline)
     converted, dest = converter(
         conversion,
         model,
-        source,
-        model_format,
-        hf=hf,
+        dest,
+        format,
     )
 
     # make sure blending only happens once, not every run
@@ -330,7 +293,7 @@ def convert_diffusion_model(conversion: ConversionContext, model):
             inversion_name = inversion["name"]
             inversion_source = inversion["source"]
             inversion_format = inversion.get("format", None)
-            inversion_source, hf = fetch_model(
+            inversion_source = fetch_model(
                 conversion,
                 inversion_name,
                 inversion_source,
@@ -369,7 +332,7 @@ def convert_diffusion_model(conversion: ConversionContext, model):
             # load models if not loaded yet
             lora_name = lora["name"]
             lora_source = lora["source"]
-            lora_source, hf = fetch_model(
+            lora_source = fetch_model(
                 conversion,
                 f"{name}-lora-{lora_name}",
                 lora_source,
@@ -413,7 +376,7 @@ def convert_upscaling_model(conversion: ConversionContext, model):
     model_format = source_format(model)
     name = model["name"]
 
-    source, hf = fetch_model(conversion, name, model["source"], format=model_format)
+    source = fetch_model(conversion, name, model["source"], format=model_format)
     model_type = model.get("model", "resrgan")
     if model_type == "bsrgan":
         convert_upscaling_bsrgan(conversion, model, source)
@@ -423,19 +386,19 @@ def convert_upscaling_model(conversion: ConversionContext, model):
         convert_upscaling_swinir(conversion, model, source)
     else:
         logger.error("unknown upscaling model type %s for %s", model_type, name)
-        model_errors.append(name)
+        raise ValueError(name)
 
 
 def convert_correction_model(conversion: ConversionContext, model):
     model_format = source_format(model)
     name = model["name"]
-    source, hf = fetch_model(conversion, name, model["source"], format=model_format)
+    source = fetch_model(conversion, name, model["source"], format=model_format)
     model_type = model.get("model", "gfpgan")
     if model_type == "gfpgan":
         convert_correction_gfpgan(conversion, model, source)
     else:
         logger.error("unknown correction model type %s for %s", model_type, name)
-        model_errors.append(name)
+        raise ValueError(name)
 
 
 def convert_models(conversion: ConversionContext, args, models: Models):

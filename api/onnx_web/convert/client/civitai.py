@@ -1,3 +1,6 @@
+from logging import getLogger
+from typing import Optional
+
 from ..utils import (
     ConversionContext,
     build_cache_paths,
@@ -6,8 +9,6 @@ from ..utils import (
     remove_prefix,
 )
 from .base import BaseClient
-from typing import Optional
-from logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -28,13 +29,18 @@ class CivitaiClient(BaseClient):
         conversion: ConversionContext,
         name: str,
         source: str,
-        format: Optional[str],
+        format: Optional[str] = None,
+        dest: Optional[str] = None,
     ) -> str:
         """
         TODO: download with auth token
         """
         cache_paths = build_cache_paths(
-            conversion, name, client=CivitaiClient.name, format=format
+            conversion,
+            name,
+            client=CivitaiClient.name,
+            format=format,
+            dest=dest,
         )
         cached = get_first_exists(cache_paths)
         if cached:

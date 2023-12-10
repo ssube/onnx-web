@@ -1,3 +1,6 @@
+from logging import getLogger
+from typing import Dict, Optional
+
 from ..utils import (
     ConversionContext,
     build_cache_paths,
@@ -6,8 +9,6 @@ from ..utils import (
     remove_prefix,
 )
 from .base import BaseClient
-from typing import Dict, Optional
-from logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -22,9 +23,20 @@ class HttpClient(BaseClient):
     def __init__(self, headers: Optional[Dict[str, str]] = None):
         self.headers = headers or {}
 
-    def download(self, conversion: ConversionContext, name: str, uri: str) -> str:
+    def download(
+        self,
+        conversion: ConversionContext,
+        name: str,
+        uri: str,
+        format: Optional[str] = None,
+        dest: Optional[str] = None,
+    ) -> str:
         cache_paths = build_cache_paths(
-            conversion, name, client=HttpClient.name, format=format
+            conversion,
+            name,
+            client=HttpClient.name,
+            format=format,
+            dest=dest,
         )
         cached = get_first_exists(cache_paths)
         if cached:
