@@ -414,6 +414,7 @@ class TestBlendPipeline(unittest.TestCase):
                 3.0,
                 1,
                 1,
+                unet_tile=64,
             ),
             Size(64, 64),
             ["test-blend.png"],

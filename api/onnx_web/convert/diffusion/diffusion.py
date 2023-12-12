@@ -36,6 +36,8 @@ from ...diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
 from ...diffusers.version_safe_diffusers import AttnProcessor
 from ...models.cnet import UNet2DConditionModel_CNet
 from ...utils import run_gc
+from ..client import fetch_model
+from ..client.huggingface import HuggingfaceClient
 from ..utils import (
     RESOLVE_FORMATS,
     ConversionContext,
@@ -43,6 +45,7 @@ from ..utils import (
     is_torch_2_0,
     load_tensor,
     onnx_export,
+    remove_prefix,
 )
 from .checkpoint import convert_extract_checkpoint
 
@@ -267,14 +270,13 @@ def collate_cnet(cnet_path):
 def convert_diffusion_diffusers(
     conversion: ConversionContext,
     model: Dict,
-    source: str,
     format: Optional[str],
-    hf: bool = False,
 ) -> Tuple[bool, str]:
     """
     From https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
     """
-    name = model.get("name")
+    name = str(model.get("name")).strip()
+    source = model.get("source")
 
     # optional
     config = model.get("config", None)
@@ -320,9 +322,11 @@ def convert_diffusion_diffusers(
             logger.info("ONNX model already exists, skipping")
             return (False, dest_path)
 
+    cache_path = fetch_model(conversion, name, source, format=format)
+
     pipe_class = CONVERT_PIPELINES.get(pipe_type)
     v2, pipe_args = get_model_version(
-        source, conversion.map_location, size=image_size, version=version
+        cache_path, conversion.map_location, size=image_size, version=version
     )
 
     is_inpainting = False
@@ -334,57 +338,66 @@ def convert_diffusion_diffusers(
         pipe_args["from_safetensors"] = True
 
     torch_source = None
-    if path.exists(source) and path.isdir(source):
-        logger.debug("loading pipeline from diffusers directory: %s", source)
-        pipeline = pipe_class.from_pretrained(
-            source,
-            torch_dtype=dtype,
-            use_auth_token=conversion.token,
-        ).to(device)
-    elif path.exists(source) and path.isfile(source):
-        if conversion.extract:
-            logger.debug("extracting SD checkpoint to Torch models: %s", source)
-            torch_source = convert_extract_checkpoint(
-                conversion,
-                source,
-                f"{name}-torch",
-                is_inpainting=is_inpainting,
-                config_file=config,
-                vae_file=replace_vae,
-            )
-            logger.debug("loading pipeline from extracted checkpoint: %s", torch_source)
+    if path.exists(cache_path):
+        if path.isdir(cache_path):
+            logger.debug("loading pipeline from diffusers directory: %s", source)
             pipeline = pipe_class.from_pretrained(
-                torch_source,
+                cache_path,
                 torch_dtype=dtype,
+                use_auth_token=conversion.token,
             ).to(device)
+        elif path.isfile(source):
+            if conversion.extract:
+                logger.debug("extracting SD checkpoint to Torch models: %s", source)
+                torch_source = convert_extract_checkpoint(
+                    conversion,
+                    source,
+                    f"{name}-torch",
+                    is_inpainting=is_inpainting,
+                    config_file=config,
+                    vae_file=replace_vae,
+                )
+                logger.debug(
+                    "loading pipeline from extracted checkpoint: %s", torch_source
+                )
+                pipeline = pipe_class.from_pretrained(
+                    torch_source,
+                    torch_dtype=dtype,
+                ).to(device)
 
-            # VAE replacement already happened during extraction, skip
-            replace_vae = None
-        else:
-            logger.debug("loading pipeline from SD checkpoint: %s", source)
-            pipeline = download_from_original_stable_diffusion_ckpt(
-                source,
-                original_config_file=config_path,
-                pipeline_class=pipe_class,
-                **pipe_args,
-            ).to(device, torch_dtype=dtype)
-    elif hf:
-        logger.debug("downloading pretrained model from Huggingface hub: %s", source)
+                # VAE replacement already happened during extraction, skip
+                replace_vae = None
+            else:
+                logger.debug("loading pipeline from SD checkpoint: %s", source)
+                pipeline = download_from_original_stable_diffusion_ckpt(
+                    source,
+                    original_config_file=config_path,
+                    pipeline_class=pipe_class,
+                    **pipe_args,
+                ).to(device, torch_dtype=dtype)
+    elif source.startswith(HuggingfaceClient.protocol):
+        hf_path = remove_prefix(source, HuggingfaceClient.protocol)
+        logger.debug("downloading pretrained model from Huggingface hub: %s", hf_path)
         pipeline = pipe_class.from_pretrained(
-            source,
+            hf_path,
             torch_dtype=dtype,
             use_auth_token=conversion.token,
         ).to(device)
     else:
-        logger.warning("pipeline source not found or not recognized: %s", source)
-        raise ValueError(f"pipeline source not found or not recognized: {source}")
+        logger.warning(
+            "pipeline source not found and protocol not recognized: %s", source
+        )
+        raise ValueError(
+            f"pipeline source not found and protocol not recognized: {source}"
+        )
 
     if replace_vae is not None:
         vae_path = path.join(conversion.model_path, replace_vae)
-        if check_ext(replace_vae, RESOLVE_FORMATS):
+        vae_file = check_ext(vae_path, RESOLVE_FORMATS)
+        if vae_file[0]:
             pipeline.vae = AutoencoderKL.from_single_file(vae_path)
         else:
-            pipeline.vae = AutoencoderKL.from_pretrained(vae_path)
+            pipeline.vae = AutoencoderKL.from_pretrained(replace_vae)
 
     if is_torch_2_0:
         pipeline.unet.set_attn_processor(AttnProcessor())
