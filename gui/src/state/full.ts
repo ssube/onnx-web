@@ -69,9 +69,7 @@ export const STATE_KEY = 'onnx-web';
 /**
  * Current state version for zustand persistence.
  */
-export const STATE_VERSION = 7;
-
-export const BLEND_SOURCES = 2;
+export const STATE_VERSION = 11;
 
 export function baseParamsFromServer(defaults: ServerParams): Required<BaseImgParams> {
   return {

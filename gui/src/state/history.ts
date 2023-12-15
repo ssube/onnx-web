@@ -1,6 +1,7 @@
 import { Maybe } from '@apextoaster/js-utils';
 import { ImageResponse, ReadyResponse, RetryParams } from '../types/api.js';
-import { DEFAULT_HISTORY, Slice } from './types.js';
+import { Slice } from './types.js';
+import { DEFAULT_HISTORY } from '../constants.js';
 
 export interface HistoryItem {
   image: ImageResponse;

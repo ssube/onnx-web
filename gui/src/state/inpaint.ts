@@ -1,4 +1,5 @@
 import { ServerParams } from '../config.js';
+import { DEFAULT_BRUSH } from '../constants.js';
 import {
   BaseImgParams,
   BrushParams,
@@ -8,7 +9,7 @@ import {
   OutpaintPixels,
   UpscaleParams,
 } from '../types/params.js';
-import { DEFAULT_BRUSH, Slice, TabState } from './types.js';
+import { Slice, TabState } from './types.js';
 export interface InpaintSlice {
   inpaint: TabState<InpaintParams>;
   inpaintBrush: BrushParams;

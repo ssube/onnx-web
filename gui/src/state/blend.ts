@@ -1,10 +1,11 @@
+import { DEFAULT_BRUSH } from '../constants.js';
 import {
   BlendParams,
   BrushParams,
   ModelParams,
   UpscaleParams,
 } from '../types/params.js';
-import { DEFAULT_BRUSH, Slice, TabState } from './types.js';
+import { Slice, TabState } from './types.js';
 
 export interface BlendSlice {
   blend: TabState<BlendParams>;

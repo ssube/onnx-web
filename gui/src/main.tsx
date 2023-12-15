@@ -30,6 +30,7 @@ import {
   StateContext,
 } from './state/full.js';
 import { I18N_STRINGS } from './strings/all.js';
+import { applyStateMigrations, UnknownState } from './state/migration/default.js';
 
 export const INITIAL_LOAD_TIMEOUT = 5_000;
 
@@ -70,6 +71,9 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
     ...createResetSlice(...slice),
     ...createProfileSlice(...slice),
   }), {
+    migrate(persistedState, version) {
+      return applyStateMigrations(params, persistedState as UnknownState, version);
+    },
     name: STATE_KEY,
     partialize(s) {
       return {
