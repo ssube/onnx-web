@@ -11,7 +11,7 @@ import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
 import { STALE_TIME } from '../../config.js';
-import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
+import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { BaseImgParams } from '../../types/params.js';
 import { NumericField } from '../input/NumericField.js';
 import { PromptInput } from '../input/PromptInput.js';

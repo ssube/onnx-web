@@ -8,7 +8,7 @@ import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { BLEND_SOURCES, ConfigContext, OnnxState, StateContext } from '../../state.js';
+import { BLEND_SOURCES, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { ImageResponse } from '../../types/api.js';
 import { range, visibleIndex } from '../../utils.js';
 

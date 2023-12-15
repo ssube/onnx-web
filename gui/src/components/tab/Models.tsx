@@ -8,7 +8,7 @@ import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
 import { STALE_TIME } from '../../config.js';
-import { ClientContext, OnnxState, StateContext } from '../../state.js';
+import { ClientContext, OnnxState, StateContext } from '../../state/full.js';
 import {
   CorrectionModel,
   DiffusionModel,

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { OnnxState, StateContext } from '../state.js';
+import { OnnxState, StateContext } from '../state/full.js';
 import { ErrorCard } from './card/ErrorCard.js';
 import { ImageCard } from './card/ImageCard.js';
 import { LoadingCard } from './card/LoadingCard.js';

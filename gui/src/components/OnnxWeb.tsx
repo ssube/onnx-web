@@ -7,7 +7,7 @@ import { useContext, useMemo } from 'react';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
-import { OnnxState, StateContext } from '../state.js';
+import { OnnxState, StateContext } from '../state/full.js';
 import { ImageHistory } from './ImageHistory.js';
 import { Logo } from './Logo.js';
 import { Blend } from './tab/Blend.js';

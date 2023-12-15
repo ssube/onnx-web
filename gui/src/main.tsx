@@ -28,7 +28,7 @@ import {
   STATE_KEY,
   STATE_VERSION,
   StateContext,
-} from './state.js';
+} from './state/full.js';
 import { I18N_STRINGS } from './strings/all.js';
 
 export const INITIAL_LOAD_TIMEOUT = 5_000;

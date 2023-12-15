@@ -8,7 +8,8 @@ import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
 import { PipelineGrid, makeTxt2ImgGridPipeline } from '../../client/utils.js';
-import { ClientContext, ConfigContext, OnnxState, StateContext, TabState } from '../../state.js';
+import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
+import { TabState } from '../../state/types.js';
 import { HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../../types/params.js';
 import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';

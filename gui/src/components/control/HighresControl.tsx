@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
-import { ConfigContext, OnnxState, StateContext } from '../../state.js';
+import { ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { HighresParams } from '../../types/params.js';
 import { NumericField } from '../input/NumericField.js';
 

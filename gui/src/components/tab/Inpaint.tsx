@@ -8,7 +8,8 @@ import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
 import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
-import { ClientContext, ConfigContext, OnnxState, StateContext, TabState } from '../../state.js';
+import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
+import { TabState } from '../../state/types.js';
 import { BrushParams, HighresParams, InpaintParams, ModelParams, UpscaleParams } from '../../types/params.js';
 import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';
