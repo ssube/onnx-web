@@ -2,7 +2,6 @@
 /* eslint-disable max-lines */
 /* eslint-disable no-null/no-null */
 import { Maybe } from '@apextoaster/js-utils';
-import { PaletteMode } from '@mui/material';
 import { Logger } from 'noicejs';
 import { createContext } from 'react';
 import { StateCreator, StoreApi } from 'zustand';
@@ -11,170 +10,24 @@ import {
   ApiClient,
 } from './client/base.js';
 import { PipelineGrid } from './client/utils.js';
-import { Config, ConfigFiles, ConfigState, ServerParams } from './config.js';
-import { CorrectionModel, DiffusionModel, ExtraNetwork, ExtraSource, ExtrasFile, UpscalingModel } from './types/model.js';
-import { ImageResponse, ReadyResponse, RetryParams } from './types/api.js';
+import { Config, ServerParams } from './config.js';
 import {
   BaseImgParams,
-  BlendParams,
-  BrushParams,
   HighresParams,
-  Img2ImgParams,
-  InpaintParams,
   ModelParams,
-  OutpaintPixels,
-  Txt2ImgParams,
   UpscaleParams,
-  UpscaleReqParams,
 } from './types/params.js';
-
-export const MISSING_INDEX = -1;
-
-export type Theme = PaletteMode | ''; // tri-state, '' is unset
-
-/**
- * Combine optional files and required ranges.
- */
-export type TabState<TabParams> = ConfigFiles<Required<TabParams>> & ConfigState<Required<TabParams>>;
-
-export interface HistoryItem {
-  image: ImageResponse;
-  ready: Maybe<ReadyResponse>;
-  retry: Maybe<RetryParams>;
-}
-
-export interface ProfileItem {
-  name: string;
-  params: BaseImgParams | Txt2ImgParams;
-  highres?: Maybe<HighresParams>;
-  upscale?: Maybe<UpscaleParams>;
-}
-
-interface DefaultSlice {
-  defaults: TabState<BaseImgParams>;
-  theme: Theme;
-
-  setDefaults(param: Partial<BaseImgParams>): void;
-  setTheme(theme: Theme): void;
-}
-
-interface HistorySlice {
-  history: Array<HistoryItem>;
-  limit: number;
-
-  pushHistory(image: ImageResponse, retry?: RetryParams): void;
-  removeHistory(image: ImageResponse): void;
-  setLimit(limit: number): void;
-  setReady(image: ImageResponse, ready: ReadyResponse): void;
-}
-
-interface ModelSlice {
-  extras: ExtrasFile;
-
-  removeCorrectionModel(model: CorrectionModel): void;
-  removeDiffusionModel(model: DiffusionModel): void;
-  removeExtraNetwork(model: ExtraNetwork): void;
-  removeExtraSource(model: ExtraSource): void;
-  removeUpscalingModel(model: UpscalingModel): void;
-
-  setExtras(extras: Partial<ExtrasFile>): void;
-
-  setCorrectionModel(model: CorrectionModel): void;
-  setDiffusionModel(model: DiffusionModel): void;
-  setExtraNetwork(model: ExtraNetwork): void;
-  setExtraSource(model: ExtraSource): void;
-  setUpscalingModel(model: UpscalingModel): void;
-}
-
-// #region tab slices
-interface Txt2ImgSlice {
-  txt2img: TabState<Txt2ImgParams>;
-  txt2imgModel: ModelParams;
-  txt2imgHighres: HighresParams;
-  txt2imgUpscale: UpscaleParams;
-  txt2imgVariable: PipelineGrid;
-
-  resetTxt2Img(): void;
-
-  setTxt2Img(params: Partial<Txt2ImgParams>): void;
-  setTxt2ImgModel(params: Partial<ModelParams>): void;
-  setTxt2ImgHighres(params: Partial<HighresParams>): void;
-  setTxt2ImgUpscale(params: Partial<UpscaleParams>): void;
-  setTxt2ImgVariable(params: Partial<PipelineGrid>): void;
-}
-
-interface Img2ImgSlice {
-  img2img: TabState<Img2ImgParams>;
-  img2imgModel: ModelParams;
-  img2imgHighres: HighresParams;
-  img2imgUpscale: UpscaleParams;
-
-  resetImg2Img(): void;
-
-  setImg2Img(params: Partial<Img2ImgParams>): void;
-  setImg2ImgModel(params: Partial<ModelParams>): void;
-  setImg2ImgHighres(params: Partial<HighresParams>): void;
-  setImg2ImgUpscale(params: Partial<UpscaleParams>): void;
-}
-
-interface InpaintSlice {
-  inpaint: TabState<InpaintParams>;
-  inpaintBrush: BrushParams;
-  inpaintModel: ModelParams;
-  inpaintHighres: HighresParams;
-  inpaintUpscale: UpscaleParams;
-  outpaint: OutpaintPixels;
-
-  resetInpaint(): void;
-
-  setInpaint(params: Partial<InpaintParams>): void;
-  setInpaintBrush(brush: Partial<BrushParams>): void;
-  setInpaintModel(params: Partial<ModelParams>): void;
-  setInpaintHighres(params: Partial<HighresParams>): void;
-  setInpaintUpscale(params: Partial<UpscaleParams>): void;
-  setOutpaint(pixels: Partial<OutpaintPixels>): void;
-}
-
-interface UpscaleSlice {
-  upscale: TabState<UpscaleReqParams>;
-  upscaleHighres: HighresParams;
-  upscaleModel: ModelParams;
-  upscaleUpscale: UpscaleParams;
-
-  resetUpscale(): void;
-
-  setUpscale(params: Partial<UpscaleReqParams>): void;
-  setUpscaleHighres(params: Partial<HighresParams>): void;
-  setUpscaleModel(params: Partial<ModelParams>): void;
-  setUpscaleUpscale(params: Partial<UpscaleParams>): void;
-}
-
-interface BlendSlice {
-  blend: TabState<BlendParams>;
-  blendBrush: BrushParams;
-  blendModel: ModelParams;
-  blendUpscale: UpscaleParams;
-
-  resetBlend(): void;
-
-  setBlend(blend: Partial<BlendParams>): void;
-  setBlendBrush(brush: Partial<BrushParams>): void;
-  setBlendModel(model: Partial<ModelParams>): void;
-  setBlendUpscale(params: Partial<UpscaleParams>): void;
-}
-
-interface ResetSlice {
-  resetAll(): void;
-}
-
-interface ProfileSlice {
-  profiles: Array<ProfileItem>;
-
-  removeProfile(profileName: string): void;
-
-  saveProfile(profile: ProfileItem): void;
-}
-// #endregion
+import { DefaultSlice } from './state/default.js';
+import { HistorySlice } from './state/history.js';
+import { Img2ImgSlice } from './state/img2img.js';
+import { InpaintSlice } from './state/inpaint.js';
+import { ModelSlice } from './state/models.js';
+import { Txt2ImgSlice } from './state/txt2img.js';
+import { UpscaleSlice } from './state/upscale.js';
+import { ResetSlice } from './state/reset.js';
+import { ProfileItem, ProfileSlice } from './state/profile.js';
+import { BlendSlice } from './state/blend.js';
+import { MISSING_INDEX } from './state/types.js';
 
 /**
  * Full merged state including all slices.
@@ -189,7 +42,6 @@ export type OnnxState
   & UpscaleSlice
   & BlendSlice
   & ResetSlice
-  & ModelSlice
   & ProfileSlice;
 
 /**
