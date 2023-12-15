@@ -72,7 +72,7 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
     ...createProfileSlice(...slice),
   }), {
     migrate(persistedState, version) {
-      return applyStateMigrations(params, persistedState as UnknownState, version);
+      return applyStateMigrations(params, persistedState as UnknownState, version, logger);
     },
     name: STATE_KEY,
     partialize(s) {
