@@ -21,10 +21,10 @@ Please see [the user guide](user-guide.md) for descriptions of the client and ea
     - [Environment Variables](#environment-variables)
       - [Client Variables](#client-variables)
       - [Conversion Variables](#conversion-variables)
-      - [Memory \& Optimization Variables](#memory--optimization-variables)
+      - [Memory and Optimization Variables](#memory-and-optimization-variables)
       - [Path Variables](#path-variables)
       - [Platform Variables](#platform-variables)
-      - [Server \& Other Variables](#server--other-variables)
+      - [Server and Other Variables](#server-and-other-variables)
     - [Feature Flags](#feature-flags)
     - [Pipeline Optimizations](#pipeline-optimizations)
     - [Server Parameters](#server-parameters)
@@ -233,7 +233,7 @@ These extra images can be helpful when debugging inpainting, especially poorly b
   - perform conversion on the CPU, even if a CUDA GPU is available
   - can allow conversion of models that do not fit in VRAM
 
-#### Memory & Optimization Variables
+#### Memory and Optimization Variables
 
 - `ONNX_WEB_CACHE_MODELS`
   - the number of recent models to keep in memory
@@ -271,7 +271,7 @@ These extra images can be helpful when debugging inpainting, especially poorly b
   - the default platform to show in the client
   - overrides the `params.json` file
 
-#### Server & Other Variables
+#### Server and Other Variables
 
 - `ONNX_WEB_ADMIN_TOKEN`
   - token for admin operations

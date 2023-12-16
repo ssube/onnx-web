@@ -1,4 +1,4 @@
-# ONNX Web
+# onnx-web
 
 onnx-web is a tool for running Stable Diffusion and other [ONNX models](https://onnx.ai/) with hardware acceleration,
 on both AMD and Nvidia GPUs and with a CPU software fallback.
@@ -77,7 +77,7 @@ This is an incomplete list of new and interesting features, with links to the us
 
 ## Contents
 
-- [ONNX Web](#onnx-web)
+- [onnx-web](#onnx-web)
   - [Features](#features)
   - [Contents](#contents)
   - [Setup](#setup)
