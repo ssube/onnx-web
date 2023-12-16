@@ -41,11 +41,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://onnx-web.ai/docs/runpod-readme/</loc>
-         <lastmod>2023-12-16</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://onnx-web.ai/docs/server-admin/</loc>
          <lastmod>2023-12-16</lastmod>
          <changefreq>daily</changefreq>
