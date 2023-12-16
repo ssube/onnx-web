@@ -3,6 +3,9 @@ build
 twine
 wheel
 
+# debug
+debugpy
+
 # lint
 black
 flake8
