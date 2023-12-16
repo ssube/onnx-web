@@ -72,6 +72,9 @@ export const LOCAL_CLIENT = {
   async strings() {
     return {};
   },
+  async wildcards() {
+    throw new NoServerError();
+  },
   async restart() {
     throw new NoServerError();
   },

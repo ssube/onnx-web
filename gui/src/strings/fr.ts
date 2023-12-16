@@ -257,6 +257,7 @@ export const I18N_STRINGS_FR = {
         'correction-first': '',
         'correction-last': '',
       },
+      wildcard: '',
     },
   },
 };

@@ -257,6 +257,7 @@ export const I18N_STRINGS_ES = {
         'correction-first': 'corrección primero',
         'correction-last': 'última corrección',
       },
+      wildcard: '',
     },
   },
 };

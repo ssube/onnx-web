@@ -212,6 +212,11 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
         translation: Record<string, string>;
       }>;
     },
+    async wildcards(): Promise<Array<string>> {
+      const path = makeApiUrl(root, 'settings', 'wildcards');
+      const res = await f(path);
+      return await res.json() as Array<string>;
+    },
     async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry> {
       const url = makeImageURL(root, 'img2img', params);
       appendModelToURL(url, model);

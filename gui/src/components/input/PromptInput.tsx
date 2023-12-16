@@ -29,14 +29,6 @@ export interface PromptInputProps {
 
 export const PROMPT_GROUP = 75;
 
-function splitPrompt(prompt: string): Array<string> {
-  return prompt
-    .split(',')
-    .flatMap((phrase) => phrase.split(' '))
-    .map((word) => word.trim())
-    .filter((word) => word.length > 0);
-}
-
 export function PromptInput(props: PromptInputProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { selector, onChange } = props;
@@ -48,12 +40,15 @@ export function PromptInput(props: PromptInputProps) {
   const models = useQuery(['models'], async () => client.models(), {
     staleTime: STALE_TIME,
   });
+  const wildcards = useQuery(['wildcards'], async () => client.wildcards(), {
+    staleTime: STALE_TIME,
+  });
 
   const { t } = useTranslation();
 
   function addNetwork(type: string, name: string, weight = 1.0) {
     onChange({
-      prompt: `<${type}:${name}:1.0> ${prompt}`,
+      prompt: `<${type}:${name}:${weight.toFixed(2)}> ${prompt}`,
       negativePrompt,
     });
   }
@@ -61,6 +56,12 @@ export function PromptInput(props: PromptInputProps) {
   function addToken(name: string) {
     onChange({
       prompt: `${prompt}, ${name}`,
+    });
+  }
+
+  function addWildcard(name: string) {
+    onChange({
+      prompt: `${prompt}, __${name}__`,
     });
   }
 
@@ -122,6 +123,18 @@ export function PromptInput(props: PromptInputProps) {
         }}
         onSelect={(name) => {
           addNetwork('lora', name);
+        }}
+      />
+      <QueryMenu
+        id='wildcard'
+        labelKey='wildcard'
+        name={t('wildcard')}
+        query={{
+          result: wildcards,
+          selector: (result) => result,
+        }}
+        onSelect={(name) => {
+          addWildcard(name);
         }}
       />
     </Stack>

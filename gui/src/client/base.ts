@@ -51,6 +51,8 @@ export interface ApiClient {
     translation: Record<string, string>;
   }>>;
 
+  wildcards(): Promise<Array<string>>;
+
   /**
    * Start a txt2img pipeline.
    */
