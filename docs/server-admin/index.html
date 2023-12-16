@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://onnx-web.ai/docs/server-admin/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Server Administration - onnx-web docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Server Administration";
+        var mkdocs_page_input_path = "server-admin.md";
+        var mkdocs_page_url = "/docs/server-admin/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> onnx-web docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">onnx-web</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../api/">API</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../architecture/">Architecture</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../chain-pipelines/">Chain Pipelines</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../compatibility/">Compatibility</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../converting-models/">Converting Models</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../dev-test/">Development and Testing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../getting-started/">Getting Started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../runpod-readme/">ONNX Web</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Server Administration</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#contents">Contents</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup">Setup</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#running-the-containers">Running the containers</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#configuring-and-running-the-server">Configuring and running the server</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#securing-the-server">Securing the server</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#updating-the-server">Updating the server</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#building-the-client">Building the client</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hosting-the-client">Hosting the client</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#customizing-the-client-config">Customizing the client config</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#debug-mode">Debug Mode</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#environment-variables">Environment Variables</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pipeline-optimizations">Pipeline Optimizations</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#server-parameters">Server Parameters</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#containers">Containers</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#cpu">CPU</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#cuda">CUDA</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#rocm">ROCm</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../setup-guide/">Setup Guide</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../user-guide/">User Guide</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">onnx-web docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Server Administration</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ssube/onnx-web/edit/master/docs/server-admin.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="server-administration">Server Administration</h1>
+<p>This is the server administration guide for ONNX web.</p>
+<p>Please see <a href="../user-guide/">the user guide</a> for descriptions of the client and each of the parameters.</p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#server-administration">Server Administration</a><ul>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#setup">Setup</a><ul>
+<li><a href="#running-the-containers">Running the containers</a></li>
+<li><a href="#configuring-and-running-the-server">Configuring and running the server</a><ul>
+<li><a href="#securing-the-server">Securing the server</a></li>
+</ul>
+</li>
+<li><a href="#updating-the-server">Updating the server</a></li>
+<li><a href="#building-the-client">Building the client</a></li>
+<li><a href="#hosting-the-client">Hosting the client</a></li>
+<li><a href="#customizing-the-client-config">Customizing the client config</a></li>
+</ul>
+</li>
+<li><a href="#configuration">Configuration</a><ul>
+<li><a href="#debug-mode">Debug Mode</a></li>
+<li><a href="#environment-variables">Environment Variables</a></li>
+<li><a href="#pipeline-optimizations">Pipeline Optimizations</a></li>
+<li><a href="#server-parameters">Server Parameters</a></li>
+</ul>
+</li>
+<li><a href="#containers">Containers</a><ul>
+<li><a href="#cpu">CPU</a></li>
+<li><a href="#cuda">CUDA</a></li>
+<li><a href="#rocm">ROCm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="setup">Setup</h2>
+<h3 id="running-the-containers">Running the containers</h3>
+<p>OCI images are available for both the API and GUI, <code>ssube/onnx-web-api</code> and <code>ssube/onnx-web-gui</code>, respectively. These
+are regularly built from the <code>main</code> branch and for all tags.</p>
+<p>While two containers are provided, the API container also includes the GUI bundle. In most cases, you will only need to
+run the API container. You may need both if you are hosting the API and GUI from separate pods or on different machines.</p>
+<p>When using the containers, make sure to mount the <code>models/</code> and <code>outputs/</code> directories. The models directory can be
+read-only, but outputs should be read-write.</p>
+<pre><code class="language-shell">&gt; podman run -p 5000:5000 --rm -v ../models:/models:ro -v ../outputs:/outputs:rw docker.io/ssube/onnx-web-api:main-buster
+
+&gt; podman run -p 8000:80 --rm docker.io/ssube/onnx-web-gui:main-nginx-bullseye
+</code></pre>
+<p>The <code>ssube/onnx-web-gui</code> image is available in both Debian and Alpine-based versions, but the <code>ssube/onnx-web-api</code>
+image is only available as a Debian-based image, due to <a href="https://github.com/microsoft/onnxruntime/issues/2909#issuecomment-593591317">this Github issue with <code>onnxruntime</code></a>.</p>
+<h3 id="configuring-and-running-the-server">Configuring and running the server</h3>
+<p>The server relies mostly on two paths, the models and outputs. It will make sure both paths exist when it starts up,
+and will exit with an error if the models path does not.</p>
+<p>Both of those paths exist in the git repository, with placeholder files to make sure they exist. You should not have to
+create them, if you are using the default settings. You can customize the paths by setting <code>ONNX_WEB_MODEL_PATH</code> and
+<code>ONNX_WEB_OUTPUT_PATH</code>, if your models exist somewhere else or you want output written to another disk, for example.</p>
+<p>From within the <code>api/</code> directory, run the Flask server with the launch script:</p>
+<pre><code class="language-shell"># on Linux:
+&gt; ./launch.sh
+
+# on Windows:
+&gt; launch.bat
+</code></pre>
+<p>This will allow access from other machines on your local network, but does not automatically make the server
+accessible from the internet. You can access the server through the IP address printed in the console.</p>
+<p>If you <em>do not</em> want to allow access to the server from other machines on your local network, run the Flask server
+<em>without</em> the <code>--host</code> argument:</p>
+<pre><code class="language-shell">&gt; flask --app=onnx_web.serve run
+</code></pre>
+<p>You can stop the server by pressing <code>Ctrl+C</code>.</p>
+<h4 id="securing-the-server">Securing the server</h4>
+<p>When making the server publicly visible, make sure to use appropriately restrictive firewall rules along with it, and
+consider using a web application firewall to help prevent malicious requests.</p>
+<h3 id="updating-the-server">Updating the server</h3>
+<p>Make sure to update your server occasionally. New features in the GUI may not be available on older servers, leading to
+options being ignored or menus not loading correctly.</p>
+<p>To update the server, make sure you are on the <code>main</code> branch and pull the latest version from Github:</p>
+<pre><code class="language-shell">&gt; git branch
+* main
+
+&gt; git pull
+</code></pre>
+<p>If you want to run a specific tag of the server, run <code>git checkout v0.10.0</code> with the desired tag.</p>
+<h3 id="building-the-client">Building the client</h3>
+<p>If you plan on building the GUI bundle, instead of using a hosted version <a href="https://ssube.github.io/onnx-web">like on Github Pages</a>,
+you will also need to install NodeJS 18:</p>
+<ul>
+<li>https://nodejs.org/en/download/</li>
+</ul>
+<p>If you are using Windows and Git Bash, you may not have <code>make</code> installed. You can <a href="https://gist.github.com/evanwill/0207876c3243bbb6863e65ec5dc3f058">add some of the missing tools</a> from <a href="https://sourceforge.net/projects/ezwinports/files/">the <code>ezwinports</code> project</a> and others.</p>
+<p>From within the <code>gui/</code> directory, edit the <code>gui/examples/config.json</code> file so that <code>api.root</code> matches the URL printed
+out by the <code>flask run</code> command you ran earlier. It should look something like this:</p>
+<pre><code class="language-json">{
+  &quot;api&quot;: {
+    &quot;root&quot;: &quot;http://127.0.0.1:5000&quot;
+  }
+}
+</code></pre>
+<p>Still in the <code>gui/</code> directory, build the UI bundle and run the dev server with Node:</p>
+<pre><code class="language-shell">&gt; npm install -g yarn   # update the package manager
+
+&gt; make bundle
+
+&gt; node serve.js
+</code></pre>
+<h3 id="hosting-the-client">Hosting the client</h3>
+<p>You should be able to access the web interface at http://127.0.0.1:8000/index.html or your local machine's hostname.</p>
+<ul>
+<li>If you get a <code>Connection Refused</code> error, make sure you are using the correct address and the dev server is still running.</li>
+<li>If you get a <code>File not found</code> error, make sure you have built the UI bundle (<code>make bundle</code>) and are using the <code>/index.html</code> path</li>
+</ul>
+<p>The txt2img tab will be active by default, with an example prompt. When you press the <code>Generate</code> button, an image should
+appear on the page 10-15 seconds later (depending on your GPU and other hardware). Generating images on CPU will take
+substantially longer, at least 2-3 minutes. The last four images will be shown, along with the parameters used to
+generate them.</p>
+<h3 id="customizing-the-client-config">Customizing the client config</h3>
+<p>You can customize the config file if you want to change the default model, platform (hardware acceleration), scheduler,
+and prompt. If you have a good base prompt or always want to use the CPU fallback, you can set that in the config file:</p>
+<pre><code class="language-json">{
+  &quot;default&quot;: {
+    &quot;model&quot;: &quot;stable-diffusion-onnx-v1-5&quot;,
+    &quot;platform&quot;: &quot;amd&quot;,
+    &quot;scheduler&quot;: &quot;euler-a&quot;,
+    &quot;prompt&quot;: &quot;an astronaut eating a hamburger&quot;
+  }
+}
+</code></pre>
+<p>When running the dev server, <code>node serve.js</code>, the config file will be loaded from <code>out/config.json</code>. If you want to load
+a different config file, save it to your home directory named <code>onnx-web-config.json</code> and copy it into the output
+directory after building the bundle:</p>
+<pre><code class="language-shell">&gt; make bundle &amp;&amp; cp -v ~/onnx-web-config.json out/config.json
+</code></pre>
+<p>When running the container, the config will be loaded from <code>/usr/share/nginx/html/config.json</code> and you can mount a
+custom config using:</p>
+<pre><code class="language-shell">&gt; podman run -p 8000:80 --rm -v ~/onnx-web-config.json:/usr/share/nginx/html/config.json:ro docker.io/ssube/onnx-web-gui:main-nginx-bullseye
+</code></pre>
+<h2 id="configuration">Configuration</h2>
+<p>Configuration is still very simple, loading models from a directory and parameters from a single JSON file. Some
+additional configuration can be done through environment variables starting with <code>ONNX_WEB</code>.</p>
+<h3 id="debug-mode">Debug Mode</h3>
+<p>Setting the <code>DEBUG</code> variable to any value except <code>false</code> will enable debug mode, which will print garbage
+collection details and save some extra images to disk.</p>
+<p>The images are:</p>
+<ul>
+<li><code>output/last-mask.png</code><ul>
+<li>the last <code>mask</code> image submitted with an inpaint request</li>
+</ul>
+</li>
+<li><code>output/last-noise.png</code><ul>
+<li>the last noise source generated for an inpaint request</li>
+</ul>
+</li>
+<li><code>output/last-source.png</code><ul>
+<li>the last <code>source</code> image submitted with an img2img, inpaint, or upscale request</li>
+</ul>
+</li>
+</ul>
+<p>These extra images can be helpful when debugging inpainting, especially poorly blended edges or visible noise.</p>
+<h3 id="environment-variables">Environment Variables</h3>
+<p>Paths:</p>
+<ul>
+<li><code>ONNX_WEB_BUNDLE_PATH</code><ul>
+<li>path where client bundle files can be found</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_MODEL_PATH</code><ul>
+<li>path where models can be found</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_OUTPUT_PATH</code><ul>
+<li>path where output images should be saved</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_PARAMS_PATH</code><ul>
+<li>path to the directory where the <code>params.json</code> file can be found</li>
+</ul>
+</li>
+</ul>
+<p>Others:</p>
+<ul>
+<li><code>ONNX_WEB_ANY_PLATFORM</code><ul>
+<li>whether or not to include the <code>any</code> option in the platform list</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_BLOCK_PLATFORMS</code><ul>
+<li>comma-delimited list of platforms that should not be presented to users</li>
+<li>further filters the list of available platforms returned by ONNX runtime</li>
+<li>can be used to prevent CPU generation on shared servers</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_CACHE_MODELS</code><ul>
+<li>the number of recent models to keep in memory</li>
+<li>setting this to 0 will disable caching and free VRAM between images</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_CORS_ORIGIN</code><ul>
+<li>comma-delimited list of allowed origins for CORS headers</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_DEFAULT_PLATFORM</code><ul>
+<li>the default platform to show in the client</li>
+<li>overrides the <code>params.json</code> file</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_EXTRA_ARGS</code><ul>
+<li>extra arguments to the launch script</li>
+<li>set this to <code>--half</code> to convert models to fp16</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_EXTRA_MODELS</code><ul>
+<li>extra model files to be loaded</li>
+<li>one or more filenames or paths, to JSON or YAML files matching <a href="../api/schemas/extras.yaml">the extras schema</a></li>
+</ul>
+</li>
+<li><code>ONNX_WEB_SHOW_PROGRESS</code><ul>
+<li>show progress bars in the logs</li>
+<li>disabling this can reduce noise in server logs, especially when logging to a file</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_OPTIMIZATIONS</code><ul>
+<li>comma-delimited list of optimizations to enable</li>
+</ul>
+</li>
+</ul>
+<h3 id="pipeline-optimizations">Pipeline Optimizations</h3>
+<ul>
+<li><code>diffusers-*</code><ul>
+<li><code>diffusers-attention-slicing</code><ul>
+<li>https://huggingface.co/docs/diffusers/optimization/fp16#sliced-attention-for-additional-memory-savings</li>
+</ul>
+</li>
+<li><code>diffusers-cpu-offload-*</code><ul>
+<li><code>diffusers-cpu-offload-sequential</code><ul>
+<li>not available for ONNX pipelines (most of them)</li>
+<li>https://huggingface.co/docs/diffusers/optimization/fp16#offloading-to-cpu-with-accelerate-for-memory-savings</li>
+</ul>
+</li>
+<li><code>diffusers-cpu-offload-model</code><ul>
+<li>not available for ONNX pipelines (most of them)</li>
+<li>https://huggingface.co/docs/diffusers/optimization/fp16#model-offloading-for-fast-inference-and-memory-savings</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>diffusers-memory-efficient-attention</code><ul>
+<li>requires <a href="https://huggingface.co/docs/diffusers/optimization/xformers">the <code>xformers</code> library</a></li>
+<li>https://huggingface.co/docs/diffusers/optimization/fp16#memory-efficient-attention</li>
+</ul>
+</li>
+<li><code>diffusers-vae-slicing</code><ul>
+<li>not available for ONNX pipelines (most of them)</li>
+<li>https://huggingface.co/docs/diffusers/optimization/fp16#sliced-vae-decode-for-larger-batches</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>onnx-*</code><ul>
+<li><code>onnx-deterministic-compute</code><ul>
+<li>enable ONNX deterministic compute</li>
+</ul>
+</li>
+<li><code>onnx-fp16</code><ul>
+<li>convert model nodes to 16-bit floating point values internally while leaving 32-bit inputs</li>
+</ul>
+</li>
+<li><code>onnx-graph-*</code><ul>
+<li><code>onnx-graph-disable</code><ul>
+<li>disable all ONNX graph optimizations</li>
+</ul>
+</li>
+<li><code>onnx-graph-basic</code><ul>
+<li>enable basic ONNX graph optimizations</li>
+</ul>
+</li>
+<li><code>onnx-graph-all</code><ul>
+<li>enable all ONNX graph optimizations</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>onnx-low-memory</code><ul>
+<li>disable ONNX features that allocate more memory than is strictly required or keep memory after use</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>torch-*</code><ul>
+<li><code>torch-fp16</code><ul>
+<li>use 16-bit floating point values when converting and running pipelines</li>
+<li>applies during conversion as well</li>
+<li>only available on CUDA platform</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="server-parameters">Server Parameters</h3>
+<p>You can limit the image parameters in user requests to a reasonable range using values in the <code>params.json</code> file.</p>
+<p>The keys share the same name as the query string parameter, and the format for each numeric value is:</p>
+<pre><code class="language-json">{
+  &quot;default&quot;: 50,
+  &quot;min&quot;: 1,
+  &quot;max&quot;: 100,
+  &quot;step&quot;: 1
+}
+</code></pre>
+<p>Setting the <code>step</code> to a decimal value between 0 and 1 will allow decimal inputs, but the client is hard-coded to send 2
+decimal places in the query and only some parameters are parsed as floats, so values below <code>0.01</code> will effect the GUI
+but not the output images, and some controls effectively force a step of <code>1</code>.</p>
+<h2 id="containers">Containers</h2>
+<h3 id="cpu">CPU</h3>
+<p>This is the simplest container to run and does not require any drivers or devices, but is also the slowest to
+generate images.</p>
+<h3 id="cuda">CUDA</h3>
+<p>Requires CUDA container runtime and 11.x driver on the host.</p>
+<h3 id="rocm">ROCm</h3>
+<p>Requires ROCm driver on the host.</p>
+<p>Run with podman using:</p>
+<pre><code class="language-shell">&gt; podman run -it \
+    --device=/dev/dri \
+    --device=/dev/kfd \
+    --group-add video \
+    --security-opt seccomp=unconfined \
+    -e ONNX_WEB_MODEL_PATH=/data/models \
+    -e ONNX_WEB_OUTPUT_PATH=/data/outputs \
+    -v /var/lib/onnx-web/models:/data/models:rw \
+    -v /var/lib/onnx-web/outputs:/data/outputs:rw \
+    -p 5000:5000 \
+    docker.io/ssube/onnx-web-api:main-rocm-ubuntu
+</code></pre>
+<p>Rootless podman does not appear to work and will show a <code>root does not belong to group 'video'</code> error, which does
+not make much sense on its own, but appears to refers to the user who launched the container.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../runpod-readme/" class="btn btn-neutral float-left" title="ONNX Web"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../setup-guide/" class="btn btn-neutral float-right" title="Setup Guide">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ssube/onnx-web" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../runpod-readme/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../setup-guide/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

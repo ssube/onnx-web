@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://onnx-web.ai/docs/dev-test/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Development and Testing - onnx-web docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Development and Testing";
+        var mkdocs_page_input_path = "dev-test.md";
+        var mkdocs_page_url = "/docs/dev-test/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> onnx-web docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">onnx-web</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../api/">API</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../architecture/">Architecture</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../chain-pipelines/">Chain Pipelines</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../compatibility/">Compatibility</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../converting-models/">Converting Models</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Development and Testing</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#contents">Contents</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#api-development">API Development</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#debugging">Debugging</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#models-and-pipelines">Models and Pipelines</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#memory-profiling">Memory Profiling</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#style">Style</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#log-levels">Log Levels</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#gui-development">GUI Development</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#updating-github-pages">Updating Github Pages</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#watch-mode">Watch mode</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#pre-release-test-plan">Pre-Release Test Plan</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#known-issues">Known Issues</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../getting-started/">Getting Started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../runpod-readme/">ONNX Web</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../server-admin/">Server Administration</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../setup-guide/">Setup Guide</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../user-guide/">User Guide</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">onnx-web docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Development and Testing</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ssube/onnx-web/edit/master/docs/dev-test.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="development-and-testing">Development and Testing</h1>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#development-and-testing">Development and Testing</a><ul>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#api-development">API Development</a><ul>
+<li><a href="#debugging">Debugging</a></li>
+<li><a href="#models-and-pipelines">Models and Pipelines</a></li>
+<li><a href="#memory-profiling">Memory Profiling</a></li>
+<li><a href="#style">Style</a><ul>
+<li><a href="#log-levels">Log Levels</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#gui-development">GUI Development</a><ul>
+<li><a href="#updating-github-pages">Updating Github Pages</a></li>
+<li><a href="#watch-mode">Watch mode</a></li>
+</ul>
+</li>
+<li><a href="#testing">Testing</a><ul>
+<li><a href="#pre-release-test-plan">Pre-Release Test Plan</a></li>
+<li><a href="#known-issues">Known Issues</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="api-development">API Development</h2>
+<p>Run <code>make ci</code> to run lint and the tests.</p>
+<h3 id="debugging">Debugging</h3>
+<p>Launching the API with <code>debugpy</code> and <code>DEBUG=TRUE</code> may fail, because Flask creates a second process to watch for code
+changes and they both try to bind the debug port: https://github.com/Microsoft/ptvsd/issues/1131</p>
+<ul>
+<li>https://code.visualstudio.com/docs/python/debugging#_debugging-by-attaching-over-a-network-connection</li>
+<li>https://github.com/microsoft/debugpy#debugging-a-script-file</li>
+</ul>
+<h3 id="models-and-pipelines">Models and Pipelines</h3>
+<p>Loading models and pipelines can be expensive. They should be converted and exported once, then cached per-process
+whenever reasonably possible.</p>
+<p>Most pipeline stages will have a corresponding load function somewhere, like <code>upscale_stable_diffusion</code> and
+<code>load_stable_diffusion</code>. The load function should compare its parameters and reuse the existing pipeline when that is
+possible without causing memory access errors. Most logging from the load function should be <code>debug</code> level.</p>
+<h3 id="memory-profiling">Memory Profiling</h3>
+<p>To track memory usage and leaks, run the API under <code>fil</code>:</p>
+<pre><code class="language-shell">&gt; fil-profile run -m flask --app=onnx_web.serve run --host=0.0.0.0
+
+&gt; fil-profile run -m waitress --listen=0.0.0.0:5000 onnx_web.serve:app
+</code></pre>
+<p>Using <code>memray</code> will break the CUDA bridge or driver somehow, and prevents hardware acceleration from working. That
+makes it extremely time consuming to test any kind of memory leak.</p>
+<h3 id="style">Style</h3>
+<ul>
+<li>all logs must use <code>logger</code> from top of file<ul>
+<li>every file should have a <code>logger = getLogger(__name__)</code> or equivalent before any real code</li>
+</ul>
+</li>
+</ul>
+<h4 id="log-levels">Log Levels</h4>
+<p><code>onnx-web</code> uses the Python <code>logging</code> library and five base log levels, with an additional <code>TRACE</code> log level.</p>
+<ul>
+<li><code>trace</code><ul>
+<li>values needed to debug errors with a specific model</li>
+<li>tensor shapes, list sizes, dict keys</li>
+<li>only level that should log <em>expected</em> values, especially empty values</li>
+<li>may emit logs at idle, can produce MB/s under load</li>
+</ul>
+</li>
+<li><code>debug</code><ul>
+<li>detailed debugging messages</li>
+</ul>
+</li>
+<li><code>info</code><ul>
+<li>standard informative logs</li>
+</ul>
+</li>
+<li><code>warning</code><ul>
+<li>error-ish messages that the code was able to handle without failing</li>
+</ul>
+</li>
+<li><code>error</code><ul>
+<li>error messages that caused a request to fail, the app to crash, etc</li>
+</ul>
+</li>
+<li><code>exception</code><ul>
+<li>not really a level, logs an error with a stacktrace, which can be helpful</li>
+</ul>
+</li>
+</ul>
+<p>When choosing log levels, consider what you will need to debug an issue from a remote server using the default
+settings (<code>info</code>). The <code>trace</code></p>
+<h2 id="gui-development">GUI Development</h2>
+<p>Run <code>make ci</code> to run lint, the tests, and build the bundle.</p>
+<h3 id="updating-github-pages">Updating Github Pages</h3>
+<p>Checkout the <code>gh-pages</code> branch and run the <code>copy-bundle.sh</code> script, assuming you have the project
+checked out to a directory named <code>onnx-web</code>.</p>
+<p>You can also clone the GH pages branch into its own directory to avoid switching between them.</p>
+<h3 id="watch-mode">Watch mode</h3>
+<p>Run <code>make watch</code> or <code>WATCH=TRUE node esbuild.js</code> to run esbuild in watch mode with a development server.</p>
+<h2 id="testing">Testing</h2>
+<h3 id="pre-release-test-plan">Pre-Release Test Plan</h3>
+<p>This is the test plan for manual pre-release testing and should exercise all of the major features.</p>
+<p>Issues:</p>
+<ul>
+<li>TODO</li>
+</ul>
+<p>Merges:</p>
+<ul>
+<li>TODO</li>
+</ul>
+<p>Testing:</p>
+<ul>
+<li>txt2img<ul>
+<li>256x256 with SD v1.5<ul>
+<li>[ ] should fail: neon blobs</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>512x512 with SD v1.5<ul>
+<li>DEIS Multi<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+<li>DPM Multi<ul>
+<li>[ ] should work</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>Euler A<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+<li>Heun<ul>
+<li>[ ] should work</li>
+<li>has automation</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>512x512 with SD v2.1<ul>
+<li>[ ] should work</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>768x768 with SD v2.1<ul>
+<li>[ ] should work, given sufficient memory</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>extra models<ul>
+<li>512x512 with Knollingcase<ul>
+<li>[ ] should work</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>512x512 with OpenJourney<ul>
+<li>[ ] should work</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>256x256 with OpenJourney<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>img2img<ul>
+<li>256x256 input<ul>
+<li>[ ] should fail: neon blobs</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>512x512 input<ul>
+<li>[ ] should work</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>1024x768 input<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>inpaint<ul>
+<li>regular inpaint<ul>
+<li>black mask<ul>
+<li>[ ] should keep all pixels, same image</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>white mask<ul>
+<li>[ ] should replace all pixels, different image</li>
+<li>has automation</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>outpaint<ul>
+<li>0 all sides<ul>
+<li>[ ] should work, run 1 tile</li>
+<li>primarily a client-side test</li>
+</ul>
+</li>
+<li>256 all sides<ul>
+<li>[ ] should work, run 8 tiles</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>512 top and bottom, 0 left and right<ul>
+<li>[ ] should work, run 3 tiles</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>512 left and right, 0 top and bottom<ul>
+<li>[ ] should work, run 3 tiles</li>
+<li>has automation</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>upscale<ul>
+<li>Real ESRGAN<ul>
+<li>x4 with CodeFormer<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+<li>x4 with GFPGAN<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+<li>x4 without face correction<ul>
+<li>[ ] should work</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>x2 without face correction<ul>
+<li>[ ] should work</li>
+<li>has automation</li>
+</ul>
+</li>
+<li>x2 model and x4 scale<ul>
+<li>[ ] should sort of work: ignores scale and uses x2</li>
+</ul>
+</li>
+<li>x4 model and x2 scale<ul>
+<li>[ ] should fail: tiles</li>
+</ul>
+</li>
+<li>v3 model and x4 scale<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Stable Diffusion<ul>
+<li>using x2 scale<ul>
+<li>[ ] should fail: tiles</li>
+</ul>
+</li>
+<li>using x4 scale<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+<li>with CodeFormer<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+<li>with GFPGAN<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+<li>without face correction<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>blend<ul>
+<li>two 512x512 inputs<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+<li>two 1024x1024 inputs<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+<li>two different size inputs<ul>
+<li>256x256 and 512x512<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+<li>512x512 and 1024x1024<ul>
+<li>[ ] should work</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>interactions<ul>
+<li>generate a new image<ul>
+<li>[ ] should request and then load an image from the server</li>
+</ul>
+</li>
+<li>delete a pending image<ul>
+<li>[ ] should remove a single image and leave the rest</li>
+</ul>
+</li>
+<li>delete a finished image<ul>
+<li>[ ] should remove a single image and leave the rest</li>
+</ul>
+</li>
+<li>copy an image to img2img<ul>
+<li>[ ] should switch to the img2img tab</li>
+<li>[ ] should populate the image source</li>
+<li>[ ] the generate button should be enabled</li>
+</ul>
+</li>
+<li>copy an image to inpaint<ul>
+<li>[ ] should switch to the inpaint tab</li>
+<li>[ ] should populate the image source</li>
+<li>[ ] the generate button should be enabled</li>
+</ul>
+</li>
+<li>copy an image to upscale<ul>
+<li>[ ] should switch to the upscale tab</li>
+<li>[ ] should populate the image source</li>
+<li>[ ] the generate button should be enabled</li>
+</ul>
+</li>
+<li>copy two images to blend<ul>
+<li>[ ] should switch to the blend tab</li>
+<li>[ ] should populate the image sources</li>
+<li>[ ] the generate button should be enabled once both sources have been populated</li>
+</ul>
+</li>
+<li>state should persist on refresh<ul>
+<li>[ ] loading images</li>
+<li>[ ] switching tabs</li>
+<li>[ ] images sources do not</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>schedulers<ul>
+<li>[ ] DDIM</li>
+<li>[ ] DDPM</li>
+<li>[ ] DEIS Multi</li>
+<li>[ ] DPM Multi</li>
+<li>[ ] DPM Single</li>
+<li>[ ] Euler A</li>
+<li>[ ] Euler</li>
+<li>[ ] Heun</li>
+<li>[ ] iPNDM</li>
+<li>[ ] KDPM2 A</li>
+<li>[ ] KDPM2</li>
+<li>[ ] Karras Ve</li>
+<li>[ ] LMS</li>
+<li>[ ] PNDM</li>
+</ul>
+</li>
+</ul>
+<p>Release:</p>
+<ul>
+<li>[ ] check and fix lint</li>
+<li>[ ] update package versions and stage files</li>
+<li>[ ] run <code>commit-and-tag-version --sign --git-tag-fallback --commit-all --release-as=minor</code> to make VERSION</li>
+<li>[ ] make sure packages and images have been built</li>
+<li>[ ] update GH pages bundle and default version</li>
+<li>[ ] post release on GH</li>
+<li>[ ] make follow up tickets</li>
+<li>[ ] close milestone and checklist</li>
+</ul>
+<p>Repeat with and without LPW enabled. Feature combinations marked <code>should work</code> must produce a valid image for the
+prompt, within a reasonable margin of creative freedom. Feature combinations marked <code>should fail</code> are known to produce
+neon blobs, out of place tiles, and errors.</p>
+<h3 id="known-issues">Known Issues</h3>
+<ul>
+<li>images of 256x256 or smaller will produce neon blobs</li>
+<li>inpaint does not work with LPW</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../converting-models/" class="btn btn-neutral float-left" title="Converting Models"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../getting-started/" class="btn btn-neutral float-right" title="Getting Started">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ssube/onnx-web" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../converting-models/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../getting-started/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

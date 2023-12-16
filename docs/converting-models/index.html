@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://onnx-web.ai/docs/converting-models/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Converting Models - onnx-web docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Converting Models";
+        var mkdocs_page_input_path = "converting-models.md";
+        var mkdocs_page_url = "/docs/converting-models/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> onnx-web docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">onnx-web</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../api/">API</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../architecture/">Architecture</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../chain-pipelines/">Chain Pipelines</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../compatibility/">Compatibility</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Converting Models</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#contents">Contents</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#conversion-steps-for-each-type-of-model">Conversion steps for each type of model</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#converting-diffusers-models">Converting diffusers models</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#converting-sd-and-dreambooth-checkpoints">Converting SD and Dreambooth checkpoints</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#converting-lora-weights">Converting LoRA weights</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#figuring-out-which-script-produced-the-lora-weights">Figuring out which script produced the LoRA weights</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#lora-weights-from-cloneofsimolora">LoRA weights from cloneofsimo/lora</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#lora-weights-from-kohya-sssd-scripts">LoRA weights from kohya-ss/sd-scripts</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#converting-textual-inversion-embeddings">Converting Textual Inversion embeddings</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#figuring-out-how-many-layers-are-in-a-textual-inversion">Figuring out how many layers are in a Textual Inversion</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#optimizing-diffusers-models">Optimizing diffusers models</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#converting-to-float16">Converting to float16</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#optimizing-with-onnx-runtime">Optimizing with ONNX runtime</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#optimizing-with-huggingface-optimum">Optimizing with HuggingFace Optimum</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../dev-test/">Development and Testing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../getting-started/">Getting Started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../runpod-readme/">ONNX Web</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../server-admin/">Server Administration</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../setup-guide/">Setup Guide</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../user-guide/">User Guide</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">onnx-web docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Converting Models</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ssube/onnx-web/edit/master/docs/converting-models.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="converting-models">Converting Models</h1>
+<p>This guide describes the process for converting models and additional networks to the directories used by <code>diffusers</code>
+and on to the ONNX models used by <code>onnx-web</code>.</p>
+<p>Using the <code>extras.json</code> file, you can convert SD and diffusers models to ONNX, and blend them with LoRA weights and
+Textual Inversion embeddings.</p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#converting-models">Converting Models</a><ul>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#conversion-steps-for-each-type-of-model">Conversion steps for each type of model</a></li>
+<li><a href="#converting-diffusers-models">Converting diffusers models</a></li>
+<li><a href="#converting-sd-and-dreambooth-checkpoints">Converting SD and Dreambooth checkpoints</a></li>
+<li><a href="#converting-lora-weights">Converting LoRA weights</a><ul>
+<li><a href="#figuring-out-which-script-produced-the-lora-weights">Figuring out which script produced the LoRA weights</a></li>
+<li><a href="#lora-weights-from-cloneofsimolora">LoRA weights from cloneofsimo/lora</a></li>
+<li><a href="#lora-weights-from-kohya-sssd-scripts">LoRA weights from kohya-ss/sd-scripts</a></li>
+</ul>
+</li>
+<li><a href="#converting-textual-inversion-embeddings">Converting Textual Inversion embeddings</a><ul>
+<li><a href="#figuring-out-how-many-layers-are-in-a-textual-inversion">Figuring out how many layers are in a Textual Inversion</a></li>
+</ul>
+</li>
+<li><a href="#optimizing-diffusers-models">Optimizing diffusers models</a><ul>
+<li><a href="#converting-to-float16">Converting to float16</a></li>
+<li><a href="#optimizing-with-onnx-runtime">Optimizing with ONNX runtime</a></li>
+<li><a href="#optimizing-with-huggingface-optimum">Optimizing with HuggingFace Optimum</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="conversion-steps-for-each-type-of-model">Conversion steps for each type of model</h2>
+<p>You can start from a diffusers directory, HuggingFace Hub repository, or an SD checkpoint in the form of a <code>.ckpt</code> or
+<code>.safetensors</code> file:</p>
+<ol>
+<li>LoRA weights from <code>kohya-ss/sd-scripts</code> to...</li>
+<li>SD or Dreambooth checkpoint to...</li>
+<li>diffusers directory or LoRA weights from <code>cloneofsimo/lora</code> to...</li>
+<li>ONNX models</li>
+</ol>
+<p>LoRAs and Textual inversions can be temporarily blended with an ONNX model while the server is running using prompt
+tokens or permanently blended during model conversion using the <code>extras.json</code> file. LoRA and Textual Inversion models
+do not need to be converted to ONNX to be used with prompt tokens.</p>
+<p>If you are using the Auto1111 web UI or another tool, you may not need to convert the models to ONNX. In that case,
+you will not have an <code>extras.json</code> file and should skip the last step.</p>
+<h2 id="converting-diffusers-models">Converting diffusers models</h2>
+<p>This is the simplest case and is supported by the conversion script in <code>onnx-web</code> with no additional steps. You can
+also use the script from the <code>diffusers</code> library.</p>
+<p>Add an entry to your <code>extras.json</code> file for each model, using the name of the HuggingFace hub repository or a local
+path:</p>
+<pre><code class="language-json">    {
+      &quot;name&quot;: &quot;diffusion-knollingcase&quot;,
+      &quot;source&quot;: &quot;Aybeeceedee/knollingcase&quot;
+    },
+    {
+      &quot;name&quot;: &quot;diffusion-openjourney&quot;,
+      &quot;source&quot;: &quot;prompthero/openjourney&quot;
+    },
+</code></pre>
+<p>To convert the diffusers model using the <code>diffusers</code> script:</p>
+<pre><code class="language-shell">&gt; python3 convert_stable_diffusion_checkpoint_to_onnx.py \
+  --model_path=&quot;runwayml/stable-diffusion-v1-5&quot; \
+  --output_path=&quot;~/onnx-web/models/stable-diffusion-onnx-v1-5&quot;
+</code></pre>
+<p>Based on docs and code in:</p>
+<ul>
+<li>https://github.com/azuritecoin/OnnxDiffusersUI#download-model-and-convert-to-onnx</li>
+<li>https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py</li>
+</ul>
+<h2 id="converting-sd-and-dreambooth-checkpoints">Converting SD and Dreambooth checkpoints</h2>
+<p>This works for most of the original SD checkpoints and many Dreambooth models, like those found on
+<a href="https://civitai.com">Civitai</a>, and is supported by the conversion script in <code>onnx-web</code> with no additional steps.
+You can also use the script from the <code>diffusers</code> library.</p>
+<p>Add an entry to your <code>extras.json</code> file for each model:, :</p>
+<pre><code class="language-json">    {
+      &quot;name&quot;: &quot;diffusion-stablydiffused-aesthetic-v2-6&quot;,
+      &quot;source&quot;: &quot;civitai://6266?type=Pruned%20Model&amp;format=SafeTensor&quot;,
+      &quot;format&quot;: &quot;safetensors&quot;
+    },
+    {
+      &quot;name&quot;: &quot;diffusion-unstable-ink-dream-v6&quot;,
+      &quot;source&quot;: &quot;civitai://5796&quot;,
+      &quot;format&quot;: &quot;safetensors&quot;
+    },
+</code></pre>
+<p>For the source, you can use the name of the HuggingFace hub repository,
+<a href="../user-guide/#downloading-models-from-civitai">the model's download ID from Civitai</a> (which may not match the
+display ID), or an HTTPS URL. Make sure to set the <code>format</code> to match the model that you downloaded, usually
+<code>safetensors</code>. You do not need to download the file ahead of time, but if you have, you can also use a local path.</p>
+<p>To convert an SD checkpoint using the <code>diffusers</code> script:</p>
+<pre><code class="language-shell">&gt; python3 convert_original_stable_diffusion_to_diffusers.py \
+    --checkpoint_path=&quot;~/onnx-web/models/.cache/sd-v1-4.ckpt&quot; \
+    --dump_path=&quot;~/onnx-web/models/stable-diffusion-onnx-v1-5&quot;
+</code></pre>
+<p>Based on docs and code in:</p>
+<ul>
+<li>https://github.com/d8ahazard/sd_dreambooth_extension</li>
+<li>https://github.com/huggingface/diffusers/blob/main/scripts/convert_original_stable_diffusion_to_diffusers.py</li>
+</ul>
+<h2 id="converting-lora-weights">Converting LoRA weights</h2>
+<p>You can merge one or more sets of LoRA weights into their base models using your <code>extras.json</code> file, which is directly
+supported by the conversion script in <code>onnx-web</code> with no additional steps.</p>
+<p>This is not required to use LoRA weights in the prompt, but it can save memory and enable better caching for
+commonly-used model combinations.</p>
+<p>LoRA weights produced by the <code>cloneofsimo/lora</code> repository can be converted to a diffusers directory and from there
+on to ONNX, while LoRA weights produced by the <code>kohya-ss/sd-scripts</code> repository must be converted to an SD checkpoint,
+which can be converted into a diffusers directory and finally ONNX models.</p>
+<h3 id="figuring-out-which-script-produced-the-lora-weights">Figuring out which script produced the LoRA weights</h3>
+<p>Weights exported by the two repositories are not compatible with the other and you must use the same scripts that
+originally created a set of weights to merge them.</p>
+<p>If you have a <code>.safetensors</code> file, check the metadata keys:</p>
+<pre><code class="language-python">&gt;&gt;&gt; import safetensors
+&gt;&gt;&gt; t = safetensors.safe_open(&quot;/home/ssube/lora-weights/jack.safetensors&quot;, framework=&quot;pt&quot;)
+&gt;&gt;&gt; print(t.metadata())
+{'ss_batch_size_per_device': '1', 'ss_bucket_info': 'null', 'ss_cache_latents': 'True', 'ss_clip_skip': '2', ...}
+</code></pre>
+<p>If they start with <code>lora_</code>, it's probably from the <code>cloneofsimo/lora</code> scripts. If they start with <code>ss_</code>, it's
+probably from the <code>kohya-ss/sd-scripts</code> scripts.</p>
+<p>If you get an error about missing metadata, try the other repository. For example:</p>
+<pre><code class="language-none">  warnings.warn(
+Traceback (most recent call last):
+  File &quot;/home/ssube/lora/venv/bin/lora_add&quot;, line 33, in &lt;module&gt;
+    sys.exit(load_entry_point('lora-diffusion', 'console_scripts', 'lora_add')())
+  File &quot;/home/ssube/lora/lora_diffusion/cli_lora_add.py&quot;, line 201, in main
+    fire.Fire(add)
+  File &quot;/home/ssube/lora/venv/lib/python3.10/site-packages/fire/core.py&quot;, line 141, in Fire
+    component_trace = _Fire(component, args, parsed_flag_args, context, name)
+  File &quot;/home/ssube/lora/venv/lib/python3.10/site-packages/fire/core.py&quot;, line 475, in _Fire
+    component, remaining_args = _CallAndUpdateTrace(
+  File &quot;/home/ssube/lora/venv/lib/python3.10/site-packages/fire/core.py&quot;, line 691, in _CallAndUpdateTrace
+    component = fn(*varargs, **kwargs)
+  File &quot;/home/ssube/lora/lora_diffusion/cli_lora_add.py&quot;, line 133, in add
+    patch_pipe(loaded_pipeline, path_2)
+  File &quot;/home/ssube/lora/lora_diffusion/lora.py&quot;, line 1012, in patch_pipe
+    monkeypatch_or_replace_safeloras(pipe, safeloras)
+  File &quot;/home/ssube/lora/lora_diffusion/lora.py&quot;, line 800, in monkeypatch_or_replace_safeloras
+    loras = parse_safeloras(safeloras)
+  File &quot;/home/ssube/lora/lora_diffusion/lora.py&quot;, line 565, in parse_safeloras
+    raise ValueError(
+ValueError: Tensor lora_te_text_model_encoder_layers_0_mlp_fc1.alpha has no metadata - is this a Lora safetensor?
+</code></pre>
+<p>See https://github.com/cloneofsimo/lora/issues/191 for more information.</p>
+<h3 id="lora-weights-from-cloneofsimolora">LoRA weights from cloneofsimo/lora</h3>
+<p>Download the <code>lora</code> repo and create a virtual environment for it:</p>
+<pre><code class="language-shell">&gt; git clone https://github.com/cloneofsimo/lora.git
+&gt; python3 -m venv venv
+&gt; source venv/bin/activate
+&gt; pip3 install -r requirements.txt
+&gt; pip3 install accelerate
+</code></pre>
+<p>Download the base model and LoRA weights that you want to merge first, or provide the names of HuggingFace hub repos
+when you run the <code>lora_add</code> command:</p>
+<pre><code class="language-shell">&gt; python3 -m lora_diffusion.cli_lora_add \
+    runwayml/stable-diffusion-v1-5 \
+    sayakpaul/sd-model-finetuned-lora-t4 \
+    ~/onnx-web/models/.cache/diffusion-sd-v1-5-pokemon \
+    0.8 \
+    --mode upl
+</code></pre>
+<p>The output is a diffusers directory (step 3) and can be converted to ONNX by adding an entry to your <code>extras.json</code>
+file that matches the output path:</p>
+<pre><code class="language-json">    {
+      &quot;name&quot;: &quot;diffusion-sd-v1-5-pokemon&quot;,
+      &quot;source&quot;: &quot;.cache/diffusion-sd-v1-5-pokemon&quot;
+    },
+</code></pre>
+<p>Based on docs in:</p>
+<ul>
+<li>https://github.com/cloneofsimo/lora#merging-full-model-with-lora</li>
+</ul>
+<h3 id="lora-weights-from-kohya-sssd-scripts">LoRA weights from kohya-ss/sd-scripts</h3>
+<p>Download the <code>sd-scripts</code> repo and create a virtual environment for it:</p>
+<pre><code class="language-shell">&gt; git clone https://github.com/kohya-ss/sd-scripts.git
+&gt; python3 -m venv venv
+&gt; source venv/bin/activate
+&gt; pip3 install -r requirements.txt
+&gt; pip3 install torch torchvision
+</code></pre>
+<p>Download the base model and LoRA weights that you want to merge, then run the <code>merge_lora.py</code> script:</p>
+<pre><code class="language-shell">&gt; python networks/merge_lora.py \
+    --sd_model ~/onnx-web/models/.cache/v1-5-pruned-emaonly.safetensors \
+    --save_to ~/onnx-web/models/.cache/v1-5-elldreths-vivid-mix.safetensors \
+    --models ~/lora-weights/elldreths-vivid-mix.safetensors \
+    --ratios 1.0
+</code></pre>
+<p>The output is an SD checkpoint (step 2) and can be converted to ONNX by adding an entry to your <code>extras.json</code> file
+that matches the <code>--save_to</code> path:</p>
+<pre><code class="language-json">    {
+      &quot;name&quot;: &quot;diffusion-lora-elldreths-vivid-mix&quot;,
+      &quot;source&quot;: &quot;../models/.cache/v1-5-elldreths-vivid-mix.safetensors&quot;,
+      &quot;format&quot;: &quot;safetensors&quot;
+    },
+</code></pre>
+<p>Make sure to set the <code>format</code> key and that it matches the format you used to export the merged model, usually
+<code>.safetensors</code>.</p>
+<p>Based on docs in:</p>
+<ul>
+<li>https://github.com/kohya-ss/sd-scripts/blob/main/train_network_README-ja.md#%E3%83%9E%E3%83%BC%E3%82%B8%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6</li>
+</ul>
+<h2 id="converting-textual-inversion-embeddings">Converting Textual Inversion embeddings</h2>
+<p>You can convert Textual Inversion embeddings by merging their weights and tokens into a copy of their base model,
+which is directly supported by the conversion script in <code>onnx-web</code> with no additional steps.</p>
+<p>This is not required to use LoRA weights in the prompt, but it can save memory and enable better caching for
+commonly-used model combinations.</p>
+<p>Some Textual Inversions may have more than one set of weights, which can be used and controlled separately. Some
+Textual Inversions may provide their own token, but you can always use the filename to activate them in <code>onnx-web</code>.</p>
+<h3 id="figuring-out-how-many-layers-are-in-a-textual-inversion">Figuring out how many layers are in a Textual Inversion</h3>
+<p>Textual Inversions produced by <a href="https://colab.research.google.com/github/huggingface/notebooks/blob/main/diffusers/stable_conceptualizer_inference.ipynb">the Stable Conceptualizer notebook</a>
+only have a single layer, while many others have more than one.</p>
+<p>The number of layers is shown in the server logs when the model is converted:</p>
+<pre><code class="language-none">[2023-03-08 04:54:00,234] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: found embedding for token &lt;concept&gt;: torch.Size([768])
+[2023-03-08 04:54:01,624] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: added 1 tokens
+[2023-03-08 04:54:01,814] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: saving tokenizer for Textual Inversion
+[2023-03-08 04:54:01,859] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: saving text encoder for Textual Inversion
+...
+[2023-03-08 04:58:06,378] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: generating 74 layer tokens
+[2023-03-08 04:58:06,379] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: found embedding for token ['goblin-0', 'goblin-1', 'goblin-2', 'goblin-3', 'goblin-4', 'goblin-5', 'goblin-6', 'gob
+lin-7', 'goblin-8', 'goblin-9', 'goblin-10', 'goblin-11', 'goblin-12', 'goblin-13', 'goblin-14', 'goblin-15', 'goblin-16', 'goblin-17', 'goblin-18', 'goblin-19', 'goblin-20', 'goblin-21', 'goblin-22', 'goblin-23', 'goblin-24', 'goblin-25', 'goblin-26', 'goblin-27', 'goblin-28', 'goblin-29', 'goblin-30', 'goblin-31', 'goblin-32', 'goblin-33', 'goblin-34', 'goblin-35', 'goblin-36', 'goblin-37', 'goblin-38', 'goblin-39', 'goblin-40', 'goblin-41', 'goblin-42', 'goblin-43', 'goblin-44', 'goblin-45', 'goblin-46', 'goblin-47', 'goblin-48', 'goblin-49', 'goblin-50', 'goblin-51', 'goblin-52', 'goblin-53', 'goblin-54', 'goblin-55', 'goblin-56', 'goblin-57', 'goblin-58', 'goblin-59', 'goblin-60', 'goblin-61', 'goblin-62', 'goblin-63', 'goblin-64', 'goblin-65', 'goblin-66', 'goblin-67', 'goblin-68', 'goblin-69', 'goblin-70', 'goblin-71', 'goblin-72', 'goblin-73'] (*): torch.Size([74, 768])
+[2023-03-08 04:58:07,685] INFO: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: added 74 tokens
+[2023-03-08 04:58:07,874] DEBUG: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: embedding torch.Size([768]) vector for layer goblin-0
+[2023-03-08 04:58:07,874] DEBUG: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: embedding torch.Size([768]) vector for layer goblin-1
+[2023-03-08 04:58:07,874] DEBUG: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: embedding torch.Size([768]) vector for layer goblin-2
+[2023-03-08 04:58:07,875] DEBUG: MainProcess MainThread onnx_web.convert.diffusion.textual_inversion: embedding torch.Size([768]) vector for layer goblin-3
+</code></pre>
+<p>You do not need to know how many layers a Textual Inversion has to use the base token, <code>goblin</code> or <code>goblin-all</code> in this
+example, but it does allow you to control the layers individually.</p>
+<h2 id="optimizing-diffusers-models">Optimizing diffusers models</h2>
+<p>The ONNX models often include redundant nodes, like division by 1, and are converted using 32-bit floating point
+numbers by default. The models can be optimized to remove some of those nodes and reduce their size, both on disk and
+in VRAM.</p>
+<p>The highest levels of optimization will make the converted models platform-specific and must be done after blending
+LoRAs and Textual Inversions, so you cannot select them in the prompt, but reduces memory usage by 50-75%.</p>
+<h3 id="converting-to-float16">Converting to float16</h3>
+<p>The size of a model can be roughly cut in half, on disk and in memory, by converting it from float32 to float16. There
+are a few different levels of conversion, which become increasingly platforms-specific.</p>
+<ol>
+<li>Internal conversion<ul>
+<li>Converts graph nodes to float16 operations</li>
+<li>Leaves inputs and outputs as float32</li>
+<li>Initializer data can be converted to float16 or kept as float32</li>
+</ul>
+</li>
+<li>Full conversion<ul>
+<li>Can be done with ONNX runtime or Torch</li>
+<li>Converts inputs, outputs, nodes, and initializer data to float16</li>
+<li>Breaks runtime LoRA and Textual Inversion blending</li>
+<li>Requires some additional data conversions at runtime, which may introduce subtle rounding errors</li>
+</ul>
+</li>
+</ol>
+<p>Using Stable Diffusion v1.5 as an example, full conversion reduces the size of the model by about half:</p>
+<pre><code class="language-none">4.0G    ./stable-diffusion-v1-5-fp32
+4.0G    ./stable-diffusion-v1-5-fp32-optimized
+2.6G    ./stable-diffusion-v1-5-fp16-internal
+2.3G    ./stable-diffusion-v1-5-fp16-optimized
+2.0G    ./stable-diffusion-v1-5-fp16-torch
+</code></pre>
+<p>Combined with <a href="../server-admin/#pipeline-optimizations">the other ONNX optimizations</a>, this can make the pipeline usable
+on 4-6GB GPUs and allow much larger batch sizes on GPUs with more memory. The optimized float32 model uses somewhat
+less VRAM than the original model, despite being the same size on disk.</p>
+<h3 id="optimizing-with-onnx-runtime">Optimizing with ONNX runtime</h3>
+<p>The ONNX runtime provides an optimization script for Stable Diffusion models in their git repository. You will need to
+clone that repository, but you can use an existing virtual environment for <code>onnx-web</code> and should not need to install
+any new packages.</p>
+<pre><code class="language-shell">&gt; git clone https://github.com/microsoft/onnxruntime
+&gt; cd onnxruntime/onnxruntime/python/tools/transformers/models/stable_diffusion
+&gt; python3 optimize_pipeline.py \
+    -i /home/ssube/onnx-web/models/stable-diffusion-onnx-v1-5 \
+    -o /home/ssube/onnx-web/models/stable-diffusion-optimized-v1-5 \
+    --use_external_data_format
+</code></pre>
+<p>You can convert the model into ONNX float16 using the <code>--float16</code> option. Models converted into ONNX float16 can only
+be run when using <a href="server-admin#pipeeline-optimizations">the <code>onnx-fp16</code> optimization</a>.</p>
+<p>The <code>optimize_pipeline.py</code> script should work on any <a href="#converting-diffusers-models">diffusers directory with ONNX models</a>,
+but you will need to use the <code>--use_external_data_format</code> option if you are not using <code>--float16</code>. See the <code>--help</code> for
+more details.</p>
+<ul>
+<li>https://github.com/microsoft/onnxruntime/tree/main/onnxruntime/python/tools/transformers/models/stable_diffusion</li>
+</ul>
+<h3 id="optimizing-with-huggingface-optimum">Optimizing with HuggingFace Optimum</h3>
+<ul>
+<li>https://huggingface.co/docs/optimum/v1.7.1/en/onnxruntime/usage_guides/optimization#optimizing-a-model-with-optimum-cli</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../compatibility/" class="btn btn-neutral float-left" title="Compatibility"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../dev-test/" class="btn btn-neutral float-right" title="Development and Testing">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ssube/onnx-web" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../compatibility/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../dev-test/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

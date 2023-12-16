@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://onnx-web.ai/docs/chain-pipelines/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Chain Pipelines - onnx-web docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Chain Pipelines";
+        var mkdocs_page_input_path = "chain-pipelines.md";
+        var mkdocs_page_url = "/docs/chain-pipelines/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> onnx-web docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">onnx-web</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../api/">API</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../architecture/">Architecture</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Chain Pipelines</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#contents">Contents</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#format">Format</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#stages">Stages</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#blending-stages">Blending Stages</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#blend-img2img">Blend: Img2img</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#blend-inpaint">Blend: Inpaint</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#correction-stages">Correction Stages</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#correct-codeformer">Correct: CodeFormer</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#correct-gfpgan">Correct: GFPGAN</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#persistence-stages">Persistence Stages</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#persist-disk">Persist: Disk</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#persist-s3">Persist: S3</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#reduction-stages">Reduction Stages</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#reduce-crop">Reduce: Crop</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#reduce-thumbnail">Reduce: Thumbnail</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#source-stages">Source Stages</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#source-noise">Source: Noise</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#source-txt2img">Source: Txt2img</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#upscaling-stages">Upscaling Stages</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#upscale-outpaint">Upscale: Outpaint</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#upscale-real-esrgan">Upscale: Real ESRGAN</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#upscale-stable-diffusion">Upscale: Stable Diffusion</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../compatibility/">Compatibility</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../converting-models/">Converting Models</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../dev-test/">Development and Testing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../getting-started/">Getting Started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../runpod-readme/">ONNX Web</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../server-admin/">Server Administration</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../setup-guide/">Setup Guide</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../user-guide/">User Guide</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">onnx-web docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Chain Pipelines</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ssube/onnx-web/edit/master/docs/chain-pipelines.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="chain-pipelines">Chain Pipelines</h1>
+<p>Chain pipelines are a new feature in v0.6 that allows you to run any combination of models on images
+of almost any size, by automatically splitting them into smaller tiles as needed. Individual models
+are run on each tile, then the results are recombined and passed on to the next stage.</p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#chain-pipelines">Chain Pipelines</a><ul>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#overview">Overview</a><ul>
+<li><a href="#format">Format</a></li>
+</ul>
+</li>
+<li><a href="#stages">Stages</a><ul>
+<li><a href="#blending-stages">Blending Stages</a><ul>
+<li><a href="#blend-img2img">Blend: Img2img</a></li>
+<li><a href="#blend-inpaint">Blend: Inpaint</a></li>
+</ul>
+</li>
+<li><a href="#correction-stages">Correction Stages</a><ul>
+<li><a href="#correct-codeformer">Correct: CodeFormer</a></li>
+<li><a href="#correct-gfpgan">Correct: GFPGAN</a></li>
+</ul>
+</li>
+<li><a href="#persistence-stages">Persistence Stages</a><ul>
+<li><a href="#persist-disk">Persist: Disk</a></li>
+<li><a href="#persist-s3">Persist: S3</a></li>
+</ul>
+</li>
+<li><a href="#reduction-stages">Reduction Stages</a><ul>
+<li><a href="#reduce-crop">Reduce: Crop</a></li>
+<li><a href="#reduce-thumbnail">Reduce: Thumbnail</a></li>
+</ul>
+</li>
+<li><a href="#source-stages">Source Stages</a><ul>
+<li><a href="#source-noise">Source: Noise</a></li>
+<li><a href="#source-txt2img">Source: Txt2img</a></li>
+</ul>
+</li>
+<li><a href="#upscaling-stages">Upscaling Stages</a><ul>
+<li><a href="#upscale-outpaint">Upscale: Outpaint</a></li>
+<li><a href="#upscale-real-esrgan">Upscale: Real ESRGAN</a></li>
+<li><a href="#upscale-stable-diffusion">Upscale: Stable Diffusion</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="overview">Overview</h2>
+<h3 id="format">Format</h3>
+<p>The <code>/api/chain</code> endpoint accepts a chain pipeline in JSON format and adds it to the queue of background jobs.</p>
+<p>Pipelines are defined mostly through their <code>stages</code>, where each stage specifies a function to be run and the
+parameters for that function, including the name of the model to be used.</p>
+<p>The output of the pipeline <em>will not</em> automatically be saved to disk, which is the case for the single-stage
+endpoints. You must use at least one <code>persist-*</code> stage. Persist stages can be placed anywhere in the pipeline
+and can also save intermediate output, such as the result of a <code>source-txt2img</code> stage before upscaling it.</p>
+<pre><code class="language-json">{
+  &quot;stages&quot;: [
+    {
+      &quot;name&quot;: &quot;start&quot;,
+      &quot;type&quot;: &quot;source-txt2img&quot;,
+      &quot;params&quot;: {
+        &quot;prompt&quot;: &quot;a magical wizard&quot;
+      }
+    },
+    {
+      &quot;name&quot;: &quot;expand&quot;,
+      &quot;type&quot;: &quot;upscale-outpaint&quot;,
+      &quot;params&quot;: {
+        &quot;border&quot;: 256,
+        &quot;prompt&quot;: &quot;a magical wizard in a robe fighting a dragon&quot;
+      }
+    },
+    {
+      &quot;name&quot;: &quot;save-local&quot;,
+      &quot;type&quot;: &quot;persist-disk&quot;,
+      &quot;params&quot;: {
+        &quot;tiles&quot;: &quot;hd8k&quot;
+      }
+    }
+  ]
+}
+</code></pre>
+<p>The complete schema can be found in <a href="../api/schema.yaml"><code>api/schema.yaml</code></a> and some example pipelines are available
+in <a href="../common/pipelines"><code>common/pipelines</code></a>.</p>
+<h2 id="stages">Stages</h2>
+<h3 id="blending-stages">Blending Stages</h3>
+<h4 id="blend-img2img">Blend: Img2img</h4>
+<h4 id="blend-inpaint">Blend: Inpaint</h4>
+<h3 id="correction-stages">Correction Stages</h3>
+<h4 id="correct-codeformer">Correct: CodeFormer</h4>
+<h4 id="correct-gfpgan">Correct: GFPGAN</h4>
+<h3 id="persistence-stages">Persistence Stages</h3>
+<h4 id="persist-disk">Persist: Disk</h4>
+<h4 id="persist-s3">Persist: S3</h4>
+<h3 id="reduction-stages">Reduction Stages</h3>
+<h4 id="reduce-crop">Reduce: Crop</h4>
+<h4 id="reduce-thumbnail">Reduce: Thumbnail</h4>
+<h3 id="source-stages">Source Stages</h3>
+<h4 id="source-noise">Source: Noise</h4>
+<h4 id="source-txt2img">Source: Txt2img</h4>
+<h3 id="upscaling-stages">Upscaling Stages</h3>
+<h4 id="upscale-outpaint">Upscale: Outpaint</h4>
+<p>Upscaling stage using outpainting. This adds empty borders to the source image, optionally fills them with noise, and
+then runs inpainting on those areas.</p>
+<h4 id="upscale-real-esrgan">Upscale: Real ESRGAN</h4>
+<p>Upscaling stage using the Real ESRGAN upscaling models, available in x2 and x4 versions:</p>
+<ul>
+<li>https://github.com/xinntao/Real-ESRGAN/releases</li>
+</ul>
+<h4 id="upscale-stable-diffusion">Upscale: Stable Diffusion</h4>
+<p>Upscaling stage using the Stable Diffusion x4 upscaling model:</p>
+<ul>
+<li>https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler</li>
+<li>https://huggingface.co/ssube/stable-diffusion-x4-upscaler-onnx</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../architecture/" class="btn btn-neutral float-left" title="Architecture"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../compatibility/" class="btn btn-neutral float-right" title="Compatibility">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ssube/onnx-web" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../architecture/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../compatibility/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

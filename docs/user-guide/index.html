@@ -1,0 +1,2543 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://onnx-web.ai/docs/user-guide/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>User Guide - onnx-web docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "User Guide";
+        var mkdocs_page_input_path = "user-guide.md";
+        var mkdocs_page_url = "/docs/user-guide/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> onnx-web docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">onnx-web</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../api/">API</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../architecture/">Architecture</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../chain-pipelines/">Chain Pipelines</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../compatibility/">Compatibility</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../converting-models/">Converting Models</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../dev-test/">Development and Testing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../getting-started/">Getting Started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../runpod-readme/">ONNX Web</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../server-admin/">Server Administration</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../setup-guide/">Setup Guide</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">User Guide</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#contents">Contents</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#outline">Outline</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#what-is-onnx-web-and-what-it-is-not">What is ONNX web (and what it is not)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#modes-and-tabs">Modes and tabs</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#image-history">Image history</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#scheduler-comparison">Scheduler comparison</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#model-and-network-types">Model and network types</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prompts">Prompts</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#general-structure">General structure</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#useful-keywords">Useful keywords</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#prompt-tokens">Prompt tokens</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#lora-and-lycoris-tokens">LoRA and LyCORIS tokens</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#embedding-textual-inversion-tokens">Embedding (Textual Inversion) tokens</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#prompt-stages">Prompt stages</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#region-tokens">Region tokens</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#reseed-tokens-region-seeds">Reseed tokens (region seeds)</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#clip-skip-tokens">CLIP skip tokens</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#long-prompt-weighting-syntax">Long prompt weighting syntax</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#pipelines">Pipelines</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#controlnet-pipeline">ControlNet pipeline</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#img2img-pipeline">img2img pipeline</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#inpaint-pipeline">Inpaint pipeline</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#long-prompt-weighting-pipeline">Long prompt weighting pipeline</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#panorama-pipeline">Panorama pipeline</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#instruct-pix2pix-pipeline">Instruct pix2pix pipeline</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#txt2img-pipeline">Txt2Img pipeline</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#upscale-pipeline">Upscale pipeline</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#tabs">Tabs</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#txt2img-tab">Txt2img tab</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#scheduler-parameter">Scheduler parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#eta-parameter">Eta parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#cfg-parameter">CFG parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#steps-parameter">Steps parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#seed-parameter">Seed parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#batch-size-parameter">Batch size parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#tile-size-parameter">Tile size parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#overlap-parameter">Overlap parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#unet-stride-parameter">UNet stride parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#tiled-vae-parameter">Tiled VAE parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#prompt-parameter">Prompt parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#negative-prompt-parameter">Negative prompt parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#width-and-height-parameters">Width and height parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#highres-parameters">Highres parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#upscale-and-correction-parameters">Upscale and correction parameters</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#img2img-tab">Img2img tab</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#img2img-source-image">Img2img source image</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#strength-parameter">Strength parameter</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#inpaint-tab">Inpaint tab</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#inpaint-source-image">Inpaint source image</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#mask-canvas-and-brush-parameters">Mask canvas and brush parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#mask-filter-parameter">Mask filter parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#noise-source-parameter">Noise source parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#outpaint-parameters">Outpaint parameters</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#upscale-tab">Upscale tab</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#upscale-scale-parameter">Upscale scale parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#upscale-outscale-parameter">Upscale outscale parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#upscale-denoise-parameter">Upscale denoise parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#correction-strength-parameter">Correction strength parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#correction-outscale-parameter">Correction outscale parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#correction-order-parameter">Correction order parameter</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#blend-tab">Blend tab</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#models-tab">Models tab</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#settings-tab">Settings tab</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#image-history-setting">Image history setting</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#api-server-setting">API server setting</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#reset-tab-buttons">Reset tab buttons</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#adding-your-own-models">Adding your own models</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#model-names">Model names</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#model-sources">Model sources</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#downloading-models-from-civitai">Downloading models from Civitai</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#downloading-models-from-huggingface">Downloading models from HuggingFace</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#using-a-custom-vae">Using a custom VAE</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#optimizing-models-for-lower-memory-usage">Optimizing models for lower memory usage</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#permanently-blending-additional-networks">Permanently blending additional networks</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#extras-file-format">Extras file format</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment variables</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#known-errors">Known errors</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#check-scripts">Check scripts</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#check-environment-script">Check environment script</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#check-model-script">Check model script</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#client-errors">Client errors</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#error-fetching-server-parameters">Error fetching server parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#parameter-version-error">Parameter version error</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#distorted-and-noisy-images">Distorted and noisy images</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#scattered-image-tiles">Scattered image tiles</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#server-errors">Server errors</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#very-slow-with-high-cpu-usage-max-fan-speed-during-image-generation">Very slow with high CPU usage, max fan speed during image generation</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#connection-refused-or-timeouts">Connection refused or timeouts</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#error-name-cmd-is-not-defined">Error: name 'cmd' is not defined</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#cuda-driver-version-is-insufficient-for-cuda-runtime-version">CUDA driver version is insufficient for CUDA runtime version</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#command-python-not-found-or-command-pip-not-found">Command 'python' not found or Command 'pip' not found</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#attributeerror-module-numpy-has-no-attribute-float">AttributeError: module 'numpy' has no attribute 'float'</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#numpy-invalid-combination-of-arguments">Numpy invalid combination of arguments</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#onnxruntimeerror-the-parameter-is-incorrect">ONNXRuntimeError: The parameter is incorrect</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#the-expanded-size-of-the-tensor-must-match-the-existing-size">The expanded size of the tensor must match the existing size</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#shape-mismatch-attempting-to-re-use-buffer">Shape mismatch attempting to re-use buffer</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#cannot-read-properties-of-undefined-reading-default">Cannot read properties of undefined (reading 'default')</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#output-image-sizes">Output Image Sizes</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">onnx-web docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">User Guide</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ssube/onnx-web/edit/master/docs/user-guide.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="user-guide">User Guide</h1>
+<p>This is the user guide for ONNX web, a web GUI for running ONNX models with hardware acceleration on both AMD and Nvidia
+system, with a CPU software fallback.</p>
+<p>The API is written in Python and runs on both Linux and Windows and provides access to the major functionality of
+diffusers, along with metadata about the available models and accelerators, and the output of previous runs. Hardware
+acceleration is supported on both AMD and Nvidia for both Linux and Windows, with a CPU fallback capable of running on
+laptop-class machines.</p>
+<p>The GUI is written in Javascript, hosted on Github Pages, and runs in all major browsers, including on mobile devices.
+It allows you to select the model and accelerator being used for each image pipeline. Image parameters are shown for
+each of the major modes, and you can either upload or paint the mask for inpainting and outpainting. The last few output
+images are shown below the image controls, making it easy to refer back to previous parameters or save an image from
+earlier.</p>
+<p>Please see <a href="../server-admin/">the server admin guide</a> for details on how to configure and run the server.</p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#user-guide">User Guide</a><ul>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#outline">Outline</a><ul>
+<li><a href="#what-is-onnx-web-and-what-it-is-not">What is ONNX web (and what it is not)</a></li>
+<li><a href="#modes-and-tabs">Modes and tabs</a></li>
+<li><a href="#image-history">Image history</a></li>
+<li><a href="#scheduler-comparison">Scheduler comparison</a></li>
+<li><a href="#model-and-network-types">Model and network types</a></li>
+</ul>
+</li>
+<li><a href="#prompts">Prompts</a><ul>
+<li><a href="#general-structure">General structure</a></li>
+<li><a href="#useful-keywords">Useful keywords</a></li>
+<li><a href="#prompt-tokens">Prompt tokens</a><ul>
+<li><a href="#lora-and-lycoris-tokens">LoRA and LyCORIS tokens</a></li>
+<li><a href="#embedding-textual-inversion-tokens">Embedding (Textual Inversion) tokens</a></li>
+<li><a href="#prompt-stages">Prompt stages</a></li>
+<li><a href="#region-tokens">Region tokens</a></li>
+<li><a href="#reseed-tokens-region-seeds">Reseed tokens (region seeds)</a></li>
+<li><a href="#clip-skip-tokens">CLIP skip tokens</a></li>
+</ul>
+</li>
+<li><a href="#long-prompt-weighting-syntax">Long prompt weighting syntax</a></li>
+</ul>
+</li>
+<li><a href="#pipelines">Pipelines</a><ul>
+<li><a href="#controlnet-pipeline">ControlNet pipeline</a></li>
+<li><a href="#img2img-pipeline">img2img pipeline</a></li>
+<li><a href="#inpaint-pipeline">Inpaint pipeline</a></li>
+<li><a href="#long-prompt-weighting-pipeline">Long prompt weighting pipeline</a></li>
+<li><a href="#panorama-pipeline">Panorama pipeline</a></li>
+<li><a href="#instruct-pix2pix-pipeline">Instruct pix2pix pipeline</a></li>
+<li><a href="#txt2img-pipeline">Txt2Img pipeline</a></li>
+<li><a href="#upscale-pipeline">Upscale pipeline</a></li>
+</ul>
+</li>
+<li><a href="#tabs">Tabs</a><ul>
+<li><a href="#txt2img-tab">Txt2img tab</a><ul>
+<li><a href="#scheduler-parameter">Scheduler parameter</a></li>
+<li><a href="#eta-parameter">Eta parameter</a></li>
+<li><a href="#cfg-parameter">CFG parameter</a></li>
+<li><a href="#steps-parameter">Steps parameter</a></li>
+<li><a href="#seed-parameter">Seed parameter</a></li>
+<li><a href="#batch-size-parameter">Batch size parameter</a></li>
+<li><a href="#tile-size-parameter">Tile size parameter</a></li>
+<li><a href="#overlap-parameter">Overlap parameter</a><ul>
+<li><a href="#25-overlap">25% overlap</a></li>
+<li><a href="#50-overlap">50% overlap</a></li>
+</ul>
+</li>
+<li><a href="#unet-stride-parameter">UNet stride parameter</a></li>
+<li><a href="#tiled-vae-parameter">Tiled VAE parameter</a></li>
+<li><a href="#prompt-parameter">Prompt parameter</a></li>
+<li><a href="#negative-prompt-parameter">Negative prompt parameter</a></li>
+<li><a href="#width-and-height-parameters">Width and height parameters</a></li>
+<li><a href="#highres-parameters">Highres parameters</a><ul>
+<li><a href="#highres-steps-parameter">Highres steps parameter</a></li>
+<li><a href="#highres-scale-parameter">Highres scale parameter</a></li>
+<li><a href="#highres-strength-parameter">Highres strength parameter</a></li>
+<li><a href="#highres-upscaler-parameter">Highres upscaler parameter</a></li>
+<li><a href="#highres-iterations-parameter">Highres iterations parameter</a></li>
+</ul>
+</li>
+<li><a href="#upscale-and-correction-parameters">Upscale and correction parameters</a></li>
+</ul>
+</li>
+<li><a href="#img2img-tab">Img2img tab</a><ul>
+<li><a href="#img2img-source-image">Img2img source image</a></li>
+<li><a href="#strength-parameter">Strength parameter</a></li>
+</ul>
+</li>
+<li><a href="#inpaint-tab">Inpaint tab</a><ul>
+<li><a href="#inpaint-source-image">Inpaint source image</a></li>
+<li><a href="#mask-canvas-and-brush-parameters">Mask canvas and brush parameters</a></li>
+<li><a href="#mask-filter-parameter">Mask filter parameter</a></li>
+<li><a href="#noise-source-parameter">Noise source parameter</a></li>
+<li><a href="#outpaint-parameters">Outpaint parameters</a></li>
+</ul>
+</li>
+<li><a href="#upscale-tab">Upscale tab</a><ul>
+<li><a href="#upscale-scale-parameter">Upscale scale parameter</a></li>
+<li><a href="#upscale-outscale-parameter">Upscale outscale parameter</a></li>
+<li><a href="#upscale-denoise-parameter">Upscale denoise parameter</a></li>
+<li><a href="#correction-strength-parameter">Correction strength parameter</a></li>
+<li><a href="#correction-outscale-parameter">Correction outscale parameter</a></li>
+<li><a href="#correction-order-parameter">Correction order parameter</a></li>
+</ul>
+</li>
+<li><a href="#blend-tab">Blend tab</a></li>
+<li><a href="#models-tab">Models tab</a></li>
+<li><a href="#settings-tab">Settings tab</a><ul>
+<li><a href="#image-history-setting">Image history setting</a></li>
+<li><a href="#api-server-setting">API server setting</a></li>
+<li><a href="#reset-tab-buttons">Reset tab buttons</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#adding-your-own-models">Adding your own models</a><ul>
+<li><a href="#model-names">Model names</a></li>
+<li><a href="#model-sources">Model sources</a><ul>
+<li><a href="#downloading-models-from-civitai">Downloading models from Civitai</a></li>
+<li><a href="#downloading-models-from-huggingface">Downloading models from HuggingFace</a></li>
+</ul>
+</li>
+<li><a href="#using-a-custom-vae">Using a custom VAE</a></li>
+<li><a href="#optimizing-models-for-lower-memory-usage">Optimizing models for lower memory usage</a></li>
+<li><a href="#permanently-blending-additional-networks">Permanently blending additional networks</a></li>
+<li><a href="#extras-file-format">Extras file format</a></li>
+</ul>
+</li>
+<li><a href="#environment-variables">Environment variables</a></li>
+<li><a href="#known-errors">Known errors</a><ul>
+<li><a href="#check-scripts">Check scripts</a><ul>
+<li><a href="#check-environment-script">Check environment script</a></li>
+<li><a href="#check-model-script">Check model script</a></li>
+</ul>
+</li>
+<li><a href="#client-errors">Client errors</a><ul>
+<li><a href="#error-fetching-server-parameters">Error fetching server parameters</a></li>
+<li><a href="#parameter-version-error">Parameter version error</a></li>
+<li><a href="#distorted-and-noisy-images">Distorted and noisy images</a></li>
+<li><a href="#scattered-image-tiles">Scattered image tiles</a></li>
+</ul>
+</li>
+<li><a href="#server-errors">Server errors</a><ul>
+<li><a href="#very-slow-with-high-cpu-usage-max-fan-speed-during-image-generation">Very slow with high CPU usage, max fan speed during image generation</a></li>
+<li><a href="#connection-refused-or-timeouts">Connection refused or timeouts</a></li>
+<li><a href="#error-name-cmd-is-not-defined">Error: name 'cmd' is not defined</a></li>
+<li><a href="#cuda-driver-version-is-insufficient-for-cuda-runtime-version">CUDA driver version is insufficient for CUDA runtime version</a></li>
+<li><a href="#command-python-not-found-or-command-pip-not-found">Command 'python' not found or Command 'pip' not found</a></li>
+<li><a href="#attributeerror-module-numpy-has-no-attribute-float">AttributeError: module 'numpy' has no attribute 'float'</a></li>
+<li><a href="#numpy-invalid-combination-of-arguments">Numpy invalid combination of arguments</a></li>
+<li><a href="#onnxruntimeerror-the-parameter-is-incorrect">ONNXRuntimeError: The parameter is incorrect</a></li>
+<li><a href="#the-expanded-size-of-the-tensor-must-match-the-existing-size">The expanded size of the tensor must match the existing size</a></li>
+<li><a href="#shape-mismatch-attempting-to-re-use-buffer">Shape mismatch attempting to re-use buffer</a></li>
+<li><a href="#cannot-read-properties-of-undefined-reading-default">Cannot read properties of undefined (reading 'default')</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#output-image-sizes">Output Image Sizes</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="outline">Outline</h2>
+<h3 id="what-is-onnx-web-and-what-it-is-not">What is ONNX web (and what it is not)</h3>
+<p>ONNX web is a responsive web GUI, in both style and performance, for running ONNX models using hardware acceleration on
+any reasonable platform (one with sufficient memory for the models, that can build scipy within 24 hours, etc).</p>
+<p>The client should do some reasonable validation of input parameters should be done, such as prompt length, pipeline and
+scheduler combinations, and output size. Tabs and options should be disabled when they are not compatible with the
+selected models.</p>
+<p>Models should be run with hardware acceleration whenever possible, even if that means converting the data files and
+helpers. When models cannot be run using the available hardware providers, a CPU fallback should be available to
+provide the same features across as many platforms as possible.</p>
+<p>The API should be easy to use with command line tools, for testing and in real usage. It should behave well when placed
+behind a load balancer, restrictive firewall (including restrictions on outgoing traffic), and when being used by more
+people than there are available GPU resources. It should be easy to run on a laptop or use in a hosted notebook.</p>
+<p>This is <em>not</em> a general purpose image editor. There are better tools for that already. The inpainting and blending tabs
+will need a simple drawing component, but anything more complicated, like layers and blending modes, should be done in
+the Gimp, Krita, or Photoshop.</p>
+<p>This is <em>not</em> a tool for building new ML models. While I am open to some training features, like Dreambooth and anything
+needed to convert models, that is not the focus and should be limited to features that support the other tabs.</p>
+<h3 id="modes-and-tabs">Modes and tabs</h3>
+<ul>
+<li><a href="#txt2img-tab">txt2img</a><ul>
+<li>generate a new image from a text prompt</li>
+</ul>
+</li>
+<li><a href="#img2img-tab">img2img</a><ul>
+<li>modify an existing image using a text prompt</li>
+</ul>
+</li>
+<li><a href="#inpaint-tab">inpaint</a><ul>
+<li>modify parts of an existing image using an opacity mask</li>
+<li>includes <a href="#outpaint-parameters">outpaint</a></li>
+</ul>
+</li>
+<li><a href="#upscale-tab">upscale</a><ul>
+<li>resize an existing image</li>
+</ul>
+</li>
+</ul>
+<h3 id="image-history">Image history</h3>
+<p>Below the tab control is the image history section. The <a href="#image-history-setting">image history setting</a> controls the
+number of images that are shown. You can use the controls in each image card to download the output, copy to the
+source image parameters for <a href="#img2img-source-image">img2img</a> and <a href="#inpaint-source-image">inpaint</a>, and delete the
+image from history if you don't like it.</p>
+<blockquote>
+<p>An astronaut eating a hamburger</p>
+</blockquote>
+<p><img alt="a smiling astronaut holding a hamburger and another astronaut whose head is a hamburger" src="../output/astronaut-hamburger.png" /></p>
+<h3 id="scheduler-comparison">Scheduler comparison</h3>
+<p>The Stable Diffusion pipeline can be run using different schedulers, which generally produce similar results but
+each have their own advantages. Some schedulers are faster than other or require fewer steps, especially the recent
+DEIS multistep and Euler Ancestral schedulers.</p>
+<ul>
+<li>https://huggingface.co/docs/diffusers/main/en/using-diffusers/schedulers#compare-schedulers</li>
+<li>https://i.imgur.com/2pQPgf0.jpeg</li>
+</ul>
+<blockquote>
+<p>An excavator digging up a pipe, construction site, tilt shift, professional photograph, studio lighting</p>
+</blockquote>
+<p><img alt="tilt shift photographs of excavators over a pile of loose dirt" src="../output/excavator-pipe.png" /></p>
+<h3 id="model-and-network-types">Model and network types</h3>
+<p>The <a href="https://onnxruntime.ai/">ONNX runtime</a> is a library for accelerating neural networks and machine learning models,
+using <a href="https://onnx.ai/">the ONNX file format</a> to share them across different platforms. ONNX web is a server to run
+hardware-accelerated inference using those models and a web client to provide the parameters and view the results.</p>
+<p>The models used by ONNX web are split up into four groups:</p>
+<ol>
+<li>Diffusion<ol>
+<li>general models like <a href="https://huggingface.co/runwayml/stable-diffusion-v1-5">Stable Diffusion</a></li>
+<li>specialized models like <a href="https://huggingface.co/Aybeeceedee/knollingcase">Knollingcase</a> or
+    <a href="https://huggingface.co/prompthero/openjourney">OpenJourney</a></li>
+</ol>
+</li>
+<li>Upscaling<ol>
+<li><a href="https://github.com/cszn/BSRGAN">BSRGAN</a></li>
+<li><a href="https://github.com/xinntao/Real-ESRGAN">Real ESRGAN</a></li>
+<li><a href="https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler">Stable Diffusion</a></li>
+<li><a href="https://github.com/JingyunLiang/SwinIR">SwinIR</a></li>
+</ol>
+</li>
+<li>Correction<ol>
+<li><a href="https://github.com/sczhou/CodeFormer">CodeFormer</a></li>
+<li><a href="https://github.com/TencentARC/GFPGAN">GFPGAN</a></li>
+</ol>
+</li>
+<li>Networks<ol>
+<li><a href="https://arxiv.org/abs/2106.09685">LoRA</a> and <a href="https://github.com/KohakuBlueleaf/LyCORIS">LyCORIS</a></li>
+<li><a href="https://textual-inversion.github.io/">Textual Inversion</a></li>
+</ol>
+</li>
+</ol>
+<p>There are many other models available and specialized variations for anime, TV shows, and all sorts of other styles. You
+can <a href="#adding-your-own-models">add your own models</a> from many sources, including <a href="#downloading-models-from-huggingface">the HuggingFace hub
+</a> and <a href="#downloading-models-from-civitai">Civitai</a>.</p>
+<h2 id="prompts">Prompts</h2>
+<h3 id="general-structure">General structure</h3>
+<p>Building a good prompt is like telling a short story without any of the articles and other small words (a/an, of, the).
+The subject and more important keywords should often come first, along with any specific camera angle or lens that you
+want to use. More generic keywords about quality and resolution can come towards the end. Adjectives about a noun
+should usually come before the nouns they describe, like "denim shirt" rather than "shirt made of denim." Try using
+figurative keywords as well as literal ones, especially with colors and textures, and include emotions for people.</p>
+<p>Things you can describe include:</p>
+<ul>
+<li>the subject, their pose, and facial expression</li>
+<li>the camera, lens, and angle used</li>
+<li>lighting mood and intensity</li>
+<li>depth of focus and amount of detail in the background</li>
+</ul>
+<p>Some prompts may not always be successful and may require a few images to get the result you want. If you still aren't
+seeing the image you have imagined, try adjusting <a href="#cfg-parameter">the CFG parameter</a> and iterate on the prompt - add
+more keywords to describe the missing parts of the image and try moving them around, putting the focal objects first.</p>
+<h3 id="useful-keywords">Useful keywords</h3>
+<p>The <a href="https://cdn.openart.ai/assets/Stable%20Diffusion%20Prompt%20Book%20From%20OpenArt%2011-13.pdf">OpenArt Stable Diffusion Prompt Book</a>
+has a lot of useful tips on how to build a good prompt. You can include keywords to describe the subject, setting,
+style, and level of detail. Throwing a few extra keywords into the end of the prompt can help add specific details,
+like the color and intensity of the lighting.</p>
+<p>Keywords:</p>
+<ul>
+<li>color<ul>
+<li>bright</li>
+<li>colorful</li>
+<li>cool</li>
+<li>dark</li>
+<li>deep</li>
+<li>dusky</li>
+<li>light</li>
+<li>warm</li>
+<li>iridescent</li>
+<li>translucent</li>
+</ul>
+</li>
+<li>lighting<ul>
+<li>candlelight</li>
+<li>cinematic lighting</li>
+<li>firelight</li>
+<li>diffused|dramatic|soft lighting</li>
+<li>neon lights</li>
+<li>reflection</li>
+<li>refraction</li>
+<li>volumetric lighting</li>
+</ul>
+</li>
+<li>material<ul>
+<li>brass</li>
+<li>crystal</li>
+<li>earth</li>
+<li>glass</li>
+<li>iron</li>
+<li>magma</li>
+<li>marble</li>
+<li>porcelain</li>
+<li>wood</li>
+</ul>
+</li>
+<li>medium<ul>
+<li>3d render</li>
+<li>digital illustration</li>
+<li>oil painting</li>
+<li>pastel drawing</li>
+<li>pencil sketch</li>
+<li>pen and ink</li>
+<li>sculpture</li>
+<li>watercolor painting</li>
+</ul>
+</li>
+<li>photography<ul>
+<li>backlighting</li>
+<li>bloom</li>
+<li>bokeh</li>
+<li>broad light</li>
+<li>chromatic aberration</li>
+<li>shallow|deep depth of field</li>
+<li>fish-eye</li>
+<li>smooth|sharp|shallow focus</li>
+<li>god rays, sun rays, sun shafts</li>
+<li>HDR</li>
+<li>RAW color</li>
+<li>wide-angle</li>
+<li>tilt-shift</li>
+<li>tone-mapped</li>
+</ul>
+</li>
+<li>quality &amp; resolution<ul>
+<li>4k</li>
+<li>8k</li>
+<li>exquisite</li>
+<li>fine detail</li>
+<li>highly detailed</li>
+<li>masterpiece</li>
+<li>Octane render</li>
+<li>realistic</li>
+<li>Unreal Engine</li>
+</ul>
+</li>
+<li>style<ul>
+<li>abstract</li>
+<li>art nouveau</li>
+<li>classical</li>
+<li>gothic</li>
+<li>graffiti</li>
+<li>hyperrealism</li>
+<li>modernism</li>
+<li>realistic</li>
+<li>surreal</li>
+</ul>
+</li>
+<li>subject<ul>
+<li>ancient</li>
+<li>cyberpunk</li>
+<li>futuristic</li>
+<li>isometric</li>
+<li>lush</li>
+<li>medieval</li>
+</ul>
+</li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li>4k, HDR, smooth, sharp focus, high resolution, photorealistic, detailed</li>
+<li>8k, HDR, shallow depth of field, broad light, high contrast, backlighting, bloom, light sparkles, chromatic
+  aberration, sharp focus, RAW color photo</li>
+</ul>
+<p>Links:</p>
+<ul>
+<li>https://stable-diffusion-art.com/how-to-come-up-with-good-prompts-for-ai-image-generation</li>
+<li>https://contentwritertools.com/stable-diffusion-prompt-guide</li>
+<li>https://www.klartai.com/post/best-stable-diffusion-midjourney-prompt-a-comprehensive-guide-to-text-to-image-generation</li>
+<li>https://getimg.ai/guides/guide-to-negative-prompts-in-stable-diffusion</li>
+</ul>
+<h3 id="prompt-tokens">Prompt tokens</h3>
+<p>You can blend extra networks with the diffusion model using <code>&lt;type:name:weight&gt;</code> tokens. There are menus in the
+client for each type of additional network, which will insert the token for you.</p>
+<p>The <code>type</code> must be one of <code>clip</code>, <code>inversion</code>, or <code>lora</code>.</p>
+<p>The <code>name</code> must be alphanumeric and must not contain any special characters other than <code>-</code> and <code>_</code>.</p>
+<p>The <code>weight</code> must be a number. For <code>clip</code>, it must be a positive integer. For <code>inversion</code> and <code>lora</code>, it can be an
+integer or decimal number and may be negative.</p>
+<h4 id="lora-and-lycoris-tokens">LoRA and LyCORIS tokens</h4>
+<p>You can blend one or more <a href="https://arxiv.org/abs/2106.09685">LoRA weights</a> with the ONNX diffusion model using a
+<code>lora</code> token:</p>
+<pre><code class="language-none">&lt;lora:name:0.5&gt;
+</code></pre>
+<p>LoRA models must be placed in the <code>models/lora</code> directory and may be any supported tensor format.</p>
+<p>The type of network, name, and weight must be separated by colons. The LoRA name must be alphanumeric and must not
+contain any special characters other than <code>-</code> and <code>_</code>.</p>
+<p>LoRA weights often have their own keywords, which can be found on their model card or Civitai page. You need to use
+the <code>&lt;lora:name:1.0&gt;</code> token <em>and</em> the keywords to activate the LoRA.</p>
+<p>Check out <a href="https://github.com/kohya-ss/sd-scripts">the <code>kohya-ss/sd-scripts</code> repository</a> for more details.</p>
+<h4 id="embedding-textual-inversion-tokens">Embedding (Textual Inversion) tokens</h4>
+<p>You can blend one or more <a href="https://textual-inversion.github.io/">Textual Inversions</a> with the ONNX diffusion model
+using the <code>embeddings</code> token <em>and</em> one or more layer token:</p>
+<pre><code class="language-none">&lt;inversion:autumn:1.0&gt; autumn, ...
+&lt;embeddings:autumn:1.0&gt; autumn, ...
+</code></pre>
+<p>The <code>&lt;inversion:name:weight&gt;</code> token is a synonym for <code>&lt;embeddings:name:weight&gt;</code> and operates exactly the same way.</p>
+<p>Textual Inversion embeddings must be placed in the <code>models/inversion</code> directory regardless of which token you use, and
+may be any supported tensor format.</p>
+<p>The type of network, name, and weight must be separated by colons. The Textual Inversion name must be alphanumeric
+and must not contain any special characters other than <code>-</code> and <code>_</code>.</p>
+<p>Once the Textual Inversion has been blended, you can activate some or all of its layers using the trained token(s)
+in your prompt. Every Textual Inversion is available using its name, as well as tokens for all of the layers and for
+each individual layer. For an embedding called <code>autumn</code>, the available tokens are:</p>
+<ul>
+<li><code>autumn</code></li>
+<li><code>autumn-all</code></li>
+<li><code>autumn-0</code> through <code>autumn-5</code></li>
+</ul>
+<p>The <code>autumn</code> and <code>autumn-all</code> tokens both activate a layer with the sum weights of the others. This will have a
+similar effect, but will not represent as many tokens in the prompt and may not attract as much attention. You need to
+use the <code>&lt;inversion:name:1.0&gt;</code> token <em>and</em> the layer tokens to activate the Textual Inversion.</p>
+<p>You can use a range of the numbered layer tokens using the <code>base-{X,Y}</code> syntax in your prompt, where <code>X</code> is inclusive
+and <code>Y</code> is not. The range <code>autumn-{0,5}</code> will be expanded into the tokens <code>autumn-0 autumn-1 autumn-2 autumn-3 autumn-4</code>.
+You can provide a step as the third parameter, which will skip layers: <code>even-layers-{0,100,2}</code> will be expanded into
+<code>even-layers-0 even-layers-2 even-layers-4 even-layers-6 ... even-layers-98</code>. Some Textual Inversions only have a
+single layer and some have 75 or more. You can use the layer tokens individually, out of order, and repeat some layers
+or omit them entirely.</p>
+<p><em>Note:</em> The token range syntax currently does not work when <a href="#long-prompt-weighting">long prompt weighting</a> is enabled.</p>
+<p>Some Textual Inversions have their own token, especially ones trained using <a href="https://colab.research.google.com/github/huggingface/notebooks/blob/main/diffusers/stable_conceptualizer_inference.ipynb">the Stable Conceptualizer notebook
+</a>
+and <a href="https://huggingface.co/spaces/sd-concepts-library/stable-diffusion-conceptualizer">the sd-concepts-library</a> on
+HuggingFace hub. The model card should list the token, which will usually be wrapped in <code>&lt;angle-brackets&gt;</code>. This token
+will be available along with the name token, but these concepts only have a single layer, so the numbered tokens are
+much less useful. For a concept called <code>cubex</code> with the token <code>&lt;cube&gt;</code>, the available tokens are:</p>
+<ul>
+<li><code>cubex</code></li>
+<li><code>&lt;cube&gt;</code></li>
+<li><code>cubex-0</code></li>
+</ul>
+<h4 id="prompt-stages">Prompt stages</h4>
+<p>You can provide a different prompt for the highres and upscaling stages of an image using prompt stages. Each stage
+of a prompt is separated by <code>||</code> and can include its own LoRAs, embeddings, and regions. If you are using multiple
+iterations of highres, each iteration can have its own prompt stage. This can help you avoid recursive body parts
+and some other weird mutations that can be caused by iterating over a subject prompt.</p>
+<p>For example, a prompt like <code>human being sitting on wet grass, outdoors, bright sunny day</code> is likely to produce many
+small people mixed in with the grass when used with highres. This becomes even worse with 2+ iterations. However,
+changing that prompt to <code>human being sitting on wet grass, outdoors, bright sunny day || outdoors, bright sunny day, detailed, intricate, HDR</code>
+will use the second stage as the prompt for highres: <code>outdoors, bright sunny day, detailed, intricate, HDR</code>.</p>
+<p>This allows you to add and refine details, textures, and even the style of the image during the highres pass.</p>
+<p>Prompt stages are only used during upscaling if you are using the Stable Diffusion upscaling model.</p>
+<h4 id="region-tokens">Region tokens</h4>
+<p>You can use a different prompt for part of the image using <code>&lt;region:...&gt;</code> tokens. Region tokens are more complicated
+than the other tokens and have more parameters, which may change in the future.</p>
+<pre><code class="language-none">&lt;region:top:left:bottom:right:strength:feather:prompt&gt;
+</code></pre>
+<ul>
+<li><code>top</code>, <code>left</code>, <code>bottom</code>, and <code>right</code> define the four corners of a rectangle<ul>
+<li>must be integers</li>
+<li>will be rounded down to the nearest multiple of 8</li>
+</ul>
+</li>
+<li><code>strength</code> defines the ratio between the two prompts<ul>
+<li>must be a float or integer</li>
+<li>strength should be between 0.0 and 100.0<ul>
+<li>2.0 to 5.0 generally works</li>
+<li>100.0 completely replaces the base prompt</li>
+<li>&lt; 0 does weird things</li>
+</ul>
+</li>
+<li>more UNet overlap will require greater strength</li>
+</ul>
+</li>
+<li><code>feather</code> defines the blending between the two prompts<ul>
+<li>must be a float or integer</li>
+<li>this is similar to UNet and VAE overlap</li>
+<li>feather should be between 0.0 and 0.5<ul>
+<li>0.0 will cause hard edges</li>
+<li>0.25 is a good default</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>the region has its own <code>prompt</code><ul>
+<li>any characters <em>except</em> <code>&gt;</code></li>
+<li>if the region prompt ends with <code>+</code>, the base prompt will be appended to it<ul>
+<li>this can help the region blend with the rest of the image better</li>
+<li><code>&lt;region:0:0:1024:1024:5.0:0.25:small dog,+&gt; autumn forest, detailed background, 4k, HDR</code> will use two prompts:<ul>
+<li><code>small dog, autumn forest, detailed background, 4k, HDR</code> for the region</li>
+<li><code>autumn forest, detailed background, 4k, HDR</code> for the rest of the image</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="reseed-tokens-region-seeds">Reseed tokens (region seeds)</h4>
+<p>You can use a different seed for part of the image using <code>&lt;reseed:...&gt;</code> tokens. Reseed tokens will replace the initial
+latents in the selected rectangle. There will be some small differences between images due to how the latents
+interpreted by the UNet, but the seeded area should be similar to an image of the same size and seed.</p>
+<pre><code class="language-none">&lt;reseed:top:left:bottom:right:seed&gt;
+</code></pre>
+<ul>
+<li><code>top</code>, <code>left</code>, <code>bottom</code>, and <code>right</code> define the four corners of a rectangle<ul>
+<li>must be integers</li>
+<li>will be rounded down to the nearest multiple of 8</li>
+</ul>
+</li>
+<li>the region has its own <code>seed</code><ul>
+<li>must be an integer</li>
+</ul>
+</li>
+</ul>
+<h4 id="clip-skip-tokens">CLIP skip tokens</h4>
+<p>You can skip the last layers of the CLIP text encoder using the <code>clip</code> token:</p>
+<pre><code class="language-none">&lt;clip:skip:2&gt;
+</code></pre>
+<p>This makes your prompt less specific and some models have been trained to work better with some amount of skipping.</p>
+<h3 id="long-prompt-weighting-syntax">Long prompt weighting syntax</h3>
+<p>You can emphasize or deemphasize certain parts of the prompt by using the long prompt weighting option. This adds
+some additional tokens:</p>
+<ul>
+<li><code>(word)</code> increases attention by 10%</li>
+<li><code>((word))</code> increases attention by 21% (10% * 10%)</li>
+<li><code>[word]</code> decreases attention by 10%</li>
+<li><code>[[word]]</code> decreases attention by 21% (10% * 10%)</li>
+<li><code>(word:1.5)</code> increases attention by 50%</li>
+<li><code>\(word\)</code> inserts literal parentheses</li>
+</ul>
+<p><em>Note:</em> The <a href="#textual-inversion-tokens">token range syntax</a> currently does not work when long prompt weighting is
+enabled.</p>
+<h2 id="pipelines">Pipelines</h2>
+<p>The pipelines in onnx-web allow you to run Stable Diffusion in many different ways, such as ControlNet and using the
+long prompt weighting syntax.</p>
+<p>If you select a pipeline that is not valid for the current tab, the default pipeline for that tab will be used instead.</p>
+<h3 id="controlnet-pipeline">ControlNet pipeline</h3>
+<p>The ControlNet pipeline allows you to modify an existing image using the ControlNet filters and models found in the
+img2img tab.</p>
+<p>ControlNet is only valid for the img2img tab.</p>
+<h3 id="img2img-pipeline">img2img pipeline</h3>
+<p>The img2img pipeline allows you to modify an existing image using a text prompt.</p>
+<p>Img2img is only valid for the img2img tab.</p>
+<h3 id="inpaint-pipeline">Inpaint pipeline</h3>
+<p>The inpaint pipeline allows you to selectively replace sections of an existing image using a prompt.</p>
+<p>Inpaint is only valid for the inpaint tab.</p>
+<h3 id="long-prompt-weighting-pipeline">Long prompt weighting pipeline</h3>
+<p>The long prompt weighting pipeline allows you to use <a href="#long-prompt-weighting-syntax">long prompt weighting syntax</a> in
+your prompt and emphasize some tokens over others.</p>
+<p>Long prompt weighting is valid for the following tabs:</p>
+<ul>
+<li>txt2img</li>
+<li>img2img</li>
+<li>inpaint</li>
+</ul>
+<h3 id="panorama-pipeline">Panorama pipeline</h3>
+<p>The panorama pipeline allows you to generate and modify very large images.</p>
+<p>Panorama works better with more steps; since the UNet results are averaged at the end of each step, more steps will
+blend the latents more effectively and produce a more coherent image. 40+ steps usually produces good results.</p>
+<p>Panorama is valid for the following tabs:</p>
+<ul>
+<li>txt2img</li>
+<li>img2img</li>
+<li>inpaint</li>
+</ul>
+<h3 id="instruct-pix2pix-pipeline">Instruct pix2pix pipeline</h3>
+<p>The instruct pix2pix pipelines allows you to modify an existing image using text instructions.</p>
+<p>Instruct pix2pix is only valid for the img2img tab.</p>
+<h3 id="txt2img-pipeline">Txt2Img pipeline</h3>
+<p>The txt2img pipeline allows you to generate an image from a text prompt.</p>
+<p>Txt2img is only valid for the img2img tab.</p>
+<h3 id="upscale-pipeline">Upscale pipeline</h3>
+<p>The upscale pipeline is specifically for Stable Diffusion upscaling.</p>
+<p>TODO: why is this special? when do you need to use it?</p>
+<h2 id="tabs">Tabs</h2>
+<h3 id="txt2img-tab">Txt2img tab</h3>
+<p>The txt2img tab turns your wildest ideas into something resembling them, maybe.</p>
+<p>This mode takes a text prompt along with various other parameters and produces a new image.</p>
+<h4 id="scheduler-parameter">Scheduler parameter</h4>
+<p>This selects the scheduler algorithm used to resolve the latent noise into a coherent image.</p>
+<p>See <a href="#scheduler-comparison">the scheduler comparison</a> for more details.</p>
+<h4 id="eta-parameter">Eta parameter</h4>
+<p>The eta parameter only applies to the DDIM scheduler, and can introduce additional noise over time, leading to
+somewhat unpredictable images.</p>
+<p>From <a href="https://huggingface.co/docs/diffusers/api/pipelines/ddim">the HuggingFace docs</a>:</p>
+<blockquote>
+<p>The eta parameter which controls the scale of the variance (0 is DDIM and 1 is one type of DDPM).</p>
+</blockquote>
+<p>In general, a higher eta parameter will require more <a href="#steps-parameter">steps</a> to produce a similar quality result.</p>
+<h4 id="cfg-parameter">CFG parameter</h4>
+<p>Classifier free guidance. How strictly the model should follow the prompt. Anything from 5 to 15 usually works. More is
+not always better, setting this too high can result in noisy, solarized images.</p>
+<p>Roughly:</p>
+<ul>
+<li>2-6 allows the AI to be creative</li>
+<li>7-11 treats the prompt as a suggestion</li>
+<li>12-15 strongly encourages the AI to follow the prompt</li>
+<li>16-20 follows the prompt whether it makes sense or not</li>
+</ul>
+<h4 id="steps-parameter">Steps parameter</h4>
+<p>The number of scheduler steps to run. Using more steps often results in an image with more details, but also takes
+longer to run.</p>
+<ul>
+<li>Euler Ancestral: 30-45 steps</li>
+<li>UniPC Multistep: 20-40 steps</li>
+<li>DEIS Multistep: 20-40 steps</li>
+<li>others: 40+</li>
+</ul>
+<p>Inpainting may need more steps, up to 120 or 150 in some cases. Using too many steps can increase the contrast
+of your image too much, almost like a posterize effect.</p>
+<h4 id="seed-parameter">Seed parameter</h4>
+<p>The seed value used for the random number generators. This is a lot like the seed in a game like Minecraft and can be
+shared to produce similar images, but producing exactly the same image requires the same model, scheduler, and all of
+the other parameters as well.</p>
+<p>You can use the same prompt and seed, while varying the steps and CFG, to produce similar images with small variations.</p>
+<p>Using -1 will generate a new seed on the server for each image.</p>
+<h4 id="batch-size-parameter">Batch size parameter</h4>
+<p>The number of images to generate each time you press the generate button.</p>
+<p>All of the images in the batch will share the same seed, and changing the batch size will change the results.</p>
+<h4 id="tile-size-parameter">Tile size parameter</h4>
+<p>The size of each UNet tile when running <a href="#panorama-pipeline">the panorama pipeline</a>.</p>
+<p>Increasing this is a lot like increasing the image size. It will produce larger areas with consistent shapes and
+outlines, but will increase memory. Decreasing this too far can produce deep-fried results.</p>
+<h4 id="overlap-parameter">Overlap parameter</h4>
+<p>The amount that each highres and VAE tile should overlap.</p>
+<p>Increasing this will increase the number of tiles and will take longer, but will reduce the strength of the seams
+between tiles. Increasing this too far will cause blurry images.</p>
+<ul>
+<li>0.25 is usually good for <a href="#highres-parameters">highres</a></li>
+<li>0.5 is usually good for <a href="#panorama-pipeline">panorama</a></li>
+</ul>
+<p><em>Note:</em> The highres and VAE overlap parameters may be split up in the future.</p>
+<p>This shows a 50% overlap with three different prompts:</p>
+<p><img alt="an image showing a gradient blending between a fantasy forest, castle with pointed spires, and futuristic city with neon lights" src="../overlap-castle.png" /></p>
+<blockquote>
+<p>(fantastic location, sun rays|dark castle, shadows|scifi city, future)</p>
+</blockquote>
+<h5 id="25-overlap">25% overlap</h5>
+<p>Stable Diffusion works best when generating full-size tiles in your selected <a href="#tile-size-parameter">tile size</a>. When
+the overlap leads to tiles that partially fall outside of the image boundaries, they will be generated at full size
+and cropped. These leads to some wasted pixels, but produces a more coherent image.</p>
+<p>Before cropping:</p>
+<p><img alt="25% overlap causes the third tile to run off the right side of the image" src="../overlap-25p.png" /></p>
+<p>After cropping:</p>
+<p><img alt="the third tile is cropped to the image size and only 50% of it is kept" src="../overlap-25p-crop.png" /></p>
+<h5 id="50-overlap">50% overlap</h5>
+<p><img alt="the tiles line up evenly and are not cropped" src="../overlap-50p.png" /></p>
+<p>Tiles evenly fill the image and do not need to be cropped.</p>
+<h4 id="unet-stride-parameter">UNet stride parameter</h4>
+<p>The stride between UNet tiles when running <a href="#panorama-pipeline">the panorama pipeline</a>.</p>
+<p>This behaves a lot like <a href="#overlap-parameter">the overlap parameter</a> but only applies to the UNet when using <a href="#panorama-pipeline">the
+panorama pipeline</a>.</p>
+<p><em>Note:</em> This parameter may be combined with the overlap parameter in the future.</p>
+<h4 id="tiled-vae-parameter">Tiled VAE parameter</h4>
+<p>Whether or not to use the tiled VAE.</p>
+<p>The tiled VAE uses less memory and allows you to generate larger images, but may produce seams without enough
+<a href="#overlap-parameter">overlap</a>.</p>
+<h4 id="prompt-parameter">Prompt parameter</h4>
+<p>The input text for your image, things that should be included.</p>
+<blockquote>
+<p>A puppy dog with wings flying over a deciduous forest, drone, detailed, daylight, wide angle, sports, action camera</p>
+</blockquote>
+<p><img alt="two txt2img images based on the flying puppy dog prompt, one successful and one with a slightly distorted puppy" src="../output/flying-puppy.png" /></p>
+<p>The models will not always follow the prompt exactly, even with a fairly large CFG value, and you may need to try a
+few times.</p>
+<blockquote>
+<p>A stone magnifying glass showing a portal to another dimension, steam punk, mysterious, alternate universe,
+highly detailed, digital illustration</p>
+</blockquote>
+<p><img alt="an intricate and glowing metal lens next to a magnifying glass showing a mysterious sewer" src="../output/stone-glass.png" /></p>
+<p>More complex scenes will often need more steps to get good results in the peripheral details. You can adjust the
+level of detail with keywords like "highly detailed" and "intricate" and adjust the art style with "digital
+illustration" or "oil painting."</p>
+<h4 id="negative-prompt-parameter">Negative prompt parameter</h4>
+<p>The opposite of <a href="#prompt-parameter">the prompt parameter</a>, things that should <em>not</em> be included.</p>
+<blockquote>
+<p>poorly drawn faces, poorly drawn hands, distorted</p>
+</blockquote>
+<h4 id="width-and-height-parameters">Width and height parameters</h4>
+<p>Controls the size of the output image, before upscaling.</p>
+<h4 id="highres-parameters">Highres parameters</h4>
+<h5 id="highres-steps-parameter">Highres steps parameter</h5>
+<p>The number of steps to use for each highres tile.</p>
+<p>This is the same as <a href="#steps-parameter">the steps parameter</a> in img2img. The number of steps that will actually run
+is <code>steps * strength</code>, but a low number of steps (20-30) with moderate or high strength (0.5-1.0) will often produce
+more duplicate shapes and totem pole style images. Using 100-200 steps with 0.1-0.2 strength seems to work well, and
+will only run 10-20 actual UNet steps.</p>
+<h5 id="highres-scale-parameter">Highres scale parameter</h5>
+<p>The output scale for <a href="#highres-upscaler-parameter">the highres upscaler</a>.</p>
+<p>This is the same as <a href="#upscale-scale-parameter">the upscale scale parameter</a>.</p>
+<h5 id="highres-strength-parameter">Highres strength parameter</h5>
+<p>The blending strength for the highres img2img runs.</p>
+<p>This is the same as <a href="#strength-parameter">the img2img strength parameter</a>.</p>
+<h5 id="highres-upscaler-parameter">Highres upscaler parameter</h5>
+<p>The upscaling method to be used for highres tiles.</p>
+<ul>
+<li>Bilinear is the fastest and produces moderate results, but usually needs more steps to correct the blur that has been
+  introduced</li>
+<li>Lanczos is reasonably fast and produces fairly good results, but requires more CPU than bilinear upscaling</li>
+<li>Upscaling uses your currently selected upscaling model and produces the best results, but can be very slow on CPU</li>
+</ul>
+<h5 id="highres-iterations-parameter">Highres iterations parameter</h5>
+<p>The number of times to run highres.</p>
+<p>The image will be resized by <a href="#highres-scale-parameter">the highres scale</a> each iteration, so this is exponential: a
+scale of 4 and 2 iterations will produce a final image that is 16 times the original size of the input image or
+parameters. A scale of 2 and 3 iterations will produce a final image that is 8 times the original size.</p>
+<h4 id="upscale-and-correction-parameters">Upscale and correction parameters</h4>
+<p>Please see <a href="#upscale-tab">the upscale tab</a> for more details on the upscaling and correction parameters.</p>
+<h3 id="img2img-tab">Img2img tab</h3>
+<p>The img2img tab takes a source image along with the text prompt and produces a similar image. You can use the
+strength parameter to control the level of similarity between the source and output.</p>
+<p>The output image will be the same size as the input, unless upscaling is turned on.</p>
+<h4 id="img2img-source-image">Img2img source image</h4>
+<p>Upload a source image for img2img.</p>
+<p>Image sources are <em>not</em> persisted when you reload the page, unlike other parameters.</p>
+<h4 id="strength-parameter">Strength parameter</h4>
+<p>Blending strength. 0 uses the source image without changing it, 1 will replace it almost entirely.</p>
+<h3 id="inpaint-tab">Inpaint tab</h3>
+<p>The inpaint tab provides a way to edit part of an image and run the diffusion pipeline again, without editing
+the entire image. It still takes a text prompt, but uses a mask to decide which pixels should be regenerated.</p>
+<p>The mask can be uploaded or edited directly in the browser. White pixels in the mask will be replaced with pixels
+from the noise source, then replaced again by the diffusion pipeline. Black pixels in the mask will be kept as
+they appeared in the source. The mask can use gray values to blend the difference.</p>
+<p>When all of the options are used together, the process is:</p>
+<ol>
+<li>Add borders to the source image</li>
+<li>Generate the noise source from the source image and random data</li>
+<li>Run the mask filter on the mask image</li>
+<li>Blend the source image and the noise source using the mask image (pre-multiply)</li>
+<li>Apply the diffusion model to the source image using the mask image to weight pixels</li>
+<li>Apply the upscaling and correction models to the output</li>
+<li>Save the output</li>
+</ol>
+<h4 id="inpaint-source-image">Inpaint source image</h4>
+<p>Upload a source image for inpaint.</p>
+<p>Image sources are <em>not</em> persisted when you reload the page, unlike other parameters.</p>
+<h4 id="mask-canvas-and-brush-parameters">Mask canvas and brush parameters</h4>
+<p>Upload or draw a mask image.</p>
+<p>White pixels will be replaced with noise and then regenerated, black pixels will be kept as-is in the output.</p>
+<p>Image sources are <em>not</em> persisted when you reload the page, unlike other parameters. If you want to keep a mask
+you have painted in the browser, right click on the canvas and use the "Save image as..." option.</p>
+<ul>
+<li>Fill with black<ul>
+<li>Keep all pixels</li>
+</ul>
+</li>
+<li>Fill with white<ul>
+<li>Replace all pixels</li>
+</ul>
+</li>
+<li>Invert<ul>
+<li>Replace black pixels with white and vice versa</li>
+<li>If you accidentally painted a good mask in the wrong color, this can save it</li>
+</ul>
+</li>
+<li>Gray to black<ul>
+<li>Convert gray parts of the mask to black (keep them)</li>
+</ul>
+</li>
+<li>Gray to white<ul>
+<li>Convert gray parts of the mask to white (replace them)</li>
+</ul>
+</li>
+</ul>
+<h4 id="mask-filter-parameter">Mask filter parameter</h4>
+<p>Mask filters are used to pre-process the mask before blending the source image with the noise and before running
+the diffusion pipeline.</p>
+<ul>
+<li>None<ul>
+<li>no mask filter</li>
+<li>usually a fine option</li>
+</ul>
+</li>
+<li>Gaussian Multiply<ul>
+<li>blur and darken the mask</li>
+<li>good when you want to soften and expand the edges of the area to be kept</li>
+</ul>
+</li>
+<li>Gaussian Screen<ul>
+<li>blur and lighten the mask</li>
+<li>good when you want to soften and expand the edges of the area to be replaced</li>
+</ul>
+</li>
+</ul>
+<h4 id="noise-source-parameter">Noise source parameter</h4>
+<p>Noise sources are used to create new data for the next round of diffusion. Sometimes adding noise can improve
+the results, but it may also be too much. A variety of sources are provided.</p>
+<ul>
+<li>Fill Edges<ul>
+<li>fill the edges of the image with a solid color</li>
+<li>only changes the image when used with outpainting</li>
+</ul>
+</li>
+<li>Fill Masked<ul>
+<li>fills the edges and masked areas of the image with a solid color</li>
+</ul>
+</li>
+<li>Gaussian Blur<ul>
+<li>blur the source image</li>
+<li>fills the edges with noise when used with outpainting</li>
+<li>a good option for finishing the edges of an image</li>
+</ul>
+</li>
+<li>Histogram Noise<ul>
+<li>fills the edges and masked area with noise matching the source color palette</li>
+<li>noise color is based on the color frequency in the source histogram</li>
+<li>a good option for continuing to build an image</li>
+</ul>
+</li>
+<li>Gaussian Noise<ul>
+<li>fills the edges and masked area with Gaussian noise</li>
+</ul>
+</li>
+<li>Uniform Noise<ul>
+<li>fills the edges and masked area with uniform noise</li>
+</ul>
+</li>
+</ul>
+<h4 id="outpaint-parameters">Outpaint parameters</h4>
+<p>The number of pixels to add in each direction.</p>
+<h3 id="upscale-tab">Upscale tab</h3>
+<p>The upscale tab provides a dedicated way to upscale an image and run face correction using Real ESRGAN and GFPGAN,
+without running a diffusion pipeline at all. This can be faster and avoids making unnecessary changes to the image.</p>
+<p>Resize the output image before returning it to the client.</p>
+<p>This uses your currently selected <a href="#model-and-network-types">upscaling model</a>.</p>
+<h4 id="upscale-scale-parameter">Upscale scale parameter</h4>
+<p>The trained output scale for the upscaling model.</p>
+<p>The final output size will be based on <a href="#upscale-outscale-parameter">the upscale outscale parameter</a>. Using a scale
+larger than the outscale can produce a sharper image.</p>
+<h4 id="upscale-outscale-parameter">Upscale outscale parameter</h4>
+<p>The final output scale for the upscaling model.</p>
+<p>This can increase <em>or</em> decrease the size of the final output. Lanczos interpolation is used when the outscale is
+greater than the scale, which can produce a blurry image.</p>
+<h4 id="upscale-denoise-parameter">Upscale denoise parameter</h4>
+<p>The amount of denoising to apply when using the RealESR x4 v4 model. Can be used to avoid over-smoothing the results.</p>
+<h4 id="correction-strength-parameter">Correction strength parameter</h4>
+<p>Run face correction the the output image before returning it to the client.</p>
+<p>This uses your currently selected <a href="#model-and-network-types">correction model</a>.</p>
+<h4 id="correction-outscale-parameter">Correction outscale parameter</h4>
+<p>The final output scale for the correction model.</p>
+<p>This is a lot like <a href="#upscale-outscale-parameter">the upscale outscale parameter</a>.</p>
+<h4 id="correction-order-parameter">Correction order parameter</h4>
+<p>Whether to run correction before upscaling, after upscaling, or both.</p>
+<p>Running correction before upscaling can remove noise and improve faces so that the upscaling model has a better input
+image to work with, while running correction after upscaling can help remove noise and artifacts introduced by the
+upscaling model. Using both will address both issues, but typically needs a lower <a href="#correction-strength-parameter">correction
+strength</a>.</p>
+<h3 id="blend-tab">Blend tab</h3>
+<p>The blend tab provides a way to blend two images together by painting a mask.</p>
+<p>The mask can be uploaded or edited directly in the browser. The first image will be used as the source for black pixels
+in the mask and the second image will be used as the source for white pixels. Gray values will blend the two.</p>
+<p>Upscaling and correction run after the images have been blended.</p>
+<h3 id="models-tab">Models tab</h3>
+<p>The models tab allows you to edit <a href="#adding-your-own-models">your <code>extras.json</code> file</a> from the web UI.</p>
+<p>You must be a server admin (by providing the correct <code>token</code>) to view and save the extras file.</p>
+<h3 id="settings-tab">Settings tab</h3>
+<p>The settings tab provides access to some of the settings and allows you to reset the state of the other tabs
+to the defaults, if they get out of control.</p>
+<h4 id="image-history-setting">Image history setting</h4>
+<p>The image history setting allows you to change the number of images kept in the recent image history. If you are
+generating very large images or have limited memory, reducing this may improve performance. Increasing this will
+keep more images in history. Output is always kept on the server.</p>
+<h4 id="api-server-setting">API server setting</h4>
+<p>Changing the API server will reload the client.</p>
+<h4 id="reset-tab-buttons">Reset tab buttons</h4>
+<p>Resets the state of each tab to the default, if some controls become glitchy.</p>
+<h2 id="adding-your-own-models">Adding your own models</h2>
+<p>You can convert and use your own models without making any code changes. Models are stored in
+<a href="../models/extras.json">the <code>models/extras.json</code> file</a> - you can make a copy to avoid any updates replacing your models in
+the future. Add an entry for each of the models that you would like to use:</p>
+<pre><code class="language-json">{
+  &quot;diffusion&quot;: [
+    {
+      &quot;name&quot;: &quot;diffusion-knollingcase&quot;,
+      &quot;source&quot;: &quot;Aybeeceedee/knollingcase&quot;
+    },
+    {
+      &quot;name&quot;: &quot;diffusion-openjourney&quot;,
+      &quot;source&quot;: &quot;prompthero/openjourney&quot;
+    },
+    {
+      &quot;name&quot;: &quot;diffusion-stablydiffused-aesthetic-v2-6&quot;,
+      &quot;source&quot;: &quot;civitai://6266?type=Pruned%20Model&amp;format=SafeTensor&quot;,
+      &quot;format&quot;: &quot;safetensors&quot;
+    },
+    {
+      &quot;name&quot;: &quot;diffusion-unstable-ink-dream-onnx-v6&quot;,
+      &quot;source&quot;: &quot;civitai://5796&quot;,
+      &quot;format&quot;: &quot;safetensors&quot;
+    }
+  ],
+  &quot;correction&quot;: [],
+  &quot;upscaling&quot;: [
+    {
+      &quot;name&quot;: &quot;upscaling-real-esrgan-x4-anime&quot;,
+      &quot;source&quot;: &quot;https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth&quot;,
+      &quot;scale&quot;: 4
+    }
+  ],
+  &quot;networks&quot;: [
+    {
+      &quot;name&quot;: &quot;cubex&quot;,
+      &quot;source&quot;: &quot;sd-concepts-library/cubex&quot;,
+      &quot;format&quot;: &quot;ckpt&quot;,
+      &quot;label&quot;: &quot;Cubex&quot;,
+      &quot;type&quot;: &quot;inversion&quot;
+    },
+    {
+      &quot;name&quot;: &quot;minecraft&quot;,
+      &quot;source&quot;: &quot;sd-concepts-library/minecraft-concept-art&quot;,
+      &quot;format&quot;: &quot;ckpt&quot;,
+      &quot;label&quot;: &quot;Minecraft Concept&quot;,
+      &quot;type&quot;: &quot;inversion&quot;
+    },
+  ],
+  &quot;sources&quot;: [
+    {
+      &quot;name&quot;: &quot;vae-ft-mse-840000-ema-pruned&quot;,
+      &quot;source&quot;: &quot;https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors&quot;,
+      &quot;format&quot;: &quot;safetensors&quot;
+    }
+  ]
+}
+</code></pre>
+<p>The complete file format and available keys are listed in <a href="#extras-file-format">the file format section</a>. If you are
+familiar with JSON schemas, <a href="../api/schemas/extras.yaml">the extras schema</a> is the canonical format.</p>
+<p>Models can be added using the directory format used by <code>diffusers</code> as well as safetensor and pickle tensor checkpoints.
+See <a href="../converting-models/">the converting models guide</a> for more details.</p>
+<p>Be careful loading pickle tensors, as they may contain unsafe code which will be executed on your machine. Use
+safetensors instead whenever possible.</p>
+<p>Set the <code>ONNX_WEB_EXTRA_MODELS</code> environment variable to the path to your file if not using <a href="../models/extras.json">the <code>models/extras.json</code> file</a>. For example:</p>
+<pre><code class="language-shell"># on Linux:
+&gt; export ONNX_WEB_EXTRA_MODELS=~/onnx-web-extras.json
+&gt; ./launch-extras.sh
+
+# on Windows:
+&gt; set ONNX_WEB_EXTRA_MODELS=C:\Users\ssube\onnx-web-extras.json
+&gt; launch-extras.bat
+</code></pre>
+<p>Extras using the older file format with nested arrays (<code>"diffusion": [[]]</code>) can be mixed with the newer format. You
+only need to convert them into the newer format if you need to use keys other than <code>name</code>, <code>source</code>, and <code>scale</code>.</p>
+<h3 id="model-names">Model names</h3>
+<p>The <code>name</code> of each model dictates which category it will appear in on the client.</p>
+<ul>
+<li><code>diffusion-*</code> or <code>stable-diffusion-*</code> for diffusion models</li>
+<li><code>upscaling-*</code> for upscaling models</li>
+<li><code>correction-*</code> for correction models</li>
+</ul>
+<p>Models that do not match one of the prefixes will not be shown, so if you cannot find a model that you have converted,
+make sure it is named correctly. This applies to models in the <code>extras.json</code> file as well as models you have created,
+converted, or copied outside of the conversion script.</p>
+<h3 id="model-sources">Model sources</h3>
+<p>You can either provide the path to a local model that you have already downloaded or provide a URL to be
+automatically downloaded, using HTTPS or one of the pre-defined sources:</p>
+<ul>
+<li><code>huggingface://</code><ul>
+<li>https://huggingface.co/models?other=stable-diffusion</li>
+<li>mostly SFW</li>
+<li>requires an account to download some models</li>
+</ul>
+</li>
+<li><code>civitai://</code><ul>
+<li>https://civitai.com/</li>
+<li>some NSFW</li>
+<li>does not require an account</li>
+</ul>
+</li>
+<li><code>https://</code><ul>
+<li>any other HTTPS source</li>
+</ul>
+</li>
+<li><code>../models/.cache/your-model.safetensors</code><ul>
+<li>relative paths</li>
+</ul>
+</li>
+<li><code>/home/ssube/onnx-web/models/.cache</code> or <code>C:\Users\ssube\onnx-web\models\.cache</code><ul>
+<li>absolute paths</li>
+</ul>
+</li>
+</ul>
+<p>If the model is a single file and the <code>source</code> does not include a file extension like <code>.safetensors</code> or <code>.ckpt</code>, make
+sure to indicate the file format using the <code>format</code> key. You do not need to provide the <code>format</code> for directories and
+models from the HuggingFace hub.</p>
+<h4 id="downloading-models-from-civitai">Downloading models from Civitai</h4>
+<p>Use the <code>civitai://</code> protocol to download models from <a href="https://civitai.com/">the Civitai catalog</a>.</p>
+<p>When downloading models from Civitai, the ID shown in the browser URL bar <em>may not be</em> the ID of the model itself.
+Since models can have multiple versions, make sure you use the correct ID. Use the model ID from the download link,
+which you can see and copy from the right-click menu:</p>
+<p><img alt="Chrome context menu with Copy link address highlighted" src="../guide-civitai.png" /></p>
+<p>You can use the <code>Pruned SafeTensor</code>, if one is available. Be careful downloading pickle tensors, they may contain unsafe
+code. The original, non-pruned models are much larger but are better for training.</p>
+<h4 id="downloading-models-from-huggingface">Downloading models from HuggingFace</h4>
+<p>Use the <code>huggingface://</code> protocol to download models from <a href="https://huggingface.co/models?other=stable-diffusion">the HuggingFace hub</a>.
+Most models will detect and download all of the necessary files, while Textual Inversions with <code>"model": "concept"</code>
+will only download the <code>trained_embeds.bin</code> file.</p>
+<p>When downloading models from HuggingFace, you can use the copy button next to the repository name:</p>
+<p><img alt="Stable Diffusion v1.5 model card with Copy model name option highlighted" src="../guide-huggingface.png" /></p>
+<h3 id="using-a-custom-vae">Using a custom VAE</h3>
+<p>You can use a custom VAE when converting models. Some models require a specific VAE, so if you get weird results,
+check the model card for a specific VAE. This works for both diffusers directories and original SD checkpoints. You
+can use the <code>sources</code> field in the extras file to download the VAE file or provide a HuggingFace model name.</p>
+<pre><code class="language-json">{
+  &quot;diffusion&quot;: [
+    {
+      &quot;name&quot;: &quot;diffusion-stablydiffused-aesthetic-v2-6-ema&quot;,
+      &quot;source&quot;: &quot;civitai://6266?type=Pruned%20Model&amp;format=SafeTensor&quot;,
+      &quot;format&quot;: &quot;safetensors&quot;,
+      &quot;vae&quot;: &quot;.cache/vae-ft-mse-840000-ema-pruned.safetensors&quot;
+    },
+    {
+      &quot;name&quot;: &quot;stable-diffusion-onnx-v1-4&quot;,
+      &quot;source&quot;: &quot;CompVis/stable-diffusion-v1-4&quot;,
+      &quot;vae&quot;: &quot;stabilityai/sd-vae-ft-ema&quot;
+    }
+  ],
+  &quot;correction&quot;: [],
+  &quot;upscaling&quot;: [],
+  &quot;sources&quot;: [
+    {
+      &quot;name&quot;: &quot;vae-ft-mse-840000-ema-pruned&quot;,
+      &quot;source&quot;: &quot;https://huggingface.co/stabilityai/sd-vae-ft-mse-original/resolve/main/vae-ft-mse-840000-ema-pruned.safetensors&quot;,
+      &quot;format&quot;: &quot;safetensors&quot;
+    }
+  ]
+}
+</code></pre>
+<p>Some common VAE models include:</p>
+<ul>
+<li>https://huggingface.co/stabilityai/sd-vae-ft-ema</li>
+<li>https://huggingface.co/stabilityai/sd-vae-ft-ema-original</li>
+<li>https://huggingface.co/stabilityai/sd-vae-ft-mse</li>
+<li>https://huggingface.co/stabilityai/sd-vae-ft-mse-original</li>
+</ul>
+<h3 id="optimizing-models-for-lower-memory-usage">Optimizing models for lower memory usage</h3>
+<p>Running Stable Diffusion with ONNX acceleration uses more memory by default than some other methods, but there are a
+number of <a href="../server-admin/#pipeline-optimizations">server optimizations</a> that you can apply to reduce the memory usage:</p>
+<ul>
+<li><code>diffusers-attention-slicing</code></li>
+<li><code>onnx-fp16</code></li>
+<li><code>onnx-graph-all</code></li>
+<li><code>onnx-low-memory</code></li>
+<li><code>torch-fp16</code></li>
+</ul>
+<p>You can enable optimizations using the <code>ONNX_WEB_OPTIMIZATIONS</code> environment variable:</p>
+<pre><code class="language-shell"># on linux:
+&gt; export ONNX_WEB_OPTIMIZATIONS=diffusers-attention-slicing,onnx-fp16,onnx-low-memory
+
+# on windows:
+&gt; set ONNX_WEB_OPTIMIZATIONS=diffusers-attention-slicing,onnx-fp16,onnx-low-memory
+</code></pre>
+<p>At least 12GB of VRAM is recommended for running all of the models in the extras file, but <code>onnx-web</code> should work on
+most 8GB cards and may work on some 6GB cards. 4GB is not supported yet, but <a href="https://github.com/ssube/onnx-web/issues/241#issuecomment-1475341043">it should be
+possible</a>.</p>
+<p>Based on somewhat limited testing, the model size memory usage for each optimization level is approximately:</p>
+<table>
+<thead>
+<tr>
+<th>Optimizations</th>
+<th>Disk Size</th>
+<th>CUDA Memory Usage</th>
+<th>DirectML Memory Usage</th>
+<th>ROCm Memory Usage</th>
+<th>Supported Platforms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>none</td>
+<td>4.0G</td>
+<td>11.5G</td>
+<td>TODO</td>
+<td>8.5G</td>
+<td>all</td>
+</tr>
+<tr>
+<td><code>onnx-fp16</code></td>
+<td>2.2G</td>
+<td>9.9G</td>
+<td>TODO</td>
+<td>4.5G</td>
+<td>all</td>
+</tr>
+<tr>
+<td>ORT script</td>
+<td>4.0G</td>
+<td>6.6G</td>
+<td>-</td>
+<td>-</td>
+<td>CUDA only</td>
+</tr>
+<tr>
+<td>ORT script with <code>--float16</code></td>
+<td>2.1G</td>
+<td>5.8G</td>
+<td>-</td>
+<td>-</td>
+<td>CUDA only</td>
+</tr>
+<tr>
+<td><code>torch-fp16</code></td>
+<td>2.0G</td>
+<td>5.9G</td>
+<td>-</td>
+<td>-</td>
+<td>CUDA only</td>
+</tr>
+</tbody>
+</table>
+<p>All rows shown using a resolution of 512x512 and batch size of 1, measured on consecutive runs after the first load.
+The exact memory usage will depend on the model(s) you are using, the ONNX runtime version, and the CUDA/ROCm drivers
+on your system. These are approximate values, measured during testing and rounded up to the nearest 100MB.</p>
+<ul>
+<li>https://github.com/microsoft/onnxruntime/tree/main/onnxruntime/python/tools/transformers/models/stable_diffusion#cuda-optimizations-for-stable-diffusion</li>
+</ul>
+<h3 id="permanently-blending-additional-networks">Permanently blending additional networks</h3>
+<p>You can permanently blend and include additional networks in an ONNX model by including the <code>inversions</code> and <code>loras</code>
+keys in the <code>diffusion</code> model.</p>
+<p>Even when permanently blended, tokens work normally and the LoRA or Textual Inversion weights must be activated using
+their built-in tokens and the ones provided when blending the model.</p>
+<p>This can be used to embed additional networks at your favorites weights and share the resulting models or to pre-blend
+some common configurations in a server context.</p>
+<pre><code class="language-json">{
+  &quot;diffusion&quot;: [
+    {
+      &quot;name&quot;: &quot;diffusion-blend-many&quot;,
+      &quot;source&quot;: &quot;runwayml/stable-diffusion-v1-5&quot;,
+      &quot;inversions&quot;: [
+        {
+          &quot;name&quot;: &quot;cubex&quot;,
+          &quot;source&quot;: &quot;sd-concepts-library/cubex&quot;,
+          &quot;format&quot;: &quot;concept&quot;,
+          &quot;label&quot;: &quot;Cubex&quot;
+        }
+      ],
+      &quot;loras&quot;: []
+    }
+  ]
+}
+</code></pre>
+<h3 id="extras-file-format">Extras file format</h3>
+<ul>
+<li>diffusion<ul>
+<li>array of diffusion models</li>
+<li>each one has:<ul>
+<li>config<ul>
+<li>string</li>
+</ul>
+</li>
+<li>format<ul>
+<li>one of:<ul>
+<li>bin</li>
+<li>ckpt</li>
+<li>onnx</li>
+<li>pt</li>
+<li>pth</li>
+<li>safetensors</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>hash<ul>
+<li>string</li>
+</ul>
+</li>
+<li>image_size<ul>
+<li>number</li>
+</ul>
+</li>
+<li>inversions<ul>
+<li>array of inversion networks</li>
+<li>permanently blended with the base model</li>
+<li>each one has:<ul>
+<li>name</li>
+<li>source</li>
+<li>format</li>
+<li>label</li>
+<li>token</li>
+<li>weight</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>label<ul>
+<li>string</li>
+</ul>
+</li>
+<li>loras<ul>
+<li>array of lora networks</li>
+<li>permanently blended with the base model</li>
+<li>each one has:<ul>
+<li>name</li>
+<li>source</li>
+<li>label</li>
+<li>weight</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>name<ul>
+<li>string</li>
+</ul>
+</li>
+<li>pipeline<ul>
+<li>one of:<ul>
+<li>controlnet</li>
+<li>img2img</li>
+<li>inpaint</li>
+<li>lpw</li>
+<li>panorama</li>
+<li>pix2pix</li>
+<li>txt2img</li>
+<li>upscaling</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>source<ul>
+<li>string</li>
+</ul>
+</li>
+<li>vae<ul>
+<li>string</li>
+</ul>
+</li>
+<li>version<ul>
+<li>one of:<ul>
+<li>v1</li>
+<li>v2</li>
+<li>v2.1</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>correction<ul>
+<li>array of correction models</li>
+<li>each one has:<ul>
+<li>format<ul>
+<li>same formats as diffusion models</li>
+</ul>
+</li>
+<li>label<ul>
+<li>string</li>
+</ul>
+</li>
+<li>model<ul>
+<li>one of:<ul>
+<li>codeformer</li>
+<li>gfpgan</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>name<ul>
+<li>string</li>
+</ul>
+</li>
+<li>source<ul>
+<li>string</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>upscaling<ul>
+<li>array of upscaling models</li>
+<li>each one has:<ul>
+<li>format<ul>
+<li>same formats as diffusion models</li>
+</ul>
+</li>
+<li>label<ul>
+<li>string</li>
+</ul>
+</li>
+<li>model<ul>
+<li>one of:<ul>
+<li>bsrgan</li>
+<li>resrgan</li>
+<li>swinir</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>name<ul>
+<li>string</li>
+</ul>
+</li>
+<li>source<ul>
+<li>string</li>
+</ul>
+</li>
+<li>scale<ul>
+<li>number</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>networks<ul>
+<li>array of additional networks</li>
+<li>each one has:<ul>
+<li>format<ul>
+<li>one of:<ul>
+<li>ckpt</li>
+<li>safetensors</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>model<ul>
+<li>one of:<ul>
+<li>concept</li>
+<li>embeddings</li>
+<li>cloneofsimo</li>
+<li>sd-scripts</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>name</li>
+<li>source</li>
+<li>type<ul>
+<li>one of:<ul>
+<li>inversion</li>
+<li>lora</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>sources<ul>
+<li>array of additional sources to fetch</li>
+<li>each one has:<ul>
+<li>format</li>
+<li>name</li>
+<li>source</li>
+</ul>
+</li>
+<li>array of sources</li>
+</ul>
+</li>
+<li>strings<ul>
+<li>additional translation strings</li>
+</ul>
+</li>
+</ul>
+<h2 id="environment-variables">Environment variables</h2>
+<p>This section catalogs the environment variables that can be set in the launch script. These variables can be set in the server launch scripts as</p>
+<pre><code class="language-shell"># on linux:
+&gt; export [ENVIRONMENT VARIABLE NAME]=[VALUE]
+
+# on windows:
+&gt; set [ENVIRONMENT VARIABLE NAME]=[VALUE]
+</code></pre>
+<p>The following environment variables are available:</p>
+<ul>
+<li><code>ONNX_WEB_MODEL_PATH</code><ul>
+<li>The path to the models folder. Defaults to <code>/models</code>.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_EXTRA_MODELS</code><ul>
+<li>The path to the extra models json file. See <a href="#adding-your-own-models">the Adding your own models section</a> for more
+  information. Defaults to nothing.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_OUTPUT_PATH</code><ul>
+<li>The path to the model output folder (for generated images). Defaults to <code>/outputs</code>.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_PARAMS_PATH</code><ul>
+<li>The path to the <code>params.json</code> file that holds the model parameters currently in use. Defaults to <code>/api</code>. Not
+  accessible by default in the Windows bundle; use the web interface or set another path.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_CORS_ORIGIN</code><ul>
+<li>The allowed origins for <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">cross-origin resource sharing</a>
+  headers. Allows access from other websites or clients.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_ANY_PLATFORM</code><ul>
+<li>The platform that will be used when selecting any platform in the client.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_BLOCK_PLATFORMS</code><ul>
+<li>Platforms that should not be shown in the client. Can be used to disable CPU mode and only run on your GPU.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_DEFAULT_PLATFORM</code><ul>
+<li>The default platform that will be selected in the client, if you have more than one GPU or have CPU mode enabled.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_IMAGE_FORMAT</code><ul>
+<li>The image format for the output. Defaults to <code>.png</code>.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_CACHE_MODELS</code><ul>
+<li>The number of models to cache. Decreasing this value may decrease VRAM usage and increase stability when switching
+  models, but may also increase startup time. Defaults to 5.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_SHOW_PROGRESS</code><ul>
+<li>Whether to show progress in the command prompt window. Defaults to True.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_OPTIMIZATIONS</code><ul>
+<li>See <a href="#optimizing-models-for-lower-memory-usage">the Optimizing models for lower memory usage section</a> for more information.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_JOB_LIMIT</code><ul>
+<li>Job limit before workers will be automatically restarted. Defaults to 10.</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_MEMORY_LIMIT</code><ul>
+<li>VRAM usage limit for CUDA devices. Defaults to none, which is no limit.</li>
+</ul>
+</li>
+</ul>
+<h2 id="known-errors">Known errors</h2>
+<p>This section attempts to cover all of the known errors and their solutions.</p>
+<p>If you encounter an error that does not show up here, please create a new issue on Github:</p>
+<ul>
+<li>collect as many details as possible<ul>
+<li>screenshots from the client and logs from the server are especially helpful</li>
+<li>redact anything you are not comfortable sharing, like IP addresses or prompt text</li>
+<li>please include any stacktraces that appear in the server logs</li>
+</ul>
+</li>
+<li>run <a href="#check-environment-script">the check environment script</a></li>
+<li><a href="https://github.com/ssube/onnx-web/issues/new/choose">open a Github issue</a></li>
+</ul>
+<h3 id="check-scripts">Check scripts</h3>
+<p>There are a few scripts provided to check various parts of the app, environment, or models. These can be used to
+collect information for debugging problems or just to figure out what is in a tensor file with a confusing name.</p>
+<h4 id="check-environment-script">Check environment script</h4>
+<p>The <code>check-env.py</code> script will check for required and recommended packages and collect their versions, then list
+the ONNX runtime providers that are available in the current environment.</p>
+<p>This can be used to make sure you have the correct packages installed and that your GPU provider appears in the list.</p>
+<p>To run the <code>check-env.py</code> script using your <code>onnx-web</code> virtual environment:</p>
+<pre><code class="language-shell"># on linux:
+&gt; cd onnx-web/api
+&gt; onnx_env/bin/activate
+&gt; python3 scripts/check-env.py
+
+# on windows:
+&gt; cd onnx-web\api
+&gt; onnx_env\Scripts\Activate.bat
+&gt; python scripts\check-env.py
+</code></pre>
+<h4 id="check-model-script">Check model script</h4>
+<p>The <code>check-model.py</code> script will check the format and contents of a model file. The models can be ONNX models,
+safetensors, pickle tensors, protocol buffers, or binary files.</p>
+<p>The script will attempt to load the file, which can import libraries and execute code in the case of pickle tensors.
+Only run the script on files that you trust enough to load.</p>
+<p>To run the <code>check-model.py</code> script on a model using your <code>onnx-web</code> virtual environment:</p>
+<pre><code class="language-shell"># on linux:
+&gt; cd onnx-web/api
+&gt; onnx_env/bin/activate
+&gt; python3 scripts/check-model.py /home/ssube/onnx-web/models/inversion/1234.safetensor
+
+# on windows:
+&gt; cd onnx-web\api
+&gt; onnx_env\Scripts\Activate.bat
+&gt; python scripts\check-model.py C:\Users\ssube\onnx-web\models\inversion\1234.safetensor
+</code></pre>
+<h3 id="client-errors">Client errors</h3>
+<h4 id="error-fetching-server-parameters">Error fetching server parameters</h4>
+<p>This can happen when the client cannot fetch the server parameters because the request times out or has been rejected
+by the server.</p>
+<p>This often means that the requested API server is not running.</p>
+<h4 id="parameter-version-error">Parameter version error</h4>
+<p>This can happen when the version in the server parameters is too old for the current client or missing entirely, which
+was the case before version v0.5.0.</p>
+<p>This often means that the API server is running but out-of-date.</p>
+<h4 id="distorted-and-noisy-images">Distorted and noisy images</h4>
+<p>This can happen when the selected diffusion or upscaling models are not trained for the current resolution or aspect
+ratio.</p>
+<p>This often means that the scale parameter does not match the upscaling model.</p>
+<h4 id="scattered-image-tiles">Scattered image tiles</h4>
+<p>This can happen when the selected upscaling model is not trained for the current resolution.</p>
+<p>This often means that the scale parameter does not match the upscaling model.</p>
+<h3 id="server-errors">Server errors</h3>
+<p>If your image fails to render without any other error messages on the client, check the server logs for errors (if you
+have access).</p>
+<h4 id="very-slow-with-high-cpu-usage-max-fan-speed-during-image-generation">Very slow with high CPU usage, max fan speed during image generation</h4>
+<p>This can happen when you attempt to use a platform that is not supported by the current hardware.</p>
+<p>This often means that you need to select a different platform or install the correct drivers for your GPU and operating
+system.</p>
+<p>Example error:</p>
+<pre><code class="language-none">loading different pipeline
+C:\Users\ssube\stabdiff\onnx-web\api\onnx_env\lib\site-packages\onnxruntime\capi\onnxruntime_inference_collection.py:54: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'DmlExecutionProvider, CPUExecutionProvider'
+</code></pre>
+<p>The <code>CPUExecutionProvider</code> is used as a fallback, but has a tendency to max out all of your real CPU cores.</p>
+<h4 id="connection-refused-or-timeouts">Connection refused or timeouts</h4>
+<p>This can happen in a few situations:</p>
+<ul>
+<li>when your API server is not running</li>
+<li>when your client is attempting to use the wrong API server</li>
+<li>when your firewall is blocking the API server's port</li>
+</ul>
+<p>If you are using a remote server, not on your local machine, check the Settings tab and make sure the API Server is
+set to the correct DNS name or IP address and port number.</p>
+<p>If you have a firewall running (which you should), make sure that the correct port has been opened and the API server
+is allowed to use that port.</p>
+<p>The default ports are:</p>
+<ul>
+<li>TCP/5000 for the API server</li>
+</ul>
+<p>If you are running the GUI separately, such as when using nginx or for development:</p>
+<ul>
+<li>TCP/80 for the GUI using nginx without a container</li>
+<li>TCP/8000 for the GUI using the nginx container</li>
+<li>TCP/8000 for the GUI dev server</li>
+</ul>
+<h4 id="error-name-cmd-is-not-defined">Error: name 'cmd' is not defined</h4>
+<p>This can happen when you attempt to create the Python virtual environment on a Debian system, and appears to be a bug
+in the Python <code>venv</code> module: https://www.mail-archive.com/debian-bugs-dist@lists.debian.org/msg1884072.html</p>
+<p>Installing the <code>venv</code> module through <code>apt</code> appears to resolve the issue:</p>
+<pre><code class="language-shell">&gt; sudo apt install python3-venv
+</code></pre>
+<h4 id="cuda-driver-version-is-insufficient-for-cuda-runtime-version">CUDA driver version is insufficient for CUDA runtime version</h4>
+<p>This can happen when your CUDA drivers are too new or too old for the API server and ONNX runtime.</p>
+<p>Make sure you are using CUDA 11.x drivers. The 11.6 version is recommended by ONNX, but 11.7 appears to work as well.</p>
+<p>Please see <a href="https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements">the ONNX runtime docs</a>
+for more details.</p>
+<h4 id="command-python-not-found-or-command-pip-not-found">Command 'python' not found or Command 'pip' not found</h4>
+<p>This can happen when your operating system has both Python 2 and 3 installed and uses different commands to
+differentiate between them.</p>
+<p>Using <code>python3</code> and <code>pip3</code> <em>instead of</em> <code>python</code> and <code>pip</code> in the commands should resolve this issue:</p>
+<pre><code class="language-shell">&gt; pip3 install -r requirements/base.txt    # for example, you may be running a different command
+</code></pre>
+<h4 id="attributeerror-module-numpy-has-no-attribute-float">AttributeError: module 'numpy' has no attribute 'float'</h4>
+<p>This can happen when you have numpy 1.24 or a newer version installed. The <code>float</code> attribute has been deprecated and
+was removed in 1.24. Some of the dependencies will automatically install the latest version, while others need a 1.23
+version.</p>
+<p>Reinstalling numpy 1.23 should resolve this issue:</p>
+<pre><code class="language-shell">&gt; pip install &quot;numpy&gt;=1.20,&lt;1.24&quot; --force-reinstall
+</code></pre>
+<h4 id="numpy-invalid-combination-of-arguments">Numpy invalid combination of arguments</h4>
+<p>This can happen when you attempt to use an ONNX model that was exported using an older version of the ONNX libraries.</p>
+<p>This often means that you need to re-export your models to ONNX format using the current version of the server and the
+libraries it depends on.</p>
+<h4 id="onnxruntimeerror-the-parameter-is-incorrect">ONNXRuntimeError: The parameter is incorrect</h4>
+<p>This can happen in a few situations:</p>
+<ul>
+<li>when you attempt to use an inpainting model from the txt2img or img2img tabs, or vice versa</li>
+<li>when you attempt to use img2img with a non-square, non-power-of-2 source</li>
+</ul>
+<p>This often means that you are using an invalid model for the current tab or an invalid source image for the current
+model.</p>
+<p>Example error:</p>
+<pre><code class="language-none">  File &quot;C:\Users\ssube\stabdiff\onnx-web\api\onnx_web\pipeline.py&quot;, line 181, in run_inpaint_pipeline
+    image = pipe(
+  File &quot;C:\Users\ssube\stabdiff\onnx-web\api\onnx_env\lib\site-packages\torch\autograd\grad_mode.py&quot;, line 27, in decorate_context
+    return func(*args, **kwargs)
+  File &quot;C:\Users\ssube\stabdiff\onnx-web\api\onnx_env\lib\site-packages\diffusers\pipelines\stable_diffusion\pipeline_onnx_stable_diffusion_inpaint.py&quot;, line 427, in __call__
+    noise_pred = self.unet(
+  File &quot;C:\Users\ssube\stabdiff\onnx-web\api\onnx_env\lib\site-packages\diffusers\onnx_utils.py&quot;, line 61, in __call__
+    return self.model.run(None, inputs)
+  File &quot;C:\Users\ssube\stabdiff\onnx-web\api\onnx_env\lib\site-packages\onnxruntime\capi\onnxruntime_inference_collection.py&quot;, line 200, in run
+    return self._sess.run(output_names, input_feed, run_options)
+onnxruntime.capi.onnxruntime_pybind11_state.RuntimeException: [ONNXRuntimeError] : 6 : RUNTIME_EXCEPTION : Non-zero status code returned while running Conv node. Name:'/conv_in/Conv' Status Message: D:\a\_work\1\s\onnx
+runtime\core\providers\dml\DmlExecutionProvider\src\MLOperatorAuthorImpl.cpp(1878)\onnxruntime_pybind11_state.pyd!00007FFB8404F72D: (caller: 00007FFB84050AEF) Exception(15) tid(2428) 80070057 The parameter is incorrect
+</code></pre>
+<h4 id="the-expanded-size-of-the-tensor-must-match-the-existing-size">The expanded size of the tensor must match the existing size</h4>
+<p>This can happen when you use an upscaling model that was trained at one specific scale with a different scale that
+it was not expecting.</p>
+<p>This often means that you are using an invalid scale for the upscaling model you have selected.</p>
+<p>Example error:</p>
+<pre><code class="language-none">  File &quot;C:\Users\ssube\stabdiff\onnx-web\api\onnx_web\upscale.py&quot;, line 155, in upscale_resrgan
+    output, _ = upsampler.enhance(output, outscale=params.outscale)
+  File &quot;C:\Users\ssube\stabdiff\onnx-web\api\onnx_env\lib\site-packages\torch\autograd\grad_mode.py&quot;, line 27, in decorate_context
+    return func(*args, **kwargs)
+  File &quot;C:\Users\ssube\stabdiff\onnx-web\api\onnx_env\lib\site-packages\realesrgan\utils.py&quot;, line 228, in enhance
+    self.tile_process()
+  File &quot;C:\Users\ssube\stabdiff\onnx-web\api\onnx_env\lib\site-packages\realesrgan\utils.py&quot;, line 182, in tile_process
+    self.output[:, :, output_start_y:output_end_y,
+RuntimeError: The expanded size of the tensor (2048) must match the existing size (1024) at non-singleton dimension 3.  Target sizes: [1, 3, 2048, 2048].  Tensor sizes: [3, 1024, 1024]
+</code></pre>
+<h4 id="shape-mismatch-attempting-to-re-use-buffer">Shape mismatch attempting to re-use buffer</h4>
+<p>This can happen when you accidentally try to run more than one pipeline on the same device at the same time.</p>
+<p>This often means that you need to set <code>ONNX_WEB_BLOCK_PLATFORMS</code> to remove the duplicates. You can try one of the
+following values, which will disable the <em>legacy</em> platform names but <em>will not</em> block hardware acceleration through
+the CUDA and DirectML platforms:</p>
+<pre><code class="language-shell"># for Windows:
+&gt; set ONNX_WEB_BLOCK_PLATFORMS=amd,cpu,nvidia
+
+# for Linux:
+&gt; export ONNX_WEB_BLOCK_PLATFORMS=amd,cpu,nvidia
+</code></pre>
+<p>Example error:</p>
+<pre><code class="language-none">[2023-02-04 12:32:54,388] DEBUG: onnx_web.device_pool: job txt2img_1495861691_ccc20fe082567fb4a3471a851db509dc25b4b933dde53db913351be0b617cf85_1675535574.png assigned to device amd
+[2023-02-04 12:32:54,388] DEBUG: onnx_web.diffusion.load: reusing existing diffusion pipeline
+
+023-02-04 12:32:54.4187694 [W:onnxruntime:, execution_frame.cc:604 onnxruntime::ExecutionFrame::AllocateMLValueTensorPreAllocateBuffer] Shape mismatch attempting to re-use buffer. {2,8,77
+,40} != {2,77,8}. Validate usage of dim_value (values should be &gt; 0) and dim_param (all values with the same string should equate to the same size) in shapes in the model.
+[2023-02-04 12:32:54,432] INFO: werkzeug: 10.2.2.16 - - [04/Feb/2023 12:32:54] &quot;GET /api/ready?output=txt2img_1495861691_ccc20fe082567fb4a3471a851db509dc25b4b933dde53db913351be0b617cf85_1
+675535574.png HTTP/1.1&quot; 200 -
+</code></pre>
+<h4 id="cannot-read-properties-of-undefined-reading-default">Cannot read properties of undefined (reading 'default')</h4>
+<p>This can happen when you use a newer client with an older version of the server parameters.</p>
+<p>This often means that a parameter is missing from your <code>params.json</code> file. If you have not updated your server
+recently, try updating and restarting the server.</p>
+<p>If you have customized your <code>params.json</code> file, check to make sure it has all of the parameters listed and that the
+names are correct (they are case-sensitive).</p>
+<p>Example error:</p>
+<pre><code class="language-none">Error fetching server parameters
+Could not fetch parameters from the ONNX web API server at http://10.2.2.34:5000.
+
+Cannot read properties of undefined (reading 'default')
+</code></pre>
+<h2 id="output-image-sizes">Output Image Sizes</h2>
+<p>You can use this table to figure out the final size for each image, based on the combination of parameters that you are
+using:</p>
+<table>
+<thead>
+<tr>
+<th>Input Width/Height</th>
+<th>Highres</th>
+<th>Iterations</th>
+<th>Scale</th>
+<th>Upscaling</th>
+<th>Scale</th>
+<th>Outscale</th>
+<th>Correction</th>
+<th>Outscale</th>
+<th>Upscale Order</th>
+<th>Output Width/Height</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>512</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>512</td>
+<td><code>512 * 1 * 1 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>2</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>1024</td>
+<td><code>512 * 2 * 1 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>4</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>2048</td>
+<td><code>512 * 4 * 1 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>2048</td>
+<td><code>512 * 2 * 2 * 1 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>2</td>
+<td>4</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>4096</td>
+<td><code>512 * 4 * 4 * 1 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>yes</td>
+<td>2</td>
+<td>1</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>512</td>
+<td><code>512 * 1 * 1 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>1024</td>
+<td><code>512 * 1 * 2 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>yes</td>
+<td>4</td>
+<td>1</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>512</td>
+<td><code>512 * 1 * 1 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>yes</td>
+<td>4</td>
+<td>2</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>1024</td>
+<td><code>512 * 1 * 2 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>yes</td>
+<td>4</td>
+<td>4</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>2048</td>
+<td><code>512 * 1 * 4 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>yes</td>
+<td>1</td>
+<td>first</td>
+<td>512</td>
+<td><code>512 * 1 * 1 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>yes</td>
+<td>2</td>
+<td>first</td>
+<td>1024</td>
+<td><code>512 * 1 * 1 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>yes</td>
+<td>1</td>
+<td>last</td>
+<td>512</td>
+<td><code>512 * 1 * 1 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>yes</td>
+<td>2</td>
+<td>last</td>
+<td>1024</td>
+<td><code>512 * 1 * 1 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>yes</td>
+<td>1</td>
+<td>both</td>
+<td>512</td>
+<td><code>512 * 1 * 1 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>2048</td>
+<td><code>512 * 1 * 1 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>2048</td>
+<td><code>512 * 2 * 2 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>4096</td>
+<td><code>512 * 4 * 2 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>2</td>
+<td>yes</td>
+<td>4</td>
+<td>4</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>4096</td>
+<td><code>512 * 2 * 4 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>4</td>
+<td>yes</td>
+<td>4</td>
+<td>4</td>
+<td>no</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>8192</td>
+<td><code>512 * 4 * 4 * 1</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>first or last</td>
+<td>4096</td>
+<td><code>512 * 2 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>first or last</td>
+<td>8192</td>
+<td><code>512 * 4 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>2</td>
+<td>yes</td>
+<td>4</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>first or last</td>
+<td>8192</td>
+<td><code>512 * 2 * 4 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>4</td>
+<td>yes</td>
+<td>4</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>first or last</td>
+<td>16k</td>
+<td><code>512 * 4 * 4 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>8192</td>
+<td><code>512 * 2 * 2 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>16k</td>
+<td><code>512 * 4 * 2 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>16k</td>
+<td><code>512 * 2 * 2 * 2 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>2</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>64k</td>
+<td><code>512 * 4 * 4 * 2 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>3</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>32k</td>
+<td><code>512 * 2 * 2 * 2 * 2 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>3</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>262k</td>
+<td><code>512 * 4 * 4 * 4 * 2 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>2</td>
+<td>yes</td>
+<td>4</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>16k</td>
+<td><code>512 * 2 * 4 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>1</td>
+<td>4</td>
+<td>yes</td>
+<td>4</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>32k</td>
+<td><code>512 * 4 * 4 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>2</td>
+<td>2</td>
+<td>yes</td>
+<td>4</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>32k</td>
+<td><code>512 * 2 * 4 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>2</td>
+<td>4</td>
+<td>yes</td>
+<td>4</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>128k</td>
+<td><code>512 * 4 * 4 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>3</td>
+<td>2</td>
+<td>yes</td>
+<td>4</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>64k</td>
+<td><code>512 * 2 * 2 * 2 * 4 * 2 * 2</code></td>
+</tr>
+<tr>
+<td>512</td>
+<td>yes</td>
+<td>3</td>
+<td>4</td>
+<td>yes</td>
+<td>4</td>
+<td>4</td>
+<td>yes</td>
+<td>2</td>
+<td>both</td>
+<td>524k</td>
+<td><code>512 * 4 * 4 * 4 * 4 * 2 * 2</code></td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../setup-guide/" class="btn btn-neutral float-left" title="Setup Guide"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ssube/onnx-web" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../setup-guide/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

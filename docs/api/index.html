@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://onnx-web.ai/docs/api/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>API - onnx-web docs</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "API";
+        var mkdocs_page_input_path = "api.md";
+        var mkdocs_page_url = "/docs/api/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> onnx-web docs
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">onnx-web</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">API</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#contents">Contents</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#endpoints">Endpoints</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#gui-bundle">GUI bundle</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#get">GET /</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get-path">GET /&lt;path&gt;</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#settings-and-parameters">Settings and parameters</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#get-api">GET /api</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsmasks">GET /api/settings/masks</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsmodels">GET /api/settings/models</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsnoises">GET /api/settings/noises</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsparams">GET /api/settings/params</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsplatforms">GET /api/settings/platforms</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsschedulers">GET /api/settings/schedulers</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pipelines">Pipelines</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#get-apiready">GET /api/ready</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#post-apiimg2img">POST /api/img2img</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#post-apiinpaint">POST /api/inpaint</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#post-apioutpaint">POST /api/outpaint</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#post-apitxt2img">POST /api/txt2img</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#outputs">Outputs</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#get-outputpath">GET /output/&lt;path&gt;</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../architecture/">Architecture</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../chain-pipelines/">Chain Pipelines</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../compatibility/">Compatibility</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../converting-models/">Converting Models</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../dev-test/">Development and Testing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../getting-started/">Getting Started</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../runpod-readme/">ONNX Web</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../server-admin/">Server Administration</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../setup-guide/">Setup Guide</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../user-guide/">User Guide</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">onnx-web docs</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">API</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/ssube/onnx-web/edit/master/docs/api.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="api">API</h1>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#api">API</a><ul>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#endpoints">Endpoints</a><ul>
+<li><a href="#gui-bundle">GUI bundle</a><ul>
+<li><a href="#get-"><code>GET /</code></a></li>
+<li><a href="#get-path"><code>GET /&lt;path&gt;</code></a></li>
+</ul>
+</li>
+<li><a href="#settings-and-parameters">Settings and parameters</a><ul>
+<li><a href="#get-api"><code>GET /api</code></a></li>
+<li><a href="#get-apisettingsmasks"><code>GET /api/settings/masks</code></a></li>
+<li><a href="#get-apisettingsmodels"><code>GET /api/settings/models</code></a></li>
+<li><a href="#get-apisettingsnoises"><code>GET /api/settings/noises</code></a></li>
+<li><a href="#get-apisettingsparams"><code>GET /api/settings/params</code></a></li>
+<li><a href="#get-apisettingsplatforms"><code>GET /api/settings/platforms</code></a></li>
+<li><a href="#get-apisettingsschedulers"><code>GET /api/settings/schedulers</code></a></li>
+</ul>
+</li>
+<li><a href="#pipelines">Pipelines</a><ul>
+<li><a href="#get-apiready"><code>GET /api/ready</code></a></li>
+<li><a href="#post-apiimg2img"><code>POST /api/img2img</code></a></li>
+<li><a href="#post-apiinpaint"><code>POST /api/inpaint</code></a></li>
+<li><a href="#post-apioutpaint"><code>POST /api/outpaint</code></a></li>
+<li><a href="#post-apitxt2img"><code>POST /api/txt2img</code></a></li>
+</ul>
+</li>
+<li><a href="#outputs">Outputs</a><ul>
+<li><a href="#get-outputpath"><code>GET /output/&lt;path&gt;</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="endpoints">Endpoints</h2>
+<h3 id="gui-bundle">GUI bundle</h3>
+<h4 id="get"><code>GET /</code></h4>
+<p>Serve <code>index.html</code>.</p>
+<h4 id="get-path"><code>GET /&lt;path&gt;</code></h4>
+<p>Serve requested bundle file.</p>
+<p>Usually includes:</p>
+<ul>
+<li><code>bundle/main.js</code></li>
+<li><code>config.json</code></li>
+<li><code>index.html</code></li>
+</ul>
+<h3 id="settings-and-parameters">Settings and parameters</h3>
+<h4 id="get-api"><code>GET /api</code></h4>
+<p>Introspection endpoint.</p>
+<h4 id="get-apisettingsmasks"><code>GET /api/settings/masks</code></h4>
+<p>Available mask filters.</p>
+<h4 id="get-apisettingsmodels"><code>GET /api/settings/models</code></h4>
+<p>Available models, all types.</p>
+<h4 id="get-apisettingsnoises"><code>GET /api/settings/noises</code></h4>
+<p>Available noise sources.</p>
+<h4 id="get-apisettingsparams"><code>GET /api/settings/params</code></h4>
+<p>Server parameters, slider min/max and version check.</p>
+<h4 id="get-apisettingsplatforms"><code>GET /api/settings/platforms</code></h4>
+<p>Available hardware acceleration platforms.</p>
+<h4 id="get-apisettingsschedulers"><code>GET /api/settings/schedulers</code></h4>
+<p>Available pipeline schedulers.</p>
+<h3 id="pipelines">Pipelines</h3>
+<h4 id="get-apiready"><code>GET /api/ready</code></h4>
+<p>Check if a pipeline has completed.</p>
+<h4 id="post-apiimg2img"><code>POST /api/img2img</code></h4>
+<p>Run an img2img pipeline.</p>
+<h4 id="post-apiinpaint"><code>POST /api/inpaint</code></h4>
+<p>Run an inpainting pipeline.</p>
+<h4 id="post-apioutpaint"><code>POST /api/outpaint</code></h4>
+<p>Run an outpainting pipeline.</p>
+<p>This uses the inpainting pipeline with more parameters and image filtering.</p>
+<h4 id="post-apitxt2img"><code>POST /api/txt2img</code></h4>
+<p>Run a txt2img pipeline.</p>
+<h3 id="outputs">Outputs</h3>
+<h4 id="get-outputpath"><code>GET /output/&lt;path&gt;</code></h4>
+<p>Serve output images.</p>
+<p>In debug mode, this will also include some intermediate images:</p>
+<ul>
+<li><code>last-mask.png</code></li>
+<li><code>last-noise.png</code></li>
+<li><code>last-source.png</code></li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="onnx-web"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../architecture/" class="btn btn-neutral float-right" title="Architecture">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/ssube/onnx-web" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../architecture/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
