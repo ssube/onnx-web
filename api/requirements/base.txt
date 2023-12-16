@@ -8,7 +8,7 @@ coloredlogs==15.0.1
 controlnet_aux==0.0.2
 datasets==2.15.0
 diffusers==0.24.0
-huggingface-hub==0.16.4
+huggingface-hub==0.19.4
 invisible-watermark==0.2.0
 mediapipe==0.9.2.1
 omegaconf==2.3.0
