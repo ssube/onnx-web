@@ -31,7 +31,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Useful keywords](#useful-keywords)
     - [Prompt tokens](#prompt-tokens)
       - [LoRA and LyCORIS tokens](#lora-and-lycoris-tokens)
-      - [Textual Inversion tokens](#textual-inversion-tokens)
+      - [Embedding (Textual Inversion) tokens](#embedding-textual-inversion-tokens)
       - [Prompt stages](#prompt-stages)
       - [Region tokens](#region-tokens)
       - [Reseed tokens (region seeds)](#reseed-tokens-region-seeds)
@@ -371,16 +371,20 @@ the `<lora:name:1.0>` token _and_ the keywords to activate the LoRA.
 
 Check out [the `kohya-ss/sd-scripts` repository](https://github.com/kohya-ss/sd-scripts) for more details.
 
-#### Textual Inversion tokens
+#### Embedding (Textual Inversion) tokens
 
 You can blend one or more [Textual Inversions](https://textual-inversion.github.io/) with the ONNX diffusion model
-using the `inversion` token:
+using the `embeddings` token _and_ one or more layer token:
 
 ```none
-<inversion:autumn:1.0>
+<inversion:autumn:1.0> autumn, ...
+<embeddings:autumn:1.0> autumn, ...
 ```
 
-Textual Inversion embeddings must be placed in the `models/inversion` directory and may be any supported tensor format.
+The `<inversion:name:weight>` token is a synonym for `<embeddings:name:weight>` and operates exactly the same way.
+
+Textual Inversion embeddings must be placed in the `models/inversion` directory regardless of which token you use, and
+may be any supported tensor format.
 
 The type of network, name, and weight must be separated by colons. The Textual Inversion name must be alphanumeric
 and must not contain any special characters other than `-` and `_`.
