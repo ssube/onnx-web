@@ -31,6 +31,15 @@ ModelDict = Dict[str, Union[str, int]]
 LegacyModel = Tuple[str, str, Optional[bool], Optional[bool], Optional[int]]
 
 DEFAULT_OPSET = 14
+DIFFUSION_PREFIX = [
+    "diffusion-",
+    "diffusion/",
+    "diffusion\\",
+    "stable-diffusion-",
+    "upscaling-",  # SD upscaling
+]
+MODEL_FORMATS = ["onnx", "pth", "ckpt", "safetensors"]
+RESOLVE_FORMATS = ["safetensors", "ckpt", "pt", "pth", "bin"]
 
 
 class ConversionContext(ServerContext):
@@ -85,37 +94,36 @@ class ConversionContext(ServerContext):
         return torch.device(self.training_device)
 
 
-def download_progress(urls: List[Tuple[str, str]]):
-    for url, dest in urls:
-        dest_path = Path(dest).expanduser().resolve()
-        dest_path.parent.mkdir(parents=True, exist_ok=True)
+def download_progress(source: str, dest: str):
+    dest_path = Path(dest).expanduser().resolve()
+    dest_path.parent.mkdir(parents=True, exist_ok=True)
 
-        if dest_path.exists():
-            logger.debug("destination already exists: %s", dest_path)
-            return str(dest_path.absolute())
-
-        req = requests.get(
-            url,
-            stream=True,
-            allow_redirects=True,
-            headers={
-                "User-Agent": "onnx-web-api",
-            },
-        )
-        if req.status_code != 200:
-            req.raise_for_status()  # Only works for 4xx errors, per SO answer
-            raise RequestException(
-                "request to %s failed with status code: %s" % (url, req.status_code)
-            )
-
-        total = int(req.headers.get("Content-Length", 0))
-        desc = "unknown" if total == 0 else ""
-        req.raw.read = partial(req.raw.read, decode_content=True)
-        with tqdm.wrapattr(req.raw, "read", total=total, desc=desc) as data:
-            with dest_path.open("wb") as f:
-                shutil.copyfileobj(data, f)
-
+    if dest_path.exists():
+        logger.debug("destination already exists: %s", dest_path)
         return str(dest_path.absolute())
+
+    req = requests.get(
+        source,
+        stream=True,
+        allow_redirects=True,
+        headers={
+            "User-Agent": "onnx-web-api",
+        },
+    )
+    if req.status_code != 200:
+        req.raise_for_status()  # Only works for 4xx errors, per SO answer
+        raise RequestException(
+            "request to %s failed with status code: %s" % (source, req.status_code)
+        )
+
+    total = int(req.headers.get("Content-Length", 0))
+    desc = "unknown" if total == 0 else ""
+    req.raw.read = partial(req.raw.read, decode_content=True)
+    with tqdm.wrapattr(req.raw, "read", total=total, desc=desc) as data:
+        with dest_path.open("wb") as f:
+            shutil.copyfileobj(data, f)
+
+    return str(dest_path.absolute())
 
 
 def tuple_to_source(model: Union[ModelDict, LegacyModel]):
@@ -184,10 +192,6 @@ def tuple_to_upscaling(model: Union[ModelDict, LegacyModel]):
         return model
 
 
-MODEL_FORMATS = ["onnx", "pth", "ckpt", "safetensors"]
-RESOLVE_FORMATS = ["safetensors", "ckpt", "pt", "pth", "bin"]
-
-
 def check_ext(name: str, exts: List[str]) -> Tuple[bool, str]:
     _name, ext = path.splitext(name)
     ext = ext.strip(".")
@@ -215,6 +219,9 @@ def remove_prefix(name: str, prefix: str) -> str:
 
 
 def load_torch(name: str, map_location=None) -> Optional[Dict]:
+    """
+    TODO: move out of convert
+    """
     try:
         logger.debug("loading tensor with Torch: %s", name)
         checkpoint = torch.load(name, map_location=map_location)
@@ -228,6 +235,9 @@ def load_torch(name: str, map_location=None) -> Optional[Dict]:
 
 
 def load_tensor(name: str, map_location=None) -> Optional[Dict]:
+    """
+    TODO: move out of convert
+    """
     logger.debug("loading tensor: %s", name)
     _, extension = path.splitext(name)
     extension = extension[1:].lower()
@@ -285,6 +295,9 @@ def load_tensor(name: str, map_location=None) -> Optional[Dict]:
 
 
 def resolve_tensor(name: str) -> Optional[str]:
+    """
+    TODO: move out of convert
+    """
     logger.debug("searching for tensors with known extensions: %s", name)
     for next_extension in RESOLVE_FORMATS:
         next_name = f"{name}.{next_extension}"
@@ -345,3 +358,52 @@ def onnx_export(
             all_tensors_to_one_file=True,
             location=ONNX_WEIGHTS,
         )
+
+
+def fix_diffusion_name(name: str):
+    if not any([name.startswith(prefix) for prefix in DIFFUSION_PREFIX]):
+        logger.warning(
+            "diffusion models must have names starting with diffusion- to be recognized by the server: %s does not match",
+            name,
+        )
+        return f"diffusion-{name}"
+
+    return name
+
+
+def build_cache_paths(
+    conversion: ConversionContext,
+    name: str,
+    client: Optional[str] = None,
+    dest: Optional[str] = None,
+    format: Optional[str] = None,
+) -> List[str]:
+    cache_path = dest or conversion.cache_path
+
+    # add an extension if possible, some of the conversion code checks for it
+    if format is not None:
+        basename = path.basename(name)
+        _filename, ext = path.splitext(basename)
+        if ext is None or ext == "":
+            name = f"{name}.{format}"
+
+    paths = [
+        path.join(cache_path, name),
+    ]
+
+    if client is not None:
+        client_path = path.join(cache_path, client)
+        paths.append(path.join(client_path, name))
+
+    return paths
+
+
+def get_first_exists(
+    paths: List[str],
+) -> Optional[str]:
+    for name in paths:
+        if path.exists(name):
+            logger.debug("model already exists in cache, skipping fetch: %s", name)
+            return name
+
+    return None

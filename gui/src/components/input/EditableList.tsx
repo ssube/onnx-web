@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
-import { OnnxState, StateContext } from '../../state.js';
+import { OnnxState, StateContext } from '../../state/full.js';
 
 const { useContext, useState, memo, useMemo } = React;
 

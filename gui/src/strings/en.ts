@@ -287,6 +287,7 @@ export const I18N_STRINGS_EN = {
         'ddpm': 'DDPM',
         'deis-multi': 'DEIS Multistep',
         'dpm-multi': 'DPM Multistep',
+        'dpm-sde': 'DPM SDE (Turbo)',
         'dpm-single': 'DPM Singlestep',
         'euler': 'Euler',
         'euler-a': 'Euler Ancestral',

@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { OnnxState, StateContext } from '../state.js';
+import { OnnxState, StateContext } from '../state/full.js';
 import { ImageMetadata } from '../types/api.js';
 import { DeepPartial } from '../types/model.js';
 import { BaseImgParams, HighresParams, Txt2ImgParams, UpscaleParams } from '../types/params.js';

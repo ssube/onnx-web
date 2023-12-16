@@ -1,6 +1,6 @@
 import { PaletteMode } from '@mui/material';
 
-import { Theme } from '../state.js';
+import { Theme } from '../state/types.js';
 import { trimHash } from '../utils.js';
 
 export const TAB_LABELS = [

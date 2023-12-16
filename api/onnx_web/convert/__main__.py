@@ -3,16 +3,17 @@ from argparse import ArgumentParser
 from logging import getLogger
 from os import makedirs, path
 from sys import exit
-from typing import Any, Dict, List, Optional, Tuple
-from urllib.parse import urlparse
+from typing import Any, Dict, List, Union
 
-from huggingface_hub.file_download import hf_hub_download
 from jsonschema import ValidationError, validate
 from onnx import load_model, save_model
 from transformers import CLIPTokenizer
 
 from ..constants import ONNX_MODEL, ONNX_WEIGHTS
+from ..server.plugin import load_plugins
 from ..utils import load_config
+from .client import add_model_source, fetch_model
+from .client.huggingface import HuggingfaceClient
 from .correction.gfpgan import convert_correction_gfpgan
 from .diffusion.control import convert_diffusion_control
 from .diffusion.diffusion import convert_diffusion_diffusers
@@ -25,8 +26,7 @@ from .upscaling.swinir import convert_upscaling_swinir
 from .utils import (
     DEFAULT_OPSET,
     ConversionContext,
-    download_progress,
-    remove_prefix,
+    fix_diffusion_name,
     source_format,
     tuple_to_correction,
     tuple_to_diffusion,
@@ -44,16 +44,18 @@ warnings.filterwarnings(
     ".*Converting a tensor to a Python boolean might cause the trace to be incorrect.*",
 )
 
-Models = Dict[str, List[Any]]
-
 logger = getLogger(__name__)
 
+ModelDict = Dict[str, Union[float, int, str]]
+Models = Dict[str, List[ModelDict]]
 
-model_sources: Dict[str, Tuple[str, str]] = {
-    "civitai://": ("Civitai", "https://civitai.com/api/download/models/%s"),
+model_converters: Dict[str, Any] = {
+    "img2img": convert_diffusion_diffusers,
+    "img2img-sdxl": convert_diffusion_diffusers_xl,
+    "inpaint": convert_diffusion_diffusers,
+    "txt2img": convert_diffusion_diffusers,
+    "txt2img-sdxl": convert_diffusion_diffusers_xl,
 }
-
-model_source_huggingface = "huggingface://"
 
 # recommended models
 base_models: Models = {
@@ -61,15 +63,15 @@ base_models: Models = {
         # v1.x
         (
             "stable-diffusion-onnx-v1-5",
-            model_source_huggingface + "runwayml/stable-diffusion-v1-5",
+            HuggingfaceClient.protocol + "runwayml/stable-diffusion-v1-5",
         ),
         (
             "stable-diffusion-onnx-v1-inpainting",
-            model_source_huggingface + "runwayml/stable-diffusion-inpainting",
+            HuggingfaceClient.protocol + "runwayml/stable-diffusion-inpainting",
         ),
         (
             "upscaling-stable-diffusion-x4",
-            model_source_huggingface + "stabilityai/stable-diffusion-x4-upscaler",
+            HuggingfaceClient.protocol + "stabilityai/stable-diffusion-x4-upscaler",
             True,
         ),
     ],
@@ -200,69 +202,203 @@ base_models: Models = {
 }
 
 
-def fetch_model(
-    conversion: ConversionContext,
-    name: str,
-    source: str,
-    dest: Optional[str] = None,
-    format: Optional[str] = None,
-    hf_hub_fetch: bool = False,
-    hf_hub_filename: Optional[str] = None,
-) -> Tuple[str, bool]:
-    cache_path = dest or conversion.cache_path
-    cache_name = path.join(cache_path, name)
+def convert_model_source(conversion: ConversionContext, model):
+    model_format = source_format(model)
+    name = model["name"]
+    source = model["source"]
 
-    # add an extension if possible, some of the conversion code checks for it
-    if format is None:
-        url = urlparse(source)
-        ext = path.basename(url.path)
-        _filename, ext = path.splitext(ext)
-        if ext is not None:
-            cache_name = cache_name + ext
+    dest_path = None
+    if "dest" in model:
+        dest_path = path.join(conversion.model_path, model["dest"])
+
+    dest = fetch_model(conversion, name, source, format=model_format, dest=dest_path)
+    logger.info("finished downloading source: %s -> %s", source, dest)
+
+
+def convert_model_network(conversion: ConversionContext, model):
+    model_format = source_format(model)
+    model_type = model["type"]
+    name = model["name"]
+    source = model["source"]
+
+    if model_type == "control":
+        dest = fetch_model(
+            conversion,
+            name,
+            source,
+            format=model_format,
+        )
+
+        convert_diffusion_control(
+            conversion,
+            model,
+            dest,
+            path.join(conversion.model_path, model_type, name),
+        )
     else:
-        cache_name = f"{cache_name}.{format}"
+        model = model.get("model", None)
+        dest = fetch_model(
+            conversion,
+            name,
+            source,
+            dest=path.join(conversion.model_path, model_type),
+            format=model_format,
+            embeds=(model_type == "inversion" and model == "concept"),
+        )
 
-    if path.exists(cache_name):
-        logger.debug("model already exists in cache, skipping fetch")
-        return cache_name, False
+    logger.info("finished downloading network: %s -> %s", source, dest)
 
-    for proto in model_sources:
-        api_name, api_root = model_sources.get(proto)
-        if source.startswith(proto):
-            api_source = api_root % (remove_prefix(source, proto))
-            logger.info(
-                "downloading model from %s: %s -> %s", api_name, api_source, cache_name
+
+def convert_model_diffusion(conversion: ConversionContext, model):
+    # fix up entries with missing prefixes
+    name = fix_diffusion_name(model["name"])
+    if name != model["name"]:
+        # update the model in-memory if the name changed
+        model["name"] = name
+
+    model_format = source_format(model)
+
+    pipeline = model.get("pipeline", "txt2img")
+    converter = model_converters.get(pipeline)
+    converted, dest = converter(
+        conversion,
+        model,
+        model_format,
+    )
+
+    # make sure blending only happens once, not every run
+    if converted:
+        # keep track of which models have been blended
+        blend_models = {}
+
+        inversion_dest = path.join(conversion.model_path, "inversion")
+        lora_dest = path.join(conversion.model_path, "lora")
+
+        for inversion in model.get("inversions", []):
+            if "text_encoder" not in blend_models:
+                blend_models["text_encoder"] = load_model(
+                    path.join(
+                        dest,
+                        "text_encoder",
+                        ONNX_MODEL,
+                    )
+                )
+
+            if "tokenizer" not in blend_models:
+                blend_models["tokenizer"] = CLIPTokenizer.from_pretrained(
+                    dest,
+                    subfolder="tokenizer",
+                )
+
+            inversion_name = inversion["name"]
+            inversion_source = inversion["source"]
+            inversion_format = inversion.get("format", None)
+            inversion_source = fetch_model(
+                conversion,
+                inversion_name,
+                inversion_source,
+                dest=inversion_dest,
             )
-            return download_progress([(api_source, cache_name)]), False
+            inversion_token = inversion.get("token", inversion_name)
+            inversion_weight = inversion.get("weight", 1.0)
 
-    if source.startswith(model_source_huggingface):
-        hub_source = remove_prefix(source, model_source_huggingface)
-        logger.info("downloading model from Huggingface Hub: %s", hub_source)
-        # from_pretrained has a bunch of useful logic that snapshot_download by itself down not
-        if hf_hub_fetch:
-            return (
-                hf_hub_download(
-                    repo_id=hub_source,
-                    filename=hf_hub_filename,
-                    cache_dir=cache_path,
-                    force_filename=f"{name}.bin",
-                ),
-                False,
+            blend_textual_inversions(
+                conversion,
+                blend_models["text_encoder"],
+                blend_models["tokenizer"],
+                [
+                    (
+                        inversion_source,
+                        inversion_weight,
+                        inversion_token,
+                        inversion_format,
+                    )
+                ],
             )
-        else:
-            return hub_source, True
-    elif source.startswith("https://"):
-        logger.info("downloading model from: %s", source)
-        return download_progress([(source, cache_name)]), False
-    elif source.startswith("http://"):
-        logger.warning("downloading model from insecure source: %s", source)
-        return download_progress([(source, cache_name)]), False
-    elif source.startswith(path.sep) or source.startswith("."):
-        logger.info("using local model: %s", source)
-        return source, False
+
+        for lora in model.get("loras", []):
+            if "text_encoder" not in blend_models:
+                blend_models["text_encoder"] = load_model(
+                    path.join(
+                        dest,
+                        "text_encoder",
+                        ONNX_MODEL,
+                    )
+                )
+
+            if "unet" not in blend_models:
+                blend_models["unet"] = load_model(path.join(dest, "unet", ONNX_MODEL))
+
+            # load models if not loaded yet
+            lora_name = lora["name"]
+            lora_source = lora["source"]
+            lora_source = fetch_model(
+                conversion,
+                f"{name}-lora-{lora_name}",
+                lora_source,
+                dest=lora_dest,
+            )
+            lora_weight = lora.get("weight", 1.0)
+
+            blend_loras(
+                conversion,
+                blend_models["text_encoder"],
+                [(lora_source, lora_weight)],
+                "text_encoder",
+            )
+
+            blend_loras(
+                conversion,
+                blend_models["unet"],
+                [(lora_source, lora_weight)],
+                "unet",
+            )
+
+        if "tokenizer" in blend_models:
+            dest_path = path.join(dest, "tokenizer")
+            logger.debug("saving blended tokenizer to %s", dest_path)
+            blend_models["tokenizer"].save_pretrained(dest_path)
+
+        for name in ["text_encoder", "unet"]:
+            if name in blend_models:
+                dest_path = path.join(dest, name, ONNX_MODEL)
+                logger.debug("saving blended %s model to %s", name, dest_path)
+                save_model(
+                    blend_models[name],
+                    dest_path,
+                    save_as_external_data=True,
+                    all_tensors_to_one_file=True,
+                    location=ONNX_WEIGHTS,
+                )
+
+
+def convert_model_upscaling(conversion: ConversionContext, model):
+    model_format = source_format(model)
+    name = model["name"]
+
+    source = fetch_model(conversion, name, model["source"], format=model_format)
+    model_type = model.get("model", "resrgan")
+    if model_type == "bsrgan":
+        convert_upscaling_bsrgan(conversion, model, source)
+    elif model_type == "resrgan":
+        convert_upscale_resrgan(conversion, model, source)
+    elif model_type == "swinir":
+        convert_upscaling_swinir(conversion, model, source)
     else:
-        logger.info("unknown model location, using path as provided: %s", source)
-        return source, False
+        logger.error("unknown upscaling model type %s for %s", model_type, name)
+        raise ValueError(name)
+
+
+def convert_model_correction(conversion: ConversionContext, model):
+    model_format = source_format(model)
+    name = model["name"]
+    source = fetch_model(conversion, name, model["source"], format=model_format)
+    model_type = model.get("model", "gfpgan")
+    if model_type == "gfpgan":
+        convert_correction_gfpgan(conversion, model, source)
+    else:
+        logger.error("unknown correction model type %s for %s", model_type, name)
+        raise ValueError(name)
 
 
 def convert_models(conversion: ConversionContext, args, models: Models):
@@ -276,69 +412,21 @@ def convert_models(conversion: ConversionContext, args, models: Models):
             if name in args.skip:
                 logger.info("skipping source: %s", name)
             else:
-                model_format = source_format(model)
-                source = model["source"]
-
                 try:
-                    dest_path = None
-                    if "dest" in model:
-                        dest_path = path.join(conversion.model_path, model["dest"])
-
-                    dest, hf = fetch_model(
-                        conversion, name, source, format=model_format, dest=dest_path
-                    )
-                    logger.info("finished downloading source: %s -> %s", source, dest)
+                    convert_model_source(conversion, model)
                 except Exception:
                     logger.exception("error fetching source %s", name)
                     model_errors.append(name)
 
     if args.networks and "networks" in models:
-        for network in models.get("networks", []):
-            name = network["name"]
+        for model in models.get("networks", []):
+            name = model["name"]
 
             if name in args.skip:
                 logger.info("skipping network: %s", name)
             else:
-                network_format = source_format(network)
-                network_model = network.get("model", None)
-                network_type = network["type"]
-                source = network["source"]
-
                 try:
-                    if network_type == "control":
-                        dest, hf = fetch_model(
-                            conversion,
-                            name,
-                            source,
-                            format=network_format,
-                        )
-
-                        convert_diffusion_control(
-                            conversion,
-                            network,
-                            dest,
-                            path.join(conversion.model_path, network_type, name),
-                        )
-                    if network_type == "inversion" and network_model == "concept":
-                        dest, hf = fetch_model(
-                            conversion,
-                            name,
-                            source,
-                            dest=path.join(conversion.model_path, network_type),
-                            format=network_format,
-                            hf_hub_fetch=True,
-                            hf_hub_filename="learned_embeds.bin",
-                        )
-                    else:
-                        dest, hf = fetch_model(
-                            conversion,
-                            name,
-                            source,
-                            dest=path.join(conversion.model_path, network_type),
-                            format=network_format,
-                        )
-
-                    logger.info("finished downloading network: %s -> %s", source, dest)
+                    convert_model_network(conversion, model)
                 except Exception:
                     logger.exception("error fetching network %s", name)
                     model_errors.append(name)
@@ -351,142 +439,8 @@ def convert_models(conversion: ConversionContext, args, models: Models):
             if name in args.skip:
                 logger.info("skipping model: %s", name)
             else:
-                model_format = source_format(model)
-
                 try:
-                    source, hf = fetch_model(
-                        conversion, name, model["source"], format=model_format
-                    )
-
-                    pipeline = model.get("pipeline", "txt2img")
-                    if pipeline.endswith("-sdxl"):
-                        converted, dest = convert_diffusion_diffusers_xl(
-                            conversion,
-                            model,
-                            source,
-                            model_format,
-                            hf=hf,
-                        )
-                    else:
-                        converted, dest = convert_diffusion_diffusers(
-                            conversion,
-                            model,
-                            source,
-                            model_format,
-                            hf=hf,
-                        )
-
-                    # make sure blending only happens once, not every run
-                    if converted:
-                        # keep track of which models have been blended
-                        blend_models = {}
-
-                        inversion_dest = path.join(conversion.model_path, "inversion")
-                        lora_dest = path.join(conversion.model_path, "lora")
-
-                        for inversion in model.get("inversions", []):
-                            if "text_encoder" not in blend_models:
-                                blend_models["text_encoder"] = load_model(
-                                    path.join(
-                                        dest,
-                                        "text_encoder",
-                                        ONNX_MODEL,
-                                    )
-                                )
-
-                            if "tokenizer" not in blend_models:
-                                blend_models[
-                                    "tokenizer"
-                                ] = CLIPTokenizer.from_pretrained(
-                                    dest,
-                                    subfolder="tokenizer",
-                                )
-
-                            inversion_name = inversion["name"]
-                            inversion_source = inversion["source"]
-                            inversion_format = inversion.get("format", None)
-                            inversion_source, hf = fetch_model(
-                                conversion,
-                                inversion_name,
-                                inversion_source,
-                                dest=inversion_dest,
-                            )
-                            inversion_token = inversion.get("token", inversion_name)
-                            inversion_weight = inversion.get("weight", 1.0)
-
-                            blend_textual_inversions(
-                                conversion,
-                                blend_models["text_encoder"],
-                                blend_models["tokenizer"],
-                                [
-                                    (
-                                        inversion_source,
-                                        inversion_weight,
-                                        inversion_token,
-                                        inversion_format,
-                                    )
-                                ],
-                            )
-
-                        for lora in model.get("loras", []):
-                            if "text_encoder" not in blend_models:
-                                blend_models["text_encoder"] = load_model(
-                                    path.join(
-                                        dest,
-                                        "text_encoder",
-                                        ONNX_MODEL,
-                                    )
-                                )
-
-                            if "unet" not in blend_models:
-                                blend_models["unet"] = load_model(
-                                    path.join(dest, "unet", ONNX_MODEL)
-                                )
-
-                            # load models if not loaded yet
-                            lora_name = lora["name"]
-                            lora_source = lora["source"]
-                            lora_source, hf = fetch_model(
-                                conversion,
-                                f"{name}-lora-{lora_name}",
-                                lora_source,
-                                dest=lora_dest,
-                            )
-                            lora_weight = lora.get("weight", 1.0)
-
-                            blend_loras(
-                                conversion,
-                                blend_models["text_encoder"],
-                                [(lora_source, lora_weight)],
-                                "text_encoder",
-                            )
-
-                            blend_loras(
-                                conversion,
-                                blend_models["unet"],
-                                [(lora_source, lora_weight)],
-                                "unet",
-                            )
-
-                        if "tokenizer" in blend_models:
-                            dest_path = path.join(dest, "tokenizer")
-                            logger.debug("saving blended tokenizer to %s", dest_path)
-                            blend_models["tokenizer"].save_pretrained(dest_path)
-
-                        for name in ["text_encoder", "unet"]:
-                            if name in blend_models:
-                                dest_path = path.join(dest, name, ONNX_MODEL)
-                                logger.debug(
-                                    "saving blended %s model to %s", name, dest_path
-                                )
-                                save_model(
-                                    blend_models[name],
-                                    dest_path,
-                                    save_as_external_data=True,
-                                    all_tensors_to_one_file=True,
-                                    location=ONNX_WEIGHTS,
-                                )
-
+                    convert_model_diffusion(conversion, model)
                 except Exception:
                     logger.exception(
                         "error converting diffusion model %s",
@@ -502,24 +456,8 @@ def convert_models(conversion: ConversionContext, args, models: Models):
             if name in args.skip:
                 logger.info("skipping model: %s", name)
             else:
-                model_format = source_format(model)
-
                 try:
-                    source, hf = fetch_model(
-                        conversion, name, model["source"], format=model_format
-                    )
-                    model_type = model.get("model", "resrgan")
-                    if model_type == "bsrgan":
-                        convert_upscaling_bsrgan(conversion, model, source)
-                    elif model_type == "resrgan":
-                        convert_upscale_resrgan(conversion, model, source)
-                    elif model_type == "swinir":
-                        convert_upscaling_swinir(conversion, model, source)
-                    else:
-                        logger.error(
-                            "unknown upscaling model type %s for %s", model_type, name
-                        )
-                        model_errors.append(name)
+                    convert_model_upscaling(conversion, model)
                 except Exception:
                     logger.exception(
                         "error converting upscaling model %s",
@@ -535,19 +473,8 @@ def convert_models(conversion: ConversionContext, args, models: Models):
             if name in args.skip:
                 logger.info("skipping model: %s", name)
             else:
-                model_format = source_format(model)
                 try:
-                    source, hf = fetch_model(
-                        conversion, name, model["source"], format=model_format
-                    )
-                    model_type = model.get("model", "gfpgan")
-                    if model_type == "gfpgan":
-                        convert_correction_gfpgan(conversion, model, source)
-                    else:
-                        logger.error(
-                            "unknown correction model type %s for %s", model_type, name
-                        )
-                        model_errors.append(name)
+                    convert_model_correction(conversion, model)
                 except Exception:
                     logger.exception(
                         "error converting correction model %s",
@@ -559,12 +486,26 @@ def convert_models(conversion: ConversionContext, args, models: Models):
         logger.error("error while converting models: %s", model_errors)
 
 
+def register_plugins(conversion: ConversionContext):
+    logger.info("loading conversion plugins")
+    exports = load_plugins(conversion)
+
+    for proto, client in exports.clients:
+        try:
+            add_model_source(proto, client)
+        except Exception:
+            logger.exception("error loading client for protocol: %s", proto)
+
+    # TODO: add converters
+
+
 def main(args=None) -> int:
     parser = ArgumentParser(
         prog="onnx-web model converter", description="convert checkpoint models to ONNX"
     )
 
     # model groups
+    parser.add_argument("--base", action="store_true", default=True)
     parser.add_argument("--networks", action="store_true", default=True)
     parser.add_argument("--sources", action="store_true", default=True)
     parser.add_argument("--correction", action="store_true", default=False)
@@ -602,16 +543,20 @@ def main(args=None) -> int:
     server.half = args.half or server.has_optimization("onnx-fp16")
     server.opset = args.opset
     server.token = args.token
+
+    register_plugins(server)
+
     logger.info(
-        "converting models in %s using %s", server.model_path, server.training_device
+        "converting models into %s using %s", server.model_path, server.training_device
     )
 
     if not path.exists(server.model_path):
         logger.info("model path does not existing, creating: %s", server.model_path)
         makedirs(server.model_path)
 
-    logger.info("converting base models")
-    convert_models(server, args, base_models)
+    if args.base:
+        logger.info("converting base models")
+        convert_models(server, args, base_models)
 
     extras = []
     extras.extend(server.extra_models)

@@ -9,7 +9,7 @@ import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
 import { POLL_TIME } from '../../config.js';
-import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state.js';
+import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { ImageResponse } from '../../types/api.js';
 
 const LOADING_PERCENT = 100;

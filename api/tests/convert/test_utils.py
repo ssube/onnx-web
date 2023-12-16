@@ -27,7 +27,7 @@ class ConversionContextTests(unittest.TestCase):
 
 class DownloadProgressTests(unittest.TestCase):
     def test_download_example(self):
-        path = download_progress([("https://example.com", "/tmp/example-dot-com")])
+        path = download_progress("https://example.com", "/tmp/example-dot-com")
         self.assertEqual(path, "/tmp/example-dot-com")
 
 

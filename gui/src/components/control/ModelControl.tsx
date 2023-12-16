@@ -6,7 +6,7 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { STALE_TIME } from '../../config.js';
-import { ClientContext } from '../../state.js';
+import { ClientContext } from '../../state/full.js';
 import { ModelParams } from '../../types/params.js';
 import { QueryList } from '../input/QueryList.js';
 

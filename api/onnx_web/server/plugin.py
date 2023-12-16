@@ -2,18 +2,24 @@ from importlib import import_module
 from logging import getLogger
 from typing import Any, Callable, Dict
 
-from onnx_web.chain.stages import add_stage
-from onnx_web.diffusers.load import add_pipeline
-from onnx_web.server.context import ServerContext
+from ..chain.stages import add_stage
+from ..diffusers.load import add_pipeline
+from ..server.context import ServerContext
 
 logger = getLogger(__name__)
 
 
 class PluginExports:
+    clients: Dict[str, Any]
+    converter: Dict[str, Any]
     pipelines: Dict[str, Any]
     stages: Dict[str, Any]
 
-    def __init__(self, pipelines=None, stages=None) -> None:
+    def __init__(
+        self, clients=None, converter=None, pipelines=None, stages=None
+    ) -> None:
+        self.clients = clients or {}
+        self.converter = converter or {}
         self.pipelines = pipelines or {}
         self.stages = stages or {}
 

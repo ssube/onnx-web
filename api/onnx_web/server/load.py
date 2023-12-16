@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Optional, Union
 import torch
 from jsonschema import ValidationError, validate
 
+from ..convert.utils import fix_diffusion_name
 from ..image import (  # mask filters; noise sources
     mask_filter_gaussian_multiply,
     mask_filter_gaussian_screen,
@@ -188,6 +189,9 @@ def load_extras(server: ServerContext):
                     if model_type in data:
                         for model in data[model_type]:
                             model_name = model["name"]
+
+                            if model_type == "diffusion":
+                                model_name = fix_diffusion_name(model_name)
 
                             if "hash" in model:
                                 logger.debug(
