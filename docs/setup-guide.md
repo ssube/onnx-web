@@ -88,7 +88,7 @@ Debian-based systems. You may need to install venv through apt instead:
 > sudo apt install python3-venv   # only if you get an error
 ```
 
-Every time you start using ONNX web, activate the virtual environment:
+Every time you start using onnx-web, activate the virtual environment:
 
 ```shell
 # on linux:

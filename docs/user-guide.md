@@ -1,6 +1,6 @@
 # User Guide
 
-This is the user guide for ONNX web, a web GUI for running ONNX models with hardware acceleration on both AMD and Nvidia
+This is the user guide for onnx-web, a web GUI for running ONNX models with hardware acceleration on both AMD and Nvidia
 system, with a CPU software fallback.
 
 The API is written in Python and runs on both Linux and Windows and provides access to the major functionality of
@@ -21,7 +21,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
 - [User Guide](#user-guide)
   - [Contents](#contents)
   - [Outline](#outline)
-    - [What is ONNX web (and what it is not)](#what-is-onnx-web-and-what-it-is-not)
+    - [What is onnx-web (and what it is not)](#what-is-onnx-web-and-what-it-is-not)
     - [Modes and tabs](#modes-and-tabs)
     - [Image history](#image-history)
     - [Scheduler comparison](#scheduler-comparison)
@@ -127,9 +127,9 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
 
 ## Outline
 
-### What is ONNX web (and what it is not)
+### What is onnx-web (and what it is not)
 
-ONNX web is a responsive web GUI, in both style and performance, for running ONNX models using hardware acceleration on
+onnx-web is a responsive web GUI, in both style and performance, for running ONNX models using hardware acceleration on
 any reasonable platform (one with sufficient memory for the models, that can build scipy within 24 hours, etc).
 
 The client should do some reasonable validation of input parameters should be done, such as prompt length, pipeline and
@@ -190,10 +190,10 @@ DEIS multistep and Euler Ancestral schedulers.
 ### Model and network types
 
 The [ONNX runtime](https://onnxruntime.ai/) is a library for accelerating neural networks and machine learning models,
-using [the ONNX file format](https://onnx.ai/) to share them across different platforms. ONNX web is a server to run
+using [the ONNX file format](https://onnx.ai/) to share them across different platforms. onnx-web is a server to run
 hardware-accelerated inference using those models and a web client to provide the parameters and view the results.
 
-The models used by ONNX web are split up into four groups:
+The models used by onnx-web are split up into four groups:
 
 1. Diffusion
    1. general models like [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5)
@@ -1668,7 +1668,7 @@ Example error:
 
 ```none
 Error fetching server parameters
-Could not fetch parameters from the ONNX web API server at http://10.2.2.34:5000.
+Could not fetch parameters from the onnx-web API server at http://10.2.2.34:5000.
 
 Cannot read properties of undefined (reading 'default')
 ```

@@ -1,6 +1,6 @@
 # Server Administration
 
-This is the server administration guide for ONNX web.
+This is the server administration guide for onnx-web.
 
 Please see [the user guide](user-guide.md) for descriptions of the client and each of the parameters.
 

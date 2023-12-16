@@ -24,7 +24,7 @@ export function ServerParamsError(props: ServerParamsErrorProps) {
       Error fetching server parameters
     </AlertTitle>
     <Typography>
-      Could not fetch parameters from the ONNX web API server at <code>{props.root}</code>.
+      Could not fetch parameters from the onnx-web API server at <code>{props.root}</code>.
     </Typography>
     <Typography>
       {getErrorMessage(props.error)}
