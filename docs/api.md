@@ -1,8 +1,8 @@
-# ONNX Web API
+# API
 
 ## Contents
 
-- [ONNX Web API](#onnx-web-api)
+- [API](#api)
   - [Contents](#contents)
   - [Endpoints](#endpoints)
     - [GUI bundle](#gui-bundle)
