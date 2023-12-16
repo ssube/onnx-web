@@ -519,16 +519,18 @@ def load_wildcards(server: ServerContext) -> None:
         parse_wildcards(data, root_key=path.splitext(file)[0])
 
 
-def parse_wildcards(data: Any, root_key: Optional[str]=None) -> None:
+def parse_wildcards(data: Any, root_key: Optional[str] = None) -> None:
     global wildcard_data
 
     for key, values in data.items():
         if root_key is not None:
-            key=f"{root_key}{sep}{key}"
-        
+            key = f"{root_key}{sep}{key}"
+
         if isinstance(values, dict):
             parse_wildcards(values, root_key=key)
         elif isinstance(values, list):
             wildcard_data[key].extend(values)
         else:
-            logger.warning("unable to parse key: %s from wildcard path: %s", key, root_key)
+            logger.warning(
+                "unable to parse key: %s from wildcard path: %s", key, root_key
+            )
