@@ -66,9 +66,15 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#blending-stages">Blending Stages</a>
         <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#blend-denoise">Blend: Denoise</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#blend-grid">Blend: Grid</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#blend-img2img">Blend: Img2img</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#blend-inpaint">Blend: Inpaint</a>
+    <li class="toctree-l4"><a class="reference internal" href="#blend-linear">Blend: Linear</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#blend-mask">Blend: Mask</a>
     </li>
         </ul>
     </li>
@@ -77,6 +83,14 @@
     <li class="toctree-l4"><a class="reference internal" href="#correct-codeformer">Correct: CodeFormer</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#correct-gfpgan">Correct: GFPGAN</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#compound-stages">Compound Stages</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#highres-stage">Highres Stage</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#upscale-stage">Upscale Stage</a>
     </li>
         </ul>
     </li>
@@ -100,17 +114,29 @@
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#source-noise">Source: Noise</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#source-s3">Source: S3</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#source-txt2img">Source: Txt2img</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#source-url">Source: URL</a>
     </li>
         </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#upscaling-stages">Upscaling Stages</a>
         <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#upscale-bsrgan">Upscale: BSRGAN</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#upscale-highres">Upscale: Highres</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#upscale-outpaint">Upscale: Outpaint</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#upscale-real-esrgan">Upscale: Real ESRGAN</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#upscale-simple">Upscale: Simple</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#upscale-stable-diffusion">Upscale: Stable Diffusion</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#upscale-swinir">Upscale: SwinIR</a>
     </li>
         </ul>
     </li>
@@ -185,13 +211,21 @@ are run on each tile, then the results are recombined and passed on to the next 
 </li>
 <li><a href="#stages">Stages</a><ul>
 <li><a href="#blending-stages">Blending Stages</a><ul>
+<li><a href="#blend-denoise">Blend: Denoise</a></li>
+<li><a href="#blend-grid">Blend: Grid</a></li>
 <li><a href="#blend-img2img">Blend: Img2img</a></li>
-<li><a href="#blend-inpaint">Blend: Inpaint</a></li>
+<li><a href="#blend-linear">Blend: Linear</a></li>
+<li><a href="#blend-mask">Blend: Mask</a></li>
 </ul>
 </li>
 <li><a href="#correction-stages">Correction Stages</a><ul>
 <li><a href="#correct-codeformer">Correct: CodeFormer</a></li>
 <li><a href="#correct-gfpgan">Correct: GFPGAN</a></li>
+</ul>
+</li>
+<li><a href="#compound-stages">Compound Stages</a><ul>
+<li><a href="#highres-stage">Highres Stage</a></li>
+<li><a href="#upscale-stage">Upscale Stage</a></li>
 </ul>
 </li>
 <li><a href="#persistence-stages">Persistence Stages</a><ul>
@@ -206,13 +240,19 @@ are run on each tile, then the results are recombined and passed on to the next 
 </li>
 <li><a href="#source-stages">Source Stages</a><ul>
 <li><a href="#source-noise">Source: Noise</a></li>
+<li><a href="#source-s3">Source: S3</a></li>
 <li><a href="#source-txt2img">Source: Txt2img</a></li>
+<li><a href="#source-url">Source: URL</a></li>
 </ul>
 </li>
 <li><a href="#upscaling-stages">Upscaling Stages</a><ul>
+<li><a href="#upscale-bsrgan">Upscale: BSRGAN</a></li>
+<li><a href="#upscale-highres">Upscale: Highres</a></li>
 <li><a href="#upscale-outpaint">Upscale: Outpaint</a></li>
 <li><a href="#upscale-real-esrgan">Upscale: Real ESRGAN</a></li>
+<li><a href="#upscale-simple">Upscale: Simple</a></li>
 <li><a href="#upscale-stable-diffusion">Upscale: Stable Diffusion</a></li>
+<li><a href="#upscale-swinir">Upscale: SwinIR</a></li>
 </ul>
 </li>
 </ul>
@@ -259,21 +299,51 @@ and can also save intermediate output, such as the result of a <code>source-txt2
 in <a href="../common/pipelines"><code>common/pipelines</code></a>.</p>
 <h2 id="stages">Stages</h2>
 <h3 id="blending-stages">Blending Stages</h3>
+<h4 id="blend-denoise">Blend: Denoise</h4>
+<p>Run <a href="https://docs.opencv.org/4.8.0/d5/d69/tutorial_py_non_local_means.html">fast non-local means denoising</a> using <code>cv2</code>.</p>
+<h4 id="blend-grid">Blend: Grid</h4>
+<p>Combine the source images into a grid.</p>
 <h4 id="blend-img2img">Blend: Img2img</h4>
-<h4 id="blend-inpaint">Blend: Inpaint</h4>
+<p>Run an img2img pipeline.</p>
+<h4 id="blend-linear">Blend: Linear</h4>
+<p>Blend two images using linear interpolation (0.0 is the first image, 1.0 is the second).</p>
+<h4 id="blend-mask">Blend: Mask</h4>
+<p>Blend two images using a mask.</p>
 <h3 id="correction-stages">Correction Stages</h3>
 <h4 id="correct-codeformer">Correct: CodeFormer</h4>
+<p>Run correction using CodeFormer.</p>
 <h4 id="correct-gfpgan">Correct: GFPGAN</h4>
+<p>Run correction using GFPGAN.</p>
+<h3 id="compound-stages">Compound Stages</h3>
+<p>Not currently available through JSON API.</p>
+<h4 id="highres-stage">Highres Stage</h4>
+<p>TODO</p>
+<h4 id="upscale-stage">Upscale Stage</h4>
+<p>TODO</p>
 <h3 id="persistence-stages">Persistence Stages</h3>
 <h4 id="persist-disk">Persist: Disk</h4>
+<p>Save all of the sources to disk.</p>
 <h4 id="persist-s3">Persist: S3</h4>
+<p>Save all of the sources to an S3 bucket.</p>
 <h3 id="reduction-stages">Reduction Stages</h3>
 <h4 id="reduce-crop">Reduce: Crop</h4>
+<p>TODO</p>
 <h4 id="reduce-thumbnail">Reduce: Thumbnail</h4>
+<p>TODO</p>
 <h3 id="source-stages">Source Stages</h3>
 <h4 id="source-noise">Source: Noise</h4>
+<p>Create a new source using a noise generator.</p>
+<h4 id="source-s3">Source: S3</h4>
+<p>Load a new source from an S3 bucket.</p>
 <h4 id="source-txt2img">Source: Txt2img</h4>
+<p>Run a txt2img pipeline.</p>
+<h4 id="source-url">Source: URL</h4>
+<p>Load a new source from a URL.</p>
 <h3 id="upscaling-stages">Upscaling Stages</h3>
+<h4 id="upscale-bsrgan">Upscale: BSRGAN</h4>
+<p>Upscaling stage using BSRGAN.</p>
+<h4 id="upscale-highres">Upscale: Highres</h4>
+<p>Upscaling stage using highres.</p>
 <h4 id="upscale-outpaint">Upscale: Outpaint</h4>
 <p>Upscaling stage using outpainting. This adds empty borders to the source image, optionally fills them with noise, and
 then runs inpainting on those areas.</p>
@@ -282,12 +352,16 @@ then runs inpainting on those areas.</p>
 <ul>
 <li>https://github.com/xinntao/Real-ESRGAN/releases</li>
 </ul>
+<h4 id="upscale-simple">Upscale: Simple</h4>
+<p>Upscaling stage using bilinear or Lanczos upscaling.</p>
 <h4 id="upscale-stable-diffusion">Upscale: Stable Diffusion</h4>
 <p>Upscaling stage using the Stable Diffusion x4 upscaling model:</p>
 <ul>
 <li>https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler</li>
 <li>https://huggingface.co/ssube/stable-diffusion-x4-upscaler-onnx</li>
 </ul>
+<h4 id="upscale-swinir">Upscale: SwinIR</h4>
+<p>Upscaling stage using SwinIR.</p>
               
             </div>
           </div><footer>

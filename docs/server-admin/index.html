@@ -101,6 +101,22 @@
     <li class="toctree-l3"><a class="reference internal" href="#debug-mode">Debug Mode</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#environment-variables">Environment Variables</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#client-variables">Client Variables</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#conversion-variables">Conversion Variables</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#memory-and-optimization-variables">Memory and Optimization Variables</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#path-variables">Path Variables</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#platform-variables">Platform Variables</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#server-and-other-variables">Server and Other Variables</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#feature-flags">Feature Flags</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#pipeline-optimizations">Pipeline Optimizations</a>
     </li>
@@ -154,7 +170,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="server-administration">Server Administration</h1>
-<p>This is the server administration guide for ONNX web.</p>
+<p>This is the server administration guide for onnx-web.</p>
 <p>Please see <a href="../user-guide/">the user guide</a> for descriptions of the client and each of the parameters.</p>
 <h2 id="contents">Contents</h2>
 <ul>
@@ -174,7 +190,16 @@
 </li>
 <li><a href="#configuration">Configuration</a><ul>
 <li><a href="#debug-mode">Debug Mode</a></li>
-<li><a href="#environment-variables">Environment Variables</a></li>
+<li><a href="#environment-variables">Environment Variables</a><ul>
+<li><a href="#client-variables">Client Variables</a></li>
+<li><a href="#conversion-variables">Conversion Variables</a></li>
+<li><a href="#memory-and-optimization-variables">Memory and Optimization Variables</a></li>
+<li><a href="#path-variables">Path Variables</a></li>
+<li><a href="#platform-variables">Platform Variables</a></li>
+<li><a href="#server-and-other-variables">Server and Other Variables</a></li>
+</ul>
+</li>
+<li><a href="#feature-flags">Feature Flags</a></li>
 <li><a href="#pipeline-optimizations">Pipeline Optimizations</a></li>
 <li><a href="#server-parameters">Server Parameters</a></li>
 </ul>
@@ -311,10 +336,83 @@ collection details and save some extra images to disk.</p>
 </ul>
 <p>These extra images can be helpful when debugging inpainting, especially poorly blended edges or visible noise.</p>
 <h3 id="environment-variables">Environment Variables</h3>
-<p>Paths:</p>
+<h4 id="client-variables">Client Variables</h4>
+<ul>
+<li><code>ONNX_WEB_CIVITAI_ROOT</code><ul>
+<li>root URL for downloading Civitai models</li>
+<li>rarely needs to be changed</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_CIVITAI_TOKEN</code><ul>
+<li>Civitai API token for models that require login</li>
+<li>you can create an API token in the Profile page: TODO LINK</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_HUGGINGFACE_TOKEN</code><ul>
+<li>Huggingface API token for models that require login</li>
+</ul>
+</li>
+</ul>
+<h4 id="conversion-variables">Conversion Variables</h4>
+<ul>
+<li><code>ONNX_WEB_CONVERT_CONTROL</code><ul>
+<li>convert ControlNet</li>
+<li>disable to skip ControlNet, saving some disk and memory</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_CONVERT_EXTRACT</code><ul>
+<li>extract models to Torch directory before converting to ONNX</li>
+<li>disable to skip extraction, saving some disk</li>
+<li>extraction uses an older code path that does not work with some newer models and has a non-commercial license</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_CONVERT_RELOAD</code><ul>
+<li>TODO</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_CONVERT_SHARE_UNET</code><ul>
+<li>TODO</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_CONVERT_OPSET</code><ul>
+<li>TODO</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_CONVERT_CPU_ONLY</code><ul>
+<li>perform conversion on the CPU, even if a CUDA GPU is available</li>
+<li>can allow conversion of models that do not fit in VRAM</li>
+</ul>
+</li>
+</ul>
+<h4 id="memory-and-optimization-variables">Memory and Optimization Variables</h4>
+<ul>
+<li><code>ONNX_WEB_CACHE_MODELS</code><ul>
+<li>the number of recent models to keep in memory</li>
+<li>setting this to 0 will disable caching and free VRAM between images</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_MEMORY_LIMIT</code><ul>
+<li>TODO</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_OPTIMIZATIONS</code><ul>
+<li>comma-delimited list of optimizations to enable</li>
+</ul>
+</li>
+</ul>
+<h4 id="path-variables">Path Variables</h4>
 <ul>
 <li><code>ONNX_WEB_BUNDLE_PATH</code><ul>
 <li>path where client bundle files can be found</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_EXTRA_MODELS</code><ul>
+<li>extra model files to be loaded</li>
+<li>one or more filenames or paths, to JSON or YAML files matching <a href="../api/schemas/extras.yaml">the extras schema</a></li>
+</ul>
+</li>
+<li><code>ONNX_WEB_LOGGING_PATH</code><ul>
+<li>path to <code>logging.yaml</code> config file</li>
 </ul>
 </li>
 <li><code>ONNX_WEB_MODEL_PATH</code><ul>
@@ -330,7 +428,7 @@ collection details and save some extra images to disk.</p>
 </ul>
 </li>
 </ul>
-<p>Others:</p>
+<h4 id="platform-variables">Platform Variables</h4>
 <ul>
 <li><code>ONNX_WEB_ANY_PLATFORM</code><ul>
 <li>whether or not to include the <code>any</code> option in the platform list</li>
@@ -342,18 +440,25 @@ collection details and save some extra images to disk.</p>
 <li>can be used to prevent CPU generation on shared servers</li>
 </ul>
 </li>
-<li><code>ONNX_WEB_CACHE_MODELS</code><ul>
-<li>the number of recent models to keep in memory</li>
-<li>setting this to 0 will disable caching and free VRAM between images</li>
+<li><code>ONNX_WEB_DEFAULT_PLATFORM</code><ul>
+<li>the default platform to show in the client</li>
+<li>overrides the <code>params.json</code> file</li>
+</ul>
+</li>
+</ul>
+<h4 id="server-and-other-variables">Server and Other Variables</h4>
+<ul>
+<li><code>ONNX_WEB_ADMIN_TOKEN</code><ul>
+<li>token for admin operations</li>
+<li>required to update extras file and restart workers</li>
 </ul>
 </li>
 <li><code>ONNX_WEB_CORS_ORIGIN</code><ul>
 <li>comma-delimited list of allowed origins for CORS headers</li>
 </ul>
 </li>
-<li><code>ONNX_WEB_DEFAULT_PLATFORM</code><ul>
-<li>the default platform to show in the client</li>
-<li>overrides the <code>params.json</code> file</li>
+<li><code>ONNX_WEB_DEBUG</code><ul>
+<li>wait for debugger to be attached before starting server</li>
 </ul>
 </li>
 <li><code>ONNX_WEB_EXTRA_ARGS</code><ul>
@@ -361,9 +466,25 @@ collection details and save some extra images to disk.</p>
 <li>set this to <code>--half</code> to convert models to fp16</li>
 </ul>
 </li>
-<li><code>ONNX_WEB_EXTRA_MODELS</code><ul>
-<li>extra model files to be loaded</li>
-<li>one or more filenames or paths, to JSON or YAML files matching <a href="../api/schemas/extras.yaml">the extras schema</a></li>
+<li><code>ONNX_WEB_FEATURE_FLAGS</code><ul>
+<li>enable some <a href="#feature-flags">feature flags</a></li>
+</ul>
+</li>
+<li><code>ONNX_WEB_IMAGE_FORMAT</code><ul>
+<li>TODO</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_JOB_LIMIT</code><ul>
+<li>number of jobs to run before restarting workers</li>
+<li>can help prevent memory leaks</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_PLUGINS</code><ul>
+<li>TODO</li>
+</ul>
+</li>
+<li><code>ONNX_WEB_SERVER_VERSION</code><ul>
+<li>TODO</li>
 </ul>
 </li>
 <li><code>ONNX_WEB_SHOW_PROGRESS</code><ul>
@@ -371,11 +492,14 @@ collection details and save some extra images to disk.</p>
 <li>disabling this can reduce noise in server logs, especially when logging to a file</li>
 </ul>
 </li>
-<li><code>ONNX_WEB_OPTIMIZATIONS</code><ul>
-<li>comma-delimited list of optimizations to enable</li>
+<li><code>ONNX_WEB_WORKER_RETRIES</code><ul>
+<li>number of times to retry a tile or stage before failing the image</li>
+<li>more retries takes longer but can help prevent intermittent OOM errors from ruining long pipelines</li>
 </ul>
 </li>
 </ul>
+<h3 id="feature-flags">Feature Flags</h3>
+<p>TODO</p>
 <h3 id="pipeline-optimizations">Pipeline Optimizations</h3>
 <ul>
 <li><code>diffusers-*</code><ul>
@@ -409,6 +533,22 @@ collection details and save some extra images to disk.</p>
 </ul>
 </li>
 <li><code>onnx-*</code><ul>
+<li><code>onnx-cpu-*</code><ul>
+<li>CPU offloading for individual models</li>
+<li><code>onnx-cpu-text-encoder</code><ul>
+<li>recommended for SDXL highres</li>
+</ul>
+</li>
+<li><code>onnx-cpu-unet</code><ul>
+<li>not recommended</li>
+</ul>
+</li>
+<li><code>onnx-cpu-vae</code><ul>
+<li>may be necessary for SDXL highres</li>
+</ul>
+</li>
+</ul>
+</li>
 <li><code>onnx-deterministic-compute</code><ul>
 <li>enable ONNX deterministic compute</li>
 </ul>

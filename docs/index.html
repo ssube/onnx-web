@@ -42,9 +42,25 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href=".">onnx-web</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#commands">Commands</a>
+    <li class="toctree-l2"><a class="reference internal" href="#features">Features</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#project-layout">Project layout</a>
+    <li class="toctree-l2"><a class="reference internal" href="#contents">Contents</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#setup">Setup</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#adding-your-own-models">Adding your own models</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#known-errors-and-solutions">Known errors and solutions</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#running-the-containers">Running the containers</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#credits">Credits</a>
     </li>
     </ul>
                 </li>
@@ -114,20 +130,193 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="onnx-web">onnx-web</h1>
-<p>For full documentation visit <a href="https://www.mkdocs.org">mkdocs.org</a>.</p>
-<h2 id="commands">Commands</h2>
+<p>onnx-web is a tool for running Stable Diffusion and other <a href="https://onnx.ai/">ONNX models</a> with hardware acceleration,
+on both AMD and Nvidia GPUs and with a CPU software fallback.</p>
+<p>The GUI is <a href="https://ssube.github.io/onnx-web/">hosted on Github Pages</a> and runs in all major browsers, including on
+mobile devices. It allows you to select the model and accelerator being used for each image pipeline. Image parameters
+are shown for each of the major modes, and you can either upload or paint the mask for inpainting and outpainting. The
+last few output images are shown below the image controls, making it easy to refer back to previous parameters or save
+an image from earlier.</p>
+<p>The API runs on both Linux and Windows and provides a REST API to run many of the pipelines from <a href="https://huggingface.co/./diffusers/main/en/index"><code>diffusers</code>
+</a>, along with metadata about the available models and accelerators,
+and the output of previous runs. Hardware acceleration is supported on both AMD and Nvidia for both Linux and Windows,
+with a CPU fallback capable of running on laptop-class machines.</p>
+<p>Please check out <a href="setup-guide/">the setup guide to get started</a> and <a href="https://github.com/ssube/onnx-web/blob/main/./user-guide.md">the user guide for more
+details</a>.</p>
+<p><img alt="preview of txt2img tab using SDXL to generate ghostly astronauts eating weird hamburgers on an abandoned space station" src="readme-sdxl.png" /></p>
+<h2 id="features">Features</h2>
+<p>This is an incomplete list of new and interesting features, with links to the user guide:</p>
 <ul>
-<li><code>mkdocs new [dir-name]</code> - Create a new project.</li>
-<li><code>mkdocs serve</code> - Start the live-reloading docs server.</li>
-<li><code>mkdocs build</code> - Build the documentation site.</li>
-<li><code>mkdocs -h</code> - Print help message and exit.</li>
+<li>supports SDXL and SDXL Turbo</li>
+<li>wide variety of schedulers: DDIM, DEIS, DPM SDE, Euler Ancestral, LCM, UniPC, and more</li>
+<li>hardware acceleration on both AMD and Nvidia<ul>
+<li>tested on CUDA, DirectML, and ROCm</li>
+<li><a href="user-guide/#optimizing-models-for-lower-memory-usage">half-precision support for low-memory GPUs</a> on both
+  AMD and Nvidia</li>
+<li>software fallback for CPU-only systems</li>
 </ul>
-<h2 id="project-layout">Project layout</h2>
-<pre><code>mkdocs.yml    # The configuration file.
-docs/
-    index.md  # The documentation homepage.
-    ...       # Other markdown pages, images and other files.
-</code></pre>
+</li>
+<li>web app to generate and view images<ul>
+<li><a href="https://ssube.github.io/onnx-web">hosted on Github Pages</a>, from your CDN, or locally</li>
+<li><a href="user-guide/#image-history">persists your recent images and progress as you change tabs</a></li>
+<li>queue up multiple images and retry errors</li>
+<li>translations available for English, French, German, and Spanish (please open an issue for more)</li>
+</ul>
+</li>
+<li>supports many <code>diffusers</code> pipelines<ul>
+<li><a href="user-guide/#txt2img-tab">txt2img</a></li>
+<li><a href="user-guide/#img2img-tab">img2img</a></li>
+<li><a href="user-guide/#inpaint-tab">inpainting</a>, with mask drawing and upload</li>
+<li><a href="user-guide/#panorama-pipeline">panorama</a>, for both SD v1.5 and SDXL</li>
+<li><a href="user-guide/#upscale-tab">upscaling</a>, with ONNX acceleration</li>
+</ul>
+</li>
+<li><a href="user-guide/#adding-your-own-models">add and use your own models</a><ul>
+<li><a href="converting-models/">convert models from diffusers and SD checkpoints</a></li>
+<li><a href="user-guide/#model-sources">download models from HuggingFace hub, Civitai, and HTTPS sources</a></li>
+</ul>
+</li>
+<li>blend in additional networks<ul>
+<li><a href="user-guide/#permanently-blending-additional-networks">permanent and prompt-based blending</a></li>
+<li><a href="user-guide/#lora-tokens">supports LoRA and LyCORIS weights</a></li>
+<li><a href="user-guide/#textual-inversion-tokens">supports Textual Inversion concepts and embeddings</a><ul>
+<li>each layer of the embeddings can be controlled and used individually</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>ControlNet<ul>
+<li>image filters for edge detection and other methods</li>
+<li>with ONNX acceleration</li>
+</ul>
+</li>
+<li>highres mode<ul>
+<li>runs img2img on the results of the other pipelines</li>
+<li>multiple iterations can produce 8k images and larger</li>
+</ul>
+</li>
+<li><a href="user-guide/#prompt-stages">multi-stage</a> and <a href="user-guide/#region-tokens">region prompts</a><ul>
+<li>seamlessly combine multiple prompts in the same image</li>
+<li>provide prompts for different areas in the image and blend them together</li>
+<li>change the prompt for highres mode and refine details without recursion</li>
+</ul>
+</li>
+<li>infinite prompt length<ul>
+<li><a href="user-guide/#long-prompt-weighting">with long prompt weighting</a></li>
+</ul>
+</li>
+<li><a href="user-guide/#blend-tab">image blending mode</a><ul>
+<li>combine images from history</li>
+</ul>
+</li>
+<li>upscaling and correction<ul>
+<li>upscaling with Real ESRGAN, SwinIR, and Stable Diffusion</li>
+<li>face correction with CodeFormer and GFPGAN</li>
+</ul>
+</li>
+<li><a href="server-admin/">API server can be run remotely</a><ul>
+<li>REST API can be served over HTTPS or HTTP</li>
+<li>background processing for all image pipelines</li>
+<li>polling for image status, plays nice with load balancers</li>
+</ul>
+</li>
+<li>OCI containers provided<ul>
+<li>for all supported hardware accelerators</li>
+<li>includes both the API and GUI bundle in a single container</li>
+<li>runs well on <a href="https://www.runpod.io/">RunPod</a>, <a href="https://vast.ai/">Vast.ai</a>, and other GPU container hosting services</li>
+</ul>
+</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#onnx-web">onnx-web</a><ul>
+<li><a href="#features">Features</a></li>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#setup">Setup</a><ul>
+<li><a href="#adding-your-own-models">Adding your own models</a></li>
+</ul>
+</li>
+<li><a href="#usage">Usage</a><ul>
+<li><a href="#known-errors-and-solutions">Known errors and solutions</a></li>
+<li><a href="#running-the-containers">Running the containers</a></li>
+</ul>
+</li>
+<li><a href="#credits">Credits</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="setup">Setup</h2>
+<p>There are a few ways to run onnx-web:</p>
+<ul>
+<li>cross-platform:<ul>
+<li><a href="setup-guide/#cross-platform-method">clone this repository, create a virtual environment, and run <code>pip install</code></a></li>
+<li><a href="server-admin/#running-the-containers">pulling and running the OCI containers</a></li>
+</ul>
+</li>
+<li>on Windows:<ul>
+<li><a href="setup-guide/#windows-python-installer">clone this repository and run one of the <code>setup-*.bat</code> scripts</a></li>
+<li><a href="setup-guide/#windows-all-in-one-bundle">download and run the experimental all-in-one bundle</a></li>
+</ul>
+</li>
+</ul>
+<p>You only need to run the server and should not need to compile anything. The client GUI is hosted on Github Pages and
+is included with the Windows all-in-one bundle.</p>
+<p>The extended setup docs have been <a href="setup-guide/">moved to the setup guide</a>.</p>
+<h3 id="adding-your-own-models">Adding your own models</h3>
+<p>You can <a href="user-guide/#adding-your-own-models">add your own models</a> by downloading them from the HuggingFace Hub
+or Civitai or by converting them from local files, without making any code changes. You can also download and blend in
+additional networks, such as LoRAs and Textual Inversions, using <a href="user-guide/#prompt-tokens">tokens in the
+prompt</a>.</p>
+<h2 id="usage">Usage</h2>
+<h3 id="known-errors-and-solutions">Known errors and solutions</h3>
+<p>Please see <a href="https://github.com/ssube/onnx-web/blob/main/./user-guide.md#known-errors">the Known Errors section of the user guide</a>.</p>
+<h3 id="running-the-containers">Running the containers</h3>
+<p>This has <a href="server-admin/#running-the-containers">been moved to the server admin guide</a>.</p>
+<h2 id="credits">Credits</h2>
+<p>Some of the conversion and pipeline code was copied or derived from code in:</p>
+<ul>
+<li><a href="https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16"><code>Amblyopius/Stable-Diffusion-ONNX-FP16</code></a><ul>
+<li>GPL v3: https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16/blob/main/LICENSE</li>
+<li>https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16/blob/main/pipeline_onnx_stable_diffusion_controlnet.py</li>
+<li>https://github.com/Amblyopius/Stable-Diffusion-ONNX-FP16/blob/main/pipeline_onnx_stable_diffusion_instruct_pix2pix.py</li>
+</ul>
+</li>
+<li><a href="https://github.com/d8ahazard/sd_dreambooth_extension"><code>d8ahazard/sd_dreambooth_extension</code></a><ul>
+<li>Non-commerical license: https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/license.md</li>
+<li>https://github.com/d8ahazard/sd_dreambooth_extension/blob/main/dreambooth/sd_to_diff.py</li>
+</ul>
+</li>
+<li><a href="https://github.com/huggingface/diffusers"><code>huggingface/diffusers</code></a><ul>
+<li>Apache v2: https://github.com/huggingface/diffusers/blob/main/LICENSE</li>
+<li>https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py</li>
+</ul>
+</li>
+<li><a href="https://github.com/uchuusen/onnx_stable_diffusion_controlnet"><code>uchuusen/onnx_stable_diffusion_controlnet</code></a><ul>
+<li>GPL v3: https://github.com/uchuusen/onnx_stable_diffusion_controlnet/blob/main/LICENSE</li>
+</ul>
+</li>
+<li><a href="https://github.com/uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix"><code>uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix</code></a><ul>
+<li>Apache v2: https://github.com/uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix/blob/main/LICENSE</li>
+</ul>
+</li>
+</ul>
+<p>Those parts have their own licenses with additional restrictions on commercial usage, modification, and redistribution.
+The rest of the project is provided under the MIT license, and I am working to isolate these components into a library.</p>
+<p>There are many other good options for using Stable Diffusion with hardware acceleration, including:</p>
+<ul>
+<li>https://github.com/Amblyopius/AMD-Stable-Diffusion-ONNX-FP16</li>
+<li>https://github.com/azuritecoin/OnnxDiffusersUI</li>
+<li>https://github.com/ForserX/StableDiffusionUI</li>
+<li>https://github.com/pingzing/stable-diffusion-playground</li>
+<li>https://github.com/quickwick/stable-diffusion-win-amd-ui</li>
+</ul>
+<p>Getting this set up and running on AMD would not have been possible without guides by:</p>
+<ul>
+<li>https://gist.github.com/harishanand95/75f4515e6187a6aa3261af6ac6f61269</li>
+<li>https://gist.github.com/averad/256c507baa3dcc9464203dc14610d674</li>
+<li>https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Install-and-Run-on-AMD-GPUs</li>
+<li>https://www.travelneil.com/stable-diffusion-updates.html</li>
+</ul>
               
             </div>
           </div><footer>
@@ -180,5 +369,5 @@ docs/
 
 <!--
 MkDocs version : 1.5.3
-Build Date UTC : 2023-12-16 21:59:11.784723+00:00
+Build Date UTC : 2023-12-16 23:22:12.110884+00:00
 -->

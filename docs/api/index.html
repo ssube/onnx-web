@@ -62,6 +62,8 @@
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#get-api">GET /api</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsfilters">GET /api/settings/filters</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsmasks">GET /api/settings/masks</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsmodels">GET /api/settings/models</a>
@@ -70,9 +72,15 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsparams">GET /api/settings/params</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get-apisettingspipelines">GET /api/settings/pipelines</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsplatforms">GET /api/settings/platforms</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsschedulers">GET /api/settings/schedulers</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get-apisettingsstrings">GET /api/settings/strings</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#get-apisettingswildcards">GET /api/settings/wildcards</a>
     </li>
         </ul>
     </li>
@@ -80,13 +88,21 @@
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#get-apiready">GET /api/ready</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#post-apiblend">POST /api/blend</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#post-apichain">POST /api/chain</a>
+    </li>
     <li class="toctree-l4"><a class="reference internal" href="#post-apiimg2img">POST /api/img2img</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#post-apiinpaint">POST /api/inpaint</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#post-apioutpaint">POST /api/outpaint</a>
-    </li>
     <li class="toctree-l4"><a class="reference internal" href="#post-apitxt2img">POST /api/txt2img</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#post-apitxt2txt">POST /api/txt2txt</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#post-apiupscale">POST /api/upscale</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#put-apicancel">PUT /api/cancel</a>
     </li>
         </ul>
     </li>
@@ -174,20 +190,28 @@
 </li>
 <li><a href="#settings-and-parameters">Settings and parameters</a><ul>
 <li><a href="#get-api"><code>GET /api</code></a></li>
+<li><a href="#get-apisettingsfilters"><code>GET /api/settings/filters</code></a></li>
 <li><a href="#get-apisettingsmasks"><code>GET /api/settings/masks</code></a></li>
 <li><a href="#get-apisettingsmodels"><code>GET /api/settings/models</code></a></li>
 <li><a href="#get-apisettingsnoises"><code>GET /api/settings/noises</code></a></li>
 <li><a href="#get-apisettingsparams"><code>GET /api/settings/params</code></a></li>
+<li><a href="#get-apisettingspipelines"><code>GET /api/settings/pipelines</code></a></li>
 <li><a href="#get-apisettingsplatforms"><code>GET /api/settings/platforms</code></a></li>
 <li><a href="#get-apisettingsschedulers"><code>GET /api/settings/schedulers</code></a></li>
+<li><a href="#get-apisettingsstrings"><code>GET /api/settings/strings</code></a></li>
+<li><a href="#get-apisettingswildcards"><code>GET /api/settings/wildcards</code></a></li>
 </ul>
 </li>
 <li><a href="#pipelines">Pipelines</a><ul>
 <li><a href="#get-apiready"><code>GET /api/ready</code></a></li>
+<li><a href="#post-apiblend"><code>POST /api/blend</code></a></li>
+<li><a href="#post-apichain"><code>POST /api/chain</code></a></li>
 <li><a href="#post-apiimg2img"><code>POST /api/img2img</code></a></li>
 <li><a href="#post-apiinpaint"><code>POST /api/inpaint</code></a></li>
-<li><a href="#post-apioutpaint"><code>POST /api/outpaint</code></a></li>
 <li><a href="#post-apitxt2img"><code>POST /api/txt2img</code></a></li>
+<li><a href="#post-apitxt2txt"><code>POST /api/txt2txt</code></a></li>
+<li><a href="#post-apiupscale"><code>POST /api/upscale</code></a></li>
+<li><a href="#put-apicancel"><code>PUT /api/cancel</code></a></li>
 </ul>
 </li>
 <li><a href="#outputs">Outputs</a><ul>
@@ -214,30 +238,46 @@
 <h3 id="settings-and-parameters">Settings and parameters</h3>
 <h4 id="get-api"><code>GET /api</code></h4>
 <p>Introspection endpoint.</p>
+<h4 id="get-apisettingsfilters"><code>GET /api/settings/filters</code></h4>
+<p>List available mask and source filters.</p>
 <h4 id="get-apisettingsmasks"><code>GET /api/settings/masks</code></h4>
-<p>Available mask filters.</p>
+<p>List available mask filters.</p>
 <h4 id="get-apisettingsmodels"><code>GET /api/settings/models</code></h4>
-<p>Available models, all types.</p>
+<p>List available models, all types.</p>
 <h4 id="get-apisettingsnoises"><code>GET /api/settings/noises</code></h4>
-<p>Available noise sources.</p>
+<p>List available noise sources.</p>
 <h4 id="get-apisettingsparams"><code>GET /api/settings/params</code></h4>
 <p>Server parameters, slider min/max and version check.</p>
+<h4 id="get-apisettingspipelines"><code>GET /api/settings/pipelines</code></h4>
+<p>List available pipelines.</p>
 <h4 id="get-apisettingsplatforms"><code>GET /api/settings/platforms</code></h4>
 <p>Available hardware acceleration platforms.</p>
 <h4 id="get-apisettingsschedulers"><code>GET /api/settings/schedulers</code></h4>
 <p>Available pipeline schedulers.</p>
+<h4 id="get-apisettingsstrings"><code>GET /api/settings/strings</code></h4>
+<p>Server strings, from extras file and plugins.</p>
+<h4 id="get-apisettingswildcards"><code>GET /api/settings/wildcards</code></h4>
+<p>List available wildcard paths.</p>
 <h3 id="pipelines">Pipelines</h3>
 <h4 id="get-apiready"><code>GET /api/ready</code></h4>
 <p>Check if a pipeline has completed.</p>
+<h4 id="post-apiblend"><code>POST /api/blend</code></h4>
+<p>Blend two images using a mask.</p>
+<h4 id="post-apichain"><code>POST /api/chain</code></h4>
+<p>Run a <a href="../chain-pipelines/">custom chain pipeline</a>.</p>
 <h4 id="post-apiimg2img"><code>POST /api/img2img</code></h4>
 <p>Run an img2img pipeline.</p>
 <h4 id="post-apiinpaint"><code>POST /api/inpaint</code></h4>
 <p>Run an inpainting pipeline.</p>
-<h4 id="post-apioutpaint"><code>POST /api/outpaint</code></h4>
-<p>Run an outpainting pipeline.</p>
-<p>This uses the inpainting pipeline with more parameters and image filtering.</p>
 <h4 id="post-apitxt2img"><code>POST /api/txt2img</code></h4>
 <p>Run a txt2img pipeline.</p>
+<h4 id="post-apitxt2txt"><code>POST /api/txt2txt</code></h4>
+<p><strong>Unstable.</strong></p>
+<p>Run a txt2txt pipeline.</p>
+<h4 id="post-apiupscale"><code>POST /api/upscale</code></h4>
+<p>Run an upscale pipeline.</p>
+<h4 id="put-apicancel"><code>PUT /api/cancel</code></h4>
+<p>Cancel a pending or in-progress job.</p>
 <h3 id="outputs">Outputs</h3>
 <h4 id="get-outputpath"><code>GET /output/&lt;path&gt;</code></h4>
 <p>Serve output images.</p>
@@ -246,6 +286,7 @@
 <li><code>last-mask.png</code></li>
 <li><code>last-noise.png</code></li>
 <li><code>last-source.png</code></li>
+<li><code>last-tile-N.png</code></li>
 </ul>
               
             </div>

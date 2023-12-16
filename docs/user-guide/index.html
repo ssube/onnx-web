@@ -86,7 +86,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#outline">Outline</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#what-is-onnx-web-and-what-it-is-not">What is ONNX web (and what it is not)</a>
+    <li class="toctree-l3"><a class="reference internal" href="#what-is-onnx-web-and-what-it-is-not">What is onnx-web (and what it is not)</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#modes-and-tabs">Modes and tabs</a>
     </li>
@@ -338,7 +338,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="user-guide">User Guide</h1>
-<p>This is the user guide for ONNX web, a web GUI for running ONNX models with hardware acceleration on both AMD and Nvidia
+<p>This is the user guide for onnx-web, a web GUI for running ONNX models with hardware acceleration on both AMD and Nvidia
 system, with a CPU software fallback.</p>
 <p>The API is written in Python and runs on both Linux and Windows and provides access to the major functionality of
 diffusers, along with metadata about the available models and accelerators, and the output of previous runs. Hardware
@@ -355,7 +355,7 @@ earlier.</p>
 <li><a href="#user-guide">User Guide</a><ul>
 <li><a href="#contents">Contents</a></li>
 <li><a href="#outline">Outline</a><ul>
-<li><a href="#what-is-onnx-web-and-what-it-is-not">What is ONNX web (and what it is not)</a></li>
+<li><a href="#what-is-onnx-web-and-what-it-is-not">What is onnx-web (and what it is not)</a></li>
 <li><a href="#modes-and-tabs">Modes and tabs</a></li>
 <li><a href="#image-history">Image history</a></li>
 <li><a href="#scheduler-comparison">Scheduler comparison</a></li>
@@ -498,8 +498,8 @@ earlier.</p>
 </li>
 </ul>
 <h2 id="outline">Outline</h2>
-<h3 id="what-is-onnx-web-and-what-it-is-not">What is ONNX web (and what it is not)</h3>
-<p>ONNX web is a responsive web GUI, in both style and performance, for running ONNX models using hardware acceleration on
+<h3 id="what-is-onnx-web-and-what-it-is-not">What is onnx-web (and what it is not)</h3>
+<p>onnx-web is a responsive web GUI, in both style and performance, for running ONNX models using hardware acceleration on
 any reasonable platform (one with sufficient memory for the models, that can build scipy within 24 hours, etc).</p>
 <p>The client should do some reasonable validation of input parameters should be done, such as prompt length, pipeline and
 scheduler combinations, and output size. Tabs and options should be disabled when they are not compatible with the
@@ -558,9 +558,9 @@ DEIS multistep and Euler Ancestral schedulers.</p>
 <p><img alt="tilt shift photographs of excavators over a pile of loose dirt" src="../output/excavator-pipe.png" /></p>
 <h3 id="model-and-network-types">Model and network types</h3>
 <p>The <a href="https://onnxruntime.ai/">ONNX runtime</a> is a library for accelerating neural networks and machine learning models,
-using <a href="https://onnx.ai/">the ONNX file format</a> to share them across different platforms. ONNX web is a server to run
+using <a href="https://onnx.ai/">the ONNX file format</a> to share them across different platforms. onnx-web is a server to run
 hardware-accelerated inference using those models and a web client to provide the parameters and view the results.</p>
-<p>The models used by ONNX web are split up into four groups:</p>
+<p>The models used by onnx-web are split up into four groups:</p>
 <ol>
 <li>Diffusion<ol>
 <li>general models like <a href="https://huggingface.co/runwayml/stable-diffusion-v1-5">Stable Diffusion</a></li>
@@ -1957,7 +1957,7 @@ recently, try updating and restarting the server.</p>
 names are correct (they are case-sensitive).</p>
 <p>Example error:</p>
 <pre><code class="language-none">Error fetching server parameters
-Could not fetch parameters from the ONNX web API server at http://10.2.2.34:5000.
+Could not fetch parameters from the onnx-web API server at http://10.2.2.34:5000.
 
 Cannot read properties of undefined (reading 'default')
 </code></pre>
