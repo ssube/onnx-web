@@ -43601,6 +43601,11 @@
         const res = await f2(path2);
         return await res.json();
       },
+      async wildcards() {
+        const path2 = makeApiUrl(root, "settings", "wildcards");
+        const res = await f2(path2);
+        return await res.json();
+      },
       async img2img(model, params, upscale, highres) {
         const url = makeImageURL(root, "img2img", params);
         appendModelToURL(url, model);
@@ -43936,6 +43941,9 @@
     },
     async strings() {
       return {};
+    },
+    async wildcards() {
+      throw new NoServerError();
     },
     async restart() {
       throw new NoServerError();
@@ -74576,15 +74584,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   // out/src/components/OnnxError.js
   var React132 = __toESM(require_react(), 1);
 
-  // out/src/state.js
+  // out/src/state/full.js
   var import_react22 = __toESM(require_react(), 1);
-  var MISSING_INDEX = -1;
-  var ClientContext = (0, import_react22.createContext)(void 0);
-  var ConfigContext = (0, import_react22.createContext)(void 0);
-  var LoggerContext = (0, import_react22.createContext)(void 0);
-  var StateContext = (0, import_react22.createContext)(void 0);
-  var STATE_KEY = "onnx-web";
-  var STATE_VERSION = 7;
+
+  // out/src/constants.js
   var BLEND_SOURCES = 2;
   var DEFAULT_BRUSH = {
     color: 255,
@@ -74602,108 +74605,128 @@ Please use another name.` : formatMuiErrorMessage(18));
      */
     scrollback: 2
   };
-  function baseParamsFromServer(defaults2) {
-    return {
-      batch: defaults2.batch.default,
-      cfg: defaults2.cfg.default,
-      eta: defaults2.eta.default,
-      negativePrompt: defaults2.negativePrompt.default,
-      prompt: defaults2.prompt.default,
-      scheduler: defaults2.scheduler.default,
-      steps: defaults2.steps.default,
-      seed: defaults2.seed.default,
-      tiled_vae: defaults2.tiled_vae.default,
-      unet_overlap: defaults2.unet_overlap.default,
-      unet_tile: defaults2.unet_tile.default,
-      vae_overlap: defaults2.vae_overlap.default,
-      vae_tile: defaults2.vae_tile.default
-    };
-  }
-  __name(baseParamsFromServer, "baseParamsFromServer");
-  function createStateSlices(server) {
-    const defaultParams = baseParamsFromServer(server);
-    const defaultHighres = {
-      enabled: false,
-      highresIterations: server.highresIterations.default,
-      highresMethod: "",
-      highresSteps: server.highresSteps.default,
-      highresScale: server.highresScale.default,
-      highresStrength: server.highresStrength.default
-    };
-    const defaultModel = {
-      control: server.control.default,
-      correction: server.correction.default,
-      model: server.model.default,
-      pipeline: server.pipeline.default,
-      platform: server.platform.default,
-      upscaling: server.upscaling.default
-    };
-    const defaultUpscale = {
-      denoise: server.denoise.default,
-      enabled: false,
-      faces: false,
-      faceOutscale: server.faceOutscale.default,
-      faceStrength: server.faceStrength.default,
-      outscale: server.outscale.default,
-      scale: server.scale.default,
-      upscaleOrder: server.upscaleOrder.default
-    };
-    const defaultGrid = {
-      enabled: false,
-      columns: {
-        parameter: "seed",
-        value: ""
+
+  // out/src/state/blend.js
+  function createBlendSlice(defaultModel, defaultUpscale) {
+    return (set) => ({
+      blend: {
+        // eslint-disable-next-line no-null/no-null
+        mask: null,
+        sources: []
       },
-      rows: {
-        parameter: "seed",
-        value: ""
+      blendBrush: Object.assign({}, DEFAULT_BRUSH),
+      blendModel: Object.assign({}, defaultModel),
+      blendUpscale: Object.assign({}, defaultUpscale),
+      resetBlend() {
+        set((prev2) => ({
+          blend: {
+            // eslint-disable-next-line no-null/no-null
+            mask: null,
+            sources: []
+          }
+        }));
+      },
+      setBlend(blend) {
+        set((prev2) => ({
+          blend: Object.assign(Object.assign({}, prev2.blend), blend)
+        }));
+      },
+      setBlendBrush(brush) {
+        set((prev2) => ({
+          blendBrush: Object.assign(Object.assign({}, prev2.blendBrush), brush)
+        }));
+      },
+      setBlendModel(model) {
+        set((prev2) => ({
+          blendModel: Object.assign(Object.assign({}, prev2.blendModel), model)
+        }));
+      },
+      setBlendUpscale(params) {
+        set((prev2) => ({
+          blendUpscale: Object.assign(Object.assign({}, prev2.blendUpscale), params)
+        }));
       }
-    };
-    const createTxt2ImgSlice = /* @__PURE__ */ __name((set) => ({
-      txt2img: Object.assign(Object.assign({}, defaultParams), { width: server.width.default, height: server.height.default }),
-      txt2imgHighres: Object.assign({}, defaultHighres),
-      txt2imgModel: Object.assign({}, defaultModel),
-      txt2imgUpscale: Object.assign({}, defaultUpscale),
-      txt2imgVariable: Object.assign({}, defaultGrid),
-      setTxt2Img(params) {
+    });
+  }
+  __name(createBlendSlice, "createBlendSlice");
+
+  // out/src/state/default.js
+  function createDefaultSlice(defaultParams) {
+    return (set) => ({
+      defaults: Object.assign({}, defaultParams),
+      theme: "",
+      setDefaults(params) {
         set((prev2) => ({
-          txt2img: Object.assign(Object.assign({}, prev2.txt2img), params)
+          defaults: Object.assign(Object.assign({}, prev2.defaults), params)
         }));
       },
-      setTxt2ImgHighres(params) {
+      setTheme(theme) {
         set((prev2) => ({
-          txt2imgHighres: Object.assign(Object.assign({}, prev2.txt2imgHighres), params)
+          theme
         }));
+      }
+    });
+  }
+  __name(createDefaultSlice, "createDefaultSlice");
+
+  // out/src/state/history.js
+  function createHistorySlice() {
+    return (set) => ({
+      history: [],
+      limit: DEFAULT_HISTORY.limit,
+      pushHistory(image, retry) {
+        set((prev2) => Object.assign(Object.assign({}, prev2), { history: [
+          {
+            image,
+            ready: void 0,
+            retry
+          },
+          ...prev2.history
+        ].slice(0, prev2.limit + DEFAULT_HISTORY.scrollback) }));
       },
-      setTxt2ImgModel(params) {
-        set((prev2) => ({
-          txt2imgModel: Object.assign(Object.assign({}, prev2.txt2imgModel), params)
-        }));
+      removeHistory(image) {
+        set((prev2) => Object.assign(Object.assign({}, prev2), { history: prev2.history.filter((it) => it.image.outputs[0].key !== image.outputs[0].key) }));
       },
-      setTxt2ImgUpscale(params) {
-        set((prev2) => ({
-          txt2imgUpscale: Object.assign(Object.assign({}, prev2.txt2imgUpscale), params)
-        }));
+      setLimit(limit) {
+        set((prev2) => Object.assign(Object.assign({}, prev2), { limit }));
       },
-      setTxt2ImgVariable(params) {
-        set((prev2) => ({
-          txt2imgVariable: Object.assign(Object.assign({}, prev2.txt2imgVariable), params)
-        }));
-      },
-      resetTxt2Img() {
-        set({
-          txt2img: Object.assign(Object.assign({}, defaultParams), { width: server.width.default, height: server.height.default })
+      setReady(image, ready) {
+        set((prev2) => {
+          const history = [...prev2.history];
+          const idx = history.findIndex((it) => it.image.outputs[0].key === image.outputs[0].key);
+          if (idx >= 0) {
+            history[idx].ready = ready;
+          } else {
+          }
+          return Object.assign(Object.assign({}, prev2), { history });
         });
       }
-    }), "createTxt2ImgSlice");
-    const createImg2ImgSlice = /* @__PURE__ */ __name((set) => ({
-      img2img: Object.assign(Object.assign({}, defaultParams), { loopback: server.loopback.default, source: null, sourceFilter: "", strength: server.strength.default }),
+    });
+  }
+  __name(createHistorySlice, "createHistorySlice");
+
+  // out/src/state/img2img.js
+  function createImg2ImgSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale) {
+    return (set) => ({
+      img2img: Object.assign(Object.assign({}, defaultParams), {
+        loopback: server.loopback.default,
+        // eslint-disable-next-line no-null/no-null
+        source: null,
+        sourceFilter: "",
+        strength: server.strength.default
+      }),
       img2imgHighres: Object.assign({}, defaultHighres),
       img2imgModel: Object.assign({}, defaultModel),
       img2imgUpscale: Object.assign({}, defaultUpscale),
       resetImg2Img() {
         set({
-          img2img: Object.assign(Object.assign({}, defaultParams), { loopback: server.loopback.default, source: null, sourceFilter: "", strength: server.strength.default })
+          img2img: Object.assign(Object.assign({}, defaultParams), {
+            loopback: server.loopback.default,
+            // eslint-disable-next-line no-null/no-null
+            source: null,
+            sourceFilter: "",
+            strength: server.strength.default
+          })
         });
       },
       setImg2Img(params) {
@@ -74726,9 +74749,24 @@ Please use another name.` : formatMuiErrorMessage(18));
           img2imgUpscale: Object.assign(Object.assign({}, prev2.img2imgUpscale), params)
         }));
       }
-    }), "createImg2ImgSlice");
-    const createInpaintSlice = /* @__PURE__ */ __name((set) => ({
-      inpaint: Object.assign(Object.assign({}, defaultParams), { fillColor: server.fillColor.default, filter: server.filter.default, mask: null, noise: server.noise.default, source: null, strength: server.strength.default, tileOrder: server.tileOrder.default }),
+    });
+  }
+  __name(createImg2ImgSlice, "createImg2ImgSlice");
+
+  // out/src/state/inpaint.js
+  function createInpaintSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale) {
+    return (set) => ({
+      inpaint: Object.assign(Object.assign({}, defaultParams), {
+        fillColor: server.fillColor.default,
+        filter: server.filter.default,
+        // eslint-disable-next-line no-null/no-null
+        mask: null,
+        noise: server.noise.default,
+        // eslint-disable-next-line no-null/no-null
+        source: null,
+        strength: server.strength.default,
+        tileOrder: server.tileOrder.default
+      }),
       inpaintBrush: Object.assign({}, DEFAULT_BRUSH),
       inpaintHighres: Object.assign({}, defaultHighres),
       inpaintModel: Object.assign({}, defaultModel),
@@ -74742,7 +74780,17 @@ Please use another name.` : formatMuiErrorMessage(18));
       },
       resetInpaint() {
         set({
-          inpaint: Object.assign(Object.assign({}, defaultParams), { fillColor: server.fillColor.default, filter: server.filter.default, mask: null, noise: server.noise.default, source: null, strength: server.strength.default, tileOrder: server.tileOrder.default })
+          inpaint: Object.assign(Object.assign({}, defaultParams), {
+            fillColor: server.fillColor.default,
+            filter: server.filter.default,
+            // eslint-disable-next-line no-null/no-null
+            mask: null,
+            noise: server.noise.default,
+            // eslint-disable-next-line no-null/no-null
+            source: null,
+            strength: server.strength.default,
+            tileOrder: server.tileOrder.default
+          })
         });
       },
       setInpaint(params) {
@@ -74775,159 +74823,16 @@ Please use another name.` : formatMuiErrorMessage(18));
           outpaint: Object.assign(Object.assign({}, prev2.outpaint), pixels)
         }));
       }
-    }), "createInpaintSlice");
-    const createHistorySlice = /* @__PURE__ */ __name((set) => ({
-      history: [],
-      limit: DEFAULT_HISTORY.limit,
-      pushHistory(image, retry) {
-        set((prev2) => Object.assign(Object.assign({}, prev2), { history: [
-          {
-            image,
-            ready: void 0,
-            retry
-          },
-          ...prev2.history
-        ].slice(0, prev2.limit + DEFAULT_HISTORY.scrollback) }));
-      },
-      removeHistory(image) {
-        set((prev2) => Object.assign(Object.assign({}, prev2), { history: prev2.history.filter((it) => it.image.outputs[0].key !== image.outputs[0].key) }));
-      },
-      setLimit(limit) {
-        set((prev2) => Object.assign(Object.assign({}, prev2), { limit }));
-      },
-      setReady(image, ready) {
-        set((prev2) => {
-          const history = [...prev2.history];
-          const idx = history.findIndex((it) => it.image.outputs[0].key === image.outputs[0].key);
-          if (idx >= 0) {
-            history[idx].ready = ready;
-          } else {
-          }
-          return Object.assign(Object.assign({}, prev2), { history });
-        });
-      }
-    }), "createHistorySlice");
-    const createUpscaleSlice = /* @__PURE__ */ __name((set) => ({
-      upscale: Object.assign(Object.assign({}, defaultParams), { source: null }),
-      upscaleHighres: Object.assign({}, defaultHighres),
-      upscaleModel: Object.assign({}, defaultModel),
-      upscaleUpscale: Object.assign({}, defaultUpscale),
-      resetUpscale() {
-        set({
-          upscale: Object.assign(Object.assign({}, defaultParams), { source: null })
-        });
-      },
-      setUpscale(source) {
-        set((prev2) => ({
-          upscale: Object.assign(Object.assign({}, prev2.upscale), source)
-        }));
-      },
-      setUpscaleHighres(params) {
-        set((prev2) => ({
-          upscaleHighres: Object.assign(Object.assign({}, prev2.upscaleHighres), params)
-        }));
-      },
-      setUpscaleModel(params) {
-        set((prev2) => ({
-          upscaleModel: Object.assign(Object.assign({}, prev2.upscaleModel), defaultModel)
-        }));
-      },
-      setUpscaleUpscale(params) {
-        set((prev2) => ({
-          upscaleUpscale: Object.assign(Object.assign({}, prev2.upscaleUpscale), params)
-        }));
-      }
-    }), "createUpscaleSlice");
-    const createBlendSlice = /* @__PURE__ */ __name((set) => ({
-      blend: {
-        mask: null,
-        sources: []
-      },
-      blendBrush: Object.assign({}, DEFAULT_BRUSH),
-      blendModel: Object.assign({}, defaultModel),
-      blendUpscale: Object.assign({}, defaultUpscale),
-      resetBlend() {
-        set({
-          blend: {
-            mask: null,
-            sources: []
-          }
-        });
-      },
-      setBlend(blend) {
-        set((prev2) => ({
-          blend: Object.assign(Object.assign({}, prev2.blend), blend)
-        }));
-      },
-      setBlendBrush(brush) {
-        set((prev2) => ({
-          blendBrush: Object.assign(Object.assign({}, prev2.blendBrush), brush)
-        }));
-      },
-      setBlendModel(model) {
-        set((prev2) => ({
-          blendModel: Object.assign(Object.assign({}, prev2.blendModel), model)
-        }));
-      },
-      setBlendUpscale(params) {
-        set((prev2) => ({
-          blendUpscale: Object.assign(Object.assign({}, prev2.blendUpscale), params)
-        }));
-      }
-    }), "createBlendSlice");
-    const createDefaultSlice = /* @__PURE__ */ __name((set) => ({
-      defaults: Object.assign({}, defaultParams),
-      theme: "",
-      setDefaults(params) {
-        set((prev2) => ({
-          defaults: Object.assign(Object.assign({}, prev2.defaults), params)
-        }));
-      },
-      setTheme(theme) {
-        set((prev2) => ({
-          theme
-        }));
-      }
-    }), "createDefaultSlice");
-    const createResetSlice = /* @__PURE__ */ __name((set) => ({
-      resetAll() {
-        set((prev2) => {
-          const next2 = Object.assign({}, prev2);
-          next2.resetImg2Img();
-          next2.resetInpaint();
-          next2.resetTxt2Img();
-          next2.resetUpscale();
-          next2.resetBlend();
-          return next2;
-        });
-      }
-    }), "createResetSlice");
-    const createProfileSlice = /* @__PURE__ */ __name((set) => ({
-      profiles: [],
-      saveProfile(profile) {
-        set((prev2) => {
-          const profiles = [...prev2.profiles];
-          const idx = profiles.findIndex((it) => it.name === profile.name);
-          if (idx >= 0) {
-            profiles[idx] = profile;
-          } else {
-            profiles.push(profile);
-          }
-          return Object.assign(Object.assign({}, prev2), { profiles });
-        });
-      },
-      removeProfile(profileName) {
-        set((prev2) => {
-          const profiles = [...prev2.profiles];
-          const idx = profiles.findIndex((it) => it.name === profileName);
-          if (idx >= 0) {
-            profiles.splice(idx, 1);
-          }
-          return Object.assign(Object.assign({}, prev2), { profiles });
-        });
-      }
-    }), "createProfileSlice");
-    const createModelSlice = /* @__PURE__ */ __name((set) => ({
+    });
+  }
+  __name(createInpaintSlice, "createInpaintSlice");
+
+  // out/src/state/types.js
+  var MISSING_INDEX = -1;
+
+  // out/src/state/model.js
+  function createModelSlice() {
+    return (set) => ({
       extras: {
         correction: [],
         diffusion: [],
@@ -75033,18 +74938,217 @@ Please use another name.` : formatMuiErrorMessage(18));
           return Object.assign(Object.assign({}, prev2), { extras: Object.assign(Object.assign({}, prev2.extras), { upscaling }) });
         });
       }
-    }), "createModelSlice");
+    });
+  }
+  __name(createModelSlice, "createModelSlice");
+
+  // out/src/state/profile.js
+  function createProfileSlice() {
+    return (set) => ({
+      profiles: [],
+      saveProfile(profile) {
+        set((prev2) => {
+          const profiles = [...prev2.profiles];
+          const idx = profiles.findIndex((it) => it.name === profile.name);
+          if (idx >= 0) {
+            profiles[idx] = profile;
+          } else {
+            profiles.push(profile);
+          }
+          return Object.assign(Object.assign({}, prev2), { profiles });
+        });
+      },
+      removeProfile(profileName) {
+        set((prev2) => {
+          const profiles = [...prev2.profiles];
+          const idx = profiles.findIndex((it) => it.name === profileName);
+          if (idx >= 0) {
+            profiles.splice(idx, 1);
+          }
+          return Object.assign(Object.assign({}, prev2), { profiles });
+        });
+      }
+    });
+  }
+  __name(createProfileSlice, "createProfileSlice");
+
+  // out/src/state/reset.js
+  function createResetSlice() {
+    return (set) => ({
+      resetAll() {
+        set((prev2) => {
+          const next2 = Object.assign({}, prev2);
+          next2.resetImg2Img();
+          next2.resetInpaint();
+          next2.resetTxt2Img();
+          next2.resetUpscale();
+          next2.resetBlend();
+          return next2;
+        });
+      }
+    });
+  }
+  __name(createResetSlice, "createResetSlice");
+
+  // out/src/state/txt2img.js
+  function createTxt2ImgSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale, defaultGrid) {
+    return (set) => ({
+      txt2img: Object.assign(Object.assign({}, defaultParams), { width: server.width.default, height: server.height.default }),
+      txt2imgHighres: Object.assign({}, defaultHighres),
+      txt2imgModel: Object.assign({}, defaultModel),
+      txt2imgUpscale: Object.assign({}, defaultUpscale),
+      txt2imgVariable: Object.assign({}, defaultGrid),
+      setTxt2Img(params) {
+        set((prev2) => ({
+          txt2img: Object.assign(Object.assign({}, prev2.txt2img), params)
+        }));
+      },
+      setTxt2ImgHighres(params) {
+        set((prev2) => ({
+          txt2imgHighres: Object.assign(Object.assign({}, prev2.txt2imgHighres), params)
+        }));
+      },
+      setTxt2ImgModel(params) {
+        set((prev2) => ({
+          txt2imgModel: Object.assign(Object.assign({}, prev2.txt2imgModel), params)
+        }));
+      },
+      setTxt2ImgUpscale(params) {
+        set((prev2) => ({
+          txt2imgUpscale: Object.assign(Object.assign({}, prev2.txt2imgUpscale), params)
+        }));
+      },
+      setTxt2ImgVariable(params) {
+        set((prev2) => ({
+          txt2imgVariable: Object.assign(Object.assign({}, prev2.txt2imgVariable), params)
+        }));
+      },
+      resetTxt2Img() {
+        set({
+          txt2img: Object.assign(Object.assign({}, defaultParams), { width: server.width.default, height: server.height.default })
+        });
+      }
+    });
+  }
+  __name(createTxt2ImgSlice, "createTxt2ImgSlice");
+
+  // out/src/state/upscale.js
+  function createUpscaleSlice(defaultParams, defaultHighres, defaultModel, defaultUpscale) {
+    return (set) => ({
+      upscale: Object.assign(Object.assign({}, defaultParams), {
+        // eslint-disable-next-line no-null/no-null
+        source: null
+      }),
+      upscaleHighres: Object.assign({}, defaultHighres),
+      upscaleModel: Object.assign({}, defaultModel),
+      upscaleUpscale: Object.assign({}, defaultUpscale),
+      resetUpscale() {
+        set({
+          upscale: Object.assign(Object.assign({}, defaultParams), {
+            // eslint-disable-next-line no-null/no-null
+            source: null
+          })
+        });
+      },
+      setUpscale(source) {
+        set((prev2) => ({
+          upscale: Object.assign(Object.assign({}, prev2.upscale), source)
+        }));
+      },
+      setUpscaleHighres(params) {
+        set((prev2) => ({
+          upscaleHighres: Object.assign(Object.assign({}, prev2.upscaleHighres), params)
+        }));
+      },
+      setUpscaleModel(params) {
+        set((prev2) => ({
+          upscaleModel: Object.assign(Object.assign({}, prev2.upscaleModel), defaultModel)
+        }));
+      },
+      setUpscaleUpscale(params) {
+        set((prev2) => ({
+          upscaleUpscale: Object.assign(Object.assign({}, prev2.upscaleUpscale), params)
+        }));
+      }
+    });
+  }
+  __name(createUpscaleSlice, "createUpscaleSlice");
+
+  // out/src/state/full.js
+  var ClientContext = (0, import_react22.createContext)(void 0);
+  var ConfigContext = (0, import_react22.createContext)(void 0);
+  var LoggerContext = (0, import_react22.createContext)(void 0);
+  var StateContext = (0, import_react22.createContext)(void 0);
+  var STATE_KEY = "onnx-web";
+  var STATE_VERSION = 11;
+  function baseParamsFromServer(defaults2) {
     return {
-      createDefaultSlice,
-      createHistorySlice,
-      createImg2ImgSlice,
-      createInpaintSlice,
-      createTxt2ImgSlice,
-      createUpscaleSlice,
-      createBlendSlice,
-      createResetSlice,
-      createModelSlice,
-      createProfileSlice
+      batch: defaults2.batch.default,
+      cfg: defaults2.cfg.default,
+      eta: defaults2.eta.default,
+      negativePrompt: defaults2.negativePrompt.default,
+      prompt: defaults2.prompt.default,
+      scheduler: defaults2.scheduler.default,
+      steps: defaults2.steps.default,
+      seed: defaults2.seed.default,
+      tiled_vae: defaults2.tiled_vae.default,
+      unet_overlap: defaults2.unet_overlap.default,
+      unet_tile: defaults2.unet_tile.default,
+      vae_overlap: defaults2.vae_overlap.default,
+      vae_tile: defaults2.vae_tile.default
+    };
+  }
+  __name(baseParamsFromServer, "baseParamsFromServer");
+  function createStateSlices(server) {
+    const defaultParams = baseParamsFromServer(server);
+    const defaultHighres = {
+      enabled: false,
+      highresIterations: server.highresIterations.default,
+      highresMethod: "",
+      highresSteps: server.highresSteps.default,
+      highresScale: server.highresScale.default,
+      highresStrength: server.highresStrength.default
+    };
+    const defaultModel = {
+      control: server.control.default,
+      correction: server.correction.default,
+      model: server.model.default,
+      pipeline: server.pipeline.default,
+      platform: server.platform.default,
+      upscaling: server.upscaling.default
+    };
+    const defaultUpscale = {
+      denoise: server.denoise.default,
+      enabled: false,
+      faces: false,
+      faceOutscale: server.faceOutscale.default,
+      faceStrength: server.faceStrength.default,
+      outscale: server.outscale.default,
+      scale: server.scale.default,
+      upscaleOrder: server.upscaleOrder.default
+    };
+    const defaultGrid = {
+      enabled: false,
+      columns: {
+        parameter: "seed",
+        value: ""
+      },
+      rows: {
+        parameter: "seed",
+        value: ""
+      }
+    };
+    return {
+      createBlendSlice: createBlendSlice(defaultModel, defaultUpscale),
+      createDefaultSlice: createDefaultSlice(defaultParams),
+      createHistorySlice: createHistorySlice(),
+      createImg2ImgSlice: createImg2ImgSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale),
+      createInpaintSlice: createInpaintSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale),
+      createModelSlice: createModelSlice(),
+      createProfileSlice: createProfileSlice(),
+      createResetSlice: createResetSlice(),
+      createTxt2ImgSlice: createTxt2ImgSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale, defaultGrid),
+      createUpscaleSlice: createUpscaleSlice(defaultParams, defaultHighres, defaultModel, defaultUpscale)
     };
   }
   __name(createStateSlices, "createStateSlices");
@@ -81874,10 +81978,13 @@ Please use another name.` : formatMuiErrorMessage(18));
     const models = useQuery(["models"], async () => client.models(), {
       staleTime: STALE_TIME
     });
+    const wildcards = useQuery(["wildcards"], async () => client.wildcards(), {
+      staleTime: STALE_TIME
+    });
     const { t: t2 } = useTranslation();
     function addNetwork(type, name, weight = 1) {
       onChange({
-        prompt: `<${type}:${name}:1.0> ${prompt}`,
+        prompt: `<${type}:${name}:${weight.toFixed(2)}> ${prompt}`,
         negativePrompt
       });
     }
@@ -81888,6 +81995,12 @@ Please use another name.` : formatMuiErrorMessage(18));
       });
     }
     __name(addToken, "addToken");
+    function addWildcard(name) {
+      onChange({
+        prompt: `${prompt}, __${name}__`
+      });
+    }
+    __name(addWildcard, "addWildcard");
     const tokens = useMemo17(() => {
       const networks = extractNetworks(prompt);
       return getNetworkTokens(models.data, networks);
@@ -81922,6 +82035,12 @@ Please use another name.` : formatMuiErrorMessage(18));
           selector: (result) => result.networks.filter((network) => network.type === "lora").map((network) => network.name)
         }, onSelect: (name) => {
           addNetwork("lora", name);
+        } }),
+        React148.createElement(QueryMenu, { id: "wildcard", labelKey: "wildcard", name: t2("wildcard"), query: {
+          result: wildcards,
+          selector: (result) => result
+        }, onSelect: (name) => {
+          addWildcard(name);
         } })
       )
     );
@@ -83769,7 +83888,8 @@ Please use another name.` : formatMuiErrorMessage(18));
           "correction-both": "Korrektur bei beiden",
           "correction-first": "Korrektur zuerst",
           "correction-last": "Korrektur zuletzt"
-        }
+        },
+        wildcard: ""
       }
     }
   };
@@ -84063,6 +84183,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           "ddpm": "DDPM",
           "deis-multi": "DEIS Multistep",
           "dpm-multi": "DPM Multistep",
+          "dpm-sde": "DPM SDE (Turbo)",
           "dpm-single": "DPM Singlestep",
           "euler": "Euler",
           "euler-a": "Euler Ancestral",
@@ -84113,7 +84234,8 @@ Please use another name.` : formatMuiErrorMessage(18));
           "correction-both": "Correction Both",
           "correction-first": "Correction First",
           "correction-last": "Correction Last"
-        }
+        },
+        wildcard: "Wildcard"
       }
     }
   };
@@ -84371,7 +84493,8 @@ Please use another name.` : formatMuiErrorMessage(18));
           "correction-both": "correcci\xF3n en ambos",
           "correction-first": "correcci\xF3n primero",
           "correction-last": "\xFAltima correcci\xF3n"
-        }
+        },
+        wildcard: ""
       }
     }
   };
@@ -84629,13 +84752,30 @@ Please use another name.` : formatMuiErrorMessage(18));
           "correction-both": "",
           "correction-first": "",
           "correction-last": ""
-        }
+        },
+        wildcard: ""
       }
     }
   };
 
   // out/src/strings/all.js
   var I18N_STRINGS = Object.assign(Object.assign(Object.assign(Object.assign({}, I18N_STRINGS_DE), I18N_STRINGS_EN), I18N_STRINGS_ES), I18N_STRINGS_FR);
+
+  // out/src/state/migration/default.js
+  var V7 = 7;
+  function applyStateMigrations(params, previousState, version, logger) {
+    logger.info("applying state migrations from version %s to version %s", version, STATE_VERSION);
+    if (version <= V7) {
+      return migrateV7ToV11(params, previousState);
+    }
+    return previousState;
+  }
+  __name(applyStateMigrations, "applyStateMigrations");
+  function migrateV7ToV11(params, previousState) {
+    const result = Object.assign(Object.assign(Object.assign({}, params), previousState), { img2img: Object.assign(Object.assign({}, previousState.img2img), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }), inpaint: Object.assign(Object.assign({}, previousState.inpaint), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }), txt2img: Object.assign(Object.assign({}, previousState.txt2img), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }), upscale: Object.assign(Object.assign({}, previousState.upscale), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }) });
+    return result;
+  }
+  __name(migrateV7ToV11, "migrateV7ToV11");
 
   // out/src/main.js
   var INITIAL_LOAD_TIMEOUT = 5e3;
@@ -84649,8 +84789,11 @@ Please use another name.` : formatMuiErrorMessage(18));
         instance.addResourceBundle(lang, namespace, data, true);
       }
     }
-    const { createDefaultSlice, createHistorySlice, createImg2ImgSlice, createInpaintSlice, createModelSlice, createTxt2ImgSlice, createUpscaleSlice, createBlendSlice, createResetSlice, createProfileSlice } = createStateSlices(params);
-    const state = createStore(persist((...slice3) => Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, createDefaultSlice(...slice3)), createHistorySlice(...slice3)), createImg2ImgSlice(...slice3)), createInpaintSlice(...slice3)), createModelSlice(...slice3)), createTxt2ImgSlice(...slice3)), createUpscaleSlice(...slice3)), createBlendSlice(...slice3)), createResetSlice(...slice3)), createProfileSlice(...slice3)), {
+    const { createDefaultSlice: createDefaultSlice2, createHistorySlice: createHistorySlice2, createImg2ImgSlice: createImg2ImgSlice2, createInpaintSlice: createInpaintSlice2, createModelSlice: createModelSlice2, createTxt2ImgSlice: createTxt2ImgSlice2, createUpscaleSlice: createUpscaleSlice2, createBlendSlice: createBlendSlice2, createResetSlice: createResetSlice2, createProfileSlice: createProfileSlice2 } = createStateSlices(params);
+    const state = createStore(persist((...slice3) => Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, createDefaultSlice2(...slice3)), createHistorySlice2(...slice3)), createImg2ImgSlice2(...slice3)), createInpaintSlice2(...slice3)), createModelSlice2(...slice3)), createTxt2ImgSlice2(...slice3)), createUpscaleSlice2(...slice3)), createBlendSlice2(...slice3)), createResetSlice2(...slice3)), createProfileSlice2(...slice3)), {
+      migrate(persistedState, version) {
+        return applyStateMigrations(params, persistedState, version, logger);
+      },
       name: STATE_KEY,
       partialize(s) {
         return Object.assign(Object.assign({}, s), { img2img: Object.assign(Object.assign({}, s.img2img), { source: void 0 }), inpaint: Object.assign(Object.assign({}, s.inpaint), { mask: void 0, source: void 0 }), upscale: Object.assign(Object.assign({}, s.upscale), { source: void 0 }), blend: Object.assign(Object.assign({}, s.blend), { mask: void 0, sources: [] }) });
