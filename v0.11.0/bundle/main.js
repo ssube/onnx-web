@@ -75153,13 +75153,149 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(createStateSlices, "createStateSlices");
 
+  // node_modules/@mui/icons-material/esm/ArrowLeft.js
+  var import_jsx_runtime124 = __toESM(require_jsx_runtime());
+  var ArrowLeft_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime124.jsx)("path", {
+    d: "m14 7-5 5 5 5V7z"
+  }), "ArrowLeft");
+
+  // node_modules/@mui/icons-material/esm/ArrowRight.js
+  var import_jsx_runtime125 = __toESM(require_jsx_runtime());
+  var ArrowRight_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime125.jsx)("path", {
+    d: "m10 17 5-5-5-5v10z"
+  }), "ArrowRight");
+
+  // node_modules/@mui/icons-material/esm/Blender.js
+  var import_jsx_runtime126 = __toESM(require_jsx_runtime());
+  var Blender_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime126.jsx)("path", {
+    d: "M16.13 15.13 18 3h-4V2h-4v1H5c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h2.23l.64 4.13C6.74 16.05 6 17.43 6 19v1c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-1c0-1.57-.74-2.95-1.87-3.87zM5 9V5h1.31l.62 4H5zm7 10c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2.29-5H9.72L8.33 5h7.34l-1.38 9z"
+  }), "Blender");
+
+  // node_modules/@mui/icons-material/esm/Brush.js
+  var import_jsx_runtime127 = __toESM(require_jsx_runtime());
+  var Brush_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime127.jsx)("path", {
+    d: "M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37-1.34-1.34a.9959.9959 0 0 0-1.41 0L9 12.25 11.75 15l8.96-8.96c.39-.39.39-1.02 0-1.41z"
+  }), "Brush");
+
+  // node_modules/@mui/icons-material/esm/Casino.js
+  var import_jsx_runtime128 = __toESM(require_jsx_runtime());
+  var Casino_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime128.jsx)("path", {
+    d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"
+  }), "Casino");
+
+  // node_modules/@mui/icons-material/esm/ContentCopy.js
+  var import_jsx_runtime129 = __toESM(require_jsx_runtime());
+  var ContentCopy_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime129.jsx)("path", {
+    d: "M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
+  }), "ContentCopy");
+
+  // node_modules/@mui/icons-material/esm/Delete.js
+  var import_jsx_runtime130 = __toESM(require_jsx_runtime());
+  var Delete_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime130.jsx)("path", {
+    d: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+  }), "Delete");
+
+  // node_modules/@mui/icons-material/esm/Download.js
+  var import_jsx_runtime131 = __toESM(require_jsx_runtime());
+  var Download_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime131.jsx)("path", {
+    d: "M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"
+  }), "Download");
+
+  // node_modules/@mui/icons-material/esm/FormatColorFill.js
+  var import_jsx_runtime132 = __toESM(require_jsx_runtime());
+  var FormatColorFill_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime132.jsx)("path", {
+    d: "M16.56 8.94 7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10 10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5zM2 20h20v4H2v-4z"
+  }), "FormatColorFill");
+
+  // node_modules/@mui/icons-material/esm/Gradient.js
+  var import_jsx_runtime133 = __toESM(require_jsx_runtime());
+  var Gradient_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime133.jsx)("path", {
+    d: "M11 9h2v2h-2zm-2 2h2v2H9zm4 0h2v2h-2zm2-2h2v2h-2zM7 9h2v2H7zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V5h14v6z"
+  }), "Gradient");
+
+  // node_modules/@mui/icons-material/esm/Help.js
+  var import_jsx_runtime134 = __toESM(require_jsx_runtime());
+  var Help_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime134.jsx)("path", {
+    d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"
+  }), "Help");
+
+  // node_modules/@mui/icons-material/esm/ImageSearch.js
+  var import_jsx_runtime135 = __toESM(require_jsx_runtime());
+  var ImageSearch_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime135.jsx)("path", {
+    d: "M18 13v7H4V6h5.02c.05-.71.22-1.38.48-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5l-2-2zm-1.5 5h-11l2.75-3.53 1.96 2.36 2.75-3.54zm2.8-9.11c.44-.7.7-1.51.7-2.39C20 4.01 17.99 2 15.5 2S11 4.01 11 6.5s2.01 4.5 4.49 4.5c.88 0 1.7-.26 2.39-.7L21 13.42 22.42 12 19.3 8.89zM15.5 9C14.12 9 13 7.88 13 6.5S14.12 4 15.5 4 18 5.12 18 6.5 16.88 9 15.5 9z"
+  }), "ImageSearch");
+
+  // node_modules/@mui/icons-material/esm/InvertColors.js
+  var import_jsx_runtime136 = __toESM(require_jsx_runtime());
+  var InvertColors_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime136.jsx)("path", {
+    d: "M12 4.81V19c-3.31 0-6-2.63-6-5.87 0-1.56.62-3.03 1.75-4.14L12 4.81M6.35 7.56C4.9 8.99 4 10.96 4 13.13 4 17.48 7.58 21 12 21s8-3.52 8-7.87c0-2.17-.9-4.14-2.35-5.57L12 2 6.35 7.56z"
+  }), "InvertColors");
+
+  // node_modules/@mui/icons-material/esm/KeyboardArrowDown.js
+  var import_jsx_runtime137 = __toESM(require_jsx_runtime());
+  var KeyboardArrowDown_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime137.jsx)("path", {
+    d: "M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
+  }), "KeyboardArrowDown");
+
+  // node_modules/@mui/icons-material/esm/PhotoCamera.js
+  var import_jsx_runtime138 = __toESM(require_jsx_runtime());
+  var PhotoCamera_default = createSvgIcon([/* @__PURE__ */ (0, import_jsx_runtime138.jsx)("circle", {
+    cx: "12",
+    cy: "12",
+    r: "3.2"
+  }, "0"), /* @__PURE__ */ (0, import_jsx_runtime138.jsx)("path", {
+    d: "M9 2 7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"
+  }, "1")], "PhotoCamera");
+
+  // node_modules/@mui/icons-material/esm/Refresh.js
+  var import_jsx_runtime139 = __toESM(require_jsx_runtime());
+  var Refresh_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime139.jsx)("path", {
+    d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+  }), "Refresh");
+
+  // node_modules/@mui/icons-material/esm/Replay.js
+  var import_jsx_runtime140 = __toESM(require_jsx_runtime());
+  var Replay_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime140.jsx)("path", {
+    d: "M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"
+  }), "Replay");
+
+  // node_modules/@mui/icons-material/esm/Save.js
+  var import_jsx_runtime141 = __toESM(require_jsx_runtime());
+  var Save_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime141.jsx)("path", {
+    d: "M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"
+  }), "Save");
+
+  // node_modules/@mui/icons-material/esm/Undo.js
+  var import_jsx_runtime142 = __toESM(require_jsx_runtime());
+  var Undo_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime142.jsx)("path", {
+    d: "M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"
+  }), "Undo");
+
+  // node_modules/@mui/icons-material/esm/ZoomOutMap.js
+  var import_jsx_runtime143 = __toESM(require_jsx_runtime());
+  var ZoomOutMap_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime143.jsx)("path", {
+    d: "m15 3 2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3h-6zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3v6zm6 12-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6h6zm12-6-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6v-6z"
+  }), "ZoomOutMap");
+
   // out/src/components/Logo.js
   var React131 = __toESM(require_react(), 1);
+  var URL_DOCS = "https://www.onnx-web.ai/docs";
+  var URL_REPO = "https://github.com/ssube/onnx-web";
+  var NEW_WINDOW = "_blank";
+  function openDocSite() {
+    window.open(URL_DOCS, NEW_WINDOW);
+  }
+  __name(openDocSite, "openDocSite");
   function Logo() {
     return React131.createElement(
       Typography_default,
       { variant: "h3", gutterBottom: true },
-      React131.createElement(Link_default, { href: "https://github.com/ssube/onnx-web", target: "_blank", underline: "hover" }, "ONNX Web")
+      React131.createElement(Link_default, { href: URL_REPO, target: NEW_WINDOW, underline: "hover" }, "ONNX Web"),
+      React131.createElement(
+        IconButton_default,
+        { onClick: openDocSite },
+        React131.createElement(Help_default, null)
+      )
     );
   }
   __name(Logo, "Logo");
@@ -75255,7 +75391,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   // node_modules/@mui/lab/TabContext/TabContext.js
   var React133 = __toESM(require_react());
   var import_prop_types92 = __toESM(require_prop_types());
-  var import_jsx_runtime124 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime144 = __toESM(require_jsx_runtime());
   var Context = /* @__PURE__ */ React133.createContext(null);
   if (true) {
     Context.displayName = "TabContext";
@@ -75280,7 +75416,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         value
       };
     }, [idPrefix, value]);
-    return /* @__PURE__ */ (0, import_jsx_runtime124.jsx)(Context.Provider, {
+    return /* @__PURE__ */ (0, import_jsx_runtime144.jsx)(Context.Provider, {
       value: context,
       children
     });
@@ -75328,7 +75464,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   // node_modules/@mui/lab/TabList/TabList.js
   var React134 = __toESM(require_react());
   var import_prop_types93 = __toESM(require_prop_types());
-  var import_jsx_runtime125 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime145 = __toESM(require_jsx_runtime());
   var _excluded83 = ["children"];
   var TabList = /* @__PURE__ */ React134.forwardRef(/* @__PURE__ */ __name(function TabList2(props, ref) {
     const {
@@ -75348,7 +75484,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         id: getTabId(context, child.props.value)
       });
     });
-    return /* @__PURE__ */ (0, import_jsx_runtime125.jsx)(Tabs_default, _extends({}, other, {
+    return /* @__PURE__ */ (0, import_jsx_runtime145.jsx)(Tabs_default, _extends({}, other, {
       ref,
       value: context.value,
       children
@@ -75378,7 +75514,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   var tabPanelClasses = generateUtilityClasses("MuiTabPanel", ["root"]);
 
   // node_modules/@mui/lab/TabPanel/TabPanel.js
-  var import_jsx_runtime126 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime146 = __toESM(require_jsx_runtime());
   var _excluded84 = ["children", "className", "value"];
   var useUtilityClasses60 = /* @__PURE__ */ __name((ownerState) => {
     const {
@@ -75416,7 +75552,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     }
     const id = getPanelId(context, value);
     const tabId = getTabId(context, value);
-    return /* @__PURE__ */ (0, import_jsx_runtime126.jsx)(TabPanelRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime146.jsx)(TabPanelRoot, _extends({
       "aria-labelledby": tabId,
       className: clsx_m_default(classes.root, className),
       hidden: value !== context.value,
@@ -75506,124 +75642,6 @@ Please use another name.` : formatMuiErrorMessage(18));
     return true;
   }
   __name(shallow, "shallow");
-
-  // node_modules/@mui/icons-material/esm/ArrowLeft.js
-  var import_jsx_runtime127 = __toESM(require_jsx_runtime());
-  var ArrowLeft_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime127.jsx)("path", {
-    d: "m14 7-5 5 5 5V7z"
-  }), "ArrowLeft");
-
-  // node_modules/@mui/icons-material/esm/ArrowRight.js
-  var import_jsx_runtime128 = __toESM(require_jsx_runtime());
-  var ArrowRight_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime128.jsx)("path", {
-    d: "m10 17 5-5-5-5v10z"
-  }), "ArrowRight");
-
-  // node_modules/@mui/icons-material/esm/Blender.js
-  var import_jsx_runtime129 = __toESM(require_jsx_runtime());
-  var Blender_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime129.jsx)("path", {
-    d: "M16.13 15.13 18 3h-4V2h-4v1H5c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h2.23l.64 4.13C6.74 16.05 6 17.43 6 19v1c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-1c0-1.57-.74-2.95-1.87-3.87zM5 9V5h1.31l.62 4H5zm7 10c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2.29-5H9.72L8.33 5h7.34l-1.38 9z"
-  }), "Blender");
-
-  // node_modules/@mui/icons-material/esm/Brush.js
-  var import_jsx_runtime130 = __toESM(require_jsx_runtime());
-  var Brush_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime130.jsx)("path", {
-    d: "M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37-1.34-1.34a.9959.9959 0 0 0-1.41 0L9 12.25 11.75 15l8.96-8.96c.39-.39.39-1.02 0-1.41z"
-  }), "Brush");
-
-  // node_modules/@mui/icons-material/esm/Casino.js
-  var import_jsx_runtime131 = __toESM(require_jsx_runtime());
-  var Casino_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime131.jsx)("path", {
-    d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"
-  }), "Casino");
-
-  // node_modules/@mui/icons-material/esm/ContentCopy.js
-  var import_jsx_runtime132 = __toESM(require_jsx_runtime());
-  var ContentCopy_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime132.jsx)("path", {
-    d: "M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
-  }), "ContentCopy");
-
-  // node_modules/@mui/icons-material/esm/Delete.js
-  var import_jsx_runtime133 = __toESM(require_jsx_runtime());
-  var Delete_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime133.jsx)("path", {
-    d: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
-  }), "Delete");
-
-  // node_modules/@mui/icons-material/esm/Download.js
-  var import_jsx_runtime134 = __toESM(require_jsx_runtime());
-  var Download_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime134.jsx)("path", {
-    d: "M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"
-  }), "Download");
-
-  // node_modules/@mui/icons-material/esm/FormatColorFill.js
-  var import_jsx_runtime135 = __toESM(require_jsx_runtime());
-  var FormatColorFill_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime135.jsx)("path", {
-    d: "M16.56 8.94 7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10 10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5zM2 20h20v4H2v-4z"
-  }), "FormatColorFill");
-
-  // node_modules/@mui/icons-material/esm/Gradient.js
-  var import_jsx_runtime136 = __toESM(require_jsx_runtime());
-  var Gradient_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime136.jsx)("path", {
-    d: "M11 9h2v2h-2zm-2 2h2v2H9zm4 0h2v2h-2zm2-2h2v2h-2zM7 9h2v2H7zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V5h14v6z"
-  }), "Gradient");
-
-  // node_modules/@mui/icons-material/esm/ImageSearch.js
-  var import_jsx_runtime137 = __toESM(require_jsx_runtime());
-  var ImageSearch_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime137.jsx)("path", {
-    d: "M18 13v7H4V6h5.02c.05-.71.22-1.38.48-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5l-2-2zm-1.5 5h-11l2.75-3.53 1.96 2.36 2.75-3.54zm2.8-9.11c.44-.7.7-1.51.7-2.39C20 4.01 17.99 2 15.5 2S11 4.01 11 6.5s2.01 4.5 4.49 4.5c.88 0 1.7-.26 2.39-.7L21 13.42 22.42 12 19.3 8.89zM15.5 9C14.12 9 13 7.88 13 6.5S14.12 4 15.5 4 18 5.12 18 6.5 16.88 9 15.5 9z"
-  }), "ImageSearch");
-
-  // node_modules/@mui/icons-material/esm/InvertColors.js
-  var import_jsx_runtime138 = __toESM(require_jsx_runtime());
-  var InvertColors_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime138.jsx)("path", {
-    d: "M12 4.81V19c-3.31 0-6-2.63-6-5.87 0-1.56.62-3.03 1.75-4.14L12 4.81M6.35 7.56C4.9 8.99 4 10.96 4 13.13 4 17.48 7.58 21 12 21s8-3.52 8-7.87c0-2.17-.9-4.14-2.35-5.57L12 2 6.35 7.56z"
-  }), "InvertColors");
-
-  // node_modules/@mui/icons-material/esm/KeyboardArrowDown.js
-  var import_jsx_runtime139 = __toESM(require_jsx_runtime());
-  var KeyboardArrowDown_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime139.jsx)("path", {
-    d: "M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
-  }), "KeyboardArrowDown");
-
-  // node_modules/@mui/icons-material/esm/PhotoCamera.js
-  var import_jsx_runtime140 = __toESM(require_jsx_runtime());
-  var PhotoCamera_default = createSvgIcon([/* @__PURE__ */ (0, import_jsx_runtime140.jsx)("circle", {
-    cx: "12",
-    cy: "12",
-    r: "3.2"
-  }, "0"), /* @__PURE__ */ (0, import_jsx_runtime140.jsx)("path", {
-    d: "M9 2 7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"
-  }, "1")], "PhotoCamera");
-
-  // node_modules/@mui/icons-material/esm/Refresh.js
-  var import_jsx_runtime141 = __toESM(require_jsx_runtime());
-  var Refresh_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime141.jsx)("path", {
-    d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-  }), "Refresh");
-
-  // node_modules/@mui/icons-material/esm/Replay.js
-  var import_jsx_runtime142 = __toESM(require_jsx_runtime());
-  var Replay_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime142.jsx)("path", {
-    d: "M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"
-  }), "Replay");
-
-  // node_modules/@mui/icons-material/esm/Save.js
-  var import_jsx_runtime143 = __toESM(require_jsx_runtime());
-  var Save_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime143.jsx)("path", {
-    d: "M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"
-  }), "Save");
-
-  // node_modules/@mui/icons-material/esm/Undo.js
-  var import_jsx_runtime144 = __toESM(require_jsx_runtime());
-  var Undo_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime144.jsx)("path", {
-    d: "M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"
-  }), "Undo");
-
-  // node_modules/@mui/icons-material/esm/ZoomOutMap.js
-  var import_jsx_runtime145 = __toESM(require_jsx_runtime());
-  var ZoomOutMap_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime145.jsx)("path", {
-    d: "m15 3 2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3h-6zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3v6zm6 12-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6h6zm12-6-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6v-6z"
-  }), "ZoomOutMap");
 
   // out/src/components/card/ErrorCard.js
   var React136 = __toESM(require_react(), 1);
