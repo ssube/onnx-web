@@ -370,7 +370,7 @@ def convert_diffusion_diffusers(
             else:
                 logger.debug("loading pipeline from SD checkpoint: %s", source)
                 pipeline = download_from_original_stable_diffusion_ckpt(
-                    source,
+                    cache_path,
                     original_config_file=config_path,
                     pipeline_class=pipe_class,
                     **pipe_args,
