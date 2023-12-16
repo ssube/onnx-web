@@ -94,33 +94,33 @@ in [`common/pipelines`](../common/pipelines).
 
 #### Blend: Denoise
 
-TODO
+Run [fast non-local means denoising](https://docs.opencv.org/4.8.0/d5/d69/tutorial_py_non_local_means.html) using `cv2`.
 
 #### Blend: Grid
 
-TODO
+Combine the source images into a grid.
 
 #### Blend: Img2img
 
-TODO
+Run an img2img pipeline.
 
 #### Blend: Linear
 
-TODO
+Blend two images using linear interpolation (0.0 is the first image, 1.0 is the second).
 
 #### Blend: Mask
 
-TODO
+Blend two images using a mask.
 
 ### Correction Stages
 
 #### Correct: CodeFormer
 
-TODO
+Run correction using CodeFormer.
 
 #### Correct: GFPGAN
 
-TODO
+Run correction using GFPGAN.
 
 ### Compound Stages
 
@@ -138,11 +138,11 @@ TODO
 
 #### Persist: Disk
 
-TODO
+Save all of the sources to disk.
 
 #### Persist: S3
 
-TODO
+Save all of the sources to an S3 bucket.
 
 ### Reduction Stages
 
@@ -158,29 +158,29 @@ TODO
 
 #### Source: Noise
 
-TODO
+Create a new source using a noise generator.
 
 #### Source: S3
 
-TODO
+Load a new source from an S3 bucket.
 
 #### Source: Txt2img
 
-TODO
+Run a txt2img pipeline.
 
 #### Source: URL
 
-TODO
+Load a new source from a URL.
 
 ### Upscaling Stages
 
 #### Upscale: BSRGAN
 
-TODO
+Upscaling stage using BSRGAN.
 
 #### Upscale: Highres
 
-TODO
+Upscaling stage using highres.
 
 #### Upscale: Outpaint
 
@@ -195,7 +195,7 @@ Upscaling stage using the Real ESRGAN upscaling models, available in x2 and x4 v
 
 #### Upscale: Simple
 
-TODO
+Upscaling stage using bilinear or Lanczos upscaling.
 
 #### Upscale: Stable Diffusion
 
@@ -206,4 +206,4 @@ Upscaling stage using the Stable Diffusion x4 upscaling model:
 
 #### Upscale: SwinIR
 
-TODO
+Upscaling stage using SwinIR.

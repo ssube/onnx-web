@@ -59,19 +59,19 @@ Introspection endpoint.
 
 #### `GET /api/settings/filters`
 
-TODO
+List available mask and source filters.
 
 #### `GET /api/settings/masks`
 
-Available mask filters.
+List available mask filters.
 
 #### `GET /api/settings/models`
 
-Available models, all types.
+List available models, all types.
 
 #### `GET /api/settings/noises`
 
-Available noise sources.
+List available noise sources.
 
 #### `GET /api/settings/params`
 
@@ -79,7 +79,7 @@ Server parameters, slider min/max and version check.
 
 #### `GET /api/settings/pipelines`
 
-TODO
+List available pipelines.
 
 #### `GET /api/settings/platforms`
 
@@ -91,11 +91,11 @@ Available pipeline schedulers.
 
 #### `GET /api/settings/strings`
 
-TODO
+Server strings, from extras file and plugins.
 
 #### `GET /api/settings/wildcards`
 
-TODO
+List available wildcard paths.
 
 ### Pipelines
 
@@ -105,11 +105,11 @@ Check if a pipeline has completed.
 
 #### `POST /api/blend`
 
-TODO
+Blend two images using a mask.
 
 #### `POST /api/chain`
 
-TODO
+Run a [custom chain pipeline](./chain-pipelines.md).
 
 #### `POST /api/img2img`
 
@@ -125,15 +125,17 @@ Run a txt2img pipeline.
 
 #### `POST /api/txt2txt`
 
-TODO
+**Unstable.**
+
+Run a txt2txt pipeline.
 
 #### `POST /api/upscale`
 
-TODO
+Run an upscale pipeline.
 
 #### `PUT /api/cancel`
 
-TODO
+Cancel a pending or in-progress job.
 
 ### Outputs
 

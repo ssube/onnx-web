@@ -206,18 +206,23 @@ These extra images can be helpful when debugging inpainting, especially poorly b
 #### Client Variables
 
 - `ONNX_WEB_CIVITAI_ROOT`
-  - TODO
+  - root URL for downloading Civitai models
+  - rarely needs to be changed
 - `ONNX_WEB_CIVITAI_TOKEN`
-  - TODO
+  - Civitai API token for models that require login
+  - you can create an API token in the Profile page: TODO LINK
 - `ONNX_WEB_HUGGINGFACE_TOKEN`
-  - TODO
+  - Huggingface API token for models that require login
 
 #### Conversion Variables
 
 - `ONNX_WEB_CONVERT_CONTROL`
-  - TODO
+  - convert ControlNet
+  - disable to skip ControlNet, saving some disk and memory
 - `ONNX_WEB_CONVERT_EXTRACT`
-  - TODO
+  - extract models to Torch directory before converting to ONNX
+  - disable to skip extraction, saving some disk
+  - extraction uses an older code path that does not work with some newer models and has a non-commercial license
 - `ONNX_WEB_CONVERT_RELOAD`
   - TODO
 - `ONNX_WEB_CONVERT_SHARE_UNET`
@@ -225,7 +230,8 @@ These extra images can be helpful when debugging inpainting, especially poorly b
 - `ONNX_WEB_CONVERT_OPSET`
   - TODO
 - `ONNX_WEB_CONVERT_CPU_ONLY`
-  - TODO
+  - perform conversion on the CPU, even if a CUDA GPU is available
+  - can allow conversion of models that do not fit in VRAM
 
 #### Memory & Optimization Variables
 
@@ -268,20 +274,22 @@ These extra images can be helpful when debugging inpainting, especially poorly b
 #### Server & Other Variables
 
 - `ONNX_WEB_ADMIN_TOKEN`
-  - TODO
+  - token for admin operations
+  - required to update extras file and restart workers
 - `ONNX_WEB_CORS_ORIGIN`
   - comma-delimited list of allowed origins for CORS headers
 - `ONNX_WEB_DEBUG`
-  - TODO
+  - wait for debugger to be attached before starting server
 - `ONNX_WEB_EXTRA_ARGS`
   - extra arguments to the launch script
   - set this to `--half` to convert models to fp16
 - `ONNX_WEB_FEATURE_FLAGS`
-  - TODO
+  - enable some [feature flags](#feature-flags)
 - `ONNX_WEB_IMAGE_FORMAT`
   - TODO
 - `ONNX_WEB_JOB_LIMIT`
-  - TODO
+  - number of jobs to run before restarting workers
+  - can help prevent memory leaks
 - `ONNX_WEB_PLUGINS`
   - TODO
 - `ONNX_WEB_SERVER_VERSION`
@@ -290,7 +298,8 @@ These extra images can be helpful when debugging inpainting, especially poorly b
   - show progress bars in the logs
   - disabling this can reduce noise in server logs, especially when logging to a file
 - `ONNX_WEB_WORKER_RETRIES`
-  - TODO
+  - number of times to retry a tile or stage before failing the image
+  - more retries takes longer but can help prevent intermittent OOM errors from ruining long pipelines
 
 ### Feature Flags
 
