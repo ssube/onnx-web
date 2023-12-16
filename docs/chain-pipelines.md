@@ -12,11 +12,17 @@ are run on each tile, then the results are recombined and passed on to the next 
     - [Format](#format)
   - [Stages](#stages)
     - [Blending Stages](#blending-stages)
+      - [Blend: Denoise](#blend-denoise)
+      - [Blend: Grid](#blend-grid)
       - [Blend: Img2img](#blend-img2img)
-      - [Blend: Inpaint](#blend-inpaint)
+      - [Blend: Linear](#blend-linear)
+      - [Blend: Mask](#blend-mask)
     - [Correction Stages](#correction-stages)
       - [Correct: CodeFormer](#correct-codeformer)
       - [Correct: GFPGAN](#correct-gfpgan)
+    - [Compound Stages](#compound-stages)
+      - [Highres Stage](#highres-stage)
+      - [Upscale Stage](#upscale-stage)
     - [Persistence Stages](#persistence-stages)
       - [Persist: Disk](#persist-disk)
       - [Persist: S3](#persist-s3)
@@ -25,11 +31,17 @@ are run on each tile, then the results are recombined and passed on to the next 
       - [Reduce: Thumbnail](#reduce-thumbnail)
     - [Source Stages](#source-stages)
       - [Source: Noise](#source-noise)
+      - [Source: S3](#source-s3)
       - [Source: Txt2img](#source-txt2img)
+      - [Source: URL](#source-url)
     - [Upscaling Stages](#upscaling-stages)
+      - [Upscale: BSRGAN](#upscale-bsrgan)
+      - [Upscale: Highres](#upscale-highres)
       - [Upscale: Outpaint](#upscale-outpaint)
       - [Upscale: Real ESRGAN](#upscale-real-esrgan)
+      - [Upscale: Simple](#upscale-simple)
       - [Upscale: Stable Diffusion](#upscale-stable-diffusion)
+      - [Upscale: SwinIR](#upscale-swinir)
 
 ## Overview
 
@@ -80,35 +92,95 @@ in [`common/pipelines`](../common/pipelines).
 
 ### Blending Stages
 
+#### Blend: Denoise
+
+TODO
+
+#### Blend: Grid
+
+TODO
+
 #### Blend: Img2img
 
-#### Blend: Inpaint
+TODO
+
+#### Blend: Linear
+
+TODO
+
+#### Blend: Mask
+
+TODO
 
 ### Correction Stages
 
 #### Correct: CodeFormer
 
+TODO
+
 #### Correct: GFPGAN
+
+TODO
+
+### Compound Stages
+
+Not currently available through JSON API.
+
+#### Highres Stage
+
+TODO
+
+#### Upscale Stage
+
+TODO
 
 ### Persistence Stages
 
 #### Persist: Disk
 
+TODO
+
 #### Persist: S3
+
+TODO
 
 ### Reduction Stages
 
 #### Reduce: Crop
 
+TODO
+
 #### Reduce: Thumbnail
+
+TODO
 
 ### Source Stages
 
 #### Source: Noise
 
+TODO
+
+#### Source: S3
+
+TODO
+
 #### Source: Txt2img
 
+TODO
+
+#### Source: URL
+
+TODO
+
 ### Upscaling Stages
+
+#### Upscale: BSRGAN
+
+TODO
+
+#### Upscale: Highres
+
+TODO
 
 #### Upscale: Outpaint
 
@@ -121,9 +193,17 @@ Upscaling stage using the Real ESRGAN upscaling models, available in x2 and x4 v
 
 - https://github.com/xinntao/Real-ESRGAN/releases
 
+#### Upscale: Simple
+
+TODO
+
 #### Upscale: Stable Diffusion
 
 Upscaling stage using the Stable Diffusion x4 upscaling model:
 
 - https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler
 - https://huggingface.co/ssube/stable-diffusion-x4-upscaler-onnx
+
+#### Upscale: SwinIR
+
+TODO

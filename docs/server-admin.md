@@ -19,6 +19,13 @@ Please see [the user guide](user-guide.md) for descriptions of the client and ea
   - [Configuration](#configuration)
     - [Debug Mode](#debug-mode)
     - [Environment Variables](#environment-variables)
+      - [Client Variables](#client-variables)
+      - [Conversion Variables](#conversion-variables)
+      - [Memory \& Optimization Variables](#memory--optimization-variables)
+      - [Path Variables](#path-variables)
+      - [Platform Variables](#platform-variables)
+      - [Server \& Other Variables](#server--other-variables)
+    - [Feature Flags](#feature-flags)
     - [Pipeline Optimizations](#pipeline-optimizations)
     - [Server Parameters](#server-parameters)
   - [Containers](#containers)
@@ -196,10 +203,49 @@ These extra images can be helpful when debugging inpainting, especially poorly b
 
 ### Environment Variables
 
-Paths:
+#### Client Variables
+
+- `ONNX_WEB_CIVITAI_ROOT`
+  - TODO
+- `ONNX_WEB_CIVITAI_TOKEN`
+  - TODO
+- `ONNX_WEB_HUGGINGFACE_TOKEN`
+  - TODO
+
+#### Conversion Variables
+
+- `ONNX_WEB_CONVERT_CONTROL`
+  - TODO
+- `ONNX_WEB_CONVERT_EXTRACT`
+  - TODO
+- `ONNX_WEB_CONVERT_RELOAD`
+  - TODO
+- `ONNX_WEB_CONVERT_SHARE_UNET`
+  - TODO
+- `ONNX_WEB_CONVERT_OPSET`
+  - TODO
+- `ONNX_WEB_CONVERT_CPU_ONLY`
+  - TODO
+
+#### Memory & Optimization Variables
+
+- `ONNX_WEB_CACHE_MODELS`
+  - the number of recent models to keep in memory
+  - setting this to 0 will disable caching and free VRAM between images
+- `ONNX_WEB_MEMORY_LIMIT`
+  - TODO
+- `ONNX_WEB_OPTIMIZATIONS`
+  - comma-delimited list of optimizations to enable
+
+#### Path Variables
 
 - `ONNX_WEB_BUNDLE_PATH`
   - path where client bundle files can be found
+- `ONNX_WEB_EXTRA_MODELS`
+  - extra model files to be loaded
+  - one or more filenames or paths, to JSON or YAML files matching [the extras schema](../api/schemas/extras.yaml)
+- `ONNX_WEB_LOGGING_PATH`
+  - path to `logging.yaml` config file
 - `ONNX_WEB_MODEL_PATH`
   - path where models can be found
 - `ONNX_WEB_OUTPUT_PATH`
@@ -207,7 +253,7 @@ Paths:
 - `ONNX_WEB_PARAMS_PATH`
   - path to the directory where the `params.json` file can be found
 
-Others:
+#### Platform Variables
 
 - `ONNX_WEB_ANY_PLATFORM`
   - whether or not to include the `any` option in the platform list
@@ -215,25 +261,40 @@ Others:
   - comma-delimited list of platforms that should not be presented to users
   - further filters the list of available platforms returned by ONNX runtime
   - can be used to prevent CPU generation on shared servers
-- `ONNX_WEB_CACHE_MODELS`
-  - the number of recent models to keep in memory
-  - setting this to 0 will disable caching and free VRAM between images
-- `ONNX_WEB_CORS_ORIGIN`
-  - comma-delimited list of allowed origins for CORS headers
 - `ONNX_WEB_DEFAULT_PLATFORM`
   - the default platform to show in the client
   - overrides the `params.json` file
+
+#### Server & Other Variables
+
+- `ONNX_WEB_ADMIN_TOKEN`
+  - TODO
+- `ONNX_WEB_CORS_ORIGIN`
+  - comma-delimited list of allowed origins for CORS headers
+- `ONNX_WEB_DEBUG`
+  - TODO
 - `ONNX_WEB_EXTRA_ARGS`
   - extra arguments to the launch script
   - set this to `--half` to convert models to fp16
-- `ONNX_WEB_EXTRA_MODELS`
-  - extra model files to be loaded
-  - one or more filenames or paths, to JSON or YAML files matching [the extras schema](../api/schemas/extras.yaml)
+- `ONNX_WEB_FEATURE_FLAGS`
+  - TODO
+- `ONNX_WEB_IMAGE_FORMAT`
+  - TODO
+- `ONNX_WEB_JOB_LIMIT`
+  - TODO
+- `ONNX_WEB_PLUGINS`
+  - TODO
+- `ONNX_WEB_SERVER_VERSION`
+  - TODO
 - `ONNX_WEB_SHOW_PROGRESS`
   - show progress bars in the logs
   - disabling this can reduce noise in server logs, especially when logging to a file
-- `ONNX_WEB_OPTIMIZATIONS`
-  - comma-delimited list of optimizations to enable
+- `ONNX_WEB_WORKER_RETRIES`
+  - TODO
+
+### Feature Flags
+
+TODO
 
 ### Pipeline Optimizations
 
@@ -254,6 +315,14 @@ Others:
     - not available for ONNX pipelines (most of them)
     - https://huggingface.co/docs/diffusers/optimization/fp16#sliced-vae-decode-for-larger-batches
 - `onnx-*`
+  - `onnx-cpu-*`
+    - CPU offloading for individual models
+    - `onnx-cpu-text-encoder`
+      - recommended for SDXL highres
+    - `onnx-cpu-unet`
+      - not recommended
+    - `onnx-cpu-vae`
+      - may be necessary for SDXL highres
   - `onnx-deterministic-compute`
     - enable ONNX deterministic compute
   - `onnx-fp16`

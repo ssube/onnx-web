@@ -136,7 +136,7 @@ Some of the conversion and pipeline code was copied or derived from code in:
   - https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
 - [`uchuusen/onnx_stable_diffusion_controlnet`](https://github.com/uchuusen/onnx_stable_diffusion_controlnet)
   - GPL v3: https://github.com/uchuusen/onnx_stable_diffusion_controlnet/blob/main/LICENSE
-- [`uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix](https://github.com/uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix)
+- [`uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix`](https://github.com/uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix)
   - Apache v2: https://github.com/uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix/blob/main/LICENSE
 
 Those parts have their own licenses with additional restrictions on commercial usage, modification, and redistribution.

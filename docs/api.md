@@ -10,18 +10,26 @@
       - [`GET /<path>`](#get-path)
     - [Settings and parameters](#settings-and-parameters)
       - [`GET /api`](#get-api)
+      - [`GET /api/settings/filters`](#get-apisettingsfilters)
       - [`GET /api/settings/masks`](#get-apisettingsmasks)
       - [`GET /api/settings/models`](#get-apisettingsmodels)
       - [`GET /api/settings/noises`](#get-apisettingsnoises)
       - [`GET /api/settings/params`](#get-apisettingsparams)
+      - [`GET /api/settings/pipelines`](#get-apisettingspipelines)
       - [`GET /api/settings/platforms`](#get-apisettingsplatforms)
       - [`GET /api/settings/schedulers`](#get-apisettingsschedulers)
+      - [`GET /api/settings/strings`](#get-apisettingsstrings)
+      - [`GET /api/settings/wildcards`](#get-apisettingswildcards)
     - [Pipelines](#pipelines)
       - [`GET /api/ready`](#get-apiready)
+      - [`POST /api/blend`](#post-apiblend)
+      - [`POST /api/chain`](#post-apichain)
       - [`POST /api/img2img`](#post-apiimg2img)
       - [`POST /api/inpaint`](#post-apiinpaint)
-      - [`POST /api/outpaint`](#post-apioutpaint)
       - [`POST /api/txt2img`](#post-apitxt2img)
+      - [`POST /api/txt2txt`](#post-apitxt2txt)
+      - [`POST /api/upscale`](#post-apiupscale)
+      - [`PUT /api/cancel`](#put-apicancel)
     - [Outputs](#outputs)
       - [`GET /output/<path>`](#get-outputpath)
 
@@ -49,6 +57,10 @@ Usually includes:
 
 Introspection endpoint.
 
+#### `GET /api/settings/filters`
+
+TODO
+
 #### `GET /api/settings/masks`
 
 Available mask filters.
@@ -65,6 +77,10 @@ Available noise sources.
 
 Server parameters, slider min/max and version check.
 
+#### `GET /api/settings/pipelines`
+
+TODO
+
 #### `GET /api/settings/platforms`
 
 Available hardware acceleration platforms.
@@ -73,11 +89,27 @@ Available hardware acceleration platforms.
 
 Available pipeline schedulers.
 
+#### `GET /api/settings/strings`
+
+TODO
+
+#### `GET /api/settings/wildcards`
+
+TODO
+
 ### Pipelines
 
 #### `GET /api/ready`
 
 Check if a pipeline has completed.
+
+#### `POST /api/blend`
+
+TODO
+
+#### `POST /api/chain`
+
+TODO
 
 #### `POST /api/img2img`
 
@@ -87,15 +119,21 @@ Run an img2img pipeline.
 
 Run an inpainting pipeline.
 
-#### `POST /api/outpaint`
-
-Run an outpainting pipeline.
-
-This uses the inpainting pipeline with more parameters and image filtering.
-
 #### `POST /api/txt2img`
 
 Run a txt2img pipeline.
+
+#### `POST /api/txt2txt`
+
+TODO
+
+#### `POST /api/upscale`
+
+TODO
+
+#### `PUT /api/cancel`
+
+TODO
 
 ### Outputs
 
@@ -108,3 +146,4 @@ In debug mode, this will also include some intermediate images:
 - `last-mask.png`
 - `last-noise.png`
 - `last-source.png`
+- `last-tile-N.png`
