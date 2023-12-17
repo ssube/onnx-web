@@ -204,28 +204,25 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="getting-started">Getting Started</h1>
-<p>onnx-web is a tool for generating images with Stable Diffusion pipelines, including SDXL.</p>
-<blockquote>
 <p>Welcome to onnx-web, a Stable Diffusion tool designed for straightforward and versatile use in AI art. Whether you're
-running on an AMD or Nvidia GPU, on a Windows desktop, or a Linux server, onnx-web is compatible across various
-setups. It goes a step further by supporting multiple GPUs simultaneously, and with SDXL and LCM available for all
-platforms, users can harness its capabilities without constraints. The panorama mode stands out, enabling regional
-prompts without the need for additional plugins. Get ready to explore the technical aspects of onnx-web and discover
-how it seamlessly fits into your AI art toolkit.</p>
-</blockquote>
-<p>OR</p>
-<blockquote>
-<p>Welcome to onnx-web, your gateway to exploring the cutting-edge realm of Stable Diffusion in AI art. This guide is tailored for new users seeking a seamless entry into the diverse and creative possibilities offered by onnx-web. Whether you're a seasoned AI art enthusiast or just dipping your toes into the world of generative art, onnx-web provides a user-friendly yet powerful environment to unleash your creativity.</p>
-<p>Installation and System Requirements:
-Before diving into the creative process, it's crucial to get onnx-web up and running on your system. We offer multiple installation methods to cater to users of varying technical expertise. For beginners on Windows, an all-in-one EXE bundle simplifies the installation process. Intermediate users can opt for a cross-platform installation using a Python virtual environment, providing greater customization. Server administrators can explore OCI containers for streamlined deployment. Keep in mind the minimum and recommended system requirements to ensure optimal performance, with options for optimizations tailored to low-memory users.</p>
-<p>Understanding onnx-web's Core Features:
-onnx-web introduces a set of core features that form the backbone of your AI art journey. The Stable Diffusion process, capable of running on both AMD and Nvidia GPUs, powers the image generation pipeline. Explore the diverse tabs in the web UI, each offering unique functionalities such as text-based image generation, upscaling, blending, and model management. Dive into the technical details of prompt syntax, model conversions, and the intricacies of parameters, gaining a deeper understanding of how to fine-tune the AI art creation process.</p>
-<p>Unlocking Specialized Pipelines:
-Delve into the specialized pipelines within onnx-web, such as the panorama and highres features, each designed to elevate your creative output. The panorama pipeline allows for the generation of large and seamless images, enhanced by the utilization of region prompts and seeds. Highres, on the other hand, provides a super-resolution upscaling technique, refining images with iterative img2img processes. Learn how to harness these features effectively, understanding the nuances of region-based modifications, tokens, and optimal tile configurations.</p>
-<p>Optimizing Performance and Memory Usage:
-Discover how onnx-web caters to users with varying hardware configurations. Uncover optimization techniques such as converting models to fp16 mode, offloading computations to the CPU, and leveraging specialized features like the panorama pipeline for efficient memory usage. Gain insights into the considerations and trade-offs involved in choosing parameters, tile configurations, and employing unique prompts for distinct creative outcomes.</p>
-<p>This guide sets the stage for your onnx-web journey, offering a balance of technical depth and user-friendly insights to empower you in your AI art exploration. Let's embark on this creative venture together, where innovation meets technical precision.</p>
-</blockquote>
+running on an AMD or Nvidia GPU, on a Windows desktop or a Linux server, onnx-web is compatible with most machines.
+It goes a step further by supporting multiple GPUs simultaneously, and with SDXL and LCM available for all platforms,
+users can harness its capabilities without waiting. The panorama pipeline allows you to use regional prompts without
+the need for additional plugins. Get ready to explore the basics of onnx-web and discover how it seamlessly fits into
+your AI art toolkit.</p>
+<p>The specialized features within onnx-web, such as the panorama pipeline and highres, are designed to produce
+high-quality results in the megapixel scale from text prompts without human intervention or inpainting. The panorama
+pipeline allows for the generation of large and seamless images, enhanced by the utilization of region prompts and
+seeds. Highres, on the other hand, provides a super-resolution upscaling technique, refining images with iterative
+img2img processes. Learn how to harness these features effectively, understanding the nuances of region-based
+modifications, tokens, and optimal tile configurations.</p>
+<p>Discover how onnx-web caters to users with varying hardware configurations. Uncover optimization techniques such as
+converting models to fp16 mode, offloading computations to the CPU, and leveraging specialized features like the
+panorama pipeline to further reduce memory usage. Gain insights into the considerations and trade-offs involved in
+choosing parameters, tile configurations, and employing unique prompts for distinct creative outcomes.</p>
+<p>This guide sets the stage for your onnx-web journey, offering a balance of technical depth and user-friendly insights to
+empower you in your AI art exploration. Let's embark on this creative venture together, where innovation meets technical
+precision.</p>
 <h2 id="contents">Contents</h2>
 <ul>
 <li><a href="#getting-started">Getting Started</a><ul>
@@ -290,122 +287,87 @@ Discover how onnx-web caters to users with varying hardware configurations. Unco
 </li>
 </ul>
 <h2 id="setup">Setup</h2>
+<p>Before diving into the creative process, it's crucial to get onnx-web up and running on your system. We offer multiple
+installation methods to cater to users of varying technical expertise. For beginners on Windows, an all-in-one EXE
+bundle simplifies the installation process. Intermediate users can opt for a cross-platform installation using a Python
+virtual environment, providing greater customization. Server administrators can explore OCI containers for streamlined
+deployment. Keep in mind the minimum and recommended system requirements to ensure optimal performance, with options for
+optimizations tailored to low-memory users.</p>
 <h3 id="windows-bundle-setup">Windows bundle setup</h3>
-<ol>
-<li>Download</li>
-<li>Extract</li>
-<li>Security flags</li>
-<li>Run</li>
-</ol>
-<blockquote>
-<p>onnx-web offers multiple installation methods catering to users with varying levels of expertise. For beginners on
-Windows, an accessible option is the all-in-one EXE bundle. This bundle, distributed as a ZIP archive, requires
-extraction before execution. It's crucial to disable the Windows mark-of-the-web check to ensure seamless
-functionality. Upon extraction, initiate onnx-web by running the EXE file. Once model conversion is complete, the
-server will commence, opening a browser window for immediate access to the web UI.</p>
-</blockquote>
+<p>For Windows users, the all-in-one EXE bundle is an accessible option. There are some minor limitations, for example you
+cannot update dependencies or use the nightly ONNX packages, or use plugins that are not included in the bundle.</p>
+<p>This bundle, distributed as a ZIP archive, requires extraction before execution. Make sure to disable the Windows
+mark-of-the-web check to ensure the server runs successfully. Upon extraction, initiate onnx-web by running the EXE
+file. Once model conversion is complete, the server will commence, opening a browser window for immediate access to the
+web UI.</p>
 <h3 id="cross-platform-setup">Cross platform setup</h3>
 <p>Link to the other methods.</p>
-<blockquote>
-<p>Intermediate users can opt for a cross-platform installation using a Python virtual environment. Ensure a functioning
-Python setup with either pip or conda. Begin by cloning the onnx-web git repository, followed by installing the base
-requirements and those specific to your GPU platform. Execute the launch script, patiently waiting for the model
-conversion process to conclude. Post-conversion, open your browser and load the web UI for interaction.</p>
-</blockquote>
+<p>Users who have a working Python environment and prefer installing their own dependencies can opt for a cross-platform
+installation using a Python virtual environment. Ensure a functioning Python setup with either pip or conda. Begin by
+cloning the onnx-web git repository, followed by installing the base requirements and those specific to your GPU
+platform. Execute the launch script, patiently waiting for the model conversion process to conclude. Post-conversion,
+open your browser and load the web UI for interaction.</p>
 <h3 id="server-setup-with-containers">Server setup with containers</h3>
-<blockquote>
-<p>For server administrators, onnx-web provides compatibility with OCI containers, offering a streamlined deployment
-method. Choose the installation method that aligns with your proficiency and system requirements, whether it's the
-beginner-friendly EXE bundle, the intermediate cross-platform setup, or the containerized deployment for server
-admins. Each pathway ensures a straightforward onnx-web installation tailored to your technical needs.</p>
-</blockquote>
+<p>For server administrators, onnx-web is also distributed as OCI containers, offering a streamlined deployment. Choose the
+installation method that aligns with your proficiency and system requirements, whether it's the beginner-friendly EXE
+bundle, the intermediate cross-platform setup, or the containerized deployment for server admins. Each pathway ensures a
+straightforward onnx-web installation tailored to your technical needs.</p>
 <h2 id="running">Running</h2>
 <h3 id="running-the-server">Running the server</h3>
-<p>Run server or bundle.</p>
-<blockquote>
 <p>Initiate onnx-web by launching the Python server application, a process that demands your attention before proceeding
 further. Specifically, ensure that your models are converted before the server commences its operation. For Windows
 users, the distribution is available in the form of a convenient EXE bundle. Allow the server the necessary time to
-perform this crucial model conversion, a prerequisite for optimal functionality during your creative sessions.
-Exercise patience during this stage to guarantee a smooth experience with onnx-web.</p>
-</blockquote>
+perform this crucial model conversion, a prerequisite for optimal functionality during your creative sessions. Exercise
+patience during this stage to guarantee a smooth experience with onnx-web.</p>
 <h3 id="running-the-web-ui">Running the web UI</h3>
-<p>Open web UI.</p>
-<p>Use it from your phone.</p>
-<blockquote>
 <p>After the server has successfully completed its startup procedures, access the web UI through your chosen evergreen
-browser, including mobile browsers. Use the same URL and local port as the server to establish the essential
-connection. This step solidifies the link between the server and the user interface, unlocking the full capabilities
-of onnx-web. For those seeking additional functionality, explore ControlNet using your phone camera directly through
-the web UI. With these meticulous steps completed, you are now equipped to efficiently harness the power of onnx-web
-and navigate the realm of Stable Diffusion without compromise.</p>
-</blockquote>
+browser, including mobile browsers. Use the same URL and local port as the server to establish the essential connection.
+This step solidifies the link between the server and the user interface, unlocking the full capabilities of onnx-web.
+For those seeking additional functionality, explore ControlNet using your phone camera directly through the web UI. With
+these meticulous steps completed, you are now equipped to efficiently harness the power of onnx-web and navigate the
+realm of Stable Diffusion without compromise.</p>
 <h2 id="tabs">Tabs</h2>
+<p>Understanding onnx-web's Core Features: onnx-web introduces a set of core features that form the backbone of your AI art
+journey. The Stable Diffusion process, capable of running on both AMD and Nvidia GPUs, powers the image generation
+pipeline. Explore the diverse tabs in the web UI, each offering unique functionalities such as text-based image
+generation, upscaling, blending, and model management. Dive into the technical details of prompt syntax, model
+conversions, and the intricacies of parameters, gaining a deeper understanding of how to fine-tune the AI art creation
+process.</p>
 <h3 id="txt2img-tab">Txt2img Tab</h3>
-<p>Words go in, pictures come out.</p>
-<blockquote>
 <p>The txt2img tab in onnx-web serves the purpose of generating images from text prompts. Users can input textual
 descriptions and witness the algorithm's creative interpretation, providing a seamless avenue for text-based image
 generation.</p>
-</blockquote>
 <h3 id="img2img-tab">Img2img Tab</h3>
-<p>Pictures go in, better pictures come out.</p>
-<p>ControlNet lives here.</p>
-<blockquote>
 <p>For image-based prompts, the img2img tab is the go-to interface within onnx-web. Beyond its fundamental image
 generation capabilities, this tab introduces the ControlNet mode, empowering users with advanced control over the
 generated images through an innovative feature set.</p>
-</blockquote>
 <h3 id="inpaint-tab">Inpaint Tab</h3>
-<p>Pictures go in, parts of the same picture come out.</p>
-<blockquote>
 <p>The inpaint tab specializes in image generation with a unique combination of image prompts and masks. This
 functionality allows users to guide the algorithm using both the source image and a mask, enhancing the precision and
 customization of the generated content.</p>
-</blockquote>
 <h3 id="upscale-tab">Upscale Tab</h3>
-<p>Just highres and super resolution.</p>
-<blockquote>
 <p>Addressing the need for higher resolutions, the upscale tab provides users with tools for high resolution and super
 resolution. This feature is particularly useful for enhancing the quality and clarity of generated images, meeting
 diverse artistic and practical requirements.</p>
-</blockquote>
 <h3 id="blend-tab">Blend Tab</h3>
-<p>Use the mask tool to combine two images.</p>
-<blockquote>
 <p>Enabling users to combine outputs or integrate external images, the blend tab in onnx-web offers a versatile blending
 tool. This functionality adds a layer of creativity by allowing users to merge multiple outputs or incorporate
 external images seamlessly.</p>
-</blockquote>
 <h3 id="models-tab">Models Tab</h3>
-<p>Add and manage models.</p>
-<blockquote>
 <p>Central to managing the core of onnx-web, the models tab provides users with the capability to manage Stable Diffusion
 models. Additionally, it allows for the management of LoRAs (Latents of Random Ancestors) associated with these
 models, facilitating a comprehensive approach to model customization.</p>
-</blockquote>
 <h3 id="settings-tab">Settings Tab</h3>
-<p>Manage web UI settings.</p>
-<p>Reset buttons.</p>
-<blockquote>
 <p>Tailoring the user experience, the settings tab is the control center for managing onnx-web's web UI settings. Users
 can configure server APIs, toggle dark mode for a personalized visual experience, and reset other tabs as needed,
 ensuring a user-friendly and customizable environment.</p>
-</blockquote>
 <h2 id="image-parameters">Image parameters</h2>
 <h3 id="common-image-parameters">Common image parameters</h3>
 <ul>
 <li>Scheduler<ul>
-<li>
-<blockquote>
-<p>Role: The scheduler dictates the annealing schedule during the diffusion process.</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>Explanation: It determines how the noise level changes over time, influencing the diffusion process to achieve the desired balance between exploration and exploitation during image generation.</p>
-</blockquote>
-</li>
+<li>Role: The scheduler dictates the annealing schedule during the diffusion process.</li>
+<li>Explanation: It determines how the noise level changes over time, influencing the diffusion process to achieve the
+  desired balance between exploration and exploitation during image generation.</li>
 </ul>
 </li>
 <li>Eta<ul>
@@ -413,217 +375,146 @@ ensuring a user-friendly and customizable environment.</p>
 </ul>
 </li>
 <li>CFG<ul>
-<li>
-<blockquote>
-<p>Role: CFG is integral for conditional image generation, allowing users to influence the generation based on specific conditions.</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>Explanation: By adjusting the CFG, users can guide the diffusion process to respond to certain prompts, achieving conditional outputs aligned with the specified criteria.</p>
-</blockquote>
-</li>
+<li>Role: CFG is integral for conditional image generation, allowing users to influence the generation based on specific
+  conditions.</li>
+<li>Explanation: By adjusting the CFG, users can guide the diffusion process to respond to certain prompts, achieving
+  conditional outputs aligned with the specified criteria.</li>
 </ul>
 </li>
 <li>Steps<ul>
-<li>
-<blockquote>
-<p>Role: Steps determine the number of diffusion steps applied to the image.</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>Explanation: More steps generally result in a more refined image but require additional computation. Users can fine-tune this parameter based on the desired trade-off between quality and computational resources.</p>
-</blockquote>
-</li>
+<li>Role: Steps determine the number of diffusion steps applied to the image.</li>
+<li>Explanation: More steps generally result in a more refined image but require additional computation. Users can
+  fine-tune this parameter based on the desired trade-off between quality and computational resources.</li>
 </ul>
 </li>
 <li>Seed<ul>
-<li>
-<blockquote>
-<p>Role: The seed initializes the randomization process, ensuring reproducibility.</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>Explanation: Setting a seed allows users to reproduce the same image by maintaining a consistent starting point for the random processes involved in the diffusion, facilitating result replication.</p>
-</blockquote>
-</li>
+<li>Role: The seed initializes the randomization process, ensuring reproducibility.</li>
+<li>Explanation: Setting a seed allows users to reproduce the same image by maintaining a consistent starting point for
+  the random processes involved in the diffusion, facilitating result replication.</li>
 </ul>
 </li>
 <li>Batch size<ul>
-<li>
-<blockquote>
-<p>Role: Batch size influences the number of samples processed simultaneously.</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>Explanation: A larger batch size can expedite computation but may require more memory. It impacts the efficiency of the Stable Diffusion process, with users adjusting it based on available resources and computational preferences.</p>
-</blockquote>
-</li>
+<li>Role: Batch size influences the number of samples processed simultaneously.</li>
+<li>Explanation: A larger batch size can expedite computation but may require more memory. It impacts the efficiency of
+  the Stable Diffusion process, with users adjusting it based on available resources and computational preferences.</li>
 </ul>
 </li>
 <li>Prompt<ul>
-<li>
-<blockquote>
-<p>Role: The prompt provides the textual or visual input guiding the image generation.</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>Explanation: It serves as the creative input for the algorithm, shaping the direction of the generated content. Users articulate their artistic vision or preferences through carefully crafted prompts.</p>
-</blockquote>
-</li>
+<li>Role: The prompt provides the textual or visual input guiding the image generation.</li>
+<li>Explanation: It serves as the creative input for the algorithm, shaping the direction of the generated content.
+  Users articulate their artistic vision or preferences through carefully crafted prompts.</li>
 </ul>
 </li>
 <li>Negative prompt<ul>
-<li>
-<blockquote>
-<p>Role: Negative prompts offer a counterbalance to positive prompts, influencing the generation towards desired qualities or away from specific characteristics.</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>Explanation: By including a negative prompt, users can fine-tune the generated output, steering it away from undesired elements or towards a more nuanced and controlled result.</p>
-</blockquote>
-</li>
+<li>Role: Negative prompts offer a counterbalance to positive prompts, influencing the generation towards desired
+  qualities or away from specific characteristics.</li>
+<li>Explanation: By including a negative prompt, users can fine-tune the generated output, steering it away from
+  undesired elements or towards a more nuanced and controlled result.</li>
 </ul>
 </li>
 <li>Width, height<ul>
-<li>
-<blockquote>
-<p>Role: These parameters define the dimensions of the generated image.</p>
-</blockquote>
-</li>
-<li>
-<blockquote>
-<p>Explanation: Users specify the width and height to control the resolution and aspect ratio of the output. This allows for customization based on the intended use or artistic preferences.</p>
-</blockquote>
-</li>
+<li>Role: These parameters define the dimensions of the generated image.</li>
+<li>Explanation: Users specify the width and height to control the resolution and aspect ratio of the output. This
+  allows for customization based on the intended use or artistic preferences.</li>
 </ul>
 </li>
 </ul>
 <h3 id="unique-image-parameters">Unique image parameters</h3>
 <ul>
 <li>UNet tile size<ul>
-<li>
-<blockquote>
-<p>One such parameter is the UNet tile size. This parameter governs the maximum size for each instance the UNet model runs. While it aids in reducing memory usage during panoramas and high-resolution processes, caution is needed. Reducing this below the image size in txt2img mode can result in repeated "totem pole" bodies, highlighting the importance of aligning the tile size appropriately with the intended use case.</p>
-</blockquote>
-</li>
+<li>One such parameter is the UNet tile size. This parameter governs the maximum size for each instance the UNet model
+  runs. While it aids in reducing memory usage during panoramas and high-resolution processes, caution is needed.
+  Reducing this below the image size in txt2img mode can result in repeated "totem pole" bodies, highlighting the
+  importance of aligning the tile size appropriately with the intended use case.</li>
 </ul>
 </li>
 <li>UNet overlap<ul>
-<li>
-<blockquote>
-<p>The UNet overlap parameter plays a pivotal role in determining how much UNet tiles overlap. For most high-resolution applications, a value of 0.25 is recommended. However, for larger panoramas, opting for values between 0.5 to 0.75 seamlessly blends tiles, significantly enhancing panorama quality. Balancing this parameter ensures optimal performance in diverse scenarios.</p>
-</blockquote>
-</li>
+<li>The UNet overlap parameter plays a pivotal role in determining how much UNet tiles overlap. For most high-resolution
+  applications, a value of 0.25 is recommended. However, for larger panoramas, opting for values between 0.5 to 0.75
+  seamlessly blends tiles, significantly enhancing panorama quality. Balancing this parameter ensures optimal
+  performance in diverse scenarios.</li>
 </ul>
 </li>
 <li>Tiled VAE<ul>
-<li>
-<blockquote>
-<p>For users engaging with the tiled VAE parameter, the choice revolves around whether the VAE (Variational Autoencoder) operates on the entire image or in smaller tiles. Opting for the tiled VAE not only accommodates larger images but also reduces VRAM usage. Notably, it doesn't exert a substantial impact on image quality, making it a pragmatic choice for scenarios where resource efficiency is a priority.</p>
-</blockquote>
-</li>
+<li>For users engaging with the tiled VAE parameter, the choice revolves around whether the VAE (Variational
+  Autoencoder) operates on the entire image or in smaller tiles. Opting for the tiled VAE not only accommodates larger
+  images but also reduces VRAM usage. Notably, it doesn't exert a substantial impact on image quality, making it a
+  pragmatic choice for scenarios where resource efficiency is a priority.</li>
 </ul>
 </li>
 <li>VAE tile size<ul>
-<li>
-<blockquote>
-<p>Parallel to UNet, the VAE (Variational Autoencoder) introduces two additional parameters: VAE tile size and VAE overlap. These mirror the UNet tile size and UNet overlap parameters, applying specifically to the VAE when the tiled VAE is active. Careful consideration of these parameters ensures effective utilization of onnx-web's capabilities while adapting to the unique requirements of your image generation tasks.</p>
-</blockquote>
-</li>
+<li>Parallel to UNet, the VAE (Variational Autoencoder) introduces two additional parameters: VAE tile size and VAE
+  overlap. These mirror the UNet tile size and UNet overlap parameters, applying specifically to the VAE when the
+  tiled VAE is active. Careful consideration of these parameters ensures effective utilization of onnx-web's
+  capabilities while adapting to the unique requirements of your image generation tasks.</li>
 </ul>
 </li>
 <li>VAE overlap</li>
 </ul>
 <p>See the complete user guide for details about the highres, upscale, and correction parameters.</p>
 <h2 id="prompt-syntax">Prompt syntax</h2>
-<blockquote>
-<p>When crafting prompts in onnx-web, it's essential to note the distinctive syntax, akin to other familiar tools like
-auto1111 but with notable differences in token usage. Prompt tokens in onnx-web are encapsulated within angle
-brackets, starting with &lt; and concluding with &gt;.</p>
-</blockquote>
+<p>Constructing prompts in onnx-web closely resembles familiar tools like auto1111, maintaining a consistent syntax
+enclosed within angle brackets (<code>&lt; &gt;</code>). Notable differences arise, particularly in the handling of embeddings (Textual
+Inversions) and regions. Despite these nuances, users transitioning from other tools will find the syntax comfortably
+familiar, allowing for a seamless integration into onnx-web's creative environment.</p>
 <h3 id="loras-and-embeddings">LoRAs and embeddings</h3>
-<p><code>&lt;lora:filename:1.0&gt;</code> and <code>&lt;inversion:filename:1.0&gt;</code>.</p>
-<blockquote>
-<p>A unique feature in onnx-web is the inclusion of LoRA networks and embeddings using the lora token. The syntax
-involves specifying the network name, followed by a colon, and then indicating the desired weight. For instance,
-<lora:name:weight>. Most LoRA networks exhibit optimal performance within a strength range of 0.8 to 1.0. However,
-some networks can be effectively utilized at higher or lower values, spanning from -1.0 to approximately 5.0 for
-certain sliders. This flexibility provides users with nuanced control over the influence of LoRA networks on the
-generated images.</p>
-</blockquote>
+<p><code>&lt;lora:filename:1.0&gt;</code> and <code>&lt;embeddings:filename:1.0&gt;</code> or <code>&lt;inversion:filename:1.0&gt;</code>.</p>
+<p>You can include additional networks like LoRAs and embeddings (also known as Textual Inversions) using their respective
+tokens. The syntax involves specifying the network type, name, and weight, separated by colons. For instance,
+<lora:name:weight>. Most LoRA networks exhibit optimal performance within a strength range of 0.8 to 1.0. However, some
+networks can be effectively utilized at higher or lower values, spanning from -1.0 to approximately 5.0 for certain
+sliders. This flexibility provides users with nuanced control over the influence of LoRA networks on the generated
+images.</p>
 <h3 id="clip-skip">CLIP skip</h3>
 <p><code>&lt;clip:skip:2&gt;</code> for anime.</p>
-<blockquote>
-<p>Additionally, onnx-web introduces the CLIP skip functionality, which proves useful for skipping later stages of the
-CLIP keyword hierarchy. Incorporating CLIP skip with a specified level can enhance image results, particularly
-beneficial for genres like anime. Skipping 2 levels, for example, can refine the output by bypassing stages in the
-keyword hierarchy, optimizing the creative outcome. This distinct combination of tokens and functionalities allows
-users to tailor their prompts in onnx-web for precise and expressive image generation.</p>
-</blockquote>
+<p>onnx-web supports CLIP skip through a token, allowing users to efficiently skip later stages in the CLIP keyword
+hierarchy. This feature proves valuable, especially in genres like anime, where skipping specified levels can enhance
+image results. For instance, skipping 2 levels refines the output by bypassing stages in the keyword hierarchy,
+optimizing the creative outcome. This combination of tokens and functionalities enables users to precisely tailor
+prompts in onnx-web for expressive image generation.</p>
 <h2 id="highres">Highres</h2>
-<p>Called highres because it's not the hires fix, it's more like SDXL.</p>
-<blockquote>
-<p>onnx-web introduces the Highres feature, a powerful tool for super-resolution upscaling followed by img2img refinement
-to restore intricate details. This feature can be iteratively applied to exponentially increase image resolution. For
-instance, using a 2x upscaling model, two iterations of Highres can produce an image four times the original size,
-while three iterations result in an image eight times the size, and so forth.</p>
-<p>The technique employed in Highres draws parallels to the hires fix seen in other tools but diverges by adopting a
-methodology akin to what SDXL utilizes. In this approach, the diffusion model refines its own output by running
-img2img on smaller tiles. This technique ensures a comprehensive refinement process, though it introduces a unique
-consideration – the img2img tiles do not perceive the entire image context. Consequently, using a distinct and more
-generic prompt during Highres iterations can be advantageous. Such prompts add more detail without introducing
-specific characters, contributing to a refined output without sacrificing the broader context.</p>
-</blockquote>
+<p>onnx-web supports a unique highres implementation, a powerful tool for super-resolution upscaling followed by img2img
+refinement to restore intricate details. This feature can be iteratively applied to exponentially increase image
+resolution. For instance, using a 2x upscaling model, two iterations of highres can produce an image four times the
+original size, while three iterations result in an image eight times the size, and so forth.</p>
+<p>The technique employed in highres draws parallels to the hires fix seen in other tools but uses repeated img2img runs,
+similar to what SDXL does with the refiner. In this approach, the diffusion model refines its own output by running
+img2img on smaller tiles, correcting the errors introduced by most super-resolution models. This technique allows
+repeated iterative refinement, though it introduces a unique consideration – the img2img tiles do not perceive the
+entire image context. Consequently, using a more generic prompt during the highres iterations can be will help avoid
+recursive image features.</p>
 <h3 id="highres-prompt">Highres prompt</h3>
 <p><code>txt2img prompt || img2img prompt</code></p>
-<blockquote>
-<p>One distinctive aspect of Highres is its ability to operate with its own prompt, which is separate from the base
-txt2img prompt. The demarcation is achieved using the double pipe syntax: ||. This separation allows users to finely
-control the details and characteristics emphasized during the high-resolution upscaling and refinement process.</p>
-</blockquote>
+<p>One distinctive aspect of onnx-web's highres feature is its ability to operate with its own prompt, which is separate
+from the base txt2img prompt. Each stage of the prompt is separated using the <code>||</code> double pipe marker.</p>
 <h3 id="highres-iterations">Highres iterations</h3>
 <p>Highres will apply the upscaler and highres prompt (img2img pipeline) for each iteration.</p>
 <p>The final size will be <code>scale ** iterations</code>.</p>
 <h2 id="profiles">Profiles</h2>
-<p>Saved sets of parameters for later use.</p>
-<blockquote>
-<p>The onnx-web web UI simplifies user experience with the introduction of a feature known as profiles. This
-functionality empowers users to save preferred combinations of image parameters for future use, providing a convenient
-way to replicate successful settings and streamline the image generation process. When you discover a configuration
-that consistently produces impressive images, you have the option to save it as a named profile.</p>
-</blockquote>
+<p>The onnx-web web UI simplifies user experience with the introduction of a feature known as profiles. When you find
+your favorite combination of image parameters, you can save them for future use as a named profiled. This is a great
+way to reuse successful settings later and streamline your image generation process.</p>
 <h3 id="loading-from-files">Loading from files</h3>
-<ul>
-<li>load from images</li>
-<li>load from JSON</li>
-</ul>
+<p>Profiles can be loaded directly from image metadata or imported from JSON files shared by other users. Leveraging this
+functionality, users can effortlessly reproduce specific parameters and settings that have been fine-tuned by their
+peers. This collaborative approach not only streamlines the configuration process but also fosters a community-driven
+exchange of preferences and techniques. Whether shared through image metadata or JSON files, loading profiles in
+onnx-web offers users a convenient way to benefit from the collective insights and optimizations of the onnx-web
+community.</p>
 <h3 id="saving-profiles-in-the-web-ui">Saving profiles in the web UI</h3>
-<p>Use the save button.</p>
-<blockquote>
 <p>The process of saving profiles involves capturing the entire set of image parameters you've fine-tuned to achieve the
 desired results. Once saved, these profiles are conveniently accessible for later usage. An additional benefit is the
 ability to download your profiles as a JSON snippet. This JSON representation encapsulates the intricacies of your
 selected parameters, allowing you to easily share your preferred configurations with others on platforms like Discord
 or various online forums.</p>
-</blockquote>
 <h3 id="sharing-parameters-profiles">Sharing parameters profiles</h3>
-<p>Use the download button.</p>
-<p>Share profiles in the Discord channel.</p>
-<blockquote>
 <p>onnx-web's profile feature extends further by facilitating the loading of parameters from both images and JSON files
 containing a profile. This means you can not only share your meticulously crafted settings but also import parameters
 from others, enabling collaborative exploration and knowledge exchange within the onnx-web community. As a
 user-friendly tool, onnx-web strives to enhance the customization and sharing aspects of image generation, providing
 users with a flexible and collaborative experience.</p>
-</blockquote>
+<p>TODO: link Discord profiles channel</p>
 <h2 id="panorama-pipeline">Panorama pipeline</h2>
-<blockquote>
 <p>onnx-web introduces a versatile panorama pipeline available for both SD v1.5 and SDXL, offering the flexibility to
 generate images without strict size limitations. Users can leverage this pipeline to produce images of 40 megapixels
 or larger, reaching dimensions such as 4k by 10k.</p>
@@ -635,27 +526,20 @@ balance based on user priorities.</p>
 <p>The panorama pipeline in onnx-web thus emerges as a sophisticated tool for users seeking expansive and detailed image
 generation. By combining the flexibility of the panorama approach with the precision afforded by region prompts and
 seeds, users can delve into intricate compositions and create visually captivating and seamless images.</p>
-</blockquote>
 <h3 id="region-prompts">Region prompts</h3>
 <p><code>&lt;region:X:Y:W:H:S:F_TLBR:prompt+&gt;</code></p>
-<blockquote>
 <p>An intriguing feature within the panorama pipeline is the incorporation of region prompts and region seeds. Region
 prompts enable users to modify or replace the prompt within specific rectangular regions within the larger image. This
 functionality proves invaluable for adding characters to backgrounds, introducing cities into landscapes, or exerting
 precise control over where elements appear. It becomes a powerful tool for avoiding crowded or overlapping elements,
 offering nuanced control over image composition.</p>
-</blockquote>
 <h3 id="region-seeds">Region seeds</h3>
-<p><code>&lt;reseed:X:Y:W:H:?:F_TLBR:seed&gt;</code></p>
-<blockquote>
+<p><code>&lt;reseed:X:Y:W:H:seed&gt;</code></p>
 <p>Furthermore, region seeds enable the replication of the same object or image in different locations, even multiple
 times within the same image. To prevent hard edges and seamlessly integrate these region-based modifications, both
 region prompts and region seeds include options for blending with the surrounding prompt or seed. It's important to
 note that these region features are currently exclusive to the panorama pipeline.</p>
-</blockquote>
 <h2 id="grid-mode">Grid mode</h2>
-<p>Makes many images. Takes many time.</p>
-<blockquote>
 <p>onnx-web introduces a powerful feature known as Grid Mode, designed to facilitate the efficient generation of multiple
 images with consistent parameters. Once enabled, Grid Mode allows users to select a parameter that varies across
 columns and another for rows. Users then provide specific values for each column or row, and the images are generated
@@ -672,11 +556,13 @@ specific requirements.</p>
 valuable tool for users seeking a range of outputs with nuanced parameter adjustments. By combining flexibility with
 precision, onnx-web empowers users to efficiently navigate the expansive creative possibilities within the Stable
 Diffusion process.</p>
-</blockquote>
 <h3 id="grid-tokens">Grid tokens</h3>
-<p><code>__column__</code> and <code>__row__</code> if you pick token in the menu.</p>
+<p><code>__column__</code> and <code>__row</code></p>
+<p>When opting for token replacement, users can take advantage of the column and row tokens to dynamically insert column
+and row values into their prompts. This feature is particularly powerful when working with comma-separated lists of
+options. By utilizing these tokens, you gain the ability to precisely control how parameters evolve across the grid,
+facilitating nuanced and controlled variations in image generation.</p>
 <h2 id="memory-optimizations">Memory optimizations</h2>
-<blockquote>
 <p>onnx-web introduces optimizations tailored for users with limited memory resources. The minimum system requirements
 are set at 4GB of VRAM and 8GB of system RAM for SD v1.5, escalating to 12GB of VRAM and 24GB of system RAM for SDXL.
 The recommended specifications stand at 6GB of VRAM and 16GB of system RAM for SD v1.5, increasing to 16GB of VRAM and
@@ -684,18 +570,12 @@ The recommended specifications stand at 6GB of VRAM and 16GB of system RAM for S
 <p>These optimizations cater to low-memory scenarios, providing users with the flexibility to adapt onnx-web to their
 hardware constraints while maintaining a balance between computational efficiency and image generation quality. Users
 can choose from these options based on their system specifications and performance preferences.</p>
-</blockquote>
 <h3 id="converting-to-fp16">Converting to fp16</h3>
-<p>Enable the option.</p>
-<blockquote>
 <p>The first optimization available is the integration of fp16 mode during model conversion. Employing fp16 significantly
 enhances efficiency in terms of storage space and inference, leading to faster runtime for fp16 models. While the
 results remain notably similar, it's imperative to acknowledge that not all models are compatible with fp16
 conversion, and caution is advised as it may disrupt certain Variational Autoencoders (VAEs).</p>
-</blockquote>
 <h3 id="moving-models-to-the-cpu">Moving models to the CPU</h3>
-<p>Option for each model.</p>
-<blockquote>
 <p>The second optimization caters to low-memory users by providing the option to offload specific models to the CPU.
 Notably, the UNet, being the largest model, is the primary candidate for GPU execution due to improved speed. However,
 onnx-web strategically offloads the text encoder and VAE to the CPU, recognizing that the text encoder only runs once
@@ -703,7 +583,6 @@ at the beginning of each image, and the VAE operates once or twice at the image'
 offloading approach proves especially impactful for SDXL, significantly mitigating memory constraints. While
 offloading the VAE might slightly affect high-resolution (highres) speed, it becomes a necessary trade-off to
 accommodate SDXL highres on certain GPUs with limited memory resources.</p>
-</blockquote>
               
             </div>
           </div><footer>
