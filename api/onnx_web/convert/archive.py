@@ -27,7 +27,7 @@ def convert_extract_archive(
 
     cache_path = fetch_model(conversion, name, model["source"], format=format)
 
-    with ZipFile(cache_path) as zip:
+    with ZipFile(cache_path, "r") as zip:
         names = zip.namelist()
         if not all([is_safe(name) for name in names]):
             raise ValueError("archive contains unsafe filenames")
