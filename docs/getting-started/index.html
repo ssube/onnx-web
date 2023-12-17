@@ -313,18 +313,20 @@ cannot update dependencies or use the nightly ONNX packages, or use plugins that
 mark-of-the-web check to ensure the server runs successfully. Upon extraction, initiate onnx-web by running the EXE
 file. Once model conversion is complete, the server will commence, opening a browser window for immediate access to the
 web UI.</p>
+<p>For more details, please see <a href="../setup-guide/#windows-all-in-one-bundle">the setup guide</a>.</p>
 <h3 id="cross-platform-setup">Cross platform setup</h3>
-<p>Link to the other methods.</p>
 <p>Users who have a working Python environment and prefer installing their own dependencies can opt for a cross-platform
 installation using a Python virtual environment. Ensure a functioning Python setup with either pip or conda. Begin by
 cloning the onnx-web git repository, followed by installing the base requirements and those specific to your GPU
 platform. Execute the launch script, patiently waiting for the model conversion process to conclude. Post-conversion,
 open your browser and load the web UI for interaction.</p>
+<p>For more details, please see <a href="../setup-guide/#cross-platform-method">the setup guide</a>.</p>
 <h3 id="server-setup-with-containers">Server setup with containers</h3>
 <p>For server administrators, onnx-web is also distributed as OCI containers, offering a streamlined deployment. Choose the
 installation method that aligns with your proficiency and system requirements, whether it's the beginner-friendly EXE
 bundle, the intermediate cross-platform setup, or the containerized deployment for server admins. Each pathway ensures a
 straightforward onnx-web installation tailored to your technical needs.</p>
+<p>For more details, please see <a href="../server-admin/#containers">the server admin guide</a>.</p>
 <h2 id="running">Running</h2>
 <p>Running onnx-web is the gateway to unlocking the creative potential of Stable Diffusion in AI art. Whether you are a
 novice or an experienced enthusiast, this section guides you through the process of installing onnx-web on your system.</p>
@@ -352,35 +354,43 @@ process.</p>
 <p>The txt2img tab in onnx-web serves the purpose of generating images from text prompts. Users can input textual
 descriptions and witness the algorithm's creative interpretation, providing a seamless avenue for text-based image
 generation.</p>
+<p>For more details, please see <a href="../user-guide/#txt2img-tab">the user guide</a>.</p>
 <h3 id="img2img-tab">Img2img Tab</h3>
 <p>For image-based prompts, the img2img tab is the go-to interface within onnx-web. Beyond its fundamental image
 generation capabilities, this tab introduces the ControlNet mode, empowering users with advanced control over the
 generated images through an innovative feature set.</p>
+<p>For more details, please see <a href="../user-guide/#img2img-tab">the user guide</a>.</p>
 <h3 id="inpaint-tab">Inpaint Tab</h3>
 <p>The inpaint tab specializes in image generation with a unique combination of image prompts and masks. This
 functionality allows users to guide the algorithm using both the source image and a mask, enhancing the precision and
 customization of the generated content.</p>
+<p>For more details, please see <a href="../user-guide/#inpaint-tab">the user guide</a>.</p>
 <h3 id="upscale-tab">Upscale Tab</h3>
 <p>Addressing the need for higher resolutions, the upscale tab provides users with tools for high resolution and super
 resolution. This feature is particularly useful for enhancing the quality and clarity of generated images, meeting
 diverse artistic and practical requirements.</p>
+<p>For more details, please see <a href="../user-guide/#upscale-tab">the user guide</a>.</p>
 <h3 id="blend-tab">Blend Tab</h3>
 <p>Enabling users to combine outputs or integrate external images, the blend tab in onnx-web offers a versatile blending
 tool. This functionality adds a layer of creativity by allowing users to merge multiple outputs or incorporate
 external images seamlessly.</p>
+<p>For more details, please see <a href="../user-guide/#blend-tab">the user guide</a>.</p>
 <h3 id="models-tab">Models Tab</h3>
 <p>Central to managing the core of onnx-web, the models tab provides users with the capability to manage Stable Diffusion
 models. Additionally, it allows for the management of LoRAs (Latents of Random Ancestors) associated with these
 models, facilitating a comprehensive approach to model customization.</p>
+<p>For more details, please see <a href="../user-guide/#models-tab">the user guide</a>.</p>
 <h3 id="settings-tab">Settings Tab</h3>
 <p>Tailoring the user experience, the settings tab is the control center for managing onnx-web's web UI settings. Users
 can configure server APIs, toggle dark mode for a personalized visual experience, and reset other tabs as needed,
 ensuring a user-friendly and customizable environment.</p>
+<p>For more details, please see <a href="../user-guide/#settings-tab">the user guide</a>.</p>
 <h2 id="image-parameters">Image parameters</h2>
 <p>In onnx-web, image parameters play a pivotal role in shaping the output of the Stable Diffusion process. These
 parameters, including scheduler, CFG, steps, seed, batch size, prompt, optional negative prompt, and image width and
 height, collectively govern the characteristics of the diffusion model's training and the resulting generated images.</p>
 <h3 id="common-image-parameters">Common image parameters</h3>
+<p>These parameters are part of the Stable Diffusion pipeline and common to most tools.</p>
 <ul>
 <li>Scheduler<ul>
 <li>Role: The scheduler dictates the annealing schedule during the diffusion process.</li>
@@ -441,6 +451,7 @@ height, collectively govern the characteristics of the diffusion model's trainin
 </li>
 </ul>
 <h3 id="unique-image-parameters">Unique image parameters</h3>
+<p>These parameters are unique to how onnx-web generates images.</p>
 <ul>
 <li>UNet tile size<ul>
 <li>One such parameter is the UNet tile size. This parameter governs the maximum size for each instance the UNet model
@@ -489,6 +500,7 @@ tokens. The syntax involves specifying the network type, name, and weight, separ
 networks can be effectively utilized at higher or lower values, spanning from -1.0 to approximately 5.0 for certain
 sliders. This flexibility provides users with nuanced control over the influence of LoRA networks on the generated
 images.</p>
+<p>For more details, please see <a href="../user-guide/#lora-and-lycoris-tokens">the user guide</a>.</p>
 <h3 id="clip-skip">CLIP skip</h3>
 <p><code>&lt;clip:skip:2&gt;</code> for anime.</p>
 <p>onnx-web supports CLIP skip through a token, allowing users to efficiently skip later stages in the CLIP keyword
@@ -496,6 +508,7 @@ hierarchy. This feature proves valuable, especially in genres like anime, where 
 image results. For instance, skipping 2 levels refines the output by bypassing stages in the keyword hierarchy,
 optimizing the creative outcome. This combination of tokens and functionalities enables users to precisely tailor
 prompts in onnx-web for expressive image generation.</p>
+<p>For more details, please see <a href="../user-guide/#clip-skip-tokens">the user guide</a>.</p>
 <h2 id="highres">Highres</h2>
 <p>onnx-web supports a unique highres implementation, a powerful tool for super-resolution upscaling followed by img2img
 refinement to restore intricate details. This feature can be iteratively applied to exponentially increase image
@@ -511,6 +524,7 @@ recursive image features.</p>
 <p><code>txt2img prompt || img2img prompt</code></p>
 <p>Highres prompts are separated from the base txt2img prompt using the double pipe syntax (<code>||</code>). These prompts guide the
 upscaling and refinement processes, enabling users to incorporate distinct instructions and achieve nuanced outputs.</p>
+<p>For more details, please see <a href="../user-guide/#prompt-stages">the user guide</a>.</p>
 <h3 id="highres-iterations">Highres iterations</h3>
 <p><code>scale ** iterations</code></p>
 <p>Highres mode's iterative approach involves refining the generated image through multiple iterations, each contributing
@@ -519,6 +533,7 @@ refinement. For instance, using a 2x upscaling model, two iterations of Highres 
 original size. This scaling effect continues exponentially with each additional iteration. The interplay of Highres
 prompts and iterations allows users to progressively enhance image resolution while maintaining detailed and refined
 visual elements.</p>
+<p>For more details, please see <a href="../user-guide/#highres-iterations-parameter">the user guide</a>.</p>
 <h2 id="profiles">Profiles</h2>
 <p>The onnx-web web UI simplifies user experience with the introduction of a feature known as profiles. When you find
 your favorite combination of image parameters, you can save them for future use as a named profiled. This is a great
@@ -562,12 +577,14 @@ prompts enable users to modify or replace the prompt within specific rectangular
 functionality proves invaluable for adding characters to backgrounds, introducing cities into landscapes, or exerting
 precise control over where elements appear. It becomes a powerful tool for avoiding crowded or overlapping elements,
 offering nuanced control over image composition.</p>
+<p>For more details, please see <a href="../user-guide/#region-tokens">the user guide</a>.</p>
 <h3 id="region-seeds">Region seeds</h3>
 <p><code>&lt;reseed:X:Y:W:H:seed&gt;</code></p>
 <p>Furthermore, region seeds enable the replication of the same object or image in different locations, even multiple
 times within the same image. To prevent hard edges and seamlessly integrate these region-based modifications, both
 region prompts and region seeds include options for blending with the surrounding prompt or seed. It's important to
 note that these region features are currently exclusive to the panorama pipeline.</p>
+<p>For more details, please see <a href="../user-guide/#reseed-tokens-region-seeds">the user guide</a>.</p>
 <h2 id="grid-mode">Grid mode</h2>
 <p>onnx-web introduces a powerful feature known as Grid Mode, designed to facilitate the efficient generation of multiple
 images with consistent parameters. Once enabled, Grid Mode allows users to select a parameter that varies across
