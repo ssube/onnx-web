@@ -231,6 +231,8 @@ choosing parameters, tile configurations, and employing unique prompts for disti
 <p>This guide sets the stage for your onnx-web journey, offering a balance of technical depth and user-friendly insights to
 empower you in your AI art exploration. Let's embark on this creative venture together, where innovation meets technical
 precision.</p>
+<p>If you have any problems or questions that are not answered here, please <a href="https://discord.gg/7CdQmutGuw">join the Discord
+server</a> and ask.</p>
 <h2 id="contents">Contents</h2>
 <ul>
 <li><a href="#getting-started">Getting Started</a><ul>
@@ -329,7 +331,7 @@ straightforward onnx-web installation tailored to your technical needs.</p>
 <p>For more details, please see <a href="../server-admin/#containers">the server admin guide</a>.</p>
 <h2 id="running">Running</h2>
 <p>Running onnx-web is the gateway to unlocking the creative potential of Stable Diffusion in AI art. Whether you are a
-novice or an experienced enthusiast, this section guides you through the process of installing onnx-web on your system.</p>
+novice or an experienced enthusiast, this section guides you through the process of starting onnx-web on your system.</p>
 <h3 id="running-the-server">Running the server</h3>
 <p>Initiate onnx-web by launching the Python server application, a process that demands your attention before proceeding
 further. Specifically, ensure that your models are converted before the server commences its operation. For Windows
@@ -344,12 +346,11 @@ For those seeking additional functionality, explore ControlNet using your phone 
 these meticulous steps completed, you are now equipped to efficiently harness the power of onnx-web and navigate the
 realm of Stable Diffusion without compromise.</p>
 <h2 id="tabs">Tabs</h2>
-<p>Understanding onnx-web's Core Features: onnx-web introduces a set of core features that form the backbone of your AI art
-journey. The Stable Diffusion process, capable of running on both AMD and Nvidia GPUs, powers the image generation
-pipeline. Explore the diverse tabs in the web UI, each offering unique functionalities such as text-based image
-generation, upscaling, blending, and model management. Dive into the technical details of prompt syntax, model
-conversions, and the intricacies of parameters, gaining a deeper understanding of how to fine-tune the AI art creation
-process.</p>
+<p>onnx-web includes a set of core features that form the backbone of your AI art journey. The Stable Diffusion process,
+capable of running on both AMD and Nvidia GPUs, powers the image generation pipeline. Explore the diverse tabs in the
+web UI, each offering unique functionalities such as text-based image generation, upscaling, blending, and model
+management. Dive into the technical details of prompt syntax, model conversions, and the intricacies of parameters,
+gaining a deeper understanding of how to fine-tune the AI art creation process.</p>
 <h3 id="txt2img-tab">Txt2img Tab</h3>
 <p>The txt2img tab in onnx-web serves the purpose of generating images from text prompts. Users can input textual
 descriptions and witness the algorithm's creative interpretation, providing a seamless avenue for text-based image
@@ -357,7 +358,7 @@ generation.</p>
 <p>For more details, please see <a href="../user-guide/#txt2img-tab">the user guide</a>.</p>
 <h3 id="img2img-tab">Img2img Tab</h3>
 <p>For image-based prompts, the img2img tab is the go-to interface within onnx-web. Beyond its fundamental image
-generation capabilities, this tab introduces the ControlNet mode, empowering users with advanced control over the
+generation capabilities, this tab includes the ControlNet mode, empowering users with advanced control over the
 generated images through an innovative feature set.</p>
 <p>For more details, please see <a href="../user-guide/#img2img-tab">the user guide</a>.</p>
 <h3 id="inpaint-tab">Inpaint Tab</h3>
@@ -475,7 +476,7 @@ height, collectively govern the characteristics of the diffusion model's trainin
 </ul>
 </li>
 <li>VAE tile size<ul>
-<li>Parallel to UNet, the VAE (Variational Autoencoder) introduces two additional parameters: VAE tile size and VAE
+<li>Parallel to UNet, the VAE (Variational Autoencoder) has two additional parameters: VAE tile size and VAE
   overlap. These mirror the UNet tile size and UNet overlap parameters, applying specifically to the VAE when the
   tiled VAE is active. Careful consideration of these parameters ensures effective utilization of onnx-web's
   capabilities while adapting to the unique requirements of your image generation tasks.</li>
@@ -557,7 +558,7 @@ containing a profile. This means you can not only share your meticulously crafte
 from others, enabling collaborative exploration and knowledge exchange within the onnx-web community. As a
 user-friendly tool, onnx-web strives to enhance the customization and sharing aspects of image generation, providing
 users with a flexible and collaborative experience.</p>
-<p>TODO: link Discord profiles channel</p>
+<p>To find more profiles and share your own, <a href="https://discord.gg/7CdQmutGuw">join the Discord server</a>.</p>
 <h2 id="panorama-pipeline">Panorama pipeline</h2>
 <p>onnx-web introduces a versatile panorama pipeline available for both SD v1.5 and SDXL, offering the flexibility to
 generate images without strict size limitations. Users can leverage this pipeline to produce images of 40 megapixels
@@ -586,13 +587,13 @@ region prompts and region seeds include options for blending with the surroundin
 note that these region features are currently exclusive to the panorama pipeline.</p>
 <p>For more details, please see <a href="../user-guide/#reseed-tokens-region-seeds">the user guide</a>.</p>
 <h2 id="grid-mode">Grid mode</h2>
-<p>onnx-web introduces a powerful feature known as Grid Mode, designed to facilitate the efficient generation of multiple
+<p>onnx-web includes a powerful feature known as Grid Mode, designed to facilitate the efficient generation of multiple
 images with consistent parameters. Once enabled, Grid Mode allows users to select a parameter that varies across
 columns and another for rows. Users then provide specific values for each column or row, and the images are generated
 by combining the current parameters with the specified column and row values.</p>
 <p>In Grid Mode, selecting different parameters for columns and rows ensures diverse variations in the generated images.
 It's important to note that the same parameter cannot be chosen for both columns and rows unless the token replacement
-option is activated. Token replacement introduces the keywords column and row within the prompt, allowing users to
+option is activated. Token replacement places the keywords column and row within the prompt, allowing users to
 dynamically insert the column or row values into their prompts before image generation.</p>
 <p>While there isn't a strict limit on the number of values users can provide for each dimension (columns and rows), it's
 essential to be mindful of the multiplicative effect. The more values provided, the longer the generation process will
@@ -609,7 +610,7 @@ and row values into their prompts. This feature is particularly powerful when wo
 options. By utilizing these tokens, you gain the ability to precisely control how parameters evolve across the grid,
 facilitating nuanced and controlled variations in image generation.</p>
 <h2 id="memory-optimizations">Memory optimizations</h2>
-<p>onnx-web introduces optimizations tailored for users with limited memory resources. The system requirements are mostly
+<p>onnx-web includes optimizations tailored for users with limited memory resources. The system requirements are mostly
 based on how much memory you have:</p>
 <ul>
 <li>minimum requirements<ul>
