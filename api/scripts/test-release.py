@@ -308,8 +308,8 @@ TEST_DATA = [
     TestCase(
         "upscale-sd-x4-gfpgan-2048-muffin",
         (
-            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4&scale=4&outscale=4"
-            "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0"
+            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4"
+            "&scale=4&outscale=4&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=VERY_SLOW_TEST,
@@ -332,11 +332,46 @@ TEST_DATA = [
     TestCase(
         "upscale-resrgan-x4-tall-muffin",
         (
-            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4"
-            "&correction=correction-gfpgan&faces=false&faceOutscale=1&faceStrength=1.0"
+            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus"
+            "&scale=4&outscale=4&correction=correction-gfpgan&faces=false&faceOutscale=1&faceStrength=1.0"
         ),
         source="txt2img-sd-v1-5-tall-muffin-0",
         max_attempts=SLOW_TEST,
+    ),
+    TestCase(
+        "txt2img-sdxl-muffin",
+        (
+            "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=1024&height=1024&unet_tile=1024"
+            "&pipeline=txt2img-sdxl&model=diffusion-sdxl-base"
+        ),
+        max_attempts=SLOW_TEST,
+    ),
+    TestCase(
+        "txt2img-sdxl-lcm-muffin",
+        (
+            "txt2img?prompt=<lora:sdxl-lcm:1.0>+a+giant+muffin&seed=0&scheduler=lcm&width=1024&height=1024"
+            "&unet_tile=1024&pipeline=txt2img-sdxl&model=diffusion-sdxl-base&cfg=1.5&steps=10"
+        ),
+        max_attempts=SLOW_TEST,
+        mse_threshold=LOOSE_TEST,
+    ),
+    TestCase(
+        "txt2img-sdxl-turbo-muffin",
+        (
+            "txt2img?prompt=a+giant+muffin&seed=0&scheduler=dpm-sde&width=512&height=512&unet_tile=512"
+            "&pipeline=txt2img-sdxl&model=diffusion-sdxl-turbo&cfg=1&steps=5"
+        ),
+        max_attempts=SLOW_TEST,
+        mse_threshold=LOOSE_TEST,
+    ),
+    TestCase(
+        "txt2img-sd-v1-5-lcm-muffin",
+        (
+            "txt2img?prompt=<lora:lcm:1.0>+a+giant+muffin&seed=0&scheduler=lcm&width=512&height=512&unet_tile=512"
+            "&pipeline=txt2img&cfg=1.5&steps=10"
+        ),
+        max_attempts=SLOW_TEST,
+        mse_threshold=VERY_LOOSE_TEST,
     ),
     # TODO: non-square controlnet
 ]
