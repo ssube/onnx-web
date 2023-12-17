@@ -74550,7 +74550,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       React129.createElement(
         Typography_default,
         null,
-        "Could not fetch parameters from the ONNX web API server at ",
+        "Could not fetch parameters from the onnx-web API server at ",
         React129.createElement("code", null, props.root),
         "."
       ),
@@ -74945,7 +74945,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   // out/src/state/profile.js
   function createProfileSlice() {
     return (set) => ({
-      profiles: [],
+      profiles: [...DEFAULT_PROFILES],
       saveProfile(profile) {
         set((prev2) => {
           const profiles = [...prev2.profiles];
@@ -74971,6 +74971,275 @@ Please use another name.` : formatMuiErrorMessage(18));
     });
   }
   __name(createProfileSlice, "createProfileSlice");
+  var DEFAULT_HIGHRES_ON = {
+    enabled: true,
+    highresIterations: 1,
+    highresMethod: "upscale",
+    highresSteps: 150,
+    highresScale: 2,
+    highresStrength: 0.2
+  };
+  var DEFAULT_HIGHRES_OFF = Object.assign(Object.assign({}, DEFAULT_HIGHRES_ON), { enabled: false });
+  var DEFAULT_UPSCALE_OFF = {
+    denoise: 0.5,
+    enabled: false,
+    faces: false,
+    faceOutscale: 1,
+    faceStrength: 0.5,
+    outscale: 1,
+    scale: 1,
+    upscaleOrder: "correction-first"
+  };
+  var DEFAULT_MODEL_SDV15 = {
+    pipeline: "txt2img"
+  };
+  var DEFAULT_MODEL_SDXL = {
+    pipeline: "txt2img-sdxl"
+  };
+  var DEFAULT_PROFILES = [
+    // SD v1.5 base
+    {
+      name: "base SD v1.5",
+      model: DEFAULT_MODEL_SDV15,
+      params: {
+        batch: 1,
+        cfg: 5,
+        eta: 0,
+        negativePrompt: "",
+        prompt: "",
+        scheduler: "deis",
+        steps: 30,
+        seed: -1,
+        tiled_vae: false,
+        unet_overlap: 0.75,
+        unet_tile: 512,
+        vae_overlap: 0.25,
+        vae_tile: 512,
+        width: 512,
+        height: 512
+      },
+      highres: DEFAULT_HIGHRES_OFF,
+      upscale: DEFAULT_UPSCALE_OFF
+    },
+    // SD v1.5 clip skip
+    {
+      name: "base SD v1.5 clip skip",
+      model: DEFAULT_MODEL_SDV15,
+      params: {
+        batch: 1,
+        cfg: 5,
+        eta: 0,
+        negativePrompt: "",
+        prompt: "<clip:skip:2> ",
+        scheduler: "deis",
+        steps: 30,
+        seed: -1,
+        tiled_vae: false,
+        unet_overlap: 0.75,
+        unet_tile: 512,
+        vae_overlap: 0.25,
+        vae_tile: 512,
+        width: 512,
+        height: 512
+      },
+      highres: DEFAULT_HIGHRES_OFF,
+      upscale: DEFAULT_UPSCALE_OFF
+    },
+    // SD v1.5 LCM
+    {
+      name: "base SD v1.5 LCM",
+      model: DEFAULT_MODEL_SDV15,
+      params: {
+        scheduler: "lcm",
+        prompt: "<lora:lcm:1.0> ",
+        negativePrompt: "",
+        cfg: 1.5,
+        seed: -1,
+        steps: 12,
+        eta: 0,
+        batch: 1,
+        tiled_vae: false,
+        unet_overlap: 0.5,
+        unet_tile: 512,
+        vae_overlap: 0.25,
+        vae_tile: 512,
+        width: 512,
+        height: 512
+      },
+      highres: DEFAULT_HIGHRES_OFF,
+      upscale: DEFAULT_UPSCALE_OFF
+    },
+    // SD v1.5 highres
+    {
+      name: "base SD v1.5 highres",
+      model: DEFAULT_MODEL_SDV15,
+      params: {
+        batch: 1,
+        cfg: 5,
+        eta: 0,
+        negativePrompt: "",
+        prompt: "",
+        scheduler: "deis",
+        steps: 30,
+        seed: -1,
+        tiled_vae: false,
+        unet_overlap: 0.75,
+        unet_tile: 512,
+        vae_overlap: 0.25,
+        vae_tile: 512,
+        width: 512,
+        height: 512
+      },
+      highres: DEFAULT_HIGHRES_ON,
+      upscale: DEFAULT_UPSCALE_OFF
+    },
+    // SD v1.5 panorama
+    {
+      name: "base SD v1.5 panorama",
+      model: {
+        pipeline: "panorama"
+      },
+      params: {
+        batch: 1,
+        cfg: 12,
+        eta: 0,
+        negativePrompt: "",
+        prompt: "",
+        scheduler: "ddim",
+        steps: 125,
+        seed: -1,
+        tiled_vae: true,
+        unet_overlap: 0.75,
+        unet_tile: 512,
+        vae_overlap: 0.25,
+        vae_tile: 512,
+        width: 1024,
+        height: 512
+      },
+      highres: DEFAULT_HIGHRES_OFF,
+      upscale: DEFAULT_UPSCALE_OFF
+    },
+    // SDXL base
+    {
+      name: "base SDXL",
+      model: DEFAULT_MODEL_SDXL,
+      params: {
+        batch: 1,
+        cfg: 10,
+        eta: 0,
+        negativePrompt: "",
+        prompt: "",
+        scheduler: "dpm-sde",
+        steps: 120,
+        seed: -1,
+        tiled_vae: false,
+        unet_overlap: 0.75,
+        unet_tile: 1024,
+        vae_overlap: 0.25,
+        vae_tile: 512,
+        width: 1024,
+        height: 1024
+      },
+      highres: DEFAULT_HIGHRES_OFF,
+      upscale: DEFAULT_UPSCALE_OFF
+    },
+    // SDXL highres
+    {
+      name: "base SDXL highres",
+      model: DEFAULT_MODEL_SDXL,
+      params: {
+        batch: 1,
+        cfg: 10,
+        eta: 0,
+        negativePrompt: "",
+        prompt: "",
+        scheduler: "dpm-sde",
+        steps: 120,
+        seed: -1,
+        tiled_vae: false,
+        unet_overlap: 0.75,
+        unet_tile: 1024,
+        vae_overlap: 0.25,
+        vae_tile: 512,
+        width: 1024,
+        height: 1024
+      },
+      highres: DEFAULT_HIGHRES_ON,
+      upscale: DEFAULT_UPSCALE_OFF
+    },
+    // SDXL LCM
+    {
+      name: "base SDXL LCM",
+      model: DEFAULT_MODEL_SDXL,
+      params: {
+        scheduler: "lcm",
+        prompt: "<lora:sdxl-lcm:1.0> ",
+        negativePrompt: "",
+        cfg: 1.5,
+        seed: -1,
+        steps: 12,
+        eta: 0,
+        batch: 1,
+        tiled_vae: false,
+        unet_overlap: 0.5,
+        unet_tile: 1024,
+        vae_overlap: 0.25,
+        vae_tile: 512,
+        width: 1024,
+        height: 1024
+      },
+      highres: DEFAULT_HIGHRES_OFF,
+      upscale: DEFAULT_UPSCALE_OFF
+    },
+    // SDXL panorama
+    {
+      name: "base SDXL panorama",
+      model: DEFAULT_MODEL_SDXL,
+      params: {
+        batch: 1,
+        cfg: 12,
+        eta: 0,
+        negativePrompt: "",
+        prompt: "",
+        scheduler: "ddim",
+        steps: 125,
+        seed: -1,
+        tiled_vae: true,
+        unet_overlap: 0.75,
+        unet_tile: 1024,
+        vae_overlap: 0.25,
+        vae_tile: 512,
+        width: 2048,
+        height: 1024
+      },
+      highres: DEFAULT_HIGHRES_ON,
+      upscale: DEFAULT_UPSCALE_OFF
+    },
+    // SDXL turbo
+    {
+      name: "base SDXL turbo",
+      model: DEFAULT_MODEL_SDXL,
+      params: {
+        scheduler: "dpm-sde",
+        prompt: "",
+        negativePrompt: "",
+        cfg: 1.5,
+        seed: -1,
+        steps: 6,
+        eta: 0,
+        batch: 1,
+        tiled_vae: false,
+        unet_overlap: 0.75,
+        unet_tile: 768,
+        vae_overlap: 0.25,
+        vae_tile: 512,
+        width: 512,
+        height: 768
+      },
+      highres: DEFAULT_HIGHRES_OFF,
+      upscale: DEFAULT_UPSCALE_OFF
+    }
+  ];
 
   // out/src/state/reset.js
   function createResetSlice() {
@@ -81610,6 +81879,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   var React145 = __toESM(require_react(), 1);
   var import_react30 = __toESM(require_react(), 1);
   var { useState: useState27 } = React145;
+  var ALLOWED_EXTENSIONS = [".json", ".jpg", ".jpeg", ".png", ".txt", ".webp"];
+  var EXTENSION_FILTER = ALLOWED_EXTENSIONS.join(",");
   function Profiles(props) {
     const store = mustExist((0, import_react30.useContext)(StateContext));
     const { removeProfile, saveProfile } = useStore(store, selectActions6, shallow);
@@ -81661,6 +81932,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           React145.createElement(Button_default, { variant: "contained", onClick: () => {
             const state = store.getState();
             saveProfile({
+              model: props.selectModel(state),
               params: props.selectParams(state),
               name: profileName,
               highres: props.selectHighres(state),
@@ -81675,7 +81947,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         Button_default,
         { component: "label", variant: "contained" },
         React145.createElement(ImageSearch_default, null),
-        React145.createElement("input", { hidden: true, accept: ".json,.jpg,.jpeg,.png,.txt,.webp", type: "file", onChange: (event) => {
+        React145.createElement("input", { hidden: true, accept: EXTENSION_FILTER, type: "file", onChange: (event) => {
           const { files } = event.target;
           if (doesExist2(files) && files.length > 0) {
             const file = mustExist(files[0]);
@@ -81700,6 +81972,8 @@ Please use another name.` : formatMuiErrorMessage(18));
         { component: "label", variant: "contained", onClick: () => {
           const state = store.getState();
           downloadParamsAsFile({
+            // TODO: save model parameters
+            // model: props.selectModel(state),
             params: props.selectParams(state),
             highres: props.selectHighres(state),
             upscale: props.selectUpscale(state)
@@ -81988,46 +82262,26 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/input/PromptInput.js
   var { useContext: useContext32, useMemo: useMemo17 } = React148;
-  function PromptInput(props) {
-    const { selector, onChange } = props;
+  function PromptTextBlock(props) {
+    const { models, selector, onChange } = props;
+    const { t: t2 } = useTranslation();
     const store = mustExist(useContext32(StateContext));
     const { prompt, negativePrompt } = useStore(store, selector, shallow);
-    const client = mustExist(useContext32(ClientContext));
-    const models = useQuery(["models"], async () => client.models(), {
-      staleTime: STALE_TIME
-    });
-    const wildcards = useQuery(["wildcards"], async () => client.wildcards(), {
-      staleTime: STALE_TIME
-    });
-    const { t: t2 } = useTranslation();
-    function addNetwork(type, name, weight = 1) {
-      onChange({
-        prompt: `<${type}:${name}:${weight.toFixed(2)}> ${prompt}`,
-        negativePrompt
-      });
-    }
-    __name(addNetwork, "addNetwork");
     function addToken(name) {
       onChange({
         prompt: `${prompt}, ${name}`
       });
     }
     __name(addToken, "addToken");
-    function addWildcard(name) {
-      onChange({
-        prompt: `${prompt}, __${name}__`
-      });
-    }
-    __name(addWildcard, "addWildcard");
     const tokens = useMemo17(() => {
       const networks = extractNetworks(prompt);
-      return getNetworkTokens(models.data, networks);
-    }, [prompt, models.data]);
+      return getNetworkTokens(models, networks);
+    }, [models, prompt]);
     return React148.createElement(
       Stack_default,
       { spacing: 2 },
       React148.createElement(TextField_default, { label: t2("parameter.prompt"), variant: "outlined", value: prompt, onChange: (event) => {
-        props.onChange({
+        onChange({
           prompt: event.target.value,
           negativePrompt
         });
@@ -82038,19 +82292,53 @@ Please use another name.` : formatMuiErrorMessage(18));
           prompt,
           negativePrompt: event.target.value
         });
-      } }),
+      } })
+    );
+  }
+  __name(PromptTextBlock, "PromptTextBlock");
+  function PromptInput(props) {
+    const { selector, onChange } = props;
+    const store = mustExist(useContext32(StateContext));
+    const client = mustExist(useContext32(ClientContext));
+    const models = useQuery(["models"], async () => client.models(), {
+      staleTime: STALE_TIME
+    });
+    const wildcards = useQuery(["wildcards"], async () => client.wildcards(), {
+      staleTime: STALE_TIME
+    });
+    const { t: t2 } = useTranslation();
+    function addNetwork(type, name, weight = 1) {
+      const { prompt, negativePrompt } = selector(store.getState());
+      onChange({
+        negativePrompt,
+        prompt: `<${type}:${name}:${weight.toFixed(2)}> ${prompt}`
+      });
+    }
+    __name(addNetwork, "addNetwork");
+    function addWildcard(name) {
+      const { prompt, negativePrompt } = selector(store.getState());
+      onChange({
+        negativePrompt,
+        prompt: `${prompt}, __${name}__`
+      });
+    }
+    __name(addWildcard, "addWildcard");
+    return React148.createElement(
+      Stack_default,
+      { spacing: 2 },
+      React148.createElement(PromptTextBlock, { models: models.data, onChange, selector }),
       React148.createElement(
         Stack_default,
         { direction: "row", spacing: 2 },
         React148.createElement(QueryMenu, { id: "inversion", labelKey: "model.inversion", name: t2("modelType.inversion"), query: {
           result: models,
-          selector: (result) => result.networks.filter((network) => network.type === "inversion").map((network) => network.name)
+          selector: (result) => filterNetworks(result.networks, "inversion")
         }, onSelect: (name) => {
           addNetwork("inversion", name);
         } }),
         React148.createElement(QueryMenu, { id: "lora", labelKey: "model.lora", name: t2("modelType.lora"), query: {
           result: models,
-          selector: (result) => result.networks.filter((network) => network.type === "lora").map((network) => network.name)
+          selector: (result) => filterNetworks(result.networks, "lora")
         }, onSelect: (name) => {
           addNetwork("lora", name);
         } }),
@@ -82064,6 +82352,10 @@ Please use another name.` : formatMuiErrorMessage(18));
     );
   }
   __name(PromptInput, "PromptInput");
+  function filterNetworks(networks, type) {
+    return networks.filter((network) => network.type === type).map((network) => network.name);
+  }
+  __name(filterNetworks, "filterNetworks");
   var ANY_TOKEN = /<([^>]+)>/g;
   function extractNetworks(prompt) {
     const inversion = [];
@@ -82371,7 +82663,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       React152.createElement(
         Stack_default2,
         { spacing: 2 },
-        React152.createElement(Profiles, { selectHighres, selectParams: selectParams3, selectUpscale: selectUpscale2, setParams: setImg2Img, setHighres, setUpscale }),
+        React152.createElement(Profiles, { selectHighres, selectModel, selectParams: selectParams3, selectUpscale: selectUpscale2, setHighres, setModel, setParams: setImg2Img, setUpscale }),
         React152.createElement(ModelControl, { model, setModel }),
         React152.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), onChange: (file) => {
           setImg2Img({
@@ -82568,7 +82860,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       React154.createElement(
         Stack_default2,
         { spacing: 2 },
-        React154.createElement(Profiles, { selectHighres: selectHighres2, selectParams: selectParams4, selectUpscale: selectUpscale3, setParams: setInpaint, setHighres, setUpscale }),
+        React154.createElement(Profiles, { selectHighres: selectHighres2, selectModel: selectModel2, selectParams: selectParams4, selectUpscale: selectUpscale3, setHighres, setModel, setParams: setInpaint, setUpscale }),
         React154.createElement(ModelControl, { model, setModel }),
         renderBanner(),
         React154.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t2("input.image.source"), hideSelection: true, onChange: (file) => {
@@ -83424,7 +83716,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       React164.createElement(
         Stack_default2,
         { spacing: 2 },
-        React164.createElement(Profiles, { selectParams: selectParams5, selectHighres: selectHighres3, selectUpscale: selectUpscale4, setParams, setHighres, setUpscale }),
+        React164.createElement(Profiles, { selectHighres: selectHighres3, selectModel: selectModel3, selectParams: selectParams5, selectUpscale: selectUpscale4, setHighres, setModel, setParams, setUpscale }),
         React164.createElement(ModelControl, { model, setModel }),
         React164.createElement(ImageControl, { selector: selectParams5, onChange: setParams }),
         React164.createElement(
@@ -83520,7 +83812,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       React165.createElement(
         Stack_default2,
         { spacing: 2 },
-        React165.createElement(Profiles, { selectHighres: selectHighres4, selectParams: selectParams6, selectUpscale: selectUpscale5, setParams, setHighres, setUpscale }),
+        React165.createElement(Profiles, { selectHighres: selectHighres4, selectModel: selectModel4, selectParams: selectParams6, selectUpscale: selectUpscale5, setHighres, setModel, setParams, setUpscale }),
         React165.createElement(ModelControl, { model, setModel }),
         React165.createElement(ImageInput, { filter: IMAGE_FILTER, image: params.source, label: t2("input.image.source"), onChange: (file) => {
           setParams({
@@ -84791,6 +85083,12 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(applyStateMigrations, "applyStateMigrations");
   function migrateV7ToV11(params, previousState) {
     const result = Object.assign(Object.assign(Object.assign({}, params), previousState), { img2img: Object.assign(Object.assign({}, previousState.img2img), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }), inpaint: Object.assign(Object.assign({}, previousState.inpaint), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }), txt2img: Object.assign(Object.assign({}, previousState.txt2img), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }), upscale: Object.assign(Object.assign({}, previousState.upscale), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }) });
+    const existingProfiles = new Set(result.profiles.map((it) => it.name));
+    for (const newProfile of DEFAULT_PROFILES) {
+      if (existingProfiles.has(newProfile.name) === false) {
+        result.profiles.push(newProfile);
+      }
+    }
     return result;
   }
   __name(migrateV7ToV11, "migrateV7ToV11");
