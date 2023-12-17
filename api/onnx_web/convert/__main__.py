@@ -12,6 +12,7 @@ from transformers import CLIPTokenizer
 from ..constants import ONNX_MODEL, ONNX_WEIGHTS
 from ..server.plugin import load_plugins
 from ..utils import load_config
+from .archive import convert_extract_archive
 from .client import add_model_source, fetch_model
 from .client.huggingface import HuggingfaceClient
 from .correction.gfpgan import convert_correction_gfpgan
@@ -50,6 +51,7 @@ ModelDict = Dict[str, Union[float, int, str]]
 Models = Dict[str, List[ModelDict]]
 
 model_converters: Dict[str, Any] = {
+    "archive": convert_extract_archive,
     "img2img": convert_diffusion_diffusers,
     "img2img-sdxl": convert_diffusion_diffusers_xl,
     "inpaint": convert_diffusion_diffusers,
