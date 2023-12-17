@@ -86,9 +86,9 @@ mark-of-the-web check to ensure the server runs successfully. Upon extraction, i
 file. Once model conversion is complete, the server will commence, opening a browser window for immediate access to the
 web UI.
 
-### Cross platform setup
+For more details, please see [the setup guide](./setup-guide.md#windows-all-in-one-bundle).
 
-Link to the other methods.
+### Cross platform setup
 
 Users who have a working Python environment and prefer installing their own dependencies can opt for a cross-platform
 installation using a Python virtual environment. Ensure a functioning Python setup with either pip or conda. Begin by
@@ -96,12 +96,16 @@ cloning the onnx-web git repository, followed by installing the base requirement
 platform. Execute the launch script, patiently waiting for the model conversion process to conclude. Post-conversion,
 open your browser and load the web UI for interaction.
 
+For more details, please see [the setup guide](./setup-guide.md#cross-platform-method).
+
 ### Server setup with containers
 
 For server administrators, onnx-web is also distributed as OCI containers, offering a streamlined deployment. Choose the
 installation method that aligns with your proficiency and system requirements, whether it's the beginner-friendly EXE
 bundle, the intermediate cross-platform setup, or the containerized deployment for server admins. Each pathway ensures a
 straightforward onnx-web installation tailored to your technical needs.
+
+For more details, please see [the server admin guide](./server-admin.md#containers).
 
 ## Running
 
@@ -140,11 +144,15 @@ The txt2img tab in onnx-web serves the purpose of generating images from text pr
 descriptions and witness the algorithm's creative interpretation, providing a seamless avenue for text-based image
 generation.
 
+For more details, please see [the user guide](./user-guide.md#txt2img-tab).
+
 ### Img2img Tab
 
 For image-based prompts, the img2img tab is the go-to interface within onnx-web. Beyond its fundamental image
 generation capabilities, this tab introduces the ControlNet mode, empowering users with advanced control over the
 generated images through an innovative feature set.
+
+For more details, please see [the user guide](./user-guide.md#img2img-tab).
 
 ### Inpaint Tab
 
@@ -152,11 +160,15 @@ The inpaint tab specializes in image generation with a unique combination of ima
 functionality allows users to guide the algorithm using both the source image and a mask, enhancing the precision and
 customization of the generated content.
 
+For more details, please see [the user guide](./user-guide.md#inpaint-tab).
+
 ### Upscale Tab
 
 Addressing the need for higher resolutions, the upscale tab provides users with tools for high resolution and super
 resolution. This feature is particularly useful for enhancing the quality and clarity of generated images, meeting
 diverse artistic and practical requirements.
+
+For more details, please see [the user guide](./user-guide.md#upscale-tab).
 
 ### Blend Tab
 
@@ -164,17 +176,23 @@ Enabling users to combine outputs or integrate external images, the blend tab in
 tool. This functionality adds a layer of creativity by allowing users to merge multiple outputs or incorporate
 external images seamlessly.
 
+For more details, please see [the user guide](./user-guide.md#blend-tab).
+
 ### Models Tab
 
 Central to managing the core of onnx-web, the models tab provides users with the capability to manage Stable Diffusion
 models. Additionally, it allows for the management of LoRAs (Latents of Random Ancestors) associated with these
 models, facilitating a comprehensive approach to model customization.
 
+For more details, please see [the user guide](./user-guide.md#models-tab).
+
 ### Settings Tab
 
 Tailoring the user experience, the settings tab is the control center for managing onnx-web's web UI settings. Users
 can configure server APIs, toggle dark mode for a personalized visual experience, and reset other tabs as needed,
 ensuring a user-friendly and customizable environment.
+
+For more details, please see [the user guide](./user-guide.md#settings-tab).
 
 ## Image parameters
 
@@ -183,6 +201,8 @@ parameters, including scheduler, CFG, steps, seed, batch size, prompt, optional 
 height, collectively govern the characteristics of the diffusion model's training and the resulting generated images.
 
 ### Common image parameters
+
+These parameters are part of the Stable Diffusion pipeline and common to most tools.
 
 - Scheduler
   - Role: The scheduler dictates the annealing schedule during the diffusion process.
@@ -225,6 +245,8 @@ height, collectively govern the characteristics of the diffusion model's trainin
     allows for customization based on the intended use or artistic preferences.
 
 ### Unique image parameters
+
+These parameters are unique to how onnx-web generates images.
 
 - UNet tile size
   - One such parameter is the UNet tile size. This parameter governs the maximum size for each instance the UNet model
@@ -269,6 +291,8 @@ networks can be effectively utilized at higher or lower values, spanning from -1
 sliders. This flexibility provides users with nuanced control over the influence of LoRA networks on the generated
 images.
 
+For more details, please see [the user guide](./user-guide.md#lora-and-lycoris-tokens).
+
 ### CLIP skip
 
 `<clip:skip:2>` for anime.
@@ -278,6 +302,8 @@ hierarchy. This feature proves valuable, especially in genres like anime, where 
 image results. For instance, skipping 2 levels refines the output by bypassing stages in the keyword hierarchy,
 optimizing the creative outcome. This combination of tokens and functionalities enables users to precisely tailor
 prompts in onnx-web for expressive image generation.
+
+For more details, please see [the user guide](./user-guide.md#clip-skip-tokens).
 
 ## Highres
 
@@ -300,6 +326,8 @@ recursive image features.
 Highres prompts are separated from the base txt2img prompt using the double pipe syntax (`||`). These prompts guide the
 upscaling and refinement processes, enabling users to incorporate distinct instructions and achieve nuanced outputs.
 
+For more details, please see [the user guide](./user-guide.md#prompt-stages).
+
 ### Highres iterations
 
 `scale ** iterations`
@@ -310,6 +338,8 @@ refinement. For instance, using a 2x upscaling model, two iterations of Highres 
 original size. This scaling effect continues exponentially with each additional iteration. The interplay of Highres
 prompts and iterations allows users to progressively enhance image resolution while maintaining detailed and refined
 visual elements.
+
+For more details, please see [the user guide](./user-guide.md#highres-iterations-parameter).
 
 ## Profiles
 
@@ -370,6 +400,8 @@ functionality proves invaluable for adding characters to backgrounds, introducin
 precise control over where elements appear. It becomes a powerful tool for avoiding crowded or overlapping elements,
 offering nuanced control over image composition.
 
+For more details, please see [the user guide](./user-guide.md#region-tokens).
+
 ### Region seeds
 
 `<reseed:X:Y:W:H:seed>`
@@ -378,6 +410,8 @@ Furthermore, region seeds enable the replication of the same object or image in 
 times within the same image. To prevent hard edges and seamlessly integrate these region-based modifications, both
 region prompts and region seeds include options for blending with the surrounding prompt or seed. It's important to
 note that these region features are currently exclusive to the panorama pipeline.
+
+For more details, please see [the user guide](./user-guide.md#reseed-tokens-region-seeds).
 
 ## Grid mode
 
