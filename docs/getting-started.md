@@ -63,6 +63,9 @@ precision.
   - [Memory optimizations](#memory-optimizations)
     - [Converting to fp16](#converting-to-fp16)
     - [Moving models to the CPU](#moving-models-to-the-cpu)
+  - [Adding your own models](#adding-your-own-models)
+    - [Editing the extras file](#editing-the-extras-file)
+  - [More details](#more-details)
 
 ## Setup
 
@@ -101,6 +104,9 @@ bundle, the intermediate cross-platform setup, or the containerized deployment f
 straightforward onnx-web installation tailored to your technical needs.
 
 ## Running
+
+Running onnx-web is the gateway to unlocking the creative potential of Stable Diffusion in AI art. Whether you are a
+novice or an experienced enthusiast, this section guides you through the process of installing onnx-web on your system.
 
 ### Running the server
 
@@ -172,14 +178,21 @@ ensuring a user-friendly and customizable environment.
 
 ## Image parameters
 
+In onnx-web, image parameters play a pivotal role in shaping the output of the Stable Diffusion process. These
+parameters, including scheduler, CFG, steps, seed, batch size, prompt, optional negative prompt, and image width and
+height, collectively govern the characteristics of the diffusion model's training and the resulting generated images.
+
 ### Common image parameters
 
 - Scheduler
   - Role: The scheduler dictates the annealing schedule during the diffusion process.
-  - Explanation: It determines how the noise level changes over time, influencing the diffusion process to achieve the
-    desired balance between exploration and exploitation during image generation.
+  - Explanation: It determines how the noise level changes over time, influencing how the diffusion process resolves
+    complex features like faces. Some schedulers are faster than others and some are more deterministic, reliably
+    reproducing the same results.
+  - LCM and Turbo require specific schedulers, which are marked in the web UI.
 - Eta
-  - only for DDIM
+  - Only applies to the DDIMScheduler, and is ignored in other schedulers.
+  - A value of 0 corresponds to DDIM and 1 corresponds to DDPM.
 - CFG
   - Role: CFG is integral for conditional image generation, allowing users to influence the generation based on specific
     conditions.
@@ -234,6 +247,7 @@ ensuring a user-friendly and customizable environment.
     tiled VAE is active. Careful consideration of these parameters ensures effective utilization of onnx-web's
     capabilities while adapting to the unique requirements of your image generation tasks.
 - VAE overlap
+  - The amount of overlap between each VAE tile.
 
 See the complete user guide for details about the highres, upscale, and correction parameters.
 
@@ -283,14 +297,19 @@ recursive image features.
 
 `txt2img prompt || img2img prompt`
 
-One distinctive aspect of onnx-web's highres feature is its ability to operate with its own prompt, which is separate
-from the base txt2img prompt. Each stage of the prompt is separated using the `||` double pipe marker.
+Highres prompts are separated from the base txt2img prompt using the double pipe syntax (`||`). These prompts guide the
+upscaling and refinement processes, enabling users to incorporate distinct instructions and achieve nuanced outputs.
 
 ### Highres iterations
 
-Highres will apply the upscaler and highres prompt (img2img pipeline) for each iteration.
+`scale ** iterations`
 
-The final size will be `scale ** iterations`.
+Highres mode's iterative approach involves refining the generated image through multiple iterations, each contributing
+to an exponential increase in resolution. Users can specify the number of iterations based on their desired level of
+refinement. For instance, using a 2x upscaling model, two iterations of Highres will result in an image four times the
+original size. This scaling effect continues exponentially with each additional iteration. The interplay of Highres
+prompts and iterations allows users to progressively enhance image resolution while maintaining detailed and refined
+visual elements.
 
 ## Profiles
 
@@ -384,7 +403,7 @@ Diffusion process.
 
 ### Grid tokens
 
-`__column__` and `__row`
+`__column__` and `__row__`
 
 When opting for token replacement, users can take advantage of the column and row tokens to dynamically insert column
 and row values into their prompts. This feature is particularly powerful when working with comma-separated lists of
@@ -418,3 +437,65 @@ at the beginning of each image, and the VAE operates once or twice at the image'
 offloading approach proves especially impactful for SDXL, significantly mitigating memory constraints. While
 offloading the VAE might slightly affect high-resolution (highres) speed, it becomes a necessary trade-off to
 accommodate SDXL highres on certain GPUs with limited memory resources.
+
+## Adding your own models
+
+onnx-web empowers users to seamlessly integrate their own models into the system through the utilization of an
+extras.json file. This JSON file serves as a conduit for users to specify additional models, including LoRA networks and
+embeddings, enhancing the versatility of onnx-web's capabilities.
+
+Models that are in the models directory and follow the correct naming pattern will be shown in the web UI whether they
+are listed in the extras file or not, but including them in the extras file allows you to provide a label for the web UI
+and ensures that the hash is included in your output images.
+
+### Editing the extras file
+
+Begin by creating an extras.json file and defining your models within the designated structure. For instance:
+
+```json
+{
+  "diffusion": [
+    {
+      "format": "safetensors",
+      "name": "diffusion-sdxl-turbovision-v3-2",
+      "label": "SDXL - Turbovision v3.2",
+      "source": "civitai://255474?type=Model&format=SafeTensor&size=pruned&fp=fp16",
+      "pipeline": "txt2img-sdxl"
+    },
+    {
+      "format": "safetensors",
+      "name": "diffusion-sdxl-icbinp-v1-0",
+      "label": "SDXL - ICBINP",
+      "source": "civitai://258447?type=Model&format=SafeTensor&size=pruned&fp=fp16",
+      "pipeline": "txt2img-sdxl",
+      "hash": "D6FF242DC70FC3DF8F311091FCD9A4DF3FDC1C85FEE2BCA604D4B8218A62378E"
+    }
+  ],
+  "networks": [
+    {
+      "format": "safetensors",
+      "label": "SDXL - LCM LoRA HuggingFace",
+      "name": "sdxl-lcm",
+      "source": "https://huggingface.co/latent-consistency/lcm-lora-sdxl/resolve/main/pytorch_lora_weights.safetensors",
+      "tokens": [],
+      "type": "lora"
+    }
+  ]
+}
+```
+
+Save the extras.json file within the designated onnx-web directory. onnx-web will automatically download and convert the
+specified models, streamlining the integration process without manual intervention.
+
+Leverage the "label" field in your extras file to provide localized and user-friendly names for each model. These labels
+will be seamlessly integrated into the onnx-web web UI, ensuring an intuitive interface for model selection.
+
+## More details
+
+For more details, please see the other guides:
+
+- [API specification](./api.md)
+- [custom chain pipelines](./chain-pipelines.md)
+- [server administration](./server-admin.md)
+- [setup guide](./setup-guide.md)
+- [user guide](./user-guide.md)
