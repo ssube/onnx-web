@@ -18,7 +18,7 @@ MAX_TOKENS_PER_GROUP = 77
 
 ANY_TOKEN = compile(r"\<([^\>]*)\>")
 CLIP_TOKEN = compile(r"\<clip:([-\w]+):(\d+)\>")
-INVERSION_TOKEN = compile(r"\<(embeddings|inversion):([^:\>]+):(-?[\.|\d]+)\>")
+INVERSION_TOKEN = compile(r"\<(?:embeddings|inversion):([^:\>]+):(-?[\.|\d]+)\>")
 LORA_TOKEN = compile(r"\<lora:([^:\>]+):(-?[\.|\d]+)\>")
 REGION_TOKEN = compile(
     r"\<region:(\d+):(\d+):(\d+):(\d+):(-?[\.|\d]+):(-?[\.|\d]+_?[TLBR]*):([^\>]+)\>"
