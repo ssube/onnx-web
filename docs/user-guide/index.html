@@ -1209,9 +1209,9 @@ keep more images in history. Output is always kept on the server.</p>
 <h4 id="reset-tab-buttons">Reset tab buttons</h4>
 <p>Resets the state of each tab to the default, if some controls become glitchy.</p>
 <h2 id="adding-your-own-models">Adding your own models</h2>
-<p>You can convert and use your own models without making any code changes. Models are stored in
-<a href="../models/extras.json">the <code>models/extras.json</code> file</a> - you can make a copy to avoid any updates replacing your models in
-the future. Add an entry for each of the models that you would like to use:</p>
+<p>You can convert and use your own models without making any code changes. Models are stored in <a href="https://github.com/ssube/onnx-web/blob/main/models/extras.json">the <code>models/extras.json</code>
+file</a> - you can make a copy to avoid any updates
+replacing your models in the future. Add an entry for each of the models that you would like to use:</p>
 <pre><code class="language-json">{
   &quot;diffusion&quot;: [
     {
@@ -1267,12 +1267,14 @@ the future. Add an entry for each of the models that you would like to use:</p>
 }
 </code></pre>
 <p>The complete file format and available keys are listed in <a href="#extras-file-format">the file format section</a>. If you are
-familiar with JSON schemas, <a href="../api/schemas/extras.yaml">the extras schema</a> is the canonical format.</p>
+familiar with JSON schemas, <a href="https://github.com/ssube/onnx-web/blob/main/api/schemas/extras.yaml">the extras schema</a> is
+the canonical format.</p>
 <p>Models can be added using the directory format used by <code>diffusers</code> as well as safetensor and pickle tensor checkpoints.
 See <a href="../converting-models/">the converting models guide</a> for more details.</p>
 <p>Be careful loading pickle tensors, as they may contain unsafe code which will be executed on your machine. Use
 safetensors instead whenever possible.</p>
-<p>Set the <code>ONNX_WEB_EXTRA_MODELS</code> environment variable to the path to your file if not using <a href="../models/extras.json">the <code>models/extras.json</code> file</a>. For example:</p>
+<p>Set the <code>ONNX_WEB_EXTRA_MODELS</code> environment variable to the path to your file if not using <a href="https://github.com/ssube/onnx-web/blob/main/models/extras.json">the <code>models/extras.json</code>
+file</a>. For example:</p>
 <pre><code class="language-shell"># on Linux:
 &gt; export ONNX_WEB_EXTRA_MODELS=~/onnx-web-extras.json
 &gt; ./launch-extras.sh
