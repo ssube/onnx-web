@@ -446,14 +446,26 @@ facilitating nuanced and controlled variations in image generation.
 
 ## Memory optimizations
 
-onnx-web introduces optimizations tailored for users with limited memory resources. The minimum system requirements
-are set at 4GB of VRAM and 8GB of system RAM for SD v1.5, escalating to 12GB of VRAM and 24GB of system RAM for SDXL.
-The recommended specifications stand at 6GB of VRAM and 16GB of system RAM for SD v1.5, increasing to 16GB of VRAM and
-32GB of system RAM for SDXL.
+onnx-web introduces optimizations tailored for users with limited memory resources. The system requirements are mostly
+based on how much memory you have:
+
+- minimum requirements
+  - SD v1.5
+    - 4GB VRAM
+    - 8GB system RAM
+  - SDXL
+    - 12GB VRAM
+    - 24GB system RAM
+- recommended requirements
+  - SD v1.5
+    - 6GB VRAM
+    - 16GB system RAM
+  - SDXL
+    - 16GB VRAM
+    - 32GB system RAM
 
 These optimizations cater to low-memory scenarios, providing users with the flexibility to adapt onnx-web to their
-hardware constraints while maintaining a balance between computational efficiency and image generation quality. Users
-can choose from these options based on their system specifications and performance preferences.
+hardware constraints.
 
 ### Converting to fp16
 
