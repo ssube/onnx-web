@@ -59,10 +59,12 @@ export function Img2Img() {
     <Stack spacing={2}>
       <Profiles
         selectHighres={selectHighres}
+        selectModel={selectModel}
         selectParams={selectParams}
         selectUpscale={selectUpscale}
-        setParams={setImg2Img}
         setHighres={setHighres}
+        setModel={setModel}
+        setParams={setImg2Img}
         setUpscale={setUpscale}
       />
       <ModelControl model={model} setModel={setModel} />

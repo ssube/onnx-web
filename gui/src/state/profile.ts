@@ -1,12 +1,13 @@
 /* eslint-disable camelcase */
 import { Maybe } from '@apextoaster/js-utils';
-import { BaseImgParams, HighresParams, Txt2ImgParams, UpscaleParams } from '../types/params.js';
+import { BaseImgParams, HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../types/params.js';
 import { Slice } from './types.js';
 
 export interface ProfileItem {
-  name: string;
-  params: BaseImgParams | Txt2ImgParams;
   highres?: Maybe<HighresParams>;
+  model?: Maybe<Partial<ModelParams>>;
+  name: string;
+  params: Partial<BaseImgParams | Txt2ImgParams>;
   upscale?: Maybe<UpscaleParams>;
 }
 
@@ -77,10 +78,19 @@ export const DEFAULT_UPSCALE_OFF: UpscaleParams = {
   upscaleOrder: 'correction-first',
 };
 
+export const DEFAULT_MODEL_SDV15: Partial<ModelParams> = {
+  pipeline: 'txt2img',
+};
+
+export const DEFAULT_MODEL_SDXL: Partial<ModelParams> = {
+  pipeline: 'txt2img-sdxl',
+};
+
 export const DEFAULT_PROFILES: Array<ProfileItem> = [
   // SD v1.5 base
   {
     name: 'base SD v1.5',
+    model: DEFAULT_MODEL_SDV15,
     params: {
       batch: 1,
       cfg: 5,
@@ -101,11 +111,35 @@ export const DEFAULT_PROFILES: Array<ProfileItem> = [
     highres: DEFAULT_HIGHRES_OFF,
     upscale: DEFAULT_UPSCALE_OFF,
   },
+  // SD v1.5 clip skip
+  {
+    name: 'base SD v1.5 clip skip',
+    model: DEFAULT_MODEL_SDV15,
+    params: {
+      batch: 1,
+      cfg: 5,
+      eta: 0,
+      negativePrompt: '',
+      prompt: '<clip:skip:2> ',
+      scheduler: 'deis',
+      steps: 30,
+      seed: -1,
+      tiled_vae: false,
+      unet_overlap: 0.75,
+      unet_tile: 512,
+      vae_overlap: 0.25,
+      vae_tile: 512,
+      width: 512,
+      height: 512
+    },
+    highres: DEFAULT_HIGHRES_OFF,
+    upscale: DEFAULT_UPSCALE_OFF,
+  },
   // SD v1.5 LCM
   {
     name: 'base SD v1.5 LCM',
+    model: DEFAULT_MODEL_SDV15,
     params: {
-      // "pipeline": "txt2img-sdxl",
       scheduler: 'lcm',
       prompt: '<lora:lcm:1.0> ',
       negativePrompt: '',
@@ -124,9 +158,11 @@ export const DEFAULT_PROFILES: Array<ProfileItem> = [
     },
     highres: DEFAULT_HIGHRES_OFF,
     upscale: DEFAULT_UPSCALE_OFF,
-  },  // SD v1.5 highres
+  },
+  // SD v1.5 highres
   {
     name: 'base SD v1.5 highres',
+    model: DEFAULT_MODEL_SDV15,
     params: {
       batch: 1,
       cfg: 5,
@@ -150,6 +186,9 @@ export const DEFAULT_PROFILES: Array<ProfileItem> = [
   // SD v1.5 panorama
   {
     name: 'base SD v1.5 panorama',
+    model: {
+      pipeline: 'panorama',
+    },
     params: {
       batch: 1,
       cfg: 12,
@@ -173,6 +212,7 @@ export const DEFAULT_PROFILES: Array<ProfileItem> = [
   // SDXL base
   {
     name: 'base SDXL',
+    model: DEFAULT_MODEL_SDXL,
     params: {
       batch: 1,
       cfg: 10,
@@ -196,6 +236,7 @@ export const DEFAULT_PROFILES: Array<ProfileItem> = [
   // SDXL highres
   {
     name: 'base SDXL highres',
+    model: DEFAULT_MODEL_SDXL,
     params: {
       batch: 1,
       cfg: 10,
@@ -219,8 +260,8 @@ export const DEFAULT_PROFILES: Array<ProfileItem> = [
   // SDXL LCM
   {
     name: 'base SDXL LCM',
+    model: DEFAULT_MODEL_SDXL,
     params: {
-      // "pipeline": "txt2img-sdxl",
       scheduler: 'lcm',
       prompt: '<lora:sdxl-lcm:1.0> ',
       negativePrompt: '',
@@ -243,6 +284,7 @@ export const DEFAULT_PROFILES: Array<ProfileItem> = [
   // SDXL panorama
   {
     name: 'base SDXL panorama',
+    model: DEFAULT_MODEL_SDXL,
     params: {
       batch: 1,
       cfg: 12,
@@ -266,6 +308,7 @@ export const DEFAULT_PROFILES: Array<ProfileItem> = [
   // SDXL turbo
   {
     name: 'base SDXL turbo',
+    model: DEFAULT_MODEL_SDXL,
     params: {
       scheduler: 'dpm-sde',
       prompt: '',

@@ -91,10 +91,12 @@ export function Inpaint() {
     <Stack spacing={2}>
       <Profiles
         selectHighres={selectHighres}
+        selectModel={selectModel}
         selectParams={selectParams}
         selectUpscale={selectUpscale}
-        setParams={setInpaint}
         setHighres={setHighres}
+        setModel={setModel}
+        setParams={setInpaint}
         setUpscale={setUpscale}
       />
       <ModelControl model={model} setModel={setModel} />

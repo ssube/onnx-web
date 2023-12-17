@@ -45,10 +45,12 @@ export function Upscale() {
     <Stack spacing={2}>
       <Profiles
         selectHighres={selectHighres}
+        selectModel={selectModel}
         selectParams={selectParams}
         selectUpscale={selectUpscale}
-        setParams={setParams}
         setHighres={setHighres}
+        setModel={setModel}
+        setParams={setParams}
         setUpscale={setUpscale}
       />
       <ModelControl model={model} setModel={setModel} />
