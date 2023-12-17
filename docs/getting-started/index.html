@@ -609,13 +609,38 @@ and row values into their prompts. This feature is particularly powerful when wo
 options. By utilizing these tokens, you gain the ability to precisely control how parameters evolve across the grid,
 facilitating nuanced and controlled variations in image generation.</p>
 <h2 id="memory-optimizations">Memory optimizations</h2>
-<p>onnx-web introduces optimizations tailored for users with limited memory resources. The minimum system requirements
-are set at 4GB of VRAM and 8GB of system RAM for SD v1.5, escalating to 12GB of VRAM and 24GB of system RAM for SDXL.
-The recommended specifications stand at 6GB of VRAM and 16GB of system RAM for SD v1.5, increasing to 16GB of VRAM and
-32GB of system RAM for SDXL.</p>
+<p>onnx-web introduces optimizations tailored for users with limited memory resources. The system requirements are mostly
+based on how much memory you have:</p>
+<ul>
+<li>minimum requirements<ul>
+<li>SD v1.5<ul>
+<li>4GB VRAM</li>
+<li>8GB system RAM</li>
+</ul>
+</li>
+<li>SDXL<ul>
+<li>12GB VRAM</li>
+<li>24GB system RAM</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>recommended requirements<ul>
+<li>SD v1.5<ul>
+<li>6GB VRAM</li>
+<li>16GB system RAM</li>
+</ul>
+</li>
+<li>SDXL<ul>
+<li>16GB VRAM</li>
+<li>32GB system RAM</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <p>These optimizations cater to low-memory scenarios, providing users with the flexibility to adapt onnx-web to their
-hardware constraints while maintaining a balance between computational efficiency and image generation quality. Users
-can choose from these options based on their system specifications and performance preferences.</p>
+hardware constraints.</p>
 <h3 id="converting-to-fp16">Converting to fp16</h3>
 <p>The first optimization available is the integration of fp16 mode during model conversion. Employing fp16 significantly
 enhances efficiency in terms of storage space and inference, leading to faster runtime for fp16 models. While the
