@@ -23,6 +23,7 @@ def convert_extract_archive(
 
     if path.exists(dest_path):
         logger.info("destination path already exists, skipping extraction")
+        return False, dest_path
 
     cache_path = fetch_model(conversion, name, model["source"], format=format)
 
@@ -33,6 +34,7 @@ def convert_extract_archive(
 
         logger.debug("archive is valid, extracting all files: %s", names)
         zip.extractall(path=dest_path)
+        return True, dest_path
 
 
 SAFE_NAME = r"^[-_a-zA-Z/\\\.]+$"

@@ -12,7 +12,7 @@ $defs:
 
   tensor_format:
     type: string
-    enum: [bin, ckpt, onnx, pt, pth, safetensors]
+    enum: [bin, ckpt, onnx, pt, pth, safetensors, zip]
 
   embedding_network:
     type: object
@@ -111,6 +111,7 @@ $defs:
           pipeline:
             type: string
             enum: [
+              archive,
               controlnet,
               img2img,
               inpaint,
