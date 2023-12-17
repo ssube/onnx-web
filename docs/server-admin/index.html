@@ -345,7 +345,7 @@ collection details and save some extra images to disk.</p>
 </li>
 <li><code>ONNX_WEB_CIVITAI_TOKEN</code><ul>
 <li>Civitai API token for models that require login</li>
-<li>you can create an API token in the Profile page: TODO LINK</li>
+<li>you can create an API token in the Account settings page: https://civitai.com/user/account</li>
 </ul>
 </li>
 <li><code>ONNX_WEB_HUGGINGFACE_TOKEN</code><ul>
@@ -367,15 +367,15 @@ collection details and save some extra images to disk.</p>
 </ul>
 </li>
 <li><code>ONNX_WEB_CONVERT_RELOAD</code><ul>
-<li>TODO</li>
+<li>load ONNX pipelines after conversion to ensure they are valid</li>
 </ul>
 </li>
 <li><code>ONNX_WEB_CONVERT_SHARE_UNET</code><ul>
-<li>TODO</li>
+<li>unload UNet after converting and reload before ControlNet conversion</li>
 </ul>
 </li>
 <li><code>ONNX_WEB_CONVERT_OPSET</code><ul>
-<li>TODO</li>
+<li>ONNX opset used when converting models</li>
 </ul>
 </li>
 <li><code>ONNX_WEB_CONVERT_CPU_ONLY</code><ul>
@@ -392,7 +392,8 @@ collection details and save some extra images to disk.</p>
 </ul>
 </li>
 <li><code>ONNX_WEB_MEMORY_LIMIT</code><ul>
-<li>TODO</li>
+<li>memory limit for CUDA devices</li>
+<li>does not apply to other platforms</li>
 </ul>
 </li>
 <li><code>ONNX_WEB_OPTIMIZATIONS</code><ul>
@@ -471,7 +472,8 @@ collection details and save some extra images to disk.</p>
 </ul>
 </li>
 <li><code>ONNX_WEB_IMAGE_FORMAT</code><ul>
-<li>TODO</li>
+<li>output image file format</li>
+<li>should be one of <code>jpeg</code> or <code>png</code></li>
 </ul>
 </li>
 <li><code>ONNX_WEB_JOB_LIMIT</code><ul>
@@ -480,11 +482,12 @@ collection details and save some extra images to disk.</p>
 </ul>
 </li>
 <li><code>ONNX_WEB_PLUGINS</code><ul>
-<li>TODO</li>
+<li>comma-delimited list of plugin modules to load</li>
 </ul>
 </li>
 <li><code>ONNX_WEB_SERVER_VERSION</code><ul>
-<li>TODO</li>
+<li>server version</li>
+<li>can be customized to identify nodes or pods in their logs</li>
 </ul>
 </li>
 <li><code>ONNX_WEB_SHOW_PROGRESS</code><ul>
@@ -499,7 +502,12 @@ collection details and save some extra images to disk.</p>
 </li>
 </ul>
 <h3 id="feature-flags">Feature Flags</h3>
-<p>TODO</p>
+<ul>
+<li><code>panorama-highres</code><ul>
+<li>when using the panorama pipeline with highres, prefer panorama views over stage tiling</li>
+</ul>
+</li>
+</ul>
 <h3 id="pipeline-optimizations">Pipeline Optimizations</h3>
 <ul>
 <li><code>diffusers-*</code><ul>
