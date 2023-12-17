@@ -106,7 +106,7 @@ Update pip itself:
 
 ### Install pip packages
 
-You can install all of the necessary packages at once using [the `requirements/base.txt` file](./api/requirements/base.txt)
+You can install all of the necessary packages at once using [the `requirements/base.txt` file](https://github.com/ssube/onnx-web/blob/main/api/requirements/base.txt)
 and the `requirements/` file for your platform. Install them in separate commands and make sure to install the
 platform-specific packages first:
 

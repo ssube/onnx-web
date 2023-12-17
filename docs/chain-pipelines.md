@@ -85,8 +85,8 @@ and can also save intermediate output, such as the result of a `source-txt2img` 
 }
 ```
 
-The complete schema can be found in [`api/schema.yaml`](../api/schema.yaml) and some example pipelines are available
-in [`common/pipelines`](../common/pipelines).
+The complete schema can be found in [`api/schema.yaml`](https://github.com/ssube/onnx-web/blob/main/api/schemas/chain.yaml) and some example pipelines are available
+in [`common/pipelines`](https://github.com/ssube/onnx-web/tree/main/common/pipelines).
 
 ## Stages
 

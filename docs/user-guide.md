@@ -969,9 +969,9 @@ Resets the state of each tab to the default, if some controls become glitchy.
 
 ## Adding your own models
 
-You can convert and use your own models without making any code changes. Models are stored in
-[the `models/extras.json` file](../models/extras.json) - you can make a copy to avoid any updates replacing your models in
-the future. Add an entry for each of the models that you would like to use:
+You can convert and use your own models without making any code changes. Models are stored in [the `models/extras.json`
+file](https://github.com/ssube/onnx-web/blob/main/models/extras.json) - you can make a copy to avoid any updates
+replacing your models in the future. Add an entry for each of the models that you would like to use:
 
 ```json
 {
@@ -1030,7 +1030,8 @@ the future. Add an entry for each of the models that you would like to use:
 ```
 
 The complete file format and available keys are listed in [the file format section](#extras-file-format). If you are
-familiar with JSON schemas, [the extras schema](../api/schemas/extras.yaml) is the canonical format.
+familiar with JSON schemas, [the extras schema](https://github.com/ssube/onnx-web/blob/main/api/schemas/extras.yaml) is
+the canonical format.
 
 Models can be added using the directory format used by `diffusers` as well as safetensor and pickle tensor checkpoints.
 See [the converting models guide](converting-models.md) for more details.
@@ -1038,7 +1039,8 @@ See [the converting models guide](converting-models.md) for more details.
 Be careful loading pickle tensors, as they may contain unsafe code which will be executed on your machine. Use
 safetensors instead whenever possible.
 
-Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file if not using [the `models/extras.json` file](../models/extras.json). For example:
+Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file if not using [the `models/extras.json`
+file](https://github.com/ssube/onnx-web/blob/main/models/extras.json). For example:
 
 ```shell
 # on Linux:

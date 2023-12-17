@@ -250,7 +250,7 @@ These extra images can be helpful when debugging inpainting, especially poorly b
   - path where client bundle files can be found
 - `ONNX_WEB_EXTRA_MODELS`
   - extra model files to be loaded
-  - one or more filenames or paths, to JSON or YAML files matching [the extras schema](../api/schemas/extras.yaml)
+  - one or more filenames or paths, to JSON or YAML files matching [the extras schema](https://github.com/ssube/onnx-web/blob/main/api/schemas/extras.yaml)
 - `ONNX_WEB_LOGGING_PATH`
   - path to `logging.yaml` config file
 - `ONNX_WEB_MODEL_PATH`
