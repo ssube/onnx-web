@@ -210,7 +210,7 @@ These extra images can be helpful when debugging inpainting, especially poorly b
   - rarely needs to be changed
 - `ONNX_WEB_CIVITAI_TOKEN`
   - Civitai API token for models that require login
-  - you can create an API token in the Profile page: TODO LINK
+  - you can create an API token in the Account settings page: https://civitai.com/user/account
 - `ONNX_WEB_HUGGINGFACE_TOKEN`
   - Huggingface API token for models that require login
 
@@ -224,11 +224,11 @@ These extra images can be helpful when debugging inpainting, especially poorly b
   - disable to skip extraction, saving some disk
   - extraction uses an older code path that does not work with some newer models and has a non-commercial license
 - `ONNX_WEB_CONVERT_RELOAD`
-  - TODO
+  - load ONNX pipelines after conversion to ensure they are valid
 - `ONNX_WEB_CONVERT_SHARE_UNET`
-  - TODO
+  - unload UNet after converting and reload before ControlNet conversion
 - `ONNX_WEB_CONVERT_OPSET`
-  - TODO
+  - ONNX opset used when converting models
 - `ONNX_WEB_CONVERT_CPU_ONLY`
   - perform conversion on the CPU, even if a CUDA GPU is available
   - can allow conversion of models that do not fit in VRAM
@@ -239,7 +239,8 @@ These extra images can be helpful when debugging inpainting, especially poorly b
   - the number of recent models to keep in memory
   - setting this to 0 will disable caching and free VRAM between images
 - `ONNX_WEB_MEMORY_LIMIT`
-  - TODO
+  - memory limit for CUDA devices
+  - does not apply to other platforms
 - `ONNX_WEB_OPTIMIZATIONS`
   - comma-delimited list of optimizations to enable
 
@@ -286,14 +287,16 @@ These extra images can be helpful when debugging inpainting, especially poorly b
 - `ONNX_WEB_FEATURE_FLAGS`
   - enable some [feature flags](#feature-flags)
 - `ONNX_WEB_IMAGE_FORMAT`
-  - TODO
+  - output image file format
+  - should be one of `jpeg` or `png`
 - `ONNX_WEB_JOB_LIMIT`
   - number of jobs to run before restarting workers
   - can help prevent memory leaks
 - `ONNX_WEB_PLUGINS`
-  - TODO
+  - comma-delimited list of plugin modules to load
 - `ONNX_WEB_SERVER_VERSION`
-  - TODO
+  - server version
+  - can be customized to identify nodes or pods in their logs
 - `ONNX_WEB_SHOW_PROGRESS`
   - show progress bars in the logs
   - disabling this can reduce noise in server logs, especially when logging to a file
@@ -303,7 +306,8 @@ These extra images can be helpful when debugging inpainting, especially poorly b
 
 ### Feature Flags
 
-TODO
+- `panorama-highres`
+  - when using the panorama pipeline with highres, prefer panorama views over stage tiling
 
 ### Pipeline Optimizations
 

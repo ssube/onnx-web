@@ -575,9 +575,9 @@ Txt2img is only valid for the img2img tab.
 
 ### Upscale pipeline
 
-The upscale pipeline is specifically for Stable Diffusion upscaling.
+The upscale pipeline is when running Stable Diffusion upscaling as the primary diffusion model.
 
-TODO: why is this special? when do you need to use it?
+You do not need to select this pipeline to use SD upscaling as your upscaling model.
 
 ## Tabs
 

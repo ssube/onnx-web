@@ -128,11 +128,11 @@ Not currently available through JSON API.
 
 #### Highres Stage
 
-TODO
+Prep one or more highres iterations. Each iteration is an upscale stage followed by img2img.
 
 #### Upscale Stage
 
-TODO
+Prep upscale and correction stages.
 
 ### Persistence Stages
 
@@ -148,11 +148,11 @@ Save all of the sources to an S3 bucket.
 
 #### Reduce: Crop
 
-TODO
+Crop a section out of each source.
 
 #### Reduce: Thumbnail
 
-TODO
+Downscale each image into a thumbnail of itself.
 
 ### Source Stages
 
