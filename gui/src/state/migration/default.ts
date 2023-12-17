@@ -7,6 +7,7 @@ import { Img2ImgSlice } from '../img2img.js';
 import { InpaintSlice } from '../inpaint.js';
 import { Txt2ImgSlice } from '../txt2img.js';
 import { UpscaleSlice } from '../upscale.js';
+import { DEFAULT_PROFILES } from '../profile.js';
 
 // #region V7
 export const V7 = 7;
@@ -86,6 +87,14 @@ export function migrateV7ToV11(params: ServerParams, previousState: PreviousStat
       vae_tile: params.vae_tile.default,
     },
   };
+
+  // add any missing profiles
+  const existingProfiles = new Set(result.profiles.map((it) => it.name));
+  for (const newProfile of DEFAULT_PROFILES) {
+    if (existingProfiles.has(newProfile.name) === false) {
+      result.profiles.push(newProfile);
+    }
+  }
 
   // TODO: remove extra keys
 
