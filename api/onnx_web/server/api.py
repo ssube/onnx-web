@@ -502,7 +502,7 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
         if source_file is None:
             logger.warning("missing source %s", i)
         else:
-            source = Image.open(BytesIO(source_file.read())).convert("RGBA")
+            source = Image.open(BytesIO(source_file.read())).convert("RGB")
             sources.append(source)
 
     device, params, size = pipeline_from_request(server)
