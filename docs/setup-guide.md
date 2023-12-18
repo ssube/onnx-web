@@ -88,7 +88,7 @@ Debian-based systems. You may need to install venv through apt instead:
 > sudo apt install python3-venv   # only if you get an error
 ```
 
-Every time you start using ONNX web, activate the virtual environment:
+Every time you start using onnx-web, activate the virtual environment:
 
 ```shell
 # on linux:
@@ -106,7 +106,7 @@ Update pip itself:
 
 ### Install pip packages
 
-You can install all of the necessary packages at once using [the `requirements/base.txt` file](./api/requirements/base.txt)
+You can install all of the necessary packages at once using [the `requirements/base.txt` file](https://github.com/ssube/onnx-web/blob/main/api/requirements/base.txt)
 and the `requirements/` file for your platform. Install them in separate commands and make sure to install the
 platform-specific packages first:
 

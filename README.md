@@ -1,4 +1,4 @@
-# ONNX Web
+# onnx-web
 
 onnx-web is a tool for running Stable Diffusion and other [ONNX models](https://onnx.ai/) with hardware acceleration,
 on both AMD and Nvidia GPUs and with a CPU software fallback.
@@ -77,7 +77,7 @@ This is an incomplete list of new and interesting features, with links to the us
 
 ## Contents
 
-- [ONNX Web](#onnx-web)
+- [onnx-web](#onnx-web)
   - [Features](#features)
   - [Contents](#contents)
   - [Setup](#setup)
@@ -136,7 +136,7 @@ Some of the conversion and pipeline code was copied or derived from code in:
   - https://github.com/huggingface/diffusers/blob/main/scripts/convert_stable_diffusion_checkpoint_to_onnx.py
 - [`uchuusen/onnx_stable_diffusion_controlnet`](https://github.com/uchuusen/onnx_stable_diffusion_controlnet)
   - GPL v3: https://github.com/uchuusen/onnx_stable_diffusion_controlnet/blob/main/LICENSE
-- [`uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix](https://github.com/uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix)
+- [`uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix`](https://github.com/uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix)
   - Apache v2: https://github.com/uchuusen/pipeline_onnx_stable_diffusion_instruct_pix2pix/blob/main/LICENSE
 
 Those parts have their own licenses with additional restrictions on commercial usage, modification, and redistribution.

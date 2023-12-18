@@ -339,6 +339,7 @@ export const I18N_STRINGS_EN = {
         'correction-first': 'Correction First',
         'correction-last': 'Correction Last',
       },
+      wildcard: 'Wildcard',
     }
   },
 };

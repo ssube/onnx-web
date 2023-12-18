@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { ConfigContext, OnnxState, StateContext } from '../../state.js';
+import { ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { NumericField } from '../input/NumericField.js';
 
 export function OutpaintControl() {

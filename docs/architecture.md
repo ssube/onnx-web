@@ -1,4 +1,4 @@
-# onnx-web Architecture
+# Architecture
 
 ## Contents
 

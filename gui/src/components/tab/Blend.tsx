@@ -8,7 +8,9 @@ import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
 import { IMAGE_FILTER } from '../../config.js';
-import { BLEND_SOURCES, ClientContext, OnnxState, StateContext, TabState } from '../../state.js';
+import { BLEND_SOURCES } from '../../constants.js';
+import { ClientContext, OnnxState, StateContext } from '../../state/full.js';
+import { TabState } from '../../state/types.js';
 import { BlendParams, BrushParams, ModelParams, UpscaleParams } from '../../types/params.js';
 import { range } from '../../utils.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';

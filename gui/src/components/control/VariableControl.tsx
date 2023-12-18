@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { useStore } from 'zustand';
 
 import { PipelineGrid } from '../../client/utils.js';
-import { OnnxState, StateContext } from '../../state.js';
+import { OnnxState, StateContext } from '../../state/full.js';
 import { VARIABLE_PARAMETERS } from '../../types/chain.js';
 
 export interface VariableControlProps {

@@ -1,6 +1,6 @@
 # User Guide
 
-This is the user guide for ONNX web, a web GUI for running ONNX models with hardware acceleration on both AMD and Nvidia
+This is the user guide for onnx-web, a web GUI for running ONNX models with hardware acceleration on both AMD and Nvidia
 system, with a CPU software fallback.
 
 The API is written in Python and runs on both Linux and Windows and provides access to the major functionality of
@@ -21,7 +21,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
 - [User Guide](#user-guide)
   - [Contents](#contents)
   - [Outline](#outline)
-    - [What is ONNX web (and what it is not)](#what-is-onnx-web-and-what-it-is-not)
+    - [What is onnx-web (and what it is not)](#what-is-onnx-web-and-what-it-is-not)
     - [Modes and tabs](#modes-and-tabs)
     - [Image history](#image-history)
     - [Scheduler comparison](#scheduler-comparison)
@@ -31,7 +31,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Useful keywords](#useful-keywords)
     - [Prompt tokens](#prompt-tokens)
       - [LoRA and LyCORIS tokens](#lora-and-lycoris-tokens)
-      - [Textual Inversion tokens](#textual-inversion-tokens)
+      - [Embedding (Textual Inversion) tokens](#embedding-textual-inversion-tokens)
       - [Prompt stages](#prompt-stages)
       - [Region tokens](#region-tokens)
       - [Reseed tokens (region seeds)](#reseed-tokens-region-seeds)
@@ -127,9 +127,9 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
 
 ## Outline
 
-### What is ONNX web (and what it is not)
+### What is onnx-web (and what it is not)
 
-ONNX web is a responsive web GUI, in both style and performance, for running ONNX models using hardware acceleration on
+onnx-web is a responsive web GUI, in both style and performance, for running ONNX models using hardware acceleration on
 any reasonable platform (one with sufficient memory for the models, that can build scipy within 24 hours, etc).
 
 The client should do some reasonable validation of input parameters should be done, such as prompt length, pipeline and
@@ -190,10 +190,10 @@ DEIS multistep and Euler Ancestral schedulers.
 ### Model and network types
 
 The [ONNX runtime](https://onnxruntime.ai/) is a library for accelerating neural networks and machine learning models,
-using [the ONNX file format](https://onnx.ai/) to share them across different platforms. ONNX web is a server to run
+using [the ONNX file format](https://onnx.ai/) to share them across different platforms. onnx-web is a server to run
 hardware-accelerated inference using those models and a web client to provide the parameters and view the results.
 
-The models used by ONNX web are split up into four groups:
+The models used by onnx-web are split up into four groups:
 
 1. Diffusion
    1. general models like [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5)
@@ -371,16 +371,20 @@ the `<lora:name:1.0>` token _and_ the keywords to activate the LoRA.
 
 Check out [the `kohya-ss/sd-scripts` repository](https://github.com/kohya-ss/sd-scripts) for more details.
 
-#### Textual Inversion tokens
+#### Embedding (Textual Inversion) tokens
 
 You can blend one or more [Textual Inversions](https://textual-inversion.github.io/) with the ONNX diffusion model
-using the `inversion` token:
+using the `embeddings` token _and_ one or more layer token:
 
 ```none
-<inversion:autumn:1.0>
+<inversion:autumn:1.0> autumn, ...
+<embeddings:autumn:1.0> autumn, ...
 ```
 
-Textual Inversion embeddings must be placed in the `models/inversion` directory and may be any supported tensor format.
+The `<inversion:name:weight>` token is a synonym for `<embeddings:name:weight>` and operates exactly the same way.
+
+Textual Inversion embeddings must be placed in the `models/inversion` directory regardless of which token you use, and
+may be any supported tensor format.
 
 The type of network, name, and weight must be separated by colons. The Textual Inversion name must be alphanumeric
 and must not contain any special characters other than `-` and `_`.
@@ -571,9 +575,9 @@ Txt2img is only valid for the img2img tab.
 
 ### Upscale pipeline
 
-The upscale pipeline is specifically for Stable Diffusion upscaling.
+The upscale pipeline is when running Stable Diffusion upscaling as the primary diffusion model.
 
-TODO: why is this special? when do you need to use it?
+You do not need to select this pipeline to use SD upscaling as your upscaling model.
 
 ## Tabs
 
@@ -965,9 +969,9 @@ Resets the state of each tab to the default, if some controls become glitchy.
 
 ## Adding your own models
 
-You can convert and use your own models without making any code changes. Models are stored in
-[the `models/extras.json` file](../models/extras.json) - you can make a copy to avoid any updates replacing your models in
-the future. Add an entry for each of the models that you would like to use:
+You can convert and use your own models without making any code changes. Models are stored in [the `models/extras.json`
+file](https://github.com/ssube/onnx-web/blob/main/models/extras.json) - you can make a copy to avoid any updates
+replacing your models in the future. Add an entry for each of the models that you would like to use:
 
 ```json
 {
@@ -1026,7 +1030,8 @@ the future. Add an entry for each of the models that you would like to use:
 ```
 
 The complete file format and available keys are listed in [the file format section](#extras-file-format). If you are
-familiar with JSON schemas, [the extras schema](../api/schemas/extras.yaml) is the canonical format.
+familiar with JSON schemas, [the extras schema](https://github.com/ssube/onnx-web/blob/main/api/schemas/extras.yaml) is
+the canonical format.
 
 Models can be added using the directory format used by `diffusers` as well as safetensor and pickle tensor checkpoints.
 See [the converting models guide](converting-models.md) for more details.
@@ -1034,7 +1039,8 @@ See [the converting models guide](converting-models.md) for more details.
 Be careful loading pickle tensors, as they may contain unsafe code which will be executed on your machine. Use
 safetensors instead whenever possible.
 
-Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file if not using [the `models/extras.json` file](../models/extras.json). For example:
+Set the `ONNX_WEB_EXTRA_MODELS` environment variable to the path to your file if not using [the `models/extras.json`
+file](https://github.com/ssube/onnx-web/blob/main/models/extras.json). For example:
 
 ```shell
 # on Linux:
@@ -1664,7 +1670,7 @@ Example error:
 
 ```none
 Error fetching server parameters
-Could not fetch parameters from the ONNX web API server at http://10.2.2.34:5000.
+Could not fetch parameters from the onnx-web API server at http://10.2.2.34:5000.
 
 Cannot read properties of undefined (reading 'default')
 ```

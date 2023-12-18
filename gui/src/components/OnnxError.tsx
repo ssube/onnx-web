@@ -2,7 +2,7 @@ import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import * as React from 'react';
 import { ReactNode } from 'react';
 
-import { STATE_KEY } from '../state.js';
+import { STATE_KEY } from '../state/full.js';
 import { Logo } from './Logo.js';
 
 export interface OnnxErrorProps {

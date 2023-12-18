@@ -102,11 +102,11 @@ This is the test plan for manual pre-release testing and should exercise all of 
 
 Issues:
 
-- TODO
+- [ ] list issues in this release
 
 Merges:
 
-- TODO
+- [ ] list PRs in this release
 
 Testing:
 

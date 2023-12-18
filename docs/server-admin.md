@@ -1,6 +1,6 @@
 # Server Administration
 
-This is the server administration guide for ONNX web.
+This is the server administration guide for onnx-web.
 
 Please see [the user guide](user-guide.md) for descriptions of the client and each of the parameters.
 
@@ -19,6 +19,13 @@ Please see [the user guide](user-guide.md) for descriptions of the client and ea
   - [Configuration](#configuration)
     - [Debug Mode](#debug-mode)
     - [Environment Variables](#environment-variables)
+      - [Client Variables](#client-variables)
+      - [Conversion Variables](#conversion-variables)
+      - [Memory and Optimization Variables](#memory-and-optimization-variables)
+      - [Path Variables](#path-variables)
+      - [Platform Variables](#platform-variables)
+      - [Server and Other Variables](#server-and-other-variables)
+    - [Feature Flags](#feature-flags)
     - [Pipeline Optimizations](#pipeline-optimizations)
     - [Server Parameters](#server-parameters)
   - [Containers](#containers)
@@ -196,10 +203,56 @@ These extra images can be helpful when debugging inpainting, especially poorly b
 
 ### Environment Variables
 
-Paths:
+#### Client Variables
+
+- `ONNX_WEB_CIVITAI_ROOT`
+  - root URL for downloading Civitai models
+  - rarely needs to be changed
+- `ONNX_WEB_CIVITAI_TOKEN`
+  - Civitai API token for models that require login
+  - you can create an API token in the Account settings page: https://civitai.com/user/account
+- `ONNX_WEB_HUGGINGFACE_TOKEN`
+  - Huggingface API token for models that require login
+
+#### Conversion Variables
+
+- `ONNX_WEB_CONVERT_CONTROL`
+  - convert ControlNet
+  - disable to skip ControlNet, saving some disk and memory
+- `ONNX_WEB_CONVERT_EXTRACT`
+  - extract models to Torch directory before converting to ONNX
+  - disable to skip extraction, saving some disk
+  - extraction uses an older code path that does not work with some newer models and has a non-commercial license
+- `ONNX_WEB_CONVERT_RELOAD`
+  - load ONNX pipelines after conversion to ensure they are valid
+- `ONNX_WEB_CONVERT_SHARE_UNET`
+  - unload UNet after converting and reload before ControlNet conversion
+- `ONNX_WEB_CONVERT_OPSET`
+  - ONNX opset used when converting models
+- `ONNX_WEB_CONVERT_CPU_ONLY`
+  - perform conversion on the CPU, even if a CUDA GPU is available
+  - can allow conversion of models that do not fit in VRAM
+
+#### Memory and Optimization Variables
+
+- `ONNX_WEB_CACHE_MODELS`
+  - the number of recent models to keep in memory
+  - setting this to 0 will disable caching and free VRAM between images
+- `ONNX_WEB_MEMORY_LIMIT`
+  - memory limit for CUDA devices
+  - does not apply to other platforms
+- `ONNX_WEB_OPTIMIZATIONS`
+  - comma-delimited list of optimizations to enable
+
+#### Path Variables
 
 - `ONNX_WEB_BUNDLE_PATH`
   - path where client bundle files can be found
+- `ONNX_WEB_EXTRA_MODELS`
+  - extra model files to be loaded
+  - one or more filenames or paths, to JSON or YAML files matching [the extras schema](https://github.com/ssube/onnx-web/blob/main/api/schemas/extras.yaml)
+- `ONNX_WEB_LOGGING_PATH`
+  - path to `logging.yaml` config file
 - `ONNX_WEB_MODEL_PATH`
   - path where models can be found
 - `ONNX_WEB_OUTPUT_PATH`
@@ -207,7 +260,7 @@ Paths:
 - `ONNX_WEB_PARAMS_PATH`
   - path to the directory where the `params.json` file can be found
 
-Others:
+#### Platform Variables
 
 - `ONNX_WEB_ANY_PLATFORM`
   - whether or not to include the `any` option in the platform list
@@ -215,25 +268,46 @@ Others:
   - comma-delimited list of platforms that should not be presented to users
   - further filters the list of available platforms returned by ONNX runtime
   - can be used to prevent CPU generation on shared servers
-- `ONNX_WEB_CACHE_MODELS`
-  - the number of recent models to keep in memory
-  - setting this to 0 will disable caching and free VRAM between images
-- `ONNX_WEB_CORS_ORIGIN`
-  - comma-delimited list of allowed origins for CORS headers
 - `ONNX_WEB_DEFAULT_PLATFORM`
   - the default platform to show in the client
   - overrides the `params.json` file
+
+#### Server and Other Variables
+
+- `ONNX_WEB_ADMIN_TOKEN`
+  - token for admin operations
+  - required to update extras file and restart workers
+- `ONNX_WEB_CORS_ORIGIN`
+  - comma-delimited list of allowed origins for CORS headers
+- `ONNX_WEB_DEBUG`
+  - wait for debugger to be attached before starting server
 - `ONNX_WEB_EXTRA_ARGS`
   - extra arguments to the launch script
   - set this to `--half` to convert models to fp16
-- `ONNX_WEB_EXTRA_MODELS`
-  - extra model files to be loaded
-  - one or more filenames or paths, to JSON or YAML files matching [the extras schema](../api/schemas/extras.yaml)
+- `ONNX_WEB_FEATURE_FLAGS`
+  - enable some [feature flags](#feature-flags)
+- `ONNX_WEB_IMAGE_FORMAT`
+  - output image file format
+  - should be one of `jpeg` or `png`
+- `ONNX_WEB_JOB_LIMIT`
+  - number of jobs to run before restarting workers
+  - can help prevent memory leaks
+- `ONNX_WEB_PLUGINS`
+  - comma-delimited list of plugin modules to load
+- `ONNX_WEB_SERVER_VERSION`
+  - server version
+  - can be customized to identify nodes or pods in their logs
 - `ONNX_WEB_SHOW_PROGRESS`
   - show progress bars in the logs
   - disabling this can reduce noise in server logs, especially when logging to a file
-- `ONNX_WEB_OPTIMIZATIONS`
-  - comma-delimited list of optimizations to enable
+- `ONNX_WEB_WORKER_RETRIES`
+  - number of times to retry a tile or stage before failing the image
+  - more retries takes longer but can help prevent intermittent OOM errors from ruining long pipelines
+
+### Feature Flags
+
+- `panorama-highres`
+  - when using the panorama pipeline with highres, prefer panorama views over stage tiling
 
 ### Pipeline Optimizations
 
@@ -254,6 +328,14 @@ Others:
     - not available for ONNX pipelines (most of them)
     - https://huggingface.co/docs/diffusers/optimization/fp16#sliced-vae-decode-for-larger-batches
 - `onnx-*`
+  - `onnx-cpu-*`
+    - CPU offloading for individual models
+    - `onnx-cpu-text-encoder`
+      - recommended for SDXL highres
+    - `onnx-cpu-unet`
+      - not recommended
+    - `onnx-cpu-vae`
+      - may be necessary for SDXL highres
   - `onnx-deterministic-compute`
     - enable ONNX deterministic compute
   - `onnx-fp16`

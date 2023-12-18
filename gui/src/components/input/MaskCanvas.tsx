@@ -6,7 +6,7 @@ import React, { RefObject, useContext, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next';
 
 import { SAVE_TIME } from '../../config.js';
-import { ConfigContext, LoggerContext, StateContext } from '../../state.js';
+import { ConfigContext, LoggerContext, StateContext } from '../../state/full.js';
 import { BrushParams } from '../../types/params.js';
 import { imageFromBlob } from '../../utils.js';
 import { NumericField } from './NumericField';

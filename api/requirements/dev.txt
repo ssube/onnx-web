@@ -3,6 +3,13 @@ build
 twine
 wheel
 
+# debug
+debugpy
+
+# docs
+mkdocs
+mdx-truly-sane-lists
+
 # lint
 black
 flake8

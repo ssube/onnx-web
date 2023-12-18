@@ -12,11 +12,17 @@ are run on each tile, then the results are recombined and passed on to the next 
     - [Format](#format)
   - [Stages](#stages)
     - [Blending Stages](#blending-stages)
+      - [Blend: Denoise](#blend-denoise)
+      - [Blend: Grid](#blend-grid)
       - [Blend: Img2img](#blend-img2img)
-      - [Blend: Inpaint](#blend-inpaint)
+      - [Blend: Linear](#blend-linear)
+      - [Blend: Mask](#blend-mask)
     - [Correction Stages](#correction-stages)
       - [Correct: CodeFormer](#correct-codeformer)
       - [Correct: GFPGAN](#correct-gfpgan)
+    - [Compound Stages](#compound-stages)
+      - [Highres Stage](#highres-stage)
+      - [Upscale Stage](#upscale-stage)
     - [Persistence Stages](#persistence-stages)
       - [Persist: Disk](#persist-disk)
       - [Persist: S3](#persist-s3)
@@ -25,11 +31,17 @@ are run on each tile, then the results are recombined and passed on to the next 
       - [Reduce: Thumbnail](#reduce-thumbnail)
     - [Source Stages](#source-stages)
       - [Source: Noise](#source-noise)
+      - [Source: S3](#source-s3)
       - [Source: Txt2img](#source-txt2img)
+      - [Source: URL](#source-url)
     - [Upscaling Stages](#upscaling-stages)
+      - [Upscale: BSRGAN](#upscale-bsrgan)
+      - [Upscale: Highres](#upscale-highres)
       - [Upscale: Outpaint](#upscale-outpaint)
       - [Upscale: Real ESRGAN](#upscale-real-esrgan)
+      - [Upscale: Simple](#upscale-simple)
       - [Upscale: Stable Diffusion](#upscale-stable-diffusion)
+      - [Upscale: SwinIR](#upscale-swinir)
 
 ## Overview
 
@@ -73,42 +85,102 @@ and can also save intermediate output, such as the result of a `source-txt2img` 
 }
 ```
 
-The complete schema can be found in [`api/schema.yaml`](../api/schema.yaml) and some example pipelines are available
-in [`common/pipelines`](../common/pipelines).
+The complete schema can be found in [`api/schema.yaml`](https://github.com/ssube/onnx-web/blob/main/api/schemas/chain.yaml) and some example pipelines are available
+in [`common/pipelines`](https://github.com/ssube/onnx-web/tree/main/common/pipelines).
 
 ## Stages
 
 ### Blending Stages
 
+#### Blend: Denoise
+
+Run [fast non-local means denoising](https://docs.opencv.org/4.8.0/d5/d69/tutorial_py_non_local_means.html) using `cv2`.
+
+#### Blend: Grid
+
+Combine the source images into a grid.
+
 #### Blend: Img2img
 
-#### Blend: Inpaint
+Run an img2img pipeline.
+
+#### Blend: Linear
+
+Blend two images using linear interpolation (0.0 is the first image, 1.0 is the second).
+
+#### Blend: Mask
+
+Blend two images using a mask.
 
 ### Correction Stages
 
 #### Correct: CodeFormer
 
+Run correction using CodeFormer.
+
 #### Correct: GFPGAN
+
+Run correction using GFPGAN.
+
+### Compound Stages
+
+Not currently available through JSON API.
+
+#### Highres Stage
+
+Prep one or more highres iterations. Each iteration is an upscale stage followed by img2img.
+
+#### Upscale Stage
+
+Prep upscale and correction stages.
 
 ### Persistence Stages
 
 #### Persist: Disk
 
+Save all of the sources to disk.
+
 #### Persist: S3
+
+Save all of the sources to an S3 bucket.
 
 ### Reduction Stages
 
 #### Reduce: Crop
 
+Crop a section out of each source.
+
 #### Reduce: Thumbnail
+
+Downscale each image into a thumbnail of itself.
 
 ### Source Stages
 
 #### Source: Noise
 
+Create a new source using a noise generator.
+
+#### Source: S3
+
+Load a new source from an S3 bucket.
+
 #### Source: Txt2img
 
+Run a txt2img pipeline.
+
+#### Source: URL
+
+Load a new source from a URL.
+
 ### Upscaling Stages
+
+#### Upscale: BSRGAN
+
+Upscaling stage using BSRGAN.
+
+#### Upscale: Highres
+
+Upscaling stage using highres.
 
 #### Upscale: Outpaint
 
@@ -121,9 +193,17 @@ Upscaling stage using the Real ESRGAN upscaling models, available in x2 and x4 v
 
 - https://github.com/xinntao/Real-ESRGAN/releases
 
+#### Upscale: Simple
+
+Upscaling stage using bilinear or Lanczos upscaling.
+
 #### Upscale: Stable Diffusion
 
 Upscaling stage using the Stable Diffusion x4 upscaling model:
 
 - https://huggingface.co/stabilityai/stable-diffusion-x4-upscaler
 - https://huggingface.co/ssube/stable-diffusion-x4-upscaler-onnx
+
+#### Upscale: SwinIR
+
+Upscaling stage using SwinIR.

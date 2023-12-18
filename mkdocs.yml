@@ -1,0 +1,12 @@
+repo_url: https://github.com/ssube/onnx-web
+site_name: onnx-web docs
+site_url: https://onnx-web.ai/docs
+exclude_docs: |
+  runpod-readme.md
+markdown_extensions:
+  - mdx_truly_sane_lists
+plugins:
+  - search:
+      prebuild_index: true
+theme:
+  name: readthedocs

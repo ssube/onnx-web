@@ -338,7 +338,7 @@ any new packages.
 ```
 
 You can convert the model into ONNX float16 using the `--float16` option. Models converted into ONNX float16 can only
-be run when using [the `onnx-fp16` optimization](server-admin#pipeeline-optimizations).
+be run when using [the `onnx-fp16` optimization](server-admin.md#pipeline-optimizations).
 
 The `optimize_pipeline.py` script should work on any [diffusers directory with ONNX models](#converting-diffusers-models),
 but you will need to use the `--use_external_data_format` option if you are not using `--float16`. See the `--help` for

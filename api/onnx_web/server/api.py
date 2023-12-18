@@ -161,6 +161,10 @@ def list_schedulers(server: ServerContext):
     return jsonify(get_pipeline_schedulers())
 
 
+def list_wildcards(server: ServerContext):
+    return jsonify(list(get_wildcard_data().keys()))
+
+
 def img2img(server: ServerContext, pool: DevicePoolExecutor):
     source_file = request.files.get("source")
     if source_file is None:
@@ -498,7 +502,7 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
         if source_file is None:
             logger.warning("missing source %s", i)
         else:
-            source = Image.open(BytesIO(source_file.read())).convert("RGBA")
+            source = Image.open(BytesIO(source_file.read())).convert("RGB")
             sources.append(source)
 
     device, params, size = pipeline_from_request(server)
@@ -597,6 +601,7 @@ def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecu
         app.route("/api/settings/platforms")(wrap_route(list_platforms, server)),
         app.route("/api/settings/schedulers")(wrap_route(list_schedulers, server)),
         app.route("/api/settings/strings")(wrap_route(list_extra_strings, server)),
+        app.route("/api/settings/wildcards")(wrap_route(list_wildcards, server)),
         app.route("/api/img2img", methods=["POST"])(
             wrap_route(img2img, server, pool=pool)
         ),

@@ -21,19 +21,24 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { OnnxState, StateContext } from '../state.js';
+import { OnnxState, StateContext } from '../state/full.js';
 import { ImageMetadata } from '../types/api.js';
 import { DeepPartial } from '../types/model.js';
-import { BaseImgParams, HighresParams, Txt2ImgParams, UpscaleParams } from '../types/params.js';
+import { BaseImgParams, HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../types/params.js';
 
 const { useState } = React;
 
+export const ALLOWED_EXTENSIONS = ['.json','.jpg','.jpeg','.png','.txt','.webp'];
+export const EXTENSION_FILTER = ALLOWED_EXTENSIONS.join(',');
+
 export interface ProfilesProps {
   selectHighres(state: OnnxState): HighresParams;
+  selectModel(state: OnnxState): ModelParams;
   selectParams(state: OnnxState): BaseImgParams;
   selectUpscale(state: OnnxState): UpscaleParams;
 
   setHighres(params: Partial<HighresParams>): void;
+  setModel(params: Partial<ModelParams>): void;
   setParams(params: Partial<BaseImgParams>): void;
   setUpscale(params: Partial<UpscaleParams>): void;
 }
@@ -116,6 +121,7 @@ export function Profiles(props: ProfilesProps) {
           onClick={() => {
             const state = store.getState();
             saveProfile({
+              model: props.selectModel(state),
               params: props.selectParams(state),
               name: profileName,
               highres: props.selectHighres(state),
@@ -131,7 +137,7 @@ export function Profiles(props: ProfilesProps) {
       <ImageSearch />
       <input
         hidden
-        accept={'.json,.jpg,.jpeg,.png,.txt,.webp'}
+        accept={EXTENSION_FILTER}
         type='file'
         onChange={(event) => {
           const { files } = event.target;
@@ -139,6 +145,8 @@ export function Profiles(props: ProfilesProps) {
             const file = mustExist(files[0]);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             loadParamsFromFile(file).then((newParams) => {
+              // TODO: load model parameters
+
               if (doesExist(newParams.params)) {
                 props.setParams(newParams.params);
               }
@@ -161,6 +169,8 @@ export function Profiles(props: ProfilesProps) {
     <Button component='label' variant='contained' onClick={() => {
       const state = store.getState();
       downloadParamsAsFile({
+        // TODO: save model parameters
+        // model: props.selectModel(state),
         params: props.selectParams(state),
         highres: props.selectHighres(state),
         upscale: props.selectUpscale(state),
