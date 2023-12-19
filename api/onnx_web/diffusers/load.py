@@ -229,7 +229,23 @@ def load_pipeline(
                 tokenizer_2=components.get("tokenizer_2", None),
             )
         else:
-            if "vae" in components:
+            if "controlnet" in components:
+                logger.debug(
+                    "assembling SD pipeline for %s with ControlNet",
+                    pipeline_class.__name__,
+                )
+                pipe = pipeline_class(
+                    components["vae"],
+                    components["text_encoder"],
+                    components["tokenizer"],
+                    components["unet"],
+                    components["controlnet"],
+                    scheduler,
+                    None,
+                    None,
+                    requires_safety_checker=False,
+                )
+            elif "vae" in components:
                 # upscale uses a single VAE
                 logger.debug(
                     "assembling SD pipeline for %s with single VAE",
