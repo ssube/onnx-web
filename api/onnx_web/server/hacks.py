@@ -152,7 +152,9 @@ def apply_patch_codeformer(server: ServerContext):
     try:
         import codeformer.basicsr.utils.download_util
 
-        codeformer.basicsr.utils.download_util.download_file_from_google_drive = patch_not_impl
+        codeformer.basicsr.utils.download_util.download_file_from_google_drive = (
+            patch_not_impl
+        )
         codeformer.basicsr.utils.download_util.load_file_from_url = partial(
             patch_cache_path, server
         )

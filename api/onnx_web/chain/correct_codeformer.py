@@ -117,7 +117,9 @@ class CorrectCodeformerStage(BaseStage):
             face_helper.get_inverse_affine(None)
 
             # paste each restored face to the input image
-            output = face_helper.paste_faces_to_input_image(upsample_img=img, draw_box=False)
+            output = face_helper.paste_faces_to_input_image(
+                upsample_img=img, draw_box=False
+            )
             results.append(Image.fromarray(cv2.cvtColor(output, cv2.COLOR_BGR2RGB)))
 
         return StageResult.from_images(results)
