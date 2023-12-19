@@ -150,11 +150,10 @@ def apply_patch_basicsr(server: ServerContext):
 def apply_patch_codeformer(server: ServerContext):
     logger.debug("patching CodeFormer module")
     try:
-        import codeformer.basicsr.utils  # download_util
-        import codeformer.facelib.utils.misc
+        import codeformer.basicsr.utils.download_util
 
-        codeformer.facelib.utils.misc.download_pretrained_models = patch_not_impl
-        codeformer.facelib.utils.misc.load_file_from_url = partial(
+        codeformer.basicsr.utils.download_util.download_file_from_google_drive = patch_not_impl
+        codeformer.basicsr.utils.download_util.load_file_from_url = partial(
             patch_cache_path, server
         )
     except ImportError:
