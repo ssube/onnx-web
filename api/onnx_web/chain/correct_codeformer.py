@@ -2,6 +2,7 @@ from logging import getLogger
 from os import path
 from typing import Optional
 
+import cv2
 import torch
 from PIL import Image
 from torchvision.transforms.functional import normalize
@@ -67,7 +68,8 @@ class CorrectCodeformerStage(BaseStage):
         )
 
         results = []
-        for img in sources.as_image():
+        for img in sources.as_numpy():
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
             # clean all the intermediate results to process the next image
             face_helper.clean_all()
             face_helper.read_image(img)
@@ -115,8 +117,7 @@ class CorrectCodeformerStage(BaseStage):
             face_helper.get_inverse_affine(None)
 
             # paste each restored face to the input image
-            results.append(
-                face_helper.paste_faces_to_input_image(upsample_img=img, draw_box=False)
-            )
+            output = face_helper.paste_faces_to_input_image(upsample_img=img, draw_box=False)
+            results.append(Image.fromarray(cv2.cvtColor(output, cv2.COLOR_BGR2RGB)))
 
         return StageResult.from_images(results)
