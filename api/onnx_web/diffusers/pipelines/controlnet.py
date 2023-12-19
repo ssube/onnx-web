@@ -18,7 +18,7 @@ from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 from diffusers.pipelines.stable_diffusion import StableDiffusionPipelineOutput
 from diffusers.schedulers import DDIMScheduler, LMSDiscreteScheduler, PNDMScheduler
 from diffusers.utils import PIL_INTERPOLATION, deprecate, logging
-from transformers import CLIPTokenizer
+from transformers import CLIPImageProcessor, CLIPTokenizer
 
 logger = logging.get_logger(__name__)
 
@@ -41,6 +41,8 @@ class OnnxStableDiffusionControlNetPipeline(DiffusionPipeline):
         unet: OnnxRuntimeModel,
         controlnet: OnnxRuntimeModel,
         scheduler: Union[DDIMScheduler, PNDMScheduler, LMSDiscreteScheduler],
+        safety_checker: OnnxRuntimeModel,
+        feature_extractor: CLIPImageProcessor,
         requires_safety_checker: bool = False,
     ):
         super().__init__()
