@@ -41,6 +41,7 @@ class OnnxStableDiffusionControlNetPipeline(DiffusionPipeline):
         unet: OnnxRuntimeModel,
         controlnet: OnnxRuntimeModel,
         scheduler: Union[DDIMScheduler, PNDMScheduler, LMSDiscreteScheduler],
+        requires_safety_checker: bool = False,
     ):
         super().__init__()
 
