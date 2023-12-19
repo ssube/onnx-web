@@ -24,7 +24,7 @@ REGION_TOKEN = compile(
     r"\<region:(\d+):(\d+):(\d+):(\d+):(-?[\.|\d]+):(-?[\.|\d]+_?[TLBR]*):([^\>]+)\>"
 )
 RESEED_TOKEN = compile(r"\<reseed:(\d+):(\d+):(\d+):(\d+):(-?\d+)\>")
-WILDCARD_TOKEN = compile(r"__([-/\\\w\. ]+)__")
+WILDCARD_TOKEN = compile(r"__([-\\\\w]+)__")
 
 INTERVAL_RANGE = compile(r"(\w+)-{(\d+),(\d+)(?:,(\d+))?}")
 ALTERNATIVE_RANGE = compile(r"\(([^\)]+)\)")
