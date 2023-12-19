@@ -150,6 +150,7 @@ def apply_patch_basicsr(server: ServerContext):
 def apply_patch_codeformer(server: ServerContext):
     logger.debug("patching CodeFormer module")
     try:
+        import codeformer.basicsr.utils  # download_util
         import codeformer.facelib.utils.misc
 
         codeformer.facelib.utils.misc.download_pretrained_models = patch_not_impl
