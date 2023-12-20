@@ -160,7 +160,7 @@ def source_filter_hed(server: ServerContext, source: Image.Image) -> Image.Image
     logger.debug("running HED detection on source image")
 
     hed = HEDdetector.from_pretrained(
-        "lllyasviel/ControlNet",
+        "lllyasviel/Annotators",
         cache_dir=server.cache_path,
     )
     image = hed(source)
@@ -172,7 +172,7 @@ def source_filter_scribble(server: ServerContext, source: Image.Image) -> Image.
     logger.debug("running scribble detection on source image")
 
     hed = HEDdetector.from_pretrained(
-        "lllyasviel/ControlNet",
+        "lllyasviel/Annotators",
         cache_dir=server.cache_path,
     )
     image = hed(source, scribble=True)

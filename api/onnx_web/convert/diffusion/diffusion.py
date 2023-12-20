@@ -507,7 +507,7 @@ def convert_diffusion_diffusers(
     run_gc()
 
     if conversion.control and not single_vae and not conversion.share_unet:
-        cnet_source = torch_source or source
+        cnet_source = torch_source or cache_path
         logger.info("loading and converting CNet from %s", cnet_source)
         cnet_path = convert_diffusion_diffusers_cnet(
             conversion,

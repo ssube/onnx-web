@@ -235,7 +235,8 @@ def load_pipeline(
                     pipeline_class.__name__,
                 )
                 pipe = pipeline_class(
-                    components["vae"],
+                    components["vae_encoder"],
+                    components["vae_decoder"],
                     components["text_encoder"],
                     components["tokenizer"],
                     components["unet"],
