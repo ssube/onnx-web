@@ -10,7 +10,7 @@
 ###
 
 from logging import getLogger
-from os import path, makedirs
+from os import makedirs, path
 from pathlib import Path
 from shutil import rmtree
 from typing import Any, Dict, Optional, Tuple, Union
@@ -131,10 +131,14 @@ def convert_diffusion_diffusers_cnet(
         makedirs(cnet_tmp, exist_ok=True)
 
         unet.save_pretrained(cnet_tmp)
-        pipe_cnet = UNet2DConditionModel_CNet.from_pretrained(cnet_tmp, low_cpu_mem_usage=False)
+        pipe_cnet = UNet2DConditionModel_CNet.from_pretrained(
+            cnet_tmp, low_cpu_mem_usage=False
+        )
     else:
         logger.debug("loading CNet from pretrained UNet config")
-        pipe_cnet = UNet2DConditionModel_CNet.from_pretrained(source, subfolder="unet", low_cpu_mem_usage=False)
+        pipe_cnet = UNet2DConditionModel_CNet.from_pretrained(
+            source, subfolder="unet", low_cpu_mem_usage=False
+        )
 
     pipe_cnet = pipe_cnet.to(device=device, dtype=dtype)
     run_gc()
