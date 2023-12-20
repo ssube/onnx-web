@@ -351,7 +351,7 @@ def convert_diffusion_diffusers(
                 logger.debug("extracting SD checkpoint to Torch models: %s", source)
                 torch_source = convert_extract_checkpoint(
                     conversion,
-                    source,
+                    cache_path,
                     f"{name}-torch",
                     is_inpainting=is_inpainting,
                     config_file=config,

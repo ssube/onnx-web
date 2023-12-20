@@ -58,7 +58,6 @@ def convert_diffusion_control(
             "timestep",
             "encoder_hidden_states",
             "controlnet_cond",
-            "return_dict",
         ],
         output_names=[
             "down_block_res_samples",
