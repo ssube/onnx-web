@@ -987,7 +987,7 @@ def convert_ldm_clip_checkpoint(checkpoint):
                     key[len("cond_stage_model.transformer.") :]
                 ] = checkpoint[key]
 
-    text_model.load_state_dict(text_model_dict)
+    text_model.load_state_dict(text_model_dict, strict=False)
 
     return text_model
 
@@ -1155,7 +1155,7 @@ def convert_open_clip_checkpoint(checkpoint):
 
                 text_model_dict[new_key] = checkpoint[key]
 
-    text_model.load_state_dict(text_model_dict)
+    text_model.load_state_dict(text_model_dict, strict=False)
 
     return text_model
 
@@ -1548,7 +1548,7 @@ def extract_checkpoint(
         )
         db_config.has_ema = has_ema
         db_config.save()
-        unet.load_state_dict(converted_unet_checkpoint)
+        unet.load_state_dict(converted_unet_checkpoint, strict=False)
 
         # Convert the VAE model.
         logger.info("converting VAE")
@@ -1567,7 +1567,7 @@ def extract_checkpoint(
             )
 
         vae = AutoencoderKL(**vae_config)
-        vae.load_state_dict(converted_vae_checkpoint)
+        vae.load_state_dict(converted_vae_checkpoint, strict=False)
 
         # Convert the text model.
         logger.info("converting text encoder")
