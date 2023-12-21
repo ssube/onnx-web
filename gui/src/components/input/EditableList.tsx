@@ -1,12 +1,11 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { Button, Stack, TextField } from '@mui/material';
 import * as React from 'react';
+import { memo, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
 import { OnnxState, StateContext } from '../../state/full.js';
-
-const { useContext, useState, memo, useMemo } = React;
 
 export interface EditableListProps<T> {
   selector: (s: OnnxState) => Array<T>;

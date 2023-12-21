@@ -3,17 +3,15 @@ import { Chip, TextField } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useQuery } from '@tanstack/react-query';
 import * as React from 'react';
+import { memo, useCallback, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { memo, useCallback } from 'react';
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, OnnxState, StateContext } from '../../state/full.js';
 import { ModelResponse, NetworkModel } from '../../types/api.js';
 import { QueryMenu, QueryMenuComplete, QueryMenuFilter } from '../input/QueryMenu.js';
-
-const { useContext, useMemo } = React;
 
 /**
  * @todo replace with a selector

@@ -3,6 +3,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, CircularP
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import _ from 'lodash';
 import * as React from 'react';
+import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
@@ -27,7 +28,6 @@ import { ExtraNetworkInput } from '../input/model/ExtraNetwork.js';
 import { ExtraSourceInput } from '../input/model/ExtraSource.js';
 import { UpscalingModelInput } from '../input/model/UpscalingModel.js';
 
-const { useContext, useEffect } = React;
 // eslint-disable-next-line @typescript-eslint/unbound-method
 const { kebabCase } = _;
 

@@ -3,9 +3,8 @@ import { KeyboardArrowDown } from '@mui/icons-material';
 import { Alert, Box, Button, FormControl, FormLabel, LinearProgress, Menu, MenuItem } from '@mui/material';
 import { UseQueryResult } from '@tanstack/react-query';
 import * as React from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-const { useState } = React;
 
 export interface QueryMenuComplete {
   result: UseQueryResult<Array<string>>;

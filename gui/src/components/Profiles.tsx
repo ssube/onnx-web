@@ -16,7 +16,7 @@ import {
 import * as ExifReader from 'exifreader';
 import { defaultTo, isString } from 'lodash';
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
@@ -25,8 +25,6 @@ import { OnnxState, StateContext } from '../state/full.js';
 import { ImageMetadata } from '../types/api.js';
 import { DeepPartial } from '../types/model.js';
 import { BaseImgParams, HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../types/params.js';
-
-const { useState } = React;
 
 export const ALLOWED_EXTENSIONS = ['.json','.jpg','.jpeg','.png','.txt','.webp'];
 export const EXTENSION_FILTER = ALLOWED_EXTENSIONS.join(',');

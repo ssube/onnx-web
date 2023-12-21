@@ -5,7 +5,7 @@ import { Button, Checkbox, FormControlLabel, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { omit } from 'lodash';
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
@@ -16,8 +16,6 @@ import { BaseImgParams } from '../../types/params.js';
 import { NumericField } from '../input/NumericField.js';
 import { PromptInput } from '../input/PromptInput.js';
 import { QueryList } from '../input/QueryList.js';
-
-const { useMemo } = React;
 
 type BaseParamsWithoutPrompt = Omit<BaseImgParams, 'prompt' | 'negativePrompt' | 'width' | 'height'>;
 
