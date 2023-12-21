@@ -7,10 +7,11 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
+import { memo, useCallback } from 'react';
 import { STALE_TIME } from '../../config.js';
 import { ClientContext, OnnxState, StateContext } from '../../state/full.js';
-import { QueryMenu } from '../input/QueryMenu.js';
 import { ModelResponse, NetworkModel } from '../../types/api.js';
+import { QueryMenu, QueryMenuComplete, QueryMenuFilter } from '../input/QueryMenu.js';
 
 const { useContext, useMemo } = React;
 
@@ -89,6 +90,9 @@ export function PromptTextBlock(props: PromptTextBlockProps) {
   </Stack>;
 }
 
+const ModelMenu = memo(QueryMenu<ModelResponse>);
+const StringMenu = memo(QueryMenu<Array<string>>);
+
 export function PromptInput(props: PromptInputProps) {
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { selector, onChange } = props;
@@ -104,21 +108,38 @@ export function PromptInput(props: PromptInputProps) {
 
   const { t } = useTranslation();
 
-  function addNetwork(type: string, name: string, weight = 1.0) {
+  const addNetwork = useCallback((type: string, name: string, weight = 1.0) => {
     const { prompt, negativePrompt } = selector(store.getState());
     onChange({
       negativePrompt,
       prompt: `<${type}:${name}:${weight.toFixed(2)}> ${prompt}`,
     });
-  }
+  }, [ onChange ]);
 
-  function addWildcard(name: string) {
+  const addInversion = useCallback((name: string) => addNetwork('inversion', name), [ onChange ]);
+  const addLora = useCallback((name: string) => addNetwork('lora', name), [ onChange ]);
+
+  const addWildcard = useCallback((name: string) => {
     const { prompt, negativePrompt } = selector(store.getState());
     onChange({
       negativePrompt,
       prompt: `${prompt}, __${name}__`,
     });
-  }
+  }, [ onChange ]);
+
+  const inversionSelector = useMemo<QueryMenuFilter<ModelResponse>>(() => ({
+    result: models,
+    selector: (result) => filterNetworks(result.networks, 'inversion'),
+  }), [models.status]);
+
+  const loraSelector = useMemo<QueryMenuFilter<ModelResponse>>(() => ({
+    result: models,
+    selector: (result) => filterNetworks(result.networks, 'lora'),
+  }), [models.status]);
+
+  const wildcardSelector = useMemo<QueryMenuComplete>(() => ({
+    result: wildcards,
+  }), [wildcards.status]);
 
   return <Stack spacing={2}>
     <PromptTextBlock
@@ -127,41 +148,26 @@ export function PromptInput(props: PromptInputProps) {
       selector={selector}
     />
     <Stack direction='row' spacing={2}>
-      <QueryMenu
+      <ModelMenu
         id='inversion'
         labelKey='model.inversion'
         name={t('modelType.inversion')}
-        query={{
-          result: models,
-          selector: (result) => filterNetworks(result.networks, 'inversion'),
-        }}
-        onSelect={(name) => {
-          addNetwork('inversion', name);
-        }}
+        query={inversionSelector}
+        onSelect={addInversion}
       />
-      <QueryMenu
+      <ModelMenu
         id='lora'
         labelKey='model.lora'
         name={t('modelType.lora')}
-        query={{
-          result: models,
-          selector: (result) => filterNetworks(result.networks, 'lora'),
-        }}
-        onSelect={(name) => {
-          addNetwork('lora', name);
-        }}
+        query={loraSelector}
+        onSelect={addLora}
       />
-      <QueryMenu
+      <StringMenu
         id='wildcard'
         labelKey='wildcard'
         name={t('wildcard')}
-        query={{
-          result: wildcards,
-          selector: (result) => result,
-        }}
-        onSelect={(name) => {
-          addWildcard(name);
-        }}
+        query={wildcardSelector}
+        onSelect={addWildcard}
       />
     </Stack>
   </Stack>;

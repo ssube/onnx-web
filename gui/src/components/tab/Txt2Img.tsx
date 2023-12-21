@@ -19,9 +19,44 @@ import { UpscaleControl } from '../control/UpscaleControl.js';
 import { VariableControl } from '../control/VariableControl.js';
 import { NumericField } from '../input/NumericField.js';
 
-export function Txt2Img() {
+export function SizeControl() {
   const { params } = mustExist(useContext(ConfigContext));
 
+  const store = mustExist(useContext(StateContext));
+  const { height, width } = useStore(store, selectSize, shallow);
+  const { setParams } = useStore(store, selectActions, shallow);
+
+  const { t } = useTranslation();
+
+  return <Stack direction='row' spacing={4}>
+    <NumericField
+      label={t('parameter.width')}
+      min={params.width.min}
+      max={params.width.max}
+      step={params.width.step}
+      value={width}
+      onChange={(value) => {
+        setParams({
+          width: value,
+        });
+      }}
+    />
+    <NumericField
+      label={t('parameter.height')}
+      min={params.height.min}
+      max={params.height.max}
+      step={params.height.step}
+      value={height}
+      onChange={(value) => {
+        setParams({
+          height: value,
+        });
+      }}
+    />
+  </Stack>;
+}
+
+export function Txt2Img() {
   async function generateImage() {
     const state = store.getState();
     const grid = selectVariable(state);
@@ -47,7 +82,6 @@ export function Txt2Img() {
 
   const store = mustExist(useContext(StateContext));
   const { pushHistory, setHighres, setModel, setParams, setUpscale, setVariable } = useStore(store, selectActions, shallow);
-  const { height, width } = useStore(store, selectReactParams, shallow);
   const model = useStore(store, selectModel);
 
   const { t } = useTranslation();
@@ -66,32 +100,7 @@ export function Txt2Img() {
       />
       <ModelControl model={model} setModel={setModel} />
       <ImageControl selector={selectParams} onChange={setParams} />
-      <Stack direction='row' spacing={4}>
-        <NumericField
-          label={t('parameter.width')}
-          min={params.width.min}
-          max={params.width.max}
-          step={params.width.step}
-          value={width}
-          onChange={(value) => {
-            setParams({
-              width: value,
-            });
-          }}
-        />
-        <NumericField
-          label={t('parameter.height')}
-          min={params.height.min}
-          max={params.height.max}
-          step={params.height.step}
-          value={height}
-          onChange={(value) => {
-            setParams({
-              height: value,
-            });
-          }}
-        />
-      </Stack>
+      <SizeControl />
       <HighresControl selectHighres={selectHighres} setHighres={setHighres} />
       <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
       <VariableControl selectGrid={selectVariable} setGrid={setVariable} />
@@ -128,7 +137,7 @@ export function selectParams(state: OnnxState): TabState<Txt2ImgParams> {
   return state.txt2img;
 }
 
-export function selectReactParams(state: OnnxState) {
+export function selectSize(state: OnnxState) {
   return {
     height: state.txt2img.height,
     width: state.txt2img.width,

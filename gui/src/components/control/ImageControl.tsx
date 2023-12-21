@@ -19,7 +19,7 @@ import { QueryList } from '../input/QueryList.js';
 
 const { useMemo } = React;
 
-type BaseParamsWithoutPrompt = Omit<BaseImgParams, 'prompt' | 'negativePrompt'>;
+type BaseParamsWithoutPrompt = Omit<BaseImgParams, 'prompt' | 'negativePrompt' | 'width' | 'height'>;
 
 export interface ImageControlProps {
   onChange(params: Partial<BaseImgParams>): void;
@@ -27,7 +27,7 @@ export interface ImageControlProps {
 }
 
 export function omitPrompt(selector: (state: OnnxState) => BaseImgParams): (state: OnnxState) => BaseParamsWithoutPrompt {
-  return (state) => omit(selector(state), 'prompt', 'negativePrompt');
+  return (state) => omit(selector(state), 'prompt', 'negativePrompt', 'width', 'height');
 }
 
 /**
@@ -77,7 +77,6 @@ export function ImageControl(props: ImageControlProps) {
         onChange={(eta) => {
           if (doesExist(onChange)) {
             onChange({
-              ...state,
               eta,
             });
           }
@@ -93,7 +92,6 @@ export function ImageControl(props: ImageControlProps) {
         onChange={(cfg) => {
           if (doesExist(onChange)) {
             onChange({
-              ...state,
               cfg,
             });
           }
@@ -107,7 +105,6 @@ export function ImageControl(props: ImageControlProps) {
         value={state.steps}
         onChange={(steps) => {
           onChange({
-            ...state,
             steps,
           });
         }}
@@ -120,7 +117,6 @@ export function ImageControl(props: ImageControlProps) {
         value={state.seed}
         onChange={(seed) => {
           onChange({
-            ...state,
             seed,
           });
         }}
@@ -131,7 +127,6 @@ export function ImageControl(props: ImageControlProps) {
         onClick={() => {
           const seed = Math.floor(Math.random() * params.seed.max);
           props.onChange({
-            ...state,
             seed,
           });
         }}
@@ -148,7 +143,6 @@ export function ImageControl(props: ImageControlProps) {
         value={state.batch}
         onChange={(batch) => {
           props.onChange({
-            ...state,
             batch,
           });
         }}
@@ -161,7 +155,6 @@ export function ImageControl(props: ImageControlProps) {
         value={state.unet_tile}
         onChange={(unet_tile) => {
           props.onChange({
-            ...state,
             unet_tile,
           });
         }}
@@ -175,7 +168,6 @@ export function ImageControl(props: ImageControlProps) {
         value={state.unet_overlap}
         onChange={(unet_overlap) => {
           props.onChange({
-            ...state,
             unet_overlap,
           });
         }}
@@ -187,7 +179,6 @@ export function ImageControl(props: ImageControlProps) {
           value='check'
           onChange={(event) => {
             props.onChange({
-              ...state,
               tiled_vae: state.tiled_vae === false,
             });
           }}
@@ -202,7 +193,6 @@ export function ImageControl(props: ImageControlProps) {
         value={state.vae_tile}
         onChange={(vae_tile) => {
           props.onChange({
-            ...state,
             vae_tile,
           });
         }}
@@ -217,7 +207,6 @@ export function ImageControl(props: ImageControlProps) {
         value={state.vae_overlap}
         onChange={(vae_overlap) => {
           props.onChange({
-            ...state,
             vae_overlap,
           });
         }}
@@ -225,12 +214,7 @@ export function ImageControl(props: ImageControlProps) {
     </Stack>
     <PromptInput
       selector={selector}
-      onChange={(value) => {
-        props.onChange({
-          ...state,
-          ...value,
-        });
-      }}
+      onChange={onChange}
     />
   </Stack>;
 }
