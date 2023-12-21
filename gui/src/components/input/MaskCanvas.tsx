@@ -231,7 +231,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
     background.current.name = source.name;
 
     // initialize the mask if it does not exist
-    if (doesExist(mask) === false) {
+    if (doesExist(maskRef.current) && doesExist(mask) === false) {
       getClearContext(maskRef);
       dirty.current = true;
     }
