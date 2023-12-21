@@ -48,8 +48,12 @@ export function PromptTextBlock(props: PromptTextBlockProps) {
   }
 
   const tokens = useMemo(() => {
-    const networks = extractNetworks(prompt);
-    return getNetworkTokens(models, networks);
+    if (doesExist(prompt)) {
+      const networks = extractNetworks(prompt);
+      return getNetworkTokens(models, networks);
+    }
+
+    return [];
   }, [models, prompt]);
 
   return <Stack spacing={2}>
