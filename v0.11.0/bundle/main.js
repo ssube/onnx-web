@@ -1084,7 +1084,7 @@
             return false;
           }
           __name(isValidElementType, "isValidElementType");
-          function memo3(type, compare) {
+          function memo4(type, compare) {
             {
               if (!isValidElementType(type)) {
                 error2("memo: The first argument must be a component. Instead received: %s", type === null ? "null" : typeof type);
@@ -1113,7 +1113,7 @@
             }
             return elementType;
           }
-          __name(memo3, "memo");
+          __name(memo4, "memo");
           function resolveDispatcher() {
             var dispatcher = ReactCurrentDispatcher.current;
             {
@@ -1169,11 +1169,11 @@
             return dispatcher.useLayoutEffect(create2, deps);
           }
           __name(useLayoutEffect3, "useLayoutEffect");
-          function useCallback18(callback, deps) {
+          function useCallback19(callback, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useCallback(callback, deps);
           }
-          __name(useCallback18, "useCallback");
+          __name(useCallback19, "useCallback");
           function useMemo21(create2, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useMemo(create2, deps);
@@ -1968,10 +1968,10 @@
           exports.forwardRef = forwardRef74;
           exports.isValidElement = isValidElement14;
           exports.lazy = lazy;
-          exports.memo = memo3;
+          exports.memo = memo4;
           exports.startTransition = startTransition;
           exports.unstable_act = act;
-          exports.useCallback = useCallback18;
+          exports.useCallback = useCallback19;
           exports.useContext = useContext45;
           exports.useDebugValue = useDebugValue5;
           exports.useDeferredValue = useDeferredValue;
@@ -75864,7 +75864,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/OnnxWeb.js
   var React166 = __toESM(require_react(), 1);
-  var import_react42 = __toESM(require_react(), 1);
+  var import_react46 = __toESM(require_react(), 1);
   var import_useHash2 = __toESM(require_useHash(), 1);
 
   // out/src/components/ImageHistory.js
@@ -76974,7 +76974,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/tab/Img2Img.js
   var React152 = __toESM(require_react(), 1);
-  var import_react35 = __toESM(require_react(), 1);
+  var import_react37 = __toESM(require_react(), 1);
 
   // node_modules/exifreader/src/utils.js
   function getStringFromDataView(dataView, offset2, length2) {
@@ -81878,15 +81878,14 @@ Please use another name.` : formatMuiErrorMessage(18));
   var import_lodash3 = __toESM(require_lodash(), 1);
   var React145 = __toESM(require_react(), 1);
   var import_react30 = __toESM(require_react(), 1);
-  var { useState: useState27 } = React145;
   var ALLOWED_EXTENSIONS = [".json", ".jpg", ".jpeg", ".png", ".txt", ".webp"];
   var EXTENSION_FILTER = ALLOWED_EXTENSIONS.join(",");
   function Profiles(props) {
     const store = mustExist((0, import_react30.useContext)(StateContext));
     const { removeProfile, saveProfile } = useStore(store, selectActions6, shallow);
     const profiles = useStore(store, selectProfiles);
-    const [dialogOpen, setDialogOpen] = useState27(false);
-    const [profileName, setProfileName] = useState27("");
+    const [dialogOpen, setDialogOpen] = (0, import_react30.useState)(false);
+    const [profileName, setProfileName] = (0, import_react30.useState)("");
     const { t: t2 } = useTranslation();
     return React145.createElement(
       Stack_default2,
@@ -82175,14 +82174,15 @@ Please use another name.` : formatMuiErrorMessage(18));
   // out/src/components/control/ImageControl.js
   var import_lodash4 = __toESM(require_lodash(), 1);
   var React150 = __toESM(require_react(), 1);
-  var import_react33 = __toESM(require_react(), 1);
+  var import_react35 = __toESM(require_react(), 1);
 
   // out/src/components/input/PromptInput.js
   var React148 = __toESM(require_react(), 1);
+  var import_react33 = __toESM(require_react(), 1);
 
   // out/src/components/input/QueryMenu.js
   var React147 = __toESM(require_react(), 1);
-  var { useState: useState28 } = React147;
+  var import_react32 = __toESM(require_react(), 1);
   function hasFilter(query) {
     return Reflect.has(query, "selector");
   }
@@ -82209,7 +82209,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { result } = query;
     const labelID = `query-menu-${props.id}-labels`;
     const { t: t2 } = useTranslation();
-    const [anchor, setAnchor] = useState28(void 0);
+    const [anchor, setAnchor] = (0, import_react32.useState)(void 0);
     function closeMenu() {
       setAnchor(void 0);
     }
@@ -82261,11 +82261,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(QueryMenu, "QueryMenu");
 
   // out/src/components/input/PromptInput.js
-  var { useContext: useContext32, useMemo: useMemo17 } = React148;
   function PromptTextBlock(props) {
     const { models, selector, onChange } = props;
     const { t: t2 } = useTranslation();
-    const store = mustExist(useContext32(StateContext));
+    const store = mustExist((0, import_react33.useContext)(StateContext));
     const { prompt, negativePrompt } = useStore(store, selector, shallow);
     function addToken(name) {
       onChange({
@@ -82273,7 +82272,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       });
     }
     __name(addToken, "addToken");
-    const tokens = useMemo17(() => {
+    const tokens = (0, import_react33.useMemo)(() => {
       if (doesExist2(prompt)) {
         const networks = extractNetworks(prompt);
         return getNetworkTokens(models, networks);
@@ -82299,10 +82298,12 @@ Please use another name.` : formatMuiErrorMessage(18));
     );
   }
   __name(PromptTextBlock, "PromptTextBlock");
+  var ModelMenu = (0, import_react33.memo)(QueryMenu);
+  var StringMenu = (0, import_react33.memo)(QueryMenu);
   function PromptInput(props) {
     const { selector, onChange } = props;
-    const store = mustExist(useContext32(StateContext));
-    const client = mustExist(useContext32(ClientContext));
+    const store = mustExist((0, import_react33.useContext)(StateContext));
+    const client = mustExist((0, import_react33.useContext)(ClientContext));
     const models = useQuery(["models"], async () => client.models(), {
       staleTime: STALE_TIME
     });
@@ -82310,22 +82311,33 @@ Please use another name.` : formatMuiErrorMessage(18));
       staleTime: STALE_TIME
     });
     const { t: t2 } = useTranslation();
-    function addNetwork(type, name, weight = 1) {
+    const addNetwork = (0, import_react33.useCallback)((type, name, weight = 1) => {
       const { prompt, negativePrompt } = selector(store.getState());
       onChange({
         negativePrompt,
         prompt: `<${type}:${name}:${weight.toFixed(2)}> ${prompt}`
       });
-    }
-    __name(addNetwork, "addNetwork");
-    function addWildcard(name) {
+    }, [onChange]);
+    const addInversion = (0, import_react33.useCallback)((name) => addNetwork("inversion", name), [onChange]);
+    const addLora = (0, import_react33.useCallback)((name) => addNetwork("lora", name), [onChange]);
+    const addWildcard = (0, import_react33.useCallback)((name) => {
       const { prompt, negativePrompt } = selector(store.getState());
       onChange({
         negativePrompt,
         prompt: `${prompt}, __${name}__`
       });
-    }
-    __name(addWildcard, "addWildcard");
+    }, [onChange]);
+    const inversionSelector = (0, import_react33.useMemo)(() => ({
+      result: models,
+      selector: (result) => filterNetworks(result.networks, "inversion")
+    }), [models.status]);
+    const loraSelector = (0, import_react33.useMemo)(() => ({
+      result: models,
+      selector: (result) => filterNetworks(result.networks, "lora")
+    }), [models.status]);
+    const wildcardSelector = (0, import_react33.useMemo)(() => ({
+      result: wildcards
+    }), [wildcards.status]);
     return React148.createElement(
       Stack_default,
       { spacing: 2 },
@@ -82333,24 +82345,9 @@ Please use another name.` : formatMuiErrorMessage(18));
       React148.createElement(
         Stack_default,
         { direction: "row", spacing: 2 },
-        React148.createElement(QueryMenu, { id: "inversion", labelKey: "model.inversion", name: t2("modelType.inversion"), query: {
-          result: models,
-          selector: (result) => filterNetworks(result.networks, "inversion")
-        }, onSelect: (name) => {
-          addNetwork("inversion", name);
-        } }),
-        React148.createElement(QueryMenu, { id: "lora", labelKey: "model.lora", name: t2("modelType.lora"), query: {
-          result: models,
-          selector: (result) => filterNetworks(result.networks, "lora")
-        }, onSelect: (name) => {
-          addNetwork("lora", name);
-        } }),
-        React148.createElement(QueryMenu, { id: "wildcard", labelKey: "wildcard", name: t2("wildcard"), query: {
-          result: wildcards,
-          selector: (result) => result
-        }, onSelect: (name) => {
-          addWildcard(name);
-        } })
+        React148.createElement(ModelMenu, { id: "inversion", labelKey: "model.inversion", name: t2("modelType.inversion"), query: inversionSelector, onSelect: addInversion }),
+        React148.createElement(ModelMenu, { id: "lora", labelKey: "model.lora", name: t2("modelType.lora"), query: loraSelector, onSelect: addLora }),
+        React148.createElement(StringMenu, { id: "wildcard", labelKey: "wildcard", name: t2("wildcard"), query: wildcardSelector, onSelect: addWildcard })
       )
     );
   }
@@ -82406,7 +82403,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/input/QueryList.js
   var React149 = __toESM(require_react(), 1);
-  var import_react32 = __toESM(require_react(), 1);
+  var import_react34 = __toESM(require_react(), 1);
   function hasFilter2(query) {
     return Reflect.has(query, "selector");
   }
@@ -82452,7 +82449,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       return mustDefault(t2(`${labelKey}.${name}`), name);
     }
     __name(getLabel, "getLabel");
-    (0, import_react32.useEffect)(() => {
+    (0, import_react34.useEffect)(() => {
       if (result.status === "success" && doesExist2(result.data) && doesExist2(props.onChange)) {
         const data2 = filterQuery2(query, noneLabel());
         if (data2.includes(value) === false) {
@@ -82492,19 +82489,18 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(QueryList, "QueryList");
 
   // out/src/components/control/ImageControl.js
-  var { useMemo: useMemo18 } = React150;
   function omitPrompt(selector) {
-    return (state) => (0, import_lodash4.omit)(selector(state), "prompt", "negativePrompt");
+    return (state) => (0, import_lodash4.omit)(selector(state), "prompt", "negativePrompt", "width", "height");
   }
   __name(omitPrompt, "omitPrompt");
   function ImageControl(props) {
     const { onChange, selector } = props;
-    const selectOmitPrompt = useMemo18(() => omitPrompt(selector), [selector]);
-    const { params } = mustExist((0, import_react33.useContext)(ConfigContext));
-    const store = mustExist((0, import_react33.useContext)(StateContext));
+    const selectOmitPrompt = (0, import_react35.useMemo)(() => omitPrompt(selector), [selector]);
+    const { params } = mustExist((0, import_react35.useContext)(ConfigContext));
+    const store = mustExist((0, import_react35.useContext)(StateContext));
     const state = useStore(store, selectOmitPrompt, shallow);
     const { t: t2 } = useTranslation();
-    const client = mustExist((0, import_react33.useContext)(ClientContext));
+    const client = mustExist((0, import_react35.useContext)(ClientContext));
     const schedulers = useQuery(["schedulers"], async () => client.schedulers(), {
       staleTime: STALE_TIME
     });
@@ -82523,60 +82519,80 @@ Please use another name.` : formatMuiErrorMessage(18));
         } }),
         React150.createElement(NumericField, { decimal: true, label: t2("parameter.eta"), min: params.eta.min, max: params.eta.max, step: params.eta.step, value: state.eta, onChange: (eta) => {
           if (doesExist2(onChange)) {
-            onChange(Object.assign(Object.assign({}, state), { eta }));
+            onChange({
+              eta
+            });
           }
         } }),
         React150.createElement(NumericField, { decimal: true, label: t2("parameter.cfg"), min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: state.cfg, onChange: (cfg) => {
           if (doesExist2(onChange)) {
-            onChange(Object.assign(Object.assign({}, state), { cfg }));
+            onChange({
+              cfg
+            });
           }
         } }),
         React150.createElement(NumericField, { label: t2("parameter.steps"), min: params.steps.min, max: params.steps.max, step: params.steps.step, value: state.steps, onChange: (steps) => {
-          onChange(Object.assign(Object.assign({}, state), { steps }));
+          onChange({
+            steps
+          });
         } }),
         React150.createElement(NumericField, { label: t2("parameter.seed"), min: params.seed.min, max: params.seed.max, step: params.seed.step, value: state.seed, onChange: (seed) => {
-          onChange(Object.assign(Object.assign({}, state), { seed }));
+          onChange({
+            seed
+          });
         } }),
         React150.createElement(Button_default, { variant: "outlined", startIcon: React150.createElement(Casino_default, null), onClick: () => {
           const seed = Math.floor(Math.random() * params.seed.max);
-          props.onChange(Object.assign(Object.assign({}, state), { seed }));
+          props.onChange({
+            seed
+          });
         } }, t2("parameter.newSeed"))
       ),
       React150.createElement(
         Stack_default2,
         { direction: "row", spacing: 4 },
         React150.createElement(NumericField, { label: t2("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: state.batch, onChange: (batch) => {
-          props.onChange(Object.assign(Object.assign({}, state), { batch }));
+          props.onChange({
+            batch
+          });
         } }),
         React150.createElement(NumericField, { label: t2("parameter.unet_tile"), min: params.unet_tile.min, max: params.unet_tile.max, step: params.unet_tile.step, value: state.unet_tile, onChange: (unet_tile) => {
-          props.onChange(Object.assign(Object.assign({}, state), { unet_tile }));
+          props.onChange({
+            unet_tile
+          });
         } }),
         React150.createElement(NumericField, { decimal: true, label: t2("parameter.unet_overlap"), min: params.unet_overlap.min, max: params.unet_overlap.max, step: params.unet_overlap.step, value: state.unet_overlap, onChange: (unet_overlap) => {
-          props.onChange(Object.assign(Object.assign({}, state), { unet_overlap }));
+          props.onChange({
+            unet_overlap
+          });
         } }),
         React150.createElement(FormControlLabel_default, { label: t2("parameter.tiled_vae"), control: React150.createElement(Checkbox_default, { checked: state.tiled_vae, value: "check", onChange: (event) => {
-          props.onChange(Object.assign(Object.assign({}, state), { tiled_vae: state.tiled_vae === false }));
+          props.onChange({
+            tiled_vae: state.tiled_vae === false
+          });
         } }) }),
         React150.createElement(NumericField, { disabled: state.tiled_vae === false, label: t2("parameter.vae_tile"), min: params.vae_tile.min, max: params.vae_tile.max, step: params.vae_tile.step, value: state.vae_tile, onChange: (vae_tile) => {
-          props.onChange(Object.assign(Object.assign({}, state), { vae_tile }));
+          props.onChange({
+            vae_tile
+          });
         } }),
         React150.createElement(NumericField, { decimal: true, disabled: state.tiled_vae === false, label: t2("parameter.vae_overlap"), min: params.vae_overlap.min, max: params.vae_overlap.max, step: params.vae_overlap.step, value: state.vae_overlap, onChange: (vae_overlap) => {
-          props.onChange(Object.assign(Object.assign({}, state), { vae_overlap }));
+          props.onChange({
+            vae_overlap
+          });
         } })
       ),
-      React150.createElement(PromptInput, { selector, onChange: (value) => {
-        props.onChange(Object.assign(Object.assign({}, state), value));
-      } })
+      React150.createElement(PromptInput, { selector, onChange })
     );
   }
   __name(ImageControl, "ImageControl");
 
   // out/src/components/control/ModelControl.js
   var React151 = __toESM(require_react(), 1);
-  var import_react34 = __toESM(require_react(), 1);
+  var import_react36 = __toESM(require_react(), 1);
   function ModelControl(props) {
     const { model, setModel } = props;
-    const client = mustExist((0, import_react34.useContext)(ClientContext));
+    const client = mustExist((0, import_react36.useContext)(ClientContext));
     const { t: t2 } = useTranslation();
     const restart = useMutation(["restart"], async () => client.restart());
     const models = useQuery(["models"], async () => client.models(), {
@@ -82636,7 +82652,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/tab/Img2Img.js
   function Img2Img() {
-    const { params } = mustExist((0, import_react35.useContext)(ConfigContext));
+    const { params } = mustExist((0, import_react37.useContext)(ConfigContext));
     async function uploadSource() {
       const state = store.getState();
       const img2img = selectParams3(state);
@@ -82644,7 +82660,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       pushHistory(image, retry);
     }
     __name(uploadSource, "uploadSource");
-    const client = mustExist((0, import_react35.useContext)(ClientContext));
+    const client = mustExist((0, import_react37.useContext)(ClientContext));
     const query = useQueryClient();
     const upload = useMutation(uploadSource, {
       onSuccess: () => query.invalidateQueries(["ready"])
@@ -82655,7 +82671,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const models = useQuery(["models"], async () => client.models(), {
       staleTime: STALE_TIME
     });
-    const store = mustExist((0, import_react35.useContext)(StateContext));
+    const store = mustExist((0, import_react37.useContext)(StateContext));
     const { pushHistory, setHighres, setImg2Img, setModel, setUpscale } = useStore(store, selectActions7, shallow);
     const { loopback, source, sourceFilter, strength } = useStore(store, selectReactParams, shallow);
     const model = useStore(store, selectModel);
@@ -82754,14 +82770,14 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/tab/Inpaint.js
   var React154 = __toESM(require_react(), 1);
-  var import_react37 = __toESM(require_react(), 1);
+  var import_react39 = __toESM(require_react(), 1);
 
   // out/src/components/control/OutpaintControl.js
   var React153 = __toESM(require_react(), 1);
-  var import_react36 = __toESM(require_react(), 1);
+  var import_react38 = __toESM(require_react(), 1);
   function OutpaintControl() {
-    const { params } = mustExist((0, import_react36.useContext)(ConfigContext));
-    const store = mustExist((0, import_react36.useContext)(StateContext));
+    const { params } = mustExist((0, import_react38.useContext)(ConfigContext));
+    const store = mustExist((0, import_react38.useContext)(StateContext));
     const { setOutpaint } = useStore(store, selectActions8, shallow);
     const outpaint = useStore(store, selectOutpaint);
     const { t: t2 } = useTranslation();
@@ -82810,8 +82826,8 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/tab/Inpaint.js
   function Inpaint() {
-    const { params } = mustExist((0, import_react37.useContext)(ConfigContext));
-    const client = mustExist((0, import_react37.useContext)(ClientContext));
+    const { params } = mustExist((0, import_react39.useContext)(ConfigContext));
+    const client = mustExist((0, import_react39.useContext)(ClientContext));
     const filters = useQuery(["filters"], async () => client.filters(), {
       staleTime: STALE_TIME
     });
@@ -82839,7 +82855,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       return model.model.includes("inpaint");
     }
     __name(supportsInpaint, "supportsInpaint");
-    const store = mustExist((0, import_react37.useContext)(StateContext));
+    const store = mustExist((0, import_react39.useContext)(StateContext));
     const { pushHistory, setBrush, setHighres, setModel, setInpaint, setUpscale } = useStore(store, selectActions9, shallow);
     const { source, mask, strength, noise, filter, tileOrder, fillColor } = useStore(store, selectReactParams2, shallow);
     const model = useStore(store, selectModel2);
@@ -82988,18 +83004,19 @@ Please use another name.` : formatMuiErrorMessage(18));
   // out/src/components/tab/Models.js
   var import_lodash5 = __toESM(require_lodash(), 1);
   var React161 = __toESM(require_react(), 1);
+  var import_react41 = __toESM(require_react(), 1);
 
   // out/src/components/input/EditableList.js
   var React155 = __toESM(require_react(), 1);
-  var { useContext: useContext38, useState: useState29, memo: memo2, useMemo: useMemo19 } = React155;
+  var import_react40 = __toESM(require_react(), 1);
   function EditableList(props) {
     const { newItem, removeItem, renderItem, setItem, selector } = props;
     const { t: t2 } = useTranslation();
-    const store = mustExist(useContext38(StateContext));
+    const store = mustExist((0, import_react40.useContext)(StateContext));
     const items = useStore(store, selector);
-    const [nextLabel, setNextLabel] = useState29("");
-    const [nextSource, setNextSource] = useState29("");
-    const RenderMemo = useMemo19(() => memo2(renderItem), [renderItem]);
+    const [nextLabel, setNextLabel] = (0, import_react40.useState)("");
+    const [nextSource, setNextSource] = (0, import_react40.useState)("");
+    const RenderMemo = (0, import_react40.useMemo)(() => (0, import_react40.memo)(renderItem), [renderItem]);
     return React155.createElement(
       Stack_default2,
       { spacing: 2 },
@@ -83198,7 +83215,6 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(UpscalingModelInput, "UpscalingModelInput");
 
   // out/src/components/tab/Models.js
-  var { useContext: useContext39, useEffect: useEffect31 } = React161;
   var { kebabCase } = import_lodash5.default;
   function mergeModelLists(local, server = []) {
     const localNames = new Set(local.map((it) => it.name));
@@ -83237,9 +83253,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(selectExtraSources, "selectExtraSources");
   function Models() {
-    const store = mustExist(useContext39(StateContext));
+    const store = mustExist((0, import_react41.useContext)(StateContext));
     const { setCorrectionModel, setDiffusionModel, setExtraNetwork, setExtraSource, setExtras, setUpscalingModel, removeCorrectionModel, removeDiffusionModel, removeExtraNetwork, removeExtraSource, removeUpscalingModel } = useStore(store, selectActions10, shallow);
-    const client = mustExist(useContext39(ClientContext));
+    const client = mustExist((0, import_react41.useContext)(ClientContext));
     const result = useQuery(["extras"], async () => client.extras(), {
       staleTime: STALE_TIME
     });
@@ -83248,7 +83264,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       onSuccess: () => query.invalidateQueries(["extras"])
     });
     const { t: t2 } = useTranslation();
-    useEffect31(() => {
+    (0, import_react41.useEffect)(() => {
       if (result.status === "success" && doesExist2(result.data)) {
         setExtras(mergeModels(store.getState().extras, result.data));
       }
@@ -83386,7 +83402,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/tab/Settings.js
   var React162 = __toESM(require_react(), 1);
-  var import_react38 = __toESM(require_react(), 1);
+  var import_react42 = __toESM(require_react(), 1);
 
   // out/src/components/utils.js
   var TAB_LABELS = [
@@ -83433,11 +83449,11 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(removeBlobs, "removeBlobs");
   function Settings() {
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-    const config = mustExist((0, import_react38.useContext)(ConfigContext));
-    const state = useStore(mustExist((0, import_react38.useContext)(StateContext)));
+    const config = mustExist((0, import_react42.useContext)(ConfigContext));
+    const state = useStore(mustExist((0, import_react42.useContext)(StateContext)));
     const theme = getTheme(state.theme, prefersDarkMode);
-    const [json, setJson] = (0, import_react38.useState)(JSON.stringify(state, removeBlobs));
-    const [root, setRoot] = (0, import_react38.useState)(getApiRoot(config));
+    const [json, setJson] = (0, import_react42.useState)(JSON.stringify(state, removeBlobs));
+    const [root, setRoot] = (0, import_react42.useState)(getApiRoot(config));
     const { t: t2 } = useTranslation();
     return React162.createElement(
       Stack_default2,
@@ -83498,7 +83514,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/tab/Txt2Img.js
   var React164 = __toESM(require_react(), 1);
-  var import_react40 = __toESM(require_react(), 1);
+  var import_react44 = __toESM(require_react(), 1);
 
   // out/src/types/chain.js
   var VARIABLE_PARAMETERS = ["prompt", "negativePrompt", "seed", "steps", "cfg", "scheduler", "eta", "token"];
@@ -83609,9 +83625,9 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/control/VariableControl.js
   var React163 = __toESM(require_react(), 1);
-  var import_react39 = __toESM(require_react(), 1);
+  var import_react43 = __toESM(require_react(), 1);
   function VariableControl(props) {
-    const store = mustExist((0, import_react39.useContext)(StateContext));
+    const store = mustExist((0, import_react43.useContext)(StateContext));
     const grid2 = useStore(store, props.selectGrid);
     const stack = [
       React163.createElement(
@@ -83685,8 +83701,29 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(parameterList, "parameterList");
 
   // out/src/components/tab/Txt2Img.js
+  function SizeControl() {
+    const { params } = mustExist((0, import_react44.useContext)(ConfigContext));
+    const store = mustExist((0, import_react44.useContext)(StateContext));
+    const { height: height2, width: width2 } = useStore(store, selectSize, shallow);
+    const { setParams } = useStore(store, selectActions11, shallow);
+    const { t: t2 } = useTranslation();
+    return React164.createElement(
+      Stack_default2,
+      { direction: "row", spacing: 4 },
+      React164.createElement(NumericField, { label: t2("parameter.width"), min: params.width.min, max: params.width.max, step: params.width.step, value: width2, onChange: (value) => {
+        setParams({
+          width: value
+        });
+      } }),
+      React164.createElement(NumericField, { label: t2("parameter.height"), min: params.height.min, max: params.height.max, step: params.height.step, value: height2, onChange: (value) => {
+        setParams({
+          height: value
+        });
+      } })
+    );
+  }
+  __name(SizeControl, "SizeControl");
   function Txt2Img() {
-    const { params } = mustExist((0, import_react40.useContext)(ConfigContext));
     async function generateImage() {
       const state = store.getState();
       const grid2 = selectVariable(state);
@@ -83703,14 +83740,13 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }
     __name(generateImage, "generateImage");
-    const client = mustExist((0, import_react40.useContext)(ClientContext));
+    const client = mustExist((0, import_react44.useContext)(ClientContext));
     const query = useQueryClient();
     const generate = useMutation(generateImage, {
       onSuccess: () => query.invalidateQueries(["ready"])
     });
-    const store = mustExist((0, import_react40.useContext)(StateContext));
+    const store = mustExist((0, import_react44.useContext)(StateContext));
     const { pushHistory, setHighres, setModel, setParams, setUpscale, setVariable } = useStore(store, selectActions11, shallow);
-    const { height: height2, width: width2 } = useStore(store, selectReactParams3, shallow);
     const model = useStore(store, selectModel3);
     const { t: t2 } = useTranslation();
     return React164.createElement(
@@ -83722,20 +83758,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         React164.createElement(Profiles, { selectHighres: selectHighres3, selectModel: selectModel3, selectParams: selectParams5, selectUpscale: selectUpscale4, setHighres, setModel, setParams, setUpscale }),
         React164.createElement(ModelControl, { model, setModel }),
         React164.createElement(ImageControl, { selector: selectParams5, onChange: setParams }),
-        React164.createElement(
-          Stack_default2,
-          { direction: "row", spacing: 4 },
-          React164.createElement(NumericField, { label: t2("parameter.width"), min: params.width.min, max: params.width.max, step: params.width.step, value: width2, onChange: (value) => {
-            setParams({
-              width: value
-            });
-          } }),
-          React164.createElement(NumericField, { label: t2("parameter.height"), min: params.height.min, max: params.height.max, step: params.height.step, value: height2, onChange: (value) => {
-            setParams({
-              height: value
-            });
-          } })
-        ),
+        React164.createElement(SizeControl, null),
         React164.createElement(HighresControl, { selectHighres: selectHighres3, setHighres }),
         React164.createElement(UpscaleControl, { selectUpscale: selectUpscale4, setUpscale }),
         React164.createElement(VariableControl, { selectGrid: selectVariable, setGrid: setVariable }),
@@ -83769,13 +83792,13 @@ Please use another name.` : formatMuiErrorMessage(18));
     return state.txt2img;
   }
   __name(selectParams5, "selectParams");
-  function selectReactParams3(state) {
+  function selectSize(state) {
     return {
       height: state.txt2img.height,
       width: state.txt2img.width
     };
   }
-  __name(selectReactParams3, "selectReactParams");
+  __name(selectSize, "selectSize");
   function selectHighres3(state) {
     return state.txt2imgHighres;
   }
@@ -83791,7 +83814,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/tab/Upscale.js
   var React165 = __toESM(require_react(), 1);
-  var import_react41 = __toESM(require_react(), 1);
+  var import_react45 = __toESM(require_react(), 1);
   function Upscale() {
     async function uploadSource() {
       const { upscaleHighres, upscaleUpscale, upscaleModel, upscale } = store.getState();
@@ -83799,12 +83822,12 @@ Please use another name.` : formatMuiErrorMessage(18));
       pushHistory(image, retry);
     }
     __name(uploadSource, "uploadSource");
-    const client = mustExist((0, import_react41.useContext)(ClientContext));
+    const client = mustExist((0, import_react45.useContext)(ClientContext));
     const query = useQueryClient();
     const upload = useMutation(uploadSource, {
       onSuccess: () => query.invalidateQueries(["ready"])
     });
-    const store = mustExist((0, import_react41.useContext)(StateContext));
+    const store = mustExist((0, import_react45.useContext)(StateContext));
     const { pushHistory, setHighres, setModel, setParams, setUpscale } = useStore(store, selectActions12, shallow);
     const model = useStore(store, selectModel4);
     const params = useStore(store, selectParams6);
@@ -83867,9 +83890,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   // out/src/components/OnnxWeb.js
   function OnnxWeb() {
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-    const store = mustExist((0, import_react42.useContext)(StateContext));
+    const store = mustExist((0, import_react46.useContext)(StateContext));
     const stateTheme = useStore(store, selectTheme);
-    const theme = (0, import_react42.useMemo)(() => createTheme_default2({
+    const theme = (0, import_react46.useMemo)(() => createTheme_default2({
       palette: {
         mode: getTheme(stateTheme, prefersDarkMode)
       }
