@@ -258,7 +258,7 @@ def process_tile_stack(
     sources = stack.as_image()
 
     width, height = kwargs.get("size", sources[0].size if len(sources) > 0 else None)
-    mask = kwargs.get("mask", None)
+    mask = kwargs.get("mask", kwargs.get("stage_mask", None))
     noise_source = kwargs.get("noise_source", noise_source_histogram)
     fill_color = kwargs.get("fill_color", None)
     if not mask:

@@ -26,20 +26,22 @@ class BlendMaskStage(BaseStage):
         dims: Tuple[int, int, int],
         stage_source: Optional[Image.Image] = None,
         stage_mask: Optional[Image.Image] = None,
+        tile_mask: Optional[Image.Image] = None,
         _callback: Optional[ProgressCallback] = None,
         **kwargs,
     ) -> StageResult:
         logger.info("blending image using mask")
 
-        mult_mask = Image.new(stage_mask.mode, stage_mask.size, color="black")
-        mult_mask = Image.alpha_composite(mult_mask, stage_mask)
+        mask_source = tile_mask or stage_mask
+        mult_mask = Image.new(mask_source.mode, mask_source.size, color="black")
+        mult_mask = Image.alpha_composite(mult_mask, mask_source)
         mult_mask = mult_mask.convert("L")
 
         top, left, tile = dims
         stage_source_tile = stage_source.crop((left, top, left + tile, top + tile))
 
         if is_debug():
-            save_image(server, "last-mask.png", stage_mask)
+            save_image(server, "last-mask.png", mask_source)
             save_image(server, "last-mult-mask.png", mult_mask)
             save_image(server, "last-stage-source.png", stage_source_tile)
 
