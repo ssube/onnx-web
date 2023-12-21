@@ -75331,7 +75331,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       },
       setUpscaleModel(params) {
         set((prev2) => ({
-          upscaleModel: Object.assign(Object.assign({}, prev2.upscaleModel), defaultModel)
+          upscaleModel: Object.assign(Object.assign({}, prev2.upscaleModel), params)
         }));
       },
       setUpscaleUpscale(params) {
@@ -76751,7 +76751,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
       background.current.url = URL.createObjectURL(source);
       background.current.name = source.name;
-      if (doesExist2(mask) === false) {
+      if (doesExist2(maskRef.current) && doesExist2(mask) === false) {
         getClearContext(maskRef);
         dirty.current = true;
       }
@@ -82274,8 +82274,11 @@ Please use another name.` : formatMuiErrorMessage(18));
     }
     __name(addToken, "addToken");
     const tokens = useMemo17(() => {
-      const networks = extractNetworks(prompt);
-      return getNetworkTokens(models, networks);
+      if (doesExist2(prompt)) {
+        const networks = extractNetworks(prompt);
+        return getNetworkTokens(models, networks);
+      }
+      return [];
     }, [models, prompt]);
     return React148.createElement(
       Stack_default,
