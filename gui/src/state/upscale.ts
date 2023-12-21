@@ -71,7 +71,7 @@ export function createUpscaleSlice<TState extends UpscaleSlice>(
       set((prev) => ({
         upscaleModel: {
           ...prev.upscaleModel,
-          ...defaultModel,
+          ...params,
         },
       } as Partial<TState>));
     },
