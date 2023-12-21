@@ -527,11 +527,15 @@ def run_blend_pipeline(
     chain = ChainPipeline()
     tile_size = get_base_tile(params, size)
 
+    # resize mask to match source size
+    stage_source = sources[1]
+    stage_mask = mask.resize(stage_source.size, Image.Resampling.BILINEAR)
+
     chain.stage(
         BlendMaskStage(),
         StageParams(tile_size=tile_size),
-        stage_source=sources[1],
-        stage_mask=mask,
+        stage_source=stage_source,
+        stage_mask=stage_mask,
     )
 
     # apply upscaling and correction
