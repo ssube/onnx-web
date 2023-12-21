@@ -36,7 +36,7 @@ class BlendMaskStage(BaseStage):
         mult_mask = mult_mask.convert("L")
 
         top, left, tile = dims
-        stage_source_tile = stage_source.crop((top, left, tile, tile))
+        stage_source_tile = stage_source.crop((left, top, left + tile, top + tile))
 
         if is_debug():
             save_image(server, "last-mask.png", stage_mask)
