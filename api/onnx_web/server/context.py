@@ -100,7 +100,7 @@ class ServerContext:
             memory_limit = int(memory_limit)
 
         return cls(
-            bundle_path=env.get("ONNX_WEB_BUNDLE_PATH", path.join("..", "gui", "out")),
+            bundle_path=env.get("ONNX_WEB_BUNDLE_PATH", path.join(".", "gui")),
             model_path=env.get("ONNX_WEB_MODEL_PATH", path.join("..", "models")),
             output_path=env.get("ONNX_WEB_OUTPUT_PATH", path.join("..", "outputs")),
             params_path=env.get("ONNX_WEB_PARAMS_PATH", "."),
