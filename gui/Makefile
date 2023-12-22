@@ -29,8 +29,13 @@ build-shebang: build
 
 bundle: build
 	node esbuild.js
+# copy other files into output to make a complete UI
 	cp -v src/index.html out/
 	cp -v src/config.json out/
+# copy everything into the server's default path
+	cp -v src/index.html ../api/gui/
+	cp -v src/config.json ../api/gui/
+	cp -v out/bundle/main.js ../api/gui/bundle/
 
 COVER_OPTS := --all \
 		--exclude ".eslintrc.js" \
