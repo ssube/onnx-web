@@ -126,6 +126,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [The expanded size of the tensor must match the existing size](#the-expanded-size-of-the-tensor-must-match-the-existing-size)
       - [Shape mismatch attempting to re-use buffer](#shape-mismatch-attempting-to-re-use-buffer)
       - [Cannot read properties of undefined (reading 'default')](#cannot-read-properties-of-undefined-reading-default)
+      - [Missing key(s) in state\_dict](#missing-keys-in-state_dict)
   - [Output Image Sizes](#output-image-sizes)
 
 ## Outline
@@ -1717,6 +1718,26 @@ Error fetching server parameters
 Could not fetch parameters from the onnx-web API server at http://10.2.2.34:5000.
 
 Cannot read properties of undefined (reading 'default')
+```
+
+#### Missing key(s) in state_dict
+
+This can happen when you try to convert a newer Stable Diffusion checkpoint with Torch model extraction enabled. The
+code used for model extraction does not support some keys in recent models and will throw an error.
+
+Make sure you have set the `ONNX_WEB_CONVERT_EXTRACT` environment variable to `FALSE`.
+
+Example error:
+
+```none
+Traceback (most recent call last):
+  File "/opt/onnx-web/api/onnx_web/convert/diffusion/checkpoint.py", line 1570, in extract_checkpoint
+    vae.load_state_dict(converted_vae_checkpoint)
+  File "/home/ssube/miniconda3/envs/onnx-web-rocm-pytorch2/lib/python3.9/site-packages/torch/nn/modules/module.py", line 2041, in load_state_dict
+    raise RuntimeError('Error(s) in loading state_dict for {}:\n\t{}'.format(
+RuntimeError: Error(s) in loading state_dict for AutoencoderKL:
+        Missing key(s) in state_dict: "encoder.mid_block.attentions.0.to_q.weight", "encoder.mid_block.attentions.0.to_q.bias", "encoder.mid_block.attentions.0.to_k.weight", "encoder.mid_block.attentions.0.to_k.bias", "encoder.mid_block.attentions.0.to_v.weight", "encoder.mid_block.attentions.0.to_v.bias", "encoder.mid_block.attentions.0.to_out.0.weight", "encoder.mid_block.attentions.0.to_out.0.bias", "decoder.mid_block.attentions.0.to_q.weight", "decoder.mid_block.attentions.0.to_q.bias", "decoder.mid_block.attentions.0.to_k.weight", "decoder.mid_block.attentions.0.to_k.bias", "decoder.mid_block.attentions.0.to_v.weight", "decoder.mid_block.attentions.0.to_v.bias", "decoder.mid_block.attentions.0.to_out.0.weight", "decoder.mid_block.attentions.0.to_out.0.bias".
+        Unexpected key(s) in state_dict: "encoder.mid_block.attentions.0.key.bias", "encoder.mid_block.attentions.0.key.weight", "encoder.mid_block.attentions.0.proj_attn.bias", "encoder.mid_block.attentions.0.proj_attn.weight", "encoder.mid_block.attentions.0.query.bias", "encoder.mid_block.attentions.0.query.weight", "encoder.mid_block.attentions.0.value.bias", "encoder.mid_block.attentions.0.value.weight", "decoder.mid_block.attentions.0.key.bias", "decoder.mid_block.attentions.0.key.weight", "decoder.mid_block.attentions.0.proj_attn.bias", "decoder.mid_block.attentions.0.proj_attn.weight", "decoder.mid_block.attentions.0.query.bias", "decoder.mid_block.attentions.0.query.weight", "decoder.mid_block.attentions.0.value.bias", "decoder.mid_block.attentions.0.value.weight".
 ```
 
 ## Output Image Sizes
