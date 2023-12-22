@@ -502,7 +502,7 @@ def load_wildcards(server: ServerContext) -> None:
             lines = f.read().splitlines()
             lines = [line.strip() for line in lines if not line.startswith("#")]
             lines = [line for line in lines if len(line) > 0]
-            logger.debug("loading wildcards from %s: %s", file, lines)
+            logger.trace("loading wildcards from %s: %s", file, lines)
             wildcard_data[path.splitext(file)[0]].extend(lines)
 
     structured_files = list_model_globs(
@@ -515,7 +515,7 @@ def load_wildcards(server: ServerContext) -> None:
 
     for file in structured_files:
         data = load_config(path.join(wildcard_path, file))
-        logger.debug("loading structured wildcards from %s: %s", file, data)
+        logger.trace("loading structured wildcards from %s: %s", file, data)
         parse_wildcards(data, root_key=path.splitext(file)[0])
 
 

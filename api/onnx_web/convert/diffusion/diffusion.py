@@ -510,7 +510,7 @@ def convert_diffusion_diffusers(
     run_gc()
 
     # UNET
-    logger.debug("UNET config: %s", pipeline.unet.config)
+    logger.trace("UNET config: %s", pipeline.unet.config)
     if single_vae:
         unet_inputs = ["sample", "timestep", "encoder_hidden_states", "class_labels"]
         unet_scale = torch.tensor(4).to(device=device, dtype=torch.long)
