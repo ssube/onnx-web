@@ -10,11 +10,10 @@ from piexif import ExifIFD, ImageIFD, dump
 from piexif.helper import UserComment
 from PIL import Image, PngImagePlugin
 
-from onnx_web.convert.utils import resolve_tensor
-from onnx_web.server.load import get_extra_hashes
-
+from .convert.utils import resolve_tensor
 from .params import Border, HighresParams, ImageParams, Param, Size, UpscaleParams
 from .server import ServerContext
+from .server.load import get_extra_hashes
 from .utils import base_join
 
 logger = getLogger(__name__)
