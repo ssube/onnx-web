@@ -55,11 +55,13 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Seed parameter](#seed-parameter)
       - [Batch size parameter](#batch-size-parameter)
       - [Tile size parameter](#tile-size-parameter)
-      - [Overlap parameter](#overlap-parameter)
+      - [UNet overlap parameter](#unet-overlap-parameter)
         - [25% overlap](#25-overlap)
         - [50% overlap](#50-overlap)
-      - [UNet stride parameter](#unet-stride-parameter)
+      - [UNet tile size parameter](#unet-tile-size-parameter)
       - [Tiled VAE parameter](#tiled-vae-parameter)
+      - [VAE overlap parameter](#vae-overlap-parameter)
+      - [VAE tile size parameter](#vae-tile-size-parameter)
       - [Prompt parameter](#prompt-parameter)
       - [Negative prompt parameter](#negative-prompt-parameter)
       - [Width and height parameters](#width-and-height-parameters)
@@ -652,7 +654,7 @@ The size of each UNet tile when running [the panorama pipeline](#panorama-pipeli
 Increasing this is a lot like increasing the image size. It will produce larger areas with consistent shapes and
 outlines, but will increase memory. Decreasing this too far can produce deep-fried results.
 
-#### Overlap parameter
+#### UNet overlap parameter
 
 The amount that each highres and VAE tile should overlap.
 
@@ -660,7 +662,7 @@ Increasing this will increase the number of tiles and will take longer, but will
 between tiles. Increasing this too far will cause blurry images.
 
 - 0.25 is usually good for [highres](#highres-parameters)
-- 0.5 is usually good for [panorama](#panorama-pipeline)
+- 0.75 is usually good for [panorama](#panorama-pipeline)
 
 _Note:_ The highres and VAE overlap parameters may be split up in the future.
 
@@ -690,11 +692,12 @@ After cropping:
 
 Tiles evenly fill the image and do not need to be cropped.
 
-#### UNet stride parameter
+#### UNet tile size parameter
 
-The stride between UNet tiles when running [the panorama pipeline](#panorama-pipeline).
+The size of each UNet tile when running tiled pipelines, which happens when the image dimensions are larger than
+the UNet tile size or you are using [the panorama pipeline](#panorama-pipeline).
 
-This behaves a lot like [the overlap parameter](#overlap-parameter) but only applies to the UNet when using [the
+This behaves a lot like [the overlap parameter](#unet-overlap-parameter) but only applies to the UNet when using [the
 panorama pipeline](#panorama-pipeline).
 
 _Note:_ This parameter may be combined with the overlap parameter in the future.
@@ -703,8 +706,21 @@ _Note:_ This parameter may be combined with the overlap parameter in the future.
 
 Whether or not to use the tiled VAE.
 
-The tiled VAE uses less memory and allows you to generate larger images, but may produce seams without enough
-[overlap](#overlap-parameter).
+The tiled VAE uses less memory and allows you to generate larger images, but may produce seams without
+[enough overlap](#vae-overlap-parameter).
+
+#### VAE overlap parameter
+
+Much like the [UNet overlap parameter](#unet-overlap-parameter) but for the tiled VAE.
+
+0.25 seems to work well for most things.
+
+#### VAE tile size parameter
+
+Much like the [UNet tile size parameter](#unet-tile-size-parameter) but for the tiled VAE.
+
+Making this smaller will reduce memory usage when decoding and during highres, which can be useful when running highres
+or SDXL on GPUs with limited memory.
 
 #### Prompt parameter
 
@@ -1241,6 +1257,7 @@ some common configurations in a server context.
         - pt
         - pth
         - safetensors
+        - zip
     - hash
       - string
     - image_size
@@ -1269,6 +1286,7 @@ some common configurations in a server context.
       - string
     - pipeline
       - one of:
+        - archive
         - controlnet
         - img2img
         - inpaint
@@ -1276,6 +1294,7 @@ some common configurations in a server context.
         - panorama
         - pix2pix
         - txt2img
+        - txt2img-sdxl
         - upscaling
     - source
       - string
@@ -1323,9 +1342,7 @@ some common configurations in a server context.
   - array of additional networks
   - each one has:
     - format
-      - one of:
-        - ckpt
-        - safetensors
+      - same formats as diffusion models
     - model
       - one of:
         - concept
@@ -1347,6 +1364,8 @@ some common configurations in a server context.
   - array of sources
 - strings
   - additional translation strings
+  - two-letter language code
+  - each one is an object of strings
 
 ## Environment variables
 
@@ -1394,6 +1413,8 @@ The following environment variables are available:
   - Job limit before workers will be automatically restarted. Defaults to 10.
 - `ONNX_WEB_MEMORY_LIMIT`
   - VRAM usage limit for CUDA devices. Defaults to none, which is no limit.
+
+Please see [the server admin guide](./server-admin.md#configuration) for the complete list of available variables.
 
 ## Known errors
 

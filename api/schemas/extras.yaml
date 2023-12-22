@@ -41,6 +41,8 @@ $defs:
     type: object
     required: [name, source, type]
     properties:
+      format:
+        $ref: "#/$defs/tensor_format"
       label:
         type: string
       model:
