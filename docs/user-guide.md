@@ -99,6 +99,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
     - [Model sources](#model-sources)
       - [Downloading models from Civitai](#downloading-models-from-civitai)
       - [Downloading models from HuggingFace](#downloading-models-from-huggingface)
+      - [Pre-converted models](#pre-converted-models)
     - [Using a custom VAE](#using-a-custom-vae)
     - [Optimizing models for lower memory usage](#optimizing-models-for-lower-memory-usage)
     - [Permanently blending additional networks](#permanently-blending-additional-networks)
@@ -1129,6 +1130,28 @@ will only download the `trained_embeds.bin` file.
 When downloading models from HuggingFace, you can use the copy button next to the repository name:
 
 ![Stable Diffusion v1.5 model card with Copy model name option highlighted](guide-huggingface.png)
+
+#### Pre-converted models
+
+You can use models that have already been converted into ONNX format and archived in a ZIP file using the archive
+converted. This is much faster and requires much less memory than converting models yourself, but limits the
+optimizations that can be applied, since many optimizations are platform-specific.
+
+To use a pre-converted model, put the URL or path to the ZIP archive in the `source` field and set the `pipeline` to
+`archive`. For example:
+
+```json
+{
+  "diffusion": [
+    {
+      "name": "stable-diffusion-v1-5",
+      "source": "https://example.com/stable-diffusion-v1-5.zip",
+      "format": "safetensors",
+      "pipeline": "archive"
+    },
+  ]
+}
+ ```
 
 ### Using a custom VAE
 
