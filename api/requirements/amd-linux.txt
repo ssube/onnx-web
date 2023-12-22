@@ -1,4 +1,4 @@
 --extra-index-url https://download.pytorch.org/whl/rocm5.4.2
-torch==2.1.1
-torchvision==0.16.1
+torch==2.0.1
+torchvision==0.15.2
 https://download.onnxruntime.ai/onnxruntime_training-1.16.3%2Brocm542-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
