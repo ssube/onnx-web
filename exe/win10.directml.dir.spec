@@ -13,7 +13,6 @@ dynamic_packages = [
     "filelock",
     "huggingface-hub",
     "numpy",
-    "onnxruntime",
     "onnxruntime-directml",
     "packaging",
     "pyyaml",
@@ -35,6 +34,13 @@ datas = [
         "models/**",
         "utils/**",
     ]),
+    collect_data_files("codeformer", include_py_files=True, includes=[
+        "basicsr/archs/**",
+        "basicsr/data/**",
+        "basicsr/losses/**",
+        "basicsr/models/**",
+        "basicsr/utils/**",
+    ]),
     collect_data_files("realesrgan", include_py_files=True, includes=[
         "archs/**",
         "data/**",
@@ -45,6 +51,9 @@ datas = [
     collect_data_files("onnxruntime", include_py_files=True, includes=[
         "transformers/**",
         "tools/**",
+    ]),
+    collect_data_files("timm", include_py_files=True, includes=[
+        "models/**",
     ]),
     collect_data_files("transformers", include_py_files=True, includes=[
         "**",
