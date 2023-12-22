@@ -35,7 +35,7 @@ class CorrectCodeformerStageTests(unittest.TestCase):
         sources = StageResult.empty()
         result = stage.run(
             worker,
-            None,
+            server,
             None,
             None,
             sources,

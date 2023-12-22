@@ -20,7 +20,8 @@ class BlendMaskStageTests(unittest.TestCase):
             highres=HighresParams(False, 1, 0, 0),
             upscale=UpscaleParams(""),
             stage_mask=Image.new("RGBA", (64, 64)),
-            dims=(0, 0, SizeChart.auto)
+            stage_source=Image.new("RGBA", (64, 64)),
+            dims=(0, 0, SizeChart.auto),
         )
 
         self.assertEqual(len(result), 0)
