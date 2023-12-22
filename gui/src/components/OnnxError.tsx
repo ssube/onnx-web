@@ -49,7 +49,7 @@ export function OnnxError(props: OnnxErrorProps) {
           </Typography>
           <Typography variant='body1'>
             If you are trying to use a remote API server or an alternative port, you can put the address into the
-            query string, like <code>{linkback}?api=http://localhost:5001</code>.
+            query string, like <code>{linkback}?api={linkback}</code>.
           </Typography>
           <Typography variant='body1'>
             If you recently upgraded and keep seeing errors, especially if you have been using a pre-release version
