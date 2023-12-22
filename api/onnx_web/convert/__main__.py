@@ -44,6 +44,10 @@ warnings.filterwarnings(
     "ignore",
     ".*Converting a tensor to a Python boolean might cause the trace to be incorrect.*",
 )
+warnings.filterwarnings(
+    "ignore",
+    ".*Overwriting tiny_vit_.*",
+)
 
 logger = getLogger(__name__)
 

@@ -1,20 +1,29 @@
 # https://github.com/ForserX/StableDiffusionUI/blob/main/data/repo/diffusion_scripts/controlnet_pipe.py
 
-from logging import getLogger
-from os import path
+import warnings
 
-import cv2
-import numpy as np
-import torch
-import transformers
-from controlnet_aux import HEDdetector, MLSDdetector, OpenposeDetector
-from huggingface_hub import snapshot_download
-from PIL import Image, ImageChops, ImageFilter
+warnings.filterwarnings(
+    "ignore",
+    ".*Overwriting tiny_vit_.*",
+)
 
-from ..server.context import ServerContext
-from .ade_palette import ade_palette
-from .laion_face import generate_annotation
-from .noise_source import noise_source_histogram
+# from https://stackoverflow.com/a/65418681
+if True:  # noqa: E402
+    from logging import getLogger
+    from os import path
+
+    import cv2
+    import numpy as np
+    import torch
+    import transformers
+    from controlnet_aux import HEDdetector, MLSDdetector, OpenposeDetector
+    from huggingface_hub import snapshot_download
+    from PIL import Image, ImageChops, ImageFilter
+
+    from ..server.context import ServerContext
+    from .ade_palette import ade_palette
+    from .laion_face import generate_annotation
+    from .noise_source import noise_source_histogram
 
 logger = getLogger(__name__)
 
