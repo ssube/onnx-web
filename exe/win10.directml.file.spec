@@ -11,10 +11,12 @@ block_cipher = None
 
 dynamic_packages = [
     "filelock",
+    "huggingface-hub",
     "numpy",
-    "packaging",
     "onnxruntime",
     "onnxruntime-directml",
+    "packaging",
+    "pyyaml",
     "regex",
     "requests",
     "tokenizers",
