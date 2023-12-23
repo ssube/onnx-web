@@ -127,6 +127,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Shape mismatch attempting to re-use buffer](#shape-mismatch-attempting-to-re-use-buffer)
       - [Cannot read properties of undefined (reading 'default')](#cannot-read-properties-of-undefined-reading-default)
       - [Missing key(s) in state\_dict](#missing-keys-in-state_dict)
+      - [Missing MIopen.so.1](#missing-miopenso1)
   - [Output Image Sizes](#output-image-sizes)
 
 ## Outline
@@ -1739,6 +1740,16 @@ RuntimeError: Error(s) in loading state_dict for AutoencoderKL:
         Missing key(s) in state_dict: "encoder.mid_block.attentions.0.to_q.weight", "encoder.mid_block.attentions.0.to_q.bias", "encoder.mid_block.attentions.0.to_k.weight", "encoder.mid_block.attentions.0.to_k.bias", "encoder.mid_block.attentions.0.to_v.weight", "encoder.mid_block.attentions.0.to_v.bias", "encoder.mid_block.attentions.0.to_out.0.weight", "encoder.mid_block.attentions.0.to_out.0.bias", "decoder.mid_block.attentions.0.to_q.weight", "decoder.mid_block.attentions.0.to_q.bias", "decoder.mid_block.attentions.0.to_k.weight", "decoder.mid_block.attentions.0.to_k.bias", "decoder.mid_block.attentions.0.to_v.weight", "decoder.mid_block.attentions.0.to_v.bias", "decoder.mid_block.attentions.0.to_out.0.weight", "decoder.mid_block.attentions.0.to_out.0.bias".
         Unexpected key(s) in state_dict: "encoder.mid_block.attentions.0.key.bias", "encoder.mid_block.attentions.0.key.weight", "encoder.mid_block.attentions.0.proj_attn.bias", "encoder.mid_block.attentions.0.proj_attn.weight", "encoder.mid_block.attentions.0.query.bias", "encoder.mid_block.attentions.0.query.weight", "encoder.mid_block.attentions.0.value.bias", "encoder.mid_block.attentions.0.value.weight", "decoder.mid_block.attentions.0.key.bias", "decoder.mid_block.attentions.0.key.weight", "decoder.mid_block.attentions.0.proj_attn.bias", "decoder.mid_block.attentions.0.proj_attn.weight", "decoder.mid_block.attentions.0.query.bias", "decoder.mid_block.attentions.0.query.weight", "decoder.mid_block.attentions.0.value.bias", "decoder.mid_block.attentions.0.value.weight".
 ```
+
+#### Missing MIopen.so.1
+
+This can happen when you upgrade Torch to a version that was built against a more recent version of ROCm than the one
+you are using.
+
+This can sometimes be fixed by upgrading ROCm, but make sure to check the supported architectures before you upgrade,
+since they often remove support for older GPUs.
+
+If you cannot upgrade ROCm, downgrade Torch to the correct version for the libraries available on your machine.
 
 ## Output Image Sizes
 
