@@ -36,6 +36,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Region tokens](#region-tokens)
       - [Reseed tokens (region seeds)](#reseed-tokens-region-seeds)
       - [CLIP skip tokens](#clip-skip-tokens)
+      - [Grid mode tokens](#grid-mode-tokens)
     - [Long prompt weighting syntax](#long-prompt-weighting-syntax)
   - [Pipelines](#pipelines)
     - [ControlNet pipeline](#controlnet-pipeline)
@@ -72,6 +73,9 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
         - [Highres upscaler parameter](#highres-upscaler-parameter)
         - [Highres iterations parameter](#highres-iterations-parameter)
       - [Upscale and correction parameters](#upscale-and-correction-parameters)
+      - [Grid mode parameters](#grid-mode-parameters)
+        - [Grid column parameter](#grid-column-parameter)
+        - [Grid row parameter](#grid-row-parameter)
     - [Img2img tab](#img2img-tab)
       - [Img2img source image](#img2img-source-image)
       - [Strength parameter](#strength-parameter)
@@ -128,6 +132,7 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Cannot read properties of undefined (reading 'default')](#cannot-read-properties-of-undefined-reading-default)
       - [Missing key(s) in state\_dict](#missing-keys-in-state_dict)
       - [Missing MIopen.so.1](#missing-miopenso1)
+      - [ValueError: Required inputs (\['text\_embeds', 'time\_ids'\]) are missing from input feed (\['sample', 'timestep', 'encoder\_hidden\_states'\])](#valueerror-required-inputs-text_embeds-time_ids-are-missing-from-input-feed-sample-timestep-encoder_hidden_states)
   - [Output Image Sizes](#output-image-sizes)
 
 ## Outline
@@ -501,6 +506,33 @@ You can skip the last layers of the CLIP text encoder using the `clip` token:
 
 This makes your prompt less specific and some models have been trained to work better with some amount of skipping.
 
+#### Grid mode tokens
+
+When you are using grid mode, you can change part of the prompt for each column or row by selecting the token parameter
+and entering a comma-delimited list of partial prompts, while including `__column__` or `__row__` in [the prompt
+parameter](#prompt-parameter).
+
+For example, using the base prompt `a cute __column__ __row__` with the tokens:
+
+- column token
+  - red, green, blue
+- row token
+  - cat, dog, bird
+
+Will produce the following prompts:
+
+- `a cute red cat`
+- `a cute green cat`
+- `a cute blue cat`
+- `a cute red dog`
+- `a cute green dog`
+- `a cute blue dog`
+- `a cute red bird`
+- `a cute green bird`
+- `a cute blue bird`
+
+This will generate 10 total images (9 prompts plus the grid) and might take a while.
+
 ### Long prompt weighting syntax
 
 You can emphasize or deemphasize certain parts of the prompt by using the long prompt weighting option. This adds
@@ -513,8 +545,8 @@ some additional tokens:
 - `(word:1.5)` increases attention by 50%
 - `\(word\)` inserts literal parentheses
 
-_Note:_ The [token range syntax](#textual-inversion-tokens) currently does not work when long prompt weighting is
-enabled.
+_Note:_ The [token range syntax](#embedding-textual-inversion-tokens) currently does not work when long prompt weighting
+is enabled.
 
 ## Pipelines
 
@@ -798,6 +830,34 @@ parameters. A scale of 2 and 3 iterations will produce a final image that is 8 t
 #### Upscale and correction parameters
 
 Please see [the upscale tab](#upscale-tab) for more details on the upscaling and correction parameters.
+
+#### Grid mode parameters
+
+Grid mode generates a grid of multiple images, with each column or row having something in common. You can choose
+which parameters change in each direction and provide the values, or for a grid prompt, add tokens that will be
+used in your full prompt.
+
+##### Grid column parameter
+
+You can select any of the available parameters here, unless they have already been used in as [the grid row
+parameter](#grid-row-parameter).
+
+Available parameters are:
+
+- [Prompt](#prompt-parameter)
+- [Negative prompt](#negative-prompt-parameter)
+- [Steps](#steps-parameter)
+- [Scheduler](#scheduler-parameter)
+- [CFG](#cfg-parameter)
+- [Eta](#eta-parameter)
+- [Token](#grid-mode-tokens)
+
+##### Grid row parameter
+
+You can select any of the available parameters here, unless they have already been used in as [the grid column
+parameter](#grid-column-parameter).
+
+Please see [the grid column parameter](#grid-column-parameter) for the list of available parameters.
 
 ### Img2img tab
 
@@ -1750,6 +1810,13 @@ This can sometimes be fixed by upgrading ROCm, but make sure to check the suppor
 since they often remove support for older GPUs.
 
 If you cannot upgrade ROCm, downgrade Torch to the correct version for the libraries available on your machine.
+
+#### ValueError: Required inputs (['text_embeds', 'time_ids']) are missing from input feed (['sample', 'timestep', 'encoder_hidden_states'])
+
+This can happen when you use an original Stable Diffusion pipeline with an SDXL model. SDXL models use different input
+names and are not backwards compatible.
+
+Make sure you have selected an SDXL pipeline in the web UI.
 
 ## Output Image Sizes
 
