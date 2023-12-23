@@ -118,6 +118,8 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#clip-skip-tokens">CLIP skip tokens</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#grid-mode-tokens">Grid mode tokens</a>
+    </li>
         </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#long-prompt-weighting-syntax">Long prompt weighting syntax</a>
@@ -181,6 +183,8 @@
     <li class="toctree-l4"><a class="reference internal" href="#highres-parameters">Highres parameters</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#upscale-and-correction-parameters">Upscale and correction parameters</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#grid-mode-parameters">Grid mode parameters</a>
     </li>
         </ul>
     </li>
@@ -310,6 +314,10 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#missing-keys-in-state_dict">Missing key(s) in state_dict</a>
     </li>
+    <li class="toctree-l4"><a class="reference internal" href="#missing-miopenso1">Missing MIopen.so.1</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#valueerror-required-inputs-text_embeds-time_ids-are-missing-from-input-feed-sample-timestep-encoder_hidden_states">ValueError: Required inputs (['text_embeds', 'time_ids']) are missing from input feed (['sample', 'timestep', 'encoder_hidden_states'])</a>
+    </li>
         </ul>
     </li>
         </ul>
@@ -378,6 +386,7 @@ earlier.</p>
 <li><a href="#region-tokens">Region tokens</a></li>
 <li><a href="#reseed-tokens-region-seeds">Reseed tokens (region seeds)</a></li>
 <li><a href="#clip-skip-tokens">CLIP skip tokens</a></li>
+<li><a href="#grid-mode-tokens">Grid mode tokens</a></li>
 </ul>
 </li>
 <li><a href="#long-prompt-weighting-syntax">Long prompt weighting syntax</a></li>
@@ -424,6 +433,11 @@ earlier.</p>
 </ul>
 </li>
 <li><a href="#upscale-and-correction-parameters">Upscale and correction parameters</a></li>
+<li><a href="#grid-mode-parameters">Grid mode parameters</a><ul>
+<li><a href="#grid-column-parameter">Grid column parameter</a></li>
+<li><a href="#grid-row-parameter">Grid row parameter</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#img2img-tab">Img2img tab</a><ul>
@@ -499,6 +513,8 @@ earlier.</p>
 <li><a href="#shape-mismatch-attempting-to-re-use-buffer">Shape mismatch attempting to re-use buffer</a></li>
 <li><a href="#cannot-read-properties-of-undefined-reading-default">Cannot read properties of undefined (reading 'default')</a></li>
 <li><a href="#missing-keys-in-state_dict">Missing key(s) in state_dict</a></li>
+<li><a href="#missing-miopenso1">Missing MIopen.so.1</a></li>
+<li><a href="#valueerror-required-inputs-text_embeds-time_ids-are-missing-from-input-feed-sample-timestep-encoder_hidden_states">ValueError: Required inputs (['text_embeds', 'time_ids']) are missing from input feed (['sample', 'timestep', 'encoder_hidden_states'])</a></li>
 </ul>
 </li>
 </ul>
@@ -871,6 +887,34 @@ interpreted by the UNet, but the seeded area should be similar to an image of th
 <pre><code class="language-none">&lt;clip:skip:2&gt;
 </code></pre>
 <p>This makes your prompt less specific and some models have been trained to work better with some amount of skipping.</p>
+<h4 id="grid-mode-tokens">Grid mode tokens</h4>
+<p>When you are using grid mode, you can change part of the prompt for each column or row by selecting the token parameter
+and entering a comma-delimited list of partial prompts, while including <code>__column__</code> or <code>__row__</code> in <a href="#prompt-parameter">the prompt
+parameter</a>.</p>
+<p>For example, using the base prompt <code>a cute __column__ __row__</code> with the tokens:</p>
+<ul>
+<li>column token<ul>
+<li>red, green, blue</li>
+</ul>
+</li>
+<li>row token<ul>
+<li>cat, dog, bird</li>
+</ul>
+</li>
+</ul>
+<p>Will produce the following prompts:</p>
+<ul>
+<li><code>a cute red cat</code></li>
+<li><code>a cute green cat</code></li>
+<li><code>a cute blue cat</code></li>
+<li><code>a cute red dog</code></li>
+<li><code>a cute green dog</code></li>
+<li><code>a cute blue dog</code></li>
+<li><code>a cute red bird</code></li>
+<li><code>a cute green bird</code></li>
+<li><code>a cute blue bird</code></li>
+</ul>
+<p>This will generate 10 total images (9 prompts plus the grid) and might take a while.</p>
 <h3 id="long-prompt-weighting-syntax">Long prompt weighting syntax</h3>
 <p>You can emphasize or deemphasize certain parts of the prompt by using the long prompt weighting option. This adds
 some additional tokens:</p>
@@ -882,8 +926,8 @@ some additional tokens:</p>
 <li><code>(word:1.5)</code> increases attention by 50%</li>
 <li><code>\(word\)</code> inserts literal parentheses</li>
 </ul>
-<p><em>Note:</em> The <a href="#textual-inversion-tokens">token range syntax</a> currently does not work when long prompt weighting is
-enabled.</p>
+<p><em>Note:</em> The <a href="#embedding-textual-inversion-tokens">token range syntax</a> currently does not work when long prompt weighting
+is enabled.</p>
 <h2 id="pipelines">Pipelines</h2>
 <p>The pipelines in onnx-web allow you to run Stable Diffusion in many different ways, such as ControlNet and using the
 long prompt weighting syntax.</p>
@@ -1068,6 +1112,27 @@ scale of 4 and 2 iterations will produce a final image that is 16 times the orig
 parameters. A scale of 2 and 3 iterations will produce a final image that is 8 times the original size.</p>
 <h4 id="upscale-and-correction-parameters">Upscale and correction parameters</h4>
 <p>Please see <a href="#upscale-tab">the upscale tab</a> for more details on the upscaling and correction parameters.</p>
+<h4 id="grid-mode-parameters">Grid mode parameters</h4>
+<p>Grid mode generates a grid of multiple images, with each column or row having something in common. You can choose
+which parameters change in each direction and provide the values, or for a grid prompt, add tokens that will be
+used in your full prompt.</p>
+<h5 id="grid-column-parameter">Grid column parameter</h5>
+<p>You can select any of the available parameters here, unless they have already been used in as <a href="#grid-row-parameter">the grid row
+parameter</a>.</p>
+<p>Available parameters are:</p>
+<ul>
+<li><a href="#prompt-parameter">Prompt</a></li>
+<li><a href="#negative-prompt-parameter">Negative prompt</a></li>
+<li><a href="#steps-parameter">Steps</a></li>
+<li><a href="#scheduler-parameter">Scheduler</a></li>
+<li><a href="#cfg-parameter">CFG</a></li>
+<li><a href="#eta-parameter">Eta</a></li>
+<li><a href="#grid-mode-tokens">Token</a></li>
+</ul>
+<h5 id="grid-row-parameter">Grid row parameter</h5>
+<p>You can select any of the available parameters here, unless they have already been used in as <a href="#grid-column-parameter">the grid column
+parameter</a>.</p>
+<p>Please see <a href="#grid-column-parameter">the grid column parameter</a> for the list of available parameters.</p>
 <h3 id="img2img-tab">Img2img tab</h3>
 <p>The img2img tab takes a source image along with the text prompt and produces a similar image. You can use the
 strength parameter to control the level of similarity between the source and output.</p>
@@ -2018,6 +2083,16 @@ RuntimeError: Error(s) in loading state_dict for AutoencoderKL:
         Missing key(s) in state_dict: &quot;encoder.mid_block.attentions.0.to_q.weight&quot;, &quot;encoder.mid_block.attentions.0.to_q.bias&quot;, &quot;encoder.mid_block.attentions.0.to_k.weight&quot;, &quot;encoder.mid_block.attentions.0.to_k.bias&quot;, &quot;encoder.mid_block.attentions.0.to_v.weight&quot;, &quot;encoder.mid_block.attentions.0.to_v.bias&quot;, &quot;encoder.mid_block.attentions.0.to_out.0.weight&quot;, &quot;encoder.mid_block.attentions.0.to_out.0.bias&quot;, &quot;decoder.mid_block.attentions.0.to_q.weight&quot;, &quot;decoder.mid_block.attentions.0.to_q.bias&quot;, &quot;decoder.mid_block.attentions.0.to_k.weight&quot;, &quot;decoder.mid_block.attentions.0.to_k.bias&quot;, &quot;decoder.mid_block.attentions.0.to_v.weight&quot;, &quot;decoder.mid_block.attentions.0.to_v.bias&quot;, &quot;decoder.mid_block.attentions.0.to_out.0.weight&quot;, &quot;decoder.mid_block.attentions.0.to_out.0.bias&quot;.
         Unexpected key(s) in state_dict: &quot;encoder.mid_block.attentions.0.key.bias&quot;, &quot;encoder.mid_block.attentions.0.key.weight&quot;, &quot;encoder.mid_block.attentions.0.proj_attn.bias&quot;, &quot;encoder.mid_block.attentions.0.proj_attn.weight&quot;, &quot;encoder.mid_block.attentions.0.query.bias&quot;, &quot;encoder.mid_block.attentions.0.query.weight&quot;, &quot;encoder.mid_block.attentions.0.value.bias&quot;, &quot;encoder.mid_block.attentions.0.value.weight&quot;, &quot;decoder.mid_block.attentions.0.key.bias&quot;, &quot;decoder.mid_block.attentions.0.key.weight&quot;, &quot;decoder.mid_block.attentions.0.proj_attn.bias&quot;, &quot;decoder.mid_block.attentions.0.proj_attn.weight&quot;, &quot;decoder.mid_block.attentions.0.query.bias&quot;, &quot;decoder.mid_block.attentions.0.query.weight&quot;, &quot;decoder.mid_block.attentions.0.value.bias&quot;, &quot;decoder.mid_block.attentions.0.value.weight&quot;.
 </code></pre>
+<h4 id="missing-miopenso1">Missing MIopen.so.1</h4>
+<p>This can happen when you upgrade Torch to a version that was built against a more recent version of ROCm than the one
+you are using.</p>
+<p>This can sometimes be fixed by upgrading ROCm, but make sure to check the supported architectures before you upgrade,
+since they often remove support for older GPUs.</p>
+<p>If you cannot upgrade ROCm, downgrade Torch to the correct version for the libraries available on your machine.</p>
+<h4 id="valueerror-required-inputs-text_embeds-time_ids-are-missing-from-input-feed-sample-timestep-encoder_hidden_states">ValueError: Required inputs (['text_embeds', 'time_ids']) are missing from input feed (['sample', 'timestep', 'encoder_hidden_states'])</h4>
+<p>This can happen when you use an original Stable Diffusion pipeline with an SDXL model. SDXL models use different input
+names and are not backwards compatible.</p>
+<p>Make sure you have selected an SDXL pipeline in the web UI.</p>
 <h2 id="output-image-sizes">Output Image Sizes</h2>
 <p>You can use this table to figure out the final size for each image, based on the combination of parameters that you are
 using:</p>
