@@ -1,0 +1,87 @@
+{
+  "diffusion": [{
+    "format": "zip",
+    "label": "Cetus v4 (fp32)",
+    "name": "diffusion-cetus-v4-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-cetus-v4-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "Dreamshaper v8 (fp32)",
+    "name": "diffusion-dreamshaper-v8-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-dreamshaper-v8-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "Elegant Entropy v1.4 (fp32)",
+    "name": "diffusion-elegant-entropy-v1-4-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-elegant-entropy-v1-4-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "Faetastic v2 (fp32)",
+    "name": "diffusion-faetastic-v2-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-faetastic-v2-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "ReV Animated v1.2.2 (fp32)",
+    "name": "diffusion-rev-animated-v1-2-2-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-rev-animated-v1-2-2-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "SDXL - Black Rose base (fp32)",
+    "name": "diffusion-sdxl-black-rose-base-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-sdxl-black-rose-base-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "SDXL - Dreamshaper alpha2 (fp32)",
+    "name": "diffusion-sdxl-dreamshaper-alpha2-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-sdxl-dreamshaper-alpha2-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "SDXL - Dynavision v0.5.5.7 (fp32)",
+    "name": "diffusion-sdxl-dynavision-v0-5-5-7-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-sdxl-dynavision-v0-5-5-7-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "SDXL - Faetastic v2.0 (fp32)",
+    "name": "diffusion-sdxl-faetastic-v2-0-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-sdxl-faetastic-v2-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "SDXL - Juggernaut v7 (fp32)",
+    "name": "diffusion-sdxl-juggernaut-v7-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-sdxl-juggernaut-v7-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "SDXL - Turbovision v3.2 (fp32)",
+    "name": "diffusion-sdxl-turbovision-v3-2-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-sdxl-turbovision-v3-2-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "Stable Diffusion v1.5 (fp32)",
+    "name": "stable-diffusion-v1-5-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/stable-diffusion-v1-5-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "SDXL - Turbo (fp32)",
+    "name": "stable-diffusion-xl-turbo-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/stable-diffusion-xl-turbo-fp32.zip"
+  }, {
+    "format": "zip",
+    "label": "SDXL - Base v1.0 (fp32)",
+    "name": "stable-diffusion-xl-v1-0-fp32",
+    "pipeline": "archive",
+    "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/stable-diffusion-xl-v1-0-fp32.zip"
+  }]
+}
