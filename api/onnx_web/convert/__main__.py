@@ -511,9 +511,9 @@ def main(args=None) -> int:
     )
 
     # model groups
-    parser.add_argument("--base", action="store_true", default=True)
-    parser.add_argument("--networks", action="store_true", default=True)
-    parser.add_argument("--sources", action="store_true", default=True)
+    parser.add_argument("--no-base", action="store_true", default=False)
+    parser.add_argument("--networks", action="store_true", default=False)
+    parser.add_argument("--sources", action="store_true", default=False)
     parser.add_argument("--correction", action="store_true", default=False)
     parser.add_argument("--diffusion", action="store_true", default=False)
     parser.add_argument("--upscaling", action="store_true", default=False)
@@ -568,7 +568,7 @@ def main(args=None) -> int:
         logger.info("model path does not existing, creating: %s", server.model_path)
         makedirs(server.model_path)
 
-    if args.base:
+    if not args.no_base:
         logger.info("converting base models")
         convert_models(server, args, base_models)
 

@@ -11,4 +11,4 @@ set ONNX_WEB_EXTRA_MODELS=%ONNX_WEB_MODEL_PATH%\preconverted-fp16.json,%ONNX_WEB
 
 REM convert models and launch the server
 @echo Launching onnx-web in fp16 mode...
-server\onnx-web.exe --base=false --diffusion --correction --upscaling --half
+server\onnx-web.exe --no-base --diffusion --correction --upscaling --half
