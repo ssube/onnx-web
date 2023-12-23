@@ -162,11 +162,15 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#tile-size-parameter">Tile size parameter</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#overlap-parameter">Overlap parameter</a>
+    <li class="toctree-l4"><a class="reference internal" href="#unet-overlap-parameter">UNet overlap parameter</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#unet-stride-parameter">UNet stride parameter</a>
+    <li class="toctree-l4"><a class="reference internal" href="#unet-tile-size-parameter">UNet tile size parameter</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#tiled-vae-parameter">Tiled VAE parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#vae-overlap-parameter">VAE overlap parameter</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#vae-tile-size-parameter">VAE tile size parameter</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#prompt-parameter">Prompt parameter</a>
     </li>
@@ -244,9 +248,9 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#downloading-models-from-huggingface">Downloading models from HuggingFace</a>
     </li>
-        </ul>
+    <li class="toctree-l4"><a class="reference internal" href="#pre-converted-models">Pre-converted models</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#using-a-custom-vae">Using a custom VAE</a>
+        </ul>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#optimizing-models-for-lower-memory-usage">Optimizing models for lower memory usage</a>
     </li>
@@ -303,6 +307,8 @@
     <li class="toctree-l4"><a class="reference internal" href="#shape-mismatch-attempting-to-re-use-buffer">Shape mismatch attempting to re-use buffer</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#cannot-read-properties-of-undefined-reading-default">Cannot read properties of undefined (reading 'default')</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#missing-keys-in-state_dict">Missing key(s) in state_dict</a>
     </li>
         </ul>
     </li>
@@ -397,13 +403,15 @@ earlier.</p>
 <li><a href="#seed-parameter">Seed parameter</a></li>
 <li><a href="#batch-size-parameter">Batch size parameter</a></li>
 <li><a href="#tile-size-parameter">Tile size parameter</a></li>
-<li><a href="#overlap-parameter">Overlap parameter</a><ul>
+<li><a href="#unet-overlap-parameter">UNet overlap parameter</a><ul>
 <li><a href="#25-overlap">25% overlap</a></li>
 <li><a href="#50-overlap">50% overlap</a></li>
 </ul>
 </li>
-<li><a href="#unet-stride-parameter">UNet stride parameter</a></li>
+<li><a href="#unet-tile-size-parameter">UNet tile size parameter</a></li>
 <li><a href="#tiled-vae-parameter">Tiled VAE parameter</a></li>
+<li><a href="#vae-overlap-parameter">VAE overlap parameter</a></li>
+<li><a href="#vae-tile-size-parameter">VAE tile size parameter</a></li>
 <li><a href="#prompt-parameter">Prompt parameter</a></li>
 <li><a href="#negative-prompt-parameter">Negative prompt parameter</a></li>
 <li><a href="#width-and-height-parameters">Width and height parameters</a></li>
@@ -455,6 +463,7 @@ earlier.</p>
 <li><a href="#model-sources">Model sources</a><ul>
 <li><a href="#downloading-models-from-civitai">Downloading models from Civitai</a></li>
 <li><a href="#downloading-models-from-huggingface">Downloading models from HuggingFace</a></li>
+<li><a href="#pre-converted-models">Pre-converted models</a></li>
 </ul>
 </li>
 <li><a href="#using-a-custom-vae">Using a custom VAE</a></li>
@@ -489,6 +498,7 @@ earlier.</p>
 <li><a href="#the-expanded-size-of-the-tensor-must-match-the-existing-size">The expanded size of the tensor must match the existing size</a></li>
 <li><a href="#shape-mismatch-attempting-to-re-use-buffer">Shape mismatch attempting to re-use buffer</a></li>
 <li><a href="#cannot-read-properties-of-undefined-reading-default">Cannot read properties of undefined (reading 'default')</a></li>
+<li><a href="#missing-keys-in-state_dict">Missing key(s) in state_dict</a></li>
 </ul>
 </li>
 </ul>
@@ -965,13 +975,13 @@ the other parameters as well.</p>
 <p>The size of each UNet tile when running <a href="#panorama-pipeline">the panorama pipeline</a>.</p>
 <p>Increasing this is a lot like increasing the image size. It will produce larger areas with consistent shapes and
 outlines, but will increase memory. Decreasing this too far can produce deep-fried results.</p>
-<h4 id="overlap-parameter">Overlap parameter</h4>
+<h4 id="unet-overlap-parameter">UNet overlap parameter</h4>
 <p>The amount that each highres and VAE tile should overlap.</p>
 <p>Increasing this will increase the number of tiles and will take longer, but will reduce the strength of the seams
 between tiles. Increasing this too far will cause blurry images.</p>
 <ul>
 <li>0.25 is usually good for <a href="#highres-parameters">highres</a></li>
-<li>0.5 is usually good for <a href="#panorama-pipeline">panorama</a></li>
+<li>0.75 is usually good for <a href="#panorama-pipeline">panorama</a></li>
 </ul>
 <p><em>Note:</em> The highres and VAE overlap parameters may be split up in the future.</p>
 <p>This shows a 50% overlap with three different prompts:</p>
@@ -990,15 +1000,23 @@ and cropped. These leads to some wasted pixels, but produces a more coherent ima
 <h5 id="50-overlap">50% overlap</h5>
 <p><img alt="the tiles line up evenly and are not cropped" src="../overlap-50p.png" /></p>
 <p>Tiles evenly fill the image and do not need to be cropped.</p>
-<h4 id="unet-stride-parameter">UNet stride parameter</h4>
-<p>The stride between UNet tiles when running <a href="#panorama-pipeline">the panorama pipeline</a>.</p>
-<p>This behaves a lot like <a href="#overlap-parameter">the overlap parameter</a> but only applies to the UNet when using <a href="#panorama-pipeline">the
+<h4 id="unet-tile-size-parameter">UNet tile size parameter</h4>
+<p>The size of each UNet tile when running tiled pipelines, which happens when the image dimensions are larger than
+the UNet tile size or you are using <a href="#panorama-pipeline">the panorama pipeline</a>.</p>
+<p>This behaves a lot like <a href="#unet-overlap-parameter">the overlap parameter</a> but only applies to the UNet when using <a href="#panorama-pipeline">the
 panorama pipeline</a>.</p>
 <p><em>Note:</em> This parameter may be combined with the overlap parameter in the future.</p>
 <h4 id="tiled-vae-parameter">Tiled VAE parameter</h4>
 <p>Whether or not to use the tiled VAE.</p>
-<p>The tiled VAE uses less memory and allows you to generate larger images, but may produce seams without enough
-<a href="#overlap-parameter">overlap</a>.</p>
+<p>The tiled VAE uses less memory and allows you to generate larger images, but may produce seams without
+<a href="#vae-overlap-parameter">enough overlap</a>.</p>
+<h4 id="vae-overlap-parameter">VAE overlap parameter</h4>
+<p>Much like the <a href="#unet-overlap-parameter">UNet overlap parameter</a> but for the tiled VAE.</p>
+<p>0.25 seems to work well for most things.</p>
+<h4 id="vae-tile-size-parameter">VAE tile size parameter</h4>
+<p>Much like the <a href="#unet-tile-size-parameter">UNet tile size parameter</a> but for the tiled VAE.</p>
+<p>Making this smaller will reduce memory usage when decoding and during highres, which can be useful when running highres
+or SDXL on GPUs with limited memory.</p>
 <h4 id="prompt-parameter">Prompt parameter</h4>
 <p>The input text for your image, things that should be included.</p>
 <blockquote>
@@ -1341,11 +1359,32 @@ Most models will detect and download all of the necessary files, while Textual I
 will only download the <code>trained_embeds.bin</code> file.</p>
 <p>When downloading models from HuggingFace, you can use the copy button next to the repository name:</p>
 <p><img alt="Stable Diffusion v1.5 model card with Copy model name option highlighted" src="../guide-huggingface.png" /></p>
-<h3 id="using-a-custom-vae">Using a custom VAE</h3>
-<p>You can use a custom VAE when converting models. Some models require a specific VAE, so if you get weird results,
-check the model card for a specific VAE. This works for both diffusers directories and original SD checkpoints. You
-can use the <code>sources</code> field in the extras file to download the VAE file or provide a HuggingFace model name.</p>
+<h4 id="pre-converted-models">Pre-converted models</h4>
+<p>You can use models that have already been converted into ONNX format and archived in a ZIP file using the archive
+converted. This is much faster and requires much less memory than converting models yourself, but limits the
+optimizations that can be applied, since many optimizations are platform-specific.</p>
+<p>To use a pre-converted model, put the URL or path to the ZIP archive in the <code>source</code> field and set the <code>pipeline</code> to
+<code>archive</code>. For example:</p>
 <pre><code class="language-json">{
+  &quot;diffusion&quot;: [
+    {
+      &quot;name&quot;: &quot;stable-diffusion-v1-5&quot;,
+      &quot;source&quot;: &quot;https://example.com/stable-diffusion-v1-5.zip&quot;,
+      &quot;format&quot;: &quot;safetensors&quot;,
+      &quot;pipeline&quot;: &quot;archive&quot;
+    },
+  ]
+}
+ ```
+
+### Using a custom VAE
+
+You can use a custom VAE when converting models. Some models require a specific VAE, so if you get weird results,
+check the model card for a specific VAE. This works for both diffusers directories and original SD checkpoints. You
+can use the `sources` field in the extras file to download the VAE file or provide a HuggingFace model name.
+
+```json
+{
   &quot;diffusion&quot;: [
     {
       &quot;name&quot;: &quot;diffusion-stablydiffused-aesthetic-v2-6-ema&quot;,
@@ -1500,6 +1539,7 @@ some common configurations in a server context.</p>
 <li>pt</li>
 <li>pth</li>
 <li>safetensors</li>
+<li>zip</li>
 </ul>
 </li>
 </ul>
@@ -1548,6 +1588,7 @@ some common configurations in a server context.</p>
 </li>
 <li>pipeline<ul>
 <li>one of:<ul>
+<li>archive</li>
 <li>controlnet</li>
 <li>img2img</li>
 <li>inpaint</li>
@@ -1555,6 +1596,7 @@ some common configurations in a server context.</p>
 <li>panorama</li>
 <li>pix2pix</li>
 <li>txt2img</li>
+<li>txt2img-sdxl</li>
 <li>upscaling</li>
 </ul>
 </li>
@@ -1652,11 +1694,7 @@ some common configurations in a server context.</p>
 <li>array of additional networks</li>
 <li>each one has:<ul>
 <li>format<ul>
-<li>one of:<ul>
-<li>ckpt</li>
-<li>safetensors</li>
-</ul>
-</li>
+<li>same formats as diffusion models</li>
 </ul>
 </li>
 <li>model<ul>
@@ -1696,6 +1734,8 @@ some common configurations in a server context.</p>
 </li>
 <li>strings<ul>
 <li>additional translation strings</li>
+<li>two-letter language code</li>
+<li>each one is an object of strings</li>
 </ul>
 </li>
 </ul>
@@ -1770,6 +1810,7 @@ some common configurations in a server context.</p>
 </ul>
 </li>
 </ul>
+<p>Please see <a href="../server-admin/#configuration">the server admin guide</a> for the complete list of available variables.</p>
 <h2 id="known-errors">Known errors</h2>
 <p>This section attempts to cover all of the known errors and their solutions.</p>
 <p>If you encounter an error that does not show up here, please create a new issue on Github:</p>
@@ -1962,6 +2003,20 @@ names are correct (they are case-sensitive).</p>
 Could not fetch parameters from the onnx-web API server at http://10.2.2.34:5000.
 
 Cannot read properties of undefined (reading 'default')
+</code></pre>
+<h4 id="missing-keys-in-state_dict">Missing key(s) in state_dict</h4>
+<p>This can happen when you try to convert a newer Stable Diffusion checkpoint with Torch model extraction enabled. The
+code used for model extraction does not support some keys in recent models and will throw an error.</p>
+<p>Make sure you have set the <code>ONNX_WEB_CONVERT_EXTRACT</code> environment variable to <code>FALSE</code>.</p>
+<p>Example error:</p>
+<pre><code class="language-none">Traceback (most recent call last):
+  File &quot;/opt/onnx-web/api/onnx_web/convert/diffusion/checkpoint.py&quot;, line 1570, in extract_checkpoint
+    vae.load_state_dict(converted_vae_checkpoint)
+  File &quot;/home/ssube/miniconda3/envs/onnx-web-rocm-pytorch2/lib/python3.9/site-packages/torch/nn/modules/module.py&quot;, line 2041, in load_state_dict
+    raise RuntimeError('Error(s) in loading state_dict for {}:\n\t{}'.format(
+RuntimeError: Error(s) in loading state_dict for AutoencoderKL:
+        Missing key(s) in state_dict: &quot;encoder.mid_block.attentions.0.to_q.weight&quot;, &quot;encoder.mid_block.attentions.0.to_q.bias&quot;, &quot;encoder.mid_block.attentions.0.to_k.weight&quot;, &quot;encoder.mid_block.attentions.0.to_k.bias&quot;, &quot;encoder.mid_block.attentions.0.to_v.weight&quot;, &quot;encoder.mid_block.attentions.0.to_v.bias&quot;, &quot;encoder.mid_block.attentions.0.to_out.0.weight&quot;, &quot;encoder.mid_block.attentions.0.to_out.0.bias&quot;, &quot;decoder.mid_block.attentions.0.to_q.weight&quot;, &quot;decoder.mid_block.attentions.0.to_q.bias&quot;, &quot;decoder.mid_block.attentions.0.to_k.weight&quot;, &quot;decoder.mid_block.attentions.0.to_k.bias&quot;, &quot;decoder.mid_block.attentions.0.to_v.weight&quot;, &quot;decoder.mid_block.attentions.0.to_v.bias&quot;, &quot;decoder.mid_block.attentions.0.to_out.0.weight&quot;, &quot;decoder.mid_block.attentions.0.to_out.0.bias&quot;.
+        Unexpected key(s) in state_dict: &quot;encoder.mid_block.attentions.0.key.bias&quot;, &quot;encoder.mid_block.attentions.0.key.weight&quot;, &quot;encoder.mid_block.attentions.0.proj_attn.bias&quot;, &quot;encoder.mid_block.attentions.0.proj_attn.weight&quot;, &quot;encoder.mid_block.attentions.0.query.bias&quot;, &quot;encoder.mid_block.attentions.0.query.weight&quot;, &quot;encoder.mid_block.attentions.0.value.bias&quot;, &quot;encoder.mid_block.attentions.0.value.weight&quot;, &quot;decoder.mid_block.attentions.0.key.bias&quot;, &quot;decoder.mid_block.attentions.0.key.weight&quot;, &quot;decoder.mid_block.attentions.0.proj_attn.bias&quot;, &quot;decoder.mid_block.attentions.0.proj_attn.weight&quot;, &quot;decoder.mid_block.attentions.0.query.bias&quot;, &quot;decoder.mid_block.attentions.0.query.weight&quot;, &quot;decoder.mid_block.attentions.0.value.bias&quot;, &quot;decoder.mid_block.attentions.0.value.weight&quot;.
 </code></pre>
 <h2 id="output-image-sizes">Output Image Sizes</h2>
 <p>You can use this table to figure out the final size for each image, based on the combination of parameters that you are
