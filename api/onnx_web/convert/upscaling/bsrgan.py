@@ -27,7 +27,6 @@ def convert_upscaling_bsrgan(
         logger.info("ONNX model already exists, skipping")
         return
 
-    logger.info("loading and training model")
     # values based on https://github.com/cszn/BSRGAN/blob/main/main_test_bsrgan.py#L69
     model = RRDBNet(
         num_in_ch=3,

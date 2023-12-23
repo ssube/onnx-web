@@ -27,7 +27,6 @@ def convert_correction_gfpgan(
         logger.info("ONNX model already exists, skipping")
         return
 
-    logger.info("loading and training model")
     model = RRDBNet(
         num_in_ch=3,
         num_out_ch=3,
@@ -38,7 +37,6 @@ def convert_correction_gfpgan(
     )
 
     torch_model = torch.load(source, map_location=conversion.map_location)
-    # TODO: make sure strict=False is safe here
     if "params_ema" in torch_model:
         model.load_state_dict(torch_model["params_ema"], strict=False)
     else:

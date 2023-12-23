@@ -31,8 +31,6 @@ def convert_upscale_resrgan(
         logger.info("ONNX model already exists, skipping")
         return
 
-    logger.info("loading and training model")
-
     if TAG_X4_V3 in name:
         # the x4-v3 model needs a different network
         model = SRVGGNetCompact(

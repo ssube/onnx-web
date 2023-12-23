@@ -27,7 +27,6 @@ def convert_upscaling_swinir(
         logger.info("ONNX model already exists, skipping")
         return
 
-    logger.info("loading and training model")
     # values based on https://github.com/JingyunLiang/SwinIR/blob/main/main_test_swinir.py#L128
     params = {
         "depths": [6] * 6,
