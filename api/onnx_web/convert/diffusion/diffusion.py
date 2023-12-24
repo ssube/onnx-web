@@ -878,6 +878,9 @@ def convert_diffusion_diffusers_optimum(
             location=ONNX_WEIGHTS,
         )
 
+        del unet
+        run_gc()
+
     if conversion.control:
         logger.debug("converting CNet from pretrained UNet")
         cnet_path = convert_diffusion_diffusers_cnet(
