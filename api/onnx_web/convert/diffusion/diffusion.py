@@ -59,7 +59,7 @@ CONVERT_PIPELINES = {
     "panorama": StableDiffusionPipeline,
     "pix2pix": StableDiffusionInstructPix2PixPipeline,
     "txt2img": StableDiffusionPipeline,
-    "txt2img-optimum": StableDiffusionPipeline,
+    "txt2img-legacy": StableDiffusionPipeline,
     "upscale": StableDiffusionUpscalePipeline,
 }
 
