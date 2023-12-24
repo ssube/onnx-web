@@ -18,7 +18,7 @@ from .client.huggingface import HuggingfaceClient
 from .correction.gfpgan import convert_correction_gfpgan
 from .diffusion.control import convert_diffusion_control
 from .diffusion.diffusion import (
-    convert_diffusion_diffusers,
+    convert_diffusion_diffusers_legacy,
     convert_diffusion_diffusers_optimum,
 )
 from .diffusion.diffusion_xl import convert_diffusion_diffusers_xl
@@ -59,11 +59,11 @@ Models = Dict[str, List[ModelDict]]
 
 model_converters: Dict[str, Any] = {
     "archive": convert_extract_archive,
-    "img2img": convert_diffusion_diffusers,
+    "img2img": convert_diffusion_diffusers_optimum,
     "img2img-sdxl": convert_diffusion_diffusers_xl,
-    "inpaint": convert_diffusion_diffusers,
+    "inpaint": convert_diffusion_diffusers_legacy,
     "txt2img": convert_diffusion_diffusers_optimum,
-    "txt2img-legacy": convert_diffusion_diffusers,
+    "txt2img-legacy": convert_diffusion_diffusers_legacy,
     "txt2img-sdxl": convert_diffusion_diffusers_xl,
 }
 

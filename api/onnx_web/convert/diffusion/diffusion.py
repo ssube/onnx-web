@@ -333,7 +333,7 @@ def collate_cnet(cnet_path):
 
 
 @torch.no_grad()
-def convert_diffusion_diffusers(
+def convert_diffusion_diffusers_legacy(
     conversion: ConversionContext,
     model: Dict,
     format: Optional[str],
