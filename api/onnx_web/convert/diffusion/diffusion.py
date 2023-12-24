@@ -389,8 +389,6 @@ def convert_diffusion_diffusers(
             return (False, dest_path)
 
     cache_path = fetch_model(conversion, name, source, format=format)
-    temp_path = path.join(conversion.cache_path, f"{name}-torch")
-
     pipe_class = CONVERT_PIPELINES.get(pipe_type)
     v2, pipe_args = get_model_version(
         cache_path, conversion.map_location, size=image_size, version=version
@@ -419,7 +417,7 @@ def convert_diffusion_diffusers(
                 torch_source = convert_extract_checkpoint(
                     conversion,
                     cache_path,
-                    temp_path,
+                    name,
                     is_inpainting=is_inpainting,
                     config_file=config_path,
                     vae_file=replace_vae,
