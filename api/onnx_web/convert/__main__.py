@@ -17,7 +17,10 @@ from .client import add_model_source, fetch_model
 from .client.huggingface import HuggingfaceClient
 from .correction.gfpgan import convert_correction_gfpgan
 from .diffusion.control import convert_diffusion_control
-from .diffusion.diffusion import convert_diffusion_diffusers
+from .diffusion.diffusion import (
+    convert_diffusion_diffusers,
+    convert_diffusion_diffusers_optimum,
+)
 from .diffusion.diffusion_xl import convert_diffusion_diffusers_xl
 from .diffusion.lora import blend_loras
 from .diffusion.textual_inversion import blend_textual_inversions
@@ -60,6 +63,7 @@ model_converters: Dict[str, Any] = {
     "img2img-sdxl": convert_diffusion_diffusers_xl,
     "inpaint": convert_diffusion_diffusers,
     "txt2img": convert_diffusion_diffusers,
+    "txt2img-optimum": convert_diffusion_diffusers_optimum,
     "txt2img-sdxl": convert_diffusion_diffusers_xl,
 }
 

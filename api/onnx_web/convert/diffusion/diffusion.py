@@ -25,6 +25,9 @@ from diffusers import (
     StableDiffusionUpscalePipeline,
 )
 from onnx import load_model, save_model
+from onnx.shape_inference import infer_shapes_path
+from onnxruntime.transformers.float16 import convert_float_to_float16
+from optimum.exporters.onnx import main_export
 
 from ...constants import ONNX_MODEL, ONNX_WEIGHTS
 from ...diffusers.load import optimize_pipeline
@@ -749,5 +752,116 @@ def convert_diffusion_diffusers(
         logger.info("ONNX pipeline is loadable")
     else:
         logger.debug("skipping ONNX reload test")
+
+    return (True, dest_path)
+
+
+@torch.no_grad()
+def convert_diffusion_diffusers_optimum(
+    conversion: ConversionContext,
+    model: Dict,
+    format: Optional[str],
+) -> Tuple[bool, str]:
+    name = str(model.get("name")).strip()
+    source = model.get("source")
+
+    # optional
+    image_size = model.get("image_size", None)
+    pipe_type = model.get("pipeline", "txt2img")
+    replace_vae = model.get("vae", None)
+    version = model.get("version", None)
+
+    device = conversion.training_device
+    dtype = conversion.torch_dtype()
+    logger.debug("using Torch dtype %s for pipeline", dtype)
+
+    dest_path = path.join(conversion.model_path, name)
+    model_index = path.join(dest_path, "model_index.json")
+    model_hash = path.join(dest_path, "hash.txt")
+
+    # diffusers go into a directory rather than .onnx file
+    logger.info(
+        "converting Stable Diffusion model %s: %s -> %s/", name, source, dest_path
+    )
+
+    if path.exists(dest_path) and path.exists(model_index):
+        logger.info("ONNX model already exists, skipping conversion")
+
+        if "hash" in model and not path.exists(model_hash):
+            logger.info("ONNX model does not have hash file, adding one")
+            with open(model_hash, "w") as f:
+                f.write(model["hash"])
+
+        return (False, dest_path)
+
+    cache_path = fetch_model(conversion, name, source, format=format)
+    temp_path = path.join(conversion.cache_path, f"{name}-torch")
+
+    pipe_class = CONVERT_PIPELINES.get(pipe_type)
+    v2, pipe_args = get_model_version(
+        cache_path, conversion.map_location, size=image_size, version=version
+    )
+
+    if path.isdir(cache_path):
+        pipeline = pipe_class.from_pretrained(cache_path, **pipe_args)
+    else:
+        pipeline = pipe_class.from_single_file(cache_path, **pipe_args)
+
+    if replace_vae is not None:
+        vae_path = path.join(conversion.model_path, replace_vae)
+        vae_file = check_ext(vae_path, RESOLVE_FORMATS)
+        if vae_file[0]:
+            logger.debug("loading VAE from single tensor file: %s", vae_path)
+            pipeline.vae = AutoencoderKL.from_single_file(vae_path)
+        else:
+            logger.debug("loading VAE from single tensor file: %s", vae_path)
+            pipeline.vae = AutoencoderKL.from_pretrained(replace_vae)
+
+    if is_torch_2_0:
+        pipeline.unet.set_attn_processor(AttnProcessor())
+        pipeline.vae.set_attn_processor(AttnProcessor())
+
+    optimize_pipeline(conversion, pipeline)
+
+    if path.exists(temp_path):
+        logger.debug("torch model already exists for %s: %s", source, temp_path)
+    else:
+        logger.debug("exporting torch model for %s: %s", source, temp_path)
+        pipeline.save_pretrained(temp_path)
+
+    main_export(
+        temp_path,
+        output=dest_path,
+        task="stable-diffusion",
+        device=device,
+        fp16=conversion.has_optimization(
+            "torch-fp16"
+        ),  # optimum's fp16 mode only works on CUDA or ROCm
+        framework="pt",
+    )
+
+    if "hash" in model:
+        logger.debug("adding hash file to ONNX model")
+        with open(model_hash, "w") as f:
+            f.write(model["hash"])
+
+    if conversion.half:
+        unet_path = path.join(dest_path, "unet", ONNX_MODEL)
+        infer_shapes_path(unet_path)
+        unet = load_model(unet_path)
+        opt_model = convert_float_to_float16(
+            unet,
+            disable_shape_infer=True,
+            force_fp16_initializers=True,
+            keep_io_types=True,
+            op_block_list=["Attention", "MultiHeadAttention"],
+        )
+        save_model(
+            opt_model,
+            unet_path,
+            save_as_external_data=True,
+            all_tensors_to_one_file=True,
+            location="weights.pb",
+        )
 
     return (True, dest_path)

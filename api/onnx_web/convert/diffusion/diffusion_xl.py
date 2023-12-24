@@ -115,4 +115,4 @@ def convert_diffusion_diffusers_xl(
             location="weights.pb",
         )
 
-    return False, dest_path
+    return (True, dest_path)
