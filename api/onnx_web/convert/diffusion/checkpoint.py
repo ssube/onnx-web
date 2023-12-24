@@ -178,7 +178,7 @@ class TrainingConfig:
     ):
         model_name = sanitize_name(model_name)
         model_dir = os.path.join(conversion.cache_path, model_name)
-        working_dir = f"{model_dir}-torch"
+        working_dir = os.path.join(model_dir, "working")
 
         if not os.path.exists(working_dir):
             os.makedirs(working_dir)
@@ -1693,7 +1693,7 @@ def convert_extract_checkpoint(
     config_file: Optional[str] = None,
     vae_file: Optional[str] = None,
 ) -> Tuple[bool, str]:
-    dest_name = os.path.join(conversion.cache_path, f"{name}-torch")
+    dest_name = os.path.join(conversion.cache_path, name, "working")
     model_index = os.path.join(dest_name, "model_index.json")
 
     if os.path.exists(dest_name) and os.path.exists(model_index):
