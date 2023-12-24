@@ -804,7 +804,7 @@ def convert_diffusion_diffusers_optimum(
         cache_path, conversion.map_location, size=image_size, version=version
     )
 
-    if path.isdir(cache_path):
+    if source.startswith(HuggingfaceClient.protocol) or path.isdir(cache_path):
         pipeline = pipe_class.from_pretrained(cache_path, **pipe_args)
     else:
         pipeline = pipe_class.from_single_file(cache_path, **pipe_args)
