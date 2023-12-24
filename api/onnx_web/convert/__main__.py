@@ -62,8 +62,8 @@ model_converters: Dict[str, Any] = {
     "img2img": convert_diffusion_diffusers,
     "img2img-sdxl": convert_diffusion_diffusers_xl,
     "inpaint": convert_diffusion_diffusers,
-    "txt2img": convert_diffusion_diffusers,
-    "txt2img-optimum": convert_diffusion_diffusers_optimum,
+    "txt2img": convert_diffusion_diffusers_optimum,
+    "txt2img-legacy": convert_diffusion_diffusers,
     "txt2img-sdxl": convert_diffusion_diffusers_xl,
 }
 

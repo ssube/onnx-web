@@ -818,7 +818,7 @@ def convert_diffusion_diffusers_optimum(
             logger.debug("loading VAE from single tensor file: %s", vae_path)
             pipeline.vae = AutoencoderKL.from_single_file(vae_path)
         else:
-            logger.debug("loading VAE from single tensor file: %s", vae_path)
+            logger.debug("loading pretrained VAE from path: %s", replace_vae)
             pipeline.vae = AutoencoderKL.from_pretrained(replace_vae)
 
     if is_torch_2_0:
