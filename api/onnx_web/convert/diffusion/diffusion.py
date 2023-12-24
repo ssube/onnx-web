@@ -59,6 +59,7 @@ CONVERT_PIPELINES = {
     "panorama": StableDiffusionPipeline,
     "pix2pix": StableDiffusionInstructPix2PixPipeline,
     "txt2img": StableDiffusionPipeline,
+    "txt2img-optimum": StableDiffusionPipeline,
     "upscale": StableDiffusionUpscalePipeline,
 }
 
@@ -781,7 +782,10 @@ def convert_diffusion_diffusers_optimum(
 
     # diffusers go into a directory rather than .onnx file
     logger.info(
-        "converting Stable Diffusion model %s: %s -> %s/", name, source, dest_path
+        "converting Stable Diffusion model %s using Optimum: %s -> %s/",
+        name,
+        source,
+        dest_path,
     )
 
     if path.exists(dest_path) and path.exists(model_index):
