@@ -1,7 +1,6 @@
 ### Specific versions ###
 numpy==1.24.1
 protobuf==3.20.3
-torch==2.1.1
 
 ### SD packages ###
 accelerate==0.25.0
