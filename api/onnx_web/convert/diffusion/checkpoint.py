@@ -1693,7 +1693,8 @@ def convert_extract_checkpoint(
     config_file: Optional[str] = None,
     vae_file: Optional[str] = None,
 ) -> Tuple[bool, str]:
-    dest_name = os.path.join(conversion.cache_path, f"{name}-torch", "working")
+    temp_name = f"{name}-torch"
+    dest_name = os.path.join(conversion.cache_path, temp_name, "working")
     model_index = os.path.join(dest_name, "model_index.json")
 
     if os.path.exists(dest_name) and os.path.exists(model_index):
@@ -1706,7 +1707,7 @@ def convert_extract_checkpoint(
         )
         if extract_checkpoint(
             conversion,
-            name,
+            temp_name,
             source,
             config_file=config_file,
             is_inpainting=is_inpainting,
