@@ -895,6 +895,8 @@ def convert_diffusion_diffusers_optimum(
             v2=v2,
         )
 
+        collate_cnet(cnet_path)
+
         if conversion.half:
             infer_shapes_path(cnet_path)
             cnet = load_model(cnet_path)
