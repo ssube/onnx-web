@@ -37,7 +37,7 @@ def convert_extract_archive(
         return True, dest_path
 
 
-SAFE_NAME = r"^[-_a-zA-Z/\\\.]+$"
+SAFE_NAME = r"^[-_a-zA-Z0-9/\\\.]+$"
 
 
 def is_safe(name: str):
