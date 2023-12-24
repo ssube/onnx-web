@@ -1,0 +1,151 @@
+{
+  "diffusion": [
+    {
+      "format": "zip",
+      "label": "Dreamshaper v8 (fp16)",
+      "name": "diffusion-dreamshaper-v8-fp16",
+      "pipeline": "archive",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-dreamshaper-v8-fp16.zip"
+    },
+    {
+      "format": "zip",
+      "label": "Stable Diffusion v1.5 (fp16)",
+      "name": "stable-diffusion-v1-5-fp16",
+      "pipeline": "archive",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/stable-diffusion-v1-5-fp16.zip"
+    },
+    {
+      "format": "zip",
+      "label": "SDXL - Turbo (fp16)",
+      "name": "stable-diffusion-xl-turbo-fp16",
+      "pipeline": "archive",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/stable-diffusion-xl-turbo-fp16.zip"
+    },
+    {
+      "format": "zip",
+      "label": "SDXL - Base v1.0 (fp16)",
+      "name": "stable-diffusion-xl-v1-0-fp16",
+      "pipeline": "archive",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/stable-diffusion-xl-v1-0-fp16.zip"
+    }
+  ],
+  "sources": [
+    {
+      "format": "onnx",
+      "name": "correction-gfpgan-v1-3",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/correction-gfpgan-v1-3.onnx"
+    },
+    {
+      "format": "onnx",
+      "name": "correction-codeformer",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/correction-codeformer.onnx"
+    },
+    {
+      "format": "onnx",
+      "name": "upscaling-real-esrgan-x2-plus",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-real-esrgan-x2-plus.onnx"
+    },
+    {
+      "format": "onnx",
+      "name": "upscaling-real-esrgan-x4-plus",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-real-esrgan-x4-plus.onnx"
+    },
+    {
+      "format": "onnx",
+      "name": "upscaling-real-esrgan-x4-v3",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-real-esrgan-x4-v3.onnx"
+    },
+    {
+      "format": "onnx",
+      "name": "upscaling-swinir-classical-x4",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-swinir-classical-x4.onnx"
+    },
+    {
+      "format": "onnx",
+      "name": "upscaling-swinir-real-large-x4",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-swinir-real-large-x4.onnx"
+    },
+    {
+      "format": "onnx",
+      "name": "upscaling-bsrgan-x4",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-bsrgan-x4.onnx"
+    },
+    {
+      "format": "onnx",
+      "name": "upscaling-bsrgan-x2",
+      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-bsrgan-x2.onnx"
+    },
+    {
+      "format": "pth",
+      "name": "detection-resnet50-final",
+      "source": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/detection_Resnet50_Final.pth"
+    },
+    {
+      "format": "pth",
+      "name": "detection-mobilenet025-final",
+      "source": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/detection_mobilenet0.25_Final.pth"
+    },
+    {
+      "format": "pth",
+      "name": "detection-yolo-v5-l",
+      "source": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/yolov5l-face.pth"
+    },
+    {
+      "format": "pth",
+      "name": "detection-yolo-v5-n",
+      "source": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/yolov5n-face.pth"
+    },
+    {
+      "format": "pth",
+      "name": "parsing-bisenet",
+      "source": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_bisenet.pth"
+    },
+    {
+      "format": "pth",
+      "name": "parsing-parsenet",
+      "source": "https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/parsing_parsenet.pth"
+    },
+    {
+      "dest": "control",
+      "format": "onnx",
+      "name": "canny",
+      "source": "https://huggingface.co/ForserX/sd-controlnet-canny-onnx/resolve/main/model.onnx"
+    },
+    {
+      "dest": "control",
+      "format": "onnx",
+      "name": "depth",
+      "source": "https://huggingface.co/ForserX/sd-controlnet-depth-onnx/resolve/main/model.onnx"
+    },
+    {
+      "dest": "control",
+      "format": "onnx",
+      "name": "hed",
+      "source": "https://huggingface.co/ForserX/sd-controlnet-hed-onnx/resolve/main/model.onnx"
+    },
+    {
+      "dest": "control",
+      "format": "onnx",
+      "name": "mlsd",
+      "source": "https://huggingface.co/ForserX/sd-controlnet-mlsd-onnx/resolve/main/model.onnx"
+    },
+    {
+      "dest": "control",
+      "format": "onnx",
+      "name": "normal",
+      "source": "https://huggingface.co/ForserX/sd-controlnet-normal-onnx/resolve/main/model.onnx"
+    },
+    {
+      "dest": "control",
+      "format": "onnx",
+      "name": "openpose",
+      "source": "https://huggingface.co/ForserX/sd-controlnet-openpose-onnx/resolve/main/model.onnx"
+    },
+    {
+      "dest": "control",
+      "format": "onnx",
+      "name": "seg",
+      "source": "https://huggingface.co/ForserX/sd-controlnet-seg-onnx/resolve/main/model.onnx"
+    }
+  ]
+}
