@@ -5,75 +5,75 @@
       "label": "Dreamshaper v8 (fp16)",
       "name": "diffusion-dreamshaper-v8-fp16",
       "pipeline": "archive",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/diffusion-dreamshaper-v8-fp16.zip"
+      "source": "https://models.onnx-files.com/diffusion-dreamshaper-v8-fp16.zip"
     },
     {
       "format": "zip",
       "label": "Stable Diffusion v1.5 (fp16)",
       "name": "stable-diffusion-v1-5-fp16",
       "pipeline": "archive",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/stable-diffusion-v1-5-fp16.zip"
+      "source": "https://models.onnx-files.com/stable-diffusion-v1-5-fp16.zip"
     },
     {
       "format": "zip",
       "label": "SDXL - Turbo (fp16)",
       "name": "stable-diffusion-xl-turbo-fp16",
       "pipeline": "archive",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/stable-diffusion-xl-turbo-fp16.zip"
+      "source": "https://models.onnx-files.com/stable-diffusion-xl-turbo-fp16.zip"
     },
     {
       "format": "zip",
       "label": "SDXL - Base v1.0 (fp16)",
       "name": "stable-diffusion-xl-v1-0-fp16",
       "pipeline": "archive",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/stable-diffusion-xl-v1-0-fp16.zip"
+      "source": "https://models.onnx-files.com/stable-diffusion-xl-v1-0-fp16.zip"
     }
   ],
   "sources": [
     {
       "format": "onnx",
       "name": "correction-gfpgan-v1-3",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/correction-gfpgan-v1-3.onnx"
+      "source": "https://models.onnx-files.com/correction-gfpgan-v1-3.onnx"
     },
     {
       "format": "onnx",
       "name": "correction-codeformer",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/correction-codeformer.onnx"
+      "source": "https://models.onnx-files.com/correction-codeformer.onnx"
     },
     {
       "format": "onnx",
       "name": "upscaling-real-esrgan-x2-plus",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-real-esrgan-x2-plus.onnx"
+      "source": "https://models.onnx-files.com/upscaling-real-esrgan-x2-plus.onnx"
     },
     {
       "format": "onnx",
       "name": "upscaling-real-esrgan-x4-plus",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-real-esrgan-x4-plus.onnx"
+      "source": "https://models.onnx-files.com/upscaling-real-esrgan-x4-plus.onnx"
     },
     {
       "format": "onnx",
       "name": "upscaling-real-esrgan-x4-v3",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-real-esrgan-x4-v3.onnx"
+      "source": "https://models.onnx-files.com/upscaling-real-esrgan-x4-v3.onnx"
     },
     {
       "format": "onnx",
       "name": "upscaling-swinir-classical-x4",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-swinir-classical-x4.onnx"
+      "source": "https://models.onnx-files.com/upscaling-swinir-classical-x4.onnx"
     },
     {
       "format": "onnx",
       "name": "upscaling-swinir-real-large-x4",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-swinir-real-large-x4.onnx"
+      "source": "https://models.onnx-files.com/upscaling-swinir-real-large-x4.onnx"
     },
     {
       "format": "onnx",
       "name": "upscaling-bsrgan-x4",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-bsrgan-x4.onnx"
+      "source": "https://models.onnx-files.com/upscaling-bsrgan-x4.onnx"
     },
     {
       "format": "onnx",
       "name": "upscaling-bsrgan-x2",
-      "source": "https://pub-ed4207c1d9d242ab9629ac1eb1f794cf.r2.dev/upscaling-bsrgan-x2.onnx"
+      "source": "https://models.onnx-files.com/upscaling-bsrgan-x2.onnx"
     },
     {
       "format": "pth",
