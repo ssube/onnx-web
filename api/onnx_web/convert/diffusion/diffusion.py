@@ -865,7 +865,7 @@ def convert_diffusion_diffusers_optimum(
             unet_path,
             save_as_external_data=True,
             all_tensors_to_one_file=True,
-            location="weights.pb",
+            location=ONNX_WEIGHTS,
         )
 
     return (True, dest_path)

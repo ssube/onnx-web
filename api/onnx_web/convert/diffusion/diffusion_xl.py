@@ -9,7 +9,7 @@ from onnx.shape_inference import infer_shapes_path
 from onnxruntime.transformers.float16 import convert_float_to_float16
 from optimum.exporters.onnx import main_export
 
-from ...constants import ONNX_MODEL
+from ...constants import ONNX_MODEL, ONNX_WEIGHTS
 from ..client import fetch_model
 from ..utils import RESOLVE_FORMATS, ConversionContext, check_ext
 
@@ -112,7 +112,7 @@ def convert_diffusion_diffusers_xl(
             unet_path,
             save_as_external_data=True,
             all_tensors_to_one_file=True,
-            location="weights.pb",
+            location=ONNX_WEIGHTS,
         )
 
     return (True, dest_path)
