@@ -10,6 +10,7 @@ from onnxruntime.transformers.float16 import convert_float_to_float16
 from optimum.exporters.onnx import main_export
 
 from ...constants import ONNX_MODEL, ONNX_WEIGHTS
+from ...utils import run_gc
 from ..client import fetch_model
 from ..utils import RESOLVE_FORMATS, ConversionContext, check_ext
 
@@ -78,6 +79,10 @@ def convert_diffusion_diffusers_xl(
     else:
         logger.debug("exporting torch model for %s: %s", source, temp_path)
         pipeline.save_pretrained(temp_path)
+
+    # GC temporary pipeline
+    del pipeline
+    run_gc()
 
     # directory -> onnx using optimum exporters
     main_export(
