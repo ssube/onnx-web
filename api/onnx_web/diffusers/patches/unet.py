@@ -107,27 +107,13 @@ class UNetWrapper(object):
         elif isinstance(self.wrapped, OnnxRuntimeModel):
             session = self.wrapped.model
         else:
-            raise ValueError()
+            raise ValueError("unknown UNet class")
 
         inputs = session.get_inputs()
         self.input_types = dict(
             [(input.name, ORT_TO_NP_TYPE[input.type]) for input in inputs]
         )
         logger.debug("cached UNet input types: %s", self.input_types)
-
-        # [
-        #        (
-        #            input.name,
-        #            next(
-        #                [
-        #                    TENSOR_TYPE_TO_NP_TYPE[field[1].elem_type]
-        #                    for field in input.type.ListFields()
-        #                ],
-        #                np.float32,
-        #            ),
-        #        )
-        #        for input in self.wrapped.model.graph.input
-        #    ]
 
     def set_prompts(self, prompt_embeds: List[np.ndarray]):
         logger.debug(
