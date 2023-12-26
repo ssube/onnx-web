@@ -198,27 +198,29 @@ def expand_prompt(
         negative_prompt_embeds = self.text_encoder(
             input_ids=uncond_input.input_ids.astype(np.int32)
         )[0]
-        negative_padding = tokens.input_ids.shape[1] - negative_prompt_embeds.shape[1]
-        logger.trace(
-            "padding negative prompt to match input: %s, %s, %s extra tokens",
-            tokens.input_ids.shape,
-            negative_prompt_embeds.shape,
-            negative_padding,
-        )
-        negative_prompt_embeds = np.pad(
-            negative_prompt_embeds,
-            [(0, 0), (0, negative_padding), (0, 0)],
-            mode="constant",
-            constant_values=0,
-        )
-        negative_prompt_embeds = np.repeat(
-            negative_prompt_embeds, num_images_per_prompt, axis=0
-        )
 
-        # For classifier free guidance, we need to do two forward passes.
-        # Here we concatenate the unconditional and text embeddings into a single batch
-        # to avoid doing two forward passes
-        prompt_embeds = np.concatenate([negative_prompt_embeds, prompt_embeds])
+        if negative_prompt_embeds is not None:
+            negative_padding = tokens.input_ids.shape[1] - negative_prompt_embeds.shape[1]
+            logger.trace(
+                "padding negative prompt to match input: %s, %s, %s extra tokens",
+                tokens.input_ids.shape,
+                negative_prompt_embeds.shape,
+                negative_padding,
+            )
+            negative_prompt_embeds = np.pad(
+                negative_prompt_embeds,
+                [(0, 0), (0, negative_padding), (0, 0)],
+                mode="constant",
+                constant_values=0,
+            )
+            negative_prompt_embeds = np.repeat(
+                negative_prompt_embeds, num_images_per_prompt, axis=0
+            )
+
+            # For classifier free guidance, we need to do two forward passes.
+            # Here we concatenate the unconditional and text embeddings into a single batch
+            # to avoid doing two forward passes
+            prompt_embeds = np.concatenate([negative_prompt_embeds, prompt_embeds])
 
     logger.trace("expanded prompt shape: %s", prompt_embeds.shape)
     return prompt_embeds
@@ -427,7 +429,7 @@ def parse_wildcards(prompt: str, seed: int, wildcards: Dict[str, List[str]]) -> 
 
         wildcard = ""
         if name in wildcards:
-            wildcard = pop_random(wildcards.get(name))
+            wildcard = pop_random(wildcards[name])
         else:
             logger.warning("unknown wildcard: %s", name)
 
@@ -488,11 +490,11 @@ def parse_region_group(group: Tuple[str, ...]) -> Region:
     top, left, bottom, right, weight, feather, prompt = group
 
     # break down the feather section
-    feather_radius, *feather_edges = feather.split("_")
-    if len(feather_edges) == 0:
+    feather_radius, *feather_rest = feather.split("_")
+    if len(feather_rest) == 0:
         feather_edges = "TLBR"
     else:
-        feather_edges = "".join(feather_edges)
+        feather_edges = "".join(feather_rest)
 
     return (
         int(top),

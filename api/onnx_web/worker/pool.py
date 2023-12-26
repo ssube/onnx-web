@@ -536,7 +536,7 @@ def logger_main(pool: DevicePoolExecutor, logs: "Queue[str]"):
 
     while True:
         try:
-            msg = logs.get(pool.join_timeout / 2)
+            msg = logs.get(timeout=(pool.join_timeout / 2))
             logger.debug("received logs from worker: %s", msg)
         except Empty:
             # logger worker should not generate more logs if it doesn't have any logs

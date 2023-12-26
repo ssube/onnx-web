@@ -269,7 +269,12 @@ def convert_model_diffusion(conversion: ConversionContext, model):
     model_format = source_format(model)
 
     pipeline = model.get("pipeline", "txt2img")
+    logger.trace("converting diffusion model using pipeline %s", pipeline)
+
     converter = model_converters.get(pipeline)
+    if converter is None:
+        raise ValueError("cannot find converter for pipeline")
+
     converted, dest = converter(
         conversion,
         model,
@@ -500,7 +505,7 @@ def register_plugins(conversion: ConversionContext):
     logger.info("loading conversion plugins")
     exports = load_plugins(conversion)
 
-    for proto, client in exports.clients:
+    for proto, client in exports.clients.items():
         try:
             add_model_source(proto, client)
         except Exception:
