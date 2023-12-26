@@ -55,7 +55,6 @@ Please see [the server admin guide](server-admin.md) for details on how to confi
       - [Steps parameter](#steps-parameter)
       - [Seed parameter](#seed-parameter)
       - [Batch size parameter](#batch-size-parameter)
-      - [Tile size parameter](#tile-size-parameter)
       - [UNet overlap parameter](#unet-overlap-parameter)
         - [25% overlap](#25-overlap)
         - [50% overlap](#50-overlap)
@@ -682,13 +681,6 @@ The number of images to generate each time you press the generate button.
 
 All of the images in the batch will share the same seed, and changing the batch size will change the results.
 
-#### Tile size parameter
-
-The size of each UNet tile when running [the panorama pipeline](#panorama-pipeline).
-
-Increasing this is a lot like increasing the image size. It will produce larger areas with consistent shapes and
-outlines, but will increase memory. Decreasing this too far can produce deep-fried results.
-
 #### UNet overlap parameter
 
 The amount that each highres and VAE tile should overlap.
@@ -732,10 +724,8 @@ Tiles evenly fill the image and do not need to be cropped.
 The size of each UNet tile when running tiled pipelines, which happens when the image dimensions are larger than
 the UNet tile size or you are using [the panorama pipeline](#panorama-pipeline).
 
-This behaves a lot like [the overlap parameter](#unet-overlap-parameter) but only applies to the UNet when using [the
-panorama pipeline](#panorama-pipeline).
-
-_Note:_ This parameter may be combined with the overlap parameter in the future.
+Increasing this is a lot like increasing the image size. It will produce larger areas with consistent shapes and
+outlines, but will increase memory. Decreasing this too far can produce deep-fried results.
 
 #### Tiled VAE parameter
 
