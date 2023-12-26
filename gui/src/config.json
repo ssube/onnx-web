@@ -64,7 +64,7 @@
     },
     "height": {
       "default": 512,
-      "min": 256,
+      "min": 128,
       "max": 8192,
       "step": 8
     },
@@ -98,7 +98,7 @@
       "step": 1
     },
     "highresStrength": {
-      "default": 0.5,
+      "default": 0.1,
       "min": 0,
       "max": 1,
       "step": 0.01
@@ -212,7 +212,7 @@
     "unet_tile": {
       "default": 512,
       "min": 128,
-      "max": 1024,
+      "max": 2048,
       "step": 128
     },
     "upscaleOrder": {
@@ -241,7 +241,7 @@
     },
     "width": {
       "default": 512,
-      "min": 256,
+      "min": 128,
       "max": 8192,
       "step": 8
     }
