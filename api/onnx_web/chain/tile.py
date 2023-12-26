@@ -25,7 +25,7 @@ class TileCallback(Protocol):
     Definition for a tile job function.
     """
 
-    def __call__(self, image: Image.Image, dims: Tuple[int, int, int]) -> StageResult:
+    def __call__(self, sources: List[Image.Image], mask: Image.Image, dims: Tuple[int, int, int]) -> StageResult:
         """
         Run this stage against a single tile.
         """
@@ -366,10 +366,7 @@ def process_tile_order(
     scale: int,
     filters: List[TileCallback],
     **kwargs,
-) -> Image.Image:
-    """
-    TODO: needs to handle more than one image
-    """
+) -> List[Image.Image]:
     if order == TileOrder.grid:
         logger.debug("using grid tile order with tile size: %s", tile)
         return process_tile_stack(
@@ -483,7 +480,7 @@ def generate_tile_grid(
     height: int,
     tile: int,
     overlap: float = 0.0,
-) -> List[Tuple[int, int]]:
+) -> List[Tuple[int, int, Image.Image]]:
     adj_tile = int(float(tile) * (1.0 - overlap))
     tiles_x = ceil(width / adj_tile)
     tiles_y = ceil(height / adj_tile)

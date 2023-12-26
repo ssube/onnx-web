@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, Union
 
 from flask import request
 
@@ -345,7 +345,7 @@ PipelineParams = Tuple[Optional[DeviceParams], ImageParams, Size]
 
 def pipeline_from_json(
     server: ServerContext,
-    data: Dict[str, str],
+    data: Dict[str, Union[str, Dict[str, str]]],
     default_pipeline: str = "txt2img",
 ) -> PipelineParams:
     """
