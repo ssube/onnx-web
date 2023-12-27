@@ -110,7 +110,6 @@ def convert_diffusion_diffusers_xl(
             disable_shape_infer=True,
             force_fp16_initializers=True,
             keep_io_types=True,
-            op_block_list=["Attention", "MultiHeadAttention"],
         )
         onnx.save_model(
             opt_model,
