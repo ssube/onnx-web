@@ -161,6 +161,9 @@ class DeviceParams:
         elif "onnx-graph-basic" in self.optimizations:
             logger.debug("enabling basic ONNX graph optimizations")
             sess.graph_optimization_level = GraphOptimizationLevel.ORT_ENABLE_BASIC
+        elif "onnx-graph-extended" in self.optimizations:
+            logger.debug("enabling extended ONNX graph optimizations")
+            sess.graph_optimization_level = GraphOptimizationLevel.ORT_ENABLE_EXTENDED
         elif "onnx-graph-all" in self.optimizations:
             logger.debug("enabling all ONNX graph optimizations")
             sess.graph_optimization_level = GraphOptimizationLevel.ORT_ENABLE_ALL
