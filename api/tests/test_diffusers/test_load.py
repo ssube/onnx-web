@@ -1,6 +1,6 @@
 import unittest
-from unittest.mock import MagicMock
 from os import path
+from unittest.mock import MagicMock
 
 import torch
 from diffusers import DDIMScheduler, OnnxRuntimeModel
