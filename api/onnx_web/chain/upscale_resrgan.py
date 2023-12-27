@@ -25,6 +25,28 @@ class UpscaleRealESRGANStage(BaseStage):
         # TODO: rewrite and remove
         from realesrgan import RealESRGANer
 
+        class RealESRGANWrapper(RealESRGANer):
+            def __init__(
+                self,
+                scale,
+                model_path,
+                dni_weight=None,
+                model=None,
+                tile=0,
+                tile_pad=10,
+                pre_pad=10,
+                half=False,
+                device=None,
+                gpu_id=None,
+            ):
+                self.scale = scale
+                self.tile_size = tile
+                self.tile_pad = tile_pad
+                self.pre_pad = pre_pad
+                self.mod_scale = None
+                self.half = half
+                self.model = model
+
         model_file = "%s.%s" % (params.upscale_model, params.format)
         model_path = path.join(server.model_path, model_file)
 
@@ -54,16 +76,14 @@ class UpscaleRealESRGANStage(BaseStage):
         logger.debug("loading Real ESRGAN upscale model from %s", model_path)
 
         # TODO: shouldn't need the PTH file
-        model_path_pth = path.join(server.cache_path, ("%s.pth" % params.upscale_model))
-        upsampler = RealESRGANer(
+        upsampler = RealESRGANWrapper(
             scale=params.scale,
-            model_path=model_path_pth,
             dni_weight=dni_weight,
             model=model,
             tile=tile,
             tile_pad=params.tile_pad,
             pre_pad=params.pre_pad,
-            half=False,  # TODO: use server optimizations
+            half=("torch-fp16" in server.optimizations),
         )
 
         server.cache.set(ModelTypes.upscaling, cache_key, upsampler)

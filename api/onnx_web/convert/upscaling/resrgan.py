@@ -27,7 +27,7 @@ SPECIAL_KEYS = {
     "model.10.weight": "conv_last.weight",
 }
 
-SUB_NAME = compile(r"^model\.1\.sub\.(\d)+\.RDB(\d)\.conv(\d)\.0\.(bias|weight)$")
+SUB_NAME = compile(r"^model\.1\.sub\.(\d+)\.RDB(\d)\.conv(\d)\.0\.(bias|weight)$")
 
 
 def fix_resrgan_keys(model):
@@ -41,10 +41,13 @@ def fix_resrgan_keys(model):
             if matched is not None:
                 sub_index, rdb_index, conv_index, node_type = matched.groups()
                 new_key = (
-                    f"model.1.sub.{sub_index}.rdb{rdb_index}.{conv_index}.{node_type}"
+                    f"body.{sub_index}.rdb{rdb_index}.conv{conv_index}.{node_type}"
                 )
             else:
                 raise ValueError("unknown key format")
+
+        if new_key in model:
+            raise ValueError("key collision")
 
         model[new_key] = model[key]
         del model[key]
