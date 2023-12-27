@@ -200,7 +200,9 @@ def expand_prompt(
         )[0]
 
         if negative_prompt_embeds is not None:
-            negative_padding = tokens.input_ids.shape[1] - negative_prompt_embeds.shape[1]
+            negative_padding = (
+                tokens.input_ids.shape[1] - negative_prompt_embeds.shape[1]
+            )
             logger.trace(
                 "padding negative prompt to match input: %s, %s, %s extra tokens",
                 tokens.input_ids.shape,

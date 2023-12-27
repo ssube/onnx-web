@@ -1,8 +1,9 @@
 import unittest
+from unittest.mock import MagicMock
 from os import path
 
 import torch
-from diffusers import DDIMScheduler
+from diffusers import DDIMScheduler, OnnxRuntimeModel
 
 from onnx_web.diffusers.load import (
     get_available_pipelines,
@@ -120,8 +121,13 @@ class TestPatchPipeline(unittest.TestCase):
         pass
 
     def test_unet_wrapper_not_xl(self):
+        session = MagicMock()
+        session.get_inputs.return_value = []
+
         server = ServerContext()
         pipeline = MockPipeline()
+        pipeline.unet = OnnxRuntimeModel(model=session)
+
         patch_pipeline(
             server,
             pipeline,
@@ -131,8 +137,13 @@ class TestPatchPipeline(unittest.TestCase):
         self.assertTrue(isinstance(pipeline.unet, UNetWrapper))
 
     def test_unet_wrapper_xl(self):
+        session = MagicMock()
+        session.get_inputs.return_value = []
+
         server = ServerContext()
         pipeline = MockPipeline()
+        pipeline.unet = OnnxRuntimeModel(model=session)
+
         patch_pipeline(
             server,
             pipeline,
@@ -142,8 +153,13 @@ class TestPatchPipeline(unittest.TestCase):
         self.assertTrue(isinstance(pipeline.unet, UNetWrapper))
 
     def test_vae_wrapper(self):
+        session = MagicMock()
+        session.get_inputs.return_value = []
+
         server = ServerContext()
         pipeline = MockPipeline()
+        pipeline.unet = OnnxRuntimeModel(model=session)
+
         patch_pipeline(
             server,
             pipeline,

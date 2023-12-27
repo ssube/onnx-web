@@ -25,7 +25,9 @@ class TileCallback(Protocol):
     Definition for a tile job function.
     """
 
-    def __call__(self, sources: List[Image.Image], mask: Image.Image, dims: Tuple[int, int, int]) -> StageResult:
+    def __call__(
+        self, sources: List[Image.Image], mask: Image.Image, dims: Tuple[int, int, int]
+    ) -> StageResult:
         """
         Run this stage against a single tile.
         """
