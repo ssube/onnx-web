@@ -13,7 +13,7 @@ from .result import StageResult
 logger = getLogger(__name__)
 
 
-class BlendDenoiseStage(BaseStage):
+class BlendDenoiseFastNLMeansStage(BaseStage):
     max_tile = SizeChart.max
 
     def run(

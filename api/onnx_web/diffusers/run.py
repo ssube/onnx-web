@@ -5,7 +5,7 @@ from typing import Any, List, Optional
 from PIL import Image, ImageOps
 
 from ..chain import (
-    BlendDenoiseStage,
+    BlendDenoiseLocalStdStage,
     BlendImg2ImgStage,
     BlendMaskStage,
     ChainPipeline,
@@ -78,9 +78,9 @@ def run_txt2img_pipeline(
 
     # apply upscaling and correction, before highres
     highres_size = get_highres_tile(server, params, highres, tile_size)
-    if params.is_panorama():
+    if params.is_xl():
         chain.stage(
-            BlendDenoiseStage(),
+            BlendDenoiseLocalStdStage(),
             StageParams(tile_size=highres_size),
         )
 

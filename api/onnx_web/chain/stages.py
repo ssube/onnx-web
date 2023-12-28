@@ -1,7 +1,8 @@
 from logging import getLogger
 
 from .base import BaseStage
-from .blend_denoise import BlendDenoiseStage
+from .blend_denoise_fastnlmeans import BlendDenoiseFastNLMeansStage
+from .blend_denoise_localstd import BlendDenoiseLocalStdStage
 from .blend_grid import BlendGridStage
 from .blend_img2img import BlendImg2ImgStage
 from .blend_linear import BlendLinearStage
@@ -27,7 +28,9 @@ from .upscale_swinir import UpscaleSwinIRStage
 logger = getLogger(__name__)
 
 CHAIN_STAGES = {
-    "blend-denoise": BlendDenoiseStage,
+    "blend-denoise": BlendDenoiseFastNLMeansStage,
+    "blend-denoise-fastnlmeans": BlendDenoiseFastNLMeansStage,
+    "blend-denoise-localstd": BlendDenoiseLocalStdStage,
     "blend-img2img": BlendImg2ImgStage,
     "blend-inpaint": UpscaleOutpaintStage,
     "blend-grid": BlendGridStage,
