@@ -32,7 +32,10 @@ class BlendDenoiseLocalStdStage(BaseStage):
         logger.info("denoising source images")
 
         return StageResult.from_arrays(
-            [remove_noise(source, threshold=strength)[0] for source in sources.as_numpy()]
+            [
+                remove_noise(source, threshold=strength)[0]
+                for source in sources.as_numpy()
+            ]
         )
 
 
@@ -50,7 +53,7 @@ def downscale_image(image: np.ndarray, scale: int = 2):
     return result_image
 
 
-def replace_noise(region: np.ndarray, threshold: int, deviation: float, op = np.median):
+def replace_noise(region: np.ndarray, threshold: int, deviation: float, op=np.median):
     # Identify stray pixels (brightness significantly deviates from surrounding pixels)
     central_pixel = np.mean(region[2:4, 2:4])
 
@@ -59,7 +62,9 @@ def replace_noise(region: np.ndarray, threshold: int, deviation: float, op = np.
     diff = np.abs(central_pixel - region_normal)
 
     # If the whole region is fairly consistent but the central pixel deviates significantly,
-    if diff > (region_deviation + threshold) and diff < (region_deviation + threshold * deviation):
+    if diff > (region_deviation + threshold) and diff < (
+        region_deviation + threshold * deviation
+    ):
         surrounding_pixels = region[region != central_pixel]
         surrounding_median = op(surrounding_pixels)
         # replace it with the median of surrounding pixels
@@ -69,7 +74,12 @@ def replace_noise(region: np.ndarray, threshold: int, deviation: float, op = np.
     return False
 
 
-def remove_noise(image: np.ndarray, threshold: int, deviation: float, region_size: Tuple[int, int] = (6, 6)):
+def remove_noise(
+    image: np.ndarray,
+    threshold: int,
+    deviation: float,
+    region_size: Tuple[int, int] = (6, 6),
+):
     # Create a copy of the original image to store the result
     result_image = np.copy(image)
     result_mask = np.zeros_like(image)
@@ -87,7 +97,7 @@ def remove_noise(image: np.ndarray, threshold: int, deviation: float, region_siz
             # print(i_min, i_max, j_min, j_max)
 
             # skip if the central pixels have already been masked by a previous artifact
-            if np.any(result_mask[i - 1:i + 1, j - 1:j + 1] > 0):
+            if np.any(result_mask[i - 1 : i + 1, j - 1 : j + 1] > 0):
                 pass
 
             # Extract region from each channel

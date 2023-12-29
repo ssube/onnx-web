@@ -227,7 +227,7 @@ def load_pipeline(
                 vae_encoder_session=components.get("vae_encoder_session", None),
                 text_encoder_2_session=components.get("text_encoder_2_session", None),
                 tokenizer_2=components.get("tokenizer_2", None),
-                add_watermarker=False, # not so invisible: https://github.com/ssube/onnx-web/issues/438
+                add_watermarker=False,  # not so invisible: https://github.com/ssube/onnx-web/issues/438
             )
         else:
             if "controlnet" in components:

@@ -37,8 +37,8 @@ else:
 
 
 if is_diffusers_0_24:
-    from diffusers.models.modeling_outputs import AutoencoderKLOutput
     from diffusers.models.autoencoders.vae import DecoderOutput
+    from diffusers.models.modeling_outputs import AutoencoderKLOutput
 else:
     from diffusers.models.autoencoder_kl import AutoencoderKLOutput
     from diffusers.models.vae import DecoderOutput
