@@ -5,6 +5,7 @@ from re import compile
 import torch
 from torch.onnx import export
 
+from ...models.rrdb import RRDBNet
 from ...models.srvgg import SRVGGNetCompact
 from ..utils import ConversionContext, ModelDict
 
@@ -61,8 +62,6 @@ def convert_upscale_resrgan(
     model: ModelDict,
     source: str,
 ):
-    from basicsr.archs.rrdbnet_arch import RRDBNet
-
     name = model.get("name")
     source = source or model.get("source")
     scale = model.get("scale")
