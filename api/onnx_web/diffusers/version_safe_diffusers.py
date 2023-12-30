@@ -32,4 +32,3 @@ if is_diffusers_0_15:
     from diffusers.models.attention_processor import AttnProcessor
 else:
     from diffusers.models.cross_attention import CrossAttnProcessor as AttnProcessor
-
