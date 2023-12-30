@@ -1,11 +1,4 @@
-import diffusers
 from diffusers import *  # NOQA
-from packaging import version
-
-is_diffusers_0_15 = version.parse(
-    version.parse(diffusers.__version__).base_version
-) >= version.parse("0.15")
-
 
 try:
     from diffusers import DEISMultistepScheduler
@@ -27,8 +20,17 @@ try:
 except ImportError:
     from ..diffusers.stub_scheduler import StubScheduler as UniPCMultistepScheduler
 
+try:
+    from diffusers.models.modeling_outputs import AutoencoderKLOutput
+except ImportError:
+    from diffusers.models.autoencoder_kl import AutoencoderKLOutput
 
-if is_diffusers_0_15:
+try:
+    from diffusers.models.autoencoders.vae import DecoderOutput
+except ImportError:
+    from diffusers.models.vae import DecoderOutput
+
+try:
     from diffusers.models.attention_processor import AttnProcessor
-else:
+except ImportError:
     from diffusers.models.cross_attention import CrossAttnProcessor as AttnProcessor
