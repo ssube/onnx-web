@@ -24,7 +24,8 @@ class BlendDenoiseLocalStdStage(BaseStage):
         _params: ImageParams,
         sources: StageResult,
         *,
-        strength: int = 3,
+        strength: int = 5,
+        range: int = 4,
         stage_source: Optional[Image.Image] = None,
         callback: Optional[ProgressCallback] = None,
         **kwargs,
@@ -33,7 +34,7 @@ class BlendDenoiseLocalStdStage(BaseStage):
 
         return StageResult.from_arrays(
             [
-                remove_noise(source, threshold=strength)[0]
+                remove_noise(source, threshold=strength, deviation=range)[0]
                 for source in sources.as_numpy()
             ]
         )
@@ -98,7 +99,7 @@ def remove_noise(
 
             # skip if the central pixels have already been masked by a previous artifact
             if np.any(result_mask[i - 1 : i + 1, j - 1 : j + 1] > 0):
-                pass
+                continue
 
             # Extract region from each channel
             region_red = image[i_min:i_max, j_min:j_max, 0]
