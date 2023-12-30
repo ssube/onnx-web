@@ -87,6 +87,10 @@ def convert_upscale_resrgan(
     else:
         state_dict = torch_model
 
+    if any(["RDB" in key for key in state_dict.keys()]):
+        # keys need fixed up to match. capitalized RDB is the best indicator.
+        state_dict = fix_resrgan_keys(state_dict)
+
     if TAG_X4_V3 in name:
         # the x4-v3 model needs a different network
         model = SRVGGNetCompact(
@@ -97,10 +101,11 @@ def convert_upscale_resrgan(
             upscale=scale,
             act_type="prelu",
         )
-    elif any(["RDB" in key for key in state_dict.keys()]):
-        # keys need fixed up to match. capitalized RDB is the best indicator.
-        state_dict = fix_resrgan_keys(state_dict)
-        model = RRDBNetFixed(
+    elif (
+        "conv_up1.weight" in state_dict.keys()
+        and "conv_up2.weight" in state_dict.keys()
+    ):
+        model = RRDBNetRescale(
             num_in_ch=3,
             num_out_ch=3,
             num_feat=64,
@@ -109,7 +114,7 @@ def convert_upscale_resrgan(
             scale=scale,
         )
     else:
-        model = RRDBNetRescale(
+        model = RRDBNetFixed(
             num_in_ch=3,
             num_out_ch=3,
             num_feat=64,

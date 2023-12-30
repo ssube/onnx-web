@@ -4,7 +4,7 @@ from os import path
 import torch
 from torch.onnx import export
 
-from ...models.rrdb import RRDBNet
+from ...models.rrdb import RRDBNetRescale
 from ..utils import ConversionContext, ModelDict
 
 logger = getLogger(__name__)
@@ -27,7 +27,7 @@ def convert_correction_gfpgan(
         logger.info("ONNX model already exists, skipping")
         return
 
-    model = RRDBNet(
+    model = RRDBNetRescale(
         num_in_ch=3,
         num_out_ch=3,
         num_feat=64,
