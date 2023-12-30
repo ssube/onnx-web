@@ -105,6 +105,7 @@ def convert_upscale_resrgan(
         "conv_up1.weight" in state_dict.keys()
         and "conv_up2.weight" in state_dict.keys()
     ):
+        # both variants are the same for scale=4
         model = RRDBNetRescale(
             num_in_ch=3,
             num_out_ch=3,

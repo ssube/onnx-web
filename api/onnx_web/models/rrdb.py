@@ -185,6 +185,8 @@ class RRDBNetFixed(nn.Module):
         # upsampling
         if self.scale > 1:
             self.conv_up1 = nn.Conv2d(num_feat, num_feat, 3, 1, 1, bias=True)
+
+        if self.scale > 2:
             self.conv_up2 = nn.Conv2d(num_feat, num_feat, 3, 1, 1, bias=True)
 
         self.conv_hr = nn.Conv2d(num_feat, num_feat, 3, 1, 1, bias=True)
@@ -201,6 +203,8 @@ class RRDBNetFixed(nn.Module):
             feat = self.lrelu(
                 self.conv_up1(F.interpolate(feat, scale_factor=2, mode="nearest"))
             )
+
+        if self.scale > 2:
             feat = self.lrelu(
                 self.conv_up2(F.interpolate(feat, scale_factor=2, mode="nearest"))
             )
