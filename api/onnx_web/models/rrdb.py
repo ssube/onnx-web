@@ -1,11 +1,13 @@
 # from https://github.com/cszn/BSRGAN/blob/main/models/network_rrdbnet.py
 
-import functools
+from logging import getLogger
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.nn.init as init
+
+logger = getLogger(__name__)
 
 
 def initialize_weights(net_l, scale=1):
@@ -28,11 +30,21 @@ def initialize_weights(net_l, scale=1):
                 init.constant_(m.bias.data, 0.0)
 
 
-def make_layer(block, n_layers):
+def make_layer(block, n_layers, **kwarg):
     layers = []
     for _ in range(n_layers):
-        layers.append(block())
+        layers.append(block(**kwarg))
     return nn.Sequential(*layers)
+
+
+def pixel_unshuffle(x, scale):
+    b, c, hh, hw = x.size()
+    out_channel = c * (scale**2)
+    assert hh % scale == 0 and hw % scale == 0
+    h = hh // scale
+    w = hw // scale
+    x_view = x.view(b, c, h, scale, w, scale)
+    return x_view.permute(0, 1, 3, 5, 2, 4).reshape(b, out_channel, h, w)
 
 
 class ResidualDenseBlock_5C(nn.Module):
@@ -89,11 +101,18 @@ class RRDBNet(nn.Module):
         super(RRDBNet, self).__init__()
         self.scale = scale
 
-        RRDB_block_f = functools.partial(RRDB, nf=num_feat, gc=num_grow_ch)
-        print([num_in_ch, num_out_ch, num_feat, num_block, num_grow_ch, scale])
+        if scale == 2:
+            num_in_ch = num_in_ch * 4
+        elif scale == 1:
+            num_in_ch = num_in_ch * 16
+
+        logger.trace(
+            "RRDBNet params: %s",
+            [num_in_ch, num_out_ch, num_feat, num_block, num_grow_ch, scale],
+        )
 
         self.conv_first = nn.Conv2d(num_in_ch, num_feat, 3, 1, 1, bias=True)
-        self.body = make_layer(RRDB_block_f, num_block)
+        self.body = make_layer(RRDB, num_block, nf=num_feat, gc=num_grow_ch)
         self.conv_body = nn.Conv2d(num_feat, num_feat, 3, 1, 1, bias=True)
 
         # upsampling
@@ -109,20 +128,27 @@ class RRDBNet(nn.Module):
         self.lrelu = nn.LeakyReLU(negative_slope=0.2, inplace=True)
 
     def forward(self, x):
-        fea = self.conv_first(x)
-        trunk = self.conv_body(self.body(fea))
-        fea = fea + trunk
+        if self.scale == 2:
+            feat = pixel_unshuffle(x, scale=2)
+        elif self.scale == 1:
+            feat = pixel_unshuffle(x, scale=4)
+        else:
+            feat = x
+
+        feat = self.conv_first(feat)
+        trunk = self.conv_body(self.body(feat))
+        feat = feat + trunk
 
         if self.scale > 1:
-            fea = self.lrelu(
-                self.conv_up1(F.interpolate(fea, scale_factor=2, mode="nearest"))
+            feat = self.lrelu(
+                self.conv_up1(F.interpolate(feat, scale_factor=2, mode="nearest"))
             )
 
         if self.scale == 4:
-            fea = self.lrelu(
-                self.conv_up2(F.interpolate(fea, scale_factor=2, mode="nearest"))
+            feat = self.lrelu(
+                self.conv_up2(F.interpolate(feat, scale_factor=2, mode="nearest"))
             )
 
-        out = self.conv_last(self.lrelu(self.conv_hr(fea)))
+        out = self.conv_last(self.lrelu(self.conv_hr(feat)))
 
         return out

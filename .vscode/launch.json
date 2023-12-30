@@ -15,7 +15,7 @@
           "remoteRoot": "/opt/onnx-web"
         }
       ],
-      "justMyCode": true
+      "justMyCode": false
     }
   ]
 }
