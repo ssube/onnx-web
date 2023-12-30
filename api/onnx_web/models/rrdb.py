@@ -88,10 +88,6 @@ class RRDBNet(nn.Module):
     ):
         super(RRDBNet, self).__init__()
         self.scale = scale
-        if scale == 2:
-            num_in_ch = num_in_ch * 4
-        elif scale == 1:
-            num_in_ch = num_in_ch * 16
 
         RRDB_block_f = functools.partial(RRDB, nf=num_feat, gc=num_grow_ch)
         print([num_in_ch, num_out_ch, num_feat, num_block, num_grow_ch, scale])
