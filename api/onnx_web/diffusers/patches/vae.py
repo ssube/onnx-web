@@ -4,10 +4,11 @@ from typing import Union
 import numpy as np
 import torch
 from diffusers import OnnxRuntimeModel
+from diffusers.models.autoencoder_kl import AutoencoderKLOutput
+from diffusers.models.vae import DecoderOutput
 from diffusers.pipelines.onnx_utils import ORT_TO_NP_TYPE
 
 from ...server import ServerContext
-from ..version_safe_diffusers import AutoencoderKLOutput, DecoderOutput
 
 logger = getLogger(__name__)
 
