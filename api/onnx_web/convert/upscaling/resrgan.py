@@ -22,6 +22,12 @@ SPECIAL_KEYS = {
     "model.3.weight": "conv_up1.weight",
     "model.6.bias": "conv_up2.bias",
     "model.6.weight": "conv_up2.weight",
+    # 1x model keys
+    "model.2.bias": "conv_hr.bias",
+    "model.2.weight": "conv_hr.weight",
+    "model.4.bias": "conv_last.bias",
+    "model.4.weight": "conv_last.weight",
+    # 2x and 4x model keys
     "model.8.bias": "conv_hr.bias",
     "model.8.weight": "conv_hr.weight",
     "model.10.bias": "conv_last.bias",
