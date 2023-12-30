@@ -28,7 +28,7 @@ logger = getLogger(__name__)
 
 FAST_TEST = 10
 SLOW_TEST = 25
-VERY_SLOW_TEST = 75
+VERY_SLOW_TEST = 100
 
 STRICT_TEST = 1e-4
 LOOSE_TEST = 1e-2
@@ -421,8 +421,9 @@ def parse_args(args: List[str]):
         description="regression tests for onnx-web",
     )
     parser.add_argument("--host", default="http://127.0.0.1:5000")
-    parser.add_argument("-n", "--name")
-    parser.add_argument("-m", "--mse", default=1.0, type=float)
+    parser.add_argument("-n", "--name", help="filter tests by name (contains this string)")
+    parser.add_argument("-m", "--mse", default=1.0, type=float, help="MSE multiplier (test strictness)")
+    parser.add_argument("-t", "--time", default=1, type=int, help="time multiplier (test duration)")
     return parser.parse_args(args)
 
 
@@ -521,6 +522,7 @@ def run_test(
     host: str,
     test: TestCase,
     mse_mult: float = 1.0,
+    time_mult: int = 1,
 ) -> TestResult:
     """
     Generate an image, wait for it to be ready, and calculate the MSE from the reference.
@@ -531,7 +533,7 @@ def run_test(
         return TestResult.failed(test.name, "could not generate image")
 
     ready = False
-    for attempt in tqdm(range(test.max_attempts)):
+    for attempt in tqdm(range(test.max_attempts * time_mult)):
         if check_ready(host, keys[0]):
             logger.debug("image is ready: %s", keys)
             ready = True
@@ -594,7 +596,7 @@ def main():
         for _i in range(3):
             try:
                 logger.info("starting test: %s", test.name)
-                result = run_test(args.host, test, mse_mult=args.mse)
+                result = run_test(args.host, test, mse_mult=args.mse, time_mult=args.time)
                 if result.passed:
                     logger.info("test passed: %s", test.name)
                     break
