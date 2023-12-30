@@ -5,7 +5,7 @@ from re import compile
 import torch
 from torch.onnx import export
 
-from ...models.rrdb import RRDBNet
+from ...models.rrdb import RRDBNetFixed, RRDBNetRescale
 from ...models.srvgg import SRVGGNetCompact
 from ..utils import ConversionContext, ModelDict
 
@@ -79,6 +79,14 @@ def convert_upscale_resrgan(
         logger.info("ONNX model already exists, skipping")
         return
 
+    torch_model = torch.load(source, map_location=conversion.map_location)
+    if "params_ema" in torch_model:
+        state_dict = torch_model["params_ema"]
+    elif "params" in torch_model:
+        state_dict = torch_model["params"]
+    else:
+        state_dict = torch_model
+
     if TAG_X4_V3 in name:
         # the x4-v3 model needs a different network
         model = SRVGGNetCompact(
@@ -89,8 +97,19 @@ def convert_upscale_resrgan(
             upscale=scale,
             act_type="prelu",
         )
+    elif any(["RDB" in key for key in state_dict.keys()]):
+        # keys need fixed up to match. capitalized RDB is the best indicator.
+        state_dict = fix_resrgan_keys(state_dict)
+        model = RRDBNetFixed(
+            num_in_ch=3,
+            num_out_ch=3,
+            num_feat=64,
+            num_block=23,
+            num_grow_ch=32,
+            scale=scale,
+        )
     else:
-        model = RRDBNet(
+        model = RRDBNetRescale(
             num_in_ch=3,
             num_out_ch=3,
             num_feat=64,
@@ -99,15 +118,7 @@ def convert_upscale_resrgan(
             scale=scale,
         )
 
-    torch_model = torch.load(source, map_location=conversion.map_location)
-    if "params_ema" in torch_model:
-        model.load_state_dict(torch_model["params_ema"])
-    elif "params" in torch_model:
-        model.load_state_dict(torch_model["params"], strict=False)
-    else:
-        # keys need fixed up to match
-        model.load_state_dict(fix_resrgan_keys(torch_model), strict=False)
-
+    model.load_state_dict(state_dict, strict=True)
     model.to(conversion.training_device).train(False)
     model.eval()
 
