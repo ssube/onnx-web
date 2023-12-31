@@ -391,6 +391,7 @@ class UpscaleParams:
         upscale_model: str,
         correction_model: Optional[str] = None,
         denoise: float = 0.5,
+        upscale=True,
         faces=True,
         face_outscale: int = 1,
         face_strength: float = 0.5,
@@ -406,6 +407,7 @@ class UpscaleParams:
         self.upscale_model = upscale_model
         self.correction_model = correction_model
         self.denoise = denoise
+        self.upscale = upscale
         self.faces = faces
         self.face_outscale = face_outscale
         self.face_strength = face_strength
@@ -421,6 +423,7 @@ class UpscaleParams:
             self.upscale_model,
             correction_model=self.correction_model,
             denoise=self.denoise,
+            upscale=self.upscale,
             faces=self.faces,
             face_outscale=self.face_outscale,
             face_strength=self.face_strength,
@@ -447,6 +450,7 @@ class UpscaleParams:
             "upscale_model": self.upscale_model,
             "correction_model": self.correction_model,
             "denoise": self.denoise,
+            "upscale": self.upscale,
             "faces": self.faces,
             "face_outscale": self.face_outscale,
             "face_strength": self.face_strength,
@@ -463,6 +467,7 @@ class UpscaleParams:
             kwargs.get("upscale_model", self.upscale_model),
             kwargs.get("correction_model", self.correction_model),
             kwargs.get("denoise", self.denoise),
+            kwargs.get("upscale", self.upscale),
             kwargs.get("faces", self.faces),
             kwargs.get("face_outscale", self.face_outscale),
             kwargs.get("face_strength", self.face_strength),

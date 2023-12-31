@@ -239,6 +239,7 @@ def build_upscale(
     if data is None:
         data = request.args
 
+    upscale = get_boolean(data, "upscale", False)
     denoise = get_and_clamp_float(
         data,
         "denoise",
@@ -262,7 +263,8 @@ def build_upscale(
     )
     upscaling = get_from_list(data, "upscaling", get_upscaling_models())
     correction = get_from_list(data, "correction", get_correction_models())
-    faces = get_not_empty(data, "faces", "false") == "true"
+
+    faces = get_boolean(data, "faces", False)
     face_outscale = get_and_clamp_int(
         data,
         "faceOutscale",
@@ -283,6 +285,7 @@ def build_upscale(
         upscaling,
         correction_model=correction,
         denoise=denoise,
+        upscale=upscale,
         faces=faces,
         face_outscale=face_outscale,
         face_strength=face_strength,
