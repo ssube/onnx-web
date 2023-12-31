@@ -162,8 +162,6 @@
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#batch-size-parameter">Batch size parameter</a>
     </li>
-    <li class="toctree-l4"><a class="reference internal" href="#tile-size-parameter">Tile size parameter</a>
-    </li>
     <li class="toctree-l4"><a class="reference internal" href="#unet-overlap-parameter">UNet overlap parameter</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#unet-tile-size-parameter">UNet tile size parameter</a>
@@ -411,7 +409,6 @@ earlier.</p>
 <li><a href="#steps-parameter">Steps parameter</a></li>
 <li><a href="#seed-parameter">Seed parameter</a></li>
 <li><a href="#batch-size-parameter">Batch size parameter</a></li>
-<li><a href="#tile-size-parameter">Tile size parameter</a></li>
 <li><a href="#unet-overlap-parameter">UNet overlap parameter</a><ul>
 <li><a href="#25-overlap">25% overlap</a></li>
 <li><a href="#50-overlap">50% overlap</a></li>
@@ -1015,10 +1012,6 @@ the other parameters as well.</p>
 <h4 id="batch-size-parameter">Batch size parameter</h4>
 <p>The number of images to generate each time you press the generate button.</p>
 <p>All of the images in the batch will share the same seed, and changing the batch size will change the results.</p>
-<h4 id="tile-size-parameter">Tile size parameter</h4>
-<p>The size of each UNet tile when running <a href="#panorama-pipeline">the panorama pipeline</a>.</p>
-<p>Increasing this is a lot like increasing the image size. It will produce larger areas with consistent shapes and
-outlines, but will increase memory. Decreasing this too far can produce deep-fried results.</p>
 <h4 id="unet-overlap-parameter">UNet overlap parameter</h4>
 <p>The amount that each highres and VAE tile should overlap.</p>
 <p>Increasing this will increase the number of tiles and will take longer, but will reduce the strength of the seams
@@ -1047,9 +1040,8 @@ and cropped. These leads to some wasted pixels, but produces a more coherent ima
 <h4 id="unet-tile-size-parameter">UNet tile size parameter</h4>
 <p>The size of each UNet tile when running tiled pipelines, which happens when the image dimensions are larger than
 the UNet tile size or you are using <a href="#panorama-pipeline">the panorama pipeline</a>.</p>
-<p>This behaves a lot like <a href="#unet-overlap-parameter">the overlap parameter</a> but only applies to the UNet when using <a href="#panorama-pipeline">the
-panorama pipeline</a>.</p>
-<p><em>Note:</em> This parameter may be combined with the overlap parameter in the future.</p>
+<p>Increasing this is a lot like increasing the image size. It will produce larger areas with consistent shapes and
+outlines, but will increase memory. Decreasing this too far can produce deep-fried results.</p>
 <h4 id="tiled-vae-parameter">Tiled VAE parameter</h4>
 <p>Whether or not to use the tiled VAE.</p>
 <p>The tiled VAE uses less memory and allows you to generate larger images, but may produce seams without
