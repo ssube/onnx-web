@@ -163,12 +163,12 @@ TEST_DATA = [
     ),
     TestCase(
         "upscale-resrgan-x2-1024-muffin",
-        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x2-plus&scale=2&outscale=2",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x2-plus&scale=2&outscale=2&upscale=true",
         source="txt2img-sd-v1-5-512-muffin-0",
     ),
     TestCase(
         "upscale-resrgan-x4-2048-muffin",
-        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4&upscale=true",
         source="txt2img-sd-v1-5-512-muffin-0",
     ),
     TestCase(
@@ -208,7 +208,7 @@ TEST_DATA = [
     ),
     TestCase(
         "upscale-swinir-x4-2048-muffin",
-        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-swinir-real-large-x4&scale=4&outscale=4",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-swinir-real-large-x4&scale=4&outscale=4&upscale=true",
         source="txt2img-sd-v1-5-512-muffin-0",
     ),
     TestCase(
@@ -223,7 +223,7 @@ TEST_DATA = [
     ),
     TestCase(
         "upscale-sd-x4-2048-muffin",
-        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4&scale=4&outscale=4",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4&scale=4&outscale=4&upscale=true",
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=VERY_SLOW_TEST,
     ),
@@ -264,7 +264,7 @@ TEST_DATA = [
         "upscale-resrgan-x4-codeformer-2048-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4"
-            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0"
+            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=SLOW_TEST,
@@ -273,7 +273,7 @@ TEST_DATA = [
         "upscale-resrgan-x4-gfpgan-2048-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4"
-            "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0"
+            "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=SLOW_TEST,
@@ -282,7 +282,7 @@ TEST_DATA = [
         "upscale-swinir-x4-codeformer-2048-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-swinir-real-large-x4&scale=4&outscale=4"
-            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0"
+            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=SLOW_TEST,
@@ -291,7 +291,7 @@ TEST_DATA = [
         "upscale-swinir-x4-gfpgan-2048-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-swinir-real-large-x4&scale=4&outscale=4"
-            "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0"
+            "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=SLOW_TEST,
@@ -300,7 +300,7 @@ TEST_DATA = [
         "upscale-sd-x4-codeformer-2048-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4&scale=4&outscale=4"
-            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0"
+            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=VERY_SLOW_TEST,
@@ -309,7 +309,7 @@ TEST_DATA = [
         "upscale-sd-x4-gfpgan-2048-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4"
-            "&scale=4&outscale=4&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0"
+            "&scale=4&outscale=4&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=VERY_SLOW_TEST,

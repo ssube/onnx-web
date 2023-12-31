@@ -22,6 +22,7 @@ def split_upscale(
     ):
         return (
             upscale.with_args(
+                upscale=False,
                 scale=1,
                 outscale=1,
             ),
