@@ -5,7 +5,7 @@ REM build bundle
 pyinstaller win10.directml.dir.spec --noconfirm
 
 REM copy additional dirs
-xcopy .\gfpgan .\dist\server\gfpgan /s /e /f /i /y
+xcopy .\gfpgan .\dist\server\_internal\gfpgan /s /e /f /i /y
 xcopy ..\api\gui .\dist\client /s /e /f /i /y
 xcopy ..\api\schemas .\dist\schemas /s /e /f /i /y
 xcopy ..\docs .\dist\docs /s /e /f /i /y
