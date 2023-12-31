@@ -28,13 +28,7 @@ def convert_upscaling_dat(
         return
 
     model = DAT(
-        # TODO: params
-        num_in_ch=3,
-        num_out_ch=3,
-        num_feat=64,
-        num_block=23,
-        num_grow_ch=32,
-        scale=scale,
+        upscale=scale,
     )
 
     torch_model = torch.load(source, map_location=conversion.map_location)
