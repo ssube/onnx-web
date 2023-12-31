@@ -18,6 +18,7 @@ from .source_s3 import SourceS3Stage
 from .source_txt2img import SourceTxt2ImgStage
 from .source_url import SourceURLStage
 from .upscale_bsrgan import UpscaleBSRGANStage
+from .upscale_dat import UpscaleDATStage
 from .upscale_highres import UpscaleHighresStage
 from .upscale_outpaint import UpscaleOutpaintStage
 from .upscale_resrgan import UpscaleRealESRGANStage
@@ -47,6 +48,7 @@ CHAIN_STAGES = {
     "source-txt2img": SourceTxt2ImgStage,
     "source-url": SourceURLStage,
     "upscale-bsrgan": UpscaleBSRGANStage,
+    "upscale-dat": UpscaleDATStage,
     "upscale-highres": UpscaleHighresStage,
     "upscale-outpaint": UpscaleOutpaintStage,
     "upscale-resrgan": UpscaleRealESRGANStage,

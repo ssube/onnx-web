@@ -145,6 +145,8 @@ $defs:
             type: string
             enum: [
               bsrgan,
+              dat,
+              esrgan,
               resrgan,
               swinir
             ]

@@ -25,6 +25,7 @@ from .diffusion.diffusion_xl import convert_diffusion_diffusers_xl
 from .diffusion.lora import blend_loras
 from .diffusion.textual_inversion import blend_textual_inversions
 from .upscaling.bsrgan import convert_upscaling_bsrgan
+from .upscaling.dat import convert_upscaling_dat
 from .upscaling.resrgan import convert_upscale_resrgan
 from .upscaling.swinir import convert_upscaling_swinir
 from .utils import (
@@ -395,7 +396,9 @@ def convert_model_upscaling(conversion: ConversionContext, model):
     model_type = model.get("model", "resrgan")
     if model_type == "bsrgan":
         convert_upscaling_bsrgan(conversion, model, source)
-    elif model_type == "resrgan":
+    elif model_type == "dat":
+        convert_upscaling_dat(conversion, model, source)
+    elif model_type in ["esrgan", "resrgan"]:
         convert_upscale_resrgan(conversion, model, source)
     elif model_type == "swinir":
         convert_upscaling_swinir(conversion, model, source)
