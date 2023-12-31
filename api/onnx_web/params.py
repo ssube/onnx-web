@@ -292,7 +292,7 @@ class ImageParams:
         return group
 
     def is_control(self):
-        return self.pipeline == "controlnet"
+        return self.pipeline in ["controlnet", "controlnet-sdxl"]
 
     def is_lpw(self):
         return self.pipeline == "lpw"

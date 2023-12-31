@@ -230,7 +230,7 @@ def load_pipeline(
                 add_watermarker=False,  # not so invisible: https://github.com/ssube/onnx-web/issues/438
             )
         else:
-            if "controlnet" in components:
+            if params.is_control():
                 logger.debug(
                     "assembling SD pipeline for %s with ControlNet",
                     pipeline_class.__name__,
