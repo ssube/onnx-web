@@ -333,7 +333,7 @@ TEST_DATA = [
         "upscale-resrgan-x4-tall-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus"
-            "&scale=4&outscale=4&correction=correction-gfpgan&faces=false&faceOutscale=1&faceStrength=1.0"
+            "&scale=4&outscale=4&correction=correction-gfpgan&faces=false&faceOutscale=1&faceStrength=1.0&upscale=true"
         ),
         source="txt2img-sd-v1-5-tall-muffin-0",
         max_attempts=SLOW_TEST,
