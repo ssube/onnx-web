@@ -15,8 +15,11 @@ This guide covers the setup process for onnx-web, including downloading the Wind
       - [For AMD on Windows: PyTorch CPU and ONNX runtime DirectML](#for-amd-on-windows-pytorch-cpu-and-onnx-runtime-directml)
       - [For CPU everywhere: PyTorch CPU and ONNX runtime CPU](#for-cpu-everywhere-pytorch-cpu-and-onnx-runtime-cpu)
       - [For Nvidia everywhere: Install PyTorch GPU and ONNX GPU](#for-nvidia-everywhere-install-pytorch-gpu-and-onnx-gpu)
+    - [Download and convert models](#download-and-convert-models)
     - [Test the models](#test-the-models)
     - [Download the web UI bundle](#download-the-web-ui-bundle)
+    - [Launch the server](#launch-the-server)
+    - [Open the web UI](#open-the-web-ui)
   - [Windows-specific methods](#windows-specific-methods)
     - [Windows all-in-one bundle](#windows-all-in-one-bundle)
     - [Windows Python installer](#windows-python-installer)
@@ -207,6 +210,40 @@ PyTorch:
 Make sure you have installed CUDA 11.x and that the version of PyTorch matches the version of CUDA
 ([see their documentation](https://pytorch.org/get-started/locally/) for more details).
 
+### Download and convert models
+
+Before continuing, you will need to download or convert at least one Stable Diffusion model into the ONNX format.
+
+Some pre-converted models are available in [the `models/preconverted-*.json`
+files](https://github.com/ssube/onnx-web/blob/main/models/preconverted-base-fp32.json), including Stable Diffusion v1.5,
+SDXL, and SDXL Turbo.
+
+You can also download and extract the models yourself. For example:
+
+```shell
+> wget -O ../models/.cache/stable-diffusion-v1-5-fp32.zip https://models.onnx-files.com/stable-diffusion-v1-5-fp32.zip
+
+...
+Saving to: ‘../models/.cache/stable-diffusion-v1-5-fp32.zip’
+...
+
+> unzip ../models/.cache/stable-diffusion-v1-5-fp32.zip -d ../models/stable-diffusion-onnx-v1-5
+
+Archive:  ../models/.cache/stable-diffusion-v1-5-fp32.zip
+   creating: ../models/stable-diffusion-onnx-v1-5/vae_encoder/
+  inflating: ../models/stable-diffusion-onnx-v1-5/vae_encoder/model.onnx
+  inflating: ../models/stable-diffusion-onnx-v1-5/LICENSE.txt
+  inflating: ../models/stable-diffusion-onnx-v1-5/README.txt
+  ...
+
+> file ../models/stable-diffusion-onnx-v1-5/model_config.json
+
+../models/stable-diffusion-onnx-v1-5/model_index.json: JSON data
+```
+
+Note that the included `--base` models and the pre-converted models have different folder names. This is intentional,
+so they don't conflict with each other during testing.
+
 ### Test the models
 
 You should verify that all of the steps up to this point have worked correctly by attempting to run the
@@ -228,11 +265,52 @@ and download all three files:
 - `config.json`
 - `index.html`
 
-Copy them into your local `api/gui` folder, making sure to keep the `main.js` bundle in the `bundle` subfolder.
+Copy them into your local [`api/gui` folder](https://github.com/ssube/onnx-web/tree/main/api/gui). Make sure to keep the
+`main.js` bundle in the `bundle` subfolder and copy the files into the `gui` folder within the `api` folder, _not_ the
+`gui` folder in the root of the repository.
 
-For example, for a v0.11 server, copy the files from https://github.com/ssube/onnx-web/tree/gh-pages/v0.11.0 into your
+For example, for a v0.12.0 server, copy the files from https://github.com/ssube/onnx-web/tree/gh-pages/v0.12.0 into your
 local copy of https://github.com/ssube/onnx-web/tree/main/api/gui and
 https://github.com/ssube/onnx-web/tree/main/api/gui/bundle.
+
+### Launch the server
+
+After you have confirmed that you have a working environment, launch the server using one of the provided launch scripts
+in the `api` folder:
+
+```shell
+# on Linux
+> ./launch.sh
+
+# on Windows
+> .\launch.ps1
+```
+
+This will download and/or convert any missing models, then launch an API server on port `:5000`. If the server starts
+up correctly, you should see an admin token in the logs:
+
+```none
+[2023-12-31 13:46:16,451] INFO: MainProcess MainThread onnx_web.main: all plugins loaded successfully
+[2023-12-31 13:46:16,466] INFO: MainProcess MainThread onnx_web.server.load: available acceleration platforms: any - CPUExecutionProvider (None), cpu - CPUExecutionProvider (None)
+[2023-12-31 13:46:16,494] INFO: MainProcess MainThread onnx_web.main: starting v0.12.0 API server with admin token: RANDOM-TOKEN
+```
+
+If you see any errors about the port already being in use, make sure you are not running any other servers or programs
+that use port 5000, or change the `--port` argument in the launch script. If you change the port, make sure to use that
+new port in any other commands that you run.
+
+### Open the web UI
+
+With the server running, open the web UI in your favorite web browser. If you are running the server locally, the UI will
+be available at http://localhost:5000/.
+
+If you are running the server on a different computer, you will need to use that computer's IP address or local DNS name
+and provide that same address in the `?api` argument. For example, with a server running on a remote computer at
+`10.2.2.100` and using port 5001, the URL would be `http://10.2.2.100:5001?api=http://10.2.2.100:5001`.
+
+You can change the `?api` argument to use multiple servers while keeping your state and results. Note that changing the
+server while an image is generating will cause it to fail in the web UI, since the new server will not be aware of that
+image.
 
 ## Windows-specific methods
 
