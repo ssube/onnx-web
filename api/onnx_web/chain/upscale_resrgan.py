@@ -105,7 +105,7 @@ class UpscaleRealESRGANStage(BaseStage):
         stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> StageResult:
-        logger.info("upscaling image with Real ESRGAN: x%s", upscale.scale)
+        logger.info("upscaling with ESRGAN model: %s", upscale.upscale_model)
 
         upsampler = self.load(
             server, upscale, worker.get_device(), tile=stage.tile_size
