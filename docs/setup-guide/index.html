@@ -100,9 +100,15 @@
     </li>
         </ul>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#download-and-convert-models">Download and convert models</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#test-the-models">Test the models</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#download-the-web-ui-bundle">Download the web UI bundle</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#launch-the-server">Launch the server</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#open-the-web-ui">Open the web UI</a>
     </li>
         </ul>
     </li>
@@ -162,8 +168,11 @@
 <li><a href="#for-nvidia-everywhere-install-pytorch-gpu-and-onnx-gpu">For Nvidia everywhere: Install PyTorch GPU and ONNX GPU</a></li>
 </ul>
 </li>
+<li><a href="#download-and-convert-models">Download and convert models</a></li>
 <li><a href="#test-the-models">Test the models</a></li>
 <li><a href="#download-the-web-ui-bundle">Download the web UI bundle</a></li>
+<li><a href="#launch-the-server">Launch the server</a></li>
+<li><a href="#open-the-web-ui">Open the web UI</a></li>
 </ul>
 </li>
 <li><a href="#windows-specific-methods">Windows-specific methods</a><ul>
@@ -298,6 +307,33 @@ PyTorch:</p>
 </code></pre>
 <p>Make sure you have installed CUDA 11.x and that the version of PyTorch matches the version of CUDA
 (<a href="https://pytorch.org/get-started/locally/">see their documentation</a> for more details).</p>
+<h3 id="download-and-convert-models">Download and convert models</h3>
+<p>Before continuing, you will need to download or convert at least one Stable Diffusion model into the ONNX format.</p>
+<p>Some pre-converted models are available in <a href="https://github.com/ssube/onnx-web/blob/main/models/preconverted-base-fp32.json">the <code>models/preconverted-*.json</code>
+files</a>, including Stable Diffusion v1.5,
+SDXL, and SDXL Turbo.</p>
+<p>You can also download and extract the models yourself. For example:</p>
+<pre><code class="language-shell">&gt; wget -O ../models/.cache/stable-diffusion-v1-5-fp32.zip https://models.onnx-files.com/stable-diffusion-v1-5-fp32.zip
+
+...
+Saving to: ‘../models/.cache/stable-diffusion-v1-5-fp32.zip’
+...
+
+&gt; unzip ../models/.cache/stable-diffusion-v1-5-fp32.zip -d ../models/stable-diffusion-onnx-v1-5
+
+Archive:  ../models/.cache/stable-diffusion-v1-5-fp32.zip
+   creating: ../models/stable-diffusion-onnx-v1-5/vae_encoder/
+  inflating: ../models/stable-diffusion-onnx-v1-5/vae_encoder/model.onnx
+  inflating: ../models/stable-diffusion-onnx-v1-5/LICENSE.txt
+  inflating: ../models/stable-diffusion-onnx-v1-5/README.txt
+  ...
+
+&gt; file ../models/stable-diffusion-onnx-v1-5/model_config.json
+
+../models/stable-diffusion-onnx-v1-5/model_index.json: JSON data
+</code></pre>
+<p>Note that the included <code>--base</code> models and the pre-converted models have different folder names. This is intentional,
+so they don't conflict with each other during testing.</p>
 <h3 id="test-the-models">Test the models</h3>
 <p>You should verify that all of the steps up to this point have worked correctly by attempting to run the
 <code>api/scripts/test-diffusers.py</code> script, which is a slight variation on the original txt2img script.</p>
@@ -313,10 +349,39 @@ and download all three files:</p>
 <li><code>config.json</code></li>
 <li><code>index.html</code></li>
 </ul>
-<p>Copy them into your local <code>api/gui</code> folder, making sure to keep the <code>main.js</code> bundle in the <code>bundle</code> subfolder.</p>
-<p>For example, for a v0.11 server, copy the files from https://github.com/ssube/onnx-web/tree/gh-pages/v0.11.0 into your
+<p>Copy them into your local <a href="https://github.com/ssube/onnx-web/tree/main/api/gui"><code>api/gui</code> folder</a>. Make sure to keep the
+<code>main.js</code> bundle in the <code>bundle</code> subfolder and copy the files into the <code>gui</code> folder within the <code>api</code> folder, <em>not</em> the
+<code>gui</code> folder in the root of the repository.</p>
+<p>For example, for a v0.12.0 server, copy the files from https://github.com/ssube/onnx-web/tree/gh-pages/v0.12.0 into your
 local copy of https://github.com/ssube/onnx-web/tree/main/api/gui and
 https://github.com/ssube/onnx-web/tree/main/api/gui/bundle.</p>
+<h3 id="launch-the-server">Launch the server</h3>
+<p>After you have confirmed that you have a working environment, launch the server using one of the provided launch scripts
+in the <code>api</code> folder:</p>
+<pre><code class="language-shell"># on Linux
+&gt; ./launch.sh
+
+# on Windows
+&gt; .\launch.ps1
+</code></pre>
+<p>This will download and/or convert any missing models, then launch an API server on port <code>:5000</code>. If the server starts
+up correctly, you should see an admin token in the logs:</p>
+<pre><code class="language-none">[2023-12-31 13:46:16,451] INFO: MainProcess MainThread onnx_web.main: all plugins loaded successfully
+[2023-12-31 13:46:16,466] INFO: MainProcess MainThread onnx_web.server.load: available acceleration platforms: any - CPUExecutionProvider (None), cpu - CPUExecutionProvider (None)
+[2023-12-31 13:46:16,494] INFO: MainProcess MainThread onnx_web.main: starting v0.12.0 API server with admin token: RANDOM-TOKEN
+</code></pre>
+<p>If you see any errors about the port already being in use, make sure you are not running any other servers or programs
+that use port 5000, or change the <code>--port</code> argument in the launch script. If you change the port, make sure to use that
+new port in any other commands that you run.</p>
+<h3 id="open-the-web-ui">Open the web UI</h3>
+<p>With the server running, open the web UI in your favorite web browser. If you are running the server locally, the UI will
+be available at http://localhost:5000/.</p>
+<p>If you are running the server on a different computer, you will need to use that computer's IP address or local DNS name
+and provide that same address in the <code>?api</code> argument. For example, with a server running on a remote computer at
+<code>10.2.2.100</code> and using port 5001, the URL would be <code>http://10.2.2.100:5001?api=http://10.2.2.100:5001</code>.</p>
+<p>You can change the <code>?api</code> argument to use multiple servers while keeping your state and results. Note that changing the
+server while an image is generating will cause it to fail in the web UI, since the new server will not be aware of that
+image.</p>
 <h2 id="windows-specific-methods">Windows-specific methods</h2>
 <p>These methods are specific to Windows, tested on Windows 10, and still experimental. They should provide an easier
 setup experience.</p>
