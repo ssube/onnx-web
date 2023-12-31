@@ -73,15 +73,15 @@ class CorrectGFPGANStage(BaseStage):
         device = worker.get_device()
         gfpgan = self.load(server, stage, upscale, device)
 
-        outputs = [
-            gfpgan.enhance(
+        outputs = []
+        for source in sources.as_numpy():
+            cropped, restored, result = gfpgan.enhance(
                 source,
                 has_aligned=False,
                 only_center_face=False,
                 paste_back=True,
                 weight=upscale.face_strength,
             )
-            for source in sources.as_numpy()
-        ]
+            outputs.append(result)
 
-        return StageResult(images=outputs)
+        return StageResult.from_arrays(outputs)
