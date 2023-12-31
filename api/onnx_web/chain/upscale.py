@@ -6,6 +6,7 @@ from . import ChainPipeline, PipelineStage
 from .correct_codeformer import CorrectCodeformerStage
 from .correct_gfpgan import CorrectGFPGANStage
 from .upscale_bsrgan import UpscaleBSRGANStage
+from .upscale_dat import UpscaleDATStage
 from .upscale_resrgan import UpscaleRealESRGANStage
 from .upscale_stable_diffusion import UpscaleStableDiffusionStage
 from .upscale_swinir import UpscaleSwinIRStage
@@ -77,6 +78,12 @@ def stage_upscale_correction(
                 outscale=upscale.outscale,
             )
             upscale_stage = (UpscaleBSRGANStage(), bsrgan_params, upscale_opts)
+        elif "dat" in upscale.upscale_model:
+            dat_params = StageParams(
+                tile_size=stage.tile_size,
+                outscale=upscale.outscale,
+            )
+            upscale_stage = (UpscaleDATStage(), dat_params, upscale_opts)
         elif "esrgan" in upscale.upscale_model:
             esrgan_params = StageParams(
                 tile_size=stage.tile_size,
