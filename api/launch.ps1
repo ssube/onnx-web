@@ -13,9 +13,9 @@ python -m onnx_web.convert `
 
 if (!(Test-Path -path .\gui\index.html -PathType Leaf)) {
   echo "Downloading latest web UI files from Github..."
-  Invoke-WebRequest "https://raw.githubusercontent.com/ssube/onnx-web/gh-pages/v0.11.0/index.html" -OutFile .\gui\index.html
-  Invoke-WebRequest "https://raw.githubusercontent.com/ssube/onnx-web/gh-pages/v0.11.0/config.json" -OutFile .\gui\config.json
-  Invoke-WebRequest "https://raw.githubusercontent.com/ssube/onnx-web/gh-pages/v0.11.0/bundle/main.js" -OutFile .\gui\bundle\main.js
+  Invoke-WebRequest "https://raw.githubusercontent.com/ssube/onnx-web/gh-pages/v0.12.0/index.html" -OutFile .\gui\index.html
+  Invoke-WebRequest "https://raw.githubusercontent.com/ssube/onnx-web/gh-pages/v0.12.0/config.json" -OutFile .\gui\config.json
+  Invoke-WebRequest "https://raw.githubusercontent.com/ssube/onnx-web/gh-pages/v0.12.0/bundle/main.js" -OutFile .\gui\bundle\main.js
 }
 
 echo "Launching API server..."

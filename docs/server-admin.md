@@ -105,7 +105,7 @@ To update the server, make sure you are on the `main` branch and pull the latest
 > git pull
 ```
 
-If you want to run a specific tag of the server, run `git checkout v0.11.0` with the desired tag.
+If you want to run a specific tag of the server, run `git checkout v0.12.0` with the desired tag.
 
 ### Building the client
 

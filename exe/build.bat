@@ -21,7 +21,7 @@ copy ..\api\params.json .\dist\params.json /y
 
 REM set version number
 set BUNDLE_TYPE=rc
-set BUNDLE_VERSION=0.11.0
+set BUNDLE_VERSION=0.12.0
 
 REM get commit info
 git rev-parse HEAD > commit.txt

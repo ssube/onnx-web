@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.12.0](https://github.com/ssube/onnx-web/compare/v0.11.0...v0.12.0) (2023-12-31)
+
+
+### Features
+
+* add API parameter for upscale checkbox ([71fbc87](https://github.com/ssube/onnx-web/commit/71fbc871a641c266247ab6aa45c68bb33bf76b54))
+* **api:** add optimization flag to ORT extended optimizations ([e8a30ae](https://github.com/ssube/onnx-web/commit/e8a30ae56b67e184f2ad456fa229991f18373ba9))
+* **api:** add stage for local standard deviation denoising for XL ([f28fdda](https://github.com/ssube/onnx-web/commit/f28fdda47a7a318c109af6b9a7ae1df4a7fcfeb3))
+* **api:** enable 1x upscaling models ([7abe6dc](https://github.com/ssube/onnx-web/commit/7abe6dc6a9e89dc3fbddca7fd43b0fcb6a0e7fea))
+* **api:** support both ESRGAN variants ([0ddc162](https://github.com/ssube/onnx-web/commit/0ddc16288ffe4ff0269e591944538fe002c9a89b))
+* **api:** support more RealESRGAN-based models ([9588643](https://github.com/ssube/onnx-web/commit/95886430a4b41c47ff17cf9eab78c01317b02097))
+* **api:** use wrapped model's input types in UNet patch ([80a2553](https://github.com/ssube/onnx-web/commit/80a255397eb76a48b325706212472c1ed7e807c2))
+
+
+### Bug Fixes
+
+* **api:** make sure ControlNet constructor is used for same pipeline ([#449](https://github.com/ssube/onnx-web/issues/449)) ([00db9a2](https://github.com/ssube/onnx-web/commit/00db9a278721425c750d39f3c7e90871f38f4fda))
+* **api:** make sure upscaling only runs once regardless of correction options ([c6718a3](https://github.com/ssube/onnx-web/commit/c6718a3e3b2e15c29b5d22b5d1101da2930c08cb))
+* **api:** make version-safe imports compatible with tests ([6a00481](https://github.com/ssube/onnx-web/commit/6a004816afff0a0ce7269307638e4ac066388824))
+* **api:** reduce min VAE tile size to match min height/width ([6d2d505](https://github.com/ssube/onnx-web/commit/6d2d5058d92ea4c21d389a4d9307506af8aa0d97))
+* **api:** turn off SDXL's very visible watermarking ([#438](https://github.com/ssube/onnx-web/issues/438)) ([9736779](https://github.com/ssube/onnx-web/commit/973677967d4050ff31cfc0ae5080f85c837ceed8))
+* **api:** use correct part of the gfpgan output ([de8ab6f](https://github.com/ssube/onnx-web/commit/de8ab6f1c933242207daee119f6ff1ac8cda4845))
+* **api:** use standard op block list for SDXL ([006f983](https://github.com/ssube/onnx-web/commit/006f9832691d38321d1cb8351b3269e3a8498d05))
+* **build:** use python image for pip release job ([7725719](https://github.com/ssube/onnx-web/commit/77257199816fa5903e7f178555bffd1defdb6afd))
+* **docs:** add more info about testing models and running server ([#451](https://github.com/ssube/onnx-web/issues/451)) ([9c3ff75](https://github.com/ssube/onnx-web/commit/9c3ff75a64706079ac6f147e7ab7f3dda790eb85))
+* **docs:** remove old tile size section ([fab3ac6](https://github.com/ssube/onnx-web/commit/fab3ac68c2214f2cf0764fa787f62a622556476c))
+* download LoRAs and other networks by default ([a5ecb59](https://github.com/ssube/onnx-web/commit/a5ecb59cd97fb3f4e7725e3f6ff99da024786559))
+* **exe:** correct path for gfpgan folders within bundle ([d3a3f95](https://github.com/ssube/onnx-web/commit/d3a3f95c506cd5d0a62c6a6fb85988d3013dbfbd))
+* **gui:** add missing params to client-side config ([1d373fa](https://github.com/ssube/onnx-web/commit/1d373faf5d19723f342ea79564e4b1e3ce6a6ba4))
+* **gui:** sync client and server default params ([b93a5da](https://github.com/ssube/onnx-web/commit/b93a5da19077b926045f367d18795d035555e80d))
+
 ## [0.11.0](https://github.com/ssube/onnx-web/compare/v0.10.0...v0.11.0) (2023-12-24)
 
 
