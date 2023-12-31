@@ -10,4 +10,4 @@ set ONNX_WEB_EXTRA_MODELS=%ONNX_WEB_MODEL_PATH%\preconverted-base-fp32.json,%ONN
 
 REM convert models and launch the server
 @echo Launching onnx-web in fp32 mode...
-server\onnx-web.exe --no-base --diffusion --correction --upscaling
+server\onnx-web.exe --no-base --sources --diffusion --correction --upscaling --networks

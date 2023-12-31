@@ -9,6 +9,7 @@ python -m onnx_web.convert ^
 --diffusion ^
 --upscaling ^
 --correction ^
+--networks ^
 --extras=%ONNX_WEB_EXTRA_MODELS% ^
 --token=%HF_TOKEN% %ONNX_WEB_EXTRA_ARGS%
 
