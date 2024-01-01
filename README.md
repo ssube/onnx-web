@@ -1,27 +1,36 @@
 # onnx-web
 
-onnx-web is a tool for running Stable Diffusion and other [ONNX models](https://onnx.ai/) with hardware acceleration,
-on both AMD and Nvidia GPUs and with a CPU software fallback.
+onnx-web is designed to simplify the process of running Stable Diffusion and other [ONNX models](https://onnx.ai) so you
+can focus on making high quality, high resolution art. With the efficiency of hardware acceleration on both AMD and
+Nvidia GPUs, and offering a reliable CPU software fallback, it offers the full feature set on desktop, laptops, and
+multi-GPU servers with a seamless user experience.
 
-The GUI is [hosted on Github Pages](https://ssube.github.io/onnx-web/) and runs in all major browsers, including on
-mobile devices. It allows you to select the model and accelerator being used for each image pipeline. Image parameters
-are shown for each of the major modes, and you can either upload or paint the mask for inpainting and outpainting. The
-last few output images are shown below the image controls, making it easy to refer back to previous parameters or save
-an image from earlier.
+You can navigate through the user-friendly web UI, hosted on Github Pages and accessible across all major browsers,
+including your go-to mobile device. Here, you have the flexibility to choose diffusion models and accelerators for each
+image pipeline, with easy access to the image parameters that define each modes. Whether you're uploading images or
+expressing your artistic touch through inpainting and outpainting, onnx-web provides an environment that's as
+user-friendly as it is powerful. Recent output images are neatly presented beneath the controls, serving as a handy
+visual reference to revisit previous parameters or remix your earlier outputs.
 
-The API runs on both Linux and Windows and provides a REST API to run many of the pipelines from [`diffusers`
-](https://huggingface.co/docs/diffusers/main/en/index), along with metadata about the available models and accelerators,
-and the output of previous runs. Hardware acceleration is supported on both AMD and Nvidia for both Linux and Windows,
-with a CPU fallback capable of running on laptop-class machines.
+Dive deeper into the onnx-web experience with its API, compatible with both Linux and Windows. This RESTful interface
+seamlessly integrates various pipelines from the [HuggingFace diffusers](https://huggingface.co/diffusers/main/en/index)
+library, offering valuable metadata on models and accelerators, along with detailed outputs from your creative runs.
 
-Please check out [the setup guide to get started](docs/setup-guide.md) and [the user guide for more
-details](https://github.com/ssube/onnx-web/blob/main/docs/user-guide.md).
+Embark on your generative art journey with onnx-web, and explore its capabilities through our detailed documentation
+site. Find a comprehensive getting started guide, setup guide, and user guide waiting to empower your creative
+endeavors!
+
+Please [check out the documentation site](https://www.onnx-web.ai/docs/) for more info:
+
+- [getting started guide](https://www.onnx-web.ai/docs/getting-started/)
+- [setup guide](https://www.onnx-web.ai/docs/setup-guide/)
+- [user guide](https://www.onnx-web.ai/docs/user-guide/)
 
 ![preview of txt2img tab using SDXL to generate ghostly astronauts eating weird hamburgers on an abandoned space station](./docs/readme-sdxl.png)
 
 ## Features
 
-This is an incomplete list of new and interesting features, with links to the user guide:
+This is an incomplete list of new and interesting features:
 
 - supports SDXL and SDXL Turbo
 - wide variety of schedulers: DDIM, DEIS, DPM SDE, Euler Ancestral, LCM, UniPC, and more
