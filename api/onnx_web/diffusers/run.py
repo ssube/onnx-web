@@ -122,9 +122,9 @@ def run_txt2img_pipeline(
 
     # add a thumbnail, if requested
     cover = images[0]
-    if params.thumbnail and (cover.width > 512 or cover.height > 512):
+    if params.thumbnail and (cover.width > server.thumbnail_size or cover.height > server.thumbnail_size):
         thumbnail = cover.copy()
-        thumbnail.thumbnail((512, 512))
+        thumbnail.thumbnail((server.thumbnail_size, server.thumbnail_size))
 
         images.insert(0, thumbnail)
         outputs.insert(0, f"{worker.name}-thumb.{server.image_format}")

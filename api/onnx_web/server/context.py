@@ -16,6 +16,7 @@ DEFAULT_JOB_LIMIT = 10
 DEFAULT_IMAGE_FORMAT = "png"
 DEFAULT_SERVER_VERSION = "v0.12.0"
 DEFAULT_SHOW_PROGRESS = True
+DEFAULT_THUMBNAIL_SIZE = 1024
 DEFAULT_WORKER_RETRIES = 3
 
 
@@ -42,6 +43,7 @@ class ServerContext:
     feature_flags: List[str]
     plugins: List[str]
     debug: bool
+    thumbnail_size: int
 
     def __init__(
         self,
@@ -67,6 +69,7 @@ class ServerContext:
         feature_flags: Optional[List[str]] = None,
         plugins: Optional[List[str]] = None,
         debug: bool = False,
+        thumbnail_size: Optional[int] = DEFAULT_THUMBNAIL_SIZE,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -90,6 +93,7 @@ class ServerContext:
         self.feature_flags = feature_flags or []
         self.plugins = plugins or []
         self.debug = debug
+        self.thumbnail_size = thumbnail_size
 
         self.cache = ModelCache(self.cache_limit)
 
@@ -127,6 +131,9 @@ class ServerContext:
             feature_flags=get_list(env, "ONNX_WEB_FEATURE_FLAGS"),
             plugins=get_list(env, "ONNX_WEB_PLUGINS", ""),
             debug=get_boolean(env, "ONNX_WEB_DEBUG", False),
+            thumbnail_size=int(
+                env.get("ONNX_WEB_THUMBNAIL_SIZE", DEFAULT_THUMBNAIL_SIZE)
+            )
         )
 
     def get_setting(self, flag: str, default: str) -> Optional[str]:
