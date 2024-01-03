@@ -123,9 +123,11 @@ def run_txt2img_pipeline(
     # add a thumbnail, if requested
     cover = images[0]
     if params.thumbnail and (cover.width > 512 or cover.height > 512):
-        thumbnail = cover.thumbnail((512, 512))
-        images.insert(thumbnail)
-        outputs.insert(f"{worker.name}-thumb.{server.image_format}")
+        thumbnail = cover.copy()
+        thumbnail.thumbnail((512, 512))
+
+        images.insert(0, thumbnail)
+        outputs.insert(0, f"{worker.name}-thumb.{server.image_format}")
 
     for image, output in zip(images, outputs):
         logger.trace("saving output image %s: %s", output, image.size)
