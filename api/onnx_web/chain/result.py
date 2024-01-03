@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Tuple
 
 import numpy as np
 from PIL import Image
@@ -13,6 +13,8 @@ class ImageMetadata:
     params: ImageParams
     size: Size
     upscale: UpscaleParams
+    inversions: Optional[List[Tuple[str, float]]]
+    loras: Optional[List[Tuple[str, float]]]
 
     def __init__(
         self,
@@ -21,21 +23,28 @@ class ImageMetadata:
         upscale: Optional[UpscaleParams] = None,
         border: Optional[Border] = None,
         highres: Optional[HighresParams] = None,
+        inversions: Optional[List[Tuple[str, float]]] = None,
+        loras: Optional[List[Tuple[str, float]]] = None,
     ) -> None:
         self.params = params
         self.size = size
         self.upscale = upscale
         self.border = border
         self.highres = highres
+        self.inversions = inversions
+        self.loras = loras
 
-    def tojson(self):
+    def tojson(self, server, outputs):
         return json_params(
-            [],
+            server,
+            outputs,
             self.params,
             self.size,
             upscale=self.upscale,
             border=self.border,
             highres=self.highres,
+            inversions=self.inversions,
+            loras=self.loras,
         )
 
 

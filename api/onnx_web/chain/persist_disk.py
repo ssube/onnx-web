@@ -41,7 +41,9 @@ class PersistDiskStage(BaseStage):
                 upscale=metadata.upscale,
                 border=metadata.border,
                 highres=metadata.highres,
-            )  # TODO: inversions and loras
+                inversions=metadata.inversions,
+                loras=metadata.loras,
+            )
             logger.info("saved image to %s", dest)
 
         return sources

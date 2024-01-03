@@ -218,7 +218,9 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("img2img job queued for: %s", job_name)
 
-    return jsonify(json_params(output, params, size, upscale=upscale, highres=highres))
+    return jsonify(
+        json_params(server, output, params, size, upscale=upscale, highres=highres)
+    )
 
 
 def txt2img(server: ServerContext, pool: DevicePoolExecutor):
@@ -245,7 +247,9 @@ def txt2img(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("txt2img job queued for: %s", job_name)
 
-    return jsonify(json_params(output, params, size, upscale=upscale, highres=highres))
+    return jsonify(
+        json_params(server, output, params, size, upscale=upscale, highres=highres)
+    )
 
 
 def inpaint(server: ServerContext, pool: DevicePoolExecutor):
@@ -334,7 +338,13 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
 
     return jsonify(
         json_params(
-            output, params, size, upscale=upscale, border=expand, highres=highres
+            server,
+            output,
+            params,
+            size,
+            upscale=upscale,
+            border=expand,
+            highres=highres,
         )
     )
 
@@ -370,7 +380,9 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("upscale job queued for: %s", job_name)
 
-    return jsonify(json_params(output, params, size, upscale=upscale, highres=highres))
+    return jsonify(
+        json_params(server, output, params, size, upscale=upscale, highres=highres)
+    )
 
 
 # keys that are specially parsed by params and should not show up in with_args
@@ -484,7 +496,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
     )
 
     step_params = base_params.with_args(steps=pipeline.steps(base_params, base_size))
-    return jsonify(json_params(output, step_params, base_size))
+    return jsonify(json_params(server, output, step_params, base_size))
 
 
 def blend(server: ServerContext, pool: DevicePoolExecutor):
@@ -526,7 +538,7 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("upscale job queued for: %s", job_name)
 
-    return jsonify(json_params(output, params, size, upscale=upscale))
+    return jsonify(json_params(server, output, params, size, upscale=upscale))
 
 
 def txt2txt(server: ServerContext, pool: DevicePoolExecutor):
@@ -546,7 +558,7 @@ def txt2txt(server: ServerContext, pool: DevicePoolExecutor):
         needs_device=device,
     )
 
-    return jsonify(json_params(output, params, size))
+    return jsonify(json_params(server, output, params, size))
 
 
 def cancel(server: ServerContext, pool: DevicePoolExecutor):

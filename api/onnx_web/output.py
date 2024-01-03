@@ -50,18 +50,23 @@ def hash_value(sha, param: Optional[Param]):
 
 
 def json_params(
+    server: ServerContext,
     outputs: List[str],
     params: ImageParams,
     size: Size,
     upscale: Optional[UpscaleParams] = None,
     border: Optional[Border] = None,
     highres: Optional[HighresParams] = None,
+    inversions: Optional[List[Tuple[str, float]]] = None,
+    loras: Optional[List[Tuple[str, float]]] = None,
     parent: Optional[Dict] = None,
 ) -> Any:
     json = {
         "input_size": size.tojson(),
         "outputs": outputs,
         "params": params.tojson(),
+        "inversions": {},
+        "loras": {},
     }
 
     json["params"]["model"] = path.basename(params.model)
@@ -82,6 +87,20 @@ def json_params(
         output_size = upscale.resize(output_size)
 
     json["size"] = output_size.tojson()
+
+    if inversions is not None:
+        for name, weight in inversions:
+            hash = hash_file(
+                resolve_tensor(path.join(server.model_path, "inversion", name))
+            ).upper()
+            json["inversions"][name] = {"weight": weight, "hash": hash}
+
+    if loras is not None:
+        for name, weight in loras:
+            hash = hash_file(
+                resolve_tensor(path.join(server.model_path, "lora", name))
+            ).upper()
+            json["loras"][name] = {"weight": weight, "hash": hash}
 
     return json
 
@@ -210,6 +229,7 @@ def save_image(
                 "maker note",
                 dumps(
                     json_params(
+                        server,
                         [output],
                         params,
                         size,
@@ -233,6 +253,7 @@ def save_image(
                     ExifIFD.MakerNote: UserComment.dump(
                         dumps(
                             json_params(
+                                server,
                                 [output],
                                 params,
                                 size,
@@ -282,7 +303,7 @@ def save_params(
 ) -> str:
     path = base_join(server.output_path, f"{output}.json")
     json = json_params(
-        output, params, size, upscale=upscale, border=border, highres=highres
+        server, output, params, size, upscale=upscale, border=border, highres=highres
     )
     with open(path, "w") as f:
         f.write(dumps(json))

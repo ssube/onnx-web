@@ -157,7 +157,9 @@ class SourceTxt2ImgStage(BaseStage):
 
         result = StageResult(source=sources)
         for image in output.images:
-            result.push_image(image, ImageMetadata(params, size))
+            result.push_image(
+                image, ImageMetadata(params, size, inversions=inversions, loras=loras)
+            )
 
         logger.debug("produced %s outputs", len(result))
         return result
