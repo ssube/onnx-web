@@ -213,6 +213,7 @@ class ImageParams:
     vae_tile: int
     vae_overlap: float
     denoise: int
+    thumbnail: int
 
     def __init__(
         self,
@@ -236,6 +237,7 @@ class ImageParams:
         vae_overlap: float = 0.25,
         vae_tile: int = 512,
         denoise: int = 3,
+        thumbnail: int = 1,
     ) -> None:
         self.model = model
         self.pipeline = pipeline
@@ -257,6 +259,7 @@ class ImageParams:
         self.vae_overlap = vae_overlap
         self.vae_tile = vae_tile
         self.denoise = denoise
+        self.thumbnail = thumbnail
 
     def do_cfg(self):
         return self.cfg > 1.0
@@ -328,6 +331,7 @@ class ImageParams:
             "vae_overlap": self.vae_overlap,
             "vae_tile": self.vae_tile,
             "denoise": self.denoise,
+            "thumbnail": self.thumbnail,
         }
 
     def with_args(self, **kwargs):
@@ -352,6 +356,7 @@ class ImageParams:
             kwargs.get("vae_overlap", self.vae_overlap),
             kwargs.get("vae_tile", self.vae_tile),
             kwargs.get("denoise", self.denoise),
+            kwargs.get("thumbnail", self.thumbnail),
         )
 
 
