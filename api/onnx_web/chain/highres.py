@@ -53,7 +53,9 @@ def stage_highres(
                 stage,
                 method=highres.method,
                 overlap=params.vae_overlap,
-                upscale=upscale.with_args(scale=highres.scale, outscale=highres.scale, upscale=True),
+                upscale=upscale.with_args(
+                    scale=highres.scale, outscale=highres.scale, upscale=True
+                ),
             )
 
         chain.stage(

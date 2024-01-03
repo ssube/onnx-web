@@ -18,7 +18,7 @@ from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
-from .result import StageResult
+from .result import ImageMetadata, StageResult
 
 logger = getLogger(__name__)
 
@@ -115,7 +115,7 @@ class SourceTxt2ImgStage(BaseStage):
         if params.is_lpw():
             logger.debug("using LPW pipeline for txt2img")
             rng = torch.manual_seed(params.seed)
-            result = pipe.text2img(
+            output = pipe.text2img(
                 prompt,
                 height=latent_size.height,
                 width=latent_size.width,
@@ -141,7 +141,7 @@ class SourceTxt2ImgStage(BaseStage):
                 pipe.unet.set_prompts(prompt_embeds)
 
             rng = np.random.RandomState(params.seed)
-            result = pipe(
+            output = pipe(
                 prompt,
                 height=latent_size.height,
                 width=latent_size.width,
@@ -155,10 +155,12 @@ class SourceTxt2ImgStage(BaseStage):
                 callback=callback,
             )
 
-        outputs = sources.as_image()
-        outputs.extend(result.images)
-        logger.debug("produced %s outputs", len(outputs))
-        return StageResult(images=outputs)
+        result = StageResult(source=sources)
+        for image in output.images:
+            result.push_image(image, ImageMetadata(params, size))
+
+        logger.debug("produced %s outputs", len(result))
+        return result
 
     def steps(
         self,

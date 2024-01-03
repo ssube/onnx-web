@@ -133,7 +133,7 @@ class ServerContext:
             debug=get_boolean(env, "ONNX_WEB_DEBUG", False),
             thumbnail_size=int(
                 env.get("ONNX_WEB_THUMBNAIL_SIZE", DEFAULT_THUMBNAIL_SIZE)
-            )
+            ),
         )
 
     def get_setting(self, flag: str, default: str) -> Optional[str]:

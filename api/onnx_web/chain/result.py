@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, List, Optional
 
 import numpy as np
 from PIL import Image
@@ -63,14 +63,20 @@ class StageResult:
     def from_images(images: List[Image.Image]):
         return StageResult(images=images)
 
-    def __init__(self, arrays=None, images=None) -> None:
-        if arrays is not None and images is not None:
+    def __init__(
+        self,
+        arrays: Optional[List[np.ndarray]] = None,
+        images: Optional[List[Image.Image]] = None,
+        source: Optional[Any] = None,
+    ) -> None:
+        if sum([arrays is not None, images is not None, source is not None]) > 1:
             raise ValueError("stages must only return one type of result")
-        elif arrays is None and images is None:
+        elif arrays is None and images is None and source is None:
             raise ValueError("stages must return results")
 
         self.arrays = arrays
         self.images = images
+        self.source = source
 
     def __len__(self) -> int:
         if self.arrays is not None:

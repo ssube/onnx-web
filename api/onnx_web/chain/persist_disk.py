@@ -31,8 +31,17 @@ class PersistDiskStage(BaseStage):
     ) -> StageResult:
         logger.info("persisting %s images to disk: %s", len(sources), output)
 
-        for source, name in zip(sources.as_image(), output):
-            dest = save_image(server, name, source, params=params, size=size)
+        for name, source, metadata in zip(output, sources.as_image(), sources.metadata):
+            dest = save_image(
+                server,
+                name,
+                source,
+                params=metadata.params,
+                size=metadata.size,
+                upscale=metadata.upscale,
+                border=metadata.border,
+                highres=metadata.highres,
+            )  # TODO: inversions and loras
             logger.info("saved image to %s", dest)
 
         return sources

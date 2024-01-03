@@ -122,7 +122,9 @@ def run_txt2img_pipeline(
 
     # add a thumbnail, if requested
     cover = images[0]
-    if params.thumbnail and (cover.width > server.thumbnail_size or cover.height > server.thumbnail_size):
+    if params.thumbnail and (
+        cover.width > server.thumbnail_size or cover.height > server.thumbnail_size
+    ):
         thumbnail = cover.copy()
         thumbnail.thumbnail((server.thumbnail_size, server.thumbnail_size))
 
