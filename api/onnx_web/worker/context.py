@@ -57,6 +57,7 @@ class WorkerContext:
         self.initial_retries = retries
         self.retries = retries
         self.timeout = timeout
+        self.callback = None
 
     def start(self, job: JobCommand) -> None:
         # set job name and type

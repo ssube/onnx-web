@@ -33,6 +33,8 @@ class ChainProgress:
         self.parent = parent
         self.step = start
         self.total = 0
+        self.stage = 0
+        self.tile = 0
 
     def __call__(self, step: int, timestep: int, latents: Any) -> None:
         if step < self.step:
