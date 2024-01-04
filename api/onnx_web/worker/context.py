@@ -28,6 +28,7 @@ class WorkerContext:
     timeout: float
     retries: int
     initial_retries: int
+    callback: Optional[Any]
 
     def __init__(
         self,
@@ -97,11 +98,15 @@ class WorkerContext:
     def get_progress_callback(self) -> ProgressCallback:
         from ..chain.pipeline import ChainProgress
 
-        def on_progress(step: int, timestep: int, latents: Any):
-            on_progress.step = step
-            self.set_progress(step)
+        if self.callback is not None:
+            return self.callback
 
-        return ChainProgress.from_progress(on_progress)
+        def on_progress(step: int, timestep: int, latents: Any):
+            self.callback.step = step
+            self.set_progress(step, stages=self.callback.stage, tiles=self.callback.tile)
+
+        self.callback = ChainProgress.from_progress(on_progress)
+        return self.callback
 
     def set_cancel(self, cancel: bool = True) -> None:
         with self.cancel.get_lock():
@@ -111,20 +116,22 @@ class WorkerContext:
         with self.idle.get_lock():
             self.idle.value = idle
 
-    def set_progress(self, progress: int) -> None:
+    def set_progress(self, steps: int, stages: int = 0, tiles: int = 0) -> None:
         if self.job is None:
             raise RuntimeError("no job on which to set progress")
 
         if self.is_cancelled():
             raise CancelledException("job has been cancelled")
 
-        logger.debug("setting progress for job %s to %s", self.job, progress)
+        logger.debug("setting progress for job %s to %s", self.job, steps)
         self.last_progress = ProgressCommand(
             self.job,
             self.job_type,
             self.device.device,
             JobStatus.RUNNING,
-            steps=progress,
+            steps=steps,
+            stages=stages,
+            tiles=tiles,
         )
         self.progress.put(
             self.last_progress,
