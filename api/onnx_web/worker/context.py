@@ -130,6 +130,10 @@ class WorkerContext:
         if self.is_cancelled():
             raise CancelledException("job has been cancelled")
 
+        result = None
+        if self.callback is not None:
+            result = self.callback.result
+
         logger.debug("setting progress for job %s to %s", self.job, steps)
         self.last_progress = ProgressCommand(
             self.job,
@@ -139,7 +143,7 @@ class WorkerContext:
             steps=steps,
             stages=stages,
             tiles=tiles,
-            result=self.callback.result,
+            result=result,
         )
         self.progress.put(
             self.last_progress,
