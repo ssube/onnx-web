@@ -104,7 +104,12 @@ class WorkerContext:
 
         def on_progress(step: int, timestep: int, latents: Any):
             self.callback.step = step
-            self.set_progress(step, stages=self.callback.stage, tiles=self.callback.tile)
+            self.set_progress(
+                step,
+                stages=self.callback.stage,
+                tiles=self.callback.tile,
+                results=self.callback.results,
+            )
 
         self.callback = ChainProgress.from_progress(on_progress)
         return self.callback
@@ -117,7 +122,9 @@ class WorkerContext:
         with self.idle.get_lock():
             self.idle.value = idle
 
-    def set_progress(self, steps: int, stages: int = 0, tiles: int = 0) -> None:
+    def set_progress(
+        self, steps: int, stages: int = 0, tiles: int = 0, results: int = 0
+    ) -> None:
         if self.job is None:
             raise RuntimeError("no job on which to set progress")
 
@@ -133,6 +140,7 @@ class WorkerContext:
             steps=steps,
             stages=stages,
             tiles=tiles,
+            results=results,
         )
         self.progress.put(
             self.last_progress,
@@ -148,8 +156,11 @@ class WorkerContext:
                 self.job,
                 self.job_type,
                 self.device.device,
-                JobStatus.SUCCESS,  # TODO: FAILED
-                steps=self.get_progress(),
+                JobStatus.SUCCESS,
+                steps=self.last_progress.steps,
+                stages=self.last_progress.stages,
+                tiles=self.last_progress.tiles,
+                results=self.last_progress.results,
             )
             self.progress.put(
                 self.last_progress,

@@ -27,6 +27,7 @@ class ChainProgress:
     total: int
     stage: int
     tile: int
+    results: int
     # TODO: total stages and tiles
 
     def __init__(self, parent: ProgressCallback, start=0) -> None:
@@ -35,6 +36,7 @@ class ChainProgress:
         self.total = 0
         self.stage = 0
         self.tile = 0
+        self.results = 0
 
     def __call__(self, step: int, timestep: int, latents: Any) -> None:
         if step < self.step:
@@ -174,6 +176,7 @@ class ChainPipeline:
                 )
 
                 callback.tile = 0
+
                 def stage_tile(
                     source_tile: List[Image.Image],
                     tile_mask: Image.Image,
@@ -224,6 +227,7 @@ class ChainPipeline:
                     **kwargs,
                 )
 
+                callback.results = len(stage_results)
                 stage_sources = StageResult(images=stage_results)
             else:
                 logger.debug(
@@ -279,6 +283,8 @@ class ChainPipeline:
             duration,
             len(stage_sources),
         )
+
+        callback.results = len(stage_sources)
         return stage_sources
 
 
