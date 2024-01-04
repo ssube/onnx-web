@@ -127,13 +127,13 @@ class ImageMetadata:
         }
 
         # fix up some fields
-        model = path.basename(self.params.model)
-        json["params"]["model"] = model
+        model_name, model_hash = self.get_model_hash(self.params.model)
+        json["params"]["model"] = model_name
         json["models"].append(
             {
-                "name": model,
+                "hash": model_hash,
+                "name": model_name,
                 "weight": 1.0,
-                "hash": self.get_model_hash(model),
             }
         )
 
