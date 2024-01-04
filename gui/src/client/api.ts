@@ -42,8 +42,7 @@ export const FIXED_FLOAT = 2;
 export const STATUS_SUCCESS = 200;
 
 export function equalResponse(a: JobResponse, b: JobResponse): boolean {
-  return a.name === b.name && a.status === b.status && a.type === b.type;
-  // return a.outputs === b.outputs;
+  return a.name === b.name;
 }
 
 /**

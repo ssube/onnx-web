@@ -55,7 +55,6 @@ export enum JobType {
 export interface BaseJobResponse {
   name: string;
   status: JobStatus;
-  type: JobType;
 
   stages: Progress;
   steps: Progress;
@@ -68,16 +67,11 @@ export interface CancelledJobResponse extends BaseJobResponse {
   /**
    * Error message to indicate if the job was cancelled by a client, admin, or the server.
    */
-  reason: string;
+  reason?: string;
 }
 
 export interface UnknownJobResponse extends BaseJobResponse {
   status: JobStatus.UNKNOWN;
-
-  /**
-   * Error message to indicate why the job was marked as unknown, if there are extenuating circumstances.
-   */
-  reason: string;
 }
 
 /**
@@ -105,7 +99,6 @@ export interface FailedJobResponse extends BaseJobResponse {
  */
 export interface SuccessTxt2ImgJobResponse extends BaseJobResponse {
   status: JobStatus.SUCCESS;
-  type: JobType.TXT2IMG;
   outputs: Array<string>;
   metadata: Array<ImageMetadata<Txt2ImgParams, JobType.TXT2IMG>>;
 }
@@ -115,7 +108,6 @@ export interface SuccessTxt2ImgJobResponse extends BaseJobResponse {
  */
 export interface SuccessImg2ImgJobResponse extends BaseJobResponse {
   status: JobStatus.SUCCESS;
-  type: JobType.IMG2IMG;
   outputs: Array<string>;
   metadata: Array<ImageMetadata<Img2ImgParams, JobType.IMG2IMG>>;
 }
@@ -125,7 +117,6 @@ export interface SuccessImg2ImgJobResponse extends BaseJobResponse {
  */
 export interface SuccessInpaintJobResponse extends BaseJobResponse {
   status: JobStatus.SUCCESS;
-  type: JobType.INPAINT;
   outputs: Array<string>;
   metadata: Array<ImageMetadata<InpaintParams, JobType.INPAINT>>;
 }
@@ -135,7 +126,6 @@ export interface SuccessInpaintJobResponse extends BaseJobResponse {
  */
 export interface SuccessUpscaleJobResponse extends BaseJobResponse {
   status: JobStatus.SUCCESS;
-  type: JobType.UPSCALE;
   outputs: Array<string>;
   metadata: Array<ImageMetadata<BaseImgParams, JobType.UPSCALE>>;
 }
@@ -145,7 +135,6 @@ export interface SuccessUpscaleJobResponse extends BaseJobResponse {
  */
 export interface SuccessBlendJobResponse extends BaseJobResponse {
   status: JobStatus.SUCCESS;
-  type: JobType.BLEND;
   outputs: Array<string>;
   metadata: Array<ImageMetadata<BaseImgParams, JobType.BLEND>>;
 }
@@ -155,7 +144,6 @@ export interface SuccessBlendJobResponse extends BaseJobResponse {
  */
 export interface SuccessChainJobResponse extends BaseJobResponse {
   status: JobStatus.SUCCESS;
-  type: JobType.CHAIN;
   outputs: Array<string>;
   metadata: Array<ImageMetadata<BaseImgParams, JobType>>; // TODO: could be all kinds
 }

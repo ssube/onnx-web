@@ -34,7 +34,7 @@ from ..utils import (
     load_config_str,
     sanitize_name,
 )
-from ..worker.command import JobType
+from ..worker.command import JobStatus, JobType
 from ..worker.pool import DevicePoolExecutor
 from .context import ServerContext
 from .load import (
@@ -105,7 +105,6 @@ def image_reply(
     server: ServerContext,
     name: str,
     status: str,
-    job_type: str,
     stages: Progress = None,
     steps: Progress = None,
     tiles: Progress = None,
@@ -124,7 +123,6 @@ def image_reply(
     data = {
         "name": name,
         "status": status,
-        "type": job_type,
         "stages": stages.tojson(),
         "steps": steps.tojson(),
         "tiles": tiles.tojson(),
@@ -646,11 +644,16 @@ def job_cancel(server: ServerContext, pool: DevicePoolExecutor):
     if len(job_list) == 0:
         return error_reply("at least one job name is required")
 
-    results = {}
+    results = []
     for job_name in job_list:
         job_name = sanitize_name(job_name)
         cancelled = pool.cancel(job_name)
-        results[job_name] = cancelled
+        results.append(
+            {
+                "name": job_name,
+                "status": JobStatus.CANCELLED if cancelled else JobStatus.PENDING,
+            }
+        )
 
     return multi_image_reply(results)
 
@@ -682,7 +685,6 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
                 server,
                 job_name,
                 status,
-                "TODO",
                 stages=Progress(progress.stages, 0),
                 steps=Progress(progress.steps, 0),
                 tiles=Progress(progress.tiles, 0),
@@ -690,7 +692,7 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
                 metadata=metadata,
             )
 
-        return image_reply(server, job_name, status, "TODO")
+        return image_reply(server, job_name, status)
 
 
 def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecutor):

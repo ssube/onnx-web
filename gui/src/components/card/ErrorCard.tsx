@@ -88,5 +88,5 @@ export function getImageErrorReason(image: FailedJobResponse | UnknownJobRespons
     return image.error;
   }
 
-  return image.reason;
+  return '';
 }
