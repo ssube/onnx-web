@@ -632,6 +632,10 @@ def ready(server: ServerContext, pool: DevicePoolExecutor):
     )
 
 
+def job_create(server: ServerContext, pool: DevicePoolExecutor):
+    return chain(server, pool)
+
+
 def job_cancel(server: ServerContext, pool: DevicePoolExecutor):
     legacy_job_name = request.args.get("job", None)
     job_list = request.args.get("jobs", "").split(",")
@@ -684,7 +688,7 @@ def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecu
     return [
         app.route("/api")(wrap_route(introspect, server, app=app)),
         # job routes
-        app.route("/api/job", methods=["POST"])(wrap_route(chain, server, pool=pool)),
+        app.route("/api/job", methods=["POST"])(wrap_route(job_create, server, pool=pool)),
         app.route("/api/job/cancel", methods=["PUT"])(
             wrap_route(job_cancel, server, pool=pool)
         ),
