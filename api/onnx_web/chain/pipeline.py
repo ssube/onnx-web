@@ -188,7 +188,7 @@ class ChainPipeline:
                                 server,
                                 stage_params,
                                 per_stage_params,
-                                StageResult(images=source_tile),
+                                StageResult(images=source_tile, metadata=stage_sources.metadata),
                                 tile_mask=tile_mask,
                                 callback=callback,
                                 dims=dims,

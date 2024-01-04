@@ -102,7 +102,7 @@ class BlendImg2ImgStage(BaseStage):
 
             outputs.extend(result.images)
 
-        return StageResult(images=outputs)
+        return StageResult(images=outputs, metadata=sources.metadata)
 
     def steps(
         self,
