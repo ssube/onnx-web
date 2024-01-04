@@ -70,8 +70,12 @@ export interface CancelledJobResponse extends BaseJobResponse {
   reason?: string;
 }
 
-export interface UnknownJobResponse extends BaseJobResponse {
-  status: JobStatus.UNKNOWN;
+/**
+ * Failed image job with error information.
+ */
+export interface FailedJobResponse extends BaseJobResponse {
+  status: JobStatus.FAILED;
+  error: string;
 }
 
 /**
@@ -84,14 +88,6 @@ export interface PendingJobResponse extends BaseJobResponse {
 
 export interface RunningJobResponse extends BaseJobResponse {
   status: JobStatus.RUNNING;
-}
-
-/**
- * Failed image job with error information.
- */
-export interface FailedJobResponse extends BaseJobResponse {
-  status: JobStatus.FAILED;
-  error: string;
 }
 
 /**
@@ -145,9 +141,25 @@ export interface SuccessBlendJobResponse extends BaseJobResponse {
 export interface SuccessChainJobResponse extends BaseJobResponse {
   status: JobStatus.SUCCESS;
   outputs: Array<string>;
-  metadata: Array<ImageMetadata<BaseImgParams, JobType>>; // TODO: could be all kinds
+  metadata: Array<
+  ImageMetadata<Txt2ImgParams, JobType.TXT2IMG>
+  | ImageMetadata<Img2ImgParams, JobType.IMG2IMG>
+  | ImageMetadata<InpaintParams, JobType.INPAINT>
+  | ImageMetadata<BaseImgParams, JobType.UPSCALE>
+  | ImageMetadata<BaseImgParams, JobType.BLEND>
+  >;
 }
 
+/**
+ * Unknown job type with no additional information.
+ */
+export interface UnknownJobResponse extends BaseJobResponse {
+  status: JobStatus.UNKNOWN;
+}
+
+/**
+ * All successful job types.
+ */
 export type SuccessJobResponse
   = SuccessTxt2ImgJobResponse
   | SuccessImg2ImgJobResponse
@@ -156,6 +168,9 @@ export type SuccessJobResponse
   | SuccessBlendJobResponse
   | SuccessChainJobResponse;
 
+/**
+ * All job types.
+ */
 export type JobResponse
   = CancelledJobResponse
   | PendingJobResponse

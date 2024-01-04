@@ -205,6 +205,7 @@ class StageResult:
         self,
         arrays: Optional[List[np.ndarray]] = None,
         images: Optional[List[Image.Image]] = None,
+        metadata: Optional[List[ImageMetadata]] = None,
         source: Optional[Any] = None,
     ) -> None:
         if sum([arrays is not None, images is not None, source is not None]) > 1:
@@ -215,7 +216,7 @@ class StageResult:
         self.arrays = arrays
         self.images = images
         self.source = source
-        self.metadata = []
+        self.metadata = metadata or []
 
     def __len__(self) -> int:
         if self.arrays is not None:

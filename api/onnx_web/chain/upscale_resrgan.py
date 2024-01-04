@@ -117,4 +117,4 @@ class UpscaleRealESRGANStage(BaseStage):
             logger.info("final output image size: %s", output.shape)
             outputs.append(output)
 
-        return StageResult(arrays=outputs)
+        return StageResult(arrays=outputs, metadata=sources.metadata)
