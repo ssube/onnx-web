@@ -157,9 +157,9 @@ class WorkerContext:
                 self.job_type,
                 self.device.device,
                 JobStatus.SUCCESS,
-                steps=self.callback.steps,
-                stages=self.callback.stages,
-                tiles=self.callback.tiles,
+                steps=self.callback.step,
+                stages=self.callback.stage,
+                tiles=self.callback.tile,
                 results=self.callback.results,
             )
             self.progress.put(
