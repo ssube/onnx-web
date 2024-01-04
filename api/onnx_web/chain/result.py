@@ -127,8 +127,15 @@ class ImageMetadata:
         }
 
         # fix up some fields
-        json["params"]["model"] = path.basename(self.params.model)
-        json["params"]["scheduler"] = self.params.scheduler  # TODO: why tho?
+        model = path.basename(self.params.model)
+        json["params"]["model"] = model
+        json["models"].append(
+            {
+                "name": model,
+                "weight": 1.0,
+                "hash": self.get_model_hash(model),
+            }
+        )
 
         # calculate final output size
         output_size = self.size
