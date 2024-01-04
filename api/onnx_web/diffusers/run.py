@@ -112,7 +112,7 @@ def run_txt2img_pipeline(
 
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
-    progress = worker.get_progress_callback()
+    progress = worker.get_progress_callback(reset=True)
     images = chain(
         worker, server, params, StageResult.empty(), callback=progress, latents=latents
     )
@@ -210,7 +210,7 @@ def run_img2img_pipeline(
     )
 
     # run and append the filtered source
-    progress = worker.get_progress_callback()
+    progress = worker.get_progress_callback(reset=True)
     images = chain(
         worker, server, params, StageResult(images=[source]), callback=progress
     )
@@ -380,7 +380,7 @@ def run_inpaint_pipeline(
 
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
-    progress = worker.get_progress_callback()
+    progress = worker.get_progress_callback(reset=True)
     images = chain(
         worker,
         server,
@@ -457,7 +457,7 @@ def run_upscale_pipeline(
     )
 
     # run and save
-    progress = worker.get_progress_callback()
+    progress = worker.get_progress_callback(reset=True)
     images = chain(
         worker, server, params, StageResult(images=[source]), callback=progress
     )
@@ -506,7 +506,7 @@ def run_blend_pipeline(
     )
 
     # run and save
-    progress = worker.get_progress_callback()
+    progress = worker.get_progress_callback(reset=True)
     images = chain(
         worker, server, params, StageResult(images=sources), callback=progress
     )

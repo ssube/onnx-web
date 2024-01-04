@@ -96,10 +96,10 @@ class WorkerContext:
 
         return 0
 
-    def get_progress_callback(self) -> ProgressCallback:
+    def get_progress_callback(self, reset=False) -> ProgressCallback:
         from ..chain.pipeline import ChainProgress
 
-        if self.callback is not None:
+        if not reset and self.callback is not None:
             return self.callback
 
         def on_progress(step: int, timestep: int, latents: Any):
@@ -157,10 +157,10 @@ class WorkerContext:
                 self.job_type,
                 self.device.device,
                 JobStatus.SUCCESS,
-                steps=self.last_progress.steps,
-                stages=self.last_progress.stages,
-                tiles=self.last_progress.tiles,
-                results=self.last_progress.results,
+                steps=self.callback.steps,
+                stages=self.callback.stages,
+                tiles=self.callback.tiles,
+                results=self.callback.results,
             )
             self.progress.put(
                 self.last_progress,
