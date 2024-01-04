@@ -18,7 +18,7 @@ from ..diffusers.run import (
     run_upscale_pipeline,
 )
 from ..diffusers.utils import replace_wildcards
-from ..output import make_job_name
+from ..output import make_job_name, make_output_names
 from ..params import Progress, Size, StageParams, TileOrder
 from ..transformers.run import run_txt2txt_pipeline
 from ..utils import (
@@ -668,7 +668,10 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
 
         # TODO: accumulate results
         if progress is not None:
-            # TODO: add output paths based on progress.results counter
+            outputs = None
+            if progress.results > 0:
+                outputs = make_output_names(server, job_name, progress.results)
+
             return image_reply(
                 job_name,
                 status,
@@ -676,6 +679,7 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
                 stages=Progress(progress.stages, 0),
                 steps=Progress(progress.steps, 0),
                 tiles=Progress(progress.tiles, 0),
+                outputs=outputs,
             )
 
         return image_reply(job_name, status, "TODO")

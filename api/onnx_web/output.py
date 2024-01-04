@@ -16,18 +16,12 @@ from .utils import base_join, hash_value
 logger = getLogger(__name__)
 
 
-def make_output_name(
+def make_output_names(
     server: ServerContext,
-    mode: str,
-    params: ImageParams,
-    size: Size,
-    extras: Optional[List[Optional[Param]]] = None,
-    count: Optional[int] = None,
+    job_name: str,
+    count: int = 1,
     offset: int = 0,
 ) -> List[str]:
-    count = count or params.batch
-    job_name = make_job_name(mode, params, size, extras)
-
     return [
         f"{job_name}_{i}.{server.image_format}" for i in range(offset, count + offset)
     ]
@@ -68,12 +62,14 @@ def save_result(
     result: StageResult,
     base_name: str,
 ) -> List[str]:
+    images = result.as_image()
+    outputs = make_output_names(server, base_name, len(images))
     results = []
-    for i, (image, metadata) in enumerate(zip(result.as_image(), result.metadata)):
+    for image, metadata, filename in zip(images, result.metadata, outputs):
         results.append(
             save_image(
                 server,
-                base_name + f"_{i}.{server.image_format}",
+                filename,
                 image,
                 metadata,
             )
