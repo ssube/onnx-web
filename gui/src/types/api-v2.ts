@@ -19,16 +19,18 @@ export interface NetworkMetadata {
 
 export interface ImageMetadata<TParams extends BaseImgParams, TType extends JobType> {
   input_size: Size;
-  size: Size;
   outputs: Array<string>;
   params: TParams;
+
   inversions: Array<NetworkMetadata>;
   loras: Array<NetworkMetadata>;
-  model: string;
-  scheduler: string;
-  border: unknown;
+  models: Array<NetworkMetadata>;
+
+  border: unknown; // TODO: type
   highres: HighresParams;
   upscale: UpscaleParams;
+  size: Size;
+
   type: TType;
 }
 

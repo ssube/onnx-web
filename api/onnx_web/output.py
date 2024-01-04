@@ -98,7 +98,7 @@ def save_image(
             exif.add_text("model", server.server_version)
             exif.add_text(
                 "parameters",
-                metadata.to_auto1111(server, [output]),
+                metadata.to_exif(server, [output]),
             )
 
         image.save(path, format=server.image_format, pnginfo=exif)
@@ -111,7 +111,7 @@ def save_image(
                         encoding="unicode",
                     ),
                     ExifIFD.UserComment: UserComment.dump(
-                        metadata.to_auto1111(server, [output]),
+                        metadata.to_exif(server, [output]),
                         encoding="unicode",
                     ),
                     ImageIFD.Make: "onnx-web",

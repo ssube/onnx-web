@@ -12,7 +12,6 @@ import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../sta
 import { range, visibleIndex } from '../../utils.js';
 import { BLEND_SOURCES } from '../../constants.js';
 import { JobResponse, SuccessJobResponse } from '../../types/api-v2.js';
-import { getApiRoot } from '../../config.js';
 
 export interface ImageCardProps {
   image: SuccessJobResponse;
@@ -110,8 +109,8 @@ export function ImageCard(props: ImageCardProps) {
 
   const url = useMemo(() => client.outputURL(image, index), [image, index]);
 
-  const model = getLabel('model', metadata[index].model);
-  const scheduler = getLabel('scheduler', metadata[index].scheduler);
+  const model = getLabel('model', metadata[index].models[0].name);
+  const scheduler = getLabel('scheduler', metadata[index].params.scheduler);
 
   return <Card sx={{ maxWidth: config.params.width.default }} elevation={2}>
     <CardMedia sx={{ height: config.params.height.default }}

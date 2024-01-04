@@ -36,10 +36,6 @@ export function LoadingCard(props: LoadingCardProps) {
     refetchInterval: POLL_TIME,
   });
 
-  function getReady() {
-    return doesExist(ready.data) && ready.data[0].status === JobStatus.SUCCESS;
-  }
-
   function renderProgress() {
     const progress = getProgress(ready.data);
     const total = getTotal(ready.data);
@@ -57,10 +53,10 @@ export function LoadingCard(props: LoadingCardProps) {
   }, [cancel.status]);
 
   useEffect(() => {
-    if (ready.status === 'success' && getReady()) {
+    if (ready.status === 'success') {
       setReady(ready.data[0]);
     }
-  }, [ready.status, getReady(), getProgress(ready.data)]);
+  }, [ready.status, getStatus(ready.data), getProgress(ready.data)]);
 
   return <Card sx={{ maxWidth: params.width.default }}>
     <CardContent sx={{ height: params.height.default }}>
@@ -133,4 +129,12 @@ export function getTotal(data: Maybe<Array<JobResponse>>) {
   }
 
   return 0;
+}
+
+function getStatus(data: Maybe<Array<JobResponse>>) {
+  if (doesExist(data)) {
+    return data[0].status;
+  }
+
+  return JobStatus.PENDING;
 }

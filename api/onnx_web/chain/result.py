@@ -1,13 +1,14 @@
 from json import dumps
 from logging import getLogger
 from os import path
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Tuple
 
 import numpy as np
 from PIL import Image
 
 from ..convert.utils import resolve_tensor
 from ..params import Border, HighresParams, ImageParams, Size, UpscaleParams
+from ..server.context import ServerContext
 from ..server.load import get_extra_hashes
 from ..utils import hash_file
 
@@ -55,8 +56,8 @@ class ImageMetadata:
         self.loras = loras
         self.models = models
 
-    def to_auto1111(self, server, outputs) -> str:
-        model_name = path.basename(path.normpath(self.params.model))
+    def get_model_hash(self, model: Optional[str] = None) -> Tuple[str, str]:
+        model_name = path.basename(path.normpath(model or self.params.model))
         logger.debug("getting model hash for %s", model_name)
 
         model_hash = get_extra_hashes().get(model_name, None)
@@ -66,7 +67,10 @@ class ImageMetadata:
                 with open(model_hash_path, "r") as f:
                     model_hash = f.readline().rstrip(",. \n\t\r")
 
-        model_hash = model_hash or "unknown"
+        return (model_name, model_hash or "unknown")
+
+    def to_exif(self, server) -> str:
+        model_name, model_hash = self.get_model_hash()
         hash_map = {
             model_name: model_hash,
         }
@@ -112,15 +116,17 @@ class ImageMetadata:
             f"Hashes: {dumps(hash_map)}"
         )
 
-    def tojson(self, server, outputs):
+    def tojson(self, server: ServerContext, output: List[str]):
         json = {
             "input_size": self.size.tojson(),
-            "outputs": outputs,
+            "outputs": output,
             "params": self.params.tojson(),
-            "inversions": {},
-            "loras": {},
+            "inversions": [],
+            "loras": [],
+            "models": [],
         }
 
+        # fix up some fields
         json["params"]["model"] = path.basename(self.params.model)
         json["params"]["scheduler"] = self.params.scheduler  # TODO: why tho?
 
@@ -145,14 +151,21 @@ class ImageMetadata:
                 hash = hash_file(
                     resolve_tensor(path.join(server.model_path, "inversion", name))
                 ).upper()
-                json["inversions"][name] = {"weight": weight, "hash": hash}
+                json["inversions"].append(
+                    {"name": name, "weight": weight, "hash": hash}
+                )
 
         if self.loras is not None:
             for name, weight in self.loras:
                 hash = hash_file(
                     resolve_tensor(path.join(server.model_path, "lora", name))
                 ).upper()
-                json["loras"][name] = {"weight": weight, "hash": hash}
+                json["loras"].append({"name": name, "weight": weight, "hash": hash})
+
+        if self.models is not None:
+            for name, weight in self.models:
+                name, hash = self.get_model_hash()
+                json["models"].append({"name": name, "weight": weight, "hash": hash})
 
         return json
 
