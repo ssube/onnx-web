@@ -32,6 +32,7 @@ export function ImageHistory() {
       case JobStatus.SUCCESS:
         children.push([key, <ImageCard key={`history-${key}`} image={item.image} onDelete={removeHistory} />]);
         break;
+      case JobStatus.UNKNOWN:
       case JobStatus.FAILED:
         children.push([key, <ErrorCard key={`history-${key}`} image={item.image} retry={item.retry} />]);
         break;

@@ -10,10 +10,10 @@ import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
-import { FailedJobResponse, RetryParams } from '../../types/api-v2.js';
+import { FailedJobResponse, JobStatus, RetryParams, UnknownJobResponse } from '../../types/api-v2.js';
 
 export interface ErrorCardProps {
-  image: FailedJobResponse;
+  image: FailedJobResponse | UnknownJobResponse;
   retry: Maybe<RetryParams>;
 }
 
@@ -54,7 +54,7 @@ export function ErrorCard(props: ErrorCardProps) {
           <Alert severity='error'>
             {t('loading.progress', image.steps)}
             <br />
-            {image.error}
+            {getImageErrorReason(image)}
           </Alert>
           <Stack direction='row' spacing={2}>
             <Tooltip title={t('tooltip.retry')}>
@@ -81,4 +81,12 @@ export function selectActions(state: OnnxState) {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     removeHistory: state.removeHistory,
   };
+}
+
+export function getImageErrorReason(image: FailedJobResponse | UnknownJobResponse) {
+  if (image.status === JobStatus.FAILED) {
+    return image.error;
+  }
+
+  return image.reason;
 }

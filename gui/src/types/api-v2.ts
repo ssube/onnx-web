@@ -62,6 +62,20 @@ export interface BaseJobResponse {
 
 export interface CancelledJobResponse extends BaseJobResponse {
   status: JobStatus.CANCELLED;
+
+  /**
+   * Error message to indicate if the job was cancelled by a client, admin, or the server.
+   */
+  reason: string;
+}
+
+export interface UnknownJobResponse extends BaseJobResponse {
+  status: JobStatus.UNKNOWN;
+
+  /**
+   * Error message to indicate why the job was marked as unknown, if there are extenuating circumstances.
+   */
+  reason: string;
 }
 
 /**
@@ -157,7 +171,8 @@ export type JobResponse
   | PendingJobResponse
   | RunningJobResponse
   | FailedJobResponse
-  | SuccessJobResponse;
+  | SuccessJobResponse
+  | UnknownJobResponse;
 
 /**
  * Status response from the job endpoint, with parameters to retry the job if it fails.
