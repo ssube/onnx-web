@@ -102,6 +102,7 @@ def job_reply(name: str):
 
 
 def image_reply(
+    server: ServerContext,
     name: str,
     status: str,
     job_type: str,
@@ -138,7 +139,7 @@ def image_reply(
             logger.error("metadata and outputs must be the same length")
             return error_reply("metadata and outputs must be the same length")
 
-        data["metadata"] = [m.tojson() for m in metadata]
+        data["metadata"] = [m.tojson(server, [o]) for m, o in zip(metadata, outputs)]
         data["outputs"] = outputs
 
     return jsonify([data])
@@ -678,6 +679,7 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
                 metadata = progress.result.metadata
 
             return image_reply(
+                server,
                 job_name,
                 status,
                 "TODO",
@@ -688,7 +690,7 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
                 metadata=metadata,
             )
 
-        return image_reply(job_name, status, "TODO")
+        return image_reply(server, job_name, status, "TODO")
 
 
 def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecutor):
