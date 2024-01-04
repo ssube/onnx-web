@@ -69,7 +69,7 @@ class ImageMetadata:
 
         return (model_name, model_hash or "unknown")
 
-    def to_exif(self, server) -> str:
+    def to_exif(self, server, output: List[str]) -> str:
         model_name, model_hash = self.get_model_hash()
         hash_map = {
             model_name: model_hash,
