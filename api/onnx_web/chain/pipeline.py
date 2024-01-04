@@ -27,7 +27,7 @@ class ChainProgress:
     total: int
     stage: int
     tile: int
-    results: int
+    result: Optional[StageResult]
     # TODO: total stages and tiles
 
     def __init__(self, parent: ProgressCallback, start=0) -> None:
@@ -36,7 +36,7 @@ class ChainProgress:
         self.total = 0
         self.stage = 0
         self.tile = 0
-        self.results = 0
+        self.result = None
 
     def __call__(self, step: int, timestep: int, latents: Any) -> None:
         if step < self.step:
@@ -169,13 +169,12 @@ class ChainPipeline:
             if stage_pipe.max_tile > 0:
                 tile = min(stage_pipe.max_tile, stage_params.tile_size)
 
+            callback.tile = 0 # reset this either way
             if must_tile:
                 logger.info(
                     "image contains sources or is larger than tile size of %s, tiling stage",
                     tile,
                 )
-
-                callback.tile = 0
 
                 def stage_tile(
                     source_tile: List[Image.Image],
@@ -227,7 +226,6 @@ class ChainPipeline:
                     **kwargs,
                 )
 
-                callback.results = len(stage_results)
                 stage_sources = StageResult(images=stage_results)
             else:
                 logger.debug(
@@ -272,6 +270,8 @@ class ChainPipeline:
                 len(stage_sources),
             )
 
+            callback.result = stage_sources # this has just been set to the result of the last stage
+
             if is_debug():
                 for j, image in enumerate(stage_sources.as_image()):
                     save_image(server, f"last-stage-{j}.png", image)
@@ -284,7 +284,7 @@ class ChainPipeline:
             len(stage_sources),
         )
 
-        callback.results = len(stage_sources)
+        callback.result = stage_sources
         return stage_sources
 
 

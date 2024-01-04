@@ -130,14 +130,16 @@ def image_reply(
     }
 
     if outputs is not None:
+        if metadata is None:
+            logger.error("metadata is required with outputs")
+            return error_reply("metadata is required with outputs")
+
+        if len(metadata) != len(outputs):
+            logger.error("metadata and outputs must be the same length")
+            return error_reply("metadata and outputs must be the same length")
+
+        data["metadata"] = metadata
         data["outputs"] = outputs
-
-        if metadata is not None:
-            if len(metadata) != len(outputs):
-                logger.error("metadata and outputs must be the same length")
-                return error_reply("metadata and outputs must be the same length")
-
-            data["metadata"] = metadata
 
     return jsonify([data])
 
@@ -669,8 +671,11 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
         # TODO: accumulate results
         if progress is not None:
             outputs = None
-            if progress.results > 0:
-                outputs = make_output_names(server, job_name, progress.results)
+            metadata = None
+            if progress.result is not None and len(progress.result) > 0:
+                # TODO: progress results should be a list of filenames and image metadata
+                outputs = make_output_names(server, job_name, len(progress.result))
+                metadata = progress.result.metadata
 
             return image_reply(
                 job_name,
@@ -680,6 +685,7 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
                 steps=Progress(progress.steps, 0),
                 tiles=Progress(progress.tiles, 0),
                 outputs=outputs,
+                metadata=metadata,
             )
 
         return image_reply(job_name, status, "TODO")
