@@ -138,7 +138,7 @@ def image_reply(
             logger.error("metadata and outputs must be the same length")
             return error_reply("metadata and outputs must be the same length")
 
-        data["metadata"] = metadata
+        data["metadata"] = [m.tojson() for m in metadata]
         data["outputs"] = outputs
 
     return jsonify([data])
@@ -673,7 +673,7 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
             outputs = None
             metadata = None
             if progress.result is not None and len(progress.result) > 0:
-                # TODO: progress results should be a list of filenames and image metadata
+                # TODO: the names should be attached to the result somehow rather than recomputing them
                 outputs = make_output_names(server, job_name, len(progress.result))
                 metadata = progress.result.metadata
 

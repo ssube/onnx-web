@@ -121,9 +121,7 @@ class WorkerContext:
         with self.idle.get_lock():
             self.idle.value = idle
 
-    def set_progress(
-        self, steps: int, stages: int = 0, tiles: int = 0
-    ) -> None:
+    def set_progress(self, steps: int, stages: int = 0, tiles: int = 0) -> None:
         if self.job is None:
             raise RuntimeError("no job on which to set progress")
 

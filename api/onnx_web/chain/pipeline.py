@@ -169,7 +169,7 @@ class ChainPipeline:
             if stage_pipe.max_tile > 0:
                 tile = min(stage_pipe.max_tile, stage_params.tile_size)
 
-            callback.tile = 0 # reset this either way
+            callback.tile = 0  # reset this either way
             if must_tile:
                 logger.info(
                     "image contains sources or is larger than tile size of %s, tiling stage",
@@ -270,7 +270,9 @@ class ChainPipeline:
                 len(stage_sources),
             )
 
-            callback.result = stage_sources # this has just been set to the result of the last stage
+            callback.result = (
+                stage_sources  # this has just been set to the result of the last stage
+            )
 
             if is_debug():
                 for j, image in enumerate(stage_sources.as_image()):
