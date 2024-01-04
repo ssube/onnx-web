@@ -40,7 +40,7 @@ class WorkerMainTests(unittest.TestCase):
             nonlocal status
             status = exit_status
 
-        job = JobCommand("test", "test", main_interrupt, [], {})
+        job = JobCommand("test", "test", "test", main_interrupt, [], {})
         cancel = Value("L", False)
         logs = Queue()
         pending = Queue()
@@ -75,7 +75,7 @@ class WorkerMainTests(unittest.TestCase):
             nonlocal status
             status = exit_status
 
-        job = JobCommand("test", "test", main_retry, [], {})
+        job = JobCommand("test", "test", "test", main_retry, [], {})
         cancel = Value("L", False)
         logs = Queue()
         pending = Queue()
@@ -144,7 +144,7 @@ class WorkerMainTests(unittest.TestCase):
             nonlocal status
             status = exit_status
 
-        job = JobCommand("test", "test", main_memory, [], {})
+        job = JobCommand("test", "test", "test", main_memory, [], {})
         cancel = Value("L", False)
         logs = Queue()
         pending = Queue()

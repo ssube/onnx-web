@@ -97,11 +97,19 @@ export function expandRanges(range: string): Array<string | number> {
 export const GRID_TILE_SIZE = 8192;
 
 // eslint-disable-next-line max-params
-export function makeTxt2ImgGridPipeline(grid: PipelineGrid, model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): ChainPipeline {
+export function makeTxt2ImgGridPipeline(
+  grid: PipelineGrid,
+  model: ModelParams,
+  params: Txt2ImgParams,
+  upscale?: UpscaleParams,
+  highres?: HighresParams,
+): ChainPipeline {
   const pipeline: ChainPipeline = {
     defaults: {
       ...model,
       ...params,
+      ...(upscale || {}),
+      ...(highres || {}),
     },
     stages: [],
   };

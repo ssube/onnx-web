@@ -43,6 +43,7 @@
 			"dtype",
 			"ESRGAN",
 			"Exif",
+			"fromarray",
 			"ftfy",
 			"gfpgan",
 			"Heun",
@@ -115,6 +116,7 @@
 			"webp",
 			"xformers",
 			"zustand"
-		]
+		],
+		"git.ignoreLimitWarning": true
 	}
 }

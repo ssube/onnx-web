@@ -26,14 +26,14 @@ def restart_workers(server: ServerContext, pool: DevicePoolExecutor):
     pool.recycle(recycle_all=True)
     logger.info("restarted worker pool")
 
-    return jsonify(pool.status())
+    return jsonify(pool.summary())
 
 
 def worker_status(server: ServerContext, pool: DevicePoolExecutor):
     if not check_admin(server):
         return make_response(jsonify({})), 401
 
-    return jsonify(pool.status())
+    return jsonify(pool.summary())
 
 
 def get_extra_models(server: ServerContext):
@@ -102,8 +102,8 @@ def register_admin_routes(app: Flask, server: ServerContext, pool: DevicePoolExe
         app.route("/api/extras", methods=["PUT"])(
             wrap_route(update_extra_models, server)
         ),
-        app.route("/api/restart", methods=["POST"])(
+        app.route("/api/worker/restart", methods=["POST"])(
             wrap_route(restart_workers, server, pool=pool)
         ),
-        app.route("/api/status")(wrap_route(worker_status, server, pool=pool)),
+        app.route("/api/worker/status")(wrap_route(worker_status, server, pool=pool)),
     ]

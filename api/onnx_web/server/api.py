@@ -1,14 +1,14 @@
 from io import BytesIO
 from logging import getLogger
 from os import path
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from flask import Flask, jsonify, make_response, request, url_for
 from jsonschema import validate
 from PIL import Image
 
 from ..chain import CHAIN_STAGES, ChainPipeline
-from ..chain.result import StageResult
+from ..chain.result import ImageMetadata, StageResult
 from ..diffusers.load import get_available_pipelines, get_pipeline_schedulers
 from ..diffusers.run import (
     run_blend_pipeline,
@@ -18,8 +18,8 @@ from ..diffusers.run import (
     run_upscale_pipeline,
 )
 from ..diffusers.utils import replace_wildcards
-from ..output import json_params, make_output_name
-from ..params import Size, StageParams, TileOrder
+from ..output import make_job_name
+from ..params import Progress, Size, StageParams, TileOrder
 from ..transformers.run import run_txt2txt_pipeline
 from ..utils import (
     base_join,
@@ -34,6 +34,7 @@ from ..utils import (
     load_config_str,
     sanitize_name,
 )
+from ..worker.command import JobType
 from ..worker.pool import DevicePoolExecutor
 from .context import ServerContext
 from .load import (
@@ -90,6 +91,64 @@ def error_reply(err: str):
     )
     response.status_code = 400
     return response
+
+
+def job_reply(name: str):
+    return jsonify(
+        {
+            "name": name,
+        }
+    )
+
+
+def image_reply(
+    name: str,
+    status: str,
+    job_type: str,
+    stages: Progress = None,
+    steps: Progress = None,
+    tiles: Progress = None,
+    outputs: List[str] = None,
+    metadata: List[ImageMetadata] = None,
+):
+    if stages is None:
+        stages = Progress()
+
+    if steps is None:
+        steps = Progress()
+
+    if tiles is None:
+        tiles = Progress()
+
+    data = {
+        "name": name,
+        "status": status,
+        "type": job_type,
+        "stages": stages.tojson(),
+        "steps": steps.tojson(),
+        "tiles": tiles.tojson(),
+    }
+
+    if len(metadata) != len(outputs):
+        logger.error("metadata and outputs must be the same length")
+        return error_reply("metadata and outputs must be the same length")
+
+    if outputs is not None:
+        data["outputs"] = outputs
+
+    if metadata is not None:
+        data["metadata"] = metadata
+
+    return jsonify(data)
+
+
+def multi_image_reply(results: Dict[str, Any]):
+    # TODO: not that
+    return jsonify(
+        {
+            "results": results,
+        }
+    )
 
 
 def url_from_rule(rule) -> str:
@@ -197,17 +256,15 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         )
         output_count += 1
 
-    output = make_output_name(
+    job_name = make_job_name(
         server, "img2img", params, size, extras=[strength], count=output_count
     )
-
-    job_name = output[0]
     pool.submit(
         job_name,
+        JobType.IMG2IMG,
         run_img2img_pipeline,
         server,
         params,
-        output,
         upscale,
         highres,
         source,
@@ -218,9 +275,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("img2img job queued for: %s", job_name)
 
-    return jsonify(
-        json_params(server, output, params, size, upscale=upscale, highres=highres)
-    )
+    return job_reply(job_name)
 
 
 def txt2img(server: ServerContext, pool: DevicePoolExecutor):
@@ -230,16 +285,15 @@ def txt2img(server: ServerContext, pool: DevicePoolExecutor):
 
     replace_wildcards(params, get_wildcard_data())
 
-    output = make_output_name(server, "txt2img", params, size, count=params.batch)
+    job_name = make_job_name(server, "txt2img", params, size, count=params.batch)
 
-    job_name = output[0]
     pool.submit(
         job_name,
+        JobType.TXT2IMG,
         run_txt2img_pipeline,
         server,
         params,
         size,
-        output,
         upscale,
         highres,
         needs_device=device,
@@ -247,9 +301,7 @@ def txt2img(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("txt2img job queued for: %s", job_name)
 
-    return jsonify(
-        json_params(server, output, params, size, upscale=upscale, highres=highres)
-    )
+    return job_reply(job_name)
 
 
 def inpaint(server: ServerContext, pool: DevicePoolExecutor):
@@ -295,7 +347,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
 
     replace_wildcards(params, get_wildcard_data())
 
-    output = make_output_name(
+    job_name = make_job_name(
         server,
         "inpaint",
         params,
@@ -312,14 +364,13 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
         ],
     )
 
-    job_name = output[0]
     pool.submit(
         job_name,
+        JobType.INPAINT,
         run_inpaint_pipeline,
         server,
         params,
         size,
-        output,
         upscale,
         highres,
         source,
@@ -336,17 +387,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("inpaint job queued for: %s", job_name)
 
-    return jsonify(
-        json_params(
-            server,
-            output,
-            params,
-            size,
-            upscale=upscale,
-            border=expand,
-            highres=highres,
-        )
-    )
+    return job_reply(job_name)
 
 
 def upscale(server: ServerContext, pool: DevicePoolExecutor):
@@ -362,16 +403,14 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
 
     replace_wildcards(params, get_wildcard_data())
 
-    output = make_output_name(server, "upscale", params, size)
-
-    job_name = output[0]
+    job_name = make_job_name(server, "upscale", params, size)
     pool.submit(
         job_name,
+        JobType.UPSCALE,
         run_upscale_pipeline,
         server,
         params,
         size,
-        output,
         upscale,
         highres,
         source,
@@ -380,9 +419,7 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("upscale job queued for: %s", job_name)
 
-    return jsonify(
-        json_params(server, output, params, size, upscale=upscale, highres=highres)
-    )
+    return job_reply(job_name)
 
 
 # keys that are specially parsed by params and should not show up in with_args
@@ -478,25 +515,21 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("running chain pipeline with %s stages", len(pipeline.stages))
 
-    output = make_output_name(
-        server, "chain", base_params, base_size, count=pipeline.outputs(base_params, 0)
-    )
-    job_name = output[0]
+    job_name = make_job_name(server, "chain", base_params, base_size)
 
     # build and run chain pipeline
     pool.submit(
         job_name,
+        JobType.CHAIN,
         pipeline,
         server,
         base_params,
         StageResult.empty(),
-        output=output,
         size=base_size,
         needs_device=device,
     )
 
-    step_params = base_params.with_args(steps=pipeline.steps(base_params, base_size))
-    return jsonify(json_params(server, output, step_params, base_size))
+    return job_reply(job_name)
 
 
 def blend(server: ServerContext, pool: DevicePoolExecutor):
@@ -520,15 +553,14 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
     device, params, size = pipeline_from_request(server)
     upscale = build_upscale()
 
-    output = make_output_name(server, "upscale", params, size)
-    job_name = output[0]
+    job_name = make_job_name(server, "blend", params, size)
     pool.submit(
         job_name,
+        JobType.BLEND,
         run_blend_pipeline,
         server,
         params,
         size,
-        output,
         upscale,
         # TODO: highres
         sources,
@@ -538,27 +570,26 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("upscale job queued for: %s", job_name)
 
-    return jsonify(json_params(server, output, params, size, upscale=upscale))
+    return job_reply(job_name)
 
 
 def txt2txt(server: ServerContext, pool: DevicePoolExecutor):
     device, params, size = pipeline_from_request(server)
 
-    output = make_output_name(server, "txt2txt", params, size)
-    job_name = output[0]
+    job_name = make_job_name(server, "txt2txt", params, size)
     logger.info("upscale job queued for: %s", job_name)
 
     pool.submit(
         job_name,
+        JobType.TXT2TXT,
         run_txt2txt_pipeline,
         server,
         params,
         size,
-        output,
         needs_device=device,
     )
 
-    return jsonify(json_params(server, output, params, size))
+    return job_reply(job_name)
 
 
 def cancel(server: ServerContext, pool: DevicePoolExecutor):
@@ -601,9 +632,64 @@ def ready(server: ServerContext, pool: DevicePoolExecutor):
     )
 
 
+def job_cancel(server: ServerContext, pool: DevicePoolExecutor):
+    legacy_job_name = request.args.get("job", None)
+    job_list = request.args.get("jobs", "").split(",")
+
+    if legacy_job_name is not None:
+        job_list.append(legacy_job_name)
+
+    if len(job_list) == 0:
+        return error_reply("at least one job name is required")
+
+    results = {}
+    for job_name in job_list:
+        job_name = sanitize_name(job_name)
+        cancelled = pool.cancel(job_name)
+        results[job_name] = cancelled
+
+    return multi_image_reply(results)
+
+
+def job_status(server: ServerContext, pool: DevicePoolExecutor):
+    legacy_job_name = request.args.get("job", None)
+    job_list = request.args.get("jobs", "").split(",")
+
+    if legacy_job_name is not None:
+        job_list.append(legacy_job_name)
+
+    if len(job_list) == 0:
+        return error_reply("at least one job name is required")
+
+    for job_name in job_list:
+        job_name = sanitize_name(job_name)
+        status, progress = pool.status(job_name)
+
+        # TODO: accumulate results
+        if progress is not None:
+            # TODO: add output paths based on progress.results counter
+            return image_reply(
+                job_name,
+                status,
+                "TODO",
+                stages=Progress(progress.stages, 0),
+                steps=Progress(progress.steps, 0),
+                tiles=Progress(progress.tiles, 0),
+            )
+
+        return image_reply(job_name, status, "TODO")
+
+
 def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecutor):
     return [
         app.route("/api")(wrap_route(introspect, server, app=app)),
+        # job routes
+        app.route("/api/job", methods=["POST"])(wrap_route(chain, server, pool=pool)),
+        app.route("/api/job/cancel", methods=["PUT"])(
+            wrap_route(job_cancel, server, pool=pool)
+        ),
+        app.route("/api/job/status")(wrap_route(job_status, server, pool=pool)),
+        # settings routes
         app.route("/api/settings/filters")(wrap_route(list_filters, server)),
         app.route("/api/settings/masks")(wrap_route(list_mask_filters, server)),
         app.route("/api/settings/models")(wrap_route(list_models, server)),
@@ -614,6 +700,7 @@ def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecu
         app.route("/api/settings/schedulers")(wrap_route(list_schedulers, server)),
         app.route("/api/settings/strings")(wrap_route(list_extra_strings, server)),
         app.route("/api/settings/wildcards")(wrap_route(list_wildcards, server)),
+        # legacy job routes
         app.route("/api/img2img", methods=["POST"])(
             wrap_route(img2img, server, pool=pool)
         ),
@@ -631,6 +718,7 @@ def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecu
         ),
         app.route("/api/chain", methods=["POST"])(wrap_route(chain, server, pool=pool)),
         app.route("/api/blend", methods=["POST"])(wrap_route(blend, server, pool=pool)),
+        # deprecated routes
         app.route("/api/cancel", methods=["PUT"])(
             wrap_route(cancel, server, pool=pool)
         ),

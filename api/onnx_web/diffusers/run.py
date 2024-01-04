@@ -16,7 +16,7 @@ from ..chain.highres import stage_highres
 from ..chain.result import StageResult
 from ..chain.upscale import split_upscale, stage_upscale_correction
 from ..image import expand_image
-from ..output import save_image
+from ..output import save_image, save_result
 from ..params import (
     Border,
     HighresParams,
@@ -29,7 +29,7 @@ from ..server import ServerContext
 from ..server.load import get_source_filters
 from ..utils import is_debug, run_gc, show_system_toast
 from ..worker import WorkerContext
-from .utils import get_latents_from_seed, parse_prompt
+from .utils import get_latents_from_seed
 
 logger = getLogger(__name__)
 
@@ -57,7 +57,6 @@ def run_txt2img_pipeline(
     server: ServerContext,
     params: ImageParams,
     size: Size,
-    outputs: List[str],
     upscale: UpscaleParams,
     highres: HighresParams,
 ) -> None:
@@ -114,50 +113,34 @@ def run_txt2img_pipeline(
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     progress = worker.get_progress_callback()
-    images = chain.run(
+    images = chain(
         worker, server, params, StageResult.empty(), callback=progress, latents=latents
     )
 
-    _pairs, loras, inversions, _rest = parse_prompt(params)
-
     # add a thumbnail, if requested
-    cover = images[0]
+    cover = images.as_image()[0]
     if params.thumbnail and (
         cover.width > server.thumbnail_size or cover.height > server.thumbnail_size
     ):
         thumbnail = cover.copy()
         thumbnail.thumbnail((server.thumbnail_size, server.thumbnail_size))
 
-        images.insert(0, thumbnail)
-        outputs.insert(0, f"{worker.name}-thumb.{server.image_format}")
+        images.insert_image(0, thumbnail)
 
-    for image, output in zip(images, outputs):
-        logger.trace("saving output image %s: %s", output, image.size)
-        dest = save_image(
-            server,
-            output,
-            image,
-            params,
-            size,
-            upscale=upscale,
-            highres=highres,
-            inversions=inversions,
-            loras=loras,
-        )
+    save_result(server, images, worker.job)
 
     # clean up
     run_gc([worker.get_device()])
 
     # notify the user
-    show_system_toast(f"finished txt2img job: {dest}")
-    logger.info("finished txt2img job: %s", dest)
+    show_system_toast(f"finished txt2img job: {worker.job}")
+    logger.info("finished txt2img job: %s", worker.job)
 
 
 def run_img2img_pipeline(
     worker: WorkerContext,
     server: ServerContext,
     params: ImageParams,
-    outputs: List[str],
     upscale: UpscaleParams,
     highres: HighresParams,
     source: Image.Image,
@@ -228,36 +211,21 @@ def run_img2img_pipeline(
 
     # run and append the filtered source
     progress = worker.get_progress_callback()
-    images = chain.run(
+    images = chain(
         worker, server, params, StageResult(images=[source]), callback=progress
     )
 
     if source_filter is not None and source_filter != "none":
-        images.append(source)
+        images.push_image(source)
 
-    # save with metadata
-    _pairs, loras, inversions, _rest = parse_prompt(params)
-    size = Size(*source.size)
-
-    for image, output in zip(images, outputs):
-        dest = save_image(
-            server,
-            output,
-            image,
-            params,
-            size,
-            upscale=upscale,
-            highres=highres,
-            inversions=inversions,
-            loras=loras,
-        )
+    save_result(server, images, worker.job)
 
     # clean up
     run_gc([worker.get_device()])
 
     # notify the user
-    show_system_toast(f"finished img2img job: {dest}")
-    logger.info("finished img2img job: %s", dest)
+    show_system_toast(f"finished img2img job: {worker.job}")
+    logger.info("finished img2img job: %s", worker.job)
 
 
 def run_inpaint_pipeline(
@@ -265,7 +233,6 @@ def run_inpaint_pipeline(
     server: ServerContext,
     params: ImageParams,
     size: Size,
-    outputs: List[str],
     upscale: UpscaleParams,
     highres: HighresParams,
     source: Image.Image,
@@ -290,7 +257,7 @@ def run_inpaint_pipeline(
     mask = ImageOps.contain(mask, (mask_max, mask_max))
     mask = mask.crop((0, 0, source.width, source.height))
 
-    source, mask, noise, full_size = expand_image(
+    source, mask, noise, _full_size = expand_image(
         source,
         mask,
         border,
@@ -414,7 +381,7 @@ def run_inpaint_pipeline(
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     progress = worker.get_progress_callback()
-    images = chain.run(
+    images = chain(
         worker,
         server,
         params,
@@ -423,33 +390,28 @@ def run_inpaint_pipeline(
         latents=latents,
     )
 
-    _pairs, loras, inversions, _rest = parse_prompt(params)
-    for image, output in zip(images, outputs):
+    for i, image, metadata in enumerate(zip(images.as_image(), images.metadata)):
         if full_res_inpaint:
             if is_debug():
                 save_image(server, "adjusted-output.png", image)
+
             mini_image = ImageOps.contain(image, (adj_mask_size, adj_mask_size))
             image = original_source
             image.paste(mini_image, box=adj_mask_border)
-        dest = save_image(
+
+        save_image(
             server,
-            output,
+            f"{worker.job}_{i}.{server.image_format}",
             image,
-            params,
-            size,
-            upscale=upscale,
-            border=border,
-            inversions=inversions,
-            loras=loras,
+            metadata,
         )
 
     # clean up
-    del image
     run_gc([worker.get_device()])
 
     # notify the user
-    show_system_toast(f"finished inpaint job: {dest}")
-    logger.info("finished inpaint job: %s", dest)
+    show_system_toast(f"finished inpaint job: {worker.job}")
+    logger.info("finished inpaint job: %s", worker.job)
 
 
 def run_upscale_pipeline(
@@ -457,7 +419,6 @@ def run_upscale_pipeline(
     server: ServerContext,
     params: ImageParams,
     size: Size,
-    outputs: List[str],
     upscale: UpscaleParams,
     highres: HighresParams,
     source: Image.Image,
@@ -497,30 +458,18 @@ def run_upscale_pipeline(
 
     # run and save
     progress = worker.get_progress_callback()
-    images = chain.run(
+    images = chain(
         worker, server, params, StageResult(images=[source]), callback=progress
     )
 
-    _pairs, loras, inversions, _rest = parse_prompt(params)
-    for image, output in zip(images, outputs):
-        dest = save_image(
-            server,
-            output,
-            image,
-            params,
-            size,
-            upscale=upscale,
-            inversions=inversions,
-            loras=loras,
-        )
+    save_result(server, images, worker.job)
 
     # clean up
-    del image
     run_gc([worker.get_device()])
 
     # notify the user
-    show_system_toast(f"finished upscale job: {dest}")
-    logger.info("finished upscale job: %s", dest)
+    show_system_toast(f"finished upscale job: {worker.job}")
+    logger.info("finished upscale job: %s", worker.job)
 
 
 def run_blend_pipeline(
@@ -528,7 +477,6 @@ def run_blend_pipeline(
     server: ServerContext,
     params: ImageParams,
     size: Size,
-    outputs: List[str],
     upscale: UpscaleParams,
     # highres: HighresParams,
     sources: List[Image.Image],
@@ -559,17 +507,15 @@ def run_blend_pipeline(
 
     # run and save
     progress = worker.get_progress_callback()
-    images = chain.run(
+    images = chain(
         worker, server, params, StageResult(images=sources), callback=progress
     )
 
-    for image, output in zip(images, outputs):
-        dest = save_image(server, output, image, params, size, upscale=upscale)
+    save_result(server, images, worker.job)
 
     # clean up
-    del image
     run_gc([worker.get_device()])
 
     # notify the user
-    show_system_toast(f"finished blend job: {dest}")
-    logger.info("finished blend job: %s", dest)
+    show_system_toast(f"finished blend job: {worker.job}")
+    logger.info("finished blend job: %s", worker.job)

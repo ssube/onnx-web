@@ -69,8 +69,8 @@ export function Txt2Img() {
       const image = await client.chain(model, chain);
       pushHistory(image);
     } else {
-      const { image, retry } = await client.txt2img(model, params2, upscale, highres);
-      pushHistory(image, retry);
+      const { job, retry } = await client.txt2img(model, params2, upscale, highres);
+      pushHistory(job, retry);
     }
   }
 

@@ -57,7 +57,7 @@ def worker_main(
             logger.info("worker %s got job: %s", worker.device.device, job.name)
 
             # clear flags and save the job name
-            worker.start(job.name)
+            worker.start(job)
             logger.info("starting job: %s", job.name)
 
             # reset progress, which does a final check for cancellation

@@ -39,22 +39,22 @@ export function Inpaint() {
     const inpaint = selectParams(state);
 
     if (outpaint.enabled) {
-      const { image, retry } = await client.outpaint(model, {
+      const { job, retry } = await client.outpaint(model, {
         ...inpaint,
         ...outpaint,
         mask: mustExist(mask),
         source: mustExist(source),
       }, selectUpscale(state), selectHighres(state));
 
-      pushHistory(image, retry);
+      pushHistory(job, retry);
     } else {
-      const { image, retry } = await client.inpaint(model, {
+      const { job, retry } = await client.inpaint(model, {
         ...inpaint,
         mask: mustExist(mask),
         source: mustExist(source),
       }, selectUpscale(state), selectHighres(state));
 
-      pushHistory(image, retry);
+      pushHistory(job, retry);
     }
   }
 

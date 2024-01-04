@@ -13,6 +13,24 @@ Param = Union[str, int, float]
 Point = Tuple[int, int]
 
 
+class Progress:
+    current: int
+    total: int
+
+    def __init__(self, current: int, total: int) -> None:
+        self.current = current
+        self.total = total
+
+    def __str__(self) -> str:
+        return "%s/%s" % (self.current, self.total)
+
+    def tojson(self):
+        return {
+            "current": self.current,
+            "total": self.total,
+        }
+
+
 class SizeChart(IntEnum):
     micro = 64
     mini = 128  # small tile for very expensive models

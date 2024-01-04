@@ -2,16 +2,18 @@ import gc
 import importlib
 import json
 import threading
+from hashlib import sha256
 from json import JSONDecodeError
 from logging import getLogger
 from os import environ, path
 from platform import system
+from struct import pack
 from typing import Any, Dict, List, Optional, Sequence, TypeVar, Union
 
 import torch
 from yaml import safe_load
 
-from .params import DeviceParams, SizeChart
+from .params import DeviceParams, Param, SizeChart
 
 logger = getLogger(__name__)
 
@@ -218,3 +220,34 @@ def load_config_str(raw: str) -> Dict:
         return json.loads(raw)
     except JSONDecodeError:
         return safe_load(raw)
+
+
+HASH_BUFFER_SIZE = 2**22  # 4MB
+
+
+def hash_file(name: str):
+    sha = sha256()
+    with open(name, "rb") as f:
+        while True:
+            data = f.read(HASH_BUFFER_SIZE)
+            if not data:
+                break
+
+            sha.update(data)
+
+    return sha.hexdigest()
+
+
+def hash_value(sha, param: Optional[Param]):
+    if param is None:
+        return
+    elif isinstance(param, bool):
+        sha.update(bytearray(pack("!B", param)))
+    elif isinstance(param, float):
+        sha.update(bytearray(pack("!f", param)))
+    elif isinstance(param, int):
+        sha.update(bytearray(pack("!I", param)))
+    elif isinstance(param, str):
+        sha.update(param.encode("utf-8"))
+    else:
+        logger.warning("cannot hash param: %s, %s", param, type(param))

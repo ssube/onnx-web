@@ -4,10 +4,7 @@ import { doesExist, InvalidArgumentError, Maybe } from '@apextoaster/js-utils';
 import { ServerParams } from '../config.js';
 import {
   FilterResponse,
-  ImageResponse,
-  ImageResponseWithRetry,
   ModelResponse,
-  ReadyResponse,
   RetryParams,
   WriteExtrasResponse,
 } from '../types/api.js';
@@ -27,6 +24,7 @@ import {
 } from '../types/params.js';
 import { range } from '../utils.js';
 import { ApiClient } from './base.js';
+import { JobResponse, JobResponseWithRetry, SuccessJobResponse } from '../types/api-v2.js';
 
 /**
  * Fixed precision for integer parameters.
@@ -43,8 +41,9 @@ export const FIXED_INTEGER = 0;
 export const FIXED_FLOAT = 2;
 export const STATUS_SUCCESS = 200;
 
-export function equalResponse(a: ImageResponse, b: ImageResponse): boolean {
-  return a.outputs === b.outputs;
+export function equalResponse(a: JobResponse, b: JobResponse): boolean {
+  return a.name === b.name && a.status === b.status && a.type === b.type;
+  // return a.outputs === b.outputs;
 }
 
 /**
@@ -141,8 +140,8 @@ export function appendHighresToURL(url: URL, highres: HighresParams) {
  * Make an API client using the given API root and fetch client.
  */
 export function makeClient(root: string, token: Maybe<string> = undefined, f = fetch): ApiClient {
-  function parseRequest(url: URL, options: RequestInit): Promise<ImageResponse> {
-    return f(url, options).then((res) => parseApiResponse(root, res));
+  function parseRequest(url: URL, options: RequestInit): Promise<JobResponse> {
+    return f(url, options).then((res) => parseJobResponse(root, res));
   }
 
   return {
@@ -218,7 +217,7 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
       const res = await f(path);
       return await res.json() as Array<string>;
     },
-    async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry> {
+    async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
       const url = makeImageURL(root, 'img2img', params);
       appendModelToURL(url, model);
 
@@ -240,12 +239,12 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
       const body = new FormData();
       body.append('source', params.source, 'source');
 
-      const image = await parseRequest(url, {
+      const job = await parseRequest(url, {
         body,
         method: 'POST',
       });
       return {
-        image,
+        job,
         retry: {
           type: 'img2img',
           model,
@@ -254,7 +253,7 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
         },
       };
     },
-    async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry> {
+    async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
       const url = makeImageURL(root, 'txt2img', params);
       appendModelToURL(url, model);
 
@@ -274,11 +273,11 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
         appendHighresToURL(url, highres);
       }
 
-      const image = await parseRequest(url, {
+      const job = await parseRequest(url, {
         method: 'POST',
       });
       return {
-        image,
+        job,
         retry: {
           type: 'txt2img',
           model,
@@ -288,7 +287,7 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
         },
       };
     },
-    async inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry> {
+    async inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
       const url = makeImageURL(root, 'inpaint', params);
       appendModelToURL(url, model);
 
@@ -309,12 +308,12 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
       body.append('mask', params.mask, 'mask');
       body.append('source', params.source, 'source');
 
-      const image = await parseRequest(url, {
+      const job = await parseRequest(url, {
         body,
         method: 'POST',
       });
       return {
-        image,
+        job,
         retry: {
           type: 'inpaint',
           model,
@@ -323,7 +322,7 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
         },
       };
     },
-    async outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry> {
+    async outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
       const url = makeImageURL(root, 'inpaint', params);
       appendModelToURL(url, model);
 
@@ -361,12 +360,12 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
       body.append('mask', params.mask, 'mask');
       body.append('source', params.source, 'source');
 
-      const image = await parseRequest(url, {
+      const job = await parseRequest(url, {
         body,
         method: 'POST',
       });
       return {
-        image,
+        job,
         retry: {
           type: 'outpaint',
           model,
@@ -375,7 +374,7 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
         },
       };
     },
-    async upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry> {
+    async upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
       const url = makeApiUrl(root, 'upscale');
       appendModelToURL(url, model);
 
@@ -396,12 +395,12 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
       const body = new FormData();
       body.append('source', params.source, 'source');
 
-      const image = await parseRequest(url, {
+      const job = await parseRequest(url, {
         body,
         method: 'POST',
       });
       return {
-        image,
+        job,
         retry: {
           type: 'upscale',
           model,
@@ -410,7 +409,7 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
         },
       };
     },
-    async blend(model: ModelParams, params: BlendParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry> {
+    async blend(model: ModelParams, params: BlendParams, upscale?: UpscaleParams): Promise<JobResponseWithRetry> {
       const url = makeApiUrl(root, 'blend');
       appendModelToURL(url, model);
 
@@ -426,12 +425,12 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
         body.append(name, params.sources[i], name);
       }
 
-      const image = await parseRequest(url, {
+      const job = await parseRequest(url, {
         body,
         method: 'POST',
       });
       return {
-        image,
+        job,
         retry: {
           type: 'blend',
           model,
@@ -440,8 +439,8 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
         }
       };
     },
-    async chain(model: ModelParams, chain: ChainPipeline): Promise<ImageResponse> {
-      const url = makeApiUrl(root, 'chain');
+    async chain(model: ModelParams, chain: ChainPipeline): Promise<JobResponse> {
+      const url = makeApiUrl(root, 'job');
       const body = JSON.stringify({
         ...chain,
         platform: model.platform,
@@ -456,23 +455,23 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
         method: 'POST',
       });
     },
-    async ready(key: string): Promise<ReadyResponse> {
-      const path = makeApiUrl(root, 'ready');
-      path.searchParams.append('output', key);
+    async status(keys: Array<string>): Promise<Array<JobResponse>> {
+      const path = makeApiUrl(root, 'job', 'status');
+      path.searchParams.append('jobs', keys.join(','));
 
       const res = await f(path);
-      return await res.json() as ReadyResponse;
+      return await res.json() as Array<JobResponse>;
     },
-    async cancel(key: string): Promise<boolean> {
-      const path = makeApiUrl(root, 'cancel');
-      path.searchParams.append('output', key);
+    async cancel(keys: Array<string>): Promise<Array<JobResponse>> {
+      const path = makeApiUrl(root, 'job', 'cancel');
+      path.searchParams.append('jobs', keys.join(','));
 
       const res = await f(path, {
         method: 'PUT',
       });
-      return res.status === STATUS_SUCCESS;
+      return await res.json() as Array<JobResponse>;
     },
-    async retry(retry: RetryParams): Promise<ImageResponseWithRetry> {
+    async retry(retry: RetryParams): Promise<JobResponseWithRetry> {
       switch (retry.type) {
         case 'blend':
           return this.blend(retry.model, retry.params, retry.upscale);
@@ -491,7 +490,7 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
       }
     },
     async restart(): Promise<boolean> {
-      const path = makeApiUrl(root, 'restart');
+      const path = makeApiUrl(root, 'worker', 'restart');
 
       if (doesExist(token)) {
         path.searchParams.append('token', token);
@@ -502,8 +501,8 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
       });
       return res.status === STATUS_SUCCESS;
     },
-    async status(): Promise<Array<unknown>> {
-      const path = makeApiUrl(root, 'status');
+    async workers(): Promise<Array<unknown>> {
+      const path = makeApiUrl(root, 'worker', 'status');
 
       if (doesExist(token)) {
         path.searchParams.append('token', token);
@@ -511,6 +510,9 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
 
       const res = await f(path);
       return res.json();
+    },
+    outputURL(image: SuccessJobResponse, index: number): string {
+      return new URL(joinPath('output', image.outputs[index]), root).toString();
     },
   };
 }
@@ -521,24 +523,9 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
  * The server sends over the output key, and the client is in the best position to turn
  * that into a full URL, since it already knows the root URL of the server.
  */
-export async function parseApiResponse(root: string, res: Response): Promise<ImageResponse> {
-  type LimitedResponse = Omit<ImageResponse, 'outputs'> & { outputs: Array<string> };
-
+export async function parseJobResponse(root: string, res: Response): Promise<JobResponse> {
   if (res.status === STATUS_SUCCESS) {
-    const data = await res.json() as LimitedResponse;
-
-    const outputs = data.outputs.map((output) => {
-      const url = new URL(joinPath('output', output), root).toString();
-      return {
-        key: output,
-        url,
-      };
-    });
-
-    return {
-      ...data,
-      outputs,
-    };
+    return await res.json() as JobResponse;
   } else {
     throw new Error('request error');
   }

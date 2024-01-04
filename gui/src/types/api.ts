@@ -14,6 +14,8 @@ import {
 
 /**
  * Output image data within the response.
+ *
+ * @deprecated
  */
 export interface ImageOutput {
   key: string;
@@ -22,6 +24,8 @@ export interface ImageOutput {
 
 /**
  * General response for most image requests.
+ *
+ * @deprecated
  */
 export interface ImageResponse {
   outputs: Array<ImageOutput>;
@@ -119,11 +123,19 @@ export type RetryParams = {
   upscale?: UpscaleParams;
 };
 
+/**
+ * Status response from the image endpoint, with parameters to retry the job if it fails.
+ *
+ * @deprecated
+ */
 export interface ImageResponseWithRetry {
   image: ImageResponse;
   retry: RetryParams;
 }
 
+/**
+ * @deprecated
+ */
 export interface ImageMetadata {
   highres: HighresParams;
   outputs: string | Array<string>;

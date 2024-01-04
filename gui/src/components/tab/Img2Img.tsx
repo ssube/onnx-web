@@ -27,12 +27,12 @@ export function Img2Img() {
     const state = store.getState();
     const img2img = selectParams(state);
 
-    const { image, retry } = await client.img2img(model, {
+    const { job, retry } = await client.img2img(model, {
       ...img2img,
       source: mustExist(img2img.source), // TODO: show an error if this doesn't exist
     }, selectUpscale(state), selectHighres(state));
 
-    pushHistory(image, retry);
+    pushHistory(job, retry);
   }
 
   const client = mustExist(useContext(ClientContext));

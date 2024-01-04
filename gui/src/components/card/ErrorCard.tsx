@@ -10,16 +10,15 @@ import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
-import { ImageResponse, ReadyResponse, RetryParams } from '../../types/api.js';
+import { FailedJobResponse, RetryParams } from '../../types/api-v2.js';
 
 export interface ErrorCardProps {
-  image: ImageResponse;
-  ready: ReadyResponse;
+  image: FailedJobResponse;
   retry: Maybe<RetryParams>;
 }
 
 export function ErrorCard(props: ErrorCardProps) {
-  const { image, ready, retry: retryParams } = props;
+  const { image, retry: retryParams } = props;
 
   const client = mustExist(useContext(ClientContext));
   const { params } = mustExist(useContext(ConfigContext));
@@ -32,8 +31,8 @@ export function ErrorCard(props: ErrorCardProps) {
     removeHistory(image);
 
     if (doesExist(retryParams)) {
-      const { image: nextImage, retry: nextRetry } = await client.retry(retryParams);
-      pushHistory(nextImage, nextRetry);
+      const { job: nextJob, retry: nextRetry } = await client.retry(retryParams);
+      pushHistory(nextJob, nextRetry);
     }
   }
 
@@ -52,10 +51,11 @@ export function ErrorCard(props: ErrorCardProps) {
           spacing={2}
           sx={{ alignItems: 'center' }}
         >
-          <Alert severity='error'>{t('loading.progress', {
-            current: ready.progress,
-            total: image.params.steps,
-          })}</Alert>
+          <Alert severity='error'>
+            {t('loading.progress', image.steps)}
+            <br />
+            {image.error}
+          </Alert>
           <Stack direction='row' spacing={2}>
             <Tooltip title={t('tooltip.retry')}>
               <IconButton onClick={() => retry.mutate()}>

@@ -3,7 +3,7 @@
 onnx-web is designed to simplify the process of running Stable Diffusion and other [ONNX models](https://onnx.ai) so you
 can focus on making high quality, high resolution art. With the efficiency of hardware acceleration on both AMD and
 Nvidia GPUs, and offering a reliable CPU software fallback, it offers the full feature set on desktop, laptops, and
-servers with a seamless user experience.
+multi-GPU servers with a seamless user experience.
 
 You can navigate through the user-friendly web UI, hosted on Github Pages and accessible across all major browsers,
 including your go-to mobile device. Here, you have the flexibility to choose diffusion models and accelerators for each
@@ -83,18 +83,6 @@ This is an incomplete list of new and interesting features:
   - for all supported hardware accelerators
   - includes both the API and GUI bundle in a single container
   - runs well on [RunPod](https://www.runpod.io/), [Vast.ai](https://vast.ai/), and other GPU container hosting services
-
-## Contents
-
-- [onnx-web](#onnx-web)
-  - [Features](#features)
-  - [Contents](#contents)
-  - [Setup](#setup)
-    - [Adding your own models](#adding-your-own-models)
-  - [Usage](#usage)
-    - [Known errors and solutions](#known-errors-and-solutions)
-    - [Running the containers](#running-the-containers)
-  - [Credits](#credits)
 
 ## Setup
 

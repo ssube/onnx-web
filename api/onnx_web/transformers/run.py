@@ -12,7 +12,6 @@ def run_txt2txt_pipeline(
     _server: ServerContext,
     params: ImageParams,
     _size: Size,
-    output: str,
 ) -> None:
     from transformers import AutoTokenizer, GPTJForCausalLM
 
@@ -38,4 +37,4 @@ def run_txt2txt_pipeline(
 
     print("Server says: %s" % result_text)
 
-    logger.info("finished txt2txt job: %s", output)
+    logger.info("finished txt2txt job: %s", worker.job)

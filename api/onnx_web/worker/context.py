@@ -2,21 +2,23 @@ from logging import getLogger
 from os import getpid
 from typing import Any, Callable, Optional
 
+import numpy as np
 from torch.multiprocessing import Queue, Value
 
 from ..errors import CancelledException
 from ..params import DeviceParams
-from .command import JobCommand, ProgressCommand
+from .command import JobCommand, JobStatus, ProgressCommand
 
 logger = getLogger(__name__)
 
 
-ProgressCallback = Callable[[int, int, Any], None]
+ProgressCallback = Callable[[int, int, np.ndarray], None]
 
 
 class WorkerContext:
     cancel: "Value[bool]"
     job: Optional[str]
+    job_type: Optional[str]
     name: str
     pending: "Queue[JobCommand]"
     active_pid: "Value[int]"
@@ -41,6 +43,7 @@ class WorkerContext:
         timeout: float,
     ):
         self.job = None
+        self.job_type = None
         self.name = name
         self.device = device
         self.cancel = cancel
@@ -54,9 +57,15 @@ class WorkerContext:
         self.retries = retries
         self.timeout = timeout
 
-    def start(self, job: str) -> None:
-        self.job = job
+    def start(self, job: JobCommand) -> None:
+        # set job name and type
+        self.job = job.name
+        self.job_type = job.job_type
+
+        # reset retries
         self.retries = self.initial_retries
+
+        # clear flags
         self.set_cancel(cancel=False)
         self.set_idle(idle=False)
 
@@ -81,7 +90,7 @@ class WorkerContext:
 
     def get_progress(self) -> int:
         if self.last_progress is not None:
-            return self.last_progress.progress
+            return self.last_progress.steps
 
         return 0
 
@@ -112,13 +121,11 @@ class WorkerContext:
         logger.debug("setting progress for job %s to %s", self.job, progress)
         self.last_progress = ProgressCommand(
             self.job,
+            self.job_type,
             self.device.device,
-            False,
-            progress,
-            self.is_cancelled(),
-            False,
+            JobStatus.RUNNING,
+            steps=progress,
         )
-
         self.progress.put(
             self.last_progress,
             block=False,
@@ -131,11 +138,10 @@ class WorkerContext:
             logger.debug("setting finished for job %s", self.job)
             self.last_progress = ProgressCommand(
                 self.job,
+                self.job_type,
                 self.device.device,
-                True,
-                self.get_progress(),
-                self.is_cancelled(),
-                False,
+                JobStatus.SUCCESS,  # TODO: FAILED
+                steps=self.get_progress(),
             )
             self.progress.put(
                 self.last_progress,
@@ -150,11 +156,10 @@ class WorkerContext:
             try:
                 self.last_progress = ProgressCommand(
                     self.job,
+                    self.job_type,
                     self.device.device,
-                    True,
-                    self.get_progress(),
-                    self.is_cancelled(),
-                    True,
+                    JobStatus.FAILED,
+                    steps=self.get_progress(),
                 )
                 self.progress.put(
                     self.last_progress,
@@ -162,25 +167,3 @@ class WorkerContext:
                 )
             except Exception:
                 logger.exception("error setting failure on job %s", self.job)
-
-
-class JobStatus:
-    name: str
-    device: str
-    progress: int
-    cancelled: bool
-    finished: bool
-
-    def __init__(
-        self,
-        name: str,
-        device: DeviceParams,
-        progress: int = 0,
-        cancelled: bool = False,
-        finished: bool = False,
-    ) -> None:
-        self.name = name
-        self.device = device.device
-        self.progress = progress
-        self.cancelled = cancelled
-        self.finished = finished

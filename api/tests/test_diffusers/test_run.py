@@ -22,6 +22,7 @@ from onnx_web.params import (
     UpscaleParams,
 )
 from onnx_web.server.context import ServerContext
+from onnx_web.worker.command import JobCommand
 from onnx_web.worker.context import WorkerContext
 from tests.helpers import (
     TEST_MODEL_DIFFUSION_SD15,
@@ -57,7 +58,7 @@ class TestTxt2ImgPipeline(unittest.TestCase):
             3,
             0.1,
         )
-        worker.start("test")
+        worker.start(JobCommand("test", "test", "test", run_txt2img_pipeline, [], {}))
 
         run_txt2img_pipeline(
             worker,
@@ -72,7 +73,6 @@ class TestTxt2ImgPipeline(unittest.TestCase):
                 1,
             ),
             Size(256, 256),
-            ["test-txt2img-basic.png"],
             UpscaleParams("test"),
             HighresParams(False, 1, 0, 0),
         )
@@ -103,7 +103,7 @@ class TestTxt2ImgPipeline(unittest.TestCase):
             3,
             0.1,
         )
-        worker.start("test")
+        worker.start(JobCommand("test", "test", "test", run_txt2img_pipeline, [], {}))
 
         run_txt2img_pipeline(
             worker,
@@ -119,7 +119,6 @@ class TestTxt2ImgPipeline(unittest.TestCase):
                 batch=2,
             ),
             Size(256, 256),
-            ["test-txt2img-batch-0.png", "test-txt2img-batch-1.png"],
             UpscaleParams("test"),
             HighresParams(False, 1, 0, 0),
         )
@@ -152,7 +151,7 @@ class TestTxt2ImgPipeline(unittest.TestCase):
             3,
             0.1,
         )
-        worker.start("test")
+        worker.start(JobCommand("test", "test", "test", run_txt2img_pipeline, [], {}))
 
         run_txt2img_pipeline(
             worker,
@@ -168,7 +167,6 @@ class TestTxt2ImgPipeline(unittest.TestCase):
                 unet_tile=256,
             ),
             Size(256, 256),
-            ["test-txt2img-highres.png"],
             UpscaleParams("test", scale=2, outscale=2),
             HighresParams(True, 2, 0, 0),
         )
@@ -198,7 +196,7 @@ class TestTxt2ImgPipeline(unittest.TestCase):
             3,
             0.1,
         )
-        worker.start("test")
+        worker.start(JobCommand("test", "test", "test", run_txt2img_pipeline, [], {}))
 
         run_txt2img_pipeline(
             worker,
@@ -214,7 +212,6 @@ class TestTxt2ImgPipeline(unittest.TestCase):
                 batch=2,
             ),
             Size(256, 256),
-            ["test-txt2img-highres-batch-0.png", "test-txt2img-highres-batch-1.png"],
             UpscaleParams("test"),
             HighresParams(True, 2, 0, 0),
         )
@@ -230,7 +227,7 @@ class TestImg2ImgPipeline(unittest.TestCase):
     @test_needs_models([TEST_MODEL_DIFFUSION_SD15])
     def test_basic(self):
         worker = test_worker()
-        worker.start("test")
+        worker.start(JobCommand("test", "test", "test", run_txt2img_pipeline, [], {}))
 
         source = Image.new("RGB", (64, 64), "black")
         run_img2img_pipeline(
@@ -245,7 +242,6 @@ class TestImg2ImgPipeline(unittest.TestCase):
                 1,
                 1,
             ),
-            ["test-img2img.png"],
             UpscaleParams("test"),
             HighresParams(False, 1, 0, 0),
             source,
@@ -259,7 +255,7 @@ class TestInpaintPipeline(unittest.TestCase):
     @test_needs_models([TEST_MODEL_DIFFUSION_SD15_INPAINT])
     def test_basic_white(self):
         worker = test_worker()
-        worker.start("test")
+        worker.start(JobCommand("test", "test", "test", run_txt2img_pipeline, [], {}))
 
         source = Image.new("RGB", (64, 64), "black")
         mask = Image.new("RGB", (64, 64), "white")
@@ -277,7 +273,6 @@ class TestInpaintPipeline(unittest.TestCase):
                 unet_tile=64,
             ),
             Size(*source.size),
-            ["test-inpaint-white.png"],
             UpscaleParams("test"),
             HighresParams(False, 1, 0, 0),
             source,
@@ -296,7 +291,7 @@ class TestInpaintPipeline(unittest.TestCase):
     @test_needs_models([TEST_MODEL_DIFFUSION_SD15_INPAINT])
     def test_basic_black(self):
         worker = test_worker()
-        worker.start("test")
+        worker.start(JobCommand("test", "test", "test", run_txt2img_pipeline, [], {}))
 
         source = Image.new("RGB", (64, 64), "black")
         mask = Image.new("RGB", (64, 64), "black")
@@ -314,7 +309,6 @@ class TestInpaintPipeline(unittest.TestCase):
                 unet_tile=64,
             ),
             Size(*source.size),
-            ["test-inpaint-black.png"],
             UpscaleParams("test"),
             HighresParams(False, 1, 0, 0),
             source,
@@ -353,7 +347,7 @@ class TestUpscalePipeline(unittest.TestCase):
             3,
             0.1,
         )
-        worker.start("test")
+        worker.start(JobCommand("test", "test", "test", run_upscale_pipeline, [], {}))
 
         source = Image.new("RGB", (64, 64), "black")
         run_upscale_pipeline(
@@ -369,7 +363,6 @@ class TestUpscalePipeline(unittest.TestCase):
                 1,
             ),
             Size(256, 256),
-            ["test-upscale.png"],
             UpscaleParams("test"),
             HighresParams(False, 1, 0, 0),
             source,
@@ -399,7 +392,7 @@ class TestBlendPipeline(unittest.TestCase):
             3,
             0.1,
         )
-        worker.start("test")
+        worker.start(JobCommand("test", "test", "test", run_blend_pipeline, [], {}))
 
         source = Image.new("RGBA", (64, 64), "black")
         mask = Image.new("RGBA", (64, 64), "white")
@@ -417,7 +410,6 @@ class TestBlendPipeline(unittest.TestCase):
                 unet_tile=64,
             ),
             Size(64, 64),
-            ["test-blend.png"],
             UpscaleParams("test"),
             [source, source],
             mask,

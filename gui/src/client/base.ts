@@ -1,12 +1,19 @@
 import { ServerParams } from '../config.js';
 import { ExtrasFile } from '../types/model.js';
-import { WriteExtrasResponse, FilterResponse, ModelResponse, ImageResponseWithRetry, ImageResponse, ReadyResponse, RetryParams } from '../types/api.js';
+import { WriteExtrasResponse, FilterResponse, ModelResponse, RetryParams } from '../types/api.js';
 import { ChainPipeline } from '../types/chain.js';
 import { ModelParams, Txt2ImgParams, UpscaleParams, HighresParams, Img2ImgParams, InpaintParams, OutpaintParams, UpscaleReqParams, BlendParams } from '../types/params.js';
+import { JobResponse, JobResponseWithRetry, SuccessJobResponse } from '../types/api-v2.js';
 
 export interface ApiClient {
+  /**
+   * Get the first extras file.
+   */
   extras(): Promise<ExtrasFile>;
 
+  /**
+   * Update the first extras file.
+   */
   writeExtras(extras: ExtrasFile): Promise<WriteExtrasResponse>;
 
   /**
@@ -51,54 +58,60 @@ export interface ApiClient {
     translation: Record<string, string>;
   }>>;
 
+  /**
+   * Get the available wildcards.
+   */
   wildcards(): Promise<Array<string>>;
 
   /**
    * Start a txt2img pipeline.
    */
-  txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry>;
+  txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry>;
 
   /**
    * Start an im2img pipeline.
    */
-  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry>;
+  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry>;
 
   /**
    * Start an inpaint pipeline.
    */
-  inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry>;
+  inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry>;
 
   /**
    * Start an outpaint pipeline.
    */
-  outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry>;
+  outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry>;
 
   /**
    * Start an upscale pipeline.
    */
-  upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<ImageResponseWithRetry>;
+  upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry>;
 
   /**
    * Start a blending pipeline.
    */
-  blend(model: ModelParams, params: BlendParams, upscale?: UpscaleParams): Promise<ImageResponseWithRetry>;
+  blend(model: ModelParams, params: BlendParams, upscale?: UpscaleParams): Promise<JobResponseWithRetry>;
 
-  chain(model: ModelParams, chain: ChainPipeline): Promise<ImageResponse>;
+  /**
+   * Start a custom chain pipeline.
+   */
+  chain(model: ModelParams, chain: ChainPipeline): Promise<JobResponse>;
 
   /**
    * Check whether job has finished and its output is ready.
    */
-  ready(key: string): Promise<ReadyResponse>;
+  status(keys: Array<string>): Promise<Array<JobResponse>>;
 
   /**
    * Cancel an existing job.
    */
-  cancel(key: string): Promise<boolean>;
+  cancel(keys: Array<string>): Promise<Array<JobResponse>>;
 
   /**
    * Retry a previous job using the same parameters.
    */
-  retry(params: RetryParams): Promise<ImageResponseWithRetry>;
+  retry(params: RetryParams): Promise<JobResponseWithRetry>;
 
   /**
    * Restart the image job workers.
@@ -108,5 +121,7 @@ export interface ApiClient {
   /**
    * Check the status of the image job workers.
    */
-  status(): Promise<Array<unknown>>;
+  workers(): Promise<Array<unknown>>;
+
+  outputURL(image: SuccessJobResponse, index: number): string;
 }

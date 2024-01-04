@@ -36,15 +36,14 @@ class CorrectCodeformerStage(BaseStage):
         # https://pypi.org/project/codeformer-perceptor/
 
         # import must be within the load function for patches to take effect
-        # TODO: rewrite and remove
+        from codeformer.basicsr.archs.codeformer_arch import CodeFormer
         from codeformer.basicsr.utils import img2tensor, tensor2img
-        from codeformer.basicsr.utils.registry import ARCH_REGISTRY
         from codeformer.facelib.utils.face_restoration_helper import FaceRestoreHelper
 
         upscale = upscale.with_args(**kwargs)
         device = worker.get_device()
 
-        net = ARCH_REGISTRY.get("CodeFormer")(
+        net = CodeFormer(
             dim_embd=512,
             codebook_size=1024,
             n_head=8,

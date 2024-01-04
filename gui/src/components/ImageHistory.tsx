@@ -10,6 +10,7 @@ import { OnnxState, StateContext } from '../state/full.js';
 import { ErrorCard } from './card/ErrorCard.js';
 import { ImageCard } from './card/ImageCard.js';
 import { LoadingCard } from './card/LoadingCard.js';
+import { JobStatus } from '../types/api-v2.js';
 
 export function ImageHistory() {
   const store = mustExist(useContext(StateContext));
@@ -25,19 +26,19 @@ export function ImageHistory() {
 
   const limited = history.slice(0, limit);
   for (const item of limited) {
-    const key = item.image.outputs[0].key;
+    const key = item.image.name;
 
-    if (doesExist(item.ready) && item.ready.ready) {
-      if (item.ready.cancelled || item.ready.failed) {
-        children.push([key, <ErrorCard key={`history-${key}`} image={item.image} ready={item.ready} retry={item.retry} />]);
-        continue;
-      }
-
-      children.push([key, <ImageCard key={`history-${key}`} image={item.image} onDelete={removeHistory} />]);
-      continue;
+    switch (item.image.status) {
+      case JobStatus.SUCCESS:
+        children.push([key, <ImageCard key={`history-${key}`} image={item.image} onDelete={removeHistory} />]);
+        break;
+      case JobStatus.FAILED:
+        children.push([key, <ErrorCard key={`history-${key}`} image={item.image} retry={item.retry} />]);
+        break;
+      default:
+        children.push([key, <LoadingCard key={`history-${key}`} image={item.image} />]);
+        break;
     }
-
-    children.push([key, <LoadingCard key={`history-${key}`} index={0} image={item.image} />]);
   }
 
   return <Grid container spacing={2}>{children.map(([key, child]) => <Grid item key={key} xs={6}>{child}</Grid>)}</Grid>;

@@ -1,12 +1,6 @@
 from diffusers import OnnxStableDiffusionPipeline
 from os import path
 
-import cv2
-import numpy as np
-import onnxruntime as ort
-import torch
-import time
-
 cfg = 8
 steps = 22
 height = 512

@@ -8,7 +8,7 @@ from torch.multiprocessing import Process, Queue, Value
 
 from ..params import DeviceParams
 from ..server import ServerContext
-from .command import JobCommand, ProgressCommand
+from .command import JobCommand, JobStatus, ProgressCommand
 from .context import WorkerContext
 from .utils import Interval
 from .worker import worker_main
@@ -201,6 +201,10 @@ class DevicePoolExecutor:
         should be cancelled on the next progress callback.
         """
 
+        if key in self.cancelled_jobs:
+            logger.debug("cancelling already cancelled job: %s", key)
+            return True
+
         for job in self.finished_jobs:
             if job.job == key:
                 logger.debug("cannot cancel finished job: %s", key)
@@ -209,6 +213,9 @@ class DevicePoolExecutor:
         for job in self.pending_jobs:
             if job.name == key:
                 self.pending_jobs.remove(job)
+                self.cancelled_jobs.append(
+                    key
+                )  # ensure workers never pick up this job and the status endpoint knows about it later
                 logger.info("cancelled pending job: %s", key)
                 return True
 
@@ -221,28 +228,31 @@ class DevicePoolExecutor:
         self.cancelled_jobs.append(key)
         return True
 
-    def done(self, key: str) -> Tuple[bool, Optional[ProgressCommand]]:
+    def status(self, key: str) -> Tuple[JobStatus, Optional[ProgressCommand]]:
         """
         Check if a job has been finished and report the last progress update.
-
-        If the job is still pending, the first item will be True and there will be no ProgressCommand.
         """
+
+        if key in self.cancelled_jobs:
+            logger.debug("checking status for cancelled job: %s", key)
+            return (JobStatus.CANCELLED, None)
+
         if key in self.running_jobs:
             logger.debug("checking status for running job: %s", key)
-            return (False, self.running_jobs[key])
+            return (JobStatus.RUNNING, self.running_jobs[key])
 
         for job in self.finished_jobs:
             if job.job == key:
                 logger.debug("checking status for finished job: %s", key)
-                return (False, job)
+                return (job.status, job)
 
         for job in self.pending_jobs:
             if job.name == key:
                 logger.debug("checking status for pending job: %s", key)
-                return (True, None)
+                return (JobStatus.PENDING, None)
 
         logger.trace("checking status for unknown job: %s", key)
-        return (False, None)
+        return (JobStatus.UNKNOWN, None)
 
     def join(self):
         logger.info("stopping worker pool")
@@ -383,6 +393,7 @@ class DevicePoolExecutor:
     def submit(
         self,
         key: str,
+        job_type: str,
         fn: Callable[..., None],
         /,
         *args,
@@ -399,56 +410,63 @@ class DevicePoolExecutor:
         )
 
         # build and queue job
-        job = JobCommand(key, device, fn, args, kwargs)
+        job = JobCommand(key, device, job_type, fn, args, kwargs)
         self.pending_jobs.append(job)
 
-    def status(self) -> Dict[str, List[Tuple[str, int, bool, bool, bool, bool]]]:
+    def summary(self) -> Dict[str, List[Tuple[str, int, JobStatus]]]:
         """
         Returns a tuple of: job/device, progress, progress, finished, cancelled, failed
         """
-        return {
-            "cancelled": [],
-            "finished": [
+
+        jobs: Tuple[str, int, JobStatus] = []
+        jobs.extend(
+            [
                 (
-                    job.job,
-                    job.progress,
-                    False,
-                    job.finished,
-                    job.cancelled,
-                    job.failed,
+                    job,
+                    0,
+                    JobStatus.CANCELLED,
                 )
-                for job in self.finished_jobs
-            ],
-            "pending": [
+                for job in self.cancelled_jobs
+            ]
+        )
+        jobs.extend(
+            [
                 (
                     job.name,
                     0,
-                    True,
-                    False,
-                    False,
-                    False,
+                    JobStatus.PENDING,
                 )
                 for job in self.pending_jobs
-            ],
-            "running": [
+            ]
+        )
+        jobs.extend(
+            [
                 (
                     name,
-                    job.progress,
-                    False,
-                    job.finished,
-                    job.cancelled,
-                    job.failed,
+                    job.steps,
+                    job.status,
                 )
                 for name, job in self.running_jobs.items()
-            ],
-            "total": [
+            ]
+        )
+        jobs.extend(
+            [
+                (
+                    job.job,
+                    job.steps,
+                    job.status,
+                )
+                for job in self.finished_jobs
+            ]
+        )
+
+        return {
+            "jobs": jobs,
+            "workers": [
                 (
                     device,
                     total,
                     self.workers[device].is_alive(),
-                    False,
-                    False,
-                    False,
                 )
                 for device, total in self.total_jobs.items()
             ],
@@ -476,20 +494,18 @@ class DevicePoolExecutor:
             self.cancelled_jobs.remove(progress.job)
 
     def update_job(self, progress: ProgressCommand):
-        if progress.finished:
+        if progress.status in [JobStatus.SUCCESS, JobStatus.FAILED]:
             return self.finish_job(progress)
 
         # move from pending to running
-        logger.debug(
-            "progress update for job: %s to %s", progress.job, progress.progress
-        )
+        logger.debug("progress update for job: %s to %s", progress.job, progress.steps)
         self.running_jobs[progress.job] = progress
         self.pending_jobs[:] = [
             job for job in self.pending_jobs if job.name != progress.job
         ]
 
         # increment job counter if this is the start of a new job
-        if progress.progress == 0:
+        if progress.steps == 0:
             if progress.device in self.total_jobs:
                 self.total_jobs[progress.device] += 1
             else:

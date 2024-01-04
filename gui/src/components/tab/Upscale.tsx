@@ -21,12 +21,12 @@ import { PromptInput } from '../input/PromptInput.js';
 export function Upscale() {
   async function uploadSource() {
     const { upscaleHighres, upscaleUpscale, upscaleModel, upscale } = store.getState();
-    const { image, retry } = await client.upscale(upscaleModel, {
+    const { job, retry } = await client.upscale(upscaleModel, {
       ...upscale,
       source: mustExist(upscale.source), // TODO: show an error if this doesn't exist
     }, upscaleUpscale, upscaleHighres);
 
-    pushHistory(image, retry);
+    pushHistory(job, retry);
   }
 
   const client = mustExist(useContext(ClientContext));

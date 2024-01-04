@@ -2,21 +2,22 @@ import { doesExist, Maybe, mustDefault, mustExist } from '@apextoaster/js-utils'
 import { ArrowLeft, ArrowRight, Blender, Brush, ContentCopy, Delete, Download, ZoomOutMap } from '@mui/icons-material';
 import { Box, Card, CardContent, CardMedia, Grid, IconButton, Menu, MenuItem, Paper, Tooltip } from '@mui/material';
 import * as React from 'react';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { ConfigContext, OnnxState, StateContext } from '../../state/full.js';
-import { ImageResponse } from '../../types/api.js';
+import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { range, visibleIndex } from '../../utils.js';
 import { BLEND_SOURCES } from '../../constants.js';
+import { JobResponse, SuccessJobResponse } from '../../types/api-v2.js';
+import { getApiRoot } from '../../config.js';
 
 export interface ImageCardProps {
-  image: ImageResponse;
+  image: SuccessJobResponse;
 
-  onDelete?: (key: ImageResponse) => void;
+  onDelete?: (key: JobResponse) => void;
 }
 
 export function GridItem(props: { xs: number; children: React.ReactNode }) {
@@ -27,18 +28,19 @@ export function GridItem(props: { xs: number; children: React.ReactNode }) {
 
 export function ImageCard(props: ImageCardProps) {
   const { image } = props;
-  const { params, outputs, size } = image;
+  const { metadata, outputs } = image;
 
   const [_hash, setHash] = useHash();
   const [blendAnchor, setBlendAnchor] = useState<Maybe<HTMLElement>>();
   const [saveAnchor, setSaveAnchor] = useState<Maybe<HTMLElement>>();
 
+  const client = mustExist(useContext(ClientContext));
   const config = mustExist(useContext(ConfigContext));
   const store = mustExist(useContext(StateContext));
   const { setBlend, setImg2Img, setInpaint, setUpscale } = useStore(store, selectActions, shallow);
 
   async function loadSource() {
-    const req = await fetch(outputs[index].url);
+    const req = await fetch(url);
     return req.blob();
   }
 
@@ -84,12 +86,12 @@ export function ImageCard(props: ImageCardProps) {
   }
 
   function downloadImage() {
-    window.open(outputs[index].url, '_blank');
+    window.open(url, '_blank');
     close();
   }
 
   function downloadMetadata() {
-    window.open(outputs[index].url + '.json', '_blank');
+    window.open(url + '.json', '_blank');
     close();
   }
 
@@ -106,14 +108,16 @@ export function ImageCard(props: ImageCardProps) {
     return mustDefault(t(`${key}.${name}`), name);
   }
 
-  const model = getLabel('model', params.model);
-  const scheduler = getLabel('scheduler', params.scheduler);
+  const url = useMemo(() => client.outputURL(image, index), [image, index]);
+
+  const model = getLabel('model', metadata[index].model);
+  const scheduler = getLabel('scheduler', metadata[index].scheduler);
 
   return <Card sx={{ maxWidth: config.params.width.default }} elevation={2}>
     <CardMedia sx={{ height: config.params.height.default }}
       component='img'
-      image={outputs[index].url}
-      title={params.prompt}
+      image={url}
+      title={metadata[index].params.prompt}
     />
     <CardContent>
       <Box textAlign='center'>
@@ -146,12 +150,12 @@ export function ImageCard(props: ImageCardProps) {
           </GridItem>
           <GridItem xs={4}>{t('modelType.diffusion', {count: 1})}: {model}</GridItem>
           <GridItem xs={4}>{t('parameter.scheduler')}: {scheduler}</GridItem>
-          <GridItem xs={4}>{t('parameter.seed')}: {params.seed}</GridItem>
-          <GridItem xs={4}>{t('parameter.cfg')}: {params.cfg}</GridItem>
-          <GridItem xs={4}>{t('parameter.steps')}: {params.steps}</GridItem>
-          <GridItem xs={4}>{t('parameter.size')}: {size.width}x{size.height}</GridItem>
+          <GridItem xs={4}>{t('parameter.seed')}: {metadata[index].params.seed}</GridItem>
+          <GridItem xs={4}>{t('parameter.cfg')}: {metadata[index].params.cfg}</GridItem>
+          <GridItem xs={4}>{t('parameter.steps')}: {metadata[index].params.steps}</GridItem>
+          <GridItem xs={4}>{t('parameter.size')}: {metadata[index].size.width}x{metadata[index].size.height}</GridItem>
           <GridItem xs={12}>
-            <Box textAlign='left'>{params.prompt}</Box>
+            <Box textAlign='left'>{metadata[index].params.prompt}</Box>
           </GridItem>
           <GridItem xs={2}>
             <Tooltip title={t('tooltip.save')}>

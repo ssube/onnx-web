@@ -48,7 +48,7 @@ export const LOCAL_CLIENT = {
   async params() {
     throw new NoServerError();
   },
-  async ready(key) {
+  async status(key) {
     throw new NoServerError();
   },
   async cancel(key) {
@@ -78,7 +78,10 @@ export const LOCAL_CLIENT = {
   async restart() {
     throw new NoServerError();
   },
-  async status() {
+  async workers() {
     throw new NoServerError();
-  }
+  },
+  outputURL(image, index) {
+    throw new NoServerError();
+  },
 } as ApiClient;

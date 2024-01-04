@@ -1,4 +1,4 @@
-import { doesExist, mustExist } from '@apextoaster/js-utils';
+import { Maybe, doesExist, mustExist } from '@apextoaster/js-utils';
 import { Box, Button, Card, CardContent, CircularProgress, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -10,19 +10,17 @@ import { shallow } from 'zustand/shallow';
 
 import { POLL_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
-import { ImageResponse } from '../../types/api.js';
+import { JobResponse, JobStatus } from '../../types/api-v2.js';
 
 const LOADING_PERCENT = 100;
 const LOADING_OVERAGE = 99;
 
 export interface LoadingCardProps {
-  image: ImageResponse;
-  index: number;
+  image: JobResponse;
 }
 
 export function LoadingCard(props: LoadingCardProps) {
-  const { image, index } = props;
-  const { steps } = props.image.params;
+  const { image } = props;
 
   const client = mustExist(useContext(ClientContext));
   const { params } = mustExist(useContext(ConfigContext));
@@ -31,50 +29,22 @@ export function LoadingCard(props: LoadingCardProps) {
   const { removeHistory, setReady } = useStore(store, selectActions, shallow);
   const { t } = useTranslation();
 
-  const cancel = useMutation(() => client.cancel(image.outputs[index].key));
-  const ready = useQuery(['ready', image.outputs[index].key], () => client.ready(image.outputs[index].key), {
+  const cancel = useMutation(() => client.cancel([image.name]));
+  const ready = useQuery(['ready', image.name], () => client.status([image.name]), {
     // data will always be ready without this, even if the API says its not
     cacheTime: 0,
     refetchInterval: POLL_TIME,
   });
 
-  function getProgress() {
-    if (doesExist(ready.data)) {
-      return ready.data.progress;
-    }
-
-    return 0;
-  }
-
-  function getPercent() {
-    const progress = getProgress();
-    if (progress > steps) {
-      // steps was not complete, show 99% until done
-      return LOADING_OVERAGE;
-    }
-
-    const pct = progress / steps;
-    return Math.ceil(pct * LOADING_PERCENT);
-  }
-
-  function getTotal() {
-    const progress = getProgress();
-    if (progress > steps) {
-      // steps was not complete, show 99% until done
-      return t('loading.unknown');
-    }
-
-    return steps.toFixed(0);
-  }
-
   function getReady() {
-    return doesExist(ready.data) && ready.data.ready;
+    return doesExist(ready.data) && ready.data[0].status === JobStatus.SUCCESS;
   }
 
   function renderProgress() {
-    const progress = getProgress();
-    if (progress > 0 && progress <= steps) {
-      return <CircularProgress variant='determinate' value={getPercent()} />;
+    const progress = getProgress(ready.data);
+    const total = getTotal(ready.data);
+    if (progress > 0 && progress <= total) {
+      return <CircularProgress variant='determinate' value={getPercent(progress, total)} />;
     } else {
       return <CircularProgress />;
     }
@@ -88,9 +58,9 @@ export function LoadingCard(props: LoadingCardProps) {
 
   useEffect(() => {
     if (ready.status === 'success' && getReady()) {
-      setReady(props.image, ready.data);
+      setReady(ready.data[0]);
     }
-  }, [ready.status, getReady(), getProgress()]);
+  }, [ready.status, getReady(), getProgress(ready.data)]);
 
   return <Card sx={{ maxWidth: params.width.default }}>
     <CardContent sx={{ height: params.height.default }}>
@@ -106,10 +76,7 @@ export function LoadingCard(props: LoadingCardProps) {
           sx={{ alignItems: 'center' }}
         >
           {renderProgress()}
-          <Typography>{t('loading.progress', {
-            current: getProgress(),
-            total: getTotal(),
-          })}</Typography>
+          <Typography>{t('loading.progress', selectStatus(ready.data, image))}</Typography>
           <Button onClick={() => cancel.mutate()}>{t('loading.cancel')}</Button>
         </Stack>
       </Box>
@@ -124,4 +91,46 @@ export function selectActions(state: OnnxState) {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     setReady: state.setReady,
   };
+}
+
+export function selectStatus(data: Maybe<Array<JobResponse>>, defaultData: JobResponse) {
+  if (doesExist(data) && data.length > 0) {
+    return {
+      steps: data[0].steps,
+      stages: data[0].stages,
+      tiles: data[0].tiles,
+    };
+  }
+
+  return {
+    steps: defaultData.steps,
+    stages: defaultData.stages,
+    tiles: defaultData.tiles,
+  };
+}
+
+export function getPercent(current: number, total: number): number {
+  if (current > total) {
+    // steps was not complete, show 99% until done
+    return LOADING_OVERAGE;
+  }
+
+  const pct = current / total;
+  return Math.ceil(pct * LOADING_PERCENT);
+}
+
+export function getProgress(data: Maybe<Array<JobResponse>>) {
+  if (doesExist(data)) {
+    return data[0].steps.current;
+  }
+
+  return 0;
+}
+
+export function getTotal(data: Maybe<Array<JobResponse>>) {
+  if (doesExist(data)) {
+    return data[0].steps.total;
+  }
+
+  return 0;
 }

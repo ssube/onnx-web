@@ -20,13 +20,13 @@ import { MaskCanvas } from '../input/MaskCanvas.js';
 export function Blend() {
   async function uploadSource() {
     const { blend, blendModel, blendUpscale } = store.getState();
-    const { image, retry } = await client.blend(blendModel, {
+    const { job, retry } = await client.blend(blendModel, {
       ...blend,
       mask: mustExist(blend.mask),
       sources: mustExist(blend.sources), // TODO: show an error if this doesn't exist
     }, blendUpscale);
 
-    pushHistory(image, retry);
+    pushHistory(job, retry);
   }
 
   const client = mustExist(useContext(ClientContext));
