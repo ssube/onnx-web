@@ -60,12 +60,20 @@ export interface BaseJobResponse {
   tiles: Progress;
 }
 
+export interface CancelledJobResponse extends BaseJobResponse {
+  status: JobStatus.CANCELLED;
+}
+
 /**
  * Pending image job.
  */
 export interface PendingJobResponse extends BaseJobResponse {
-  status: JobStatus.PENDING | JobStatus.RUNNING;
+  status: JobStatus.PENDING;
   queue: Progress;
+}
+
+export interface RunningJobResponse extends BaseJobResponse {
+  status: JobStatus.RUNNING;
 }
 
 /**
@@ -144,7 +152,12 @@ export type SuccessJobResponse
   | SuccessBlendJobResponse
   | SuccessChainJobResponse;
 
-export type JobResponse = PendingJobResponse | FailedJobResponse | SuccessJobResponse;
+export type JobResponse
+  = CancelledJobResponse
+  | PendingJobResponse
+  | RunningJobResponse
+  | FailedJobResponse
+  | SuccessJobResponse;
 
 /**
  * Status response from the job endpoint, with parameters to retry the job if it fails.
