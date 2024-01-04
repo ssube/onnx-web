@@ -26,7 +26,7 @@ class ProgressCommand:
     job: str
     job_type: str
     status: JobStatus
-    results: int
+    result: Any
     steps: int
     stages: int
     tiles: int
@@ -37,7 +37,7 @@ class ProgressCommand:
         job_type: str,
         device: str,
         status: JobStatus,
-        results: int = 0,
+        result: Any = None,
         steps: int = 0,
         stages: int = 0,
         tiles: int = 0,
@@ -46,7 +46,7 @@ class ProgressCommand:
         self.job_type = job_type
         self.device = device
         self.status = status
-        self.results = results
+        self.result = result
         self.steps = steps
         self.stages = stages
         self.tiles = tiles
