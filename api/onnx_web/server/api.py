@@ -139,7 +139,7 @@ def image_reply(
 
             data["metadata"] = metadata
 
-    return jsonify(data)
+    return jsonify([data])
 
 
 def multi_image_reply(results: Dict[str, Any]):
