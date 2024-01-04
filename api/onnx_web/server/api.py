@@ -129,15 +129,15 @@ def image_reply(
         "tiles": tiles.tojson(),
     }
 
-    if len(metadata) != len(outputs):
-        logger.error("metadata and outputs must be the same length")
-        return error_reply("metadata and outputs must be the same length")
-
     if outputs is not None:
         data["outputs"] = outputs
 
-    if metadata is not None:
-        data["metadata"] = metadata
+        if metadata is not None:
+            if len(metadata) != len(outputs):
+                logger.error("metadata and outputs must be the same length")
+                return error_reply("metadata and outputs must be the same length")
+
+            data["metadata"] = metadata
 
     return jsonify(data)
 
@@ -256,9 +256,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         )
         output_count += 1
 
-    job_name = make_job_name(
-        server, "img2img", params, size, extras=[strength], count=output_count
-    )
+    job_name = make_job_name("img2img", params, size, extras=[strength])
     pool.submit(
         job_name,
         JobType.IMG2IMG,
@@ -285,7 +283,7 @@ def txt2img(server: ServerContext, pool: DevicePoolExecutor):
 
     replace_wildcards(params, get_wildcard_data())
 
-    job_name = make_job_name(server, "txt2img", params, size, count=params.batch)
+    job_name = make_job_name("txt2img", params, size)
 
     pool.submit(
         job_name,
@@ -348,7 +346,6 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     replace_wildcards(params, get_wildcard_data())
 
     job_name = make_job_name(
-        server,
         "inpaint",
         params,
         size,
@@ -403,7 +400,7 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
 
     replace_wildcards(params, get_wildcard_data())
 
-    job_name = make_job_name(server, "upscale", params, size)
+    job_name = make_job_name("upscale", params, size)
     pool.submit(
         job_name,
         JobType.UPSCALE,
@@ -515,7 +512,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("running chain pipeline with %s stages", len(pipeline.stages))
 
-    job_name = make_job_name(server, "chain", base_params, base_size)
+    job_name = make_job_name("chain", base_params, base_size)
 
     # build and run chain pipeline
     pool.submit(
@@ -553,7 +550,7 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
     device, params, size = pipeline_from_request(server)
     upscale = build_upscale()
 
-    job_name = make_job_name(server, "blend", params, size)
+    job_name = make_job_name("blend", params, size)
     pool.submit(
         job_name,
         JobType.BLEND,
@@ -576,7 +573,7 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
 def txt2txt(server: ServerContext, pool: DevicePoolExecutor):
     device, params, size = pipeline_from_request(server)
 
-    job_name = make_job_name(server, "txt2txt", params, size)
+    job_name = make_job_name("txt2txt", params, size)
     logger.info("upscale job queued for: %s", job_name)
 
     pool.submit(

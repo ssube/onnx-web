@@ -129,6 +129,7 @@ def save_image(
         save_metadata(
             server,
             output,
+            metadata,
         )
 
     logger.debug("saved output image to: %s", path)
