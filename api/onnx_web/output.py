@@ -69,7 +69,7 @@ def save_result(
     base_name: str,
 ) -> List[str]:
     results = []
-    for i, image, metadata in enumerate(zip(result.as_image(), result.metadata)):
+    for i, (image, metadata) in enumerate(zip(result.as_image(), result.metadata)):
         results.append(
             save_image(
                 server,

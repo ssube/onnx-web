@@ -112,13 +112,13 @@ def image_reply(
     metadata: List[ImageMetadata] = None,
 ):
     if stages is None:
-        stages = Progress()
+        stages = Progress(0, 0)
 
     if steps is None:
-        steps = Progress()
+        steps = Progress(0, 0)
 
     if tiles is None:
-        tiles = Progress()
+        tiles = Progress(0, 0)
 
     data = {
         "name": name,
@@ -688,7 +688,9 @@ def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecu
     return [
         app.route("/api")(wrap_route(introspect, server, app=app)),
         # job routes
-        app.route("/api/job", methods=["POST"])(wrap_route(job_create, server, pool=pool)),
+        app.route("/api/job", methods=["POST"])(
+            wrap_route(job_create, server, pool=pool)
+        ),
         app.route("/api/job/cancel", methods=["PUT"])(
             wrap_route(job_cancel, server, pool=pool)
         ),
