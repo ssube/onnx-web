@@ -140,8 +140,12 @@ class ChainPipeline:
             callback = ChainProgress.from_progress(callback)
 
         # set estimated totals
-        # TODO: should use self.steps, but size is not available here
-        callback.set_total(params.steps, stages=len(self.stages), tiles=0)
+        steps = params.steps
+        if "size" in pipeline_kwargs and isinstance(pipeline_kwargs["size"], Size):
+            size = pipeline_kwargs["size"]
+            steps = self.steps(params, size)
+
+        callback.set_total(steps, stages=len(self.stages), tiles=0)
 
         start = monotonic()
 

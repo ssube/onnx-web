@@ -685,9 +685,9 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
                 server,
                 job_name,
                 status,
-                stages=Progress(progress.stages, 0),
-                steps=Progress(progress.steps, 0),
-                tiles=Progress(progress.tiles, 0),
+                stages=progress.stages,
+                steps=progress.steps,
+                tiles=progress.tiles,
                 outputs=outputs,
                 metadata=metadata,
             )
