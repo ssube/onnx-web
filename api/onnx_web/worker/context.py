@@ -7,7 +7,7 @@ from torch.multiprocessing import Queue, Value
 
 from ..errors import CancelledException
 from ..params import DeviceParams
-from .command import JobCommand, JobStatus, ProgressCommand
+from .command import JobCommand, JobStatus, Progress, ProgressCommand
 
 logger = getLogger(__name__)
 
@@ -90,11 +90,26 @@ class WorkerContext:
         """
         return self.device
 
-    def get_progress(self) -> int:
+    def get_progress(self) -> Progress:
+        return self.get_last_steps()
+
+    def get_last_steps(self) -> Progress:
         if self.last_progress is not None:
             return self.last_progress.steps
 
-        return 0
+        return Progress(0, 0)
+
+    def get_last_stages(self) -> Progress:
+        if self.last_progress is not None:
+            return self.last_progress.stages
+
+        return Progress(0, 0)
+
+    def get_last_tiles(self) -> Progress:
+        if self.last_progress is not None:
+            return self.last_progress.tiles
+
+        return Progress(0, 0)
 
     def get_progress_callback(self, reset=False) -> ProgressCallback:
         from ..chain.pipeline import ChainProgress
@@ -103,7 +118,7 @@ class WorkerContext:
             return self.callback
 
         def on_progress(step: int, timestep: int, latents: Any):
-            self.callback.step = step
+            # self.callback.step = step
             self.set_progress(
                 step,
                 stages=self.callback.stage,
@@ -138,9 +153,9 @@ class WorkerContext:
             self.job_type,
             self.device.device,
             JobStatus.RUNNING,
-            steps=steps,
-            stages=stages,
-            tiles=tiles,
+            steps=Progress(steps, self.callback.steps.total),
+            stages=Progress(stages, self.callback.stages.total),
+            tiles=Progress(tiles, self.callback.tiles.total),
             result=result,
         )
         self.progress.put(
@@ -158,9 +173,9 @@ class WorkerContext:
                 self.job_type,
                 self.device.device,
                 JobStatus.SUCCESS,
-                steps=self.callback.step,
-                stages=self.callback.stage,
-                tiles=self.callback.tile,
+                steps=self.callback.steps,
+                stages=self.callback.stages,
+                tiles=self.callback.tiles,
                 result=self.callback.result,
             )
             self.progress.put(
@@ -179,7 +194,10 @@ class WorkerContext:
                     self.job_type,
                     self.device.device,
                     JobStatus.FAILED,
-                    steps=self.get_progress(),
+                    steps=self.get_last_steps(),
+                    stages=self.get_last_stages(),
+                    tiles=self.get_last_tiles(),
+                    # TODO: should this have results?
                 )
                 self.progress.put(
                     self.last_progress,

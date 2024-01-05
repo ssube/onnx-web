@@ -5,6 +5,8 @@ from typing import Any, List, Optional, Tuple
 
 from PIL import Image
 
+from ..worker.command import Progress
+
 from ..errors import CancelledException, RetryException
 from ..output import save_image
 from ..params import ImageParams, Size, StageParams
@@ -23,31 +25,43 @@ PipelineStage = Tuple[BaseStage, StageParams, Optional[dict]]
 
 class ChainProgress:
     parent: ProgressCallback
-    step: int
-    total: int
-    stage: int
-    tile: int
+    step: int  # same as steps.current, left for legacy purposes
+    prev: int  # accumulator when step resets
+
+    # new progress trackers
+    steps: Progress
+    stages: Progress
+    tiles: Progress
     result: Optional[StageResult]
-    # TODO: total stages and tiles
 
     def __init__(self, parent: ProgressCallback, start=0) -> None:
         self.parent = parent
         self.step = start
-        self.total = 0
-        self.stage = 0
-        self.tile = 0
+        self.prev = 0
+        self.steps = Progress(self.step, self.prev)
+        self.stages = Progress(0, 0)
+        self.tiles = Progress(0, 0)
         self.result = None
 
     def __call__(self, step: int, timestep: int, latents: Any) -> None:
         if step < self.step:
             # accumulate on resets
-            self.total += self.step
+            self.prev += self.step
 
         self.step = step
-        self.parent(self.get_total(), timestep, latents)
+
+        total = self.get_total()
+        self.steps.current = total
+        self.parent(total, timestep, latents)
 
     def get_total(self) -> int:
-        return self.step + self.total
+        return self.step + self.prev
+
+    def set_total(self, steps: int, stages: int = 0, tiles: int = 0) -> None:
+        self.prev = steps
+        self.steps.total = steps
+        self.stages.total = stages
+        self.tiles.total = tiles
 
     @classmethod
     def from_progress(cls, parent: ProgressCallback):
@@ -60,6 +74,8 @@ class ChainPipeline:
     Run many stages in series, passing the image results from each to the next, and processing
     tiles as needed.
     """
+
+    stages: List[PipelineStage]
 
     def __init__(
         self,
@@ -124,6 +140,11 @@ class ChainPipeline:
         if not isinstance(callback, ChainProgress):
             callback = ChainProgress.from_progress(callback)
 
+        # set estimated totals
+        callback.set_total(
+            self.steps(params, sources.size), stages=len(self.stages), tiles=0
+        )
+
         start = monotonic()
 
         if len(sources) > 0:
@@ -145,7 +166,7 @@ class ChainPipeline:
                 len(stage_sources),
                 kwargs.keys(),
             )
-            callback.stage = stage_i
+            callback.stages.current = stage_i
 
             per_stage_params = params
             if "params" in kwargs:
@@ -169,7 +190,7 @@ class ChainPipeline:
             if stage_pipe.max_tile > 0:
                 tile = min(stage_pipe.max_tile, stage_params.tile_size)
 
-            callback.tile = 0  # reset this either way
+            callback.tiles.current = 0  # reset this either way
             if must_tile:
                 logger.info(
                     "image contains sources or is larger than tile size of %s, tiling stage",
@@ -188,7 +209,9 @@ class ChainPipeline:
                                 server,
                                 stage_params,
                                 per_stage_params,
-                                StageResult(images=source_tile, metadata=stage_sources.metadata),
+                                StageResult(
+                                    images=source_tile, metadata=stage_sources.metadata
+                                ),
                                 tile_mask=tile_mask,
                                 callback=callback,
                                 dims=dims,
@@ -199,7 +222,7 @@ class ChainPipeline:
                                 for j, image in enumerate(tile_result.as_image()):
                                     save_image(server, f"last-tile-{j}.png", image)
 
-                            callback.tile = callback.tile + 1
+                            callback.tiles.current = callback.tiles.current + 1
 
                             return tile_result
                         except CancelledException as err:
@@ -226,7 +249,9 @@ class ChainPipeline:
                     **kwargs,
                 )
 
-                stage_sources = StageResult(images=stage_results)
+                stage_sources = StageResult(
+                    images=stage_results, metadata=stage_sources.metadata
+                )
             else:
                 logger.debug(
                     "image does not contain sources and is within tile size of %s, running stage",

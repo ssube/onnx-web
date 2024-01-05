@@ -125,7 +125,7 @@ def run_txt2img_pipeline(
         thumbnail = cover.copy()
         thumbnail.thumbnail((server.thumbnail_size, server.thumbnail_size))
 
-        images.insert_image(0, thumbnail)
+        images.insert_image(0, thumbnail, images.metadata[0])
 
     save_result(server, images, worker.job)
 

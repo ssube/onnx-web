@@ -21,15 +21,33 @@ class JobType(str, Enum):
     CHAIN = "chain"
 
 
+class Progress:
+    current: int
+    total: int
+
+    def __init__(self, current: int, total: int) -> None:
+        self.current = current
+        self.total = total
+
+    def __str__(self) -> str:
+        return "%s/%s" % (self.current, self.total)
+
+    def tojson(self):
+        return {
+            "current": self.current,
+            "total": self.total,
+        }
+
+
 class ProgressCommand:
     device: str
     job: str
     job_type: str
     status: JobStatus
-    result: Any
-    steps: int
-    stages: int
-    tiles: int
+    result: Any  # really StageResult but that would be a very circular import
+    steps: Progress
+    stages: Progress
+    tiles: Progress
 
     def __init__(
         self,
@@ -37,19 +55,21 @@ class ProgressCommand:
         job_type: str,
         device: str,
         status: JobStatus,
+        steps: Progress,
+        stages: Progress,
+        tiles: Progress,
         result: Any = None,
-        steps: int = 0,
-        stages: int = 0,
-        tiles: int = 0,
     ):
         self.job = job
         self.job_type = job_type
         self.device = device
         self.status = status
-        self.result = result
+
+        # progress info
         self.steps = steps
         self.stages = stages
         self.tiles = tiles
+        self.result = result
 
 
 class JobCommand:
