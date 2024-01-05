@@ -121,8 +121,8 @@ class WorkerContext:
             # self.callback.step = step
             self.set_progress(
                 step,
-                stages=self.callback.stage,
-                tiles=self.callback.tile,
+                stages=self.callback.stages.current,
+                tiles=self.callback.tiles.current,
             )
 
         self.callback = ChainProgress.from_progress(on_progress)
@@ -144,8 +144,14 @@ class WorkerContext:
             raise CancelledException("job has been cancelled")
 
         result = None
+        total_steps = 0
+        total_stages = 0
+        total_tiles = 0
         if self.callback is not None:
             result = self.callback.result
+            total_steps = self.callback.steps.total
+            total_stages = self.callback.stages.total
+            total_tiles = self.callback.tiles.total
 
         logger.debug("setting progress for job %s to %s", self.job, steps)
         self.last_progress = ProgressCommand(
@@ -153,9 +159,9 @@ class WorkerContext:
             self.job_type,
             self.device.device,
             JobStatus.RUNNING,
-            steps=Progress(steps, self.callback.steps.total),
-            stages=Progress(stages, self.callback.stages.total),
-            tiles=Progress(tiles, self.callback.tiles.total),
+            steps=Progress(steps, total_steps),
+            stages=Progress(stages, total_stages),
+            tiles=Progress(tiles, total_tiles),
             result=result,
         )
         self.progress.put(
