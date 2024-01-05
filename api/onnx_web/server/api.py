@@ -19,7 +19,7 @@ from ..diffusers.run import (
 )
 from ..diffusers.utils import replace_wildcards
 from ..output import make_job_name, make_output_names
-from ..params import Progress, Size, StageParams, TileOrder
+from ..params import Size, StageParams, TileOrder
 from ..transformers.run import run_txt2txt_pipeline
 from ..utils import (
     base_join,
@@ -34,7 +34,7 @@ from ..utils import (
     load_config_str,
     sanitize_name,
 )
-from ..worker.command import JobStatus, JobType
+from ..worker.command import JobStatus, JobType, Progress
 from ..worker.pool import DevicePoolExecutor
 from .context import ServerContext
 from .load import (

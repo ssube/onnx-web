@@ -5,14 +5,13 @@ from typing import Any, List, Optional, Tuple
 
 from PIL import Image
 
-from ..worker.command import Progress
-
 from ..errors import CancelledException, RetryException
 from ..output import save_image
 from ..params import ImageParams, Size, StageParams
 from ..server import ServerContext
 from ..utils import is_debug, run_gc
 from ..worker import ProgressCallback, WorkerContext
+from ..worker.command import Progress
 from .base import BaseStage
 from .result import StageResult
 from .tile import needs_tile, process_tile_order
