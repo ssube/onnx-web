@@ -129,7 +129,7 @@ def image_reply(
     }
 
     if outputs is not None:
-        if metadata is not None:
+        if metadata is None:
             logger.error("metadata is required with outputs")
             return error_reply("metadata is required with outputs")
 

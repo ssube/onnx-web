@@ -235,8 +235,9 @@ class ChainPipeline:
                     **kwargs,
                 )
 
+                metadata = stage_sources.metadata
                 stage_sources = StageResult(
-                    images=stage_results, metadata=stage_sources.metadata
+                    images=stage_results, metadata=metadata
                 )
             else:
                 logger.debug(
