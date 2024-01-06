@@ -21,5 +21,6 @@ class SourceURLStageTests(unittest.TestCase):
             size=Size(128, 128),
             source_urls=[],
         )
+        result.validate()
 
         self.assertEqual(len(result), 0)

@@ -22,5 +22,6 @@ class SourceS3StageTests(unittest.TestCase):
             bucket="test",
             source_keys=[],
         )
+        result.validate()
 
         self.assertEqual(len(result), 0)

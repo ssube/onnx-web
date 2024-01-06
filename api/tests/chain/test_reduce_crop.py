@@ -20,5 +20,6 @@ class ReduceCropStageTests(unittest.TestCase):
             origin=Size(0, 0),
             size=Size(128, 128),
         )
+        result.validate()
 
         self.assertEqual(len(result), 0)

@@ -81,6 +81,12 @@ class Size:
     def __str__(self) -> str:
         return "%sx%s" % (self.width, self.height)
 
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, Size):
+            return self.width == other.width and self.height == other.height
+
+        return False
+
     def add_border(self, border: Border):
         return Size(
             border.left + self.width + border.right,

@@ -18,5 +18,6 @@ class UpscaleHighresStageTests(unittest.TestCase):
             highres=HighresParams(False, 1, 0, 0),
             upscale=UpscaleParams(""),
         )
+        result.validate()
 
         self.assertEqual(len(result), 0)

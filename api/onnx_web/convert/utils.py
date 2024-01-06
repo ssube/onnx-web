@@ -107,7 +107,7 @@ def download_progress(source: str, dest: str):
         stream=True,
         allow_redirects=True,
         headers={
-            "User-Agent": "onnx-web-api",
+            "User-Agent": "onnx-web-api",  # TODO: add version
         },
     )
     if req.status_code != 200:
@@ -226,9 +226,7 @@ def load_torch(name: str, map_location=None) -> Optional[Dict]:
         logger.debug("loading tensor with Torch: %s", name)
         checkpoint = torch.load(name, map_location=map_location)
     except Exception:
-        logger.exception(
-            "error loading with Torch JIT, trying with Torch JIT: %s", name
-        )
+        logger.exception("error loading with Torch, trying with Torch JIT: %s", name)
         checkpoint = torch.jit.load(name)
 
     return checkpoint

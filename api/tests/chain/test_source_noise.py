@@ -22,5 +22,6 @@ class SourceNoiseStageTests(unittest.TestCase):
             size=Size(128, 128),
             noise_source=noise_source_fill_edge,
         )
+        result.validate()
 
         self.assertEqual(len(result), 0)

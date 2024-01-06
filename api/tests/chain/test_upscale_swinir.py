@@ -35,5 +35,6 @@ class UpscaleSwinIRStageTests(unittest.TestCase):
             highres=HighresParams(False, 1, 0, 0),
             upscale=UpscaleParams(TEST_MODEL),
         )
+        result.validate()
 
         self.assertEqual(len(result), 0)

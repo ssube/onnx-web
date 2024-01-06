@@ -22,6 +22,13 @@ class JobType(str, Enum):
 
 
 class Progress:
+    """
+    Generic counter with current and expected/final/total value. Can be used to count up or down.
+
+    Counter is considered "complete" when the current value is greater than or equal to the total value, and "empty"
+    when the current value is zero.
+    """
+
     current: int
     total: int
 

@@ -46,5 +46,6 @@ class UpscaleOutpaintStageTests(unittest.TestCase):
             dims=(),
             tile_mask=Image.new("RGB", (64, 64)),
         )
+        result.validate()
 
         self.assertEqual(len(result), 0)

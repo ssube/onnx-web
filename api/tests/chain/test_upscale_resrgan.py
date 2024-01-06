@@ -35,5 +35,6 @@ class UpscaleRealESRGANStageTests(unittest.TestCase):
             highres=HighresParams(False, 1, 0, 0),
             upscale=UpscaleParams("upscaling-real-esrgan-x4-v3"),
         )
+        result.validate()
 
         self.assertEqual(len(result), 0)

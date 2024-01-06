@@ -24,5 +24,6 @@ class ReduceThumbnailStageTests(unittest.TestCase):
             size=Size(128, 128),
             stage_source=stage_source,
         )
+        result.validate()
 
         self.assertEqual(len(result), 0)

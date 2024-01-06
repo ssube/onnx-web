@@ -23,5 +23,6 @@ class BlendMaskStageTests(unittest.TestCase):
             stage_source=Image.new("RGBA", (64, 64)),
             dims=(0, 0, SizeChart.auto),
         )
+        result.validate()
 
         self.assertEqual(len(result), 0)

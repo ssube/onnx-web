@@ -78,9 +78,10 @@ class TestTxt2ImgPipeline(unittest.TestCase):
         )
 
         self.assertTrue(path.exists("../outputs/test-txt2img-basic.png"))
-        output = Image.open("../outputs/test-txt2img-basic.png")
-        self.assertEqual(output.size, (256, 256))
-        # TODO: test contents of image
+
+        with Image.open("../outputs/test-txt2img-basic.png") as output:
+            self.assertEqual(output.size, (256, 256))
+            # TODO: test contents of image
 
     @test_needs_models([TEST_MODEL_DIFFUSION_SD15])
     def test_batch(self):
@@ -126,9 +127,9 @@ class TestTxt2ImgPipeline(unittest.TestCase):
         self.assertTrue(path.exists("../outputs/test-txt2img-batch-0.png"))
         self.assertTrue(path.exists("../outputs/test-txt2img-batch-1.png"))
 
-        output = Image.open("../outputs/test-txt2img-batch-0.png")
-        self.assertEqual(output.size, (256, 256))
-        # TODO: test contents of image
+        with Image.open("../outputs/test-txt2img-batch-0.png") as output:
+            self.assertEqual(output.size, (256, 256))
+            # TODO: test contents of image
 
     @test_needs_models([TEST_MODEL_DIFFUSION_SD15])
     def test_highres(self):
@@ -172,8 +173,8 @@ class TestTxt2ImgPipeline(unittest.TestCase):
         )
 
         self.assertTrue(path.exists("../outputs/test-txt2img-highres.png"))
-        output = Image.open("../outputs/test-txt2img-highres.png")
-        self.assertEqual(output.size, (512, 512))
+        with Image.open("../outputs/test-txt2img-highres.png") as output:
+            self.assertEqual(output.size, (512, 512))
 
     @test_needs_models([TEST_MODEL_DIFFUSION_SD15])
     def test_highres_batch(self):
@@ -219,8 +220,8 @@ class TestTxt2ImgPipeline(unittest.TestCase):
         self.assertTrue(path.exists("../outputs/test-txt2img-highres-batch-0.png"))
         self.assertTrue(path.exists("../outputs/test-txt2img-highres-batch-1.png"))
 
-        output = Image.open("../outputs/test-txt2img-highres-batch-0.png")
-        self.assertEqual(output.size, (512, 512))
+        with Image.open("../outputs/test-txt2img-highres-batch-0.png") as output:
+            self.assertEqual(output.size, (512, 512))
 
 
 class TestImg2ImgPipeline(unittest.TestCase):
