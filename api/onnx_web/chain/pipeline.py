@@ -26,19 +26,13 @@ class ChainProgress:
     step: int  # same as steps.current, left for legacy purposes
     prev: int  # accumulator when step resets
 
-    # new progress trackers
-    steps: Progress
-    stages: Progress
-    tiles: Progress
+    # TODO: should probably be moved to worker context as well
     result: Optional[StageResult]
 
     def __init__(self, parent: ProgressCallback, start=0) -> None:
         self.parent = parent
         self.step = start
         self.prev = 0
-        self.steps = Progress(self.step, self.prev)
-        self.stages = Progress(0, 0)
-        self.tiles = Progress(0, 0)
         self.result = None
 
     def __call__(self, step: int, timestep: int, latents: Any) -> None:
@@ -47,19 +41,10 @@ class ChainProgress:
             self.prev += self.step
 
         self.step = step
-
-        total = self.get_total()
-        self.steps.current = total
-        self.parent(total, timestep, latents)
+        self.parent(self.get_total(), timestep, latents)
 
     def get_total(self) -> int:
         return self.step + self.prev
-
-    def set_total(self, steps: int, stages: int = 0, tiles: int = 0) -> None:
-        self.prev = steps
-        self.steps.total = steps
-        self.stages.total = stages
-        self.tiles.total = tiles
 
     @classmethod
     def from_progress(cls, parent: ProgressCallback):
@@ -144,7 +129,7 @@ class ChainPipeline:
             size = pipeline_kwargs["size"]
             steps = self.steps(params, size)
 
-        callback.set_total(steps, stages=len(self.stages), tiles=0)
+        worker.set_totals(steps, stages=len(self.stages), tiles=0)
 
         start = monotonic()
 
@@ -167,7 +152,7 @@ class ChainPipeline:
                 len(stage_sources),
                 kwargs.keys(),
             )
-            callback.stages.current = stage_i
+            worker.set_stages(stage_i)
 
             per_stage_params = params
             if "params" in kwargs:
@@ -191,7 +176,7 @@ class ChainPipeline:
             if stage_pipe.max_tile > 0:
                 tile = min(stage_pipe.max_tile, stage_params.tile_size)
 
-            callback.tiles.current = 0  # reset this either way
+            worker.set_tiles(0)
             if must_tile:
                 logger.info(
                     "image contains sources or is larger than tile size of %s, tiling stage",
@@ -223,7 +208,7 @@ class ChainPipeline:
                                 for j, image in enumerate(tile_result.as_image()):
                                     save_image(server, f"last-tile-{j}.png", image)
 
-                            callback.tiles.current = callback.tiles.current + 1
+                            worker.set_tiles(worker.tiles.current + 1)
 
                             return tile_result
                         except CancelledException as err:

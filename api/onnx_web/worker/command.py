@@ -38,6 +38,13 @@ class Progress:
             "total": self.total,
         }
 
+    def complete(self) -> bool:
+        return self.current >= self.total
+
+    def empty(self) -> bool:
+        # TODO: what if total is also 0?
+        return self.current == 0
+
 
 class ProgressCommand:
     device: str
