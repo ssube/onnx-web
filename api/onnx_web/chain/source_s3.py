@@ -49,6 +49,7 @@ class SourceS3Stage(BaseStage):
             except Exception:
                 logger.exception("error loading image from S3")
 
+        # TODO: attempt to load metadata from s3 or load it from the image itself (exif data)
         return StageResult(outputs)
 
     def outputs(

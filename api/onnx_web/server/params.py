@@ -289,7 +289,6 @@ def build_upscale(
         faces=faces,
         face_outscale=face_outscale,
         face_strength=face_strength,
-        format="onnx",
         outscale=outscale,
         scale=scale,
         upscale_order=upscale_order,

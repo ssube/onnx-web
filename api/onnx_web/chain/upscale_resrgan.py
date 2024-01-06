@@ -48,10 +48,10 @@ class UpscaleRealESRGANStage(BaseStage):
                 self.model = model
                 self.device = device
 
-        model_file = "%s.%s" % (params.upscale_model, params.format)
+        model_file = f"{params.upscale_model}.onnx"
         model_path = path.join(server.model_path, model_file)
 
-        cache_key = (model_path, params.format)
+        cache_key = (model_path, params.scale)
         cache_pipe = server.cache.get(ModelTypes.upscaling, cache_key)
         if cache_pipe is not None:
             logger.info("reusing existing Real ESRGAN pipeline")
