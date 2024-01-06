@@ -9,7 +9,7 @@ from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 from .base import BaseStage
-from .result import StageResult
+from .result import ImageMetadata, StageResult
 
 logger = getLogger(__name__)
 
@@ -50,7 +50,8 @@ class SourceS3Stage(BaseStage):
                 logger.exception("error loading image from S3")
 
         # TODO: attempt to load metadata from s3 or load it from the image itself (exif data)
-        return StageResult(outputs)
+        metadata = [ImageMetadata.unknown_image()] * len(outputs)
+        return StageResult(outputs, metadata=metadata)
 
     def outputs(
         self,

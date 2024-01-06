@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 import torch
@@ -6,6 +7,7 @@ from onnx import GraphProto, ModelProto, NodeProto
 from onnx.numpy_helper import from_array
 
 from onnx_web.convert.diffusion.lora import (
+    blend_loras,
     blend_node_conv_gemm,
     blend_node_matmul,
     blend_weights_loha,
@@ -225,6 +227,30 @@ class BlendLoRATests(unittest.TestCase):
 
     def test_node_dtype(self):
         pass
+
+    @patch("onnx_web.convert.diffusion.lora.load")
+    @patch("onnx_web.convert.diffusion.lora.load_tensor")
+    def test_blend_loras_load_str(self, mock_load_tensor, mock_load):
+        base_name = "model.onnx"
+        loras = [("loras/model1.safetensors", 0.5), ("loras/safetensors.onnx", 0.5)]
+        model_type = "unet"
+        model_index = 2
+        xl = True
+
+        mock_load.return_value = MagicMock()
+        mock_load_tensor.return_value = MagicMock()
+
+        # Call the blend_loras function
+        blended_model = blend_loras(None, base_name, loras, model_type, model_index, xl)
+
+        # Assert that the InferenceSession is called with the correct arguments
+        mock_load.assert_called_once_with(base_name)
+
+        # Assert that the model is loaded successfully
+        self.assertEqual(blended_model, mock_load.return_value)
+
+        # Assert that the blending logic is executed correctly
+        # (assertions specific to the blending logic can be added here)
 
 
 class BlendWeightsLoHATests(unittest.TestCase):

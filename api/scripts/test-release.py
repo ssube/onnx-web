@@ -485,10 +485,10 @@ def check_ready(host: str, key: str) -> bool:
         raise TestError("error getting image status")
 
 def check_outputs(host: str, key: str) -> List[str]:
-    resp = requests.get(f"{host}/api/ready?output={key}")
+    resp = requests.get(f"{host}/api/job/status?jobs={key}")
     if resp.status_code == 200:
         json = resp.json()
-        outputs = json.get("outputs", [])
+        outputs = json[0].get("outputs", [])
         return outputs
 
     logger.warning("getting outputs failed: %s: %s", resp.status_code, resp.text)
@@ -499,12 +499,13 @@ def download_images(host: str, key: str) -> List[Image.Image]:
 
     images = []
     for key in outputs:
-        resp = requests.get(f"{host}/output/{key}")
+        url = f"{host}/output/{key}"
+        resp = requests.get(url)
         if resp.status_code == 200:
             logger.debug("downloading image: %s", key)
             images.append(Image.open(BytesIO(resp.content)))
         else:
-            logger.warning("download request failed: %s", resp.status_code)
+            logger.warning("download request failed: %s: %s", url, resp.status_code)
             raise TestError("error downloading image")
 
     return images

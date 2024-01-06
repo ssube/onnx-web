@@ -36,6 +36,14 @@ class ImageMetadata:
     loras: Optional[List[NetworkMetadata]]
     models: Optional[List[NetworkMetadata]]
 
+    @staticmethod
+    def unknown_image() -> "ImageMetadata":
+        UNKNOWN_STR = "unknown"
+        return ImageMetadata(
+            ImageParams(UNKNOWN_STR, UNKNOWN_STR, UNKNOWN_STR, "", 0, 0, 0),
+            Size(0, 0),
+        )
+
     def __init__(
         self,
         params: ImageParams,
@@ -212,22 +220,18 @@ class StageResult:
         return StageResult(images=[])
 
     @staticmethod
-    def from_arrays(
-        arrays: List[np.ndarray], metadata: Optional[List[ImageMetadata]] = None
-    ):
+    def from_arrays(arrays: List[np.ndarray], metadata: List[ImageMetadata]):
         return StageResult(arrays=arrays, metadata=metadata)
 
     @staticmethod
-    def from_images(
-        images: List[Image.Image], metadata: Optional[List[ImageMetadata]] = None
-    ):
+    def from_images(images: List[Image.Image], metadata: List[ImageMetadata]):
         return StageResult(images=images, metadata=metadata)
 
     def __init__(
         self,
         arrays: Optional[List[np.ndarray]] = None,
         images: Optional[List[Image.Image]] = None,
-        metadata: Optional[List[ImageMetadata]] = None,
+        metadata: Optional[List[ImageMetadata]] = None,  # TODO: should not be optional
         source: Optional[Any] = None,
     ) -> None:
         data_provided = sum(

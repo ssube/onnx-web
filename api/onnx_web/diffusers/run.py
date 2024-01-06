@@ -13,7 +13,7 @@ from ..chain import (
     UpscaleOutpaintStage,
 )
 from ..chain.highres import stage_highres
-from ..chain.result import StageResult
+from ..chain.result import ImageMetadata, StageResult
 from ..chain.upscale import split_upscale, stage_upscale_correction
 from ..image import expand_image
 from ..output import save_image, save_result
@@ -212,7 +212,11 @@ def run_img2img_pipeline(
     # run and append the filtered source
     progress = worker.get_progress_callback(reset=True)
     images = chain(
-        worker, server, params, StageResult(images=[source]), callback=progress
+        worker,
+        server,
+        params,
+        StageResult(images=[source], metadata=[ImageMetadata.unknown_image()]),
+        callback=progress,
     )
 
     if source_filter is not None and source_filter != "none":
@@ -385,7 +389,9 @@ def run_inpaint_pipeline(
         worker,
         server,
         params,
-        StageResult(images=[source]),  # TODO: load metadata from source image
+        StageResult(
+            images=[source], metadata=[ImageMetadata.unknown_image()]
+        ),  # TODO: load metadata from source image
         callback=progress,
         latents=latents,
     )
@@ -459,7 +465,11 @@ def run_upscale_pipeline(
     # run and save
     progress = worker.get_progress_callback(reset=True)
     images = chain(
-        worker, server, params, StageResult(images=[source]), callback=progress
+        worker,
+        server,
+        params,
+        StageResult(images=[source], metadata=[ImageMetadata.unknown_image()]),
+        callback=progress,
     )
 
     save_result(server, images, worker.job)
@@ -508,7 +518,13 @@ def run_blend_pipeline(
     # run and save
     progress = worker.get_progress_callback(reset=True)
     images = chain(
-        worker, server, params, StageResult(images=sources), callback=progress
+        worker,
+        server,
+        params,
+        StageResult(
+            images=sources, metadata=[ImageMetadata.unknown_image()] * len(sources)
+        ),
+        callback=progress,
     )
 
     save_result(server, images, worker.job)

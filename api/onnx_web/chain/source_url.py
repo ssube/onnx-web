@@ -9,7 +9,7 @@ from ..params import ImageParams, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 from .base import BaseStage
-from .result import StageResult
+from .result import ImageMetadata, StageResult
 
 logger = getLogger(__name__)
 
@@ -42,7 +42,8 @@ class SourceURLStage(BaseStage):
             logger.info("final output image size: %sx%s", output.width, output.height)
             outputs.append(output)
 
-        return StageResult(images=outputs)
+        metadata = [ImageMetadata.unknown_image()] * len(outputs)
+        return StageResult(images=outputs, metadata=metadata)
 
     def outputs(
         self,

@@ -2,7 +2,7 @@ import unittest
 
 from PIL import Image
 
-from onnx_web.chain.result import StageResult
+from onnx_web.chain.result import ImageMetadata, StageResult
 from onnx_web.chain.tile import (
     complete_tile,
     generate_tile_grid,
@@ -126,7 +126,11 @@ class TestProcessTileStack(unittest.TestCase):
     def test_grid_full(self):
         source = Image.new("RGB", (64, 64))
         blend = process_tile_stack(
-            StageResult(images=[source]), 32, 1, [], generate_tile_grid
+            StageResult(images=[source], metadata=[ImageMetadata.unknown_image()]),
+            32,
+            1,
+            [],
+            generate_tile_grid,
         )
 
         self.assertEqual(blend[0].size, (64, 64))
@@ -134,7 +138,11 @@ class TestProcessTileStack(unittest.TestCase):
     def test_grid_partial(self):
         source = Image.new("RGB", (72, 72))
         blend = process_tile_stack(
-            StageResult(images=[source]), 32, 1, [], generate_tile_grid
+            StageResult(images=[source], metadata=[ImageMetadata.unknown_image()]),
+            32,
+            1,
+            [],
+            generate_tile_grid,
         )
 
         self.assertEqual(blend[0].size, (72, 72))

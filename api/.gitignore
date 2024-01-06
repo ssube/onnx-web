@@ -7,6 +7,7 @@ entry.py
 *.swp
 *.pyc
 
+.cache/
 __pycache__/
 dist/
 htmlcov/

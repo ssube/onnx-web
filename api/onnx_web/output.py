@@ -64,6 +64,8 @@ def save_result(
 ) -> List[str]:
     images = result.as_images()
     outputs = make_output_names(server, base_name, len(images))
+    logger.debug("saving %s images: %s", len(images), outputs)
+
     results = []
     for image, metadata, filename in zip(images, result.metadata, outputs):
         results.append(
