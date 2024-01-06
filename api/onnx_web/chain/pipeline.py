@@ -231,9 +231,7 @@ class ChainPipeline:
                 )
 
                 metadata = stage_sources.metadata
-                stage_sources = StageResult(
-                    images=stage_results, metadata=metadata
-                )
+                stage_sources = StageResult(images=stage_results, metadata=metadata)
             else:
                 logger.debug(
                     "image does not contain sources and is within tile size of %s, running stage",

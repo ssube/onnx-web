@@ -327,10 +327,14 @@ class StageResult:
 
     def size(self) -> Size:
         if self.images is not None:
-            return Size(self.images[0].width, self.images[0].height)
+            return Size(
+                max([image.width for image in self.images]),
+                max([image.height for image in self.images]),
+            )
         elif self.arrays is not None:
             return Size(
-                self.arrays[0].shape[0], self.arrays[0].shape[1]
+                max([array.shape[0] for array in self.arrays]),
+                max([array.shape[1] for array in self.arrays]),
             )  # TODO: which fields within the shape are width/height?
         else:
             return Size(0, 0)
