@@ -72,6 +72,7 @@ def stage_highres(
         EditMetadataStage(),
         stage.with_args(outscale=1),
         highres=highres,
+        replace_params=params,
     )
 
     return chain
