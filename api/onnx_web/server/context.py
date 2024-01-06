@@ -1,7 +1,7 @@
 from logging import getLogger
 from os import environ, path
 from secrets import token_urlsafe
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import torch
 
@@ -44,6 +44,7 @@ class ServerContext:
     plugins: List[str]
     debug: bool
     thumbnail_size: int
+    hash_cache: Dict[str, str]
 
     def __init__(
         self,
@@ -70,6 +71,7 @@ class ServerContext:
         plugins: Optional[List[str]] = None,
         debug: bool = False,
         thumbnail_size: Optional[int] = DEFAULT_THUMBNAIL_SIZE,
+        hash_cache: Optional[Dict[str, str]] = None,
     ) -> None:
         self.bundle_path = bundle_path
         self.model_path = model_path
@@ -94,6 +96,7 @@ class ServerContext:
         self.plugins = plugins or []
         self.debug = debug
         self.thumbnail_size = thumbnail_size
+        self.hash_cache = hash_cache or {}
 
         self.cache = ModelCache(self.cache_limit)
 
