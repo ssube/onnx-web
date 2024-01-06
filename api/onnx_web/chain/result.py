@@ -194,12 +194,16 @@ class StageResult:
         return StageResult(images=[])
 
     @staticmethod
-    def from_arrays(arrays: List[np.ndarray]):
-        return StageResult(arrays=arrays)
+    def from_arrays(
+        arrays: List[np.ndarray], metadata: Optional[List[ImageMetadata]] = None
+    ):
+        return StageResult(arrays=arrays, metadata=metadata)
 
     @staticmethod
-    def from_images(images: List[Image.Image]):
-        return StageResult(images=images)
+    def from_images(
+        images: List[Image.Image], metadata: Optional[List[ImageMetadata]] = None
+    ):
+        return StageResult(images=images, metadata=metadata)
 
     def __init__(
         self,
@@ -208,15 +212,22 @@ class StageResult:
         metadata: Optional[List[ImageMetadata]] = None,
         source: Optional[Any] = None,
     ) -> None:
-        if sum([arrays is not None, images is not None, source is not None]) > 1:
-            raise ValueError("stages must only return one type of result")
-        elif arrays is None and images is None and source is None:
-            raise ValueError("stages must return results")
+        data_provided = sum(
+            [arrays is not None, images is not None, source is not None]
+        )
+        if data_provided > 1:
+            raise ValueError("results must only contain one type of data")
+        elif data_provided == 0:
+            raise ValueError("results must contain some data")
 
-        self.arrays = arrays
-        self.images = images
-        self.source = source
-        self.metadata = metadata or []
+        if source is not None:
+            self.arrays = source.arrays
+            self.images = source.images
+            self.metadata = source.metadata
+        else:
+            self.arrays = arrays
+            self.images = images
+            self.metadata = metadata or []
 
     def __len__(self) -> int:
         if self.arrays is not None:
@@ -226,7 +237,7 @@ class StageResult:
         else:
             return 0
 
-    def as_numpy(self) -> List[np.ndarray]:
+    def as_arrays(self) -> List[np.ndarray]:
         if self.arrays is not None:
             return self.arrays
         elif self.images is not None:
@@ -234,7 +245,7 @@ class StageResult:
         else:
             return []
 
-    def as_image(self) -> List[Image.Image]:
+    def as_images(self) -> List[Image.Image]:
         if self.images is not None:
             return self.images
         elif self.arrays is not None:
@@ -242,7 +253,7 @@ class StageResult:
         else:
             return []
 
-    def push_array(self, array: np.ndarray, metadata: Optional[ImageMetadata]):
+    def push_array(self, array: np.ndarray, metadata: ImageMetadata):
         if self.arrays is not None:
             self.arrays.append(array)
         elif self.images is not None:
@@ -253,9 +264,9 @@ class StageResult:
         if metadata is not None:
             self.metadata.append(metadata)
         else:
-            self.metadata.append(ImageMetadata())
+            raise ValueError("metadata must be provided")
 
-    def push_image(self, image: Image.Image, metadata: Optional[ImageMetadata]):
+    def push_image(self, image: Image.Image, metadata: ImageMetadata):
         if self.images is not None:
             self.images.append(image)
         elif self.arrays is not None:
@@ -266,11 +277,9 @@ class StageResult:
         if metadata is not None:
             self.metadata.append(metadata)
         else:
-            self.metadata.append(ImageMetadata())
+            raise ValueError("metadata must be provided")
 
-    def insert_array(
-        self, index: int, array: np.ndarray, metadata: Optional[ImageMetadata]
-    ):
+    def insert_array(self, index: int, array: np.ndarray, metadata: ImageMetadata):
         if self.arrays is not None:
             self.arrays.insert(index, array)
         elif self.images is not None:
@@ -283,11 +292,9 @@ class StageResult:
         if metadata is not None:
             self.metadata.insert(index, metadata)
         else:
-            self.metadata.insert(index, ImageMetadata())
+            raise ValueError("metadata must be provided")
 
-    def insert_image(
-        self, index: int, image: Image.Image, metadata: Optional[ImageMetadata]
-    ):
+    def insert_image(self, index: int, image: Image.Image, metadata: ImageMetadata):
         if self.images is not None:
             self.images.insert(index, image)
         elif self.arrays is not None:
@@ -298,7 +305,28 @@ class StageResult:
         if metadata is not None:
             self.metadata.insert(index, metadata)
         else:
-            self.metadata.insert(index, ImageMetadata())
+            raise ValueError("metadata must be provided")
+
+    def size(self) -> Size:
+        if self.images is not None:
+            return Size(self.images[0].width, self.images[0].height)
+        elif self.arrays is not None:
+            return Size(
+                self.arrays[0].shape[0], self.arrays[0].shape[1]
+            )  # TODO: which fields within the shape are width/height?
+        else:
+            return Size(0, 0)
+
+    def validate(self) -> None:
+        """
+        Make sure the data exists and that data and metadata match in length.
+        """
+
+        if self.arrays is None and self.images is None:
+            raise ValueError("no data in result")
+
+        if len(self) != len(self.metadata):
+            raise ValueError("metadata and data do not match in length")
 
 
 def shape_mode(arr: np.ndarray) -> str:

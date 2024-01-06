@@ -62,7 +62,7 @@ class UpscaleOutpaintStage(BaseStage):
         )
 
         outputs = []
-        for source in sources.as_image():
+        for source in sources.as_images():
             if is_debug():
                 save_image(server, "tile-source.png", source)
                 save_image(server, "tile-mask.png", tile_mask)
@@ -123,4 +123,4 @@ class UpscaleOutpaintStage(BaseStage):
 
             outputs.extend(result.images)
 
-        return StageResult(images=outputs)
+        return StageResult(images=outputs, metadata=sources.metadata)

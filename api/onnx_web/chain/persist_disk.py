@@ -31,18 +31,14 @@ class PersistDiskStage(BaseStage):
     ) -> StageResult:
         logger.info("persisting %s images to disk: %s", len(sources), output)
 
-        for name, source, metadata in zip(output, sources.as_image(), sources.metadata):
+        for name, source, metadata in zip(
+            output, sources.as_images(), sources.metadata
+        ):
             dest = save_image(
                 server,
                 name,
                 source,
-                params=metadata.params,
-                size=metadata.size,
-                upscale=metadata.upscale,
-                border=metadata.border,
-                highres=metadata.highres,
-                inversions=metadata.inversions,
-                loras=metadata.loras,
+                metadata=metadata,
             )
             logger.info("saved image to %s", dest)
 

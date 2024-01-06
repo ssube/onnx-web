@@ -72,7 +72,7 @@ class UpscaleSwinIRStage(BaseStage):
         swinir = self.load(server, stage, upscale, device)
 
         outputs = []
-        for source in sources.as_numpy():
+        for source in sources.as_arrays():
             # TODO: add support for grayscale (1-channel) images
             image = source / 255.0
             image = image[:, :, [2, 1, 0]].astype(np.float32).transpose((2, 0, 1))
@@ -98,4 +98,4 @@ class UpscaleSwinIRStage(BaseStage):
             logger.info("output image size: %s", output.shape)
             outputs.append(output)
 
-        return StageResult(images=outputs)
+        return StageResult(images=outputs, metadata=sources.metadata)

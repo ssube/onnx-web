@@ -34,7 +34,7 @@ class SourceURLStage(BaseStage):
                 "source images were passed to a source stage, new images will be appended"
             )
 
-        outputs = sources.as_image()
+        outputs = sources.as_images()
         for url in source_urls:
             response = requests.get(url)
             output = Image.open(BytesIO(response.content))

@@ -11,7 +11,6 @@ from ..params import ImageParams, Size, StageParams
 from ..server import ServerContext
 from ..utils import is_debug, run_gc
 from ..worker import ProgressCallback, WorkerContext
-from ..worker.command import Progress
 from .base import BaseStage
 from .result import StageResult
 from .tile import needs_tile, process_tile_order
@@ -107,7 +106,7 @@ class ChainPipeline:
         result = self(
             worker, server, params, sources=sources, callback=callback, **kwargs
         )
-        return result.as_image()
+        return result.as_images()
 
     def stage(self, callback: BaseStage, params: StageParams, **kwargs):
         self.stages.append((callback, params, kwargs))
@@ -184,7 +183,7 @@ class ChainPipeline:
                         size=kwargs.get("size", None),
                         source=source,
                     )
-                    for source in stage_sources.as_image()
+                    for source in stage_sources.as_images()
                 ]
             )
 
@@ -302,7 +301,7 @@ class ChainPipeline:
             )
 
             if is_debug():
-                for j, image in enumerate(stage_sources.as_image()):
+                for j, image in enumerate(stage_sources.as_images()):
                     save_image(server, f"last-stage-{j}.png", image)
 
         end = monotonic()

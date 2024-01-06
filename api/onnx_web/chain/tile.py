@@ -257,7 +257,7 @@ def process_tile_stack(
     overlap: float = 0.5,
     **kwargs,
 ) -> List[Image.Image]:
-    sources = stack.as_image()
+    sources = stack.as_images()
 
     width, height = kwargs.get("size", sources[0].size if len(sources) > 0 else None)
     mask = kwargs.get("mask", kwargs.get("stage_mask", None))
@@ -308,7 +308,7 @@ def process_tile_stack(
                 bottom_margin,
             )
             tile_stack = add_margin(
-                stack.as_image(),
+                stack.as_images(),
                 left,
                 top,
                 right,
@@ -346,7 +346,7 @@ def process_tile_stack(
         if isinstance(tile_stack, list):
             tile_stack = StageResult.from_images(tile_stack)
 
-        tiles.append((left, top, tile_stack.as_image()))
+        tiles.append((left, top, tile_stack.as_images()))
 
     lefts, tops, stacks = list(zip(*tiles))
     coords = list(zip(lefts, tops))
@@ -516,7 +516,7 @@ def get_result_tile(
     top, left = origin
     return [
         layer.crop((top, left, top + tile.height, left + tile.width))
-        for layer in result.as_image()
+        for layer in result.as_images()
     ]
 
 

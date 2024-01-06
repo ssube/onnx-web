@@ -35,7 +35,7 @@ class BlendGridStage(BaseStage):
     ) -> StageResult:
         logger.info("combining source images using grid layout")
 
-        images = sources.as_image()
+        images = sources.as_images()
         ref_image = images[0]
         size = Size(*ref_image.size)
 
@@ -52,7 +52,9 @@ class BlendGridStage(BaseStage):
             n = order[i]
             output.paste(images[n], (x * size.width, y * size.height))
 
-        return StageResult(images=[*images, output])
+        result = StageResult(source=sources)
+        result.push_image(output, sources.metadata[0])
+        return result
 
     def outputs(
         self,

@@ -62,7 +62,7 @@ def save_result(
     result: StageResult,
     base_name: str,
 ) -> List[str]:
-    images = result.as_image()
+    images = result.as_images()
     outputs = make_output_names(server, base_name, len(images))
     results = []
     for image, metadata, filename in zip(images, result.metadata, outputs):

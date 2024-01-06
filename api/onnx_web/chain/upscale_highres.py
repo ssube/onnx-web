@@ -42,7 +42,7 @@ class UpscaleHighresStage(BaseStage):
                 source,
                 callback=callback,
             )
-            for source in sources.as_image()
+            for source in sources.as_images()
         ]
 
-        return StageResult(images=outputs)
+        return StageResult(images=outputs, metadata=sources.metadata)

@@ -33,7 +33,8 @@ class PersistS3Stage(BaseStage):
         session = Session(profile_name=profile_name)
         s3 = session.client("s3", endpoint_url=endpoint_url)
 
-        for source, name in zip(sources.as_image(), output):
+        # TODO: save metadata as well
+        for source, name in zip(sources.as_images(), output):
             data = BytesIO()
             source.save(data, format=server.image_format)
             data.seek(0)

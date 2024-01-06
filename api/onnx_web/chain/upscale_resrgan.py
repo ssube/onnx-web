@@ -112,7 +112,7 @@ class UpscaleRealESRGANStage(BaseStage):
         )
 
         outputs = []
-        for source in sources.as_numpy():
+        for source in sources.as_arrays():
             output, _ = upsampler.enhance(source, outscale=upscale.outscale)
             logger.info("final output image size: %s", output.shape)
             outputs.append(output)

@@ -36,13 +36,13 @@ class SourceNoiseStage(BaseStage):
         outputs = []
 
         # TODO: looping over sources and ignoring params does not make much sense for a source stage
-        for source in sources.as_image():
+        for source in sources.as_images():
             output = noise_source(source, (size.width, size.height), (0, 0))
 
             logger.info("final output image size: %sx%s", output.width, output.height)
             outputs.append(output)
 
-        return StageResult(images=outputs)
+        return StageResult.from_images(outputs, metadata=sources.metadata)
 
     def outputs(
         self,

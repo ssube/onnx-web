@@ -14,6 +14,11 @@ logger = getLogger(__name__)
 
 
 class BlendDenoiseLocalStdStage(BaseStage):
+    """
+    Experimental stage to blend and denoise images using local means compared to local standard deviation.
+    Very slow.
+    """
+
     max_tile = SizeChart.max
 
     def run(
@@ -35,8 +40,9 @@ class BlendDenoiseLocalStdStage(BaseStage):
         return StageResult.from_arrays(
             [
                 remove_noise(source, threshold=strength, deviation=range)[0]
-                for source in sources.as_numpy()
-            ]
+                for source in sources.as_arrays()
+            ],
+            metadata=sources.metadata,
         )
 
 

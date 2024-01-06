@@ -28,11 +28,11 @@ class ReduceCropStage(BaseStage):
     ) -> StageResult:
         outputs = []
 
-        for source in sources.as_image():
+        for source in sources.as_images():
             image = source.crop((origin.width, origin.height, size.width, size.height))
             logger.info(
                 "created thumbnail with dimensions: %sx%s", image.width, image.height
             )
             outputs.append(image)
 
-        return StageResult(images=outputs)
+        return StageResult.from_images(outputs, metadata=sources.metadata)

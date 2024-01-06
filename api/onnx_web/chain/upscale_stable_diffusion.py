@@ -59,7 +59,7 @@ class UpscaleStableDiffusionStage(BaseStage):
             pipeline.unet.set_prompts(prompt_embeds)
 
         outputs = []
-        for source in sources.as_image():
+        for source in sources.as_images():
             result = pipeline(
                 prompt,
                 source,
@@ -73,4 +73,4 @@ class UpscaleStableDiffusionStage(BaseStage):
             )
             outputs.extend(result.images)
 
-        return StageResult(images=outputs)
+        return StageResult(images=outputs, metadata=sources.metadata)

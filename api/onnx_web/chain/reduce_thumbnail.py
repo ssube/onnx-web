@@ -26,7 +26,7 @@ class ReduceThumbnailStage(BaseStage):
     ) -> StageResult:
         outputs = []
 
-        for source in sources.as_image():
+        for source in sources.as_images():
             image = source.copy()
 
             image = image.thumbnail((size.width, size.height))
@@ -37,4 +37,4 @@ class ReduceThumbnailStage(BaseStage):
 
             outputs.append(image)
 
-        return StageResult(images=outputs)
+        return StageResult.from_images(outputs, metadata=sources.metadata)

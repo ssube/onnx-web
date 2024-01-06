@@ -67,7 +67,7 @@ class CorrectCodeformerStage(BaseStage):
         )
 
         results = []
-        for img in sources.as_numpy():
+        for img in sources.as_arrays():
             img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
             # clean all the intermediate results to process the next image
             face_helper.clean_all()
@@ -121,4 +121,4 @@ class CorrectCodeformerStage(BaseStage):
             )
             results.append(Image.fromarray(cv2.cvtColor(output, cv2.COLOR_BGR2RGB)))
 
-        return StageResult.from_images(results)
+        return StageResult.from_images(results, metadata=sources.metadata)

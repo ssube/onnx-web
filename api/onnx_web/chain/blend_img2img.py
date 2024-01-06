@@ -66,7 +66,7 @@ class BlendImg2ImgStage(BaseStage):
             pipe_params["strength"] = strength
 
         outputs = []
-        for source in sources.as_image():
+        for source in sources.as_images():
             if params.is_lpw():
                 logger.debug("using LPW pipeline for img2img")
                 rng = torch.manual_seed(params.seed)

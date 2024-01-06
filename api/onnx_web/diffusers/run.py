@@ -118,7 +118,7 @@ def run_txt2img_pipeline(
     )
 
     # add a thumbnail, if requested
-    cover = images.as_image()[0]
+    cover = images.as_images()[0]
     if params.thumbnail and (
         cover.width > server.thumbnail_size or cover.height > server.thumbnail_size
     ):
@@ -385,12 +385,12 @@ def run_inpaint_pipeline(
         worker,
         server,
         params,
-        StageResult(images=[source]),
+        StageResult(images=[source]),  # TODO: load metadata from source image
         callback=progress,
         latents=latents,
     )
 
-    for i, image, metadata in enumerate(zip(images.as_image(), images.metadata)):
+    for i, image, metadata in enumerate(zip(images.as_images(), images.metadata)):
         if full_res_inpaint:
             if is_debug():
                 save_image(server, "adjusted-output.png", image)

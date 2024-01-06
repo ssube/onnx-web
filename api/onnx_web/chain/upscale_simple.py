@@ -33,7 +33,7 @@ class UpscaleSimpleStage(BaseStage):
             return sources
 
         outputs = []
-        for source in sources.as_image():
+        for source in sources.as_images():
             scaled_size = (source.width * upscale.scale, source.height * upscale.scale)
 
             if method == "bilinear":
@@ -49,4 +49,4 @@ class UpscaleSimpleStage(BaseStage):
             else:
                 logger.warning("unknown upscaling method: %s", method)
 
-        return StageResult(images=outputs)
+        return StageResult(images=outputs, metadata=sources.metadata)

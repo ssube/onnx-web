@@ -74,7 +74,7 @@ class CorrectGFPGANStage(BaseStage):
         gfpgan = self.load(server, stage, upscale, device)
 
         outputs = []
-        for source in sources.as_numpy():
+        for source in sources.as_arrays():
             cropped, restored, result = gfpgan.enhance(
                 source,
                 has_aligned=False,
@@ -84,4 +84,4 @@ class CorrectGFPGANStage(BaseStage):
             )
             outputs.append(result)
 
-        return StageResult.from_arrays(outputs)
+        return StageResult.from_arrays(outputs, metadata=sources.metadata)
