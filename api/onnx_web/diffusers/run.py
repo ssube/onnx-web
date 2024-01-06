@@ -396,7 +396,7 @@ def run_inpaint_pipeline(
         latents=latents,
     )
 
-    for i, image, metadata in enumerate(zip(images.as_images(), images.metadata)):
+    for i, (image, metadata) in enumerate(zip(images.as_images(), images.metadata)):
         if full_res_inpaint:
             if is_debug():
                 save_image(server, "adjusted-output.png", image)

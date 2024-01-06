@@ -344,7 +344,7 @@ def process_tile_stack(
             tile_stack = image_filter(tile_stack, tile_mask, (left, top, tile))
 
         if isinstance(tile_stack, list):
-            tile_stack = StageResult.from_images(tile_stack)
+            tile_stack = StageResult.from_images(tile_stack, metadata=stack.metadata)
 
         tiles.append((left, top, tile_stack.as_images()))
 
