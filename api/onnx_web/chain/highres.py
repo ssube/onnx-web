@@ -2,6 +2,7 @@ from logging import getLogger
 from typing import Optional
 
 from ..chain.blend_img2img import BlendImg2ImgStage
+from ..chain.edit_metadata import EditMetadataStage
 from ..chain.upscale import stage_upscale_correction
 from ..chain.upscale_simple import UpscaleSimpleStage
 from ..params import HighresParams, ImageParams, StageParams, UpscaleParams
@@ -65,5 +66,12 @@ def stage_highres(
             prompt_index=prompt_index + i,
             strength=highres.strength,
         )
+
+    # add highres parameters to the image metadata
+    chain.stage(
+        EditMetadataStage(),
+        stage.with_args(outscale=1),
+        highres=highres,
+    )
 
     return chain

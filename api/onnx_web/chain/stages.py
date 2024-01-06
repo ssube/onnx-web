@@ -9,6 +9,7 @@ from .blend_linear import BlendLinearStage
 from .blend_mask import BlendMaskStage
 from .correct_codeformer import CorrectCodeformerStage
 from .correct_gfpgan import CorrectGFPGANStage
+from .edit_metadata import EditMetadataStage
 from .persist_disk import PersistDiskStage
 from .persist_s3 import PersistS3Stage
 from .reduce_crop import ReduceCropStage
@@ -38,6 +39,7 @@ CHAIN_STAGES = {
     "blend-mask": BlendMaskStage,
     "correct-codeformer": CorrectCodeformerStage,
     "correct-gfpgan": CorrectGFPGANStage,
+    "edit-metadata": EditMetadataStage,
     "persist-disk": PersistDiskStage,
     "persist-s3": PersistS3Stage,
     "reduce-crop": ReduceCropStage,

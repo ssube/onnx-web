@@ -102,7 +102,9 @@ class BlendImg2ImgStage(BaseStage):
 
             outputs.extend(result.images)
 
-        metadata = [metadata.child(params) for metadata in sources.metadata]
+        metadata = [
+            metadata.child(params, metadata.size) for metadata in sources.metadata
+        ]
         return StageResult(images=outputs, metadata=metadata)
 
     def steps(

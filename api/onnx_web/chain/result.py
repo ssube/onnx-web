@@ -28,6 +28,7 @@ class NetworkMetadata:
 
 class ImageMetadata:
     ancestors: List["ImageMetadata"]
+    note: str
     params: ImageParams
     size: Size
 
@@ -70,6 +71,7 @@ class ImageMetadata:
         self.loras = loras or []
         self.models = models or []
         self.ancestors = ancestors or []
+        self.note = ""
 
     def child(
         self,
