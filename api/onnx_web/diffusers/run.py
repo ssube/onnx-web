@@ -497,7 +497,7 @@ def run_blend_pipeline(
     tile_size = get_base_tile(params, size)
 
     # resize mask to match source size
-    stage_source = sources[1]
+    stage_source = sources.pop()
     stage_mask = mask.resize(stage_source.size, Image.Resampling.BILINEAR)
 
     chain.stage(

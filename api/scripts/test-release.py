@@ -564,10 +564,15 @@ def run_test(
     passed = False
     for i in range(len(results)):
         result = results[i]
-        result.save(test_path(path.join("test-results", f"{test.name}-{i}.png")))
+        result_name = f"{test.name}-{i}.png"
+        result.save(test_path(path.join("test-results", result_name)))
 
-        ref_name = test_path(path.join("test-refs", f"{test.name}-{i}.png"))
-        ref = Image.open(ref_name) if path.exists(ref_name) else None
+        ref_name = test_path(path.join("test-refs", result_name))
+        if not path.exists(ref_name):
+            return TestResult.failed(test.name, f"no reference image for {result_name}")
+
+        ref = Image.open(ref_name)
+        logger.warning("comparing image %s to %s", result, ref)
 
         mse = find_mse(result, ref)
         threshold = test.mse_threshold * mse_mult
