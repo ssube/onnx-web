@@ -110,7 +110,7 @@ def image_reply(
     tiles: Progress = None,
     outputs: List[str] = None,
     metadata: List[ImageMetadata] = None,
-):
+) -> Dict[str, Any]:
     if stages is None:
         stages = Progress(0, 0)
 
@@ -140,7 +140,7 @@ def image_reply(
         data["metadata"] = [m.tojson(server, [o]) for m, o in zip(metadata, outputs)]
         data["outputs"] = outputs
 
-    return jsonify([data])
+    return data
 
 
 def multi_image_reply(results: Dict[str, Any]):
@@ -668,11 +668,12 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
     if len(job_list) == 0:
         return error_reply("at least one job name is required")
 
+    records = []
+
     for job_name in job_list:
         job_name = sanitize_name(job_name)
         status, progress = pool.status(job_name)
 
-        # TODO: accumulate results
         if progress is not None:
             outputs = None
             metadata = None
@@ -681,18 +682,22 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
                 outputs = make_output_names(server, job_name, len(progress.result))
                 metadata = progress.result.metadata
 
-            return image_reply(
-                server,
-                job_name,
-                status,
-                stages=progress.stages,
-                steps=progress.steps,
-                tiles=progress.tiles,
-                outputs=outputs,
-                metadata=metadata,
+            records.append(
+                image_reply(
+                    server,
+                    job_name,
+                    status,
+                    stages=progress.stages,
+                    steps=progress.steps,
+                    tiles=progress.tiles,
+                    outputs=outputs,
+                    metadata=metadata,
+                )
             )
+        else:
+            records.append(image_reply(server, job_name, status))
 
-        return image_reply(server, job_name, status)
+    return jsonify(records)
 
 
 def register_api_routes(app: Flask, server: ServerContext, pool: DevicePoolExecutor):

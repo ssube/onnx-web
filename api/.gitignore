@@ -10,6 +10,7 @@ entry.py
 .cache/
 __pycache__/
 dist/
+filter/
 htmlcov/
 onnx_env/
 venv/
