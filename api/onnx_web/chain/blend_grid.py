@@ -7,7 +7,7 @@ from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
-from .result import StageResult
+from .result import ImageMetadata, StageResult
 
 logger = getLogger(__name__)
 
@@ -20,7 +20,7 @@ class BlendGridStage(BaseStage):
         _worker: WorkerContext,
         _server: ServerContext,
         _stage: StageParams,
-        _params: ImageParams,
+        params: ImageParams,
         sources: StageResult,
         *,
         height: int,
@@ -53,7 +53,10 @@ class BlendGridStage(BaseStage):
             output.paste(images[n], (x * size.width, y * size.height))
 
         result = StageResult(source=sources)
-        result.push_image(output, sources.metadata[0])
+        result.push_image(
+            output,
+            ImageMetadata(params, Size(width, height), ancestors=[sources.metadata]),
+        )
         return result
 
     def outputs(

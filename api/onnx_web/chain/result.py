@@ -27,14 +27,19 @@ class NetworkMetadata:
 
 
 class ImageMetadata:
-    border: Border
-    highres: HighresParams
+    ancestors: List["ImageMetadata"]
     params: ImageParams
     size: Size
-    upscale: UpscaleParams
-    inversions: Optional[List[NetworkMetadata]]
-    loras: Optional[List[NetworkMetadata]]
-    models: Optional[List[NetworkMetadata]]
+
+    # models
+    inversions: List[NetworkMetadata]
+    loras: List[NetworkMetadata]
+    models: List[NetworkMetadata]
+
+    # optional params
+    border: Optional[Border]
+    highres: Optional[HighresParams]
+    upscale: Optional[UpscaleParams]
 
     @staticmethod
     def unknown_image() -> "ImageMetadata":
@@ -54,15 +59,40 @@ class ImageMetadata:
         inversions: Optional[List[NetworkMetadata]] = None,
         loras: Optional[List[NetworkMetadata]] = None,
         models: Optional[List[NetworkMetadata]] = None,
+        ancestors: Optional[List["ImageMetadata"]] = None,
     ) -> None:
         self.params = params
         self.size = size
         self.upscale = upscale
         self.border = border
         self.highres = highres
-        self.inversions = inversions
-        self.loras = loras
-        self.models = models
+        self.inversions = inversions or []
+        self.loras = loras or []
+        self.models = models or []
+        self.ancestors = ancestors or []
+
+    def child(
+        self,
+        params: ImageParams,
+        size: Size,
+        upscale: Optional[UpscaleParams] = None,
+        border: Optional[Border] = None,
+        highres: Optional[HighresParams] = None,
+        inversions: Optional[List[NetworkMetadata]] = None,
+        loras: Optional[List[NetworkMetadata]] = None,
+        models: Optional[List[NetworkMetadata]] = None,
+    ) -> "ImageMetadata":
+        return ImageMetadata(
+            params,
+            size,
+            upscale,
+            border,
+            highres,
+            inversions,
+            loras,
+            models,
+            [self],
+        )
 
     def get_model_hash(
         self, server: ServerContext, model: Optional[str] = None
