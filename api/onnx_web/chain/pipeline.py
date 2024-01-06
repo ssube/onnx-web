@@ -160,16 +160,11 @@ class ChainPipeline:
                 kwargs.pop("params")
 
             # the stage must be split and tiled if any image is larger than the selected/max tile size
-            must_tile = has_mask(stage_kwargs) or any(
-                [
-                    needs_tile(
-                        stage_pipe.max_tile,
-                        stage_params.tile_size,
-                        size=kwargs.get("size", None),
-                        source=source,
-                    )
-                    for source in stage_sources.as_images()
-                ]
+            must_tile = has_mask(stage_kwargs) or needs_tile(
+                stage_pipe.max_tile,
+                stage_params.tile_size,
+                size=kwargs.get("size", None),
+                source=stage_sources.size(),
             )
 
             tile = stage_params.tile_size
