@@ -12,6 +12,10 @@ export const I18N_STRINGS_FR = {
       },
       convert: '',
       error: {
+        image: {
+          memory: '',
+          unknown: '',
+        },
         inpaint: {
           support: '',
         },

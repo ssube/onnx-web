@@ -7,6 +7,10 @@ export const I18N_STRINGS_EN = {
       },
       convert: 'Save and Convert',
       error: {
+        image: {
+          memory: 'Memory error generating image',
+          unknown: 'Unknown error generating image',
+        },
         inpaint: {
           support: 'This diffusion model may not support inpainting.',
         },

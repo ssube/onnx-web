@@ -52,9 +52,9 @@ export function ErrorCard(props: ErrorCardProps) {
           sx={{ alignItems: 'center' }}
         >
           <Alert severity='error'>
-            {t('loading.progress', image.steps)}
+            {t('loading.progress', image)}
             <br />
-            {getImageErrorReason(image)}
+            {t(getImageErrorReason(image))}
           </Alert>
           <Stack direction='row' spacing={2}>
             <Tooltip title={t('tooltip.retry')}>
@@ -83,10 +83,18 @@ export function selectActions(state: OnnxState) {
   };
 }
 
+export const IMAGE_ERROR = 'error.image.';
+export const UNKNOWN_ERROR = `${IMAGE_ERROR}unknown`;
+
 export function getImageErrorReason(image: FailedJobResponse | UnknownJobResponse) {
   if (image.status === JobStatus.FAILED) {
-    return image.error;
+    const error = image.error;
+    if (doesExist(error) && error.startsWith(IMAGE_ERROR)) {
+      return error;
+    }
+
+    return `${IMAGE_ERROR}.${error}`;
   }
 
-  return '';
+  return UNKNOWN_ERROR;
 }
