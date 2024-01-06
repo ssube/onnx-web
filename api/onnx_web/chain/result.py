@@ -333,8 +333,8 @@ class StageResult:
             )
         elif self.arrays is not None:
             return Size(
-                max([image.height for image in self.images], default=0),
-                max([image.height for image in self.images], default=0),
+                max([array.shape[0] for array in self.arrays], default=0),
+                max([array.shape[1] for array in self.arrays], default=0),
             )  # TODO: which fields within the shape are width/height?
         else:
             return Size(0, 0)

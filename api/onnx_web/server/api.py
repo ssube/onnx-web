@@ -607,9 +607,9 @@ def ready(server: ServerContext, pool: DevicePoolExecutor):
         return error_reply("output name is required")
 
     output_file = sanitize_name(output_file)
-    pending, progress = pool.done(output_file)
+    status, progress = pool.status(output_file)
 
-    if pending:
+    if status == JobStatus.PENDING:
         return ready_reply(pending=True)
 
     if progress is None:
@@ -623,10 +623,10 @@ def ready(server: ServerContext, pool: DevicePoolExecutor):
             )  # is a missing image really an error? yes will display the retry button
 
     return ready_reply(
-        ready=progress.finished,
-        progress=progress.progress,
-        failed=progress.failed,
-        cancelled=progress.cancelled,
+        ready=(status == JobStatus.SUCCESS),
+        progress=progress.steps.current,
+        failed=(status == JobStatus.FAILED),
+        cancelled=(status == JobStatus.CANCELLED),
     )
 
 

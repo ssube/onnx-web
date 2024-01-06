@@ -463,7 +463,7 @@ def generate_images(host: str, test: TestCase) -> Optional[str]:
     resp = requests.post(f"{host}/api/{test.query}", files=files)
     if resp.status_code == 200:
         json = resp.json()
-        return json.get("outputs")
+        return json.get("name")
     else:
         logger.warning("generate request failed: %s: %s", resp.status_code, resp.text)
         raise TestError("error generating image")
@@ -484,10 +484,21 @@ def check_ready(host: str, key: str) -> bool:
         logger.warning("ready request failed: %s", resp.status_code)
         raise TestError("error getting image status")
 
+def check_outputs(host: str, key: str) -> List[str]:
+    resp = requests.get(f"{host}/api/ready?output={key}")
+    if resp.status_code == 200:
+        json = resp.json()
+        outputs = json.get("outputs", [])
+        return outputs
 
-def download_images(host: str, keys: List[str]) -> List[Image.Image]:
+    logger.warning("getting outputs failed: %s: %s", resp.status_code, resp.text)
+    raise TestError("error getting image outputs")
+
+def download_images(host: str, key: str) -> List[Image.Image]:
+    outputs = check_outputs(host, key)
+
     images = []
-    for key in keys:
+    for key in outputs:
         resp = requests.get(f"{host}/output/{key}")
         if resp.status_code == 200:
             logger.debug("downloading image: %s", key)
@@ -528,14 +539,14 @@ def run_test(
     Generate an image, wait for it to be ready, and calculate the MSE from the reference.
     """
 
-    keys = generate_images(host, test)
-    if keys is None:
+    job = generate_images(host, test)
+    if job is None:
         return TestResult.failed(test.name, "could not generate image")
 
     ready = False
     for attempt in tqdm(range(test.max_attempts * time_mult)):
-        if check_ready(host, keys[0]):
-            logger.debug("image is ready: %s", keys)
+        if check_ready(host, job):
+            logger.debug("image is ready: %s", job)
             ready = True
             break
         else:
@@ -545,7 +556,7 @@ def run_test(
     if not ready:
         return TestResult.failed(test.name, "image was not ready in time")
 
-    results = download_images(host, keys)
+    results = download_images(host, job)
     if results is None or len(results) == 0:
         return TestResult.failed(test.name, "could not download image")
 

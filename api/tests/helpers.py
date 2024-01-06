@@ -3,7 +3,7 @@ from os import path
 from typing import List
 from unittest import skipUnless
 
-from onnx_web.params import DeviceParams
+from onnx_web.params import DeviceParams, ImageParams, Size
 from onnx_web.worker.context import WorkerContext
 
 
@@ -21,6 +21,14 @@ def test_needs_onnx_models(models: List[str]):
 
 def test_device() -> DeviceParams:
     return DeviceParams("cpu", "CPUExecutionProvider")
+
+
+def test_size() -> Size:
+    return Size(64, 64)
+
+
+def test_params() -> ImageParams:
+    return ImageParams("test", "txt2img", "ddim", "test", 5.0, 25, 0)
 
 
 def test_worker() -> WorkerContext:
