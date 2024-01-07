@@ -75,7 +75,8 @@ export interface CancelledJobResponse extends BaseJobResponse {
  */
 export interface FailedJobResponse extends BaseJobResponse {
   status: JobStatus.FAILED;
-  error: string;
+
+  error?: string;
 }
 
 /**
@@ -83,6 +84,7 @@ export interface FailedJobResponse extends BaseJobResponse {
  */
 export interface PendingJobResponse extends BaseJobResponse {
   status: JobStatus.PENDING;
+
   queue: Progress;
 }
 

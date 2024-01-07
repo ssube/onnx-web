@@ -83,17 +83,18 @@ export function selectActions(state: OnnxState) {
   };
 }
 
-export const IMAGE_ERROR = 'error.image.';
+export const ANY_ERROR = 'error.';
+export const IMAGE_ERROR = `${ANY_ERROR}image.`;
 export const UNKNOWN_ERROR = `${IMAGE_ERROR}unknown`;
 
 export function getImageErrorReason(image: FailedJobResponse | UnknownJobResponse) {
   if (image.status === JobStatus.FAILED) {
     const error = image.error;
-    if (doesExist(error) && error.startsWith(IMAGE_ERROR)) {
+    if (doesExist(error) && error.startsWith(ANY_ERROR)) {
       return error;
     }
 
-    return `${IMAGE_ERROR}.${error}`;
+    return `${IMAGE_ERROR}${error}`;
   }
 
   return UNKNOWN_ERROR;

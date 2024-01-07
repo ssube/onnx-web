@@ -3,7 +3,7 @@ import { Box, Button, Card, CardContent, CircularProgress, Typography } from '@m
 import { Stack } from '@mui/system';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import * as React from 'react';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
@@ -58,6 +58,8 @@ export function LoadingCard(props: LoadingCardProps) {
     }
   }, [ready.status, getStatus(ready.data), getProgress(ready.data)]);
 
+  const status = useMemo(() => getStatus(ready.data), [ready.data]);
+
   return <Card sx={{ maxWidth: params.width.default }}>
     <CardContent sx={{ height: params.height.default }}>
       <Box sx={{
@@ -72,7 +74,11 @@ export function LoadingCard(props: LoadingCardProps) {
           sx={{ alignItems: 'center' }}
         >
           {renderProgress()}
-          <Typography>{t('loading.progress', selectStatus(ready.data, image))}</Typography>
+          {
+            status === JobStatus.PENDING ?
+              <Typography>{t('loading.queue', getQueue(ready.data))}</Typography> :
+              <Typography>{t('loading.progress', selectStatus(ready.data, image))}</Typography>
+          }
           <Button onClick={() => cancel.mutate()}>{t('loading.cancel')}</Button>
         </Stack>
       </Box>
@@ -137,4 +143,15 @@ function getStatus(data: Maybe<Array<JobResponse>>) {
   }
 
   return JobStatus.PENDING;
+}
+
+function getQueue(data: Maybe<Array<JobResponse>>) {
+  if (doesExist(data) && data[0].status === JobStatus.PENDING) {
+    return data[0].queue;
+  }
+
+  return {
+    current: 0,
+    total: 0,
+  };
 }

@@ -80,6 +80,7 @@ export const I18N_STRINGS_DE = {
       loading: {
         cancel: 'Stornieren',
         progress: '{{current}} von {{total}} Schritten',
+        queue: '',
         server: 'Verbindung zum Server...',
         unknown: 'vielen',
       },
