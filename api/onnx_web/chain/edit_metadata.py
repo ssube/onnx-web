@@ -1,6 +1,6 @@
 from typing import Any, Optional
 
-from ..params import HighresParams, ImageParams, Size, StageParams, UpscaleParams
+from ..params import HighresParams, ImageParams, Size, SizeChart, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 from .base import BaseStage
@@ -8,6 +8,8 @@ from .result import StageResult
 
 
 class EditMetadataStage(BaseStage):
+    max_tile = SizeChart.max
+
     def run(
         self,
         _worker: WorkerContext,

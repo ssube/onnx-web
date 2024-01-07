@@ -97,6 +97,11 @@ def job_reply(name: str):
     return jsonify(
         {
             "name": name,
+            "queue": Progress(0, 0).tojson(), # TODO: use real queue position
+            "status": JobStatus.PENDING,
+            "stages": Progress(0, 0).tojson(),
+            "steps": Progress(0, 0).tojson(),
+            "tiles": Progress(0, 0).tojson(),
         }
     )
 
