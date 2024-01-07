@@ -93,15 +93,18 @@ def error_reply(err: str):
     return response
 
 
-def job_reply(name: str):
+EMPTY_PROGRESS = Progress(0, 0)
+
+
+def job_reply(name: str, queue: int = 0):
     return jsonify(
         {
             "name": name,
-            "queue": Progress(0, 0).tojson(), # TODO: use real queue position
+            "queue": Progress(queue, queue).tojson(),
             "status": JobStatus.PENDING,
-            "stages": Progress(0, 0).tojson(),
-            "steps": Progress(0, 0).tojson(),
-            "tiles": Progress(0, 0).tojson(),
+            "stages": EMPTY_PROGRESS.tojson(),
+            "steps": EMPTY_PROGRESS.tojson(),
+            "tiles": EMPTY_PROGRESS.tojson(),
         }
     )
 
@@ -110,24 +113,29 @@ def image_reply(
     server: ServerContext,
     name: str,
     status: str,
+    queue: Progress = None,
     stages: Progress = None,
     steps: Progress = None,
     tiles: Progress = None,
     outputs: List[str] = None,
     metadata: List[ImageMetadata] = None,
 ) -> Dict[str, Any]:
+    if queue is None:
+        queue = EMPTY_PROGRESS
+
     if stages is None:
-        stages = Progress(0, 0)
+        stages = EMPTY_PROGRESS
 
     if steps is None:
-        steps = Progress(0, 0)
+        steps = EMPTY_PROGRESS
 
     if tiles is None:
-        tiles = Progress(0, 0)
+        tiles = EMPTY_PROGRESS
 
     data = {
         "name": name,
         "status": status,
+        "queue": queue.tojson(),
         "stages": stages.tojson(),
         "steps": steps.tojson(),
         "tiles": tiles.tojson(),
@@ -263,7 +271,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         output_count += 1
 
     job_name = make_job_name("img2img", params, size, extras=[strength])
-    pool.submit(
+    queue = pool.submit(
         job_name,
         JobType.IMG2IMG,
         run_img2img_pipeline,
@@ -279,7 +287,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("img2img job queued for: %s", job_name)
 
-    return job_reply(job_name)
+    return job_reply(job_name, queue=queue)
 
 
 def txt2img(server: ServerContext, pool: DevicePoolExecutor):
@@ -291,7 +299,7 @@ def txt2img(server: ServerContext, pool: DevicePoolExecutor):
 
     job_name = make_job_name("txt2img", params, size)
 
-    pool.submit(
+    queue = pool.submit(
         job_name,
         JobType.TXT2IMG,
         run_txt2img_pipeline,
@@ -305,7 +313,7 @@ def txt2img(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("txt2img job queued for: %s", job_name)
 
-    return job_reply(job_name)
+    return job_reply(job_name, queue=queue)
 
 
 def inpaint(server: ServerContext, pool: DevicePoolExecutor):
@@ -367,7 +375,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
         ],
     )
 
-    pool.submit(
+    queue = pool.submit(
         job_name,
         JobType.INPAINT,
         run_inpaint_pipeline,
@@ -390,7 +398,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("inpaint job queued for: %s", job_name)
 
-    return job_reply(job_name)
+    return job_reply(job_name, queue=queue)
 
 
 def upscale(server: ServerContext, pool: DevicePoolExecutor):
@@ -407,7 +415,7 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
     replace_wildcards(params, get_wildcard_data())
 
     job_name = make_job_name("upscale", params, size)
-    pool.submit(
+    queue = pool.submit(
         job_name,
         JobType.UPSCALE,
         run_upscale_pipeline,
@@ -422,7 +430,7 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("upscale job queued for: %s", job_name)
 
-    return job_reply(job_name)
+    return job_reply(job_name, queue=queue)
 
 
 # keys that are specially parsed by params and should not show up in with_args
@@ -521,7 +529,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
     job_name = make_job_name("chain", base_params, base_size)
 
     # build and run chain pipeline
-    pool.submit(
+    queue = pool.submit(
         job_name,
         JobType.CHAIN,
         pipeline,
@@ -532,7 +540,7 @@ def chain(server: ServerContext, pool: DevicePoolExecutor):
         needs_device=device,
     )
 
-    return job_reply(job_name)
+    return job_reply(job_name, queue=queue)
 
 
 def blend(server: ServerContext, pool: DevicePoolExecutor):
@@ -557,7 +565,7 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
     upscale = build_upscale()
 
     job_name = make_job_name("blend", params, size)
-    pool.submit(
+    queue = pool.submit(
         job_name,
         JobType.BLEND,
         run_blend_pipeline,
@@ -573,7 +581,7 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
 
     logger.info("upscale job queued for: %s", job_name)
 
-    return job_reply(job_name)
+    return job_reply(job_name, queue=queue)
 
 
 def txt2txt(server: ServerContext, pool: DevicePoolExecutor):
@@ -582,7 +590,7 @@ def txt2txt(server: ServerContext, pool: DevicePoolExecutor):
     job_name = make_job_name("txt2txt", params, size)
     logger.info("upscale job queued for: %s", job_name)
 
-    pool.submit(
+    queue = pool.submit(
         job_name,
         JobType.TXT2TXT,
         run_txt2txt_pipeline,
@@ -592,7 +600,7 @@ def txt2txt(server: ServerContext, pool: DevicePoolExecutor):
         needs_device=device,
     )
 
-    return job_reply(job_name)
+    return job_reply(job_name, queue=queue)
 
 
 def cancel(server: ServerContext, pool: DevicePoolExecutor):
@@ -612,7 +620,7 @@ def ready(server: ServerContext, pool: DevicePoolExecutor):
         return error_reply("output name is required")
 
     output_file = sanitize_name(output_file)
-    status, progress = pool.status(output_file)
+    status, progress, _queue = pool.status(output_file)
 
     if status == JobStatus.PENDING:
         return ready_reply(pending=True)
@@ -677,7 +685,7 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
 
     for job_name in job_list:
         job_name = sanitize_name(job_name)
-        status, progress = pool.status(job_name)
+        status, progress, queue = pool.status(job_name)
 
         if progress is not None:
             outputs = None
@@ -700,7 +708,7 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
                 )
             )
         else:
-            records.append(image_reply(server, job_name, status))
+            records.append(image_reply(server, job_name, status, queue=queue))
 
     return jsonify(records)
 

@@ -1,6 +1,13 @@
-from typing import Any, Optional
+from typing import Optional
 
-from ..params import HighresParams, ImageParams, Size, SizeChart, StageParams, UpscaleParams
+from ..params import (
+    HighresParams,
+    ImageParams,
+    Size,
+    SizeChart,
+    StageParams,
+    UpscaleParams,
+)
 from ..server import ServerContext
 from ..worker import WorkerContext
 from .base import BaseStage
@@ -24,7 +31,7 @@ class EditMetadataStage(BaseStage):
         note: Optional[str] = None,
         replace_params: Optional[ImageParams] = None,
         **kwargs,
-    ) -> Any:
+    ) -> StageResult:
         # Modify the source image's metadata using the provided parameters
         for metadata in source.metadata:
             if note is not None:

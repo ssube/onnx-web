@@ -8,7 +8,7 @@ from torch.multiprocessing import Process, Queue, Value
 
 from ..params import DeviceParams
 from ..server import ServerContext
-from .command import JobCommand, JobStatus, ProgressCommand
+from .command import JobCommand, JobStatus, Progress, ProgressCommand
 from .context import WorkerContext
 from .utils import Interval
 from .worker import worker_main
@@ -228,31 +228,33 @@ class DevicePoolExecutor:
         self.cancelled_jobs.append(key)
         return True
 
-    def status(self, key: str) -> Tuple[JobStatus, Optional[ProgressCommand]]:
+    def status(
+        self, key: str
+    ) -> Tuple[JobStatus, Optional[ProgressCommand], Optional[Progress]]:
         """
         Check if a job has been finished and report the last progress update.
         """
 
         if key in self.cancelled_jobs:
             logger.debug("checking status for cancelled job: %s", key)
-            return (JobStatus.CANCELLED, None)
+            return (JobStatus.CANCELLED, None, None)
 
         if key in self.running_jobs:
             logger.debug("checking status for running job: %s", key)
-            return (JobStatus.RUNNING, self.running_jobs[key])
+            return (JobStatus.RUNNING, self.running_jobs[key], None)
 
         for job in self.finished_jobs:
             if job.job == key:
                 logger.debug("checking status for finished job: %s", key)
-                return (job.status, job)
+                return (job.status, job, None)
 
-        for job in self.pending_jobs:
+        for i, job in enumerate(self.pending_jobs):
             if job.name == key:
                 logger.debug("checking status for pending job: %s", key)
-                return (JobStatus.PENDING, None)
+                return (JobStatus.PENDING, None, Progress(i, len(self.pending_jobs)))
 
         logger.trace("checking status for unknown job: %s", key)
-        return (JobStatus.UNKNOWN, None)
+        return (JobStatus.UNKNOWN, None, None)
 
     def join(self):
         logger.info("stopping worker pool")
@@ -399,7 +401,7 @@ class DevicePoolExecutor:
         *args,
         needs_device: Optional[DeviceParams] = None,
         **kwargs,
-    ) -> None:
+    ) -> int:
         device_idx = self.get_next_device(needs_device=needs_device)
         device = self.devices[device_idx].device
         logger.info(
@@ -412,6 +414,9 @@ class DevicePoolExecutor:
         # build and queue job
         job = JobCommand(key, device, job_type, fn, args, kwargs)
         self.pending_jobs.append(job)
+
+        # return position in queue
+        return len(self.pending_jobs)
 
     def summary(self) -> Dict[str, List[Tuple[str, int, JobStatus]]]:
         """

@@ -36,8 +36,17 @@ class Progress:
         self.current = current
         self.total = total
 
+    def __repr__(self) -> str:
+        return "Progress(%d, %d)" % (self.current, self.total)
+
     def __str__(self) -> str:
         return "%s/%s" % (self.current, self.total)
+
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, Progress):
+            return self.current == other.current and self.total == other.total
+
+        return False
 
     def tojson(self):
         return {

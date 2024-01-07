@@ -23,7 +23,7 @@ PipelineStage = Tuple[BaseStage, StageParams, Optional[dict]]
 
 class ChainProgress:
     parent: ProgressCallback
-    step: int  # same as steps.current, left for legacy purposes
+    step: int  # current number of steps
     prev: int  # accumulator when step resets
 
     # TODO: should probably be moved to worker context as well

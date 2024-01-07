@@ -5,7 +5,7 @@ from typing import Optional
 
 from onnx_web.params import DeviceParams
 from onnx_web.server.context import ServerContext
-from onnx_web.worker.command import JobStatus
+from onnx_web.worker.command import JobStatus, Progress
 from onnx_web.worker.pool import DevicePoolExecutor
 from tests.helpers import test_device
 
@@ -61,10 +61,12 @@ class TestWorkerPool(unittest.TestCase):
         self.pool.start()
 
         self.pool.submit("test", "test", sleep_job, lock=lock)
-        self.assertEqual(self.pool.status("test"), (JobStatus.PENDING, None))
+        self.assertEqual(
+            self.pool.status("test"), (JobStatus.PENDING, None, Progress(0, 1))
+        )
 
         self.assertTrue(self.pool.cancel("test"))
-        self.assertEqual(self.pool.status("test"), (JobStatus.CANCELLED, None))
+        self.assertEqual(self.pool.status("test"), (JobStatus.CANCELLED, None, None))
 
     def test_cancel_running(self):
         pass
@@ -104,7 +106,7 @@ class TestWorkerPool(unittest.TestCase):
         self.pool.submit("test", "test", lock_job)
         sleep(5.0)
 
-        status, _progress = self.pool.status("test")
+        status, _progress, _status = self.pool.status("test")
         self.assertEqual(status, JobStatus.RUNNING)
 
     def test_done_pending(self):
@@ -116,7 +118,9 @@ class TestWorkerPool(unittest.TestCase):
 
         self.pool.submit("test1", "test", lock_job)
         self.pool.submit("test2", "test", lock_job)
-        self.assertEqual(self.pool.status("test2"), (JobStatus.PENDING, None))
+        self.assertEqual(
+            self.pool.status("test2"), (JobStatus.PENDING, None, Progress(1, 2))
+        )
 
         lock.set()
 
@@ -132,10 +136,12 @@ class TestWorkerPool(unittest.TestCase):
         )
         self.pool.start()
         self.pool.submit("test", "test", sleep_job)
-        self.assertEqual(self.pool.status("test"), (JobStatus.PENDING, None))
+        self.assertEqual(
+            self.pool.status("test"), (JobStatus.PENDING, None, Progress(0, 1))
+        )
 
         sleep(5.0)
-        status, _progress = self.pool.status("test")
+        status, _progress, _queue = self.pool.status("test")
         self.assertEqual(status, JobStatus.SUCCESS)
 
     def test_recycle_live(self):
@@ -162,7 +168,7 @@ class TestWorkerPool(unittest.TestCase):
         self.pool.submit("test", "test", progress_job)
         sleep(5.0)
 
-        status, progress = self.pool.status("test")
+        status, progress, _queue = self.pool.status("test")
         self.assertEqual(status, JobStatus.SUCCESS)
         self.assertEqual(progress.steps.current, 1)
 
@@ -178,6 +184,6 @@ class TestWorkerPool(unittest.TestCase):
         self.pool.submit("test", "test", fail_job)
         sleep(5.0)
 
-        status, progress = self.pool.status("test")
+        status, progress, _queue = self.pool.status("test")
         self.assertEqual(status, JobStatus.FAILED)
         self.assertEqual(progress.steps.current, 0)
