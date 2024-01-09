@@ -5,7 +5,7 @@ from sys import exit
 
 from setproctitle import setproctitle
 
-from ..errors import RetryException
+from ..errors import CancelledException, RetryException
 from ..server import ServerContext, apply_patches
 from ..torch_before_ort import get_available_providers
 from .context import WorkerContext
@@ -82,13 +82,16 @@ def worker_main(
             logger.exception("value error in worker, exiting")
             worker.fail()
             return exit(EXIT_ERROR)
+        except CancelledException as e:
+            logger.warning("job was cancelled, continuing")
+            worker.fail(e.reason or "cancelled")
         except Exception as e:
             e_str = str(e)
             # restart the worker on memory errors
             for e_mem in MEMORY_ERRORS:
                 if e_mem in e_str:
                     logger.error("detected out-of-memory error, exiting: %s", e)
-                    worker.fail()
+                    worker.fail("oom")
                     return exit(EXIT_MEMORY)
 
             # carry on for other errors

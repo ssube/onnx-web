@@ -174,7 +174,7 @@ class ChainPipeline:
             worker.set_tiles(0)
             if must_tile:
                 logger.info(
-                    "image contains sources or is larger than tile size of %s, tiling stage",
+                    "image has mask or is larger than tile size of %s, tiling stage",
                     tile,
                 )
 

@@ -59,7 +59,9 @@ def add_safety_stage(
     if server.has_feature("horde-safety"):
         from ..chain.edit_safety import EditSafetyStage
 
-        pipeline.stage(EditSafetyStage(), StageParams())
+        pipeline.stage(
+            EditSafetyStage(), StageParams(tile_size=EditSafetyStage.max_tile)
+        )
 
 
 def run_txt2img_pipeline(

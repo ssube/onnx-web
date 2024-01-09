@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Optional
 
 
 class JobStatus(str, Enum):
@@ -64,7 +64,8 @@ class ProgressCommand:
     job: str
     job_type: str
     status: JobStatus
-    result: Any  # really StageResult but that would be a very circular import
+    reason: Optional[str]
+    result: Optional[Any]  # really StageResult but that would be a very circular import
     steps: Progress
     stages: Progress
     tiles: Progress
@@ -79,6 +80,7 @@ class ProgressCommand:
         stages: Progress,
         tiles: Progress,
         result: Any = None,
+        reason: Optional[str] = None,
     ):
         self.job = job
         self.job_type = job_type
@@ -90,6 +92,7 @@ class ProgressCommand:
         self.stages = stages
         self.tiles = tiles
         self.result = result
+        self.reason = reason
 
 
 class JobCommand:

@@ -13,7 +13,9 @@ export const I18N_STRINGS_ES = {
       convert: '',
       error: {
         image: {
+          csam: '',
           memory: '',
+          oom: '',
           unknown: '',
         },
         inpaint: {

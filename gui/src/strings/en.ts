@@ -8,7 +8,9 @@ export const I18N_STRINGS_EN = {
       convert: 'Save and Convert',
       error: {
         image: {
+          csam: 'CSAM detected',
           memory: 'Memory error generating image',
+          oom: 'Out of memory generating image',
           unknown: 'Unknown error generating image',
         },
         inpaint: {

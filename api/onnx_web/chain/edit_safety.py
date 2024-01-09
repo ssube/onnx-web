@@ -65,7 +65,7 @@ class EditSafetyStage(BaseStage):
 
             if is_csam:
                 logger.warning("blocking csam result")
-                raise CancelledException("csam detected")
+                raise CancelledException(reason="csam")
             else:
                 return StageResult.from_images(results, metadata=sources.metadata)
         except ImportError:

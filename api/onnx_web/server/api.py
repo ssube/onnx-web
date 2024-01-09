@@ -1,7 +1,7 @@
 from io import BytesIO
 from logging import getLogger
 from os import path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from flask import Flask, jsonify, make_response, request, url_for
 from jsonschema import validate
@@ -117,8 +117,9 @@ def image_reply(
     stages: Progress = None,
     steps: Progress = None,
     tiles: Progress = None,
-    outputs: List[str] = None,
-    metadata: List[ImageMetadata] = None,
+    outputs: Optional[List[str]] = None,
+    metadata: Optional[List[ImageMetadata]] = None,
+    reason: Optional[str] = None,
 ) -> Dict[str, Any]:
     if queue is None:
         queue = EMPTY_PROGRESS
@@ -140,6 +141,9 @@ def image_reply(
         "steps": steps.tojson(),
         "tiles": tiles.tojson(),
     }
+
+    if reason is not None:
+        data["reason"] = reason
 
     if outputs is not None:
         if metadata is None:
@@ -705,6 +709,7 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
                     tiles=progress.tiles,
                     outputs=outputs,
                     metadata=metadata,
+                    reason=progress.reason,
                 )
             )
         else:

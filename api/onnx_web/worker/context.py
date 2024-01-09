@@ -218,7 +218,7 @@ class WorkerContext:
                 block=False,
             )
 
-    def fail(self) -> None:
+    def fail(self, reason: Optional[str] = None) -> None:
         if self.job is None:
             logger.warning("setting failure without an active job")
         else:
@@ -232,6 +232,7 @@ class WorkerContext:
                     steps=self.steps,
                     stages=self.stages,
                     tiles=self.tiles,
+                    reason=reason,
                     # TODO: should this include partial results?
                 )
                 self.progress.put(
