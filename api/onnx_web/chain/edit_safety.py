@@ -3,6 +3,7 @@ from typing import Optional
 
 from PIL import Image
 
+from ..errors import CancelledException
 from ..params import ImageParams, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import ProgressCallback, WorkerContext
@@ -51,7 +52,7 @@ class EditSafetyStage(BaseStage):
             images = sources.as_images()
             results = []
             for i, image in enumerate(images):
-                prompt = sources.metadata[i].prompt
+                prompt = sources.metadata[i].params.prompt
                 check = nsfw_checker.check_for_nsfw(image, prompt=prompt)
 
                 if check.is_csam:
@@ -64,7 +65,7 @@ class EditSafetyStage(BaseStage):
 
             if is_csam:
                 logger.warning("blocking csam result")
-                raise RuntimeError("csam detected")
+                raise CancelledException("csam detected")
             else:
                 return StageResult.from_images(results, metadata=sources.metadata)
         except ImportError:

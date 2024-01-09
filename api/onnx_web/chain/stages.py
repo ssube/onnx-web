@@ -1,8 +1,5 @@
 from logging import getLogger
 
-from .edit_safety import EditSafetyStage
-from .edit_text import EditTextStage
-
 from .base import BaseStage
 from .blend_denoise_fastnlmeans import BlendDenoiseFastNLMeansStage
 from .blend_denoise_localstd import BlendDenoiseLocalStdStage
@@ -13,6 +10,8 @@ from .blend_mask import BlendMaskStage
 from .correct_codeformer import CorrectCodeformerStage
 from .correct_gfpgan import CorrectGFPGANStage
 from .edit_metadata import EditMetadataStage
+from .edit_safety import EditSafetyStage
+from .edit_text import EditTextStage
 from .persist_disk import PersistDiskStage
 from .persist_s3 import PersistS3Stage
 from .reduce_crop import ReduceCropStage

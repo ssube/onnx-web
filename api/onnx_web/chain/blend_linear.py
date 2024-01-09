@@ -23,7 +23,7 @@ class BlendLinearStage(BaseStage):
         *,
         alpha: float,
         stage_source: Optional[Image.Image] = None,
-        _callback: Optional[ProgressCallback] = None,
+        callback: Optional[ProgressCallback] = None,
         **kwargs,
     ) -> StageResult:
         logger.info("blending source images using linear interpolation")
