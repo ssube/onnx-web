@@ -52,6 +52,16 @@ def get_highres_tile(
     return params.unet_tile
 
 
+def add_safety_stage(
+    server: ServerContext,
+    pipeline: ChainPipeline,
+) -> None:
+    if server.has_feature("horde-safety"):
+        from ..chain.edit_safety import EditSafetyStage
+
+        pipeline.stage(EditSafetyStage(), StageParams())
+
+
 def run_txt2img_pipeline(
     worker: WorkerContext,
     server: ServerContext,
@@ -109,6 +119,8 @@ def run_txt2img_pipeline(
         chain=chain,
         upscale=after_upscale,
     )
+
+    add_safety_stage(server, chain)
 
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
@@ -208,6 +220,8 @@ def run_img2img_pipeline(
         upscale=after_upscale,
         chain=chain,
     )
+
+    add_safety_stage(server, chain)
 
     # run and append the filtered source
     progress = worker.get_progress_callback(reset=True)
@@ -382,6 +396,8 @@ def run_inpaint_pipeline(
         chain=chain,
     )
 
+    add_safety_stage(server, chain)
+
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     progress = worker.get_progress_callback(reset=True)
@@ -462,6 +478,8 @@ def run_upscale_pipeline(
         chain=chain,
     )
 
+    add_safety_stage(server, chain)
+
     # run and save
     progress = worker.get_progress_callback(reset=True)
     images = chain(
@@ -514,6 +532,8 @@ def run_blend_pipeline(
         upscale=upscale,
         chain=chain,
     )
+
+    add_safety_stage(server, chain)
 
     # run and save
     progress = worker.get_progress_callback(reset=True)

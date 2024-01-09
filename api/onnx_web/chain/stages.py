@@ -1,5 +1,8 @@
 from logging import getLogger
 
+from .edit_safety import EditSafetyStage
+from .edit_text import EditTextStage
+
 from .base import BaseStage
 from .blend_denoise_fastnlmeans import BlendDenoiseFastNLMeansStage
 from .blend_denoise_localstd import BlendDenoiseLocalStdStage
@@ -40,6 +43,8 @@ CHAIN_STAGES = {
     "correct-codeformer": CorrectCodeformerStage,
     "correct-gfpgan": CorrectGFPGANStage,
     "edit-metadata": EditMetadataStage,
+    "edit-safety": EditSafetyStage,
+    "edit-text": EditTextStage,
     "persist-disk": PersistDiskStage,
     "persist-s3": PersistS3Stage,
     "reduce-crop": ReduceCropStage,
