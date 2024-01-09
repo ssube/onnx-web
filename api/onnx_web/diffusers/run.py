@@ -242,7 +242,7 @@ def run_img2img_pipeline(
     )
 
     if source_filter is not None and source_filter != "none":
-        images.push_image(source)
+        images.push_image(source, ImageMetadata.unknown_image())
 
     save_result(server, images, worker.job)
 
