@@ -58,10 +58,14 @@ class EditSafetyStage(BaseStage):
                 if check.is_csam:
                     logger.warning("flagging csam result: %s, %s", i, prompt)
                     is_csam = True
+                    continue
 
                 if check.is_nsfw and block_nsfw:
                     logger.warning("blocking nsfw image: %s, %s", i, prompt)
                     results.append(Image.new("RGB", image.size, color="black"))
+                    continue
+
+                results.append(image)
 
             if is_csam:
                 logger.warning("blocking csam result")
