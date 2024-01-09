@@ -1,7 +1,7 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Container, CssBaseline, Divider, Tab, useMediaQuery } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import * as React from 'react';
 import { useContext, useMemo } from 'react';
 import { useHash } from 'react-use/lib/useHash';
@@ -17,9 +17,14 @@ import { Models } from './tab/Models.js';
 import { Settings } from './tab/Settings.js';
 import { Txt2Img } from './tab/Txt2Img.js';
 import { Upscale } from './tab/Upscale.js';
-import { getTab, getTheme, TAB_LABELS } from './utils.js';
+import { TAB_LABELS, getTab, getTheme } from './utils.js';
+import { Motd } from '../Motd.js';
 
-export function OnnxWeb() {
+export interface OnnxWebProps {
+  motd: boolean;
+}
+
+export function OnnxWeb(props: OnnxWebProps) {
   /* checks for system light/dark mode preference */
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const store = mustExist(useContext(StateContext));
@@ -43,6 +48,7 @@ export function OnnxWeb() {
         <Box sx={{ my: 4 }}>
           <Logo />
         </Box>
+        {props.motd && <Motd />}
         <TabContext value={getTab(hash)}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={(_e, idx) => {

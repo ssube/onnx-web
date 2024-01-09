@@ -1,5 +1,11 @@
 {
   "version": "0.12.0",
+  "motd": {
+    "de": "Willkommen bei onnx-web!",
+    "en": "Welcome to onnx-web!",
+    "es": "Bienvenido a onnx-web!",
+    "fr": "Bienvenue sur onnx-web!"
+  },
   "batch": {
     "default": 1,
     "min": 1,

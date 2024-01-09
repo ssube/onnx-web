@@ -36,9 +36,6 @@ class Progress:
         self.current = current
         self.total = total
 
-    def __repr__(self) -> str:
-        return "Progress(%d, %d)" % (self.current, self.total)
-
     def __str__(self) -> str:
         return "%s/%s" % (self.current, self.total)
 

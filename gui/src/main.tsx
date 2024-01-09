@@ -1,4 +1,4 @@
-import { mustDefault, mustExist, timeout, TimeoutError } from '@apextoaster/js-utils';
+import { doesExist, mustDefault, mustExist, timeout, TimeoutError } from '@apextoaster/js-utils';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createLogger, Logger } from 'browser-bunyan';
 import i18n from 'i18next';
@@ -43,6 +43,13 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
     logger.debug({ lang, translation }, 'adding server strings');
     for (const [namespace, data] of Object.entries(translation)) {
       i18n.addResourceBundle(lang, namespace, data, true);
+    }
+  }
+
+  if (doesExist(params.motd)) {
+    logger.debug({ motd: params.motd }, 'adding server motd strings');
+    for (const [lang, message] of Object.entries(params.motd)) {
+      i18n.addResource(lang, 'translation', 'motd', message);
     }
   }
 
@@ -116,7 +123,7 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
         <LoggerContext.Provider value={reactLogger}>
           <I18nextProvider i18n={i18n}>
             <StateContext.Provider value={state}>
-              <OnnxWeb />
+              <OnnxWeb motd={doesExist(params.motd)} />
             </StateContext.Provider>
           </I18nextProvider>
         </LoggerContext.Provider>

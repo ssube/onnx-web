@@ -71,6 +71,7 @@ export type ServerParams = ConfigRanges<Required<
   UpscaleParams &
   HighresParams
 >> & {
+  motd?: Record<string, string>;
   version: string;
 };
 /* eslint-enable */
