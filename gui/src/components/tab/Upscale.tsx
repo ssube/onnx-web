@@ -17,6 +17,7 @@ import { ModelControl } from '../control/ModelControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { PromptInput } from '../input/PromptInput.js';
+import { JobType } from '../../types/api-v2.js';
 
 export function Upscale() {
   async function uploadSource() {
@@ -53,7 +54,7 @@ export function Upscale() {
         setParams={setParams}
         setUpscale={setUpscale}
       />
-      <ModelControl model={model} setModel={setModel} />
+      <ModelControl model={model} setModel={setModel} tab={JobType.UPSCALE} />
       <ImageInput
         filter={IMAGE_FILTER}
         image={params.source}

@@ -11,6 +11,7 @@ import { shallow } from 'zustand/shallow';
 import { POLL_TIME } from '../../config.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { JobResponse, JobStatus } from '../../types/api-v2.js';
+import { visibleIndex } from '../../utils.js';
 
 const LOADING_PERCENT = 100;
 const LOADING_OVERAGE = 99;
@@ -147,11 +148,15 @@ function getStatus(data: Maybe<Array<JobResponse>>) {
 
 function getQueue(data: Maybe<Array<JobResponse>>) {
   if (doesExist(data) && data[0].status === JobStatus.PENDING) {
-    return data[0].queue;
+    const { current, total } = data[0].queue;
+    return {
+      current: visibleIndex(current),
+      total: total.toFixed(0),
+    };
   }
 
   return {
-    current: 0,
-    total: 0,
+    current: '0',
+    total: '0',
   };
 }

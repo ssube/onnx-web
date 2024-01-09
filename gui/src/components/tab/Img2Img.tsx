@@ -19,6 +19,7 @@ import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
+import { JobType } from '../../types/api-v2.js';
 
 export function Img2Img() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -67,7 +68,7 @@ export function Img2Img() {
         setParams={setImg2Img}
         setUpscale={setUpscale}
       />
-      <ModelControl model={model} setModel={setModel} />
+      <ModelControl model={model} setModel={setModel} tab={JobType.IMG2IMG} />
       <ImageInput
         filter={IMAGE_FILTER}
         image={source}

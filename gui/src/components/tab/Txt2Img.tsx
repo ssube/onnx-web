@@ -18,6 +18,7 @@ import { ModelControl } from '../control/ModelControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { VariableControl } from '../control/VariableControl.js';
 import { NumericField } from '../input/NumericField.js';
+import { JobType } from '../../types/api-v2.js';
 
 export function SizeControl() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -98,7 +99,7 @@ export function Txt2Img() {
         setParams={setParams}
         setUpscale={setUpscale}
       />
-      <ModelControl model={model} setModel={setModel} />
+      <ModelControl model={model} setModel={setModel} tab={JobType.TXT2IMG} />
       <ImageControl selector={selectParams} onChange={setParams} />
       <SizeControl />
       <HighresControl selectHighres={selectHighres} setHighres={setHighres} />

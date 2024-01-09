@@ -21,6 +21,7 @@ import { ImageInput } from '../input/ImageInput.js';
 import { MaskCanvas } from '../input/MaskCanvas.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
+import { JobType } from '../../types/api-v2.js';
 
 export function Inpaint() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -99,7 +100,7 @@ export function Inpaint() {
         setParams={setInpaint}
         setUpscale={setUpscale}
       />
-      <ModelControl model={model} setModel={setModel} />
+      <ModelControl model={model} setModel={setModel} tab={JobType.INPAINT} />
       {renderBanner()}
       <ImageInput
         filter={IMAGE_FILTER}
