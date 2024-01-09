@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from PIL import Image
 
-from ..output import save_image
+from ..output import save_image, save_result
 from ..params import ImageParams, Size, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
@@ -18,28 +18,17 @@ class PersistDiskStage(BaseStage):
 
     def run(
         self,
-        _worker: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         _stage: StageParams,
         params: ImageParams,
         sources: StageResult,
         *,
-        output: List[str],
-        size: Optional[Size] = None,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> StageResult:
-        logger.info("persisting %s images to disk: %s", len(sources), output)
+        logger.info("persisting %s images to disk", len(sources))
 
-        for name, source, metadata in zip(
-            output, sources.as_images(), sources.metadata
-        ):
-            dest = save_image(
-                server,
-                name,
-                source,
-                metadata=metadata,
-            )
-            logger.info("saved image to %s", dest)
+        save_result(server, sources, worker.job)
 
         return sources
