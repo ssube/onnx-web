@@ -65,6 +65,7 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
     createBlendSlice,
     createResetSlice,
     createProfileSlice,
+    createSettingsSlice,
   } = createStateSlices(params);
   const state = createStore<OnnxState, [['zustand/persist', OnnxState]]>(persist((...slice) => ({
     ...createDefaultSlice(...slice),
@@ -77,6 +78,7 @@ export async function renderApp(config: Config, params: ServerParams, logger: Lo
     ...createBlendSlice(...slice),
     ...createResetSlice(...slice),
     ...createProfileSlice(...slice),
+    ...createSettingsSlice(...slice),
   }), {
     migrate(persistedState, version) {
       return applyStateMigrations(params, persistedState as UnknownState, version, logger);

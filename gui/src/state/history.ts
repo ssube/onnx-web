@@ -21,6 +21,7 @@ export interface HistorySlice {
 
   pushHistory(image: JobResponse, retry?: RetryParams): void;
   removeHistory(image: JobResponse): void;
+
   setLimit(limit: number): void;
   setReady(image: JobResponse): void;
 }

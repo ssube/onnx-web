@@ -17,6 +17,7 @@ import { InpaintSlice, createInpaintSlice } from './inpaint.js';
 import { ModelSlice, createModelSlice } from './model.js';
 import { ProfileSlice, createProfileSlice } from './profile.js';
 import { ResetSlice, createResetSlice } from './reset.js';
+import { SettingsSlice, createSettingsSlice } from './settings.js';
 import { Txt2ImgSlice, createTxt2ImgSlice } from './txt2img.js';
 import { UpscaleSlice, createUpscaleSlice } from './upscale.js';
 import {
@@ -39,7 +40,8 @@ export type OnnxState
   & UpscaleSlice
   & BlendSlice
   & ResetSlice
-  & ProfileSlice;
+  & ProfileSlice
+  & SettingsSlice;
 
 /**
  * React context binding for API client.
@@ -69,7 +71,7 @@ export const STATE_KEY = 'onnx-web';
 /**
  * Current state version for zustand persistence.
  */
-export const STATE_VERSION = 11;
+export const STATE_VERSION = 13;
 
 export function baseParamsFromServer(defaults: ServerParams): Required<BaseImgParams> {
   return {
@@ -144,6 +146,7 @@ export function createStateSlices(server: ServerParams) {
     createModelSlice: createModelSlice(),
     createProfileSlice: createProfileSlice(),
     createResetSlice: createResetSlice(),
+    createSettingsSlice: createSettingsSlice(),
     createTxt2ImgSlice: createTxt2ImgSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale, defaultGrid),
     createUpscaleSlice: createUpscaleSlice(defaultParams, defaultHighres, defaultModel, defaultUpscale),
   };

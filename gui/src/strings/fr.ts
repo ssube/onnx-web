@@ -212,7 +212,10 @@ export const I18N_STRINGS_FR = {
       },
       setting: {
         connectServer: '',
-        history: '',
+        history: {
+          limit: '',
+          width: '',
+        },
         loadState: '',
         prompt: '',
         reset: {

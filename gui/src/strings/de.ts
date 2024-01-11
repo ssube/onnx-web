@@ -212,7 +212,10 @@ export const I18N_STRINGS_DE = {
       },
       setting: {
         connectServer: 'verbinden zum Server',
-        history: 'Bildgeschichte',
+        history: {
+          limit: 'Bildgeschichte',
+          width: '',
+        },
         loadState: 'Laden',
         prompt: 'Standard-Eingabeaufforderung',
         reset: {

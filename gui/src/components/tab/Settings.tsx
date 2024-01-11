@@ -40,13 +40,22 @@ export function Settings() {
 
   return <Stack spacing={2}>
     <NumericField
-      label={t('setting.history')}
+      label={t('setting.history.limit')}
       min={2}
-      max={20}
+      max={40}
       step={1}
       value={state.limit}
       onChange={(value) => state.setLimit(value)}
     />
+    <NumericField
+      label={t('setting.history.width')}
+      min={2}
+      max={6}
+      step={1}
+      value={state.historyWidth}
+      onChange={(value) => state.setWidth(value)}
+    />
+    <Button onClick={() => state.setLayout(state.layout === 'horizontal' ? 'vertical' : 'horizontal')}>Toggle Layout</Button>
     <TextField variant='outlined' label={t('setting.prompt')} value={state.defaults.prompt} onChange={(event) => {
       state.setDefaults({
         prompt: event.target.value,

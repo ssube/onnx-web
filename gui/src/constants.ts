@@ -21,11 +21,11 @@ export const DEFAULT_HISTORY = {
   /**
    * The number of images to be shown.
    */
-  limit: 4,
+  limit: 8,
 
   /**
    * The number of additional images to be kept in history, so they can scroll
    * back into view when you delete one. Does not include deleted images.
    */
-  scrollback: 2,
+  scrollback: 4,
 };

@@ -1,4 +1,4 @@
-import { doesExist, mustExist } from '@apextoaster/js-utils';
+import { mustExist } from '@apextoaster/js-utils';
 import { Grid, Typography } from '@mui/material';
 import { ReactNode, useContext } from 'react';
 import * as React from 'react';
@@ -12,7 +12,13 @@ import { ImageCard } from './card/ImageCard.js';
 import { LoadingCard } from './card/LoadingCard.js';
 import { JobStatus } from '../types/api-v2.js';
 
-export function ImageHistory() {
+export interface ImageHistoryProps {
+  width: number;
+}
+
+export function ImageHistory(props: ImageHistoryProps) {
+  const { width } = props;
+
   const store = mustExist(useContext(StateContext));
   const { history, limit } = useStore(store, selectParams, shallow);
   const { removeHistory } = useStore(store, selectActions, shallow);
@@ -42,7 +48,8 @@ export function ImageHistory() {
     }
   }
 
-  return <Grid container spacing={2}>{children.map(([key, child]) => <Grid item key={key} xs={6}>{child}</Grid>)}</Grid>;
+  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+  return <Grid container spacing={2}>{children.map(([key, child]) => <Grid item key={key} xs={12 / width}>{child}</Grid>)}</Grid>;
 }
 
 export function selectActions(state: OnnxState) {

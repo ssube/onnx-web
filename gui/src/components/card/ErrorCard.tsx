@@ -90,11 +90,9 @@ export const UNKNOWN_ERROR = `${IMAGE_ERROR}unknown`;
 export function getImageErrorReason(image: FailedJobResponse | UnknownJobResponse) {
   if (image.status === JobStatus.FAILED) {
     const error = image.reason;
-    if (doesExist(error) && error.startsWith(ANY_ERROR)) {
+    if (doesExist(error)) {
       return error;
     }
-
-    return `${IMAGE_ERROR}${error}`;
   }
 
   return UNKNOWN_ERROR;

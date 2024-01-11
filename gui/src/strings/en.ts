@@ -275,7 +275,10 @@ export const I18N_STRINGS_EN = {
       },
       setting: {
         connectServer: 'Connect',
-        history: 'Image History',
+        history: {
+          limit: 'Image History Length',
+          width: 'Image History Width',
+        },
         loadState: 'Load',
         prompt: 'Default Prompt',
         reset: {
