@@ -279,7 +279,6 @@ export const I18N_STRINGS_EN = {
           limit: 'Image History Length',
           width: 'Image History Width',
         },
-        loadState: 'Load',
         prompt: 'Default Prompt',
         reset: {
           all: 'Reset All',
@@ -289,7 +288,11 @@ export const I18N_STRINGS_EN = {
         },
         scheduler: 'Default Scheduler',
         server: 'API Server',
-        state: 'Client State',
+        state: {
+          label: 'Client State',
+          save: 'Save',
+          load: 'Load',
+        },
         darkMode: 'Dark Mode',
       },
       scheduler: {

@@ -1,5 +1,5 @@
 import { doesExist, mustExist } from '@apextoaster/js-utils';
-import { Refresh } from '@mui/icons-material';
+import { Download, Refresh } from '@mui/icons-material';
 import { Alert, Button, FormControlLabel, Stack, Switch, TextField, useMediaQuery } from '@mui/material';
 import * as React from 'react';
 import { useContext, useState } from 'react';
@@ -10,6 +10,7 @@ import { getApiRoot } from '../../config.js';
 import { ConfigContext, StateContext, STATE_KEY } from '../../state/full.js';
 import { getTheme } from '../utils.js';
 import { NumericField } from '../input/NumericField.js';
+import { downloadAsJson } from '../../utils.js';
 
 function removeBlobs(key: string, value: unknown): unknown {
   if (value instanceof Blob || value instanceof File) {
@@ -55,7 +56,7 @@ export function Settings() {
       value={state.historyWidth}
       onChange={(value) => state.setWidth(value)}
     />
-    <Button onClick={() => state.setLayout(state.layout === 'horizontal' ? 'vertical' : 'horizontal')}>Toggle Layout</Button>
+    <Button variant='contained' onClick={() => state.setLayout(state.layout === 'horizontal' ? 'vertical' : 'horizontal')}>Toggle Layout</Button>
     <TextField variant='outlined' label={t('setting.prompt')} value={state.defaults.prompt} onChange={(event) => {
       state.setDefaults({
         prompt: event.target.value,
@@ -82,14 +83,19 @@ export function Settings() {
       </Alert>
     </Stack>
     <Stack direction='row' spacing={2}>
-      <TextField variant='outlined' label={t('setting.state')} value={json} onChange={(event) => {
+      <TextField variant='outlined' label={t('setting.state.label')} value={json} onChange={(event) => {
         setJson(event.target.value);
       }} />
       <Button variant='contained' startIcon={<Refresh />} onClick={() => {
         window.localStorage.setItem(STATE_KEY, json);
         window.location.reload();
       }}>
-        {t('setting.loadState')}
+        {t('setting.state.load')}
+      </Button>
+      <Button variant='contained' startIcon={<Download />} onClick={() => {
+        downloadAsJson(state, 'state.json');
+      }}>
+        {t('setting.state.save')}
       </Button>
     </Stack>
     <FormControlLabel control={

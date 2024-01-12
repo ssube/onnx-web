@@ -22,6 +22,7 @@ docs-local:
 
 build: deps
 	yarn tsc
+	cp -v src/components/main.css out/src/components/
 
 build-shebang: build
 	sed -i '1s;^;#! /usr/bin/env node\n\n;g' $(shell pwd)/out/src/main.js
@@ -35,6 +36,7 @@ bundle: build
 # copy everything into the server's default path
 	cp -v src/index.html ../api/gui/
 	cp -v src/config.json ../api/gui/
+	cp -v out/bundle/main.css ../api/gui/bundle/
 	cp -v out/bundle/main.js ../api/gui/bundle/
 
 COVER_OPTS := --all \

@@ -25,6 +25,7 @@ import { OnnxState, StateContext } from '../state/full.js';
 import { ImageMetadata } from '../types/api.js';
 import { DeepPartial } from '../types/model.js';
 import { BaseImgParams, HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../types/params.js';
+import { downloadAsJson } from '../utils.js';
 
 export const ALLOWED_EXTENSIONS = ['.json','.jpg','.jpeg','.png','.txt','.webp'];
 export const EXTENSION_FILTER = ALLOWED_EXTENSIONS.join(',');
@@ -119,10 +120,10 @@ export function Profiles(props: ProfilesProps) {
           onClick={() => {
             const state = store.getState();
             saveProfile({
-              model: props.selectModel(state),
-              params: props.selectParams(state),
               name: profileName,
               highres: props.selectHighres(state),
+              model: props.selectModel(state),
+              params: props.selectParams(state),
               upscale: props.selectUpscale(state),
             });
             setDialogOpen(false);
@@ -166,9 +167,9 @@ export function Profiles(props: ProfilesProps) {
     </Button>
     <Button component='label' variant='contained' onClick={() => {
       const state = store.getState();
-      downloadParamsAsFile({
-        // TODO: save model parameters
-        // model: props.selectModel(state),
+      downloadAsJson({
+        name: 'web-ui-profile',
+        model: props.selectModel(state),
         params: props.selectParams(state),
         highres: props.selectHighres(state),
         upscale: props.selectUpscale(state),
@@ -208,19 +209,6 @@ export async function loadParamsFromFile(file: File): Promise<DeepPartial<ImageM
     default:
       return parseAutoComment(await file.text());
   }
-}
-
-/**
- * from https://stackoverflow.com/a/30800715
- */
-export function downloadParamsAsFile(data: DeepPartial<ImageMetadata>): void {
-  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
-  const elem = document.createElement('a');
-  elem.setAttribute('href', dataStr);
-  elem.setAttribute('download', 'parameters.json');
-  document.body.appendChild(elem); // required for firefox
-  elem.click();
-  elem.remove();
 }
 
 export async function parseImageParams(file: File): Promise<DeepPartial<ImageMetadata>> {

@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { mustExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-import { Box, Button, Container, CssBaseline, Divider, Stack, Tab, useMediaQuery } from '@mui/material';
+import { Box, Container, CssBaseline, Divider, Stack, Tab, useMediaQuery } from '@mui/material';
 import { Breakpoint, SxProps, Theme, ThemeProvider, createTheme } from '@mui/material/styles';
+import { Allotment } from 'allotment';
 import * as React from 'react';
 import { useContext, useMemo } from 'react';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
+import { shallow } from 'zustand/shallow';
 
+import { Motd } from '../Motd.js';
 import { OnnxState, StateContext } from '../state/full.js';
 import { ImageHistory } from './ImageHistory.js';
 import { Logo } from './Logo.js';
@@ -19,7 +22,9 @@ import { Settings } from './tab/Settings.js';
 import { Txt2Img } from './tab/Txt2Img.js';
 import { Upscale } from './tab/Upscale.js';
 import { TAB_LABELS, getTab, getTheme } from './utils.js';
-import { Motd } from '../Motd.js';
+
+import 'allotment/dist/style.css';
+import './main.css';
 
 export interface OnnxWebProps {
   motd: boolean;
@@ -30,7 +35,7 @@ export function OnnxWeb(props: OnnxWebProps) {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const store = mustExist(useContext(StateContext));
   const stateTheme = useStore(store, selectTheme);
-  const layout = useStore(store, selectLayout);
+  const layout = useStore(store, selectLayout, shallow);
 
   const theme = useMemo(
     () => createTheme({
@@ -41,13 +46,7 @@ export function OnnxWeb(props: OnnxWebProps) {
     [prefersDarkMode, stateTheme],
   );
 
-  const [hash, setHash] = useHash();
-
-  const historyStyle: SxProps<Theme> = {
-    mx: 4,
-    my: 4,
-    ...LAYOUT_STYLES[layout.direction].history.style,
-  };
+  const historyStyle: SxProps<Theme> = LAYOUT_STYLES[layout.direction].history.style;
 
   return (
     <ThemeProvider theme={theme}>
@@ -57,44 +56,7 @@ export function OnnxWeb(props: OnnxWebProps) {
           <Logo />
         </Box>
         {props.motd && <Motd />}
-        <Stack direction={LAYOUT_STYLES[layout.direction].direction} spacing={2}>
-          <Stack direction='column'>
-            <TabContext value={getTab(hash)}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <TabList onChange={(_e, idx) => {
-                  setHash(idx);
-                }}>
-                  {TAB_LABELS.map((name) => <Tab key={name} label={name} value={name} />)}
-                </TabList>
-              </Box>
-              <TabPanel value='txt2img'>
-                <Txt2Img />
-              </TabPanel>
-              <TabPanel value='img2img'>
-                <Img2Img />
-              </TabPanel>
-              <TabPanel value='inpaint'>
-                <Inpaint />
-              </TabPanel>
-              <TabPanel value='upscale'>
-                <Upscale />
-              </TabPanel>
-              <TabPanel value='blend'>
-                <Blend />
-              </TabPanel>
-              <TabPanel value='models'>
-                <Models />
-              </TabPanel>
-              <TabPanel value='settings'>
-                <Settings />
-              </TabPanel>
-            </TabContext>
-          </Stack>
-          <Divider flexItem variant='middle' orientation={LAYOUT_STYLES[layout.direction].divider} />
-          <Box sx={historyStyle}>
-            <ImageHistory width={layout.width} />
-          </Box>
-        </Stack>
+        {layout.direction === 'vertical' ? <VerticalBody layout={layout} style={historyStyle} /> : <HorizontalBody layout={layout} style={historyStyle} />}
       </Container>
     </ThemeProvider>
   );
@@ -114,10 +76,14 @@ export function selectLayout(state: OnnxState) {
 export const LAYOUT_STYLES = {
   horizontal: {
     container: false,
+    control: {
+      width: '30%',
+    },
     direction: 'row',
     divider: 'vertical',
     history: {
       style: {
+        marginLeft: 4,
         maxHeight: '85vb',
         overflowY: 'auto',
       },
@@ -126,11 +92,91 @@ export const LAYOUT_STYLES = {
   },
   vertical: {
     container: 'lg' as Breakpoint,
+    control: {
+      width: undefined,
+    },
     direction: 'column',
     divider: 'horizontal',
     history: {
-      style: {},
+      style: {
+        mx: 4,
+        my: 4,
+      },
       width: 2,
     },
   },
 } as const;
+
+// used for both horizontal and vertical
+export interface BodyProps {
+  layout: ReturnType<typeof selectLayout>;
+  style: SxProps<Theme>;
+}
+
+export function HorizontalBody(props: BodyProps) {
+  const store = mustExist(useContext(StateContext));
+  const {direction} = useStore(store, selectLayout, shallow);
+  const layout = LAYOUT_STYLES[direction];
+
+  return <Allotment separator className='body-allotment' minSize={300}>
+    <TabGroup />
+    <Box sx={layout.history.style}>
+      <ImageHistory width={props.layout.width} />
+    </Box>
+  </Allotment>;
+}
+
+export function VerticalBody(props: BodyProps) {
+  const store = mustExist(useContext(StateContext));
+  const {direction, width} = useStore(store, selectLayout, shallow);
+  const layout = LAYOUT_STYLES[direction];
+
+  return <Stack direction={layout.direction} spacing={2}>
+    <TabGroup />
+    <Divider flexItem variant='middle' orientation={layout.divider} />
+    <Box sx={layout.history.style}>
+      <ImageHistory width={width} />
+    </Box>
+  </Stack>;
+}
+
+export function TabGroup() {
+  const store = mustExist(useContext(StateContext));
+  const {direction} = useStore(store, selectLayout, shallow);
+  const layout = LAYOUT_STYLES[direction];
+
+  const [hash, setHash] = useHash();
+
+  return <Stack direction='column' minWidth={layout.control.width} sx={{ mx: 4 }}>
+    <TabContext value={getTab(hash)}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <TabList onChange={(_e, idx) => {
+          setHash(idx);
+        }}>
+          {TAB_LABELS.map((name) => <Tab key={name} label={name} value={name} />)}
+        </TabList>
+      </Box>
+      <TabPanel value='txt2img'>
+        <Txt2Img />
+      </TabPanel>
+      <TabPanel value='img2img'>
+        <Img2Img />
+      </TabPanel>
+      <TabPanel value='inpaint'>
+        <Inpaint />
+      </TabPanel>
+      <TabPanel value='upscale'>
+        <Upscale />
+      </TabPanel>
+      <TabPanel value='blend'>
+        <Blend />
+      </TabPanel>
+      <TabPanel value='models'>
+        <Models />
+      </TabPanel>
+      <TabPanel value='settings'>
+        <Settings />
+      </TabPanel>
+    </TabContext>
+  </Stack>;
+}

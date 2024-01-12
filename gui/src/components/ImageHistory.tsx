@@ -48,8 +48,13 @@ export function ImageHistory(props: ImageHistoryProps) {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-  return <Grid container spacing={2}>{children.map(([key, child]) => <Grid item key={key} xs={12 / width}>{child}</Grid>)}</Grid>;
+  return <Grid
+    container
+    spacing={2}
+  >{
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+      children.map(([key, child]) => <Grid item key={key} xs={12 / width}>{child}</Grid>)
+    }</Grid>;
 }
 
 export function selectActions(state: OnnxState) {

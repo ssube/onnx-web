@@ -26,3 +26,16 @@ export function trimHash(val: string): string {
 
   return val;
 }
+
+/**
+ * from https://stackoverflow.com/a/30800715
+ */
+export function downloadAsJson(data: object, filename = 'parameters.json'): void {
+  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+  const elem = document.createElement('a');
+  elem.setAttribute('href', dataStr);
+  elem.setAttribute('download', filename);
+  document.body.appendChild(elem); // required for firefox
+  elem.click();
+  elem.remove();
+}

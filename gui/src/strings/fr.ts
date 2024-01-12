@@ -216,7 +216,6 @@ export const I18N_STRINGS_FR = {
           limit: '',
           width: '',
         },
-        loadState: '',
         prompt: '',
         reset: {
           all: '',
@@ -226,7 +225,11 @@ export const I18N_STRINGS_FR = {
         },
         scheduler: '',
         server: '',
-        state: '',
+        state: {
+          label: '',
+          load: '',
+          save: '',
+        },
         darkMode: 'Mode Sombre',
       },
       sourceFilter: {

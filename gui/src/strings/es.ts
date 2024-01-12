@@ -216,7 +216,6 @@ export const I18N_STRINGS_ES = {
           limit: 'Historia de la imagen',
           width: '',
         },
-        loadState: 'Carga estado',
         prompt: 'Solicitud predeterminada',
         reset: {
           all: 'Resetear todo',
@@ -226,7 +225,11 @@ export const I18N_STRINGS_ES = {
         },
         scheduler: 'Programador predeterminado',
         server: 'Servidor API',
-        state: 'Estado del cliente',
+        state: {
+          label: 'Estado del cliente',
+          load: 'Carga estado',
+          save: '',
+        },
         darkMode: 'Modo Oscuro',
       },
       sourceFilter: {

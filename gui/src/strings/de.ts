@@ -216,7 +216,6 @@ export const I18N_STRINGS_DE = {
           limit: 'Bildgeschichte',
           width: '',
         },
-        loadState: 'Laden',
         prompt: 'Standard-Eingabeaufforderung',
         reset: {
           all: 'Alles zurücksetzen',
@@ -226,7 +225,11 @@ export const I18N_STRINGS_DE = {
         },
         scheduler: 'Standardplaner',
         server: 'API-Server',
-        state: 'Kundenstatus',
+        state: {
+          label: 'Kundenstatus',
+          load: 'Laden',
+          save: '',
+        },
         darkMode: 'Dunkelmodus',
       },
       sourceFilter: {
