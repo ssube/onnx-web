@@ -12,6 +12,7 @@ import { shallow } from 'zustand/shallow';
 
 import { Motd } from '../Motd.js';
 import { OnnxState, StateContext } from '../state/full.js';
+import { Layout } from '../state/settings.js';
 import { ImageHistory } from './ImageHistory.js';
 import { Logo } from './Logo.js';
 import { Blend } from './tab/Blend.js';
@@ -56,7 +57,7 @@ export function OnnxWeb(props: OnnxWebProps) {
           <Logo />
         </Box>
         {props.motd && <Motd />}
-        {layout.direction === 'vertical' ? <VerticalBody layout={layout} style={historyStyle} /> : <HorizontalBody layout={layout} style={historyStyle} />}
+        {renderBody(layout, historyStyle)}
       </Container>
     </ThemeProvider>
   );
@@ -107,43 +108,50 @@ export const LAYOUT_STYLES = {
   },
 } as const;
 
+function renderBody(layout: ReturnType<typeof selectLayout>, historyStyle: SxProps<Theme>) {
+  if (layout.direction === 'vertical') {
+    return <VerticalBody {...layout} style={historyStyle} />;
+  } else {
+    return <HorizontalBody {...layout} style={historyStyle} />;
+  }
+}
+
 // used for both horizontal and vertical
 export interface BodyProps {
-  layout: ReturnType<typeof selectLayout>;
+  direction: Layout;
   style: SxProps<Theme>;
+  width: number;
 }
 
 export function HorizontalBody(props: BodyProps) {
-  const store = mustExist(useContext(StateContext));
-  const {direction} = useStore(store, selectLayout, shallow);
-  const layout = LAYOUT_STYLES[direction];
+  const layout = LAYOUT_STYLES[props.direction];
 
   return <Allotment separator className='body-allotment' minSize={300}>
-    <TabGroup />
+    <TabGroup direction={props.direction} />
     <Box sx={layout.history.style}>
-      <ImageHistory width={props.layout.width} />
+      <ImageHistory width={props.width} />
     </Box>
   </Allotment>;
 }
 
 export function VerticalBody(props: BodyProps) {
-  const store = mustExist(useContext(StateContext));
-  const {direction, width} = useStore(store, selectLayout, shallow);
-  const layout = LAYOUT_STYLES[direction];
+  const layout = LAYOUT_STYLES[props.direction];
 
   return <Stack direction={layout.direction} spacing={2}>
-    <TabGroup />
+    <TabGroup direction={props.direction} />
     <Divider flexItem variant='middle' orientation={layout.divider} />
     <Box sx={layout.history.style}>
-      <ImageHistory width={width} />
+      <ImageHistory width={props.width} />
     </Box>
   </Stack>;
 }
 
-export function TabGroup() {
-  const store = mustExist(useContext(StateContext));
-  const {direction} = useStore(store, selectLayout, shallow);
-  const layout = LAYOUT_STYLES[direction];
+export interface TabGroupProps {
+  direction: Layout;
+}
+
+export function TabGroup(props: TabGroupProps) {
+  const layout = LAYOUT_STYLES[props.direction];
 
   const [hash, setHash] = useHash();
 
