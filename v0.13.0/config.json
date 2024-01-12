@@ -1,0 +1,255 @@
+{
+  "api": {
+    "root": "http://127.0.0.1:5000"
+  },
+  "params": {
+    "version": "0.12.0",
+    "motd": {
+      "de": "Willkommen bei onnx-web!",
+      "en": "Welcome to onnx-web!",
+      "es": "Bienvenido a onnx-web!",
+      "fr": "Bienvenue sur onnx-web!"
+    },
+    "batch": {
+      "default": 1,
+      "min": 1,
+      "max": 5,
+      "step": 1
+    },
+    "bottom": {
+      "default": 0,
+      "min": 0,
+      "max": 1024,
+      "step": 8
+    },
+    "cfg": {
+      "default": 6,
+      "min": 0,
+      "max": 30,
+      "step": 0.1
+    },
+    "control": {
+      "default": "",
+      "keys": []
+    },
+    "correction": {
+      "default": "",
+      "keys": []
+    },
+    "denoise": {
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.1
+    },
+    "eta": {
+      "default": 0.0,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    "faceOutscale": {
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    "faceStrength": {
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.1
+    },
+    "fillColor": {
+      "default": "#000000",
+      "keys": []
+    },
+    "filter": {
+      "default": "none",
+      "keys": []
+    },
+    "height": {
+      "default": 512,
+      "min": 128,
+      "max": 8192,
+      "step": 8
+    },
+    "highres": {
+      "default": false
+    },
+    "highresIterations": {
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    "highresMethod": {
+      "default": "lanczos",
+      "keys": [
+        "bilinear",
+        "lanczos",
+        "upscale"
+      ]
+    },
+    "highresScale": {
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    "highresSteps": {
+      "default": 0,
+      "min": 1,
+      "max": 500,
+      "step": 1
+    },
+    "highresStrength": {
+      "default": 0.1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    "inversion": {
+      "default": "",
+      "keys": []
+    },
+    "left": {
+      "default": 0,
+      "min": 0,
+      "max": 1024,
+      "step": 8
+    },
+    "loopback": {
+      "default": 0,
+      "min": 0,
+      "max": 10,
+      "step": 1
+    },
+    "model": {
+      "default": "stable-diffusion-onnx-v1-5",
+      "keys": []
+    },
+    "negativePrompt": {
+      "default": "",
+      "keys": []
+    },
+    "noise": {
+      "default": "histogram",
+      "keys": []
+    },
+    "outscale": {
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    "pipeline": {
+      "default": "",
+      "keys": [
+        "controlnet",
+        "lpw",
+        "pix2pix"
+      ]
+    },
+    "platform": {
+      "default": "amd",
+      "keys": []
+    },
+    "prompt": {
+      "default": "an astronaut eating a hamburger",
+      "keys": []
+    },
+    "right": {
+      "default": 0,
+      "min": 0,
+      "max": 1024,
+      "step": 8
+    },
+    "scale": {
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "step": 1
+    },
+    "scheduler": {
+      "default": "euler-a",
+      "keys": []
+    },
+    "seed": {
+      "default": -1,
+      "min": -1,
+      "max": 4294967295,
+      "step": 1
+    },
+    "steps": {
+      "default": 25,
+      "min": 1,
+      "max": 300,
+      "step": 1
+    },
+    "strength": {
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    "tiled_vae": {
+      "default": false
+    },
+    "tileOrder": {
+      "default": "spiral",
+      "keys": [
+        "grid",
+        "spiral"
+      ]
+    },
+    "top": {
+      "default": 0,
+      "min": 0,
+      "max": 1024,
+      "step": 8
+    },
+    "unet_overlap": {
+      "default": 0.25,
+      "min": 0.0,
+      "max": 0.9,
+      "step": 0.01
+    },
+    "unet_tile": {
+      "default": 512,
+      "min": 128,
+      "max": 2048,
+      "step": 128
+    },
+    "upscaleOrder": {
+      "default": "correction-first",
+      "keys": [
+        "correction-both",
+        "correction-first",
+        "correction-last"
+      ]
+    },
+    "upscaling": {
+      "default": "",
+      "keys": []
+    },
+    "vae_overlap": {
+      "default": 0.25,
+      "min": 0.0,
+      "max": 0.9,
+      "step": 0.01
+    },
+    "vae_tile": {
+      "default": 512,
+      "min": 128,
+      "max": 1024,
+      "step": 128
+    },
+    "width": {
+      "default": 512,
+      "min": 128,
+      "max": 8192,
+      "step": 8
+    }
+  }
+}
