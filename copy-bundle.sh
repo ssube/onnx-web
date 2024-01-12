@@ -8,5 +8,6 @@ mkdir -p ${VERSION}/bundle
 
 cp -v ../onnx-web/gui/out/index.html ${VERSION}/index.html
 cp -v ../onnx-web/gui/out/config.json ${VERSION}/config.json
+cp -v ../onnx-web/gui/out/bundle/main.css ${VERSION}/bundle/main.css
 cp -v ../onnx-web/gui/out/bundle/main.js ${VERSION}/bundle/main.js
 
