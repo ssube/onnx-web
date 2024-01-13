@@ -229,7 +229,7 @@ class ImageMetadata:
 
         if self.models is not None:
             for name, weight in self.models:
-                name, hash = self.get_model_hash()
+                name, hash = self.get_model_hash(server)
                 json["models"].append({"name": name, "weight": weight, "hash": hash})
 
         return json

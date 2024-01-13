@@ -84,7 +84,7 @@ def save_image(
     server: ServerContext,
     output: str,
     image: Image.Image,
-    metadata: ImageMetadata,
+    metadata: Optional[ImageMetadata] = None,
 ) -> str:
     path = base_join(server.output_path, output)
 

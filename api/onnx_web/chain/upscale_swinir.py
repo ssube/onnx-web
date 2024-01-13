@@ -40,7 +40,7 @@ class UpscaleSwinIRStage(BaseStage):
         pipe = OnnxModel(
             server,
             model_path,
-            provider=device.ort_provider(),
+            provider=device.ort_provider("swinir"),
             sess_options=device.sess_options(),
         )
 

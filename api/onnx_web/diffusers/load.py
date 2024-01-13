@@ -158,7 +158,7 @@ def load_pipeline(
             logger.debug("loading new diffusion scheduler")
             scheduler = scheduler_type.from_pretrained(
                 model,
-                provider=device.ort_provider(),
+                provider=device.ort_provider("scheduler"),
                 sess_options=device.sess_options(),
                 subfolder="scheduler",
                 torch_dtype=torch_dtype,
@@ -179,7 +179,7 @@ def load_pipeline(
         logger.debug("loading new diffusion pipeline from %s", model)
         scheduler = scheduler_type.from_pretrained(
             model,
-            provider=device.ort_provider(),
+            provider=device.ort_provider("scheduler"),
             sess_options=device.sess_options(),
             subfolder="scheduler",
             torch_dtype=torch_dtype,
@@ -320,7 +320,7 @@ def load_controlnet(server: ServerContext, device: DeviceParams, params: ImagePa
     components["controlnet"] = OnnxRuntimeModel(
         OnnxRuntimeModel.load_model(
             cnet_path,
-            provider=device.ort_provider(),
+            provider=device.ort_provider("controlnet"),
             sess_options=device.sess_options(),
         )
     )
@@ -448,7 +448,7 @@ def load_text_encoders(
         # session for te1
         text_encoder_session = InferenceSession(
             text_encoder.SerializeToString(),
-            providers=[device.ort_provider("text-encoder")],
+            providers=[device.ort_provider("text-encoder", "sdxl")],
             sess_options=text_encoder_opts,
         )
         text_encoder_session._model_path = path.join(model, "text_encoder")
@@ -457,7 +457,7 @@ def load_text_encoders(
         # session for te2
         text_encoder_2_session = InferenceSession(
             text_encoder_2.SerializeToString(),
-            providers=[device.ort_provider("text-encoder")],
+            providers=[device.ort_provider("text-encoder", "sdxl")],
             sess_options=text_encoder_2_opts,
         )
         text_encoder_2_session._model_path = path.join(model, "text_encoder_2")
@@ -511,7 +511,7 @@ def load_unet(
     if params.is_xl():
         unet_session = InferenceSession(
             unet_model.SerializeToString(),
-            providers=[device.ort_provider("unet")],
+            providers=[device.ort_provider("unet", "sdxl")],
             sess_options=unet_opts,
         )
         unet_session._model_path = path.join(model, "unet")
@@ -551,7 +551,7 @@ def load_vae(
             logger.debug("loading VAE decoder from %s", vae_decoder)
             components["vae_decoder_session"] = OnnxRuntimeModel.load_model(
                 vae_decoder,
-                provider=device.ort_provider("vae"),
+                provider=device.ort_provider("vae", "sdxl"),
                 sess_options=device.sess_options(),
             )
             components["vae_decoder_session"]._model_path = vae_decoder
@@ -559,7 +559,7 @@ def load_vae(
             logger.debug("loading VAE encoder from %s", vae_encoder)
             components["vae_encoder_session"] = OnnxRuntimeModel.load_model(
                 vae_encoder,
-                provider=device.ort_provider("vae"),
+                provider=device.ort_provider("vae", "sdxl"),
                 sess_options=device.sess_options(),
             )
             components["vae_encoder_session"]._model_path = vae_encoder

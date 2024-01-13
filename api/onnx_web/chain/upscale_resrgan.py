@@ -64,7 +64,7 @@ class UpscaleRealESRGANStage(BaseStage):
         model = OnnxRRDBNet(
             server,
             model_file,
-            provider=device.ort_provider(),
+            provider=device.ort_provider("esrgan"),
             sess_options=device.sess_options(),
         )
 

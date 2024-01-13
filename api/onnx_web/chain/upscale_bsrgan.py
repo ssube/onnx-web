@@ -47,7 +47,7 @@ class UpscaleBSRGANStage(BaseStage):
         pipe = OnnxModel(
             server,
             model_path,
-            provider=device.ort_provider(),
+            provider=device.ort_provider("bsrgan"),
             sess_options=device.sess_options(),
         )
 

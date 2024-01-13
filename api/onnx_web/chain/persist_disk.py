@@ -1,10 +1,10 @@
 from logging import getLogger
-from typing import List, Optional
+from typing import Optional
 
 from PIL import Image
 
-from ..output import save_image, save_result
-from ..params import ImageParams, Size, SizeChart, StageParams
+from ..output import save_result
+from ..params import ImageParams, SizeChart, StageParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 from .base import BaseStage

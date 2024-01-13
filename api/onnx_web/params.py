@@ -136,13 +136,22 @@ class DeviceParams:
         return "%s - %s (%s)" % (self.device, self.provider, self.options)
 
     def ort_provider(
-        self, model_type: Optional[str] = None
+        self,
+        model_type: str,
+        suffix: Optional[str] = None,
     ) -> Union[str, Tuple[str, Any]]:
-        if model_type is not None:
-            # check if model has been pinned to CPU
-            # TODO: check whether the CPU device is allowed
-            if f"onnx-cpu-{model_type}" in self.optimizations:
-                return "CPUExecutionProvider"
+        # check if model has been pinned to CPU
+        # TODO: check whether the CPU device is allowed
+        if f"onnx-cpu-{model_type}" in self.optimizations:
+            logger.debug("pinning %s to CPU", model_type)
+            return "CPUExecutionProvider"
+
+        if (
+            suffix is not None
+            and f"onnx-cpu-{model_type}-{suffix}" in self.optimizations
+        ):
+            logger.debug("pinning %s-%s to CPU", model_type, suffix)
+            return "CPUExecutionProvider"
 
         if self.options is None:
             return self.provider
