@@ -145,3 +145,19 @@ def save_metadata(
         f.write(dumps(json))
         logger.debug("saved image params to: %s", path)
         return path
+
+
+def read_metadata(
+    image: Image.Image,
+) -> Optional[ImageMetadata]:
+    exif_data = image._getexif()
+
+    if ImageIFD.Make in exif_data and exif_data[ImageIFD.Make] == "onnx-web":
+        return ImageMetadata.from_json(exif_data[ExifIFD.MakerNote])
+
+    if ExifIFD.UserComment in exif_data:
+        return ImageMetadata.from_exif(exif_data[ExifIFD.UserComment])
+
+    # this could return ImageMetadata.unknown_image(), but that would not indicate whether the input
+    # had metadata or not, so it's easier to return None and follow the call with `or ImageMetadata.unknown_image()`
+    return None

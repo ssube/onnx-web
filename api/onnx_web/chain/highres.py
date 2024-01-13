@@ -5,7 +5,7 @@ from ..chain.blend_img2img import BlendImg2ImgStage
 from ..chain.edit_metadata import EditMetadataStage
 from ..chain.upscale import stage_upscale_correction
 from ..chain.upscale_simple import UpscaleSimpleStage
-from ..params import HighresParams, ImageParams, StageParams, UpscaleParams
+from ..params import HighresParams, ImageParams, SizeChart, StageParams, UpscaleParams
 from .pipeline import ChainPipeline
 
 logger = getLogger(__name__)
@@ -70,7 +70,7 @@ def stage_highres(
     # add highres parameters to the image metadata
     chain.stage(
         EditMetadataStage(),
-        stage.with_args(outscale=1),
+        stage.with_args(outscale=1, tile_size=SizeChart.max),
         highres=highres,
         replace_params=params,
     )

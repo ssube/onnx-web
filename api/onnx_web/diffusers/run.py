@@ -16,7 +16,7 @@ from ..chain.highres import stage_highres
 from ..chain.result import ImageMetadata, StageResult
 from ..chain.upscale import split_upscale, stage_upscale_correction
 from ..image import expand_image
-from ..output import save_image, save_result
+from ..output import read_metadata, save_image, save_result
 from ..params import (
     Border,
     HighresParams,
@@ -62,6 +62,31 @@ def add_safety_stage(
         pipeline.stage(
             EditSafetyStage(), StageParams(tile_size=EditSafetyStage.max_tile)
         )
+
+
+def add_thumbnail_output(
+    server: ServerContext,
+    images: StageResult,
+    params: ImageParams,
+) -> None:
+    """
+    Add a thumbnail image to the output, if requested.
+    TODO: This should really be a stage.
+    """
+    result_size = images.size()
+    if (
+        params.thumbnail
+        and len(images) > 0
+        and (
+            result_size.width > server.thumbnail_size
+            or result_size.height > server.thumbnail_size
+        )
+    ):
+        cover = images.as_images()[0]
+        thumbnail = cover.copy()
+        thumbnail.thumbnail((server.thumbnail_size, server.thumbnail_size))
+
+        images.insert_image(0, thumbnail, images.metadata[0])
 
 
 def run_txt2img_pipeline(
@@ -131,22 +156,7 @@ def run_txt2img_pipeline(
         worker, server, params, StageResult.empty(), callback=progress, latents=latents
     )
 
-    # add a thumbnail, if requested
-    result_size = images.size()
-    if (
-        params.thumbnail
-        and len(images) > 0
-        and (
-            result_size.width > server.thumbnail_size
-            or result_size.height > server.thumbnail_size
-        )
-    ):
-        cover = images.as_images()[0]
-        thumbnail = cover.copy()
-        thumbnail.thumbnail((server.thumbnail_size, server.thumbnail_size))
-
-        images.insert_image(0, thumbnail, images.metadata[0])
-
+    add_thumbnail_output(server, images, params)
     save_result(server, images, worker.job)
 
     # clean up
@@ -231,19 +241,24 @@ def run_img2img_pipeline(
 
     add_safety_stage(server, chain)
 
+    # prep inputs
+    input_metadata = read_metadata(source) or ImageMetadata.unknown_image()
+    input_result = StageResult(images=[source], metadata=[input_metadata])
+
     # run and append the filtered source
     progress = worker.get_progress_callback(reset=True)
     images = chain(
         worker,
         server,
         params,
-        StageResult(images=[source], metadata=[ImageMetadata.unknown_image()]),
+        input_result,  # terrible naming, I know
         callback=progress,
     )
 
     if source_filter is not None and source_filter != "none":
         images.push_image(source, ImageMetadata.unknown_image())
 
+    add_thumbnail_output(server, images, params)
     save_result(server, images, worker.job)
 
     # clean up
@@ -406,6 +421,10 @@ def run_inpaint_pipeline(
 
     add_safety_stage(server, chain)
 
+    # prep inputs
+    input_metadata = read_metadata(source) or ImageMetadata.unknown_image()
+    input_result = StageResult(images=[source], metadata=[input_metadata])
+
     # run and save
     latents = get_latents_from_seed(params.seed, size, batch=params.batch)
     progress = worker.get_progress_callback(reset=True)
@@ -413,12 +432,12 @@ def run_inpaint_pipeline(
         worker,
         server,
         params,
-        StageResult(
-            images=[source], metadata=[ImageMetadata.unknown_image()]
-        ),  # TODO: load metadata from source image
+        input_result,
         callback=progress,
         latents=latents,
     )
+
+    add_thumbnail_output(server, images, params)
 
     for i, (image, metadata) in enumerate(zip(images.as_images(), images.metadata)):
         if full_res_inpaint:
@@ -488,16 +507,21 @@ def run_upscale_pipeline(
 
     add_safety_stage(server, chain)
 
+    # prep inputs
+    input_metadata = read_metadata(source) or ImageMetadata.unknown_image()
+    input_result = StageResult(images=[source], metadata=[input_metadata])
+
     # run and save
     progress = worker.get_progress_callback(reset=True)
     images = chain(
         worker,
         server,
         params,
-        StageResult(images=[source], metadata=[ImageMetadata.unknown_image()]),
+        input_result,
         callback=progress,
     )
 
+    add_thumbnail_output(server, images, params)
     save_result(server, images, worker.job)
 
     # clean up
@@ -543,18 +567,23 @@ def run_blend_pipeline(
 
     add_safety_stage(server, chain)
 
+    # prep inputs
+    input_metadata = [
+        read_metadata(source) or ImageMetadata.unknown_image() for source in sources
+    ]
+    input_result = StageResult(images=sources, metadata=input_metadata)
+
     # run and save
     progress = worker.get_progress_callback(reset=True)
     images = chain(
         worker,
         server,
         params,
-        StageResult(
-            images=sources, metadata=[ImageMetadata.unknown_image()] * len(sources)
-        ),
+        input_result,
         callback=progress,
     )
 
+    add_thumbnail_output(server, images, params)
     save_result(server, images, worker.job)
 
     # clean up

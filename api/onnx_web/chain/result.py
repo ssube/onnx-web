@@ -1,6 +1,7 @@
 from json import dumps
 from logging import getLogger
 from os import path
+from re import compile
 from typing import Any, List, Optional, Tuple
 
 import numpy as np
@@ -10,9 +11,11 @@ from ..convert.utils import resolve_tensor
 from ..params import Border, HighresParams, ImageParams, Size, UpscaleParams
 from ..server.context import ServerContext
 from ..server.load import get_extra_hashes
-from ..utils import hash_file
+from ..utils import hash_file, load_config_str
 
 logger = getLogger(__name__)
+
+FLOAT_PATTERN = compile(r"[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?")
 
 
 class NetworkMetadata:
@@ -237,6 +240,70 @@ class ImageMetadata:
                 )
 
         return json
+
+    @staticmethod
+    def from_exif(input: str) -> "ImageMetadata":
+        lines = input.splitlines()
+        prompt, maybe_negative, *rest = lines
+
+        # process negative prompt or put that line back into rest
+        if maybe_negative.startswith("Negative prompt:"):
+            negative_prompt = maybe_negative[len("Negative prompt:") :]
+            negative_prompt = negative_prompt.strip()
+        else:
+            rest.insert(0, maybe_negative)
+            negative_prompt = None
+
+        rest = " ".join(rest)
+        other_params = rest.split(",")
+
+        # process other params
+        params = {}
+        size = None
+        for param in other_params:
+            key, value = param.split(":")
+            key = key.strip().lower()
+            value = value.strip()
+
+            if key == "size":
+                width, height = value.split("x")
+                width = int(width.strip())
+                height = int(height.strip())
+                size = Size(width, height)
+            elif value.isdecimal():
+                value = int(value)
+            elif FLOAT_PATTERN.match(value) is not None:
+                value = float(value)
+
+            params[key] = value
+
+        params = ImageParams(
+            "TODO",
+            "txt2img",  # TODO: can this be detected?
+            params["sampler"],
+            prompt,
+            params["cfg scale"],
+            params["steps"],
+            params["seed"],
+            negative_prompt,
+        )
+        return ImageMetadata(params, size)
+
+    @staticmethod
+    def from_json(input: str) -> "ImageMetadata":
+        data = load_config_str(input)
+        # TODO: enforce schema
+
+        return ImageMetadata(
+            data["params"],
+            data["input_size"],
+            data.get("upscale", None),
+            data.get("border", None),
+            data.get("highres", None),
+            data.get("inversions", None),
+            data.get("loras", None),
+            data.get("models", None),
+        )
 
 
 ERROR_NO_METADATA = "metadata must be provided"
