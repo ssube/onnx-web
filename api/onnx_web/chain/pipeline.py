@@ -124,12 +124,13 @@ class ChainPipeline:
             callback = ChainProgress.from_progress(callback)
 
         # set estimated totals
-        steps = params.steps
         if "size" in pipeline_kwargs and isinstance(pipeline_kwargs["size"], Size):
             size = pipeline_kwargs["size"]
-            steps = self.steps(params, size)
+        else:
+            size = sources.size()
 
-        worker.set_totals(steps, stages=len(self.stages), tiles=0)
+        total_steps = self.steps(params, size)
+        worker.set_totals(total_steps, stages=len(self.stages), tiles=0)
 
         start = monotonic()
 
@@ -182,6 +183,7 @@ class ChainPipeline:
                     source_tile: List[Image.Image],
                     tile_mask: Image.Image,
                     dims: Tuple[int, int, int],
+                    progress: Tuple[int, int],
                 ) -> List[Image.Image]:
                     for _i in range(worker.retries):
                         try:
@@ -203,7 +205,7 @@ class ChainPipeline:
                                 for j, image in enumerate(tile_result.as_image()):
                                     save_image(server, f"last-tile-{j}.png", image)
 
-                            worker.set_tiles(worker.tiles.current + 1)
+                            worker.set_tiles(current=progress[0], total=progress[1])
 
                             return tile_result
                         except CancelledException as err:

@@ -26,7 +26,7 @@ class TileCallback(Protocol):
     """
 
     def __call__(
-        self, sources: List[Image.Image], mask: Image.Image, dims: Tuple[int, int, int]
+        self, sources: List[Image.Image], mask: Image.Image, dims: Tuple[int, int, int], progress: Tuple[int, int]
     ) -> StageResult:
         """
         Run this stage against a single tile.
@@ -268,11 +268,13 @@ def process_tile_stack(
 
     tiles: List[Tuple[int, int, Image.Image]] = []
     tile_coords = tile_generator(width, height, tile, overlap)
-    single_tile = len(tile_coords) == 1
+
+    total_tiles = len(tile_coords)
+    single_tile = total_tiles == 1
 
     for counter, (left, top) in enumerate(tile_coords):
         logger.info(
-            "processing tile %s of %s, %sx%s", counter, len(tile_coords), left, top
+            "processing tile %s of %s, %sx%s", counter, total_tiles, left, top
         )
 
         right = left + tile
@@ -341,8 +343,9 @@ def process_tile_stack(
                 tile_mask = mask.crop((left, top, right, bottom))
 
         for image_filter in filters:
-            tile_stack = image_filter(tile_stack, tile_mask, (left, top, tile))
+            tile_stack = image_filter(tile_stack, tile_mask, (left, top, tile), (counter, total_tiles))
 
+        # TODO: this should be inverted to extract them from the result
         if isinstance(tile_stack, list):
             tile_stack = StageResult.from_images(tile_stack, metadata=stack.metadata)
 
