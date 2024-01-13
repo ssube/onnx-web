@@ -190,8 +190,8 @@ class WorkerContext:
 
     def set_totals(self, steps: int, stages: int = 0, tiles: int = 0) -> None:
         self.steps = Progress(0, steps)
-        self.stages.total = Progress(0, stages)
-        self.tiles.total = Progress(0, tiles)
+        self.stages = Progress(0, stages)
+        self.tiles = Progress(0, tiles)
 
     def finish(self) -> None:
         if self.job is None:
