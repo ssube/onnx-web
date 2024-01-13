@@ -1,6 +1,13 @@
 import { RetryParams } from './api.js';
 import { BaseImgParams, HighresParams, Img2ImgParams, InpaintParams, Txt2ImgParams, UpscaleParams } from './params.js';
 
+export interface Border {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+}
+
 export interface Progress {
   current: number;
   total: number;
@@ -26,7 +33,7 @@ export interface ImageMetadata<TParams extends BaseImgParams, TType extends JobT
   loras: Array<NetworkMetadata>;
   models: Array<NetworkMetadata>;
 
-  border: unknown; // TODO: type
+  border: Border;
   highres: HighresParams;
   upscale: UpscaleParams;
   size: Size;

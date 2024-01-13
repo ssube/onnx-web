@@ -160,7 +160,7 @@ def image_reply(
     return data
 
 
-def multi_image_reply(results: Dict[str, Any]):
+def multi_image_reply(results: List[Dict[str, Any]]):
     return jsonify(
         {
             "results": results,
@@ -180,7 +180,10 @@ def introspect(server: ServerContext, app: Flask):
     return {
         "name": "onnx-web",
         "routes": [
-            {"path": url_from_rule(rule), "methods": list(rule.methods or []).sort()}
+            {
+                "path": url_from_rule(rule),
+                "methods": list(rule.methods or []),
+            }
             for rule in app.url_map.iter_rules()
         ],
     }
@@ -687,7 +690,7 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
             outputs = None
             metadata = None
             if progress.result is not None and len(progress.result) > 0:
-                # TODO: the names should be attached to the result somehow rather than recomputing them
+                # TODO: the names should be attached to the result when it is saved rather than recomputing them
                 outputs = make_output_names(server, job_name, len(progress.result))
                 metadata = progress.result.metadata
 
