@@ -1,7 +1,7 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Container, CssBaseline, Divider, Stack, Tab, useMediaQuery } from '@mui/material';
-import { SxProps, Theme, ThemeProvider, createTheme } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Allotment } from 'allotment';
 import * as React from 'react';
 import { useContext, useMemo } from 'react';
@@ -21,7 +21,7 @@ import { Models } from './tab/Models.js';
 import { Settings } from './tab/Settings.js';
 import { Txt2Img } from './tab/Txt2Img.js';
 import { Upscale } from './tab/Upscale.js';
-import { TAB_LABELS, getTab, getTheme } from './utils.js';
+import { getTab, getTheme, TAB_LABELS } from './utils.js';
 
 import 'allotment/dist/style.css';
 import './main.css';
@@ -49,8 +49,6 @@ export function OnnxWeb(props: OnnxWebProps) {
     [prefersDarkMode, stateTheme],
   );
 
-  const historyStyle: SxProps<Theme> = layout.history.style;
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -59,7 +57,7 @@ export function OnnxWeb(props: OnnxWebProps) {
           <Logo />
         </Box>
         {props.motd && <Motd />}
-        {renderBody(direction, historyStyle, historyWidth)}
+        {renderBody(direction, historyWidth)}
       </Container>
     </ThemeProvider>
   );
@@ -77,25 +75,30 @@ export function selectHistoryWidth(state: OnnxState) {
   return state.historyWidth;
 }
 
-function renderBody(direction: Layout, historyStyle: SxProps<Theme>, historyWidth: number) {
+function renderBody(direction: Layout, historyWidth: number) {
   if (direction === 'vertical') {
-    return <VerticalBody direction={direction} style={historyStyle} width={historyWidth} />;
+    return <VerticalBody direction={direction} width={historyWidth} />;
   } else {
-    return <HorizontalBody direction={direction} style={historyStyle} width={historyWidth} />;
+    return <HorizontalBody direction={direction} width={historyWidth} />;
   }
 }
 
 // used for both horizontal and vertical
 export interface BodyProps {
   direction: Layout;
-  style: SxProps<Theme>;
   width: number;
 }
 
 export function HorizontalBody(props: BodyProps) {
   const layout = LAYOUT_STYLES[props.direction];
 
-  return <Allotment separator className='body-allotment' minSize={LAYOUT_MIN} defaultSizes={LAYOUT_PROPORTIONS} snap>
+  return <Allotment
+    className='body-allotment'
+    defaultSizes={LAYOUT_PROPORTIONS}
+    minSize={LAYOUT_MIN}
+    separator
+    snap
+  >
     <TabGroup direction={props.direction} />
     <Box className='box-history' sx={layout.history.style}>
       <ImageHistory width={props.width} />

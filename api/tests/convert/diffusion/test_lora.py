@@ -6,6 +6,7 @@ import torch
 from onnx import GraphProto, ModelProto, NodeProto
 from onnx.numpy_helper import from_array
 
+from onnx_web.constants import ONNX_MODEL
 from onnx_web.convert.diffusion.lora import (
     blend_loras,
     blend_node_conv_gemm,
@@ -231,7 +232,6 @@ class BlendLoRATests(unittest.TestCase):
     @patch("onnx_web.convert.diffusion.lora.load")
     @patch("onnx_web.convert.diffusion.lora.load_tensor")
     def test_blend_loras_load_str(self, mock_load_tensor, mock_load):
-        base_name = "model.onnx"
         loras = [("loras/model1.safetensors", 0.5), ("loras/safetensors.onnx", 0.5)]
         model_type = "unet"
         model_index = 2
@@ -241,10 +241,12 @@ class BlendLoRATests(unittest.TestCase):
         mock_load_tensor.return_value = MagicMock()
 
         # Call the blend_loras function
-        blended_model = blend_loras(None, base_name, loras, model_type, model_index, xl)
+        blended_model = blend_loras(
+            None, ONNX_MODEL, loras, model_type, model_index, xl
+        )
 
         # Assert that the InferenceSession is called with the correct arguments
-        mock_load.assert_called_once_with(base_name)
+        mock_load.assert_called_once_with(ONNX_MODEL)
 
         # Assert that the model is loaded successfully
         self.assertEqual(blended_model, mock_load.return_value)

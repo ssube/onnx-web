@@ -267,13 +267,6 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
     replace_wildcards(params, get_wildcard_data())
 
-    output_count = params.batch
-    if source_filter is not None and source_filter != "none":
-        logger.debug(
-            "including filtered source with outputs, filter: %s", source_filter
-        )
-        output_count += 1
-
     job_name = make_job_name("img2img", params, size, extras=[strength])
     queue = pool.submit(
         job_name,

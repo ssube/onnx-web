@@ -423,7 +423,7 @@ class DevicePoolExecutor:
         Returns a tuple of: job/device, progress, progress, finished, cancelled, failed
         """
 
-        jobs: Tuple[str, int, JobStatus] = []
+        jobs: List[Tuple[str, int, JobStatus]] = []
         jobs.extend(
             [
                 (

@@ -31,16 +31,16 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(split_list(" a ,b "), ["a", "b"])
 
     def test_get_boolean_empty(self):
-        self.assertEqual(get_boolean({}, "key", False), False)
-        self.assertEqual(get_boolean({}, "key", True), True)
+        self.assertFalse(get_boolean({}, "key", False))
+        self.assertTrue(get_boolean({}, "key", True))
 
     def test_get_boolean_true(self):
-        self.assertEqual(get_boolean({"key": True}, "key", False), True)
-        self.assertEqual(get_boolean({"key": True}, "key", True), True)
+        self.assertTrue(get_boolean({"key": True}, "key", False))
+        self.assertTrue(get_boolean({"key": True}, "key", True))
 
     def test_get_boolean_false(self):
-        self.assertEqual(get_boolean({"key": False}, "key", False), False)
-        self.assertEqual(get_boolean({"key": False}, "key", True), False)
+        self.assertFalse(get_boolean({"key": False}, "key", False))
+        self.assertFalse(get_boolean({"key": False}, "key", True))
 
     def test_get_list_empty(self):
         self.assertEqual(get_list({}, "key", ""), [])

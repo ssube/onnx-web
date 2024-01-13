@@ -3,6 +3,7 @@ from os import path
 from unittest import mock
 from unittest.mock import MagicMock, patch
 
+from onnx_web.constants import ONNX_MODEL
 from onnx_web.convert.utils import (
     DEFAULT_OPSET,
     ConversionContext,
@@ -267,36 +268,41 @@ class ResolveTensorTests(unittest.TestCase):
         self.assertIsNone(resolve_tensor("missing"))
 
 
+TORCH_MODEL = "model.pth"
+
+
 class LoadTorchTests(unittest.TestCase):
     @patch("onnx_web.convert.utils.logger")
     @patch("onnx_web.convert.utils.torch")
     def test_load_torch_with_torch_load(self, mock_torch, mock_logger):
-        name = "model.pth"
         map_location = "cpu"
         checkpoint = MagicMock()
         mock_torch.load.return_value = checkpoint
 
-        result = load_torch(name, map_location)
+        result = load_torch(TORCH_MODEL, map_location)
 
-        mock_logger.debug.assert_called_once_with("loading tensor with Torch: %s", name)
-        mock_torch.load.assert_called_once_with(name, map_location=map_location)
+        mock_logger.debug.assert_called_once_with(
+            "loading tensor with Torch: %s", TORCH_MODEL
+        )
+        mock_torch.load.assert_called_once_with(TORCH_MODEL, map_location=map_location)
         self.assertEqual(result, checkpoint)
 
     @patch("onnx_web.convert.utils.logger")
     @patch("onnx_web.convert.utils.torch")
     def test_load_torch_with_torch_jit_load(self, mock_torch, mock_logger):
-        name = "model.pth"
         checkpoint = MagicMock()
         mock_torch.load.side_effect = Exception()
         mock_torch.jit.load.return_value = checkpoint
 
-        result = load_torch(name)
+        result = load_torch(TORCH_MODEL)
 
-        mock_logger.debug.assert_called_once_with("loading tensor with Torch: %s", name)
-        mock_logger.exception.assert_called_once_with(
-            "error loading with Torch, trying with Torch JIT: %s", name
+        mock_logger.debug.assert_called_once_with(
+            "loading tensor with Torch: %s", TORCH_MODEL
         )
-        mock_torch.jit.load.assert_called_once_with(name)
+        mock_logger.exception.assert_called_once_with(
+            "error loading with Torch, trying with Torch JIT: %s", TORCH_MODEL
+        )
+        mock_torch.jit.load.assert_called_once_with(TORCH_MODEL)
         self.assertEqual(result, checkpoint)
 
 
@@ -358,20 +364,21 @@ class LoadTensorTests(unittest.TestCase):
     @patch("onnx_web.convert.utils.logger")
     @patch("onnx_web.convert.utils.torch")
     def test_load_tensor_with_onnx_extension(self, mock_torch, mock_logger):
-        name = "model.onnx"
         map_location = "cpu"
         checkpoint = MagicMock()
         mock_torch.load.side_effect = [checkpoint]
 
-        result = load_tensor(name, map_location)
+        result = load_tensor(ONNX_MODEL, map_location)
 
-        mock_logger.debug.assert_has_calls([mock.call("loading tensor: %s", name)])
+        mock_logger.debug.assert_has_calls(
+            [mock.call("loading tensor: %s", ONNX_MODEL)]
+        )
         mock_logger.warning.assert_called_once_with(
             "tensor has ONNX extension, attempting to use PyTorch anyways: %s", "onnx"
         )
         mock_torch.load.assert_has_calls(
             [
-                mock.call(name, map_location=map_location),
+                mock.call(ONNX_MODEL, map_location=map_location),
             ]
         )
         self.assertEqual(result, checkpoint)
@@ -429,16 +436,15 @@ class FixDiffusionNameTests(unittest.TestCase):
 
 class BuildCachePathsTests(unittest.TestCase):
     def test_build_cache_paths_without_format(self):
-        name = "model.onnx"
         client = "client1"
         cache = "/path/to/cache"
 
         conversion = ConversionContext(cache_path=cache)
-        result = build_cache_paths(conversion, name, client, cache)
+        result = build_cache_paths(conversion, ONNX_MODEL, client, cache)
 
         expected_paths = [
-            path.join("/path/to/cache", "model.onnx"),
-            path.join("/path/to/cache/client1", "model.onnx"),
+            path.join("/path/to/cache", ONNX_MODEL),
+            path.join("/path/to/cache/client1", ONNX_MODEL),
         ]
         self.assertEqual(result, expected_paths)
 
@@ -452,23 +458,22 @@ class BuildCachePathsTests(unittest.TestCase):
         result = build_cache_paths(conversion, name, client, cache, format)
 
         expected_paths = [
-            path.join("/path/to/cache", "model.onnx"),
-            path.join("/path/to/cache/client2", "model.onnx"),
+            path.join("/path/to/cache", ONNX_MODEL),
+            path.join("/path/to/cache/client2", ONNX_MODEL),
         ]
         self.assertEqual(result, expected_paths)
 
     def test_build_cache_paths_with_existing_extension(self):
-        name = "model.pth"
         client = "client3"
         cache = "/path/to/cache"
         format = "onnx"
 
         conversion = ConversionContext(cache_path=cache)
-        result = build_cache_paths(conversion, name, client, cache, format)
+        result = build_cache_paths(conversion, TORCH_MODEL, client, cache, format)
 
         expected_paths = [
-            path.join("/path/to/cache", "model.pth"),
-            path.join("/path/to/cache/client3", "model.pth"),
+            path.join("/path/to/cache", TORCH_MODEL),
+            path.join("/path/to/cache/client3", TORCH_MODEL),
         ]
         self.assertEqual(result, expected_paths)
 
@@ -482,8 +487,8 @@ class BuildCachePathsTests(unittest.TestCase):
         result = build_cache_paths(conversion, name, client, cache, format)
 
         expected_paths = [
-            path.join("/path/to/cache", "model.onnx"),
-            path.join("/path/to/cache/client4", "model.onnx"),
+            path.join("/path/to/cache", ONNX_MODEL),
+            path.join("/path/to/cache/client4", ONNX_MODEL),
         ]
         self.assertEqual(result, expected_paths)
 
