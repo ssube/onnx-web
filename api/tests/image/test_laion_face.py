@@ -6,7 +6,7 @@ from onnx_web.image.laion_face import draw_pupils, generate_annotation, reverse_
 
 
 class TestLaionFace(unittest.TestCase):
-    @unittest.skip
+    @unittest.skip("need to prepare a good input image")
     def test_draw_pupils(self):
         # Create a dummy image
         image = np.zeros((100, 100, 3), dtype=np.uint8)
@@ -34,7 +34,7 @@ class TestLaionFace(unittest.TestCase):
 
         self.assertNotEqual(np.sum(image), 0, "Image should be modified")
 
-    @unittest.skip
+    @unittest.skip("need to prepare a good input image")
     def test_generate_annotation(self):
         # Create a dummy image
         image = np.zeros((100, 100, 3), dtype=np.uint8)

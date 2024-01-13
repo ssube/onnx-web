@@ -161,7 +161,6 @@ def image_reply(
 
 
 def multi_image_reply(results: Dict[str, Any]):
-    # TODO: not that
     return jsonify(
         {
             "results": results,
@@ -654,7 +653,7 @@ def job_cancel(server: ServerContext, pool: DevicePoolExecutor):
     if len(job_list) == 0:
         return error_reply("at least one job name is required")
 
-    results = []
+    results: List[Dict[str, str]] = []
     for job_name in job_list:
         job_name = sanitize_name(job_name)
         cancelled = pool.cancel(job_name)

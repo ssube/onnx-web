@@ -217,22 +217,29 @@ class ImageMetadata:
 
         if self.inversions is not None:
             for name, weight in self.inversions:
-                hash = self.get_network_hash(server, name, "inversion")[1]
+                model_hash = self.get_network_hash(server, name, "inversion")[1]
                 json["inversions"].append(
-                    {"name": name, "weight": weight, "hash": hash}
+                    {"name": name, "weight": weight, "hash": model_hash}
                 )
 
         if self.loras is not None:
             for name, weight in self.loras:
-                hash = self.get_network_hash(server, name, "lora")[1]
-                json["loras"].append({"name": name, "weight": weight, "hash": hash})
+                model_hash = self.get_network_hash(server, name, "lora")[1]
+                json["loras"].append(
+                    {"name": name, "weight": weight, "hash": model_hash}
+                )
 
         if self.models is not None:
             for name, weight in self.models:
-                name, hash = self.get_model_hash(server)
-                json["models"].append({"name": name, "weight": weight, "hash": hash})
+                name, model_hash = self.get_model_hash(server)
+                json["models"].append(
+                    {"name": name, "weight": weight, "hash": model_hash}
+                )
 
         return json
+
+
+ERROR_NO_METADATA = "metadata must be provided"
 
 
 class StageResult:
@@ -318,7 +325,7 @@ class StageResult:
         if metadata is not None:
             self.metadata.append(metadata)
         else:
-            raise ValueError("metadata must be provided")
+            raise ValueError(ERROR_NO_METADATA)
 
     def push_image(self, image: Image.Image, metadata: ImageMetadata):
         if self.images is not None:
@@ -331,7 +338,7 @@ class StageResult:
         if metadata is not None:
             self.metadata.append(metadata)
         else:
-            raise ValueError("metadata must be provided")
+            raise ValueError(ERROR_NO_METADATA)
 
     def insert_array(self, index: int, array: np.ndarray, metadata: ImageMetadata):
         if self.arrays is not None:
@@ -346,7 +353,7 @@ class StageResult:
         if metadata is not None:
             self.metadata.insert(index, metadata)
         else:
-            raise ValueError("metadata must be provided")
+            raise ValueError(ERROR_NO_METADATA)
 
     def insert_image(self, index: int, image: Image.Image, metadata: ImageMetadata):
         if self.images is not None:
@@ -359,7 +366,7 @@ class StageResult:
         if metadata is not None:
             self.metadata.insert(index, metadata)
         else:
-            raise ValueError("metadata must be provided")
+            raise ValueError(ERROR_NO_METADATA)
 
     def size(self) -> Size:
         if self.images is not None:

@@ -452,10 +452,10 @@ class BuildCachePathsTests(unittest.TestCase):
         name = "model"
         client = "client2"
         cache = "/path/to/cache"
-        format = "onnx"
+        model_format = "onnx"
 
         conversion = ConversionContext(cache_path=cache)
-        result = build_cache_paths(conversion, name, client, cache, format)
+        result = build_cache_paths(conversion, name, client, cache, model_format)
 
         expected_paths = [
             path.join("/path/to/cache", ONNX_MODEL),
@@ -466,10 +466,10 @@ class BuildCachePathsTests(unittest.TestCase):
     def test_build_cache_paths_with_existing_extension(self):
         client = "client3"
         cache = "/path/to/cache"
-        format = "onnx"
+        model_format = "onnx"
 
         conversion = ConversionContext(cache_path=cache)
-        result = build_cache_paths(conversion, TORCH_MODEL, client, cache, format)
+        result = build_cache_paths(conversion, TORCH_MODEL, client, cache, model_format)
 
         expected_paths = [
             path.join("/path/to/cache", TORCH_MODEL),
@@ -481,10 +481,10 @@ class BuildCachePathsTests(unittest.TestCase):
         name = "model"
         client = "client4"
         cache = "/path/to/cache"
-        format = "onnx"
+        model_format = "onnx"
 
         conversion = ConversionContext(cache_path=cache)
-        result = build_cache_paths(conversion, name, client, cache, format)
+        result = build_cache_paths(conversion, name, client, cache, model_format)
 
         expected_paths = [
             path.join("/path/to/cache", ONNX_MODEL),
