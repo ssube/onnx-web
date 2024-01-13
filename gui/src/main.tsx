@@ -18,7 +18,7 @@ import { ServerParamsError } from './components/error/ServerParams.js';
 import { LoadingScreen } from './components/LoadingScreen.js';
 import { OnnxError } from './components/OnnxError.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
-import { Config, getApiRoot, isDebug, loadConfig, mergeConfig, PARAM_VERSION, ServerParams } from './config.js';
+import { Config, getApiRoot, isDebug, loadConfig, mergeConfig, ServerParams } from './config.js';
 import {
   ClientContext,
   ConfigContext,
@@ -31,8 +31,7 @@ import {
 } from './state/full.js';
 import { I18N_STRINGS } from './strings/all.js';
 import { applyStateMigrations, UnknownState } from './state/migration/default.js';
-
-export const INITIAL_LOAD_TIMEOUT = 5_000;
+import { INITIAL_LOAD_TIMEOUT, PARAM_VERSION } from './constants.js';
 
 export async function renderApp(config: Config, params: ServerParams, logger: Logger, client: ApiClient) {
   const completeConfig = mergeConfig(config, params);

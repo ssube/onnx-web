@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { STALE_TIME } from '../../config.js';
+import { STALE_TIME, STANDARD_SPACING } from '../../constants.js';
 import { ClientContext, OnnxState, StateContext } from '../../state/full.js';
 import {
   CorrectionModel,
@@ -111,13 +111,13 @@ export function Models() {
   }, [result.status]);
 
   if (result.status === 'error') {
-    return <Stack spacing={2} direction='row' sx={{ alignItems: 'center' }}>
+    return <Stack spacing={STANDARD_SPACING} direction='row' sx={{ alignItems: 'center' }}>
       <Alert severity='error'>Error</Alert>
     </Stack>;
   }
 
   if (result.status === 'loading') {
-    return <Stack spacing={2} direction='row' sx={{ alignItems: 'center' }}>
+    return <Stack spacing={STANDARD_SPACING} direction='row' sx={{ alignItems: 'center' }}>
       <CircularProgress />
     </Stack>;
   }
@@ -127,7 +127,7 @@ export function Models() {
     // TODO: do something with resp
   }
 
-  return <Stack spacing={2}>
+  return <Stack spacing={STANDARD_SPACING}>
     <Accordion>
       <AccordionSummary>
         {t('modelType.diffusion', { count: 10 })}

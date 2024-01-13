@@ -7,9 +7,10 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { IMAGE_FILTER } from '../../config.js';
+import { IMAGE_FILTER, STANDARD_SPACING } from '../../constants.js';
 import { ClientContext, OnnxState, StateContext } from '../../state/full.js';
 import { TabState } from '../../state/types.js';
+import { JobType } from '../../types/api-v2.js';
 import { HighresParams, ModelParams, UpscaleParams, UpscaleReqParams } from '../../types/params.js';
 import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';
@@ -17,7 +18,6 @@ import { ModelControl } from '../control/ModelControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { PromptInput } from '../input/PromptInput.js';
-import { JobType } from '../../types/api-v2.js';
 
 export function Upscale() {
   async function uploadSource() {
@@ -43,7 +43,7 @@ export function Upscale() {
   const { t } = useTranslation();
 
   return <Box>
-    <Stack spacing={2}>
+    <Stack spacing={STANDARD_SPACING}>
       <Profiles
         selectHighres={selectHighres}
         selectModel={selectModel}

@@ -8,8 +8,10 @@ import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
 import { PipelineGrid, makeTxt2ImgGridPipeline } from '../../client/utils.js';
+import { STANDARD_SPACING } from '../../constants.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { TabState } from '../../state/types.js';
+import { JobType } from '../../types/api-v2.js';
 import { HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../../types/params.js';
 import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';
@@ -18,7 +20,6 @@ import { ModelControl } from '../control/ModelControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { VariableControl } from '../control/VariableControl.js';
 import { NumericField } from '../input/NumericField.js';
-import { JobType } from '../../types/api-v2.js';
 
 export function SizeControl() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -88,7 +89,7 @@ export function Txt2Img() {
   const { t } = useTranslation();
 
   return <Box>
-    <Stack spacing={2}>
+    <Stack spacing={STANDARD_SPACING}>
       <Profiles
         selectHighres={selectHighres}
         selectModel={selectModel}

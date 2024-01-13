@@ -5,11 +5,11 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { STALE_TIME } from '../../config.js';
+import { STALE_TIME, STANDARD_SPACING } from '../../constants.js';
 import { ClientContext } from '../../state/full.js';
+import { JobType } from '../../types/api-v2.js';
 import { ModelParams } from '../../types/params.js';
 import { QueryList } from '../input/QueryList.js';
-import { JobType } from '../../types/api-v2.js';
 
 export interface ModelControlProps {
   model: ModelParams;
@@ -35,7 +35,7 @@ export function ModelControl(props: ModelControlProps) {
     staleTime: STALE_TIME,
   });
 
-  return <Stack direction='row' spacing={2}>
+  return <Stack direction='row' spacing={STANDARD_SPACING}>
     <QueryList
       id='platforms'
       labelKey='platform'

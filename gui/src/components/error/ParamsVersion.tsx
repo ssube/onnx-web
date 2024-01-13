@@ -1,7 +1,7 @@
 import { Alert, AlertTitle, Typography } from '@mui/material';
 import * as React from 'react';
 
-import { PARAM_VERSION } from '../../config.js';
+import { PARAM_VERSION } from '../../constants';
 
 export interface ParamsVersionErrorProps {
   root: string;

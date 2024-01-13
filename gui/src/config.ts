@@ -1,7 +1,6 @@
 import { doesExist, Maybe } from '@apextoaster/js-utils';
 import { merge } from 'lodash';
 
-import { STATUS_SUCCESS } from './client/api.js';
 import {
   HighresParams,
   Img2ImgParams,
@@ -11,6 +10,7 @@ import {
   Txt2ImgParams,
   UpscaleParams,
 } from './types/params.js';
+import { STATUS_SUCCESS } from './constants.js';
 
 export interface ConfigBoolean {
   default: boolean;
@@ -92,13 +92,6 @@ export interface Config<T = ClientParams> {
   };
   params: T;
 }
-
-export const IMAGE_FILTER = '.bmp, .jpg, .jpeg, .png';
-export const PARAM_VERSION = '>=0.10.0';
-
-export const STALE_TIME = 300_000; // 5 minutes
-export const POLL_TIME = 5_000; // 5 seconds
-export const SAVE_TIME = 5_000; // 5 seconds
 
 export async function loadConfig(): Promise<Config> {
   const configPath = new URL('./config.json', window.location.href);

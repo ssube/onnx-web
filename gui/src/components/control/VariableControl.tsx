@@ -7,6 +7,7 @@ import { useStore } from 'zustand';
 import { PipelineGrid } from '../../client/utils.js';
 import { OnnxState, StateContext } from '../../state/full.js';
 import { VARIABLE_PARAMETERS } from '../../types/chain.js';
+import { STANDARD_SPACING } from '../../constants.js';
 
 export interface VariableControlProps {
   selectGrid: (state: OnnxState) => PipelineGrid;
@@ -20,7 +21,7 @@ export function VariableControl(props: VariableControlProps) {
   const grid = useStore(store, props.selectGrid);
 
   const stack = [
-    <Stack direction='row' spacing={2} key='variable-enable'>
+    <Stack direction='row' spacing={STANDARD_SPACING} key='variable-enable'>
       <FormControl>
         <FormControlLabel
           label='Grid Mode'
@@ -37,7 +38,7 @@ export function VariableControl(props: VariableControlProps) {
 
   if (grid.enabled) {
     stack.push(
-      <Stack direction='row' spacing={2} key='variable-row'>
+      <Stack direction='row' spacing={STANDARD_SPACING} key='variable-row'>
         <FormControl>
           <InputLabel id='TODO'>Columns</InputLabel>
           <Select onChange={(event) => props.setGrid({
@@ -56,7 +57,7 @@ export function VariableControl(props: VariableControlProps) {
           },
         })} />
       </Stack>,
-      <Stack direction='row' spacing={2} key='variable-column'>
+      <Stack direction='row' spacing={STANDARD_SPACING} key='variable-column'>
         <FormControl>
           <InputLabel id='TODO'>Rows</InputLabel>
           <Select onChange={(event) => props.setGrid({
@@ -78,7 +79,7 @@ export function VariableControl(props: VariableControlProps) {
     );
   }
 
-  return <Stack direction='column' spacing={2}>{...stack}</Stack>;
+  return <Stack direction='column' spacing={STANDARD_SPACING}>{...stack}</Stack>;
 }
 
 export function parameterList(exclude?: Array<string>) {

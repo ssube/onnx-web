@@ -1,14 +1,8 @@
 import { Maybe } from '@apextoaster/js-utils';
-import { ImageResponse, ReadyResponse, RetryParams } from '../types/api.js';
+import { RetryParams } from '../types/api.js';
 import { Slice } from './types.js';
 import { DEFAULT_HISTORY } from '../constants.js';
 import { JobResponse } from '../types/api-v2.js';
-
-export interface HistoryItem {
-  image: ImageResponse;
-  ready: Maybe<ReadyResponse>;
-  retry: Maybe<RetryParams>;
-}
 
 export interface HistoryItemV2 {
   image: JobResponse;

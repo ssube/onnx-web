@@ -7,9 +7,10 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
+import { IMAGE_FILTER, STALE_TIME, STANDARD_SPACING } from '../../constants.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { TabState } from '../../state/types.js';
+import { JobType } from '../../types/api-v2.js';
 import { HighresParams, Img2ImgParams, ModelParams, UpscaleParams } from '../../types/params.js';
 import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';
@@ -19,7 +20,6 @@ import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
-import { JobType } from '../../types/api-v2.js';
 
 export function Img2Img() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -57,7 +57,7 @@ export function Img2Img() {
   const { t } = useTranslation();
 
   return <Box>
-    <Stack spacing={2}>
+    <Stack spacing={STANDARD_SPACING}>
       <Profiles
         selectHighres={selectHighres}
         selectModel={selectModel}
@@ -80,7 +80,7 @@ export function Img2Img() {
         }}
       />
       <ImageControl selector={selectParams} onChange={setImg2Img} />
-      <Stack direction='row' spacing={2}>
+      <Stack direction='row' spacing={STANDARD_SPACING}>
         <QueryList
           id='control'
           labelKey='model.control'

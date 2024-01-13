@@ -21,11 +21,14 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
+import { STANDARD_SPACING } from '../constants.js';
 import { OnnxState, StateContext } from '../state/full.js';
-import { ImageMetadata } from '../types/api.js';
+import { AnyImageMetadata } from '../types/api-v2.js';
 import { DeepPartial } from '../types/model.js';
 import { BaseImgParams, HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../types/params.js';
 import { downloadAsJson } from '../utils.js';
+
+export type PartialImageMetadata = DeepPartial<AnyImageMetadata>;
 
 export const ALLOWED_EXTENSIONS = ['.json','.jpg','.jpeg','.png','.txt','.webp'];
 export const EXTENSION_FILTER = ALLOWED_EXTENSIONS.join(',');
@@ -51,7 +54,7 @@ export function Profiles(props: ProfilesProps) {
   const [profileName, setProfileName] = useState('');
   const { t } = useTranslation();
 
-  return <Stack direction='row' spacing={2}>
+  return <Stack direction='row' spacing={STANDARD_SPACING}>
     <Autocomplete
       id='profile-select'
       options={profiles}
@@ -193,7 +196,7 @@ export function selectProfiles(state: OnnxState) {
   return state.profiles;
 }
 
-export async function loadParamsFromFile(file: File): Promise<DeepPartial<ImageMetadata>> {
+export async function loadParamsFromFile(file: File): Promise<PartialImageMetadata> {
   const parts = file.name.toLocaleLowerCase().split('.');
   const ext = parts[parts.length - 1];
 
@@ -211,7 +214,7 @@ export async function loadParamsFromFile(file: File): Promise<DeepPartial<ImageM
   }
 }
 
-export async function parseImageParams(file: File): Promise<DeepPartial<ImageMetadata>> {
+export async function parseImageParams(file: File): Promise<PartialImageMetadata> {
   const tags = await ExifReader.load(file);
 
   // some parsers expect uppercase, some use lowercase, read both
@@ -251,8 +254,8 @@ export function decodeTag(tag: Maybe<ExifReader.XmpTag | (ExifReader.NumberTag &
   throw new InvalidArgumentError('tag value cannot be decoded');
 }
 
-export async function parseJSONParams(json: string): Promise<DeepPartial<ImageMetadata>> {
-  const data = JSON.parse(json) as DeepPartial<ImageMetadata>;
+export async function parseJSONParams(json: string): Promise<PartialImageMetadata> {
+  const data = JSON.parse(json) as PartialImageMetadata;
   const params: Partial<Txt2ImgParams> = {
     ...data.params,
   };
@@ -276,7 +279,7 @@ export function isProbablyJSON(maybeJSON: unknown): boolean {
 
 export const NEGATIVE_PROMPT_TAG = 'Negative prompt:';
 
-export async function parseAutoComment(comment: string): Promise<DeepPartial<ImageMetadata>> {
+export async function parseAutoComment(comment: string): Promise<PartialImageMetadata> {
   if (isProbablyJSON(comment)) {
     return parseJSONParams(comment);
   }

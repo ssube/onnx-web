@@ -11,6 +11,7 @@ import { shallow } from 'zustand/shallow';
 
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { FailedJobResponse, JobStatus, RetryParams, UnknownJobResponse } from '../../types/api-v2.js';
+import { STANDARD_SPACING } from '../../constants.js';
 
 export interface ErrorCardProps {
   image: FailedJobResponse | UnknownJobResponse;
@@ -48,7 +49,7 @@ export function ErrorCard(props: ErrorCardProps) {
       }}>
         <Stack
           direction='column'
-          spacing={2}
+          spacing={STANDARD_SPACING}
           sx={{ alignItems: 'center' }}
         >
           <Alert severity='error'>
@@ -56,7 +57,7 @@ export function ErrorCard(props: ErrorCardProps) {
             <br />
             {t(getImageErrorReason(image))}
           </Alert>
-          <Stack direction='row' spacing={2}>
+          <Stack direction='row' spacing={STANDARD_SPACING}>
             <Tooltip title={t('tooltip.retry')}>
               <IconButton onClick={() => retry.mutate()}>
                 <Replay />

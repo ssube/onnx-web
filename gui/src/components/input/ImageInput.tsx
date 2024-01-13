@@ -4,6 +4,8 @@ import { Button, Stack, Typography } from '@mui/material';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { STANDARD_SPACING } from '../../constants';
+
 export interface ImageInputProps {
   filter: string;
   image?: Maybe<Blob>;
@@ -35,7 +37,7 @@ export function ImageInput(props: ImageInputProps) {
     }
   }
 
-  return <Stack direction='row' spacing={2}>
+  return <Stack direction='row' spacing={STANDARD_SPACING}>
     <Stack>
       <Button component='label' startIcon={<PhotoCamera />} variant='outlined'>
         {props.label}

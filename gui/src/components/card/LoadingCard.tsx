@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { POLL_TIME } from '../../config.js';
+import { POLL_TIME, STANDARD_SPACING } from '../../constants.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { JobResponse, JobStatus } from '../../types/api-v2.js';
 import { visibleIndex } from '../../utils.js';
@@ -71,7 +71,7 @@ export function LoadingCard(props: LoadingCardProps) {
       }}>
         <Stack
           direction='column'
-          spacing={2}
+          spacing={STANDARD_SPACING}
           sx={{ alignItems: 'center' }}
         >
           {renderProgress()}

@@ -5,7 +5,7 @@ import { throttle } from 'lodash';
 import React, { RefObject, useContext, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { SAVE_TIME } from '../../config.js';
+import { SAVE_TIME, STANDARD_SPACING } from '../../constants.js';
 import { ConfigContext, LoggerContext, StateContext } from '../../state/full.js';
 import { BrushParams } from '../../types/params.js';
 import { imageFromBlob } from '../../utils.js';
@@ -255,8 +255,8 @@ export function MaskCanvas(props: MaskCanvasProps) {
     display: 'none',
   };
 
-  return <Stack spacing={2}>
-    <Stack direction='row' spacing={2}>
+  return <Stack spacing={STANDARD_SPACING}>
+    <Stack direction='row' spacing={STANDARD_SPACING}>
       <Button
         variant='outlined'
         startIcon={<Download />}
@@ -348,7 +348,7 @@ export function MaskCanvas(props: MaskCanvasProps) {
           }}
         />
       </Stack>
-      <Stack direction='row' spacing={2}>
+      <Stack direction='row' spacing={STANDARD_SPACING}>
         <Button
           variant='outlined'
           startIcon={<FormatColorFill />}

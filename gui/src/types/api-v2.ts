@@ -34,6 +34,13 @@ export interface ImageMetadata<TParams extends BaseImgParams, TType extends JobT
   type: TType;
 }
 
+export type AnyImageMetadata
+  = ImageMetadata<Txt2ImgParams, JobType.TXT2IMG>
+  | ImageMetadata<Img2ImgParams, JobType.IMG2IMG>
+  | ImageMetadata<InpaintParams, JobType.INPAINT>
+  | ImageMetadata<BaseImgParams, JobType.UPSCALE>
+  | ImageMetadata<BaseImgParams, JobType.BLEND>;
+
 export enum JobStatus {
   PENDING = 'pending',
   RUNNING = 'running',
@@ -143,13 +150,7 @@ export interface SuccessBlendJobResponse extends BaseJobResponse {
 export interface SuccessChainJobResponse extends BaseJobResponse {
   status: JobStatus.SUCCESS;
   outputs: Array<string>;
-  metadata: Array<
-  ImageMetadata<Txt2ImgParams, JobType.TXT2IMG>
-  | ImageMetadata<Img2ImgParams, JobType.IMG2IMG>
-  | ImageMetadata<InpaintParams, JobType.INPAINT>
-  | ImageMetadata<BaseImgParams, JobType.UPSCALE>
-  | ImageMetadata<BaseImgParams, JobType.BLEND>
-  >;
+  metadata: Array<AnyImageMetadata>;
 }
 
 /**

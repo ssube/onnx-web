@@ -2,6 +2,8 @@
 import { doesExist, InvalidArgumentError, Maybe } from '@apextoaster/js-utils';
 
 import { ServerParams } from '../config.js';
+import { FIXED_FLOAT, FIXED_INTEGER, STATUS_SUCCESS } from '../constants.js';
+import { JobResponse, JobResponseWithRetry, SuccessJobResponse } from '../types/api-v2.js';
 import {
   FilterResponse,
   ModelResponse,
@@ -24,22 +26,6 @@ import {
 } from '../types/params.js';
 import { range } from '../utils.js';
 import { ApiClient } from './base.js';
-import { JobResponse, JobResponseWithRetry, SuccessJobResponse } from '../types/api-v2.js';
-
-/**
- * Fixed precision for integer parameters.
- */
-export const FIXED_INTEGER = 0;
-
-/**
- * Fixed precision for float parameters.
- *
- * The GUI limits the input steps based on the server parameters, but this does limit
- * the maximum precision that can be sent back to the server, and may have to be
- * increased in the future.
- */
-export const FIXED_FLOAT = 2;
-export const STATUS_SUCCESS = 200;
 
 export function equalResponse(a: JobResponse, b: JobResponse): boolean {
   return a.name === b.name;

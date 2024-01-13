@@ -10,7 +10,7 @@ import { shallow } from 'zustand/shallow';
 
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { range, visibleIndex } from '../../utils.js';
-import { BLEND_SOURCES } from '../../constants.js';
+import { BLEND_SOURCES, STANDARD_SPACING } from '../../constants.js';
 import { JobResponse, SuccessJobResponse } from '../../types/api-v2.js';
 
 export interface ImageCardProps {
@@ -120,7 +120,7 @@ export function ImageCard(props: ImageCardProps) {
     />
     <CardContent>
       <Box textAlign='center'>
-        <Grid container spacing={2}>
+        <Grid container spacing={STANDARD_SPACING}>
           <GridItem xs={4}>
             <Tooltip title={t('tooltip.previous')}>
               <IconButton onClick={() => {

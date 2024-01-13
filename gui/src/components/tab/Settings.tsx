@@ -11,6 +11,7 @@ import { ConfigContext, StateContext, STATE_KEY } from '../../state/full.js';
 import { getTheme } from '../utils.js';
 import { NumericField } from '../input/NumericField.js';
 import { downloadAsJson } from '../../utils.js';
+import { STANDARD_SPACING } from '../../constants.js';
 
 function removeBlobs(key: string, value: unknown): unknown {
   if (value instanceof Blob || value instanceof File) {
@@ -39,7 +40,7 @@ export function Settings() {
   const [root, setRoot] = useState(getApiRoot(config));
   const { t } = useTranslation();
 
-  return <Stack spacing={2}>
+  return <Stack spacing={STANDARD_SPACING}>
     <NumericField
       label={t('setting.history.limit')}
       min={2}
@@ -67,7 +68,7 @@ export function Settings() {
         scheduler: event.target.value,
       });
     }} />
-    <Stack direction='row' spacing={2}>
+    <Stack direction='row' spacing={STANDARD_SPACING}>
       <TextField variant='outlined' label={t('setting.server')} value={root} onChange={(event) => {
         setRoot(event.target.value);
       }} />
@@ -82,7 +83,7 @@ export function Settings() {
         {config.params.version}
       </Alert>
     </Stack>
-    <Stack direction='row' spacing={2}>
+    <Stack direction='row' spacing={STANDARD_SPACING}>
       <TextField variant='outlined' label={t('setting.state.label')} value={json} onChange={(event) => {
         setJson(event.target.value);
       }} />
@@ -109,7 +110,7 @@ export function Settings() {
         }}
       />
     } label={t('setting.darkMode')} />
-    <Stack direction='row' spacing={2}>
+    <Stack direction='row' spacing={STANDARD_SPACING}>
       <Button onClick={() => state.resetTxt2Img()} color='warning'>{t('setting.reset.txt2img')}</Button>
       <Button onClick={() => state.resetImg2Img()} color='warning'>{t('setting.reset.img2img')}</Button>
       <Button onClick={() => state.resetInpaint()} color='warning'>{t('setting.reset.inpaint')}</Button>

@@ -1,16 +1,17 @@
 import { mustExist } from '@apextoaster/js-utils';
 import { Grid, Typography } from '@mui/material';
-import { ReactNode, useContext } from 'react';
 import * as React from 'react';
+import { ReactNode, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
+import { STANDARD_SPACING } from '../constants.js';
 import { OnnxState, StateContext } from '../state/full.js';
+import { JobStatus } from '../types/api-v2.js';
 import { ErrorCard } from './card/ErrorCard.js';
 import { ImageCard } from './card/ImageCard.js';
 import { LoadingCard } from './card/LoadingCard.js';
-import { JobStatus } from '../types/api-v2.js';
 
 export interface ImageHistoryProps {
   width: number;
@@ -50,7 +51,7 @@ export function ImageHistory(props: ImageHistoryProps) {
 
   return <Grid
     container
-    spacing={2}
+    spacing={STANDARD_SPACING}
   >{
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
       children.map(([key, child]) => <Grid item key={key} xs={12 / width}>{child}</Grid>)

@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { mustExist } from '@apextoaster/js-utils';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Container, CssBaseline, Divider, Stack, Tab, useMediaQuery } from '@mui/material';
-import { Breakpoint, SxProps, Theme, ThemeProvider, createTheme } from '@mui/material/styles';
+import { SxProps, Theme, ThemeProvider, createTheme } from '@mui/material/styles';
 import { Allotment } from 'allotment';
 import * as React from 'react';
 import { useContext, useMemo } from 'react';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
-import { shallow } from 'zustand/shallow';
 
+import { LAYOUT_MIN, LAYOUT_PROPORTIONS, LAYOUT_STYLES, STANDARD_MARGIN, STANDARD_SPACING } from '../constants.js';
 import { Motd } from '../Motd.js';
 import { OnnxState, StateContext } from '../state/full.js';
 import { Layout } from '../state/settings.js';
@@ -36,7 +35,10 @@ export function OnnxWeb(props: OnnxWebProps) {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const store = mustExist(useContext(StateContext));
   const stateTheme = useStore(store, selectTheme);
-  const layout = useStore(store, selectLayout, shallow);
+  const historyWidth = useStore(store, selectHistoryWidth);
+  const direction = useStore(store, selectDirection);
+
+  const layout = LAYOUT_STYLES[direction];
 
   const theme = useMemo(
     () => createTheme({
@@ -47,17 +49,17 @@ export function OnnxWeb(props: OnnxWebProps) {
     [prefersDarkMode, stateTheme],
   );
 
-  const historyStyle: SxProps<Theme> = LAYOUT_STYLES[layout.direction].history.style;
+  const historyStyle: SxProps<Theme> = layout.history.style;
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container maxWidth={LAYOUT_STYLES[layout.direction].container}>
-        <Box sx={{ my: 4 }}>
+      <Container maxWidth={layout.container}>
+        <Box sx={{ my: STANDARD_MARGIN }}>
           <Logo />
         </Box>
         {props.motd && <Motd />}
-        {renderBody(layout, historyStyle)}
+        {renderBody(direction, historyStyle, historyWidth)}
       </Container>
     </ThemeProvider>
   );
@@ -67,52 +69,19 @@ export function selectTheme(state: OnnxState) {
   return state.theme;
 }
 
-export function selectLayout(state: OnnxState) {
-  return {
-    direction: state.layout,
-    width: state.historyWidth,
-  };
+export function selectDirection(state: OnnxState) {
+  return state.layout;
 }
 
-export const LAYOUT_STYLES = {
-  horizontal: {
-    container: false,
-    control: {
-      width: '30%',
-    },
-    direction: 'row',
-    divider: 'vertical',
-    history: {
-      style: {
-        marginLeft: 4,
-        maxHeight: '85vb',
-        overflowY: 'auto',
-      },
-      width: 4,
-    },
-  },
-  vertical: {
-    container: 'lg' as Breakpoint,
-    control: {
-      width: undefined,
-    },
-    direction: 'column',
-    divider: 'horizontal',
-    history: {
-      style: {
-        mx: 4,
-        my: 4,
-      },
-      width: 2,
-    },
-  },
-} as const;
+export function selectHistoryWidth(state: OnnxState) {
+  return state.historyWidth;
+}
 
-function renderBody(layout: ReturnType<typeof selectLayout>, historyStyle: SxProps<Theme>) {
-  if (layout.direction === 'vertical') {
-    return <VerticalBody {...layout} style={historyStyle} />;
+function renderBody(direction: Layout, historyStyle: SxProps<Theme>, historyWidth: number) {
+  if (direction === 'vertical') {
+    return <VerticalBody direction={direction} style={historyStyle} width={historyWidth} />;
   } else {
-    return <HorizontalBody {...layout} style={historyStyle} />;
+    return <HorizontalBody direction={direction} style={historyStyle} width={historyWidth} />;
   }
 }
 
@@ -126,9 +95,9 @@ export interface BodyProps {
 export function HorizontalBody(props: BodyProps) {
   const layout = LAYOUT_STYLES[props.direction];
 
-  return <Allotment separator className='body-allotment' minSize={300}>
+  return <Allotment separator className='body-allotment' minSize={LAYOUT_MIN} defaultSizes={LAYOUT_PROPORTIONS} snap>
     <TabGroup direction={props.direction} />
-    <Box sx={layout.history.style}>
+    <Box className='box-history' sx={layout.history.style}>
       <ImageHistory width={props.width} />
     </Box>
   </Allotment>;
@@ -137,10 +106,10 @@ export function HorizontalBody(props: BodyProps) {
 export function VerticalBody(props: BodyProps) {
   const layout = LAYOUT_STYLES[props.direction];
 
-  return <Stack direction={layout.direction} spacing={2}>
+  return <Stack direction={layout.direction} spacing={STANDARD_SPACING}>
     <TabGroup direction={props.direction} />
     <Divider flexItem variant='middle' orientation={layout.divider} />
-    <Box sx={layout.history.style}>
+    <Box className='box-history' sx={layout.history.style}>
       <ImageHistory width={props.width} />
     </Box>
   </Stack>;
@@ -155,7 +124,7 @@ export function TabGroup(props: TabGroupProps) {
 
   const [hash, setHash] = useHash();
 
-  return <Stack direction='column' minWidth={layout.control.width} sx={{ mx: 4 }}>
+  return <Stack direction='column' minWidth={layout.control.width} sx={{ mx: STANDARD_MARGIN }}>
     <TabContext value={getTab(hash)}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <TabList onChange={(_e, idx) => {

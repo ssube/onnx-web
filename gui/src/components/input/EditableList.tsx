@@ -5,6 +5,7 @@ import { memo, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 
+import { STANDARD_SPACING } from '../../constants.js';
 import { OnnxState, StateContext } from '../../state/full.js';
 
 export interface EditableListProps<T> {
@@ -30,7 +31,7 @@ export function EditableList<T>(props: EditableListProps<T>) {
   const [nextSource, setNextSource] = useState('');
   const RenderMemo = useMemo(() => memo(renderItem), [renderItem]);
 
-  return <Stack spacing={2}>
+  return <Stack spacing={STANDARD_SPACING}>
     {items.map((model, idx) =>
       <RenderMemo
         key={idx}
@@ -39,7 +40,7 @@ export function EditableList<T>(props: EditableListProps<T>) {
         onRemove={removeItem}
       />
     )}
-    <Stack direction='row' spacing={2}>
+    <Stack direction='row' spacing={STANDARD_SPACING}>
       <TextField
         label={t('extras.label')}
         variant='outlined'

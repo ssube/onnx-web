@@ -3,6 +3,8 @@ import { Slider, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { STANDARD_SPACING } from '../../constants';
+
 export function parseNumber(num: string, decimal = false): number {
   if (decimal) {
     return parseFloat(num);
@@ -29,7 +31,7 @@ export function NumericField(props: ImageControlProps) {
 
   const { t } = useTranslation();
 
-  return <Stack spacing={2}>
+  return <Stack spacing={STANDARD_SPACING}>
     <TextField
       error={error}
       label={label}

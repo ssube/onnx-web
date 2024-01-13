@@ -7,8 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { IMAGE_FILTER } from '../../config.js';
-import { BLEND_SOURCES } from '../../constants.js';
+import { BLEND_SOURCES, IMAGE_FILTER, STANDARD_SPACING } from '../../constants.js';
 import { ClientContext, OnnxState, StateContext } from '../../state/full.js';
 import { TabState } from '../../state/types.js';
 import { BlendParams, BrushParams, ModelParams, UpscaleParams } from '../../types/params.js';
@@ -44,7 +43,7 @@ export function Blend() {
   const sources = mustDefault(blend.sources, []);
 
   return <Box>
-    <Stack spacing={2}>
+    <Stack spacing={STANDARD_SPACING}>
       {range(BLEND_SOURCES).map((idx) =>
         <ImageInput
           key={`source-${idx.toFixed(0)}`}

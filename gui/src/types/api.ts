@@ -1,37 +1,14 @@
 import {
-  BaseImgParams,
-  ModelParams,
-  Txt2ImgParams,
-  UpscaleParams,
+  BlendParams,
   HighresParams,
   Img2ImgParams,
   InpaintParams,
+  ModelParams,
   OutpaintParams,
+  Txt2ImgParams,
+  UpscaleParams,
   UpscaleReqParams,
-  BlendParams,
-  ImageSize,
 } from './params.js';
-
-/**
- * Output image data within the response.
- *
- * @deprecated
- */
-export interface ImageOutput {
-  key: string;
-  url: string;
-}
-
-/**
- * General response for most image requests.
- *
- * @deprecated
- */
-export interface ImageResponse {
-  outputs: Array<ImageOutput>;
-  params: Required<BaseImgParams> & Required<ModelParams>;
-  size: ImageSize;
-}
 
 /**
  * Status response from the ready endpoint.
@@ -122,26 +99,3 @@ export type RetryParams = {
   params: BlendParams;
   upscale?: UpscaleParams;
 };
-
-/**
- * Status response from the image endpoint, with parameters to retry the job if it fails.
- *
- * @deprecated
- */
-export interface ImageResponseWithRetry {
-  image: ImageResponse;
-  retry: RetryParams;
-}
-
-/**
- * @deprecated
- */
-export interface ImageMetadata {
-  highres: HighresParams;
-  outputs: string | Array<string>;
-  params: Txt2ImgParams | Img2ImgParams | InpaintParams;
-  upscale: UpscaleParams;
-
-  input_size: ImageSize;
-  size: ImageSize;
-}

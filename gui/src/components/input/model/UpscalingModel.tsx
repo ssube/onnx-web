@@ -2,6 +2,7 @@ import { Button, MenuItem, Select, Stack, TextField } from '@mui/material';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { STANDARD_SPACING } from '../../../constants.js';
 import { ModelFormat, UpscalingArch, UpscalingModel } from '../../../types/model.js';
 import { NumericField } from '../NumericField.js';
 
@@ -17,7 +18,7 @@ export function UpscalingModelInput(props: UpscalingModelInputProps) {
   const { key, model, onChange, onRemove } = props;
   const { t } = useTranslation();
 
-  return <Stack direction='row' spacing={2} key={key}>
+  return <Stack direction='row' spacing={STANDARD_SPACING} key={key}>
     <TextField
       label={t('extras.label')}
       value={model.label}

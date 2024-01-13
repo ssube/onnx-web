@@ -2,6 +2,7 @@ import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import * as React from 'react';
 import { ReactNode } from 'react';
 
+import { STANDARD_MARGIN, STANDARD_SPACING } from '../constants.js';
 import { STATE_KEY } from '../state/full.js';
 import { Logo } from './Logo.js';
 
@@ -20,11 +21,11 @@ export function OnnxError(props: OnnxErrorProps) {
 
   return (
     <Container>
-      <Box sx={{ my: 4 }}>
+      <Box sx={{ my: STANDARD_MARGIN }}>
         <Logo />
       </Box>
-      <Box sx={{ my: 4 }}>
-        <Stack spacing={2}>
+      <Box sx={{ my: STANDARD_MARGIN }}>
+        <Stack spacing={STANDARD_SPACING}>
           {props.children}
           <Typography variant='body1'>
             This is a web UI for running ONNX models with GPU acceleration or in software, running locally or on a

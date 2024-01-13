@@ -7,9 +7,10 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { IMAGE_FILTER, STALE_TIME } from '../../config.js';
+import { IMAGE_FILTER, STALE_TIME, STANDARD_SPACING } from '../../constants.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { TabState } from '../../state/types.js';
+import { JobType } from '../../types/api-v2.js';
 import { BrushParams, HighresParams, InpaintParams, ModelParams, UpscaleParams } from '../../types/params.js';
 import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';
@@ -21,7 +22,6 @@ import { ImageInput } from '../input/ImageInput.js';
 import { MaskCanvas } from '../input/MaskCanvas.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
-import { JobType } from '../../types/api-v2.js';
 
 export function Inpaint() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -89,7 +89,7 @@ export function Inpaint() {
   }
 
   return <Box>
-    <Stack spacing={2}>
+    <Stack spacing={STANDARD_SPACING}>
       <Profiles
         selectHighres={selectHighres}
         selectModel={selectModel}
@@ -153,7 +153,7 @@ export function Inpaint() {
           });
         }}
       />
-      <Stack direction='row' spacing={2}>
+      <Stack direction='row' spacing={STANDARD_SPACING}>
         <QueryList
           id='masks'
           labelKey={'maskFilter'}
@@ -200,7 +200,7 @@ export function Inpaint() {
             }
           </Select>
         </FormControl>
-        <Stack direction='row' spacing={2}>
+        <Stack direction='row' spacing={STANDARD_SPACING}>
           <FormControlLabel
             label={t('parameter.fillColor')}
             sx={{ mx: 1 }}

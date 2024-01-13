@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { STALE_TIME } from '../../config.js';
+import { STALE_TIME, STANDARD_SPACING } from '../../constants.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { BaseImgParams } from '../../types/params.js';
 import { NumericField } from '../input/NumericField.js';
@@ -46,7 +46,7 @@ export function ImageControl(props: ImageControlProps) {
     staleTime: STALE_TIME,
   });
 
-  return <Stack spacing={2}>
+  return <Stack spacing={STANDARD_SPACING}>
     <Stack direction='row' spacing={4}>
       <QueryList
         id='schedulers'

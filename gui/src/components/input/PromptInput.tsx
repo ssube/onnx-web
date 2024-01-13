@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { STALE_TIME } from '../../config.js';
+import { STALE_TIME, STANDARD_SPACING } from '../../constants.js';
 import { ClientContext, OnnxState, StateContext } from '../../state/full.js';
 import { ModelResponse, NetworkModel } from '../../types/api.js';
 import { QueryMenu, QueryMenuComplete, QueryMenuFilter } from '../input/QueryMenu.js';
@@ -55,7 +55,7 @@ export function PromptTextBlock(props: PromptTextBlockProps) {
     return [];
   }, [models, prompt]);
 
-  return <Stack spacing={2}>
+  return <Stack spacing={STANDARD_SPACING}>
     <TextField
       label={t('parameter.prompt')}
       variant='outlined'
@@ -67,7 +67,7 @@ export function PromptTextBlock(props: PromptTextBlockProps) {
         });
       }}
     />
-    <Stack direction='row' spacing={2}>
+    <Stack direction='row' spacing={STANDARD_SPACING}>
       {tokens.map((token) => <Chip
         color={prompt.includes(token) ? 'primary' : 'default'}
         label={token}
@@ -139,13 +139,13 @@ export function PromptInput(props: PromptInputProps) {
     result: wildcards,
   }), [wildcards.status]);
 
-  return <Stack spacing={2}>
+  return <Stack spacing={STANDARD_SPACING}>
     <PromptTextBlock
       models={models.data}
       onChange={onChange}
       selector={selector}
     />
-    <Stack direction='row' spacing={2}>
+    <Stack direction='row' spacing={STANDARD_SPACING}>
       <ModelMenu
         id='inversion'
         labelKey='model.inversion'
