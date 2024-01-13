@@ -51,12 +51,15 @@ class Progress:
             "total": self.total,
         }
 
-    def complete(self) -> bool:
+    def is_complete(self) -> bool:
         return self.current >= self.total
 
-    def empty(self) -> bool:
+    def is_empty(self) -> bool:
         # TODO: what if total is also 0?
         return self.current == 0
+
+    def update(self, current: int) -> "Progress":
+        return Progress(current, self.total)
 
 
 class ProgressCommand:

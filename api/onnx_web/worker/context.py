@@ -140,13 +140,13 @@ class WorkerContext:
             raise CancelledException("job has been cancelled")
 
         # update current progress counters
-        self.steps.current = steps
+        self.steps = self.steps.update(steps)
 
         if stages is not None:
-            self.stages.current = stages
+            self.stages = self.stages.update(stages)
 
         if tiles is not None:
-            self.tiles.current = tiles
+            self.tiles = self.tiles.update(tiles)
 
         # TODO: result should really be part of context at this point
         result = None
@@ -174,19 +174,19 @@ class WorkerContext:
         if total > 0:
             self.steps = Progress(current, total)
         else:
-            self.steps.current = current
+            self.steps = self.steps.update(current)
 
     def set_stages(self, current: int, total: int = 0) -> None:
         if total > 0:
             self.stages = Progress(current, total)
         else:
-            self.stages.current = current
+            self.stages = self.stages.update(current)
 
     def set_tiles(self, current: int, total: int = 0) -> None:
         if total > 0:
             self.tiles = Progress(current, total)
         else:
-            self.tiles.current = current
+            self.tiles = self.tiles.update(current)
 
     def set_totals(self, steps: int, stages: int = 0, tiles: int = 0) -> None:
         self.steps.total = steps
