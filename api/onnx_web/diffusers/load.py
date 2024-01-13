@@ -231,6 +231,9 @@ def load_pipeline(
             )
         else:
             if params.is_control():
+                if "controlnet" not in components or components["controlnet"] is None:
+                    raise ValueError("ControlNet is required for control pipelines")
+
                 logger.debug(
                     "assembling SD pipeline for %s with ControlNet",
                     pipeline_class.__name__,
