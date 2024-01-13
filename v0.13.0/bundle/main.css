@@ -157,6 +157,10 @@
 
 /* out/src/components/main.css */
 .body-allotment {
-  height: 85vb;
+  height: 90vb;
+}
+.box-history {
+  max-height: 90vh;
+  overflow-y: auto;
 }
 /*# sourceMappingURL=main.css.map */

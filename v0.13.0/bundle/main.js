@@ -29489,6 +29489,604 @@
     }
   });
 
+  // node_modules/tslib/tslib.es6.js
+  var tslib_es6_exports = {};
+  __export(tslib_es6_exports, {
+    __assign: () => __assign,
+    __asyncDelegator: () => __asyncDelegator,
+    __asyncGenerator: () => __asyncGenerator,
+    __asyncValues: () => __asyncValues,
+    __await: () => __await,
+    __awaiter: () => __awaiter,
+    __classPrivateFieldGet: () => __classPrivateFieldGet,
+    __classPrivateFieldIn: () => __classPrivateFieldIn,
+    __classPrivateFieldSet: () => __classPrivateFieldSet,
+    __createBinding: () => __createBinding,
+    __decorate: () => __decorate,
+    __esDecorate: () => __esDecorate,
+    __exportStar: () => __exportStar,
+    __extends: () => __extends,
+    __generator: () => __generator,
+    __importDefault: () => __importDefault,
+    __importStar: () => __importStar,
+    __makeTemplateObject: () => __makeTemplateObject,
+    __metadata: () => __metadata,
+    __param: () => __param,
+    __propKey: () => __propKey,
+    __read: () => __read,
+    __rest: () => __rest,
+    __runInitializers: () => __runInitializers,
+    __setFunctionName: () => __setFunctionName,
+    __spread: () => __spread,
+    __spreadArray: () => __spreadArray,
+    __spreadArrays: () => __spreadArrays,
+    __values: () => __values
+  });
+  function __extends(d3, b3) {
+    if (typeof b3 !== "function" && b3 !== null)
+      throw new TypeError("Class extends value " + String(b3) + " is not a constructor or null");
+    extendStatics(d3, b3);
+    function __() {
+      this.constructor = d3;
+    }
+    __name(__, "__");
+    d3.prototype = b3 === null ? Object.create(b3) : (__.prototype = b3.prototype, new __());
+  }
+  function __rest(s2, e3) {
+    var t3 = {};
+    for (var p3 in s2)
+      if (Object.prototype.hasOwnProperty.call(s2, p3) && e3.indexOf(p3) < 0)
+        t3[p3] = s2[p3];
+    if (s2 != null && typeof Object.getOwnPropertySymbols === "function")
+      for (var i2 = 0, p3 = Object.getOwnPropertySymbols(s2); i2 < p3.length; i2++) {
+        if (e3.indexOf(p3[i2]) < 0 && Object.prototype.propertyIsEnumerable.call(s2, p3[i2]))
+          t3[p3[i2]] = s2[p3[i2]];
+      }
+    return t3;
+  }
+  function __decorate(decorators, target, key, desc) {
+    var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d3;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
+      r3 = Reflect.decorate(decorators, target, key, desc);
+    else
+      for (var i2 = decorators.length - 1; i2 >= 0; i2--)
+        if (d3 = decorators[i2])
+          r3 = (c3 < 3 ? d3(r3) : c3 > 3 ? d3(target, key, r3) : d3(target, key)) || r3;
+    return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
+  }
+  function __param(paramIndex, decorator) {
+    return function(target, key) {
+      decorator(target, key, paramIndex);
+    };
+  }
+  function __esDecorate(ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f3) {
+      if (f3 !== void 0 && typeof f3 !== "function")
+        throw new TypeError("Function expected");
+      return f3;
+    }
+    __name(accept, "accept");
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _28, done = false;
+    for (var i2 = decorators.length - 1; i2 >= 0; i2--) {
+      var context = {};
+      for (var p3 in contextIn)
+        context[p3] = p3 === "access" ? {} : contextIn[p3];
+      for (var p3 in contextIn.access)
+        context.access[p3] = contextIn.access[p3];
+      context.addInitializer = function(f3) {
+        if (done)
+          throw new TypeError("Cannot add initializers after decoration has completed");
+        extraInitializers.push(accept(f3 || null));
+      };
+      var result = (0, decorators[i2])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+      if (kind === "accessor") {
+        if (result === void 0)
+          continue;
+        if (result === null || typeof result !== "object")
+          throw new TypeError("Object expected");
+        if (_28 = accept(result.get))
+          descriptor.get = _28;
+        if (_28 = accept(result.set))
+          descriptor.set = _28;
+        if (_28 = accept(result.init))
+          initializers.push(_28);
+      } else if (_28 = accept(result)) {
+        if (kind === "field")
+          initializers.push(_28);
+        else
+          descriptor[key] = _28;
+      }
+    }
+    if (target)
+      Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+  }
+  function __runInitializers(thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i2 = 0; i2 < initializers.length; i2++) {
+      value = useValue ? initializers[i2].call(thisArg, value) : initializers[i2].call(thisArg);
+    }
+    return useValue ? value : void 0;
+  }
+  function __propKey(x2) {
+    return typeof x2 === "symbol" ? x2 : "".concat(x2);
+  }
+  function __setFunctionName(f3, name, prefix2) {
+    if (typeof name === "symbol")
+      name = name.description ? "[".concat(name.description, "]") : "";
+    return Object.defineProperty(f3, "name", { configurable: true, value: prefix2 ? "".concat(prefix2, " ", name) : name });
+  }
+  function __metadata(metadataKey, metadataValue) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
+      return Reflect.metadata(metadataKey, metadataValue);
+  }
+  function __awaiter(thisArg, _arguments, P2, generator) {
+    function adopt(value) {
+      return value instanceof P2 ? value : new P2(function(resolve) {
+        resolve(value);
+      });
+    }
+    __name(adopt, "adopt");
+    return new (P2 || (P2 = Promise))(function(resolve, reject) {
+      function fulfilled(value) {
+        try {
+          step(generator.next(value));
+        } catch (e3) {
+          reject(e3);
+        }
+      }
+      __name(fulfilled, "fulfilled");
+      function rejected(value) {
+        try {
+          step(generator["throw"](value));
+        } catch (e3) {
+          reject(e3);
+        }
+      }
+      __name(rejected, "rejected");
+      function step(result) {
+        result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+      }
+      __name(step, "step");
+      step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+  }
+  function __generator(thisArg, body2) {
+    var _28 = { label: 0, sent: function() {
+      if (t3[0] & 1)
+        throw t3[1];
+      return t3[1];
+    }, trys: [], ops: [] }, f3, y3, t3, g3;
+    return g3 = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g3[Symbol.iterator] = function() {
+      return this;
+    }), g3;
+    function verb(n2) {
+      return function(v3) {
+        return step([n2, v3]);
+      };
+    }
+    __name(verb, "verb");
+    function step(op) {
+      if (f3)
+        throw new TypeError("Generator is already executing.");
+      while (g3 && (g3 = 0, op[0] && (_28 = 0)), _28)
+        try {
+          if (f3 = 1, y3 && (t3 = op[0] & 2 ? y3["return"] : op[0] ? y3["throw"] || ((t3 = y3["return"]) && t3.call(y3), 0) : y3.next) && !(t3 = t3.call(y3, op[1])).done)
+            return t3;
+          if (y3 = 0, t3)
+            op = [op[0] & 2, t3.value];
+          switch (op[0]) {
+            case 0:
+            case 1:
+              t3 = op;
+              break;
+            case 4:
+              _28.label++;
+              return { value: op[1], done: false };
+            case 5:
+              _28.label++;
+              y3 = op[1];
+              op = [0];
+              continue;
+            case 7:
+              op = _28.ops.pop();
+              _28.trys.pop();
+              continue;
+            default:
+              if (!(t3 = _28.trys, t3 = t3.length > 0 && t3[t3.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                _28 = 0;
+                continue;
+              }
+              if (op[0] === 3 && (!t3 || op[1] > t3[0] && op[1] < t3[3])) {
+                _28.label = op[1];
+                break;
+              }
+              if (op[0] === 6 && _28.label < t3[1]) {
+                _28.label = t3[1];
+                t3 = op;
+                break;
+              }
+              if (t3 && _28.label < t3[2]) {
+                _28.label = t3[2];
+                _28.ops.push(op);
+                break;
+              }
+              if (t3[2])
+                _28.ops.pop();
+              _28.trys.pop();
+              continue;
+          }
+          op = body2.call(thisArg, _28);
+        } catch (e3) {
+          op = [6, e3];
+          y3 = 0;
+        } finally {
+          f3 = t3 = 0;
+        }
+      if (op[0] & 5)
+        throw op[1];
+      return { value: op[0] ? op[1] : void 0, done: true };
+    }
+    __name(step, "step");
+  }
+  function __exportStar(m3, o3) {
+    for (var p3 in m3)
+      if (p3 !== "default" && !Object.prototype.hasOwnProperty.call(o3, p3))
+        __createBinding(o3, m3, p3);
+  }
+  function __values(o3) {
+    var s2 = typeof Symbol === "function" && Symbol.iterator, m3 = s2 && o3[s2], i2 = 0;
+    if (m3)
+      return m3.call(o3);
+    if (o3 && typeof o3.length === "number")
+      return {
+        next: function() {
+          if (o3 && i2 >= o3.length)
+            o3 = void 0;
+          return { value: o3 && o3[i2++], done: !o3 };
+        }
+      };
+    throw new TypeError(s2 ? "Object is not iterable." : "Symbol.iterator is not defined.");
+  }
+  function __read(o3, n2) {
+    var m3 = typeof Symbol === "function" && o3[Symbol.iterator];
+    if (!m3)
+      return o3;
+    var i2 = m3.call(o3), r3, ar = [], e3;
+    try {
+      while ((n2 === void 0 || n2-- > 0) && !(r3 = i2.next()).done)
+        ar.push(r3.value);
+    } catch (error2) {
+      e3 = { error: error2 };
+    } finally {
+      try {
+        if (r3 && !r3.done && (m3 = i2["return"]))
+          m3.call(i2);
+      } finally {
+        if (e3)
+          throw e3.error;
+      }
+    }
+    return ar;
+  }
+  function __spread() {
+    for (var ar = [], i2 = 0; i2 < arguments.length; i2++)
+      ar = ar.concat(__read(arguments[i2]));
+    return ar;
+  }
+  function __spreadArrays() {
+    for (var s2 = 0, i2 = 0, il = arguments.length; i2 < il; i2++)
+      s2 += arguments[i2].length;
+    for (var r3 = Array(s2), k3 = 0, i2 = 0; i2 < il; i2++)
+      for (var a3 = arguments[i2], j3 = 0, jl = a3.length; j3 < jl; j3++, k3++)
+        r3[k3] = a3[j3];
+    return r3;
+  }
+  function __spreadArray(to, from2, pack) {
+    if (pack || arguments.length === 2)
+      for (var i2 = 0, l3 = from2.length, ar; i2 < l3; i2++) {
+        if (ar || !(i2 in from2)) {
+          if (!ar)
+            ar = Array.prototype.slice.call(from2, 0, i2);
+          ar[i2] = from2[i2];
+        }
+      }
+    return to.concat(ar || Array.prototype.slice.call(from2));
+  }
+  function __await(v3) {
+    return this instanceof __await ? (this.v = v3, this) : new __await(v3);
+  }
+  function __asyncGenerator(thisArg, _arguments, generator) {
+    if (!Symbol.asyncIterator)
+      throw new TypeError("Symbol.asyncIterator is not defined.");
+    var g3 = generator.apply(thisArg, _arguments || []), i2, q2 = [];
+    return i2 = {}, verb("next"), verb("throw"), verb("return"), i2[Symbol.asyncIterator] = function() {
+      return this;
+    }, i2;
+    function verb(n2) {
+      if (g3[n2])
+        i2[n2] = function(v3) {
+          return new Promise(function(a3, b3) {
+            q2.push([n2, v3, a3, b3]) > 1 || resume(n2, v3);
+          });
+        };
+    }
+    __name(verb, "verb");
+    function resume(n2, v3) {
+      try {
+        step(g3[n2](v3));
+      } catch (e3) {
+        settle(q2[0][3], e3);
+      }
+    }
+    __name(resume, "resume");
+    function step(r3) {
+      r3.value instanceof __await ? Promise.resolve(r3.value.v).then(fulfill, reject) : settle(q2[0][2], r3);
+    }
+    __name(step, "step");
+    function fulfill(value) {
+      resume("next", value);
+    }
+    __name(fulfill, "fulfill");
+    function reject(value) {
+      resume("throw", value);
+    }
+    __name(reject, "reject");
+    function settle(f3, v3) {
+      if (f3(v3), q2.shift(), q2.length)
+        resume(q2[0][0], q2[0][1]);
+    }
+    __name(settle, "settle");
+  }
+  function __asyncDelegator(o3) {
+    var i2, p3;
+    return i2 = {}, verb("next"), verb("throw", function(e3) {
+      throw e3;
+    }), verb("return"), i2[Symbol.iterator] = function() {
+      return this;
+    }, i2;
+    function verb(n2, f3) {
+      i2[n2] = o3[n2] ? function(v3) {
+        return (p3 = !p3) ? { value: __await(o3[n2](v3)), done: false } : f3 ? f3(v3) : v3;
+      } : f3;
+    }
+    __name(verb, "verb");
+  }
+  function __asyncValues(o3) {
+    if (!Symbol.asyncIterator)
+      throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m3 = o3[Symbol.asyncIterator], i2;
+    return m3 ? m3.call(o3) : (o3 = typeof __values === "function" ? __values(o3) : o3[Symbol.iterator](), i2 = {}, verb("next"), verb("throw"), verb("return"), i2[Symbol.asyncIterator] = function() {
+      return this;
+    }, i2);
+    function verb(n2) {
+      i2[n2] = o3[n2] && function(v3) {
+        return new Promise(function(resolve, reject) {
+          v3 = o3[n2](v3), settle(resolve, reject, v3.done, v3.value);
+        });
+      };
+    }
+    __name(verb, "verb");
+    function settle(resolve, reject, d3, v3) {
+      Promise.resolve(v3).then(function(v4) {
+        resolve({ value: v4, done: d3 });
+      }, reject);
+    }
+    __name(settle, "settle");
+  }
+  function __makeTemplateObject(cooked, raw) {
+    if (Object.defineProperty) {
+      Object.defineProperty(cooked, "raw", { value: raw });
+    } else {
+      cooked.raw = raw;
+    }
+    return cooked;
+  }
+  function __importStar(mod) {
+    if (mod && mod.__esModule)
+      return mod;
+    var result = {};
+    if (mod != null) {
+      for (var k3 in mod)
+        if (k3 !== "default" && Object.prototype.hasOwnProperty.call(mod, k3))
+          __createBinding(result, mod, k3);
+    }
+    __setModuleDefault(result, mod);
+    return result;
+  }
+  function __importDefault(mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  }
+  function __classPrivateFieldGet(receiver, state, kind, f3) {
+    if (kind === "a" && !f3)
+      throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f3 : !state.has(receiver))
+      throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f3 : kind === "a" ? f3.call(receiver) : f3 ? f3.value : state.get(receiver);
+  }
+  function __classPrivateFieldSet(receiver, state, value, kind, f3) {
+    if (kind === "m")
+      throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f3)
+      throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f3 : !state.has(receiver))
+      throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return kind === "a" ? f3.call(receiver, value) : f3 ? f3.value = value : state.set(receiver, value), value;
+  }
+  function __classPrivateFieldIn(state, receiver) {
+    if (receiver === null || typeof receiver !== "object" && typeof receiver !== "function")
+      throw new TypeError("Cannot use 'in' operator on non-object");
+    return typeof state === "function" ? receiver === state : state.has(receiver);
+  }
+  var extendStatics, __assign, __createBinding, __setModuleDefault;
+  var init_tslib_es6 = __esm({
+    "node_modules/tslib/tslib.es6.js"() {
+      extendStatics = /* @__PURE__ */ __name(function(d3, b3) {
+        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d4, b4) {
+          d4.__proto__ = b4;
+        } || function(d4, b4) {
+          for (var p3 in b4)
+            if (Object.prototype.hasOwnProperty.call(b4, p3))
+              d4[p3] = b4[p3];
+        };
+        return extendStatics(d3, b3);
+      }, "extendStatics");
+      __name(__extends, "__extends");
+      __assign = /* @__PURE__ */ __name(function() {
+        __assign = Object.assign || /* @__PURE__ */ __name(function __assign2(t3) {
+          for (var s2, i2 = 1, n2 = arguments.length; i2 < n2; i2++) {
+            s2 = arguments[i2];
+            for (var p3 in s2)
+              if (Object.prototype.hasOwnProperty.call(s2, p3))
+                t3[p3] = s2[p3];
+          }
+          return t3;
+        }, "__assign");
+        return __assign.apply(this, arguments);
+      }, "__assign");
+      __name(__rest, "__rest");
+      __name(__decorate, "__decorate");
+      __name(__param, "__param");
+      __name(__esDecorate, "__esDecorate");
+      __name(__runInitializers, "__runInitializers");
+      __name(__propKey, "__propKey");
+      __name(__setFunctionName, "__setFunctionName");
+      __name(__metadata, "__metadata");
+      __name(__awaiter, "__awaiter");
+      __name(__generator, "__generator");
+      __createBinding = Object.create ? function(o3, m3, k3, k22) {
+        if (k22 === void 0)
+          k22 = k3;
+        var desc = Object.getOwnPropertyDescriptor(m3, k3);
+        if (!desc || ("get" in desc ? !m3.__esModule : desc.writable || desc.configurable)) {
+          desc = { enumerable: true, get: function() {
+            return m3[k3];
+          } };
+        }
+        Object.defineProperty(o3, k22, desc);
+      } : function(o3, m3, k3, k22) {
+        if (k22 === void 0)
+          k22 = k3;
+        o3[k22] = m3[k3];
+      };
+      __name(__exportStar, "__exportStar");
+      __name(__values, "__values");
+      __name(__read, "__read");
+      __name(__spread, "__spread");
+      __name(__spreadArrays, "__spreadArrays");
+      __name(__spreadArray, "__spreadArray");
+      __name(__await, "__await");
+      __name(__asyncGenerator, "__asyncGenerator");
+      __name(__asyncDelegator, "__asyncDelegator");
+      __name(__asyncValues, "__asyncValues");
+      __name(__makeTemplateObject, "__makeTemplateObject");
+      __setModuleDefault = Object.create ? function(o3, v3) {
+        Object.defineProperty(o3, "default", { enumerable: true, value: v3 });
+      } : function(o3, v3) {
+        o3["default"] = v3;
+      };
+      __name(__importStar, "__importStar");
+      __name(__importDefault, "__importDefault");
+      __name(__classPrivateFieldGet, "__classPrivateFieldGet");
+      __name(__classPrivateFieldSet, "__classPrivateFieldSet");
+      __name(__classPrivateFieldIn, "__classPrivateFieldIn");
+    }
+  });
+
+  // node_modules/react-use/lib/useLifecycles.js
+  var require_useLifecycles = __commonJS({
+    "node_modules/react-use/lib/useLifecycles.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      var react_1 = require_react();
+      var useLifecycles = /* @__PURE__ */ __name(function(mount, unmount) {
+        react_1.useEffect(function() {
+          if (mount) {
+            mount();
+          }
+          return function() {
+            if (unmount) {
+              unmount();
+            }
+          };
+        }, []);
+      }, "useLifecycles");
+      exports.default = useLifecycles;
+    }
+  });
+
+  // node_modules/react-use/lib/misc/util.js
+  var require_util = __commonJS({
+    "node_modules/react-use/lib/misc/util.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.isNavigator = exports.isBrowser = exports.off = exports.on = exports.noop = void 0;
+      var noop5 = /* @__PURE__ */ __name(function() {
+      }, "noop");
+      exports.noop = noop5;
+      function on(obj) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+          args[_i - 1] = arguments[_i];
+        }
+        if (obj && obj.addEventListener) {
+          obj.addEventListener.apply(obj, args);
+        }
+      }
+      __name(on, "on");
+      exports.on = on;
+      function off(obj) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+          args[_i - 1] = arguments[_i];
+        }
+        if (obj && obj.removeEventListener) {
+          obj.removeEventListener.apply(obj, args);
+        }
+      }
+      __name(off, "off");
+      exports.off = off;
+      exports.isBrowser = typeof window !== "undefined";
+      exports.isNavigator = typeof navigator !== "undefined";
+    }
+  });
+
+  // node_modules/react-use/lib/useHash.js
+  var require_useHash = __commonJS({
+    "node_modules/react-use/lib/useHash.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      exports.useHash = void 0;
+      var tslib_1 = (init_tslib_es6(), __toCommonJS(tslib_es6_exports));
+      var react_1 = require_react();
+      var useLifecycles_1 = tslib_1.__importDefault(require_useLifecycles());
+      var util_1 = require_util();
+      var useHash3 = /* @__PURE__ */ __name(function() {
+        var _a = react_1.useState(function() {
+          return window.location.hash;
+        }), hash4 = _a[0], setHash = _a[1];
+        var onHashChange = react_1.useCallback(function() {
+          setHash(window.location.hash);
+        }, []);
+        useLifecycles_1.default(function() {
+          util_1.on(window, "hashchange", onHashChange);
+        }, function() {
+          util_1.off(window, "hashchange", onHashChange);
+        });
+        var _setHash = react_1.useCallback(function(newHash) {
+          if (newHash !== hash4) {
+            window.location.hash = newHash;
+          }
+        }, [hash4]);
+        return [hash4, _setHash];
+      }, "useHash");
+      exports.useHash = useHash3;
+    }
+  });
+
   // node_modules/lodash/lodash.js
   var require_lodash = __commonJS({
     "node_modules/lodash/lodash.js"(exports, module) {
@@ -35456,604 +36054,6 @@
           root._ = _28;
         }
       }).call(exports);
-    }
-  });
-
-  // node_modules/tslib/tslib.es6.js
-  var tslib_es6_exports = {};
-  __export(tslib_es6_exports, {
-    __assign: () => __assign,
-    __asyncDelegator: () => __asyncDelegator,
-    __asyncGenerator: () => __asyncGenerator,
-    __asyncValues: () => __asyncValues,
-    __await: () => __await,
-    __awaiter: () => __awaiter,
-    __classPrivateFieldGet: () => __classPrivateFieldGet,
-    __classPrivateFieldIn: () => __classPrivateFieldIn,
-    __classPrivateFieldSet: () => __classPrivateFieldSet,
-    __createBinding: () => __createBinding,
-    __decorate: () => __decorate,
-    __esDecorate: () => __esDecorate,
-    __exportStar: () => __exportStar,
-    __extends: () => __extends,
-    __generator: () => __generator,
-    __importDefault: () => __importDefault,
-    __importStar: () => __importStar,
-    __makeTemplateObject: () => __makeTemplateObject,
-    __metadata: () => __metadata,
-    __param: () => __param,
-    __propKey: () => __propKey,
-    __read: () => __read,
-    __rest: () => __rest,
-    __runInitializers: () => __runInitializers,
-    __setFunctionName: () => __setFunctionName,
-    __spread: () => __spread,
-    __spreadArray: () => __spreadArray,
-    __spreadArrays: () => __spreadArrays,
-    __values: () => __values
-  });
-  function __extends(d3, b3) {
-    if (typeof b3 !== "function" && b3 !== null)
-      throw new TypeError("Class extends value " + String(b3) + " is not a constructor or null");
-    extendStatics(d3, b3);
-    function __() {
-      this.constructor = d3;
-    }
-    __name(__, "__");
-    d3.prototype = b3 === null ? Object.create(b3) : (__.prototype = b3.prototype, new __());
-  }
-  function __rest(s2, e3) {
-    var t3 = {};
-    for (var p3 in s2)
-      if (Object.prototype.hasOwnProperty.call(s2, p3) && e3.indexOf(p3) < 0)
-        t3[p3] = s2[p3];
-    if (s2 != null && typeof Object.getOwnPropertySymbols === "function")
-      for (var i2 = 0, p3 = Object.getOwnPropertySymbols(s2); i2 < p3.length; i2++) {
-        if (e3.indexOf(p3[i2]) < 0 && Object.prototype.propertyIsEnumerable.call(s2, p3[i2]))
-          t3[p3[i2]] = s2[p3[i2]];
-      }
-    return t3;
-  }
-  function __decorate(decorators, target, key, desc) {
-    var c3 = arguments.length, r3 = c3 < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d3;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function")
-      r3 = Reflect.decorate(decorators, target, key, desc);
-    else
-      for (var i2 = decorators.length - 1; i2 >= 0; i2--)
-        if (d3 = decorators[i2])
-          r3 = (c3 < 3 ? d3(r3) : c3 > 3 ? d3(target, key, r3) : d3(target, key)) || r3;
-    return c3 > 3 && r3 && Object.defineProperty(target, key, r3), r3;
-  }
-  function __param(paramIndex, decorator) {
-    return function(target, key) {
-      decorator(target, key, paramIndex);
-    };
-  }
-  function __esDecorate(ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
-    function accept(f3) {
-      if (f3 !== void 0 && typeof f3 !== "function")
-        throw new TypeError("Function expected");
-      return f3;
-    }
-    __name(accept, "accept");
-    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
-    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
-    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
-    var _28, done = false;
-    for (var i2 = decorators.length - 1; i2 >= 0; i2--) {
-      var context = {};
-      for (var p3 in contextIn)
-        context[p3] = p3 === "access" ? {} : contextIn[p3];
-      for (var p3 in contextIn.access)
-        context.access[p3] = contextIn.access[p3];
-      context.addInitializer = function(f3) {
-        if (done)
-          throw new TypeError("Cannot add initializers after decoration has completed");
-        extraInitializers.push(accept(f3 || null));
-      };
-      var result = (0, decorators[i2])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
-      if (kind === "accessor") {
-        if (result === void 0)
-          continue;
-        if (result === null || typeof result !== "object")
-          throw new TypeError("Object expected");
-        if (_28 = accept(result.get))
-          descriptor.get = _28;
-        if (_28 = accept(result.set))
-          descriptor.set = _28;
-        if (_28 = accept(result.init))
-          initializers.push(_28);
-      } else if (_28 = accept(result)) {
-        if (kind === "field")
-          initializers.push(_28);
-        else
-          descriptor[key] = _28;
-      }
-    }
-    if (target)
-      Object.defineProperty(target, contextIn.name, descriptor);
-    done = true;
-  }
-  function __runInitializers(thisArg, initializers, value) {
-    var useValue = arguments.length > 2;
-    for (var i2 = 0; i2 < initializers.length; i2++) {
-      value = useValue ? initializers[i2].call(thisArg, value) : initializers[i2].call(thisArg);
-    }
-    return useValue ? value : void 0;
-  }
-  function __propKey(x2) {
-    return typeof x2 === "symbol" ? x2 : "".concat(x2);
-  }
-  function __setFunctionName(f3, name, prefix2) {
-    if (typeof name === "symbol")
-      name = name.description ? "[".concat(name.description, "]") : "";
-    return Object.defineProperty(f3, "name", { configurable: true, value: prefix2 ? "".concat(prefix2, " ", name) : name });
-  }
-  function __metadata(metadataKey, metadataValue) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function")
-      return Reflect.metadata(metadataKey, metadataValue);
-  }
-  function __awaiter(thisArg, _arguments, P2, generator) {
-    function adopt(value) {
-      return value instanceof P2 ? value : new P2(function(resolve) {
-        resolve(value);
-      });
-    }
-    __name(adopt, "adopt");
-    return new (P2 || (P2 = Promise))(function(resolve, reject) {
-      function fulfilled(value) {
-        try {
-          step(generator.next(value));
-        } catch (e3) {
-          reject(e3);
-        }
-      }
-      __name(fulfilled, "fulfilled");
-      function rejected(value) {
-        try {
-          step(generator["throw"](value));
-        } catch (e3) {
-          reject(e3);
-        }
-      }
-      __name(rejected, "rejected");
-      function step(result) {
-        result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-      }
-      __name(step, "step");
-      step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-  }
-  function __generator(thisArg, body2) {
-    var _28 = { label: 0, sent: function() {
-      if (t3[0] & 1)
-        throw t3[1];
-      return t3[1];
-    }, trys: [], ops: [] }, f3, y3, t3, g3;
-    return g3 = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g3[Symbol.iterator] = function() {
-      return this;
-    }), g3;
-    function verb(n2) {
-      return function(v3) {
-        return step([n2, v3]);
-      };
-    }
-    __name(verb, "verb");
-    function step(op) {
-      if (f3)
-        throw new TypeError("Generator is already executing.");
-      while (g3 && (g3 = 0, op[0] && (_28 = 0)), _28)
-        try {
-          if (f3 = 1, y3 && (t3 = op[0] & 2 ? y3["return"] : op[0] ? y3["throw"] || ((t3 = y3["return"]) && t3.call(y3), 0) : y3.next) && !(t3 = t3.call(y3, op[1])).done)
-            return t3;
-          if (y3 = 0, t3)
-            op = [op[0] & 2, t3.value];
-          switch (op[0]) {
-            case 0:
-            case 1:
-              t3 = op;
-              break;
-            case 4:
-              _28.label++;
-              return { value: op[1], done: false };
-            case 5:
-              _28.label++;
-              y3 = op[1];
-              op = [0];
-              continue;
-            case 7:
-              op = _28.ops.pop();
-              _28.trys.pop();
-              continue;
-            default:
-              if (!(t3 = _28.trys, t3 = t3.length > 0 && t3[t3.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-                _28 = 0;
-                continue;
-              }
-              if (op[0] === 3 && (!t3 || op[1] > t3[0] && op[1] < t3[3])) {
-                _28.label = op[1];
-                break;
-              }
-              if (op[0] === 6 && _28.label < t3[1]) {
-                _28.label = t3[1];
-                t3 = op;
-                break;
-              }
-              if (t3 && _28.label < t3[2]) {
-                _28.label = t3[2];
-                _28.ops.push(op);
-                break;
-              }
-              if (t3[2])
-                _28.ops.pop();
-              _28.trys.pop();
-              continue;
-          }
-          op = body2.call(thisArg, _28);
-        } catch (e3) {
-          op = [6, e3];
-          y3 = 0;
-        } finally {
-          f3 = t3 = 0;
-        }
-      if (op[0] & 5)
-        throw op[1];
-      return { value: op[0] ? op[1] : void 0, done: true };
-    }
-    __name(step, "step");
-  }
-  function __exportStar(m3, o3) {
-    for (var p3 in m3)
-      if (p3 !== "default" && !Object.prototype.hasOwnProperty.call(o3, p3))
-        __createBinding(o3, m3, p3);
-  }
-  function __values(o3) {
-    var s2 = typeof Symbol === "function" && Symbol.iterator, m3 = s2 && o3[s2], i2 = 0;
-    if (m3)
-      return m3.call(o3);
-    if (o3 && typeof o3.length === "number")
-      return {
-        next: function() {
-          if (o3 && i2 >= o3.length)
-            o3 = void 0;
-          return { value: o3 && o3[i2++], done: !o3 };
-        }
-      };
-    throw new TypeError(s2 ? "Object is not iterable." : "Symbol.iterator is not defined.");
-  }
-  function __read(o3, n2) {
-    var m3 = typeof Symbol === "function" && o3[Symbol.iterator];
-    if (!m3)
-      return o3;
-    var i2 = m3.call(o3), r3, ar = [], e3;
-    try {
-      while ((n2 === void 0 || n2-- > 0) && !(r3 = i2.next()).done)
-        ar.push(r3.value);
-    } catch (error2) {
-      e3 = { error: error2 };
-    } finally {
-      try {
-        if (r3 && !r3.done && (m3 = i2["return"]))
-          m3.call(i2);
-      } finally {
-        if (e3)
-          throw e3.error;
-      }
-    }
-    return ar;
-  }
-  function __spread() {
-    for (var ar = [], i2 = 0; i2 < arguments.length; i2++)
-      ar = ar.concat(__read(arguments[i2]));
-    return ar;
-  }
-  function __spreadArrays() {
-    for (var s2 = 0, i2 = 0, il = arguments.length; i2 < il; i2++)
-      s2 += arguments[i2].length;
-    for (var r3 = Array(s2), k3 = 0, i2 = 0; i2 < il; i2++)
-      for (var a3 = arguments[i2], j3 = 0, jl = a3.length; j3 < jl; j3++, k3++)
-        r3[k3] = a3[j3];
-    return r3;
-  }
-  function __spreadArray(to, from2, pack) {
-    if (pack || arguments.length === 2)
-      for (var i2 = 0, l3 = from2.length, ar; i2 < l3; i2++) {
-        if (ar || !(i2 in from2)) {
-          if (!ar)
-            ar = Array.prototype.slice.call(from2, 0, i2);
-          ar[i2] = from2[i2];
-        }
-      }
-    return to.concat(ar || Array.prototype.slice.call(from2));
-  }
-  function __await(v3) {
-    return this instanceof __await ? (this.v = v3, this) : new __await(v3);
-  }
-  function __asyncGenerator(thisArg, _arguments, generator) {
-    if (!Symbol.asyncIterator)
-      throw new TypeError("Symbol.asyncIterator is not defined.");
-    var g3 = generator.apply(thisArg, _arguments || []), i2, q2 = [];
-    return i2 = {}, verb("next"), verb("throw"), verb("return"), i2[Symbol.asyncIterator] = function() {
-      return this;
-    }, i2;
-    function verb(n2) {
-      if (g3[n2])
-        i2[n2] = function(v3) {
-          return new Promise(function(a3, b3) {
-            q2.push([n2, v3, a3, b3]) > 1 || resume(n2, v3);
-          });
-        };
-    }
-    __name(verb, "verb");
-    function resume(n2, v3) {
-      try {
-        step(g3[n2](v3));
-      } catch (e3) {
-        settle(q2[0][3], e3);
-      }
-    }
-    __name(resume, "resume");
-    function step(r3) {
-      r3.value instanceof __await ? Promise.resolve(r3.value.v).then(fulfill, reject) : settle(q2[0][2], r3);
-    }
-    __name(step, "step");
-    function fulfill(value) {
-      resume("next", value);
-    }
-    __name(fulfill, "fulfill");
-    function reject(value) {
-      resume("throw", value);
-    }
-    __name(reject, "reject");
-    function settle(f3, v3) {
-      if (f3(v3), q2.shift(), q2.length)
-        resume(q2[0][0], q2[0][1]);
-    }
-    __name(settle, "settle");
-  }
-  function __asyncDelegator(o3) {
-    var i2, p3;
-    return i2 = {}, verb("next"), verb("throw", function(e3) {
-      throw e3;
-    }), verb("return"), i2[Symbol.iterator] = function() {
-      return this;
-    }, i2;
-    function verb(n2, f3) {
-      i2[n2] = o3[n2] ? function(v3) {
-        return (p3 = !p3) ? { value: __await(o3[n2](v3)), done: false } : f3 ? f3(v3) : v3;
-      } : f3;
-    }
-    __name(verb, "verb");
-  }
-  function __asyncValues(o3) {
-    if (!Symbol.asyncIterator)
-      throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m3 = o3[Symbol.asyncIterator], i2;
-    return m3 ? m3.call(o3) : (o3 = typeof __values === "function" ? __values(o3) : o3[Symbol.iterator](), i2 = {}, verb("next"), verb("throw"), verb("return"), i2[Symbol.asyncIterator] = function() {
-      return this;
-    }, i2);
-    function verb(n2) {
-      i2[n2] = o3[n2] && function(v3) {
-        return new Promise(function(resolve, reject) {
-          v3 = o3[n2](v3), settle(resolve, reject, v3.done, v3.value);
-        });
-      };
-    }
-    __name(verb, "verb");
-    function settle(resolve, reject, d3, v3) {
-      Promise.resolve(v3).then(function(v4) {
-        resolve({ value: v4, done: d3 });
-      }, reject);
-    }
-    __name(settle, "settle");
-  }
-  function __makeTemplateObject(cooked, raw) {
-    if (Object.defineProperty) {
-      Object.defineProperty(cooked, "raw", { value: raw });
-    } else {
-      cooked.raw = raw;
-    }
-    return cooked;
-  }
-  function __importStar(mod) {
-    if (mod && mod.__esModule)
-      return mod;
-    var result = {};
-    if (mod != null) {
-      for (var k3 in mod)
-        if (k3 !== "default" && Object.prototype.hasOwnProperty.call(mod, k3))
-          __createBinding(result, mod, k3);
-    }
-    __setModuleDefault(result, mod);
-    return result;
-  }
-  function __importDefault(mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  }
-  function __classPrivateFieldGet(receiver, state, kind, f3) {
-    if (kind === "a" && !f3)
-      throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f3 : !state.has(receiver))
-      throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f3 : kind === "a" ? f3.call(receiver) : f3 ? f3.value : state.get(receiver);
-  }
-  function __classPrivateFieldSet(receiver, state, value, kind, f3) {
-    if (kind === "m")
-      throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f3)
-      throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f3 : !state.has(receiver))
-      throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return kind === "a" ? f3.call(receiver, value) : f3 ? f3.value = value : state.set(receiver, value), value;
-  }
-  function __classPrivateFieldIn(state, receiver) {
-    if (receiver === null || typeof receiver !== "object" && typeof receiver !== "function")
-      throw new TypeError("Cannot use 'in' operator on non-object");
-    return typeof state === "function" ? receiver === state : state.has(receiver);
-  }
-  var extendStatics, __assign, __createBinding, __setModuleDefault;
-  var init_tslib_es6 = __esm({
-    "node_modules/tslib/tslib.es6.js"() {
-      extendStatics = /* @__PURE__ */ __name(function(d3, b3) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d4, b4) {
-          d4.__proto__ = b4;
-        } || function(d4, b4) {
-          for (var p3 in b4)
-            if (Object.prototype.hasOwnProperty.call(b4, p3))
-              d4[p3] = b4[p3];
-        };
-        return extendStatics(d3, b3);
-      }, "extendStatics");
-      __name(__extends, "__extends");
-      __assign = /* @__PURE__ */ __name(function() {
-        __assign = Object.assign || /* @__PURE__ */ __name(function __assign2(t3) {
-          for (var s2, i2 = 1, n2 = arguments.length; i2 < n2; i2++) {
-            s2 = arguments[i2];
-            for (var p3 in s2)
-              if (Object.prototype.hasOwnProperty.call(s2, p3))
-                t3[p3] = s2[p3];
-          }
-          return t3;
-        }, "__assign");
-        return __assign.apply(this, arguments);
-      }, "__assign");
-      __name(__rest, "__rest");
-      __name(__decorate, "__decorate");
-      __name(__param, "__param");
-      __name(__esDecorate, "__esDecorate");
-      __name(__runInitializers, "__runInitializers");
-      __name(__propKey, "__propKey");
-      __name(__setFunctionName, "__setFunctionName");
-      __name(__metadata, "__metadata");
-      __name(__awaiter, "__awaiter");
-      __name(__generator, "__generator");
-      __createBinding = Object.create ? function(o3, m3, k3, k22) {
-        if (k22 === void 0)
-          k22 = k3;
-        var desc = Object.getOwnPropertyDescriptor(m3, k3);
-        if (!desc || ("get" in desc ? !m3.__esModule : desc.writable || desc.configurable)) {
-          desc = { enumerable: true, get: function() {
-            return m3[k3];
-          } };
-        }
-        Object.defineProperty(o3, k22, desc);
-      } : function(o3, m3, k3, k22) {
-        if (k22 === void 0)
-          k22 = k3;
-        o3[k22] = m3[k3];
-      };
-      __name(__exportStar, "__exportStar");
-      __name(__values, "__values");
-      __name(__read, "__read");
-      __name(__spread, "__spread");
-      __name(__spreadArrays, "__spreadArrays");
-      __name(__spreadArray, "__spreadArray");
-      __name(__await, "__await");
-      __name(__asyncGenerator, "__asyncGenerator");
-      __name(__asyncDelegator, "__asyncDelegator");
-      __name(__asyncValues, "__asyncValues");
-      __name(__makeTemplateObject, "__makeTemplateObject");
-      __setModuleDefault = Object.create ? function(o3, v3) {
-        Object.defineProperty(o3, "default", { enumerable: true, value: v3 });
-      } : function(o3, v3) {
-        o3["default"] = v3;
-      };
-      __name(__importStar, "__importStar");
-      __name(__importDefault, "__importDefault");
-      __name(__classPrivateFieldGet, "__classPrivateFieldGet");
-      __name(__classPrivateFieldSet, "__classPrivateFieldSet");
-      __name(__classPrivateFieldIn, "__classPrivateFieldIn");
-    }
-  });
-
-  // node_modules/react-use/lib/useLifecycles.js
-  var require_useLifecycles = __commonJS({
-    "node_modules/react-use/lib/useLifecycles.js"(exports) {
-      "use strict";
-      Object.defineProperty(exports, "__esModule", { value: true });
-      var react_1 = require_react();
-      var useLifecycles = /* @__PURE__ */ __name(function(mount, unmount) {
-        react_1.useEffect(function() {
-          if (mount) {
-            mount();
-          }
-          return function() {
-            if (unmount) {
-              unmount();
-            }
-          };
-        }, []);
-      }, "useLifecycles");
-      exports.default = useLifecycles;
-    }
-  });
-
-  // node_modules/react-use/lib/misc/util.js
-  var require_util = __commonJS({
-    "node_modules/react-use/lib/misc/util.js"(exports) {
-      "use strict";
-      Object.defineProperty(exports, "__esModule", { value: true });
-      exports.isNavigator = exports.isBrowser = exports.off = exports.on = exports.noop = void 0;
-      var noop5 = /* @__PURE__ */ __name(function() {
-      }, "noop");
-      exports.noop = noop5;
-      function on(obj) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-          args[_i - 1] = arguments[_i];
-        }
-        if (obj && obj.addEventListener) {
-          obj.addEventListener.apply(obj, args);
-        }
-      }
-      __name(on, "on");
-      exports.on = on;
-      function off(obj) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-          args[_i - 1] = arguments[_i];
-        }
-        if (obj && obj.removeEventListener) {
-          obj.removeEventListener.apply(obj, args);
-        }
-      }
-      __name(off, "off");
-      exports.off = off;
-      exports.isBrowser = typeof window !== "undefined";
-      exports.isNavigator = typeof navigator !== "undefined";
-    }
-  });
-
-  // node_modules/react-use/lib/useHash.js
-  var require_useHash = __commonJS({
-    "node_modules/react-use/lib/useHash.js"(exports) {
-      "use strict";
-      Object.defineProperty(exports, "__esModule", { value: true });
-      exports.useHash = void 0;
-      var tslib_1 = (init_tslib_es6(), __toCommonJS(tslib_es6_exports));
-      var react_1 = require_react();
-      var useLifecycles_1 = tslib_1.__importDefault(require_useLifecycles());
-      var util_1 = require_util();
-      var useHash3 = /* @__PURE__ */ __name(function() {
-        var _a = react_1.useState(function() {
-          return window.location.hash;
-        }), hash4 = _a[0], setHash = _a[1];
-        var onHashChange = react_1.useCallback(function() {
-          setHash(window.location.hash);
-        }, []);
-        useLifecycles_1.default(function() {
-          util_1.on(window, "hashchange", onHashChange);
-        }, function() {
-          util_1.off(window, "hashchange", onHashChange);
-        });
-        var _setHash = react_1.useCallback(function(newHash) {
-          if (newHash !== hash4) {
-            window.location.hash = newHash;
-          }
-        }, [hash4]);
-        return [hash4, _setHash];
-      }, "useHash");
-      exports.useHash = useHash3;
     }
   });
 
@@ -43437,6 +43437,69 @@
   }, "persistImpl");
   var persist = persistImpl;
 
+  // out/src/constants.js
+  var BLEND_SOURCES = 2;
+  var DEFAULT_BRUSH = {
+    color: 255,
+    size: 8,
+    strength: 0.5
+  };
+  var DEFAULT_HISTORY = {
+    /**
+     * The number of images to be shown.
+     */
+    limit: 8,
+    /**
+     * The number of additional images to be kept in history, so they can scroll
+     * back into view when you delete one. Does not include deleted images.
+     */
+    scrollback: 4
+  };
+  var STANDARD_MARGIN = 4;
+  var STANDARD_SPACING = 2;
+  var LAYOUT_MIN = 300;
+  var LAYOUT_PROPORTIONS = [100, 200];
+  var LAYOUT_STYLES = {
+    horizontal: {
+      container: false,
+      control: {
+        width: "30%"
+      },
+      direction: "row",
+      divider: "vertical",
+      history: {
+        style: {
+          ml: STANDARD_MARGIN
+        },
+        width: 4
+      }
+    },
+    vertical: {
+      container: "lg",
+      control: {
+        width: void 0
+      },
+      direction: "column",
+      divider: "horizontal",
+      history: {
+        style: {
+          mx: STANDARD_MARGIN,
+          my: STANDARD_MARGIN
+        },
+        width: 2
+      }
+    }
+  };
+  var INITIAL_LOAD_TIMEOUT = 5e3;
+  var STALE_TIME = 3e5;
+  var POLL_TIME = 5e3;
+  var SAVE_TIME = 5e3;
+  var IMAGE_FILTER = ".bmp, .jpg, .jpeg, .png";
+  var PARAM_VERSION = ">=0.10.0";
+  var FIXED_INTEGER = 0;
+  var FIXED_FLOAT = 2;
+  var STATUS_SUCCESS = 200;
+
   // out/src/utils.js
   function imageFromBlob(blob) {
     return new Promise((res, rej) => {
@@ -43477,9 +43540,6 @@
   __name(downloadAsJson, "downloadAsJson");
 
   // out/src/client/api.js
-  var FIXED_INTEGER = 0;
-  var FIXED_FLOAT = 2;
-  var STATUS_SUCCESS = 200;
   function joinPath(...parts) {
     return parts.join("/");
   }
@@ -74473,53 +74533,6 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/error/ParamsVersion.js
   var React128 = __toESM(require_react(), 1);
-
-  // out/src/config.js
-  var import_lodash = __toESM(require_lodash(), 1);
-  var IMAGE_FILTER = ".bmp, .jpg, .jpeg, .png";
-  var PARAM_VERSION = ">=0.10.0";
-  var STALE_TIME = 3e5;
-  var POLL_TIME = 5e3;
-  var SAVE_TIME = 5e3;
-  async function loadConfig() {
-    const configPath = new URL("./config.json", window.location.href);
-    const configReq = await fetch(configPath);
-    if (configReq.status === STATUS_SUCCESS) {
-      return configReq.json();
-    } else {
-      throw new Error("could not load config");
-    }
-  }
-  __name(loadConfig, "loadConfig");
-  function mergeConfig(client, server) {
-    const full = (0, import_lodash.merge)({}, server, client.params);
-    ;
-    return Object.assign(Object.assign({}, client), { params: full });
-  }
-  __name(mergeConfig, "mergeConfig");
-  function getApiRoot(config) {
-    const query = new URLSearchParams(window.location.search);
-    const api = query.get("api");
-    if (doesExist2(api)) {
-      return api;
-    } else {
-      return config.api.root;
-    }
-  }
-  __name(getApiRoot, "getApiRoot");
-  function isDebug2() {
-    const query = new URLSearchParams(window.location.search);
-    const debug = query.get("debug");
-    if (doesExist2(debug)) {
-      const val = debug.toLowerCase();
-      return val === "1" || val === "t" || val === "true" || val === "y" || val === "yes";
-    } else {
-      return false;
-    }
-  }
-  __name(isDebug2, "isDebug");
-
-  // out/src/components/error/ParamsVersion.js
   function ParamsVersionError(props) {
     return React128.createElement(
       Alert_default,
@@ -74582,7 +74595,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       } },
       React130.createElement(
         Stack_default2,
-        { direction: "column", spacing: 2, sx: { alignItems: "center" } },
+        { direction: "column", spacing: STANDARD_SPACING, sx: { alignItems: "center" } },
         React130.createElement(CircularProgress_default, null),
         React130.createElement(Typography_default, null, t3("loading.server"))
       )
@@ -74595,25 +74608,6 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/state/full.js
   var import_react22 = __toESM(require_react(), 1);
-
-  // out/src/constants.js
-  var BLEND_SOURCES = 2;
-  var DEFAULT_BRUSH = {
-    color: 255,
-    size: 8,
-    strength: 0.5
-  };
-  var DEFAULT_HISTORY = {
-    /**
-     * The number of images to be shown.
-     */
-    limit: 8,
-    /**
-     * The number of additional images to be kept in history, so they can scroll
-     * back into view when you delete one. Does not include deleted images.
-     */
-    scrollback: 4
-  };
 
   // out/src/state/blend.js
   function createBlendSlice(defaultModel, defaultUpscale) {
@@ -75615,15 +75609,15 @@ Please use another name.` : formatMuiErrorMessage(18));
       null,
       React132.createElement(
         Box_default,
-        { sx: { my: 4 } },
+        { sx: { my: STANDARD_MARGIN } },
         React132.createElement(Logo, null)
       ),
       React132.createElement(
         Box_default,
-        { sx: { my: 4 } },
+        { sx: { my: STANDARD_MARGIN } },
         React132.createElement(
           Stack_default2,
-          { spacing: 2 },
+          { spacing: STANDARD_SPACING },
           props.children,
           React132.createElement(Typography_default, { variant: "body1" }, "This is a web UI for running ONNX models with GPU acceleration or in software, running locally or on a remote machine."),
           React132.createElement(Typography_default, { variant: "body1" }, "The API runs on both Linux and Windows and provides access to the major functionality of diffusers, along with metadata about the available models and accelerators, and the output of previous runs. Hardware acceleration is supported on both AMD and Nvidia, with a CPU fallback capable of running on laptop-class machines."),
@@ -77509,6 +77503,29 @@ Please use another name.` : formatMuiErrorMessage(18));
   var import_react48 = __toESM(require_react(), 1);
   var import_useHash2 = __toESM(require_useHash(), 1);
 
+  // out/src/Motd.js
+  var import_react24 = __toESM(require_react(), 1);
+  function Motd() {
+    const [open, setOpen] = (0, import_react24.useState)(true);
+    const { t: t3 } = useTranslation();
+    return import_react24.default.createElement(
+      Collapse_default,
+      { in: open },
+      import_react24.default.createElement(Alert_default, { action: import_react24.default.createElement(
+        IconButton_default,
+        { "aria-label": "close", color: "inherit", size: "small", onClick: () => {
+          setOpen(false);
+        } },
+        import_react24.default.createElement(Close_default2, { fontSize: "inherit" })
+      ), severity: "info", sx: { mb: 2 } }, t3("motd"))
+    );
+  }
+  __name(Motd, "Motd");
+
+  // out/src/components/ImageHistory.js
+  var React140 = __toESM(require_react(), 1);
+  var import_react28 = __toESM(require_react(), 1);
+
   // node_modules/zustand/esm/shallow.mjs
   function shallow(objA, objB) {
     if (Object.is(objA, objB)) {
@@ -77550,33 +77567,6 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(shallow, "shallow");
 
-  // out/src/Motd.js
-  var import_react24 = __toESM(require_react(), 1);
-  function Motd() {
-    const [open, setOpen] = (0, import_react24.useState)(true);
-    const { t: t3 } = useTranslation();
-    return import_react24.default.createElement(
-      Collapse_default,
-      { in: open },
-      import_react24.default.createElement(Alert_default, { action: import_react24.default.createElement(
-        IconButton_default,
-        { "aria-label": "close", color: "inherit", size: "small", onClick: () => {
-          setOpen(false);
-        } },
-        import_react24.default.createElement(Close_default2, { fontSize: "inherit" })
-      ), severity: "info", sx: { mb: 2 } }, t3("motd"))
-    );
-  }
-  __name(Motd, "Motd");
-
-  // out/src/components/ImageHistory.js
-  var import_react28 = __toESM(require_react(), 1);
-  var React140 = __toESM(require_react(), 1);
-
-  // out/src/components/card/ErrorCard.js
-  var React137 = __toESM(require_react(), 1);
-  var import_react25 = __toESM(require_react(), 1);
-
   // out/src/types/api-v2.js
   var JobStatus;
   (function(JobStatus2) {
@@ -77598,6 +77588,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   })(JobType || (JobType = {}));
 
   // out/src/components/card/ErrorCard.js
+  var React137 = __toESM(require_react(), 1);
+  var import_react25 = __toESM(require_react(), 1);
   function ErrorCard(props) {
     const { image, retry: retryParams } = props;
     const client = mustExist((0, import_react25.useContext)(ClientContext));
@@ -77630,7 +77622,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           } },
           React137.createElement(
             Stack_default,
-            { direction: "column", spacing: 2, sx: { alignItems: "center" } },
+            { direction: "column", spacing: STANDARD_SPACING, sx: { alignItems: "center" } },
             React137.createElement(
               Alert_default,
               { severity: "error" },
@@ -77640,7 +77632,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             ),
             React137.createElement(
               Stack_default,
-              { direction: "row", spacing: 2 },
+              { direction: "row", spacing: STANDARD_SPACING },
               React137.createElement(
                 Tooltip_default,
                 { title: t3("tooltip.retry") },
@@ -77793,7 +77785,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           { textAlign: "center" },
           React138.createElement(
             Grid_default,
-            { container: true, spacing: 2 },
+            { container: true, spacing: STANDARD_SPACING },
             React138.createElement(
               GridItem,
               { xs: 4 },
@@ -78053,7 +78045,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           } },
           React139.createElement(
             Stack_default,
-            { direction: "column", spacing: 2, sx: { alignItems: "center" } },
+            { direction: "column", spacing: STANDARD_SPACING, sx: { alignItems: "center" } },
             renderProgress2(),
             status === JobStatus.PENDING ? React139.createElement(Typography_default, null, t3("loading.queue", getQueue(ready.data))) : React139.createElement(Typography_default, null, t3("loading.progress", selectStatus(ready.data, image))),
             React139.createElement(Button_default, { onClick: () => cancel.mutate() }, t3("loading.cancel"))
@@ -78160,7 +78152,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     }
     return React140.createElement(
       Grid_default,
-      { container: true, spacing: 2 },
+      { container: true, spacing: STANDARD_SPACING },
       // eslint-disable-next-line @typescript-eslint/no-magic-numbers
       children.map(([key, child]) => React140.createElement(Grid_default, { item: true, key, xs: 12 / width2 }, child))
     );
@@ -78205,7 +78197,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { t: t3 } = useTranslation();
     return React141.createElement(
       Stack_default2,
-      { spacing: 2 },
+      { spacing: STANDARD_SPACING },
       React141.createElement(TextField_default, { error: error2, label, helperText: error2 && t3("input.numeric.error.range"), disabled, variant: "outlined", type: "number", inputProps: { min: min2, max: max2, step }, value, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange(parseNumber(event.target.value, decimal));
@@ -78303,7 +78295,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     __name(renderImage, "renderImage");
     return React143.createElement(
       Stack_default2,
-      { direction: "row", spacing: 2 },
+      { direction: "row", spacing: STANDARD_SPACING },
       React143.createElement(
         Stack_default2,
         null,
@@ -78326,7 +78318,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(ImageInput, "ImageInput");
 
   // out/src/components/input/MaskCanvas.js
-  var import_lodash2 = __toESM(require_lodash(), 1);
+  var import_lodash = __toESM(require_lodash(), 1);
   var import_react30 = __toESM(require_react(), 1);
   var FULL_CIRCLE = 2 * Math.PI;
   var FULL_OPACITY = 1;
@@ -78458,7 +78450,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }
     __name(saveMask, "saveMask");
-    const save = (0, import_react30.useMemo)(() => (0, import_lodash2.throttle)(saveMask, SAVE_TIME), []);
+    const save = (0, import_react30.useMemo)(() => (0, import_lodash.throttle)(saveMask, SAVE_TIME), []);
     const brushRef = (0, import_react30.useRef)(null);
     const maskRef = (0, import_react30.useRef)(null);
     const viewRef = (0, import_react30.useRef)(null);
@@ -78508,10 +78500,10 @@ Please use another name.` : formatMuiErrorMessage(18));
     const hiddenStyle = Object.assign(Object.assign({}, backgroundStyle), { display: "none" });
     return import_react30.default.createElement(
       Stack_default2,
-      { spacing: 2 },
+      { spacing: STANDARD_SPACING },
       import_react30.default.createElement(
         Stack_default2,
-        { direction: "row", spacing: 2 },
+        { direction: "row", spacing: STANDARD_SPACING },
         import_react30.default.createElement(Button_default, { variant: "outlined", startIcon: import_react30.default.createElement(Download_default, null), onClick: () => {
           if (doesExist2(maskRef.current)) {
             const data = maskRef.current.toDataURL("image/png");
@@ -78551,7 +78543,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         ),
         import_react30.default.createElement(
           Stack_default2,
-          { direction: "row", spacing: 2 },
+          { direction: "row", spacing: STANDARD_SPACING },
           import_react30.default.createElement(Button_default, { variant: "outlined", startIcon: import_react30.default.createElement(FormatColorFill_default, null), onClick: () => {
             drawFill(floodBlack);
           } }, t3("mask.fill.black")),
@@ -78665,7 +78657,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       null,
       React145.createElement(
         Stack_default2,
-        { spacing: 2 },
+        { spacing: STANDARD_SPACING },
         range(BLEND_SOURCES).map((idx) => React145.createElement(ImageInput, { key: `source-${idx.toFixed(0)}`, filter: IMAGE_FILTER, image: sources[idx], hideSelection: true, label: t3("input.image.source"), onChange: (file) => {
           const newSources = [...sources];
           newSources[idx] = file;
@@ -83613,7 +83605,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(hasPngData, "hasPngData");
 
   // out/src/components/Profiles.js
-  var import_lodash3 = __toESM(require_lodash(), 1);
+  var import_lodash2 = __toESM(require_lodash(), 1);
   var React146 = __toESM(require_react(), 1);
   var import_react32 = __toESM(require_react(), 1);
   var ALLOWED_EXTENSIONS = [".json", ".jpg", ".jpeg", ".png", ".txt", ".webp"];
@@ -83627,7 +83619,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { t: t3 } = useTranslation();
     return React146.createElement(
       Stack_default2,
-      { direction: "row", spacing: 2 },
+      { direction: "row", spacing: STANDARD_SPACING },
       React146.createElement(Autocomplete_default, { id: "profile-select", options: profiles, sx: { width: "25em" }, getOptionLabel: (option) => option.name, clearOnBlur: true, renderOption: (optionProps, option) => React146.createElement(
         ListItem_default,
         Object.assign({}, optionProps, { secondaryAction: React146.createElement(
@@ -83753,8 +83745,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(loadParamsFromFile, "loadParamsFromFile");
   async function parseImageParams(file) {
     const tags2 = await load(file);
-    const makerNote = decodeTag((0, import_lodash3.defaultTo)(tags2.MakerNote, tags2["maker note"]));
-    const userComment = decodeTag((0, import_lodash3.defaultTo)((0, import_lodash3.defaultTo)(tags2.UserComment, tags2["Parameters"]), tags2["parameters"]));
+    const makerNote = decodeTag((0, import_lodash2.defaultTo)(tags2.MakerNote, tags2["maker note"]));
+    const userComment = decodeTag((0, import_lodash2.defaultTo)((0, import_lodash2.defaultTo)(tags2.UserComment, tags2["Parameters"]), tags2["parameters"]));
     if (doesExist2(makerNote) && isProbablyJSON(makerNote)) {
       return parseJSONParams(makerNote);
     }
@@ -83772,7 +83764,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     if (!doesExist2(tag)) {
       return void 0;
     }
-    if ((0, import_lodash3.isString)(tag.value)) {
+    if ((0, import_lodash2.isString)(tag.value)) {
       return tag.value;
     }
     if (tag.description === "[Unicode encoded text]" && isNumberArray(tag.value)) {
@@ -83784,7 +83776,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   async function parseJSONParams(json) {
     const data = JSON.parse(json);
     const params = Object.assign({}, data.params);
-    const size = (0, import_lodash3.defaultTo)(data.input_size, data.size);
+    const size = (0, import_lodash2.defaultTo)(data.input_size, data.size);
     if (doesExist2(size)) {
       params.height = size.height;
       params.width = size.width;
@@ -83900,7 +83892,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(HighresControl, "HighresControl");
 
   // out/src/components/control/ImageControl.js
-  var import_lodash4 = __toESM(require_lodash(), 1);
+  var import_lodash3 = __toESM(require_lodash(), 1);
   var React151 = __toESM(require_react(), 1);
   var import_react37 = __toESM(require_react(), 1);
 
@@ -84009,14 +84001,14 @@ Please use another name.` : formatMuiErrorMessage(18));
     }, [models, prompt]);
     return React149.createElement(
       Stack_default,
-      { spacing: 2 },
+      { spacing: STANDARD_SPACING },
       React149.createElement(TextField_default, { label: t3("parameter.prompt"), variant: "outlined", value: prompt, onChange: (event) => {
         onChange({
           prompt: event.target.value,
           negativePrompt
         });
       } }),
-      React149.createElement(Stack_default, { direction: "row", spacing: 2 }, tokens.map((token2) => React149.createElement(Chip_default, { color: prompt.includes(token2) ? "primary" : "default", label: token2, onClick: () => addToken(token2) }))),
+      React149.createElement(Stack_default, { direction: "row", spacing: STANDARD_SPACING }, tokens.map((token2) => React149.createElement(Chip_default, { color: prompt.includes(token2) ? "primary" : "default", label: token2, onClick: () => addToken(token2) }))),
       React149.createElement(TextField_default, { label: t3("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
         props.onChange({
           prompt,
@@ -84068,11 +84060,11 @@ Please use another name.` : formatMuiErrorMessage(18));
     }), [wildcards.status]);
     return React149.createElement(
       Stack_default,
-      { spacing: 2 },
+      { spacing: STANDARD_SPACING },
       React149.createElement(PromptTextBlock, { models: models.data, onChange, selector }),
       React149.createElement(
         Stack_default,
-        { direction: "row", spacing: 2 },
+        { direction: "row", spacing: STANDARD_SPACING },
         React149.createElement(ModelMenu, { id: "inversion", labelKey: "model.inversion", name: t3("modelType.inversion"), query: inversionSelector, onSelect: addInversion }),
         React149.createElement(ModelMenu, { id: "lora", labelKey: "model.lora", name: t3("modelType.lora"), query: loraSelector, onSelect: addLora }),
         React149.createElement(StringMenu, { id: "wildcard", labelKey: "wildcard", name: t3("wildcard"), query: wildcardSelector, onSelect: addWildcard })
@@ -84218,7 +84210,7 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/control/ImageControl.js
   function omitPrompt(selector) {
-    return (state) => (0, import_lodash4.omit)(selector(state), "prompt", "negativePrompt", "width", "height");
+    return (state) => (0, import_lodash3.omit)(selector(state), "prompt", "negativePrompt", "width", "height");
   }
   __name(omitPrompt, "omitPrompt");
   function ImageControl(props) {
@@ -84234,7 +84226,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     });
     return React151.createElement(
       Stack_default2,
-      { spacing: 2 },
+      { spacing: STANDARD_SPACING },
       React151.createElement(
         Stack_default2,
         { direction: "row", spacing: 4 },
@@ -84334,7 +84326,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     });
     return React152.createElement(
       Stack_default2,
-      { direction: "row", spacing: 2 },
+      { direction: "row", spacing: STANDARD_SPACING },
       React152.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t3("parameter.platform"), query: {
         result: platforms
       }, value: model.platform, onChange: (platform) => {
@@ -84446,7 +84438,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       null,
       React153.createElement(
         Stack_default2,
-        { spacing: 2 },
+        { spacing: STANDARD_SPACING },
         React153.createElement(Profiles, { selectHighres, selectModel, selectParams: selectParams3, selectUpscale: selectUpscale2, setHighres, setModel, setParams: setImg2Img, setUpscale }),
         React153.createElement(ModelControl, { model, setModel, tab: JobType.IMG2IMG }),
         React153.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t3("input.image.source"), onChange: (file) => {
@@ -84457,7 +84449,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         React153.createElement(ImageControl, { selector: selectParams3, onChange: setImg2Img }),
         React153.createElement(
           Stack_default2,
-          { direction: "row", spacing: 2 },
+          { direction: "row", spacing: STANDARD_SPACING },
           React153.createElement(QueryList, { id: "control", labelKey: "model.control", name: t3("modelType.control"), query: {
             result: models,
             selector: (result) => result.networks.filter((network) => network.type === "control").map((network) => network.name)
@@ -84643,7 +84635,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       null,
       React155.createElement(
         Stack_default2,
-        { spacing: 2 },
+        { spacing: STANDARD_SPACING },
         React155.createElement(Profiles, { selectHighres: selectHighres2, selectModel: selectModel2, selectParams: selectParams4, selectUpscale: selectUpscale3, setHighres, setModel, setParams: setInpaint, setUpscale }),
         React155.createElement(ModelControl, { model, setModel, tab: JobType.INPAINT }),
         renderBanner(),
@@ -84672,7 +84664,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         } }),
         React155.createElement(
           Stack_default2,
-          { direction: "row", spacing: 2 },
+          { direction: "row", spacing: STANDARD_SPACING },
           React155.createElement(QueryList, { id: "masks", labelKey: "maskFilter", name: t3("parameter.maskFilter"), query: {
             result: filters,
             selector: (f3) => f3.mask
@@ -84700,7 +84692,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           ),
           React155.createElement(
             Stack_default2,
-            { direction: "row", spacing: 2 },
+            { direction: "row", spacing: STANDARD_SPACING },
             React155.createElement(FormControlLabel_default, { label: t3("parameter.fillColor"), sx: { mx: 1 }, control: React155.createElement("input", { defaultValue: fillColor, name: "fill-color", type: "color", onBlur: (event) => {
               setInpaint({
                 fillColor: event.target.value
@@ -84767,7 +84759,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(selectUpscale3, "selectUpscale");
 
   // out/src/components/tab/Models.js
-  var import_lodash5 = __toESM(require_lodash(), 1);
+  var import_lodash4 = __toESM(require_lodash(), 1);
   var React162 = __toESM(require_react(), 1);
   var import_react43 = __toESM(require_react(), 1);
 
@@ -84784,11 +84776,11 @@ Please use another name.` : formatMuiErrorMessage(18));
     const RenderMemo = (0, import_react42.useMemo)(() => (0, import_react42.memo)(renderItem), [renderItem]);
     return React156.createElement(
       Stack_default2,
-      { spacing: 2 },
+      { spacing: STANDARD_SPACING },
       items.map((model, idx) => React156.createElement(RenderMemo, { key: idx, model, onChange: setItem, onRemove: removeItem })),
       React156.createElement(
         Stack_default2,
-        { direction: "row", spacing: 2 },
+        { direction: "row", spacing: STANDARD_SPACING },
         React156.createElement(TextField_default, { label: t3("extras.label"), variant: "outlined", value: nextLabel, onChange: (event) => setNextLabel(event.target.value) }),
         React156.createElement(TextField_default, { label: t3("extras.source"), variant: "outlined", value: nextSource, onChange: (event) => setNextSource(event.target.value) }),
         React156.createElement(Button_default, { onClick: () => {
@@ -84808,7 +84800,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { t: t3 } = useTranslation();
     return React157.createElement(
       Stack_default2,
-      { direction: "row", spacing: 2, key },
+      { direction: "row", spacing: STANDARD_SPACING, key },
       React157.createElement(TextField_default, { label: t3("extras.label"), value: model.label, onChange: (event) => {
         onChange(Object.assign(Object.assign({}, model), { label: event.target.value }));
       } }),
@@ -84843,7 +84835,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { t: t3 } = useTranslation();
     return React158.createElement(
       Stack_default2,
-      { direction: "row", spacing: 2, key },
+      { direction: "row", spacing: STANDARD_SPACING, key },
       React158.createElement(TextField_default, { label: t3("extras.label"), value: model.label, onChange: (event) => {
         onChange(Object.assign(Object.assign({}, model), { label: event.target.value }));
       } }),
@@ -84870,7 +84862,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { t: t3 } = useTranslation();
     return React159.createElement(
       Stack_default2,
-      { direction: "row", spacing: 2, key },
+      { direction: "row", spacing: STANDARD_SPACING, key },
       React159.createElement(TextField_default, { label: t3("extras.label"), value: model.label, onChange: (event) => {
         onChange(Object.assign(Object.assign({}, model), { label: event.target.value }));
       } }),
@@ -84915,7 +84907,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { t: t3 } = useTranslation();
     return React160.createElement(
       Stack_default2,
-      { direction: "row", spacing: 2, key },
+      { direction: "row", spacing: STANDARD_SPACING, key },
       React160.createElement(TextField_default, { label: t3("extras.name"), value: model.name, onChange: (event) => {
         onChange(Object.assign(Object.assign({}, model), { name: event.target.value }));
       } }),
@@ -84947,7 +84939,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { t: t3 } = useTranslation();
     return React161.createElement(
       Stack_default2,
-      { direction: "row", spacing: 2, key },
+      { direction: "row", spacing: STANDARD_SPACING, key },
       React161.createElement(TextField_default, { label: t3("extras.label"), value: model.label, onChange: (event) => {
         onChange(Object.assign(Object.assign({}, model), { label: event.target.value }));
       } }),
@@ -84980,7 +84972,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(UpscalingModelInput, "UpscalingModelInput");
 
   // out/src/components/tab/Models.js
-  var { kebabCase } = import_lodash5.default;
+  var { kebabCase } = import_lodash4.default;
   function mergeModelLists(local, server = []) {
     const localNames = new Set(local.map((it) => it.name));
     const merged = [...local];
@@ -85037,14 +85029,14 @@ Please use another name.` : formatMuiErrorMessage(18));
     if (result.status === "error") {
       return React162.createElement(
         Stack_default2,
-        { spacing: 2, direction: "row", sx: { alignItems: "center" } },
+        { spacing: STANDARD_SPACING, direction: "row", sx: { alignItems: "center" } },
         React162.createElement(Alert_default, { severity: "error" }, "Error")
       );
     }
     if (result.status === "loading") {
       return React162.createElement(
         Stack_default2,
-        { spacing: 2, direction: "row", sx: { alignItems: "center" } },
+        { spacing: STANDARD_SPACING, direction: "row", sx: { alignItems: "center" } },
         React162.createElement(CircularProgress_default, null)
       );
     }
@@ -85054,7 +85046,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     __name(writeExtras, "writeExtras");
     return React162.createElement(
       Stack_default2,
-      { spacing: 2 },
+      { spacing: STANDARD_SPACING },
       React162.createElement(
         Accordion_default,
         null,
@@ -85169,6 +85161,46 @@ Please use another name.` : formatMuiErrorMessage(18));
   var React163 = __toESM(require_react(), 1);
   var import_react44 = __toESM(require_react(), 1);
 
+  // out/src/config.js
+  var import_lodash5 = __toESM(require_lodash(), 1);
+  async function loadConfig() {
+    const configPath = new URL("./config.json", window.location.href);
+    const configReq = await fetch(configPath);
+    if (configReq.status === STATUS_SUCCESS) {
+      return configReq.json();
+    } else {
+      throw new Error("could not load config");
+    }
+  }
+  __name(loadConfig, "loadConfig");
+  function mergeConfig(client, server) {
+    const full = (0, import_lodash5.merge)({}, server, client.params);
+    ;
+    return Object.assign(Object.assign({}, client), { params: full });
+  }
+  __name(mergeConfig, "mergeConfig");
+  function getApiRoot(config) {
+    const query = new URLSearchParams(window.location.search);
+    const api = query.get("api");
+    if (doesExist2(api)) {
+      return api;
+    } else {
+      return config.api.root;
+    }
+  }
+  __name(getApiRoot, "getApiRoot");
+  function isDebug2() {
+    const query = new URLSearchParams(window.location.search);
+    const debug = query.get("debug");
+    if (doesExist2(debug)) {
+      const val = debug.toLowerCase();
+      return val === "1" || val === "t" || val === "true" || val === "y" || val === "yes";
+    } else {
+      return false;
+    }
+  }
+  __name(isDebug2, "isDebug");
+
   // out/src/components/utils.js
   var TAB_LABELS = [
     "txt2img",
@@ -85222,7 +85254,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { t: t3 } = useTranslation();
     return React163.createElement(
       Stack_default2,
-      { spacing: 2 },
+      { spacing: STANDARD_SPACING },
       React163.createElement(NumericField, { label: t3("setting.history.limit"), min: 2, max: 40, step: 1, value: state.limit, onChange: (value) => state.setLimit(value) }),
       React163.createElement(NumericField, { label: t3("setting.history.width"), min: 2, max: 6, step: 1, value: state.historyWidth, onChange: (value) => state.setWidth(value) }),
       React163.createElement(Button_default, { variant: "contained", onClick: () => state.setLayout(state.layout === "horizontal" ? "vertical" : "horizontal") }, "Toggle Layout"),
@@ -85238,7 +85270,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       } }),
       React163.createElement(
         Stack_default2,
-        { direction: "row", spacing: 2 },
+        { direction: "row", spacing: STANDARD_SPACING },
         React163.createElement(TextField_default, { variant: "outlined", label: t3("setting.server"), value: root, onChange: (event) => {
           setRoot(event.target.value);
         } }),
@@ -85251,7 +85283,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       ),
       React163.createElement(
         Stack_default2,
-        { direction: "row", spacing: 2 },
+        { direction: "row", spacing: STANDARD_SPACING },
         React163.createElement(TextField_default, { variant: "outlined", label: t3("setting.state.label"), value: json, onChange: (event) => {
           setJson(event.target.value);
         } }),
@@ -85272,7 +85304,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       } }), label: t3("setting.darkMode") }),
       React163.createElement(
         Stack_default2,
-        { direction: "row", spacing: 2 },
+        { direction: "row", spacing: STANDARD_SPACING },
         React163.createElement(Button_default, { onClick: () => state.resetTxt2Img(), color: "warning" }, t3("setting.reset.txt2img")),
         React163.createElement(Button_default, { onClick: () => state.resetImg2Img(), color: "warning" }, t3("setting.reset.img2img")),
         React163.createElement(Button_default, { onClick: () => state.resetInpaint(), color: "warning" }, t3("setting.reset.inpaint")),
@@ -85402,7 +85434,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const stack = [
       React164.createElement(
         Stack_default2,
-        { direction: "row", spacing: 2, key: "variable-enable" },
+        { direction: "row", spacing: STANDARD_SPACING, key: "variable-enable" },
         React164.createElement(
           FormControl_default,
           null,
@@ -85415,7 +85447,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     if (grid2.enabled) {
       stack.push(React164.createElement(
         Stack_default2,
-        { direction: "row", spacing: 2, key: "variable-row" },
+        { direction: "row", spacing: STANDARD_SPACING, key: "variable-row" },
         React164.createElement(
           FormControl_default,
           null,
@@ -85435,7 +85467,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         }) })
       ), React164.createElement(
         Stack_default2,
-        { direction: "row", spacing: 2, key: "variable-column" },
+        { direction: "row", spacing: STANDARD_SPACING, key: "variable-column" },
         React164.createElement(
           FormControl_default,
           null,
@@ -85455,7 +85487,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         }) })
       ));
     }
-    return React164.createElement(Stack_default2, { direction: "column", spacing: 2 }, ...stack);
+    return React164.createElement(Stack_default2, { direction: "column", spacing: STANDARD_SPACING }, ...stack);
   }
   __name(VariableControl, "VariableControl");
   function parameterList(exclude) {
@@ -85524,7 +85556,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       null,
       React165.createElement(
         Stack_default2,
-        { spacing: 2 },
+        { spacing: STANDARD_SPACING },
         React165.createElement(Profiles, { selectHighres: selectHighres3, selectModel: selectModel3, selectParams: selectParams5, selectUpscale: selectUpscale4, setHighres, setModel, setParams, setUpscale }),
         React165.createElement(ModelControl, { model, setModel, tab: JobType.TXT2IMG }),
         React165.createElement(ImageControl, { selector: selectParams5, onChange: setParams }),
@@ -85607,7 +85639,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       null,
       React166.createElement(
         Stack_default2,
-        { spacing: 2 },
+        { spacing: STANDARD_SPACING },
         React166.createElement(Profiles, { selectHighres: selectHighres4, selectModel: selectModel4, selectParams: selectParams6, selectUpscale: selectUpscale5, setHighres, setModel, setParams, setUpscale }),
         React166.createElement(ModelControl, { model, setModel, tab: JobType.UPSCALE }),
         React166.createElement(ImageInput, { filter: IMAGE_FILTER, image: params.source, label: t3("input.image.source"), onChange: (file) => {
@@ -85662,27 +85694,29 @@ Please use another name.` : formatMuiErrorMessage(18));
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
     const store = mustExist((0, import_react48.useContext)(StateContext));
     const stateTheme = useStore(store, selectTheme);
-    const layout = useStore(store, selectLayout, shallow);
+    const historyWidth = useStore(store, selectHistoryWidth);
+    const direction = useStore(store, selectDirection);
+    const layout = LAYOUT_STYLES[direction];
     const theme = (0, import_react48.useMemo)(() => createTheme_default2({
       palette: {
         mode: getTheme(stateTheme, prefersDarkMode)
       }
     }), [prefersDarkMode, stateTheme]);
-    const historyStyle = LAYOUT_STYLES[layout.direction].history.style;
+    const historyStyle = layout.history.style;
     return React167.createElement(
       ThemeProvider4,
       { theme },
       React167.createElement(CssBaseline_default, null),
       React167.createElement(
         Container_default,
-        { maxWidth: LAYOUT_STYLES[layout.direction].container },
+        { maxWidth: layout.container },
         React167.createElement(
           Box_default,
-          { sx: { my: 4 } },
+          { sx: { my: STANDARD_MARGIN } },
           React167.createElement(Logo, null)
         ),
         props.motd && React167.createElement(Motd, null),
-        renderBody(layout, historyStyle)
+        renderBody(direction, historyStyle, historyWidth)
       )
     );
   }
@@ -85691,51 +85725,19 @@ Please use another name.` : formatMuiErrorMessage(18));
     return state.theme;
   }
   __name(selectTheme, "selectTheme");
-  function selectLayout(state) {
-    return {
-      direction: state.layout,
-      width: state.historyWidth
-    };
+  function selectDirection(state) {
+    return state.layout;
   }
-  __name(selectLayout, "selectLayout");
-  var LAYOUT_STYLES = {
-    horizontal: {
-      container: false,
-      control: {
-        width: "30%"
-      },
-      direction: "row",
-      divider: "vertical",
-      history: {
-        style: {
-          marginLeft: 4,
-          maxHeight: "85vb",
-          overflowY: "auto"
-        },
-        width: 4
-      }
-    },
-    vertical: {
-      container: "lg",
-      control: {
-        width: void 0
-      },
-      direction: "column",
-      divider: "horizontal",
-      history: {
-        style: {
-          mx: 4,
-          my: 4
-        },
-        width: 2
-      }
-    }
-  };
-  function renderBody(layout, historyStyle) {
-    if (layout.direction === "vertical") {
-      return React167.createElement(VerticalBody, Object.assign({}, layout, { style: historyStyle }));
+  __name(selectDirection, "selectDirection");
+  function selectHistoryWidth(state) {
+    return state.historyWidth;
+  }
+  __name(selectHistoryWidth, "selectHistoryWidth");
+  function renderBody(direction, historyStyle, historyWidth) {
+    if (direction === "vertical") {
+      return React167.createElement(VerticalBody, { direction, style: historyStyle, width: historyWidth });
     } else {
-      return React167.createElement(HorizontalBody, Object.assign({}, layout, { style: historyStyle }));
+      return React167.createElement(HorizontalBody, { direction, style: historyStyle, width: historyWidth });
     }
   }
   __name(renderBody, "renderBody");
@@ -85743,11 +85745,11 @@ Please use another name.` : formatMuiErrorMessage(18));
     const layout = LAYOUT_STYLES[props.direction];
     return React167.createElement(
       He,
-      { separator: true, className: "body-allotment", minSize: 300 },
+      { separator: true, className: "body-allotment", minSize: LAYOUT_MIN, defaultSizes: LAYOUT_PROPORTIONS, snap: true },
       React167.createElement(TabGroup, { direction: props.direction }),
       React167.createElement(
         Box_default,
-        { sx: layout.history.style },
+        { className: "box-history", sx: layout.history.style },
         React167.createElement(ImageHistory, { width: props.width })
       )
     );
@@ -85757,12 +85759,12 @@ Please use another name.` : formatMuiErrorMessage(18));
     const layout = LAYOUT_STYLES[props.direction];
     return React167.createElement(
       Stack_default2,
-      { direction: layout.direction, spacing: 2 },
+      { direction: layout.direction, spacing: STANDARD_SPACING },
       React167.createElement(TabGroup, { direction: props.direction }),
       React167.createElement(Divider_default, { flexItem: true, variant: "middle", orientation: layout.divider }),
       React167.createElement(
         Box_default,
-        { sx: layout.history.style },
+        { className: "box-history", sx: layout.history.style },
         React167.createElement(ImageHistory, { width: props.width })
       )
     );
@@ -85773,7 +85775,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const [hash4, setHash] = (0, import_useHash2.useHash)();
     return React167.createElement(
       Stack_default2,
-      { direction: "column", minWidth: layout.control.width, sx: { mx: 4 } },
+      { direction: "column", minWidth: layout.control.width, sx: { mx: STANDARD_MARGIN } },
       React167.createElement(
         TabContext,
         { value: getTab(hash4) },
@@ -87025,7 +87027,6 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(migrateV7ToV11, "migrateV7ToV11");
 
   // out/src/main.js
-  var INITIAL_LOAD_TIMEOUT = 5e3;
   async function renderApp(config, params, logger, client) {
     const completeConfig = mergeConfig(config, params);
     logger.info("getting strings from server");
