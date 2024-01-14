@@ -202,22 +202,20 @@ class ImageMetadata:
             }
         )
 
-        # calculate final output size
-        output_size = self.size
+        # add optional params
         if self.border is not None:
             json["border"] = self.border.tojson()
-            output_size = output_size.add_border(self.border)
 
         if self.highres is not None:
             json["highres"] = self.highres.tojson()
-            output_size = self.highres.resize(output_size)
 
         if self.upscale is not None:
             json["upscale"] = self.upscale.tojson()
-            output_size = self.upscale.resize(output_size)
 
-        json["size"] = output_size.tojson()
+        # calculate final output size
+        json["size"] = self.get_output_size().tojson()
 
+        # hash and add models and networks
         if self.inversions is not None:
             for name, weight in self.inversions:
                 model_hash = self.get_network_hash(server, name, "inversion")[1]
@@ -240,6 +238,19 @@ class ImageMetadata:
                 )
 
         return json
+
+    def get_output_size(self) -> Size:
+        output_size = self.size
+        if self.border is not None:
+            output_size = output_size.add_border(self.border)
+
+        if self.highres is not None:
+            output_size = self.highres.resize(output_size)
+
+        if self.upscale is not None:
+            output_size = self.upscale.resize(output_size)
+
+        return output_size
 
     @staticmethod
     def from_exif(input: str) -> "ImageMetadata":

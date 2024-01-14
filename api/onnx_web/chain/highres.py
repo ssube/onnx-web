@@ -67,11 +67,12 @@ def stage_highres(
             strength=highres.strength,
         )
 
-    # add highres parameters to the image metadata
+    # add highres parameters to the image metadata and clear upscale stage
     chain.stage(
         EditMetadataStage(),
         stage.with_args(outscale=1, tile_size=SizeChart.max),
         highres=highres,
+        upscale=UpscaleParams(upscale.upscale_model, upscale=False),
         replace_params=params,
     )
 
