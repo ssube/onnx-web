@@ -150,7 +150,7 @@ def save_metadata(
 def read_metadata(
     image: Image.Image,
 ) -> Optional[ImageMetadata]:
-    exif_data = image._getexif()
+    exif_data = image.getexif()
 
     if ImageIFD.Make in exif_data and exif_data[ImageIFD.Make] == "onnx-web":
         return ImageMetadata.from_json(exif_data[ExifIFD.MakerNote])
