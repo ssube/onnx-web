@@ -791,6 +791,18 @@
   resolved "https://registry.yarnpkg.com/@xobotyi/scrollbar-width/-/scrollbar-width-1.9.5.tgz#80224a6919272f405b87913ca13b92929bdf3c4d"
   integrity sha512-N8tkAACJx2ww8vFMneJmaAgmjAG1tnVBZJRLRcx061tmsLRZHSEZSLuGWnwPtunsSLvSqXQ2wfp7Mgqg1I+2dQ==
 
+"@yornaath/batshit-devtools@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@yornaath/batshit-devtools/-/batshit-devtools-1.6.0.tgz#a40de72569d9571e4fcf3be9ea623f54203e7c99"
+  integrity sha512-ckKxrdfuFSRFz54tYU+VkD1eZOOaxa92U4eKOPtlxc1itB12Cqb1Dmk8Rqv6mARxp8YvocVGKbccrXoCwH2Lew==
+
+"@yornaath/batshit@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@yornaath/batshit/-/batshit-0.9.0.tgz#4d078e6ed3cadb5d8c4ae762363f40b6f61ad7d0"
+  integrity sha512-QdI1hQUPlpFT+o1iKLi9fQEKCli8c3UG7q4Ih8MP4jn+pyAjbfC4xaK5PwqSsSZgT0YeAZ0GWbbO9+1xAtWXlQ==
+  dependencies:
+    "@yornaath/batshit-devtools" "^1.6.0"
+
 acorn-jsx@^5.3.2:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.3.2.tgz#7ed5bb55908b3b2f1bc55c6af1653bada7f07937"
