@@ -59,16 +59,13 @@ export const I18N_STRINGS_EN = {
             specific: 'Error: {{message}}',
             unknown: 'Unknown Error',
           },
-          idle: 'Idle?',
+          idle: 'Idle',
           loading: 'Loading...',
         },
         numeric: {
           error: {
             range: 'Out of range',
           },
-        },
-        prompt: {
-          tokens: '{{tokens}} tokens, {{groups}} groups',
         },
       },
       loading: {
@@ -290,8 +287,8 @@ export const I18N_STRINGS_EN = {
         server: 'API Server',
         state: {
           label: 'Client State',
-          save: 'Save',
           load: 'Load',
+          save: 'Save',
         },
         darkMode: 'Dark Mode',
       },
@@ -315,15 +312,15 @@ export const I18N_STRINGS_EN = {
         'unipc-multi': 'UniPC Multistep',
       },
       sourceFilter: {
-        none: 'None',
         canny: 'Canny Edges',
         depth: 'Depth Map',
         face: 'Face Detection',
         gaussian: 'Gaussian Blur',
         hed: 'HED Edges',
         mlsd: 'M-LSD Segmentation',
-        normal: 'Normal Map',
         noise: 'Histogram Noise',
+        none: 'None',
+        normal: 'Normal Map',
         openpose: 'OpenPose',
         scribble: 'Scribble',
         segment: 'Image Segmentation',

@@ -46,6 +46,7 @@
 			"Exif",
 			"fromarray",
 			"ftfy",
+			"getexif",
 			"gfpgan",
 			"Heun",
 			"Highres",
