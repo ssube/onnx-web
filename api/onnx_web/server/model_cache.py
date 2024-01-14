@@ -12,6 +12,7 @@ class ModelTypes(str, Enum):
     diffusion = "diffusion"
     scheduler = "scheduler"
     upscaling = "upscaling"
+    safety = "safety"
 
 
 class ModelCache:
