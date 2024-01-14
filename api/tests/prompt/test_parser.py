@@ -1,6 +1,6 @@
 import unittest
 
-from onnx_web.prompt.grammar import PromptPhrase
+from onnx_web.prompt.grammar import PromptPhrase, PromptToken
 from onnx_web.prompt.parser import parse_prompt_onnx
 
 
@@ -34,6 +34,17 @@ class ParserTests(unittest.TestCase):
             [
                 str(["foo"]),
                 str(PromptPhrase(["bar"], weight=(1.5**3))),
+                str(["bin"]),
+            ],
+        )
+
+    def test_lora_token(self):
+        res = parse_prompt_onnx(None, "foo <lora:name:1.5> bin", debug=False)
+        self.assertListEqual(
+            [str(i) for i in res],
+            [
+                str(["foo"]),
+                str(PromptToken("lora", "name", 1.5)),
                 str(["bin"]),
             ],
         )
