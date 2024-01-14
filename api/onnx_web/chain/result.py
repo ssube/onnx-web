@@ -252,6 +252,30 @@ class ImageMetadata:
 
         return output_size
 
+    def with_args(
+        self,
+        params: Optional[ImageParams] = None,
+        size: Optional[Size] = None,
+        upscale: Optional[UpscaleParams] = None,
+        border: Optional[Border] = None,
+        highres: Optional[HighresParams] = None,
+        inversions: Optional[List[NetworkMetadata]] = None,
+        loras: Optional[List[NetworkMetadata]] = None,
+        models: Optional[List[NetworkMetadata]] = None,
+        ancestors: Optional[List["ImageMetadata"]] = None,
+    ) -> "ImageMetadata":
+        return ImageMetadata(
+            params or self.params,
+            size or self.size,
+            upscale=upscale or self.upscale,
+            border=border or self.border,
+            highres=highres or self.highres,
+            inversions=inversions or self.inversions,
+            loras=loras or self.loras,
+            models=models or self.models,
+            ancestors=ancestors or self.ancestors,
+        )
+
     @staticmethod
     def from_exif(input: str) -> "ImageMetadata":
         lines = input.splitlines()
