@@ -72,7 +72,7 @@ def stage_highres(
         EditMetadataStage(),
         stage.with_args(outscale=1, tile_size=SizeChart.max),
         highres=highres,
-        upscale=UpscaleParams(upscale.upscale_model, upscale=False),
+        upscale=upscale,
         replace_params=params,
     )
 
