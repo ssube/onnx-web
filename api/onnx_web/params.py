@@ -405,6 +405,9 @@ class StageParams:
         )
 
 
+UpscaleOrder = Literal["correction-first", "correction-last", "correction-both"]
+
+
 class UpscaleParams:
     def __init__(
         self,
@@ -419,9 +422,7 @@ class UpscaleParams:
         scale: int = 4,
         pre_pad: int = 0,
         tile_pad: int = 10,
-        upscale_order: Literal[
-            "correction-first", "correction-last", "correction-both"
-        ] = "correction-first",
+        upscale_order: UpscaleOrder = "correction-first",
     ) -> None:
         self.upscale_model = upscale_model
         self.correction_model = correction_model
@@ -478,21 +479,38 @@ class UpscaleParams:
             "upscale_order": self.upscale_order,
         }
 
-    def with_args(self, **kwargs):
+    def with_args(
+        self,
+        upscale_model: Optional[str] = None,
+        correction_model: Optional[str] = None,
+        denoise: Optional[float] = None,
+        upscale: Optional[bool] = None,
+        faces: Optional[bool] = None,
+        face_outscale: Optional[int] = None,
+        face_strength: Optional[float] = None,
+        outscale: Optional[int] = None,
+        scale: Optional[int] = None,
+        pre_pad: Optional[int] = None,
+        tile_pad: Optional[int] = None,
+        upscale_order: Optional[UpscaleOrder] = None,
+    ):
         return UpscaleParams(
-            kwargs.get("upscale_model", self.upscale_model),
-            kwargs.get("correction_model", self.correction_model),
-            kwargs.get("denoise", self.denoise),
-            kwargs.get("upscale", self.upscale),
-            kwargs.get("faces", self.faces),
-            kwargs.get("face_outscale", self.face_outscale),
-            kwargs.get("face_strength", self.face_strength),
-            kwargs.get("outscale", self.outscale),
-            kwargs.get("scale", self.scale),
-            kwargs.get("pre_pad", self.pre_pad),
-            kwargs.get("tile_pad", self.tile_pad),
-            kwargs.get("upscale_order", self.upscale_order),
+            upscale_model=upscale_model or self.upscale_model,
+            correction_model=correction_model or self.correction_model,
+            denoise=denoise or self.denoise,
+            upscale=upscale or self.upscale,
+            faces=faces or self.faces,
+            face_outscale=face_outscale or self.face_outscale,
+            face_strength=face_strength or self.face_strength,
+            outscale=outscale or self.outscale,
+            scale=scale or self.scale,
+            pre_pad=pre_pad or self.pre_pad,
+            tile_pad=tile_pad or self.tile_pad,
+            upscale_order=upscale_order or self.upscale_order,
         )
+
+
+UpscaleMethod = Literal["bilinear", "lanczos", "upscale"]
 
 
 class HighresParams:
@@ -502,7 +520,7 @@ class HighresParams:
         scale: int,
         steps: int,
         strength: float,
-        method: Literal["bilinear", "lanczos", "upscale"] = "lanczos",
+        method: UpscaleMethod = "lanczos",
         iterations: int = 1,
     ):
         self.enabled = enabled
@@ -531,3 +549,21 @@ class HighresParams:
             "steps": self.steps,
             "strength": self.strength,
         }
+
+    def with_args(
+        self,
+        enabled: Optional[bool] = None,
+        scale: Optional[int] = None,
+        steps: Optional[int] = None,
+        strength: Optional[float] = None,
+        method: Optional[UpscaleMethod] = None,
+        iterations: Optional[int] = None,
+    ):
+        return HighresParams(
+            enabled=enabled or self.enabled,
+            scale=scale or self.scale,
+            steps=steps or self.steps,
+            strength=strength or self.strength,
+            method=method or self.method,
+            iterations=iterations or self.iterations,
+        )

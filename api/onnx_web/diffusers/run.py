@@ -91,6 +91,16 @@ def add_thumbnail_output(
             size=Size(server.thumbnail_size, server.thumbnail_size)
         )
 
+        if metadata.highres is not None:
+            metadata.highres = metadata.highres.with_args(
+                outscale=1,
+            )
+
+        if metadata.upscale is not None:
+            metadata.upscale = metadata.upscale.with_args(
+                outscale=1,
+            )
+
         images.insert_image(0, thumbnail, metadata)
 
 
