@@ -75,7 +75,7 @@ export const I18N_STRINGS_DE = {
       },
       loading: {
         cancel: 'Stornieren',
-        progress: '{{current}} von {{total}} Schritten, {{tiles.current}} of {{tiles.total}} Kacheln, {{stages.current}} of {{stages.total}} Abschnitten',
+        progress: '{{steps.current}} von {{steps.total}} Schritten, {{tiles.current}} of {{tiles.total}} Kacheln, {{stages.current}} of {{stages.total}} Abschnitten',
         queue: '{{current}} von {{total}} in der Warteschlange',
         server: 'Verbindung zum Server...',
         unknown: 'vielen',
@@ -248,6 +248,8 @@ export const I18N_STRINGS_DE = {
         blend: 'Mischung',
         img2img: 'Img2img',
         inpaint: '',
+        models: 'Modelle',
+        settings: 'Einstellungen',
         txt2txt: 'Txt2txt',
         txt2img: 'Txt2img',
         upscale: 'Vergrößern',

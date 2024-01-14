@@ -5,6 +5,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Allotment } from 'allotment';
 import * as React from 'react';
 import { useContext, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHash } from 'react-use/lib/useHash';
 import { useStore } from 'zustand';
 
@@ -126,6 +127,7 @@ export function TabGroup(props: TabGroupProps) {
   const layout = LAYOUT_STYLES[props.direction];
 
   const [hash, setHash] = useHash();
+  const { t } = useTranslation();
 
   return <Stack direction='column' minWidth={layout.control.width} sx={{ mx: STANDARD_MARGIN }}>
     <TabContext value={getTab(hash)}>
@@ -133,7 +135,7 @@ export function TabGroup(props: TabGroupProps) {
         <TabList onChange={(_e, idx) => {
           setHash(idx);
         }}>
-          {TAB_LABELS.map((name) => <Tab key={name} label={name} value={name} />)}
+          {TAB_LABELS.map((name) => <Tab key={name} label={t(`tab.${name}`)} value={name} />)}
         </TabList>
       </Box>
       <TabPanel value='txt2img'>

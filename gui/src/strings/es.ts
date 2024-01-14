@@ -250,6 +250,8 @@ export const I18N_STRINGS_ES = {
         blend: 'Mezclar',
         img2img: 'Img2img',
         inpaint: 'Inpaint',
+        models: '',
+        settings: '',
         txt2txt: 'Txt2txt',
         txt2img: 'Txt2img',
         upscale: 'Aumentar',

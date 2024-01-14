@@ -329,6 +329,8 @@ export const I18N_STRINGS_EN = {
         blend: 'Blend',
         img2img: 'Img2img',
         inpaint: 'Inpaint',
+        models: 'Models',
+        settings: 'Settings',
         txt2txt: 'Txt2txt',
         txt2img: 'Txt2img',
         upscale: 'Upscale',
