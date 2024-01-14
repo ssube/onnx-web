@@ -138,7 +138,7 @@ class ImageMetadata:
 
         return (network_name, network_hash)
 
-    def to_exif(self, server: ServerContext, output: List[str]) -> str:
+    def to_exif(self, server: ServerContext) -> str:
         model_name, model_hash = self.get_model_hash(server)
         hash_map = {
             model_name: model_hash,

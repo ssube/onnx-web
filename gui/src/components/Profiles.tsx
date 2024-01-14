@@ -79,7 +79,7 @@ export function Profiles(props: ProfilesProps) {
     await loadParamsFromFile(file).then(loadFromMetadata);
   }
 
-  const drop = useDrop({
+  useDrop({
     onFiles(files, event) {
       event.preventDefault();
       const file = files[0];
