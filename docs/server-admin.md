@@ -308,6 +308,10 @@ These extra images can be helpful when debugging inpainting, especially poorly b
 
 - `panorama-highres`
   - when using the panorama pipeline with highres, prefer panorama views over stage tiling
+- `horde-safety` and `horde-safety-nsfw`
+  - enable [the horde-safety plugin](https://github.com/Haidra-Org/horde-safety)
+  - plugin always blocks CSAM, enable `horde-safety-nsfw` to block NSFW as well
+  - recommended for shared servers, may be required by some model licenses
 
 ### Pipeline Optimizations
 
@@ -330,12 +334,14 @@ These extra images can be helpful when debugging inpainting, especially poorly b
 - `onnx-*`
   - `onnx-cpu-*`
     - CPU offloading for individual models
-    - `onnx-cpu-text-encoder`
-      - recommended for SDXL highres
-    - `onnx-cpu-unet`
-      - not recommended
-    - `onnx-cpu-vae`
-      - may be necessary for SDXL highres
+    - upscaling models: `bsrgan`, `esrgan`, `swinir`
+    - diffusion models: `controlnet`, `scheduler`, `text-encoder`, `unet`, `vae`
+      - diffusion models can use `-sdxl` suffix for CPU offloading only in SDXL pipelines
+    - common flags:
+      - `onnx-cpu-text-encoder`
+        - recommended for SDXL highres
+      - `onnx-cpu-vae-sdxl`
+        - may be necessary for SDXL highres with limited VRAM
   - `onnx-deterministic-compute`
     - enable ONNX deterministic compute
   - `onnx-fp16`
