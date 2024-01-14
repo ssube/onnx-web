@@ -48,14 +48,16 @@ export function newSeed(): number {
   return Math.floor(Math.random() * MAX_SEED);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-magic-numbers
+export const RANDOM_SEED = [-1, '-1'];
+
 export function replaceRandomSeeds(key: string, values: Array<number | string>): Array<number | string> {
   if (key !== 'seed') {
     return values;
   }
 
   return values.map((it) => {
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    if (it === '-1' || it === -1) {
+    if (RANDOM_SEED.includes(it)) {
       return newSeed();
     }
 
@@ -108,8 +110,8 @@ export function makeTxt2ImgGridPipeline(
     defaults: {
       ...model,
       ...params,
-      ...(upscale || {}),
-      ...(highres || {}),
+      ...(upscale ?? {}),
+      ...(highres ?? {}),
     },
     stages: [],
   };

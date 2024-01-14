@@ -11,14 +11,16 @@ import { createStore } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { makeClient } from './client/api.js';
-import { LOCAL_CLIENT } from './client/local.js';
 import { ApiClient } from './client/base.js';
+import { LOCAL_CLIENT } from './client/local.js';
 import { ParamsVersionError } from './components/error/ParamsVersion.js';
 import { ServerParamsError } from './components/error/ServerParams.js';
 import { LoadingScreen } from './components/LoadingScreen.js';
 import { OnnxError } from './components/OnnxError.js';
 import { OnnxWeb } from './components/OnnxWeb.js';
+import { getBatchInterval, getToken } from './components/utils.js';
 import { Config, getApiRoot, isDebug, loadConfig, mergeConfig, ServerParams } from './config.js';
+import { INITIAL_LOAD_TIMEOUT, PARAM_VERSION } from './constants.js';
 import {
   ClientContext,
   ConfigContext,
@@ -29,9 +31,8 @@ import {
   STATE_VERSION,
   StateContext,
 } from './state/full.js';
-import { I18N_STRINGS } from './strings/all.js';
 import { applyStateMigrations, UnknownState } from './state/migration/default.js';
-import { INITIAL_LOAD_TIMEOUT, PARAM_VERSION } from './constants.js';
+import { I18N_STRINGS } from './strings/all.js';
 
 export async function renderApp(config: Config, params: ServerParams, logger: Logger, client: ApiClient) {
   const completeConfig = mergeConfig(config, params);
@@ -149,13 +150,13 @@ export async function main() {
   // load config from GUI server
   const config = await loadConfig();
 
-  // get token from query string
-  const query = new URLSearchParams(window.location.search);
-  const token = query.get('token');
+  // get client params from query string
+  const root = getApiRoot(config);
+  const batch = getBatchInterval();
+  const token = getToken();
 
   // use that to create an API client
-  const root = getApiRoot(config);
-  const client = makeClient(root, token);
+  const client = makeClient(root, batch, token);
 
   // prep react-dom
   const appElement = mustExist(document.getElementById('app'));

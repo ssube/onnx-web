@@ -8,10 +8,11 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
-import { POLL_TIME, STANDARD_SPACING } from '../../constants.js';
+import { STANDARD_SPACING } from '../../constants.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { JobResponse, JobStatus } from '../../types/api-v2.js';
 import { visibleIndex } from '../../utils.js';
+import { getBatchInterval } from '../utils.js';
 
 const LOADING_PERCENT = 100;
 const LOADING_OVERAGE = 99;
@@ -22,6 +23,7 @@ export interface LoadingCardProps {
 
 export function LoadingCard(props: LoadingCardProps) {
   const { image } = props;
+  const batch = getBatchInterval();
 
   const client = mustExist(useContext(ClientContext));
   const { params } = mustExist(useContext(ConfigContext));
@@ -34,7 +36,7 @@ export function LoadingCard(props: LoadingCardProps) {
   const ready = useQuery(['ready', image.name], () => client.status([image.name]), {
     // data will always be ready without this, even if the API says its not
     cacheTime: 0,
-    refetchInterval: POLL_TIME,
+    refetchInterval: batch,
   });
 
   function renderProgress() {

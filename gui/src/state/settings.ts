@@ -2,7 +2,7 @@ import { Slice } from './types.js';
 
 export type Layout = 'horizontal' | 'vertical';
 
-export const DEFAULT_LAYOUT = {
+export const DEFAULT_SETTINGS = {
   historyWidth: 4,
   layout: 'vertical' as Layout,
 } as const;
@@ -11,23 +11,23 @@ export interface SettingsSlice {
   historyWidth: number;
   layout: Layout;
 
+  setHistoryWidth(width: number): void;
   setLayout(layout: Layout): void;
-  setWidth(width: number): void;
 }
 
 export function createSettingsSlice<TState extends SettingsSlice>(): Slice<TState, SettingsSlice> {
   return (set) => ({
-    ...DEFAULT_LAYOUT,
+    ...DEFAULT_SETTINGS,
     setLayout(layout) {
       set((prev) => ({
         ...prev,
         layout,
       }));
     },
-    setWidth(width) {
+    setHistoryWidth(historyWidth) {
       set((prev) => ({
         ...prev,
-        historyWidth: width,
+        historyWidth,
       }));
     },
   });

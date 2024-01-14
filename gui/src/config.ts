@@ -123,14 +123,15 @@ export function getApiRoot(config: Config): string {
   }
 }
 
+export const TRUE_VALUES = ['1', 't', 'true', 'y', 'yes'];
+
 export function isDebug(): boolean {
   const query = new URLSearchParams(window.location.search);
   const debug = query.get('debug');
 
   if (doesExist(debug)) {
     const val = debug.toLowerCase();
-    // eslint-disable-next-line no-restricted-syntax
-    return val === '1' || val === 't' || val === 'true' || val === 'y' || val === 'yes';
+    return TRUE_VALUES.includes(val);
   } else {
     return false;
   }

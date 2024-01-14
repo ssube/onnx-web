@@ -73,7 +73,6 @@ export const LAYOUT_STYLES = {
 export const INITIAL_LOAD_TIMEOUT = 5_000;
 
 export const STALE_TIME = 300_000; // 5 minutes
-export const POLL_TIME = 5_000; // 5 seconds
 export const SAVE_TIME = 5_000; // 5 seconds
 
 export const IMAGE_FILTER = '.bmp, .jpg, .jpeg, .png';

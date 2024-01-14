@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
 import { doesExist, InvalidArgumentError, Maybe } from '@apextoaster/js-utils';
-import { create as batcher, windowScheduler, keyResolver } from '@yornaath/batshit';
+import { create as batcher, keyResolver, windowScheduler } from '@yornaath/batshit';
 
 import { ServerParams } from '../config.js';
-import { FIXED_FLOAT, FIXED_INTEGER, POLL_TIME, STATUS_SUCCESS } from '../constants.js';
+import { FIXED_FLOAT, FIXED_INTEGER, STATUS_SUCCESS } from '../constants.js';
 import { JobResponse, JobResponseWithRetry, SuccessJobResponse } from '../types/api-v2.js';
 import {
   FilterResponse,
@@ -125,7 +125,7 @@ export function appendHighresToURL(url: URL, highres: HighresParams) {
 /**
  * Make an API client using the given API root and fetch client.
  */
-export function makeClient(root: string, token: Maybe<string> = undefined, f = fetch): ApiClient {
+export function makeClient(root: string, batchInterval: number, token: Maybe<string> = undefined, f = fetch): ApiClient {
   function parseRequest(url: URL, options: RequestInit): Promise<JobResponse> {
     return f(url, options).then((res) => parseJobResponse(root, res));
   }
@@ -505,7 +505,7 @@ export function makeClient(root: string, token: Maybe<string> = undefined, f = f
   const batchStatus = batcher({
     fetcher: async (jobs: Array<string>) => client.status(jobs),
     resolver: keyResolver('name'),
-    scheduler: windowScheduler(POLL_TIME),
+    scheduler: windowScheduler(batchInterval),
   });
 
   return {

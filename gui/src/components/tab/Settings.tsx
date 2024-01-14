@@ -55,7 +55,7 @@ export function Settings() {
       max={6}
       step={1}
       value={state.historyWidth}
-      onChange={(value) => state.setWidth(value)}
+      onChange={(value) => state.setHistoryWidth(value)}
     />
     <Button variant='contained' onClick={() => state.setLayout(state.layout === 'horizontal' ? 'vertical' : 'horizontal')}>Toggle Layout</Button>
     <TextField variant='outlined' label={t('setting.prompt')} value={state.defaults.prompt} onChange={(event) => {
