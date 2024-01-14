@@ -199,12 +199,11 @@ export function MaskCanvas(props: MaskCanvasProps) {
   // painting state
   const painting = useRef(false);
   const dirty = useRef(false);
-  const background = useRef<{ name: string; url: Maybe<string> }>({
-    name: '',
+  const background = useRef<{ source: Maybe<Blob>; url: Maybe<string> }>({
+    source: undefined,
     url: undefined,
   });
 
-  const state = mustExist(useContext(StateContext));
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -222,13 +221,13 @@ export function MaskCanvas(props: MaskCanvasProps) {
   }, [mask]);
 
   // update background ref
-  if (doesExist(source) && background.current.name !== source.name) {
+  if (doesExist(source) && background.current.source !== source) {
     if (doesExist(background.current.url)) {
       URL.revokeObjectURL(background.current.url);
     }
 
+    background.current.source = source;
     background.current.url = URL.createObjectURL(source);
-    background.current.name = source.name;
 
     // initialize the mask if it does not exist
     if (doesExist(maskRef.current) && doesExist(mask) === false) {

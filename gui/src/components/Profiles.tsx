@@ -18,6 +18,7 @@ import { defaultTo, isString } from 'lodash';
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import * as useDropModule from 'react-use/lib/useDrop';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
@@ -27,6 +28,10 @@ import { AnyImageMetadata } from '../types/api-v2.js';
 import { DeepPartial } from '../types/model.js';
 import { BaseImgParams, HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../types/params.js';
 import { downloadAsJson } from '../utils.js';
+
+// useDrop has a really weird export
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const useDrop = (useDropModule.default as any).default as typeof useDropModule['default'];
 
 export type PartialImageMetadata = DeepPartial<AnyImageMetadata>;
 
@@ -53,6 +58,40 @@ export function Profiles(props: ProfilesProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [profileName, setProfileName] = useState('');
   const { t } = useTranslation();
+
+  async function loadFromMetadata(metadata: PartialImageMetadata) {
+    // TODO: load model parameters
+
+    if (doesExist(metadata.params)) {
+      props.setParams(metadata.params);
+    }
+
+    if (doesExist(metadata.highres)) {
+      props.setHighres(metadata.highres);
+    }
+
+    if (doesExist(metadata.upscale)) {
+      props.setUpscale(metadata.upscale);
+    }
+  }
+
+  async function loadFromFile(file: File) {
+    await loadParamsFromFile(file).then(loadFromMetadata);
+  }
+
+  const drop = useDrop({
+    onFiles(files, event) {
+      event.preventDefault();
+      const file = files[0];
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      loadFromFile(file);
+    },
+    onText(text, event) {
+      event.preventDefault();
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      parseAutoComment(text).then(loadFromMetadata);
+    },
+  });
 
   return <Stack direction='row' spacing={STANDARD_SPACING}>
     <Autocomplete
@@ -146,21 +185,7 @@ export function Profiles(props: ProfilesProps) {
           if (doesExist(files) && files.length > 0) {
             const file = mustExist(files[0]);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            loadParamsFromFile(file).then((newParams) => {
-              // TODO: load model parameters
-
-              if (doesExist(newParams.params)) {
-                props.setParams(newParams.params);
-              }
-
-              if (doesExist(newParams.highres)) {
-                props.setHighres(newParams.highres);
-              }
-
-              if (doesExist(newParams.upscale)) {
-                props.setUpscale(newParams.upscale);
-              }
-            });
+            loadFromFile(file);
           }
         }}
         onClick={(event) => {
