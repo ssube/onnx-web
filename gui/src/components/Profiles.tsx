@@ -86,11 +86,6 @@ export function Profiles(props: ProfilesProps) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       loadFromFile(file);
     },
-    onText(text, event) {
-      event.preventDefault();
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      parseAutoComment(text).then(loadFromMetadata);
-    },
   });
 
   return <Stack direction='row' spacing={STANDARD_SPACING}>
