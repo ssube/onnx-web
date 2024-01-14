@@ -87,7 +87,7 @@ def add_thumbnail_output(
         thumbnail.thumbnail((server.thumbnail_size, server.thumbnail_size))
 
         metadata = images.metadata[0]
-        metadata = metadata.copy(
+        metadata = metadata.with_args(
             size=Size(server.thumbnail_size, server.thumbnail_size)
         )
 
