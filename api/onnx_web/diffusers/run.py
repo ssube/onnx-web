@@ -91,7 +91,7 @@ def add_thumbnail_output(
             size=Size(server.thumbnail_size, server.thumbnail_size)
         )
 
-        images.insert_image(0, thumbnail, images.metadata[0])
+        images.insert_image(0, thumbnail, metadata)
 
 
 def run_txt2img_pipeline(
