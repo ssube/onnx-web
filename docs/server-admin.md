@@ -17,6 +17,7 @@ Please see [the user guide](user-guide.md) for descriptions of the client and ea
     - [Hosting the client](#hosting-the-client)
     - [Customizing the client config](#customizing-the-client-config)
   - [Configuration](#configuration)
+    - [Client Parameters](#client-parameters)
     - [Debug Mode](#debug-mode)
     - [Environment Variables](#environment-variables)
       - [Client Variables](#client-variables)
@@ -184,6 +185,23 @@ custom config using:
 
 Configuration is still very simple, loading models from a directory and parameters from a single JSON file. Some
 additional configuration can be done through environment variables starting with `ONNX_WEB`.
+
+For the web GUI or client, most configuration is provided by the server. Some additional options can be set using
+the query string.
+
+### Client Parameters
+
+- `api`
+  - the root URL of the server you intend to use
+  - `?api=http://localhost:5000`
+  - `?api=https://generate.your-server.ai`
+- `interval`
+  - the polling interval for status updates
+  - `?interval=500` for LCM and Turbo
+- `lng`
+  - the language to use for localization
+  - `de`, `en`, `es`, and `fr` are supported
+  - `dev` will show localization labels
 
 ### Debug Mode
 
