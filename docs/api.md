@@ -8,6 +8,10 @@
     - [GUI bundle](#gui-bundle)
       - [`GET /`](#get-)
       - [`GET /<path>`](#get-path)
+    - [Jobs](#jobs)
+      - [`POST /api/job`](#post-apijob)
+      - [`PUT /api/job/cancel`](#put-apijobcancel)
+      - [`GET /api/job/status`](#get-apijobstatus)
     - [Settings and parameters](#settings-and-parameters)
       - [`GET /api`](#get-api)
       - [`GET /api/settings/filters`](#get-apisettingsfilters)
@@ -51,11 +55,132 @@ Usually includes:
 - `config.json`
 - `index.html`
 
+### Jobs
+
+#### `POST /api/job`
+
+Create a new job that will run a chain pipeline provided in the `POST` body.
+
+#### `PUT /api/job/cancel`
+
+Cancel one or more jobs by name, provided in the `jobs` query parameter.
+
+Request:
+
+```shell
+> curl http://localhost:5000/api/job/status?jobs=job-1,job-2,job-3,job-4
+```
+
+Response:
+
+```json
+[
+  {
+    "name": "job-1",
+    "status": "cancelled"
+  },
+  {
+    "name": "job-2",
+    "status": "pending"
+  }
+]
+```
+
+#### `GET /api/job/status`
+
+Get the status of one or more jobs by name, provided in the `jobs` query parameter.
+
+Request:
+
+```shell
+> curl http://localhost:5000/api/job/status?jobs=job-1,job-2,job-3,job-4
+```
+
+Response:
+
+```json
+[
+    {
+        "metadata": [
+            // metadata for each output
+        ],
+        "name": "job-1",
+        "outputs": [
+            "txt2img_job_1.png"
+        ],
+        "queue": {
+            "current": 0,
+            "total": 0
+        },
+        "stages": {
+            "current": 4,
+            "total": 6
+        },
+        "status": "running",
+        "steps": {
+            "current": 120,
+            "total": 78
+        },
+        "tiles": {
+            "current": 0,
+            "total": 16
+        }
+    },
+    {
+        "name": "job-2",
+        "queue": {
+            "current": 2,
+            "total": 3
+        },
+        "stages": {
+            "current": 0,
+            "total": 0
+        },
+        "status": "pending",
+        "steps": {
+            "current": 0,
+            "total": 0
+        },
+        "tiles": {
+            "current": 0,
+            "total": 0
+        }
+    }
+]
+```
+
 ### Settings and parameters
 
 #### `GET /api`
 
-Introspection endpoint.
+API introspection endpoint.
+
+Returns a JSON document with all of the available API endpoints and valid methods for them:
+
+```json
+{
+  "name": "onnx-web",
+  "routes": [
+    {
+      "methods": [
+        "HEAD",
+        "GET",
+        "OPTIONS"
+      ],
+      "path": "/static/:filename"
+    },
+    {
+      "methods": [
+        "HEAD",
+        "GET",
+        "OPTIONS"
+      ],
+      "path": "/"
+    },
+    ...
+  ]
+}
+```
 
 #### `GET /api/settings/filters`
 
