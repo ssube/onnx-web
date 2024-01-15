@@ -68,6 +68,7 @@ class TestWorkerPool(unittest.TestCase):
         self.assertTrue(self.pool.cancel("test"))
         self.assertEqual(self.pool.status("test"), (JobStatus.CANCELLED, None, None))
 
+    @unittest.skip("TODO")
     def test_cancel_running(self):
         pass
 
@@ -144,15 +145,19 @@ class TestWorkerPool(unittest.TestCase):
         status, _progress, _queue = self.pool.status("test")
         self.assertEqual(status, JobStatus.SUCCESS)
 
+    @unittest.skip("TODO")
     def test_recycle_live(self):
         pass
 
+    @unittest.skip("TODO")
     def test_recycle_dead(self):
         pass
 
+    @unittest.skip("TODO")
     def test_running_status(self):
         pass
 
+    @unittest.skip("TODO")
     def test_progress_update(self):
         pass
 

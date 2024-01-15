@@ -8,6 +8,7 @@ from PIL import Image
 from ..models.onnx import OnnxModel
 from ..params import (
     DeviceParams,
+    HighresParams,
     ImageParams,
     Size,
     SizeChart,
@@ -65,6 +66,7 @@ class UpscaleBSRGANStage(BaseStage):
         sources: StageResult,
         *,
         upscale: UpscaleParams,
+        highres: Optional[HighresParams] = None,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> StageResult:

@@ -306,6 +306,9 @@ class LoadTorchTests(unittest.TestCase):
         self.assertEqual(result, checkpoint)
 
 
+LOAD_TENSOR_LOG = "loading tensor: %s"
+
+
 class LoadTensorTests(unittest.TestCase):
     @patch("onnx_web.convert.utils.logger")
     @patch("onnx_web.convert.utils.path")
@@ -320,7 +323,7 @@ class LoadTensorTests(unittest.TestCase):
 
         result = load_tensor(name, map_location)
 
-        mock_logger.debug.assert_has_calls([mock.call("loading tensor: %s", name)])
+        mock_logger.debug.assert_has_calls([mock.call(LOAD_TENSOR_LOG, name)])
         mock_path.splitext.assert_called_once_with(name)
         mock_path.exists.assert_called_once_with(name)
         mock_torch.load.assert_called_once_with(name, map_location=map_location)
@@ -339,7 +342,7 @@ class LoadTensorTests(unittest.TestCase):
 
         result = load_tensor(name)
 
-        mock_logger.debug.assert_has_calls([mock.call("loading tensor: %s", name)])
+        mock_logger.debug.assert_has_calls([mock.call(LOAD_TENSOR_LOG, name)])
         mock_safetensors.torch.load_file.assert_called_once_with(name, device="cpu")
         self.assertEqual(result, checkpoint)
 
@@ -353,7 +356,7 @@ class LoadTensorTests(unittest.TestCase):
 
         result = load_tensor(name, map_location)
 
-        mock_logger.debug.assert_has_calls([mock.call("loading tensor: %s", name)])
+        mock_logger.debug.assert_has_calls([mock.call(LOAD_TENSOR_LOG, name)])
         mock_torch.load.assert_has_calls(
             [
                 mock.call(name, map_location=map_location),
@@ -370,9 +373,7 @@ class LoadTensorTests(unittest.TestCase):
 
         result = load_tensor(ONNX_MODEL, map_location)
 
-        mock_logger.debug.assert_has_calls(
-            [mock.call("loading tensor: %s", ONNX_MODEL)]
-        )
+        mock_logger.debug.assert_has_calls([mock.call(LOAD_TENSOR_LOG, ONNX_MODEL)])
         mock_logger.warning.assert_called_once_with(
             "tensor has ONNX extension, attempting to use PyTorch anyways: %s", "onnx"
         )
@@ -393,7 +394,7 @@ class LoadTensorTests(unittest.TestCase):
 
         result = load_tensor(name, map_location)
 
-        mock_logger.debug.assert_has_calls([mock.call("loading tensor: %s", name)])
+        mock_logger.debug.assert_has_calls([mock.call(LOAD_TENSOR_LOG, name)])
         mock_logger.warning.assert_called_once_with(
             "unknown tensor type, falling back to PyTorch: %s", "xyz"
         )
@@ -434,13 +435,15 @@ class FixDiffusionNameTests(unittest.TestCase):
         )
 
 
+CACHE_PATH = "/path/to/cache"
+
+
 class BuildCachePathsTests(unittest.TestCase):
     def test_build_cache_paths_without_format(self):
         client = "client1"
-        cache = "/path/to/cache"
 
-        conversion = ConversionContext(cache_path=cache)
-        result = build_cache_paths(conversion, ONNX_MODEL, client, cache)
+        conversion = ConversionContext(cache_path=CACHE_PATH)
+        result = build_cache_paths(conversion, ONNX_MODEL, client, CACHE_PATH)
 
         expected_paths = [
             path.join("/path/to/cache", ONNX_MODEL),
@@ -451,11 +454,10 @@ class BuildCachePathsTests(unittest.TestCase):
     def test_build_cache_paths_with_format(self):
         name = "model"
         client = "client2"
-        cache = "/path/to/cache"
         model_format = "onnx"
 
-        conversion = ConversionContext(cache_path=cache)
-        result = build_cache_paths(conversion, name, client, cache, model_format)
+        conversion = ConversionContext(cache_path=CACHE_PATH)
+        result = build_cache_paths(conversion, name, client, CACHE_PATH, model_format)
 
         expected_paths = [
             path.join("/path/to/cache", ONNX_MODEL),
@@ -465,11 +467,12 @@ class BuildCachePathsTests(unittest.TestCase):
 
     def test_build_cache_paths_with_existing_extension(self):
         client = "client3"
-        cache = "/path/to/cache"
         model_format = "onnx"
 
-        conversion = ConversionContext(cache_path=cache)
-        result = build_cache_paths(conversion, TORCH_MODEL, client, cache, model_format)
+        conversion = ConversionContext(cache_path=CACHE_PATH)
+        result = build_cache_paths(
+            conversion, TORCH_MODEL, client, CACHE_PATH, model_format
+        )
 
         expected_paths = [
             path.join("/path/to/cache", TORCH_MODEL),
@@ -480,11 +483,10 @@ class BuildCachePathsTests(unittest.TestCase):
     def test_build_cache_paths_with_empty_extension(self):
         name = "model"
         client = "client4"
-        cache = "/path/to/cache"
         model_format = "onnx"
 
-        conversion = ConversionContext(cache_path=cache)
-        result = build_cache_paths(conversion, name, client, cache, model_format)
+        conversion = ConversionContext(cache_path=CACHE_PATH)
+        result = build_cache_paths(conversion, name, client, CACHE_PATH, model_format)
 
         expected_paths = [
             path.join("/path/to/cache", ONNX_MODEL),

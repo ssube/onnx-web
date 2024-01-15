@@ -7,7 +7,7 @@ import torch
 from PIL import Image
 from torchvision.transforms.functional import normalize
 
-from ..params import ImageParams, StageParams, UpscaleParams
+from ..params import HighresParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
 from .base import BaseStage
@@ -28,8 +28,9 @@ class CorrectCodeformerStage(BaseStage):
         _params: ImageParams,
         sources: StageResult,
         *,
-        stage_source: Optional[Image.Image] = None,
         upscale: UpscaleParams,
+        highres: Optional[HighresParams] = None,
+        stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> StageResult:
         # adapted from https://github.com/kadirnar/codeformer-pip/blob/main/codeformer/app.py and

@@ -4,9 +4,6 @@ from onnx_web.chain.result import ImageMetadata
 
 
 class ImageMetadataTests(unittest.TestCase):
-    def test_image_metadata(self):
-        pass
-
     def test_from_exif_normal(self):
         exif_data = """test prompt
 Negative prompt: negative prompt
@@ -36,8 +33,3 @@ Steps: 30, Seed: 5
         self.assertEqual(metadata.params.cfg, 4.0)
         self.assertEqual(metadata.params.steps, 30)
         self.assertEqual(metadata.params.seed, 5)
-
-
-class StageResultTests(unittest.TestCase):
-    def test_stage_result(self):
-        pass

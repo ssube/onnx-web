@@ -5,7 +5,13 @@ from typing import Optional
 from PIL import Image
 
 from ..onnx import OnnxRRDBNet
-from ..params import DeviceParams, ImageParams, StageParams, UpscaleParams
+from ..params import (
+    DeviceParams,
+    HighresParams,
+    ImageParams,
+    StageParams,
+    UpscaleParams,
+)
 from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
@@ -102,6 +108,7 @@ class UpscaleRealESRGANStage(BaseStage):
         sources: StageResult,
         *,
         upscale: UpscaleParams,
+        highres: Optional[HighresParams] = None,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> StageResult:

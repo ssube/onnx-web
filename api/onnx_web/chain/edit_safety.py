@@ -4,6 +4,7 @@ from typing import Any, Optional
 from PIL import Image
 
 from ..errors import CancelledException
+from ..output import save_metadata
 from ..params import ImageParams, SizeChart, StageParams
 from ..server import ServerContext
 from ..server.model_cache import ModelTypes
@@ -44,7 +45,7 @@ class EditSafetyStage(BaseStage):
 
     def run(
         self,
-        _worker: WorkerContext,
+        worker: WorkerContext,
         server: ServerContext,
         _stage: StageParams,
         _params: ImageParams,
@@ -65,23 +66,24 @@ class EditSafetyStage(BaseStage):
             images = sources.as_images()
             results = []
             for i, image in enumerate(images):
-                prompt = sources.metadata[i].params.prompt
+                metadata = sources.metadata[i]
+                prompt = metadata.params.prompt
                 check = nsfw_checker.check_for_nsfw(image, prompt=prompt)
 
                 if check.is_csam:
                     logger.warning("flagging csam result: %s, %s", i, prompt)
                     is_csam = True
-                    continue
 
-                if check.is_nsfw and block_nsfw:
+                    report_name = f"csam-report-{worker.job}-{i}"
+                    report_path = save_metadata(server, report_name, metadata)
+                    logger.info("saved csam report: %s", report_path)
+                elif check.is_nsfw and block_nsfw:
                     logger.warning("blocking nsfw image: %s, %s", i, prompt)
                     results.append(Image.new("RGB", image.size, color="black"))
-                    continue
-
-                results.append(image)
+                else:
+                    results.append(image)
 
             if is_csam:
-                # TODO: save metadata to a report file
                 logger.warning("blocking csam result")
                 raise CancelledException(reason="csam")
             else:

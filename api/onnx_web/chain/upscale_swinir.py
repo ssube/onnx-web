@@ -6,7 +6,14 @@ import numpy as np
 from PIL import Image
 
 from ..models.onnx import OnnxModel
-from ..params import DeviceParams, ImageParams, SizeChart, StageParams, UpscaleParams
+from ..params import (
+    DeviceParams,
+    HighresParams,
+    ImageParams,
+    SizeChart,
+    StageParams,
+    UpscaleParams,
+)
 from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
 from ..worker import WorkerContext
@@ -58,6 +65,7 @@ class UpscaleSwinIRStage(BaseStage):
         sources: StageResult,
         *,
         upscale: UpscaleParams,
+        highres: Optional[HighresParams] = None,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> StageResult:

@@ -28,6 +28,7 @@ from ..utils import (
     get_boolean,
     get_from_list,
     get_from_map,
+    get_list,
     get_not_empty,
     get_size,
     load_config,
@@ -648,7 +649,7 @@ def job_create(server: ServerContext, pool: DevicePoolExecutor):
 
 def job_cancel(server: ServerContext, pool: DevicePoolExecutor):
     legacy_job_name = request.args.get("job", None)
-    job_list = request.args.get("jobs", "").split(",")
+    job_list = get_list(request.args, "jobs")
 
     if legacy_job_name is not None:
         job_list.append(legacy_job_name)
@@ -672,7 +673,7 @@ def job_cancel(server: ServerContext, pool: DevicePoolExecutor):
 
 def job_status(server: ServerContext, pool: DevicePoolExecutor):
     legacy_job_name = request.args.get("job", None)
-    job_list = request.args.get("jobs", "").split(",")
+    job_list = get_list(request.args, "jobs")
 
     if legacy_job_name is not None:
         job_list.append(legacy_job_name)
