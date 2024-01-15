@@ -454,6 +454,11 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                             guidance_rescale=guidance_rescale,
                         )
 
+                # freeze the scheduler's internal timestep
+                prev_step_index = None
+                if hasattr(self.scheduler, "_step_index"):
+                    prev_step_index = self.scheduler._step_index
+
                 # compute the previous noisy sample x_t -> x_t-1
                 scheduler_output = self.scheduler.step(
                     torch.from_numpy(noise_pred),
@@ -462,6 +467,10 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                     **extra_step_kwargs,
                 )
                 latents_view_denoised = scheduler_output.prev_sample.numpy()
+
+                # reset the scheduler's internal timestep
+                if prev_step_index is not None:
+                    self.scheduler._step_index = prev_step_index
 
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
                 count[:, :, h_start:h_end, w_start:w_end] += 1
@@ -537,6 +546,11 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                                 guidance_rescale=guidance_rescale,
                             )
 
+                    # freeze the scheduler's internal timestep
+                    prev_step_index = None
+                    if hasattr(self.scheduler, "_step_index"):
+                        prev_step_index = self.scheduler._step_index
+
                     # compute the previous noisy sample x_t -> x_t-1
                     scheduler_output = self.scheduler.step(
                         torch.from_numpy(region_noise_pred),
@@ -545,6 +559,10 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                         **extra_step_kwargs,
                     )
                     latents_region_denoised = scheduler_output.prev_sample.numpy()
+
+                    # reset the scheduler's internal timestep
+                    if prev_step_index is not None:
+                        self.scheduler._step_index = prev_step_index
 
                     if feather[0] > 0.0:
                         mask = make_tile_mask(
@@ -878,6 +896,11 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                             guidance_rescale=guidance_rescale,
                         )
 
+                # freeze the scheduler's internal timestep
+                prev_step_index = None
+                if hasattr(self.scheduler, "_step_index"):
+                    prev_step_index = self.scheduler._step_index
+
                 # compute the previous noisy sample x_t -> x_t-1
                 scheduler_output = self.scheduler.step(
                     torch.from_numpy(noise_pred),
@@ -886,6 +909,10 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                     **extra_step_kwargs,
                 )
                 latents_view_denoised = scheduler_output.prev_sample.numpy()
+
+                # reset the scheduler's internal timestep
+                if prev_step_index is not None:
+                    self.scheduler._step_index = prev_step_index
 
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
                 count[:, :, h_start:h_end, w_start:w_end] += 1
