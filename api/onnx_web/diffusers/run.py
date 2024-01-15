@@ -93,11 +93,12 @@ def add_thumbnail_output(
 
         if metadata.highres is not None:
             metadata.highres = metadata.highres.with_args(
-                outscale=1,
+                scale=1,
             )
 
         if metadata.upscale is not None:
             metadata.upscale = metadata.upscale.with_args(
+                scale=1,
                 outscale=1,
             )
 
