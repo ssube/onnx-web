@@ -470,6 +470,11 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
                 # reset the scheduler's internal timestep
                 if prev_step_index is not None:
+                    logger.debug(
+                        "resetting scheduler internal step index from %s to %s",
+                        self.scheduler._step_index,
+                        prev_step_index,
+                    )
                     self.scheduler._step_index = prev_step_index
 
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
@@ -562,6 +567,11 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
                     # reset the scheduler's internal timestep
                     if prev_step_index is not None:
+                        logger.debug(
+                            "resetting scheduler internal step index from %s to %s",
+                            self.scheduler._step_index,
+                            prev_step_index,
+                        )
                         self.scheduler._step_index = prev_step_index
 
                     if feather[0] > 0.0:
@@ -912,6 +922,11 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
 
                 # reset the scheduler's internal timestep
                 if prev_step_index is not None:
+                    logger.debug(
+                        "resetting scheduler internal step index from %s to %s",
+                        self.scheduler._step_index,
+                        prev_step_index,
+                    )
                     self.scheduler._step_index = prev_step_index
 
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised

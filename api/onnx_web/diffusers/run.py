@@ -5,7 +5,6 @@ from typing import Any, List, Optional
 from PIL import Image, ImageOps
 
 from ..chain import (
-    BlendDenoiseFastNLMeansStage,
     BlendImg2ImgStage,
     BlendMaskStage,
     ChainPipeline,
@@ -130,12 +129,6 @@ def run_txt2img_pipeline(
 
     # apply upscaling and correction, before highres
     highres_size = get_highres_tile(server, params, highres, tile_size)
-    if params.is_panorama():
-        chain.stage(
-            BlendDenoiseFastNLMeansStage(),
-            StageParams(tile_size=highres_size),
-        )
-
     first_upscale, after_upscale = split_upscale(upscale)
     if first_upscale:
         stage_upscale_correction(
