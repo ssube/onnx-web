@@ -656,6 +656,8 @@ def job_cancel(server: ServerContext, pool: DevicePoolExecutor):
 
     if len(job_list) == 0:
         return error_reply("at least one job name is required")
+    elif len(job_list) > 10:
+        return error_reply("too many jobs")
 
     results: List[Dict[str, str]] = []
     for job_name in job_list:
@@ -680,6 +682,8 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
 
     if len(job_list) == 0:
         return error_reply("at least one job name is required")
+    elif len(job_list) > 10:
+        return error_reply("too many jobs")
 
     records = []
 

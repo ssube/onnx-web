@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import { doesExist, InvalidArgumentError, Maybe } from '@apextoaster/js-utils';
-import { create as batcher, keyResolver, windowScheduler } from '@yornaath/batshit';
+import { create as batcher, keyResolver, windowScheduler, windowedFiniteBatchScheduler } from '@yornaath/batshit';
 
 import { ServerParams } from '../config.js';
 import { FIXED_FLOAT, FIXED_INTEGER, STATUS_SUCCESS } from '../constants.js';
@@ -505,7 +505,10 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
   const batchStatus = batcher({
     fetcher: async (jobs: Array<string>) => client.status(jobs),
     resolver: keyResolver('name'),
-    scheduler: windowScheduler(batchInterval),
+    scheduler: windowedFiniteBatchScheduler({
+      windowMs: batchInterval,
+      maxBatchSize: 10,
+    }),
   });
 
   return {
