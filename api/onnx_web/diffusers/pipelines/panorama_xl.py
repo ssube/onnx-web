@@ -598,7 +598,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                     for i in range(latents.shape[0])
                 ]
             )
-            image = self.watermark.apply_watermark(image)
 
             # TODO: add image_processor
             image = np.clip(image / 2 + 0.5, 0, 1).transpose((0, 2, 3, 1))
@@ -917,7 +916,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                     for i in range(latents.shape[0])
                 ]
             )
-            image = self.watermark.apply_watermark(image)
 
             # TODO: add image_processor
             image = np.clip(image / 2 + 0.5, 0, 1).transpose((0, 2, 3, 1))
