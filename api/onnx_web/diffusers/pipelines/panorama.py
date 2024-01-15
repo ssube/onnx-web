@@ -578,8 +578,6 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         for i, t in enumerate(self.progress_bar(self.scheduler.timesteps)):
             last = i == (len(self.scheduler.timesteps) - 1)
-            next_step_index = None
-
             count.fill(0)
             value.fill(0)
 
@@ -614,11 +612,6 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                         noise_pred_text - noise_pred_uncond
                     )
 
-                # freeze the scheduler's internal timestep
-                prev_step_index = None
-                if hasattr(self.scheduler, "_step_index"):
-                    prev_step_index = self.scheduler._step_index
-
                 # compute the previous noisy sample x_t -> x_t-1
                 scheduler_output = self.scheduler.step(
                     torch.from_numpy(noise_pred),
@@ -627,16 +620,6 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                     **extra_step_kwargs,
                 )
                 latents_view_denoised = scheduler_output.prev_sample.numpy()
-
-                # reset the scheduler's internal timestep
-                if prev_step_index is not None:
-                    logger.debug(
-                        "resetting scheduler internal step index from %s to %s",
-                        self.scheduler._step_index,
-                        prev_step_index,
-                    )
-                    next_step_index = self.scheduler._step_index
-                    self.scheduler._step_index = prev_step_index
 
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
                 count[:, :, h_start:h_end, w_start:w_end] += 1
@@ -703,11 +686,6 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                             * (region_noise_pred_text - region_noise_pred_uncond)
                         )
 
-                    # freeze the scheduler's internal timestep
-                    prev_step_index = None
-                    if hasattr(self.scheduler, "_step_index"):
-                        prev_step_index = self.scheduler._step_index
-
                     # compute the previous noisy sample x_t -> x_t-1
                     scheduler_output = self.scheduler.step(
                         torch.from_numpy(region_noise_pred),
@@ -716,16 +694,6 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                         **extra_step_kwargs,
                     )
                     latents_region_denoised = scheduler_output.prev_sample.numpy()
-
-                    # reset the scheduler's internal timestep
-                    if prev_step_index is not None:
-                        logger.debug(
-                            "resetting scheduler internal step index from %s to %s",
-                            self.scheduler._step_index,
-                            prev_step_index,
-                        )
-                        next_step_index = self.scheduler._step_index
-                        self.scheduler._step_index = prev_step_index
 
                     if feather[0] > 0.0:
                         mask = make_tile_mask(
@@ -754,16 +722,6 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
             latents = repair_nan(latents)
-
-            # update the scheduler's internal timestep
-            if not last and next_step_index is not None:
-                logger.debug(
-                    "updating scheduler internal step index from %s to %s",
-                    self.scheduler._step_index,
-                    next_step_index,
-                )
-                self.scheduler._step_index = next_step_index
-                next_step_index = None
 
             # call the callback, if provided
             if callback is not None and i % callback_steps == 0:
@@ -1036,8 +994,6 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         for i, t in enumerate(self.progress_bar(timesteps)):
             last = i == (len(timesteps) - 1)
-            next_step_index = None
-
             count.fill(0)
             value.fill(0)
 
@@ -1072,11 +1028,6 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                         noise_pred_text - noise_pred_uncond
                     )
 
-                # freeze the scheduler's internal timestep
-                prev_step_index = None
-                if hasattr(self.scheduler, "_step_index"):
-                    prev_step_index = self.scheduler._step_index
-
                 # compute the previous noisy sample x_t -> x_t-1
                 scheduler_output = self.scheduler.step(
                     torch.from_numpy(noise_pred),
@@ -1086,30 +1037,11 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                 )
                 latents_view_denoised = scheduler_output.prev_sample.numpy()
 
-                # reset the scheduler's internal timestep
-                if prev_step_index is not None:
-                    logger.debug(
-                        "resetting scheduler internal step index from %s to %s",
-                        self.scheduler._step_index,
-                        prev_step_index,
-                    )
-                    next_step_index = self.scheduler._step_index
-                    self.scheduler._step_index = prev_step_index
-
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
                 count[:, :, h_start:h_end, w_start:w_end] += 1
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
-
-            # update the scheduler's internal timestep
-            if not last and next_step_index is not None:
-                logger.debug(
-                    "updating scheduler internal step index from %s to %s",
-                    self.scheduler._step_index,
-                    next_step_index,
-                )
-                self.scheduler._step_index = next_step_index
 
             # call the callback, if provided
             if callback is not None and i % callback_steps == 0:

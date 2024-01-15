@@ -411,8 +411,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
         for i, t in enumerate(self.progress_bar(timesteps)):
             last = i == (len(timesteps) - 1)
-            next_step_index = None
-
             count.fill(0)
             value.fill(0)
 
@@ -456,11 +454,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                             guidance_rescale=guidance_rescale,
                         )
 
-                # freeze the scheduler's internal timestep
-                prev_step_index = None
-                if hasattr(self.scheduler, "_step_index"):
-                    prev_step_index = self.scheduler._step_index
-
                 # compute the previous noisy sample x_t -> x_t-1
                 scheduler_output = self.scheduler.step(
                     torch.from_numpy(noise_pred),
@@ -469,16 +462,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                     **extra_step_kwargs,
                 )
                 latents_view_denoised = scheduler_output.prev_sample.numpy()
-
-                # reset the scheduler's internal timestep
-                if prev_step_index is not None:
-                    logger.debug(
-                        "rewinding scheduler internal step index from %s to %s",
-                        self.scheduler._step_index,
-                        prev_step_index,
-                    )
-                    next_step_index = self.scheduler._step_index
-                    self.scheduler._step_index = prev_step_index
 
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
                 count[:, :, h_start:h_end, w_start:w_end] += 1
@@ -554,11 +537,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                                 guidance_rescale=guidance_rescale,
                             )
 
-                    # freeze the scheduler's internal timestep
-                    prev_step_index = None
-                    if hasattr(self.scheduler, "_step_index"):
-                        prev_step_index = self.scheduler._step_index
-
                     # compute the previous noisy sample x_t -> x_t-1
                     scheduler_output = self.scheduler.step(
                         torch.from_numpy(region_noise_pred),
@@ -567,16 +545,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                         **extra_step_kwargs,
                     )
                     latents_region_denoised = scheduler_output.prev_sample.numpy()
-
-                    # reset the scheduler's internal timestep
-                    if prev_step_index is not None:
-                        logger.debug(
-                            "resetting scheduler internal step index from %s to %s",
-                            self.scheduler._step_index,
-                            prev_step_index,
-                        )
-                        next_step_index = self.scheduler._step_index
-                        self.scheduler._step_index = prev_step_index
 
                     if feather[0] > 0.0:
                         mask = make_tile_mask(
@@ -605,15 +573,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
             latents = repair_nan(latents)
-
-            # update the scheduler's internal timestep, if set
-            if not last and next_step_index is not None:
-                logger.debug(
-                    "updating scheduler internal step index from %s to %s",
-                    self.scheduler._step_index,
-                    next_step_index,
-                )
-                self.scheduler._step_index = next_step_index
 
             # call the callback, if provided
             if i == len(timesteps) - 1 or (
@@ -877,8 +836,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
         for i, t in enumerate(self.progress_bar(timesteps)):
             last = i == (len(timesteps) - 1)
-            next_step_index = None
-
             count.fill(0)
             value.fill(0)
 
@@ -922,11 +879,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                             guidance_rescale=guidance_rescale,
                         )
 
-                # freeze the scheduler's internal timestep
-                prev_step_index = None
-                if hasattr(self.scheduler, "_step_index"):
-                    prev_step_index = self.scheduler._step_index
-
                 # compute the previous noisy sample x_t -> x_t-1
                 scheduler_output = self.scheduler.step(
                     torch.from_numpy(noise_pred),
@@ -936,30 +888,11 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 )
                 latents_view_denoised = scheduler_output.prev_sample.numpy()
 
-                # reset the scheduler's internal timestep
-                if prev_step_index is not None:
-                    logger.debug(
-                        "resetting scheduler internal step index from %s to %s",
-                        self.scheduler._step_index,
-                        prev_step_index,
-                    )
-                    next_step_index = self.scheduler._step_index
-                    self.scheduler._step_index = prev_step_index
-
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
                 count[:, :, h_start:h_end, w_start:w_end] += 1
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
-
-            # update the scheduler's internal timestep, if set
-            if not last and next_step_index is not None:
-                logger.debug(
-                    "updating scheduler internal step index from %s to %s",
-                    self.scheduler._step_index,
-                    next_step_index,
-                )
-                self.scheduler._step_index = next_step_index
 
             # call the callback, if provided
             if i == len(timesteps) - 1 or (
