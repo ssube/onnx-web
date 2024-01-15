@@ -578,6 +578,8 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
         for i, t in enumerate(self.progress_bar(self.scheduler.timesteps)):
             last = i == (len(self.scheduler.timesteps) - 1)
+            next_step_index = None
+
             count.fill(0)
             value.fill(0)
 
@@ -633,6 +635,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                         self.scheduler._step_index,
                         prev_step_index,
                     )
+                    next_step_index = self.scheduler._step_index
                     self.scheduler._step_index = prev_step_index
 
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
@@ -721,6 +724,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                             self.scheduler._step_index,
                             prev_step_index,
                         )
+                        next_step_index = self.scheduler._step_index
                         self.scheduler._step_index = prev_step_index
 
                     if feather[0] > 0.0:
@@ -750,6 +754,16 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
             latents = repair_nan(latents)
+
+            # update the scheduler's internal timestep
+            if not last and next_step_index is not None:
+                logger.debug(
+                    "updating scheduler internal step index from %s to %s",
+                    self.scheduler._step_index,
+                    next_step_index,
+                )
+                self.scheduler._step_index = next_step_index
+                next_step_index = None
 
             # call the callback, if provided
             if callback is not None and i % callback_steps == 0:
@@ -1021,6 +1035,9 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
         )
 
         for i, t in enumerate(self.progress_bar(timesteps)):
+            last = i == (len(timesteps) - 1)
+            next_step_index = None
+
             count.fill(0)
             value.fill(0)
 
@@ -1076,6 +1093,7 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
                         self.scheduler._step_index,
                         prev_step_index,
                     )
+                    next_step_index = self.scheduler._step_index
                     self.scheduler._step_index = prev_step_index
 
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
@@ -1083,6 +1101,15 @@ class OnnxStableDiffusionPanoramaPipeline(DiffusionPipeline):
 
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
+
+            # update the scheduler's internal timestep
+            if not last and next_step_index is not None:
+                logger.debug(
+                    "updating scheduler internal step index from %s to %s",
+                    self.scheduler._step_index,
+                    next_step_index,
+                )
+                self.scheduler._step_index = next_step_index
 
             # call the callback, if provided
             if callback is not None and i % callback_steps == 0:
