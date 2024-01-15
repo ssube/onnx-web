@@ -21,9 +21,11 @@ def make_output_names(
     job_name: str,
     count: int = 1,
     offset: int = 0,
+    extension: Optional[str] = None,
 ) -> List[str]:
     return [
-        f"{job_name}_{i}.{server.image_format}" for i in range(offset, count + offset)
+        f"{job_name}_{i}.{extension or server.image_format}"
+        for i in range(offset, count + offset)
     ]
 
 

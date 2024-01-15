@@ -446,7 +446,7 @@ class BuildCachePathsTests(unittest.TestCase):
         result = build_cache_paths(conversion, ONNX_MODEL, client, CACHE_PATH)
 
         expected_paths = [
-            path.join("/path/to/cache", ONNX_MODEL),
+            path.join(CACHE_PATH, ONNX_MODEL),
             path.join("/path/to/cache/client1", ONNX_MODEL),
         ]
         self.assertEqual(result, expected_paths)
@@ -460,7 +460,7 @@ class BuildCachePathsTests(unittest.TestCase):
         result = build_cache_paths(conversion, name, client, CACHE_PATH, model_format)
 
         expected_paths = [
-            path.join("/path/to/cache", ONNX_MODEL),
+            path.join(CACHE_PATH, ONNX_MODEL),
             path.join("/path/to/cache/client2", ONNX_MODEL),
         ]
         self.assertEqual(result, expected_paths)
@@ -475,7 +475,7 @@ class BuildCachePathsTests(unittest.TestCase):
         )
 
         expected_paths = [
-            path.join("/path/to/cache", TORCH_MODEL),
+            path.join(CACHE_PATH, TORCH_MODEL),
             path.join("/path/to/cache/client3", TORCH_MODEL),
         ]
         self.assertEqual(result, expected_paths)
@@ -489,7 +489,7 @@ class BuildCachePathsTests(unittest.TestCase):
         result = build_cache_paths(conversion, name, client, CACHE_PATH, model_format)
 
         expected_paths = [
-            path.join("/path/to/cache", ONNX_MODEL),
+            path.join(CACHE_PATH, ONNX_MODEL),
             path.join("/path/to/cache/client4", ONNX_MODEL),
         ]
         self.assertEqual(result, expected_paths)
