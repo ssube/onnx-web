@@ -411,6 +411,8 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
         for i, t in enumerate(self.progress_bar(timesteps)):
             last = i == (len(timesteps) - 1)
+            next_step_index = None
+
             count.fill(0)
             value.fill(0)
 
@@ -471,10 +473,11 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                 # reset the scheduler's internal timestep
                 if prev_step_index is not None:
                     logger.debug(
-                        "resetting scheduler internal step index from %s to %s",
+                        "rewinding scheduler internal step index from %s to %s",
                         self.scheduler._step_index,
                         prev_step_index,
                     )
+                    next_step_index = self.scheduler._step_index
                     self.scheduler._step_index = prev_step_index
 
                 value[:, :, h_start:h_end, w_start:w_end] += latents_view_denoised
@@ -572,6 +575,7 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
                             self.scheduler._step_index,
                             prev_step_index,
                         )
+                        next_step_index = self.scheduler._step_index
                         self.scheduler._step_index = prev_step_index
 
                     if feather[0] > 0.0:
@@ -601,6 +605,15 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
             # take the MultiDiffusion step. Eq. 5 in MultiDiffusion paper: https://arxiv.org/abs/2302.08113
             latents = np.where(count > 0, value / count, value)
             latents = repair_nan(latents)
+
+            # update the scheduler's internal timestep, if set
+            if next_step_index is not None:
+                logger.debug(
+                    "forwarding scheduler internal step index from %s to %s",
+                    self.scheduler._step_index,
+                    next_step_index,
+                )
+                self.scheduler._step_index = next_step_index
 
             # call the callback, if provided
             if i == len(timesteps) - 1 or (
