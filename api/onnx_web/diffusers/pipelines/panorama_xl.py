@@ -835,7 +835,6 @@ class StableDiffusionXLPanoramaPipelineMixin(StableDiffusionXLImg2ImgPipelineMix
         # 8. Denoising loop
         num_warmup_steps = len(timesteps) - num_inference_steps * self.scheduler.order
         for i, t in enumerate(self.progress_bar(timesteps)):
-            last = i == (len(timesteps) - 1)
             count.fill(0)
             value.fill(0)
 

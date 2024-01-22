@@ -18,9 +18,11 @@ from ..params import DeviceParams, ImageParams
 from ..server import ModelTypes, ServerContext
 from ..torch_before_ort import InferenceSession
 from ..utils import run_gc
+from .patches.scheduler import SchedulerPatch
 from .patches.unet import UNetWrapper
 from .patches.vae import VAEWrapper
 from .pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
+from .pipelines.highres import OnnxStableDiffusionHighresPipeline
 from .pipelines.lpw import OnnxStableDiffusionLongPromptWeightingPipeline
 from .pipelines.panorama import OnnxStableDiffusionPanoramaPipeline
 from .pipelines.panorama_xl import ORTStableDiffusionXLPanoramaPipeline
@@ -53,6 +55,7 @@ logger = getLogger(__name__)
 
 available_pipelines = {
     "controlnet": OnnxStableDiffusionControlNetPipeline,
+    "highres": OnnxStableDiffusionHighresPipeline,
     "img2img": OnnxStableDiffusionImg2ImgPipeline,
     "img2img-sdxl": ORTStableDiffusionXLImg2ImgPipeline,
     "inpaint": OnnxStableDiffusionInpaintPipeline,
@@ -651,9 +654,13 @@ def patch_pipeline(
     if not params.is_lpw() and not params.is_xl():
         pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
 
+    logger.debug("patching pipeline scheduler")
+    original_scheduler = pipe.scheduler
+    pipe.scheduler = SchedulerPatch(original_scheduler)
+
+    logger.debug("patching pipeline UNet")
     original_unet = pipe.unet
     pipe.unet = UNetWrapper(server, original_unet, params.is_xl())
-    logger.debug("patched UNet with wrapper")
 
     if hasattr(pipe, "vae_decoder"):
         original_decoder = pipe.vae_decoder

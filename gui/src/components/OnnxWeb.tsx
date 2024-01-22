@@ -100,8 +100,8 @@ export function HorizontalBody(props: BodyProps) {
     separator
     snap
   >
-    <TabGroup direction={props.direction} />
-    <Box className='box-history' sx={layout.history.style}>
+    <TabGroup direction={props.direction} panelClass='scroll-controls' />
+    <Box className='scroll-history' sx={layout.history.style}>
       <ImageHistory width={props.width} />
     </Box>
   </Allotment>;
@@ -113,7 +113,7 @@ export function VerticalBody(props: BodyProps) {
   return <Stack direction={layout.direction} spacing={STANDARD_SPACING}>
     <TabGroup direction={props.direction} />
     <Divider flexItem variant='middle' orientation={layout.divider} />
-    <Box className='box-history' sx={layout.history.style}>
+    <Box sx={layout.history.style}>
       <ImageHistory width={props.width} />
     </Box>
   </Stack>;
@@ -121,6 +121,7 @@ export function VerticalBody(props: BodyProps) {
 
 export interface TabGroupProps {
   direction: Layout;
+  panelClass?: string;
 }
 
 export function TabGroup(props: TabGroupProps) {
@@ -138,25 +139,25 @@ export function TabGroup(props: TabGroupProps) {
           {TAB_LABELS.map((name) => <Tab key={name} label={t(`tab.${name}`)} value={name} />)}
         </TabList>
       </Box>
-      <TabPanel value='txt2img'>
+      <TabPanel className={props.panelClass} value='txt2img'>
         <Txt2Img />
       </TabPanel>
-      <TabPanel value='img2img'>
+      <TabPanel className={props.panelClass} value='img2img'>
         <Img2Img />
       </TabPanel>
-      <TabPanel value='inpaint'>
+      <TabPanel className={props.panelClass} value='inpaint'>
         <Inpaint />
       </TabPanel>
-      <TabPanel value='upscale'>
+      <TabPanel className={props.panelClass} value='upscale'>
         <Upscale />
       </TabPanel>
-      <TabPanel value='blend'>
+      <TabPanel className={props.panelClass} value='blend'>
         <Blend />
       </TabPanel>
-      <TabPanel value='models'>
+      <TabPanel className={props.panelClass} value='models'>
         <Models />
       </TabPanel>
-      <TabPanel value='settings'>
+      <TabPanel className={props.panelClass} value='settings'>
         <Settings />
       </TabPanel>
     </TabContext>

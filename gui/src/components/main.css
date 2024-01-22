@@ -2,7 +2,12 @@
   height: 90vb;
 }
 
-.box-history {
+.scroll-history {
   max-height: 90vh;
+  overflow-y: auto;
+}
+
+.scroll-controls {
+  max-height: 85vh;
   overflow-y: auto;
 }
