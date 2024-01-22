@@ -24,12 +24,12 @@ class SchedulerPatchTests(unittest.TestCase):
                 ],
             ]
         )
-        black_point = 0
-        white_point = 1
+        white_point = 0
+        black_point = 1
         center_line = 2
         direction = "horizontal"
         mirrored_latents = mirror_latents(
-            latents, black_point, white_point, center_line, direction
+            latents, white_point, black_point, center_line, direction
         )
         assert np.array_equal(mirrored_latents, latents)
 
@@ -41,12 +41,12 @@ class SchedulerPatchTests(unittest.TestCase):
                 ],
             ]
         )
-        black_point = 0
-        white_point = 1
+        white_point = 0
+        black_point = 1
         center_line = 3
         direction = "vertical"
         mirrored_latents = mirror_latents(
-            latents, black_point, white_point, center_line, direction
+            latents, white_point, black_point, center_line, direction
         )
         assert np.array_equal(
             mirrored_latents,
