@@ -652,11 +652,12 @@ def patch_pipeline(
     logger.debug("patching SD pipeline")
 
     if not params.is_lpw() and not params.is_xl():
+        logger.debug("patching prompt encoder")
         pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
 
     logger.debug("patching pipeline scheduler")
     original_scheduler = pipe.scheduler
-    pipe.scheduler = SchedulerPatch(original_scheduler)
+    pipe.scheduler = SchedulerPatch(server, original_scheduler)
 
     logger.debug("patching pipeline UNet")
     original_unet = pipe.unet
