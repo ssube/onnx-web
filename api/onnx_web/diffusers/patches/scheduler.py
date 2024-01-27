@@ -13,11 +13,13 @@ logger = getLogger(__name__)
 
 class SchedulerPatch:
     server: ServerContext
+    text_pipeline: bool
     wrapped: Any
 
-    def __init__(self, server: ServerContext, scheduler):
+    def __init__(self, server: ServerContext, scheduler: Any, text_pipeline: bool):
         self.server = server
         self.wrapped = scheduler
+        self.text_pipeline = text_pipeline
 
     def __getattr__(self, attr):
         return getattr(self.wrapped, attr)
@@ -27,7 +29,7 @@ class SchedulerPatch:
     ) -> SchedulerOutput:
         result = self.wrapped.step(model_output, timestep, sample)
 
-        if self.server.has_feature("mirror-latents"):
+        if self.text_pipeline and self.server.has_feature("mirror-latents"):
             logger.info("using experimental latent mirroring")
 
             white_point = 0

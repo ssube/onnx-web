@@ -22,7 +22,6 @@ from .patches.scheduler import SchedulerPatch
 from .patches.unet import UNetWrapper
 from .patches.vae import VAEWrapper
 from .pipelines.controlnet import OnnxStableDiffusionControlNetPipeline
-from .pipelines.highres import OnnxStableDiffusionHighresPipeline
 from .pipelines.lpw import OnnxStableDiffusionLongPromptWeightingPipeline
 from .pipelines.panorama import OnnxStableDiffusionPanoramaPipeline
 from .pipelines.panorama_xl import ORTStableDiffusionXLPanoramaPipeline
@@ -55,7 +54,7 @@ logger = getLogger(__name__)
 
 available_pipelines = {
     "controlnet": OnnxStableDiffusionControlNetPipeline,
-    "highres": OnnxStableDiffusionHighresPipeline,
+    # "highres": OnnxStableDiffusionHighresPipeline,
     "img2img": OnnxStableDiffusionImg2ImgPipeline,
     "img2img-sdxl": ORTStableDiffusionXLImg2ImgPipeline,
     "inpaint": OnnxStableDiffusionInpaintPipeline,
@@ -657,7 +656,7 @@ def patch_pipeline(
 
     logger.debug("patching pipeline scheduler")
     original_scheduler = pipe.scheduler
-    pipe.scheduler = SchedulerPatch(server, original_scheduler)
+    pipe.scheduler = SchedulerPatch(server, original_scheduler, params.is_txt2img())
 
     logger.debug("patching pipeline UNet")
     original_unet = pipe.unet
