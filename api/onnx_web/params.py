@@ -321,9 +321,6 @@ class ImageParams:
     def is_pix2pix(self):
         return self.pipeline == "pix2pix"
 
-    def is_txt2img(self):
-        return self.pipeline in ["txt2img", "txt2img-sdxl"]
-
     def is_xl(self):
         return self.pipeline.endswith("-sdxl")
 
