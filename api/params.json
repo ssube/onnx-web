@@ -207,6 +207,9 @@
       "spiral"
     ]
   },
+  "thumbnail": {
+    "default": true
+  },
   "top": {
     "default": 0,
     "min": 0,

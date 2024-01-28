@@ -118,6 +118,7 @@ def build_params(
         get_config_value("steps", "min"),
     )
     tiled_vae = get_boolean(data, "tiled_vae", get_config_value("tiled_vae"))
+    thumbnail = get_boolean(data, "thumbnail", get_config_value("thumbnail"))
     unet_overlap = get_and_clamp_float(
         data,
         "unet_overlap",
@@ -169,6 +170,7 @@ def build_params(
         unet_tile=unet_tile,
         vae_overlap=vae_overlap,
         vae_tile=vae_tile,
+        thumbnail=thumbnail,
     )
 
     return params
