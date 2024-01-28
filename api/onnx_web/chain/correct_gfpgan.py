@@ -13,7 +13,7 @@ from ..params import (
 )
 from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
-from ..worker import WorkerContext
+from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
 from .result import StageResult
 
@@ -66,6 +66,7 @@ class CorrectGFPGANStage(BaseStage):
         sources: StageResult,
         *,
         upscale: UpscaleParams,
+        callback: Optional[ProgressCallback] = None,
         highres: Optional[HighresParams] = None,
         stage_source: Optional[Image.Image] = None,
         **kwargs,

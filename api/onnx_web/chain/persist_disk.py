@@ -6,7 +6,7 @@ from PIL import Image
 from ..output import save_result
 from ..params import ImageParams, SizeChart, StageParams
 from ..server import ServerContext
-from ..worker import WorkerContext
+from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
 from .result import StageResult
 
@@ -24,6 +24,7 @@ class PersistDiskStage(BaseStage):
         params: ImageParams,
         sources: StageResult,
         *,
+        callback: Optional[ProgressCallback] = None,
         stage_source: Optional[Image.Image] = None,
         **kwargs,
     ) -> StageResult:

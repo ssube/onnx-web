@@ -3,9 +3,9 @@ from typing import Optional
 
 from PIL import Image
 
-from ..params import ImageParams, StageParams, UpscaleParams
+from ..params import ImageParams, SizeChart, StageParams, UpscaleParams
 from ..server import ServerContext
-from ..worker import WorkerContext
+from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
 from .result import StageResult
 
@@ -13,6 +13,8 @@ logger = getLogger(__name__)
 
 
 class UpscaleSimpleStage(BaseStage):
+    max_tile = SizeChart.max
+
     def run(
         self,
         _worker: WorkerContext,
@@ -24,6 +26,7 @@ class UpscaleSimpleStage(BaseStage):
         method: str,
         upscale: UpscaleParams,
         stage_source: Optional[Image.Image] = None,
+        callback: Optional[ProgressCallback] = None,
         **kwargs,
     ) -> StageResult:
         if upscale.scale <= 1:

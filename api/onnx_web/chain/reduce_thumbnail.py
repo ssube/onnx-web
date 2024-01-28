@@ -1,10 +1,11 @@
 from logging import getLogger
+from typing import Optional
 
 from PIL import Image
 
 from ..params import ImageParams, Size, StageParams
 from ..server import ServerContext
-from ..worker import WorkerContext
+from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
 from .result import StageResult
 
@@ -22,6 +23,7 @@ class ReduceThumbnailStage(BaseStage):
         *,
         size: Size,
         stage_source: Image.Image,
+        callback: Optional[ProgressCallback] = None,
         **kwargs,
     ) -> StageResult:
         outputs = []

@@ -27,7 +27,7 @@ class BlendMaskStage(BaseStage):
         stage_source: Optional[Image.Image] = None,
         stage_mask: Optional[Image.Image] = None,
         tile_mask: Optional[Image.Image] = None,
-        _callback: Optional[ProgressCallback] = None,
+        callback: Optional[ProgressCallback] = None,
         **kwargs,
     ) -> StageResult:
         logger.info("blending image using mask")

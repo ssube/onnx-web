@@ -9,7 +9,7 @@ from ..params import (
     UpscaleParams,
 )
 from ..server import ServerContext
-from ..worker import WorkerContext
+from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
 from .result import StageResult
 
@@ -25,6 +25,7 @@ class EditMetadataStage(BaseStage):
         _params: ImageParams,
         source: StageResult,
         *,
+        callback: Optional[ProgressCallback] = None,
         size: Optional[Size] = None,
         upscale: Optional[UpscaleParams] = None,
         highres: Optional[HighresParams] = None,

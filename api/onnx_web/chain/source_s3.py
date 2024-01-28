@@ -6,7 +6,7 @@ from boto3 import Session
 from PIL import Image
 
 from ..params import ImageParams, StageParams
-from ..server import ServerContext
+from ..server import ProgressCallback, ServerContext
 from ..worker import WorkerContext
 from .base import BaseStage
 from .result import ImageMetadata, StageResult
@@ -27,6 +27,7 @@ class SourceS3Stage(BaseStage):
         bucket: str,
         endpoint_url: Optional[str] = None,
         profile_name: Optional[str] = None,
+        callback: Optional[ProgressCallback] = None,
         **kwargs,
     ) -> StageResult:
         session = Session(profile_name=profile_name)

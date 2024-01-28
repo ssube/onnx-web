@@ -5,7 +5,7 @@ from PIL import Image
 
 from ..params import ImageParams, Size, StageParams
 from ..server import ServerContext
-from ..worker import WorkerContext
+from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
 from .result import StageResult
 
@@ -24,6 +24,7 @@ class ReduceCropStage(BaseStage):
         origin: Size,
         size: Size,
         stage_source: Optional[Image.Image] = None,
+        callback: Optional[ProgressCallback] = None,
         **kwargs,
     ) -> StageResult:
         outputs = []

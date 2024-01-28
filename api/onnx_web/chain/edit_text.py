@@ -1,10 +1,10 @@
-from typing import Tuple
+from typing import Optional, Tuple
 
 from PIL import ImageDraw
 
 from ..params import ImageParams, SizeChart, StageParams
 from ..server import ServerContext
-from ..worker import WorkerContext
+from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
 from .result import StageResult
 
@@ -25,6 +25,7 @@ class EditTextStage(BaseStage):
         fill: str = "white",
         stroke: str = "black",
         stroke_width: int = 1,
+        callback: Optional[ProgressCallback] = None,
         **kwargs,
     ) -> StageResult:
         # Add text to each image in source at the given position

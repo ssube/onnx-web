@@ -10,6 +10,7 @@ from torchvision.transforms.functional import normalize
 from ..params import HighresParams, ImageParams, StageParams, UpscaleParams
 from ..server import ServerContext
 from ..worker import WorkerContext
+from ..worker.context import ProgressCallback
 from .base import BaseStage
 from .result import StageResult
 
@@ -29,6 +30,7 @@ class CorrectCodeformerStage(BaseStage):
         sources: StageResult,
         *,
         upscale: UpscaleParams,
+        callback: Optional[ProgressCallback] = None,
         highres: Optional[HighresParams] = None,
         stage_source: Optional[Image.Image] = None,
         **kwargs,

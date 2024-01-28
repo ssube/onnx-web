@@ -16,7 +16,7 @@ from ..params import (
 )
 from ..server import ModelTypes, ServerContext
 from ..utils import run_gc
-from ..worker import WorkerContext
+from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
 from .result import StageResult
 
@@ -67,6 +67,7 @@ class UpscaleSwinIRStage(BaseStage):
         upscale: UpscaleParams,
         highres: Optional[HighresParams] = None,
         stage_source: Optional[Image.Image] = None,
+        callback: Optional[ProgressCallback] = None,
         **kwargs,
     ) -> StageResult:
         upscale = upscale.with_args(**kwargs)

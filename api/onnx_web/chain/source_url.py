@@ -7,7 +7,7 @@ from PIL import Image
 
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
-from ..worker import WorkerContext
+from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
 from .result import ImageMetadata, StageResult
 
@@ -25,6 +25,7 @@ class SourceURLStage(BaseStage):
         *,
         source_urls: List[str],
         stage_source: Optional[Image.Image] = None,
+        callback: Optional[ProgressCallback] = None,
         **kwargs,
     ) -> StageResult:
         logger.info("loading image from URL source")
