@@ -39,8 +39,8 @@ class SchedulerPatch:
                 axis_of_symmetry = 3
                 expand_dims = (0, 1, 2)
 
-            white_point = 0
-            black_point = result.prev_sample.shape[axis_of_symmetry] // 8
+            white_point = 2
+            black_point = result.prev_sample.shape[axis_of_symmetry] // 4
             center_line = result.prev_sample.shape[axis_of_symmetry] // 2
 
             gradient = linear_gradient(
@@ -48,19 +48,19 @@ class SchedulerPatch:
             )
             latents = result.prev_sample.numpy()
 
-            gradiated_latents = np.multiply(latents, gradient)
+            # gradiated_latents = np.multiply(latents, gradient)
             inverse_gradiated_latents = np.multiply(
                 np.flip(latents, axis=axis_of_symmetry), gradient
             )
-            latents += gradiated_latents + inverse_gradiated_latents
+            latents += inverse_gradiated_latents
 
             mask = np.ones_like(latents).astype(np.float32)
-            gradiated_mask = np.multiply(mask, gradient)
+            # gradiated_mask = np.multiply(mask, gradient)
             # flipping the mask would do nothing, we need to flip the gradient for this one
             inverse_gradiated_mask = np.multiply(
                 mask, np.flip(gradient, axis=axis_of_symmetry)
             )
-            mask += gradiated_mask + inverse_gradiated_mask
+            mask += inverse_gradiated_mask
 
             latents = np.where(mask > 0, latents / mask, latents)
 
