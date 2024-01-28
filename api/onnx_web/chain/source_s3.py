@@ -6,8 +6,8 @@ from boto3 import Session
 from PIL import Image
 
 from ..params import ImageParams, StageParams
-from ..server import ProgressCallback, ServerContext
-from ..worker import WorkerContext
+from ..server import ServerContext
+from ..worker import WorkerContext, ProgressCallback
 from .base import BaseStage
 from .result import ImageMetadata, StageResult
 
