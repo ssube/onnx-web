@@ -373,6 +373,37 @@ TEST_DATA = [
         max_attempts=SLOW_TEST,
         mse_threshold=VERY_LOOSE_TEST,
     ),
+    # SD v1.5 highres
+    TestCase(
+        "txt2img-sd-v1-5-highres-muffin",
+        (
+            "txt2img?batch=1&cfg=5.00&eta=0.00&steps=25&tiled_vae=true&unet_overlap=0.50&unet_tile=512&vae_overlap=0.50"
+            "&vae_tile=512&scheduler=ddim&seed=-1&prompt=a+giant+muffin&upscaling=upscaling-real-esrgan-x2-plus"
+            "&correction=correction-gfpgan-v1-3&control=&width=512&height=512&upscale=false"
+            "&upscaleOrder=correction-first&highres=true&highresIterations=1&highresMethod=upscale&highresScale=2"
+            "&highresSteps=50&highresStrength=0.20"
+        ),
+        max_attempts=VERY_SLOW_TEST,
+        mse_threshold=LOOSE_TEST,
+    ),
+    # SDXL highres
+    TestCase(
+        "txt2img-sdxl-highres-muffin",
+        (
+            "txt2img?batch=1&cfg=5.00&eta=0.00&steps=25&tiled_vae=true&unet_overlap=0.50&unet_tile=1024&vae_overlap=0.50"
+            "&vae_tile=1024&scheduler=ddim&seed=-1&prompt=a+giant+muffin&upscaling=upscaling-real-esrgan-x2-plus"
+            "&correction=correction-gfpgan-v1-3&control=&width=1024&height=1024&upscale=false&pipeline=txt2img-sdxl"
+            "&upscaleOrder=correction-first&highres=true&highresIterations=1&highresMethod=upscale&highresScale=2"
+            "&highresSteps=50&highresStrength=0.20&model=diffusion-sdxl-base"
+        ),
+        max_attempts=200,
+        mse_threshold=LOOSE_TEST,
+    )
+    # TODO: highres panorama
+    # TODO: grid mode
+    # TODO: grid highres
+    # TODO: batch size > 1
+    # TODO: highres batch size > 1
     # TODO: non-square controlnet
 ]
 
