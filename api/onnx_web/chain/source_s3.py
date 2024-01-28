@@ -7,7 +7,7 @@ from PIL import Image
 
 from ..params import ImageParams, StageParams
 from ..server import ServerContext
-from ..worker import WorkerContext, ProgressCallback
+from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
 from .result import ImageMetadata, StageResult
 

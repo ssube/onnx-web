@@ -57,12 +57,20 @@ class Border:
             "bottom": self.bottom,
         }
 
-    def with_args(self, **kwargs):
+    def with_args(
+        self,
+        left: Optional[int] = None,
+        right: Optional[int] = None,
+        top: Optional[int] = None,
+        bottom: Optional[int] = None,
+        **kwargs,
+    ):
+        logger.debug("ignoring extra kwargs for border: %s", kwargs)
         return Border(
-            kwargs.get("left", self.left),
-            kwargs.get("right", self.right),
-            kwargs.get("top", self.top),
-            kwargs.get("bottom", self.bottom),
+            left or self.left,
+            right or self.right,
+            top or self.top,
+            bottom or self.bottom,
         )
 
     @classmethod
@@ -111,10 +119,16 @@ class Size:
             "height": self.height,
         }
 
-    def with_args(self, **kwargs):
+    def with_args(
+        self,
+        height: Optional[int] = None,
+        width: Optional[int] = None,
+        **kwargs,
+    ):
+        logger.debug("ignoring extra kwargs for size: %s", kwargs)
         return Size(
-            kwargs.get("width", self.width),
-            kwargs.get("height", self.height),
+            width or self.width,
+            height or self.height,
         )
 
 
@@ -395,13 +409,18 @@ class StageParams:
 
     def with_args(
         self,
+        name: Optional[str] = None,
+        outscale: Optional[int] = None,
+        tile_order: Optional[str] = None,
+        tile_size: Optional[int] = None,
         **kwargs,
     ):
+        logger.debug("ignoring extra kwargs for stage: %s", kwargs)
         return StageParams(
-            name=kwargs.get("name", self.name),
-            outscale=kwargs.get("outscale", self.outscale),
-            tile_order=kwargs.get("tile_order", self.tile_order),
-            tile_size=kwargs.get("tile_size", self.tile_size),
+            name=name or self.name,
+            outscale=outscale or self.outscale,
+            tile_order=tile_order or self.tile_order,
+            tile_size=tile_size or self.tile_size,
         )
 
 
@@ -493,7 +512,9 @@ class UpscaleParams:
         pre_pad: Optional[int] = None,
         tile_pad: Optional[int] = None,
         upscale_order: Optional[UpscaleOrder] = None,
+        **kwargs,
     ):
+        logger.debug("ignoring extra kwargs for upscale: %s", kwargs)
         return UpscaleParams(
             upscale_model=upscale_model or self.upscale_model,
             correction_model=correction_model or self.correction_model,
@@ -558,7 +579,9 @@ class HighresParams:
         strength: Optional[float] = None,
         method: Optional[UpscaleMethod] = None,
         iterations: Optional[int] = None,
+        **kwargs,
     ):
+        logger.debug("ignoring extra kwargs for highres: %s", kwargs)
         return HighresParams(
             enabled=enabled or self.enabled,
             scale=scale or self.scale,

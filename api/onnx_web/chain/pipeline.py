@@ -187,14 +187,15 @@ class ChainPipeline:
                 ) -> List[Image.Image]:
                     for _i in range(worker.retries):
                         try:
+                            stage_input = StageResult(
+                                images=source_tile, metadata=stage_sources.metadata
+                            )
                             tile_result = stage_pipe.run(
                                 worker,
                                 server,
                                 stage_params,
                                 per_stage_params,
-                                StageResult(
-                                    images=source_tile, metadata=stage_sources.metadata
-                                ),
+                                stage_input,
                                 tile_mask=tile_mask,
                                 callback=callback,
                                 dims=dims,

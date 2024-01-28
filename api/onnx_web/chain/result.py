@@ -263,7 +263,9 @@ class ImageMetadata:
         loras: Optional[List[NetworkMetadata]] = None,
         models: Optional[List[NetworkMetadata]] = None,
         ancestors: Optional[List["ImageMetadata"]] = None,
+        **kwargs,
     ) -> "ImageMetadata":
+        logger.info("ignoring extra kwargs for metadata: %s", kwargs)
         return ImageMetadata(
             params or self.params,
             size or self.size,
