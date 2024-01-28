@@ -60,71 +60,71 @@ class TestCase:
 TEST_DATA = [
     TestCase(
         "txt2img-sd-v1-5-256-muffin",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=256&height=256",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=256&height=256&thumbnail=false",
     ),
     TestCase(
         "txt2img-sd-v1-5-512-muffin",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&thumbnail=false",
     ),
     TestCase(
         "txt2img-sd-v1-5-512-muffin-deis",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=deis",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=deis&thumbnail=false",
         mse_threshold=LOOSE_TEST,
     ),
     TestCase(
         "txt2img-sd-v1-5-512-muffin-dpm",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=dpm-multi",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=dpm-multi&thumbnail=false",
     ),
     TestCase(
         "txt2img-sd-v1-5-512-muffin-heun",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=heun",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=heun&thumbnail=false",
         mse_threshold=LOOSE_TEST,
     ),
     TestCase(
         "txt2img-sd-v1-5-512-muffin-unipc",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=unipc-multi",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=unipc-multi&thumbnail=false",
         mse_threshold=LOOSE_TEST,
     ),
     TestCase(
         "txt2img-sd-v2-1-512-muffin",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v2-1",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v2-1&thumbnail=false",
     ),
     TestCase(
         "txt2img-sd-v2-1-768-muffin",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v2-1&width=768&height=768&unet_tile=768",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v2-1&width=768&height=768&unet_tile=768&thumbnail=false",
         max_attempts=SLOW_TEST,
     ),
     TestCase(
         "txt2img-openjourney-256-muffin",
-        "txt2img?prompt=mdjrny-v4+style+a+giant+muffin&seed=0&scheduler=ddim&model=diffusion-openjourney&width=256&height=256",
+        "txt2img?prompt=mdjrny-v4+style+a+giant+muffin&seed=0&scheduler=ddim&model=diffusion-openjourney&width=256&height=256&thumbnail=false",
     ),
     TestCase(
         "txt2img-openjourney-512-muffin",
-        "txt2img?prompt=mdjrny-v4+style+a+giant+muffin&seed=0&scheduler=ddim&model=diffusion-openjourney",
+        "txt2img?prompt=mdjrny-v4+style+a+giant+muffin&seed=0&scheduler=ddim&model=diffusion-openjourney&thumbnail=false",
     ),
     TestCase(
         "txt2img-knollingcase-512-muffin",
-        "txt2img?prompt=knollingcase+display+case+with+a+giant+muffin&seed=0&scheduler=ddim&model=diffusion-knollingcase",
+        "txt2img?prompt=knollingcase+display+case+with+a+giant+muffin&seed=0&scheduler=ddim&model=diffusion-knollingcase&thumbnail=false",
     ),
     TestCase(
         "img2img-sd-v1-5-512-pumpkin",
-        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none",
+        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none&thumbnail=false",
         source="txt2img-sd-v1-5-512-muffin-0",
     ),
     TestCase(
         "img2img-sd-v1-5-256-pumpkin",
-        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none&unet_tile=256",
+        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none&unet_tile=256&thumbnail=false",
         source="txt2img-sd-v1-5-256-muffin-0",
     ),
     TestCase(
         "inpaint-v1-512-white",
-        "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting",
+        "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&thumbnail=false",
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-white",
     ),
     TestCase(
         "inpaint-v1-512-black",
-        "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting",
+        "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&thumbnail=false",
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
     ),
@@ -132,7 +132,7 @@ TEST_DATA = [
         "outpaint-even-256",
         (
             "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&noise=fill-mask"
-            "&top=256&bottom=256&left=256&right=256"
+            "&top=256&bottom=256&left=256&right=256&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
@@ -143,7 +143,7 @@ TEST_DATA = [
         "outpaint-vertical-512",
         (
             "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&noise=fill-mask"
-            "&top=512&bottom=512&left=0&right=0"
+            "&top=512&bottom=512&left=0&right=0&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
@@ -154,7 +154,7 @@ TEST_DATA = [
         "outpaint-horizontal-512",
         (
             "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&noise=fill-mask"
-            "&top=0&bottom=0&left=512&right=512"
+            "&top=0&bottom=0&left=512&right=512&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
@@ -163,17 +163,17 @@ TEST_DATA = [
     ),
     TestCase(
         "upscale-resrgan-x2-1024-muffin",
-        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x2-plus&scale=2&outscale=2&upscale=true",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x2-plus&scale=2&outscale=2&upscale=true&thumbnail=false",
         source="txt2img-sd-v1-5-512-muffin-0",
     ),
     TestCase(
         "upscale-resrgan-x4-2048-muffin",
-        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4&upscale=true",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4&upscale=true&thumbnail=false",
         source="txt2img-sd-v1-5-512-muffin-0",
     ),
     TestCase(
         "blend-512-muffin-black",
-        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
+        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&thumbnail=false",
         mask="mask-black",
         source=[
             "txt2img-sd-v1-5-512-muffin-0",
@@ -182,7 +182,7 @@ TEST_DATA = [
     ),
     TestCase(
         "blend-512-muffin-white",
-        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
+        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&thumbnail=false",
         mask="mask-white",
         source=[
             "txt2img-sd-v1-5-512-muffin-0",
@@ -191,7 +191,7 @@ TEST_DATA = [
     ),
     TestCase(
         "blend-512-muffin-blend",
-        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim",
+        "blend?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&thumbnail=false",
         mask="mask-blend",
         source=[
             "txt2img-sd-v1-5-512-muffin-0",
@@ -200,30 +200,30 @@ TEST_DATA = [
     ),
     TestCase(
         "txt2img-sd-v1-5-512-muffin-taters",
-        "txt2img?prompt=<lora:taters:1.0>+a+giant+muffin+made+of+mashed+potatoes&seed=0&scheduler=unipc-multi",
+        "txt2img?prompt=<lora:taters:1.0>+a+giant+muffin+made+of+mashed+potatoes&seed=0&scheduler=unipc-multi&thumbnail=false",
     ),
     TestCase(
         "txt2img-sd-v1-5-512-muffin-cloud",
-        "txt2img?prompt=<inversion:cloud:1.0>+a+giant+muffin+made+of+cloud-all&seed=0&scheduler=unipc-multi",
+        "txt2img?prompt=<inversion:cloud:1.0>+a+giant+muffin+made+of+cloud-all&seed=0&scheduler=unipc-multi&thumbnail=false",
     ),
     TestCase(
         "upscale-swinir-x4-2048-muffin",
-        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-swinir-real-large-x4&scale=4&outscale=4&upscale=true",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-swinir-real-large-x4&scale=4&outscale=4&upscale=true&thumbnail=false",
         source="txt2img-sd-v1-5-512-muffin-0",
     ),
     TestCase(
         "upscale-codeformer-512-muffin",
-        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0&thumbnail=false",
         source="txt2img-sd-v1-5-512-muffin-0",
     ),
     TestCase(
         "upscale-gfpgan-muffin",
-        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0&thumbnail=false",
         source="txt2img-sd-v1-5-512-muffin-0",
     ),
     TestCase(
         "upscale-sd-x4-2048-muffin",
-        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4&scale=4&outscale=4&upscale=true",
+        "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4&scale=4&outscale=4&upscale=true&thumbnail=false",
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=VERY_SLOW_TEST,
     ),
@@ -231,7 +231,7 @@ TEST_DATA = [
         "outpaint-panorama-even-256",
         (
             "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&noise=fill-mask"
-            "&top=256&bottom=256&left=256&right=256&pipeline=panorama"
+            "&top=256&bottom=256&left=256&right=256&pipeline=panorama&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
@@ -242,7 +242,7 @@ TEST_DATA = [
         "outpaint-panorama-vertical-512",
         (
             "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&noise=histogram"
-            "&top=512&bottom=512&left=0&right=0&pipeline=panorama"
+            "&top=512&bottom=512&left=0&right=0&pipeline=panorama&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
@@ -253,7 +253,7 @@ TEST_DATA = [
         "outpaint-panorama-horizontal-512",
         (
             "inpaint?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&model=stable-diffusion-onnx-v1-inpainting&noise=histogram"
-            "&top=0&bottom=0&left=512&right=512&pipeline=panorama"
+            "&top=0&bottom=0&left=512&right=512&pipeline=panorama&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         mask="mask-black",
@@ -264,7 +264,7 @@ TEST_DATA = [
         "upscale-resrgan-x4-codeformer-2048-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4"
-            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true"
+            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=SLOW_TEST,
@@ -273,7 +273,7 @@ TEST_DATA = [
         "upscale-resrgan-x4-gfpgan-2048-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus&scale=4&outscale=4"
-            "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true"
+            "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=SLOW_TEST,
@@ -282,7 +282,7 @@ TEST_DATA = [
         "upscale-swinir-x4-codeformer-2048-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-swinir-real-large-x4&scale=4&outscale=4"
-            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true"
+            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=SLOW_TEST,
@@ -291,7 +291,7 @@ TEST_DATA = [
         "upscale-swinir-x4-gfpgan-2048-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-swinir-real-large-x4&scale=4&outscale=4"
-            "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true"
+            "&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=SLOW_TEST,
@@ -300,7 +300,7 @@ TEST_DATA = [
         "upscale-sd-x4-codeformer-2048-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4&scale=4&outscale=4"
-            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true"
+            "&correction=correction-codeformer&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=VERY_SLOW_TEST,
@@ -308,32 +308,32 @@ TEST_DATA = [
     TestCase(
         "upscale-sd-x4-gfpgan-2048-muffin",
         (
-            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4"
-            "&scale=4&outscale=4&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true"
+            "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-stable-diffusion-x4&scale=4"
+            "&outscale=4&correction=correction-gfpgan&faces=true&faceOutscale=1&faceStrength=1.0&upscale=true&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-512-muffin-0",
         max_attempts=VERY_SLOW_TEST,
     ),
     TestCase(
         "txt2img-panorama-1024x768-muffin",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=1024&height=768&pipeline=panorama&tiled_vae=true",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=1024&height=768&pipeline=panorama&tiled_vae=true&thumbnail=false",
         max_attempts=VERY_SLOW_TEST,
     ),
     TestCase(
         "img2img-panorama-1024x768-pumpkin",
-        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none&pipeline=panorama&tiled_vae=true",
+        "img2img?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&sourceFilter=none&pipeline=panorama&tiled_vae=true&thumbnail=false",
         source="txt2img-panorama-1024x768-muffin-0",
         max_attempts=VERY_SLOW_TEST,
     ),
     TestCase(
         "txt2img-sd-v1-5-tall-muffin",
-        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=512&height=768&unet_tile=768",
+        "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=512&height=768&unet_tile=768&thumbnail=false",
     ),
     TestCase(
         "upscale-resrgan-x4-tall-muffin",
         (
             "upscale?prompt=a+giant+pumpkin&seed=0&scheduler=ddim&upscaling=upscaling-real-esrgan-x4-plus"
-            "&scale=4&outscale=4&correction=correction-gfpgan&faces=false&faceOutscale=1&faceStrength=1.0&upscale=true"
+            "&scale=4&outscale=4&correction=correction-gfpgan&faces=false&faceOutscale=1&faceStrength=1.0&upscale=true&thumbnail=false"
         ),
         source="txt2img-sd-v1-5-tall-muffin-0",
         max_attempts=SLOW_TEST,
@@ -342,7 +342,7 @@ TEST_DATA = [
         "txt2img-sdxl-muffin",
         (
             "txt2img?prompt=a+giant+muffin&seed=0&scheduler=ddim&width=1024&height=1024&unet_tile=1024"
-            "&pipeline=txt2img-sdxl&model=diffusion-sdxl-base"
+            "&pipeline=txt2img-sdxl&model=diffusion-sdxl-base&thumbnail=false"
         ),
         max_attempts=SLOW_TEST,
     ),
@@ -350,7 +350,7 @@ TEST_DATA = [
         "txt2img-sdxl-lcm-muffin",
         (
             "txt2img?prompt=<lora:sdxl-lcm:1.0>+a+giant+muffin&seed=0&scheduler=lcm&width=1024&height=1024"
-            "&unet_tile=1024&pipeline=txt2img-sdxl&model=diffusion-sdxl-base&cfg=1.5&steps=10"
+            "&unet_tile=1024&pipeline=txt2img-sdxl&model=diffusion-sdxl-base&cfg=1.5&steps=10&thumbnail=false"
         ),
         max_attempts=SLOW_TEST,
         mse_threshold=LOOSE_TEST,
@@ -359,7 +359,7 @@ TEST_DATA = [
         "txt2img-sdxl-turbo-muffin",
         (
             "txt2img?prompt=a+giant+muffin&seed=0&scheduler=dpm-sde&width=512&height=512&unet_tile=512"
-            "&pipeline=txt2img-sdxl&model=diffusion-sdxl-turbo&cfg=1&steps=5"
+            "&pipeline=txt2img-sdxl&model=diffusion-sdxl-turbo&cfg=1&steps=5&thumbnail=false"
         ),
         max_attempts=SLOW_TEST,
         mse_threshold=LOOSE_TEST,
@@ -368,7 +368,7 @@ TEST_DATA = [
         "txt2img-sd-v1-5-lcm-muffin",
         (
             "txt2img?prompt=<lora:lcm:1.0>+a+giant+muffin&seed=0&scheduler=lcm&width=512&height=512&unet_tile=512"
-            "&pipeline=txt2img&cfg=1.5&steps=10"
+            "&pipeline=txt2img&cfg=1.5&steps=10&thumbnail=false"
         ),
         max_attempts=SLOW_TEST,
         mse_threshold=VERY_LOOSE_TEST,
@@ -381,7 +381,7 @@ TEST_DATA = [
             "&vae_tile=512&scheduler=ddim&seed=-1&prompt=a+giant+muffin&upscaling=upscaling-real-esrgan-x2-plus"
             "&correction=correction-gfpgan-v1-3&control=&width=512&height=512&upscale=false"
             "&upscaleOrder=correction-first&highres=true&highresIterations=1&highresMethod=upscale&highresScale=2"
-            "&highresSteps=50&highresStrength=0.20"
+            "&highresSteps=50&highresStrength=0.20&thumbnail=false"
         ),
         max_attempts=VERY_SLOW_TEST,
         mse_threshold=LOOSE_TEST,
@@ -394,7 +394,7 @@ TEST_DATA = [
             "&vae_tile=1024&scheduler=ddim&seed=-1&prompt=a+giant+muffin&upscaling=upscaling-real-esrgan-x2-plus"
             "&correction=correction-gfpgan-v1-3&control=&width=1024&height=1024&upscale=false&pipeline=txt2img-sdxl"
             "&upscaleOrder=correction-first&highres=true&highresIterations=1&highresMethod=upscale&highresScale=2"
-            "&highresSteps=50&highresStrength=0.20&model=diffusion-sdxl-base"
+            "&highresSteps=50&highresStrength=0.20&model=diffusion-sdxl-base&thumbnail=false"
         ),
         max_attempts=200,
         mse_threshold=LOOSE_TEST,

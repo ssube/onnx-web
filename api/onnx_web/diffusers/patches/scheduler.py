@@ -111,8 +111,8 @@ def mirror_latents(
         )
         flipped_mask = np.flip(padded_mask, axis=3)
 
-        padded_mask += flipped_mask
-        padded_mask += np.multiply(np.ones_like(padded_array), gradient)
+        padded_mask += np.multiply(padded_mask, gradient)
+        padded_mask += np.multiply(flipped_mask, gradient)
 
         # combine the two copies
         result = padded_array + padded_gradiated + flipped_gradiated
@@ -143,9 +143,11 @@ def mirror_latents(
         )
         flipped_mask = np.flip(padded_mask, axis=2)
 
-        padded_mask += flipped_mask
         padded_mask += np.multiply(
-            np.ones_like(padded_array).transpose(0, 1, 3, 2), gradient
+            padded_mask.transpose(0, 1, 3, 2), gradient
+        ).transpose(0, 1, 3, 2)
+        padded_mask += np.multiply(
+            flipped_mask.transpose(0, 1, 3, 2), gradient
         ).transpose(0, 1, 3, 2)
 
         # combine the two copies

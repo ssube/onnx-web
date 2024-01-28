@@ -11,6 +11,7 @@ class MockPipeline:
 
     # stubs
     _encode_prompt: Optional[Any]
+    scheduler: Optional[Any]
     unet: Optional[Any]
     vae_decoder: Optional[Any]
     vae_encoder: Optional[Any]
@@ -23,6 +24,7 @@ class MockPipeline:
         self.xformers = None
 
         self._encode_prompt = None
+        self.scheduler = None
         self.unet = None
         self.vae_decoder = None
         self.vae_encoder = None
