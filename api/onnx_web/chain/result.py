@@ -358,6 +358,10 @@ class StageResult:
     images: Optional[List[Image.Image]]
     metadata: List[ImageMetadata]
 
+    # output paths, filled in when the result is saved
+    outputs: Optional[List[str]]
+    thumbnails: Optional[List[str]]
+
     @staticmethod
     def empty():
         return StageResult(images=[])
@@ -384,6 +388,9 @@ class StageResult:
             raise ValueError("results must only contain one type of data")
         elif data_provided == 0:
             raise ValueError("results must contain some data")
+
+        self.outputs = None
+        self.thumbnails = None
 
         if source is not None:
             self.arrays = source.arrays

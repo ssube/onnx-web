@@ -500,6 +500,13 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
     outputURL(image: SuccessJobResponse, index: number): string {
       return new URL(joinPath('output', image.outputs[index]), root).toString();
     },
+    thumbnailURL(image: SuccessJobResponse, index: number): Maybe<string> {
+      if (doesExist(image.thumbnails) && doesExist(image.thumbnails[index])) {
+        return new URL(joinPath('output', image.thumbnails[index]), root).toString();
+      }
+
+      return undefined;
+    },
   };
 
   const batchStatus = batcher({

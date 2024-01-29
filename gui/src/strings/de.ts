@@ -73,6 +73,9 @@ export const I18N_STRINGS_DE = {
           },
         },
       },
+      image: {
+        thumbnail: 'Miniaturansicht',
+      },
       loading: {
         cancel: 'Stornieren',
         progress: '{{steps.current}} von {{steps.total}} Schritten, {{tiles.current}} of {{tiles.total}} Kacheln, {{stages.current}} of {{stages.total}} Abschnitten',

@@ -18,7 +18,7 @@ from ..diffusers.run import (
     run_upscale_pipeline,
 )
 from ..diffusers.utils import replace_wildcards
-from ..output import make_job_name, make_output_names
+from ..output import make_job_name
 from ..params import Size, StageParams, TileOrder
 from ..transformers.run import run_txt2txt_pipeline
 from ..utils import (
@@ -118,8 +118,9 @@ def image_reply(
     stages: Progress = None,
     steps: Progress = None,
     tiles: Progress = None,
-    outputs: Optional[List[str]] = None,
     metadata: Optional[List[ImageMetadata]] = None,
+    outputs: Optional[List[str]] = None,
+    thumbnails: Optional[List[str]] = None,
     reason: Optional[str] = None,
 ) -> Dict[str, Any]:
     if queue is None:
@@ -157,6 +158,13 @@ def image_reply(
 
         data["metadata"] = [m.tojson(server, [o]) for m, o in zip(metadata, outputs)]
         data["outputs"] = outputs
+
+        if thumbnails is not None:
+            if len(thumbnails) != len(outputs):
+                logger.error("thumbnails and outputs must be the same length")
+                return error_reply("thumbnails and outputs must be the same length")
+
+            data["thumbnails"] = thumbnails
 
     return data
 
@@ -692,12 +700,14 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
         status, progress, queue = pool.status(job_name)
 
         if progress is not None:
-            outputs = None
             metadata = None
-            if progress.result is not None and len(progress.result) > 0:
-                # TODO: the names should be attached to the result when it is saved rather than recomputing them
-                outputs = make_output_names(server, job_name, len(progress.result))
+            outputs = None
+            thumbnails = None
+
+            if progress.result is not None:
                 metadata = progress.result.metadata
+                outputs = progress.result.outputs
+                thumbnails = progress.result.thumbnails
 
             records.append(
                 image_reply(
@@ -707,8 +717,9 @@ def job_status(server: ServerContext, pool: DevicePoolExecutor):
                     stages=progress.stages,
                     steps=progress.steps,
                     tiles=progress.tiles,
-                    outputs=outputs,
                     metadata=metadata,
+                    outputs=outputs,
+                    thumbnails=thumbnails,
                     reason=progress.reason,
                 )
             )

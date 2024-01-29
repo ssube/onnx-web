@@ -106,57 +106,51 @@ export interface RunningJobResponse extends BaseJobResponse {
   status: JobStatus.RUNNING;
 }
 
+export interface BaseSuccessJobResponse extends BaseJobResponse {
+  status: JobStatus.SUCCESS;
+  outputs: Array<string>;
+  thumbnails?: Array<string>;
+}
+
 /**
  * Successful txt2img image job with output keys and metadata.
  */
-export interface SuccessTxt2ImgJobResponse extends BaseJobResponse {
-  status: JobStatus.SUCCESS;
-  outputs: Array<string>;
+export interface Txt2ImgSuccessJobResponse extends BaseSuccessJobResponse {
   metadata: Array<ImageMetadata<Txt2ImgParams, JobType.TXT2IMG>>;
 }
 
 /**
  * Successful img2img job with output keys and metadata.
  */
-export interface SuccessImg2ImgJobResponse extends BaseJobResponse {
-  status: JobStatus.SUCCESS;
-  outputs: Array<string>;
+export interface Img2ImgSuccessJobResponse extends BaseSuccessJobResponse {
   metadata: Array<ImageMetadata<Img2ImgParams, JobType.IMG2IMG>>;
 }
 
 /**
  * Successful inpaint job with output keys and metadata.
  */
-export interface SuccessInpaintJobResponse extends BaseJobResponse {
-  status: JobStatus.SUCCESS;
-  outputs: Array<string>;
+export interface InpaintSuccessJobResponse extends BaseSuccessJobResponse {
   metadata: Array<ImageMetadata<InpaintParams, JobType.INPAINT>>;
 }
 
 /**
  * Successful upscale job with output keys and metadata.
  */
-export interface SuccessUpscaleJobResponse extends BaseJobResponse {
-  status: JobStatus.SUCCESS;
-  outputs: Array<string>;
+export interface UpscaleSuccessJobResponse extends BaseSuccessJobResponse {
   metadata: Array<ImageMetadata<BaseImgParams, JobType.UPSCALE>>;
 }
 
 /**
  * Successful blend job with output keys and metadata.
  */
-export interface SuccessBlendJobResponse extends BaseJobResponse {
-  status: JobStatus.SUCCESS;
-  outputs: Array<string>;
+export interface BlendSuccessJobResponse extends BaseSuccessJobResponse {
   metadata: Array<ImageMetadata<BaseImgParams, JobType.BLEND>>;
 }
 
 /**
  * Successful chain pipeline job with output keys and metadata.
  */
-export interface SuccessChainJobResponse extends BaseJobResponse {
-  status: JobStatus.SUCCESS;
-  outputs: Array<string>;
+export interface ChainSuccessJobResponse extends BaseSuccessJobResponse {
   metadata: Array<AnyImageMetadata>;
 }
 
@@ -171,12 +165,12 @@ export interface UnknownJobResponse extends BaseJobResponse {
  * All successful job types.
  */
 export type SuccessJobResponse
-  = SuccessTxt2ImgJobResponse
-  | SuccessImg2ImgJobResponse
-  | SuccessInpaintJobResponse
-  | SuccessUpscaleJobResponse
-  | SuccessBlendJobResponse
-  | SuccessChainJobResponse;
+  = Txt2ImgSuccessJobResponse
+  | Img2ImgSuccessJobResponse
+  | InpaintSuccessJobResponse
+  | UpscaleSuccessJobResponse
+  | BlendSuccessJobResponse
+  | ChainSuccessJobResponse;
 
 /**
  * All job types.

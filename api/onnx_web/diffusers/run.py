@@ -15,7 +15,7 @@ from ..chain.highres import stage_highres
 from ..chain.result import ImageMetadata, StageResult
 from ..chain.upscale import split_upscale, stage_upscale_correction
 from ..image import expand_image
-from ..output import read_metadata, save_image, save_result
+from ..output import make_output_names, read_metadata, save_image, save_result
 from ..params import (
     Border,
     HighresParams,
@@ -61,47 +61,6 @@ def add_safety_stage(
         pipeline.stage(
             EditSafetyStage(), StageParams(tile_size=EditSafetyStage.max_tile)
         )
-
-
-def add_thumbnail_output(
-    server: ServerContext,
-    images: StageResult,
-    params: ImageParams,
-) -> None:
-    """
-    Add a thumbnail image to the output, if requested.
-    TODO: This should really be a stage.
-    """
-    result_size = images.size()
-    if (
-        params.thumbnail
-        and len(images) > 0
-        and (
-            result_size.width > server.thumbnail_size
-            or result_size.height > server.thumbnail_size
-        )
-    ):
-        cover = images.as_images()[0]
-        thumbnail = cover.copy()
-        thumbnail.thumbnail((server.thumbnail_size, server.thumbnail_size))
-
-        metadata = images.metadata[0]
-        metadata = metadata.with_args(
-            size=Size(server.thumbnail_size, server.thumbnail_size)
-        )
-
-        if metadata.highres is not None:
-            metadata.highres = metadata.highres.with_args(
-                scale=1,
-            )
-
-        if metadata.upscale is not None:
-            metadata.upscale = metadata.upscale.with_args(
-                scale=1,
-                outscale=1,
-            )
-
-        images.insert_image(0, thumbnail, metadata)
 
 
 def run_txt2img_pipeline(
@@ -165,8 +124,7 @@ def run_txt2img_pipeline(
         worker, server, params, StageResult.empty(), callback=progress, latents=latents
     )
 
-    add_thumbnail_output(server, images, params)
-    save_result(server, images, worker.job)
+    save_result(server, images, worker.job, save_thumbnails=params.thumbnail)
 
     # clean up
     run_gc([worker.get_device()])
@@ -267,8 +225,7 @@ def run_img2img_pipeline(
     if source_filter is not None and source_filter != "none":
         images.push_image(source, ImageMetadata.unknown_image())
 
-    add_thumbnail_output(server, images, params)
-    save_result(server, images, worker.job)
+    save_result(server, images, worker.job, save_thumbnails=params.thumbnail)
 
     # clean up
     run_gc([worker.get_device()])
@@ -446,9 +403,13 @@ def run_inpaint_pipeline(
         latents=latents,
     )
 
-    add_thumbnail_output(server, images, params)
+    # custom version of save for full-res inpainting
+    output_names = make_output_names(server, worker.job, len(images))
+    outputs = []
 
-    for i, (image, metadata) in enumerate(zip(images.as_images(), images.metadata)):
+    for image, metadata, output in zip(
+        images.as_images(), images.metadata, output_names
+    ):
         if full_res_inpaint:
             if is_debug():
                 save_image(server, "adjusted-output.png", image)
@@ -457,12 +418,33 @@ def run_inpaint_pipeline(
             image = original_source
             image.paste(mini_image, box=adj_mask_border)
 
-        save_image(
-            server,
-            f"{worker.job}_{i}.{server.image_format}",
-            image,
-            metadata,
+        outputs.append(
+            save_image(
+                server,
+                output,
+                image,
+                metadata,
+            )
         )
+
+    thumbnails = None
+    if params.thumbnail:
+        thumbnail_names = make_output_names(
+            server, worker.job, len(images), suffix="thumbnail"
+        )
+        thumbnails = []
+
+        for image, thumbnail in zip(images.as_images(), thumbnail_names):
+            thumbnails.append(
+                save_image(
+                    server,
+                    thumbnail,
+                    image,
+                )
+            )
+
+    images.outputs = outputs
+    images.thumbnails = thumbnails
 
     # clean up
     run_gc([worker.get_device()])
@@ -530,8 +512,7 @@ def run_upscale_pipeline(
         callback=progress,
     )
 
-    add_thumbnail_output(server, images, params)
-    save_result(server, images, worker.job)
+    save_result(server, images, worker.job, save_thumbnails=params.thumbnail)
 
     # clean up
     run_gc([worker.get_device()])
@@ -592,8 +573,7 @@ def run_blend_pipeline(
         callback=progress,
     )
 
-    add_thumbnail_output(server, images, params)
-    save_result(server, images, worker.job)
+    save_result(server, images, worker.job, save_thumbnails=params.thumbnail)
 
     # clean up
     run_gc([worker.get_device()])

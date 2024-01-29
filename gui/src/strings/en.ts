@@ -48,6 +48,9 @@ export const I18N_STRINGS_EN = {
       history: {
         empty: 'No recent history. Press Generate to create an image.',
       },
+      image: {
+        thumbnail: 'Thumbnail',
+      },
       input: {
         image: {
           empty: 'Please select an image.',

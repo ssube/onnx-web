@@ -1,6 +1,6 @@
 import { doesExist, Maybe, mustDefault, mustExist } from '@apextoaster/js-utils';
 import { ArrowLeft, ArrowRight, Blender, Brush, ContentCopy, Delete, Download, ZoomOutMap } from '@mui/icons-material';
-import { Box, Card, CardContent, CardMedia, Grid, IconButton, Menu, MenuItem, Paper, Tooltip } from '@mui/material';
+import { Box, Card, CardActionArea, CardContent, CardMedia, Grid, IconButton, Menu, MenuItem, Paper, Tooltip, Typography } from '@mui/material';
 import * as React from 'react';
 import { useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,7 @@ export function GridItem(props: { xs: number; children: React.ReactNode }) {
 
 export function ImageCard(props: ImageCardProps) {
   const { image } = props;
-  const { metadata, outputs } = image;
+  const { metadata, outputs, thumbnails } = image;
 
   const [_hash, setHash] = useHash();
   const [blendAnchor, setBlendAnchor] = useState<Maybe<HTMLElement>>();
@@ -39,7 +39,7 @@ export function ImageCard(props: ImageCardProps) {
   const { setBlend, setImg2Img, setInpaint, setUpscale } = useStore(store, selectActions, shallow);
 
   async function loadSource() {
-    const req = await fetch(url);
+    const req = await fetch(outputURL);
     return req.blob();
   }
 
@@ -85,12 +85,12 @@ export function ImageCard(props: ImageCardProps) {
   }
 
   function downloadImage() {
-    window.open(url, '_blank');
+    window.open(outputURL, '_blank');
     close();
   }
 
   function downloadMetadata() {
-    window.open(url + '.json', '_blank');
+    window.open(outputURL + '.json', '_blank');
     close();
   }
 
@@ -107,17 +107,21 @@ export function ImageCard(props: ImageCardProps) {
     return mustDefault(t(`${key}.${name}`), name);
   }
 
-  const url = useMemo(() => client.outputURL(image, index), [image, index]);
+  const outputURL = useMemo(() => client.outputURL(image, index), [image, index]);
+  const thumbnailURL = useMemo(() => client.thumbnailURL(image, index), [image, index]);
+  const previewURL = thumbnailURL ?? outputURL;
 
   const model = getLabel('model', metadata[index].models[0].name);
   const scheduler = getLabel('scheduler', metadata[index].params.scheduler);
 
   return <Card sx={{ maxWidth: config.params.width.default }} elevation={2}>
-    <CardMedia sx={{ height: config.params.height.default }}
-      component='img'
-      image={url}
-      title={metadata[index].params.prompt}
-    />
+    <CardActionArea onClick={downloadImage}>
+      <CardMedia sx={{ height: config.params.height.default }}
+        component='img'
+        image={previewURL}
+        title={metadata[index].params.prompt}
+      />
+    </CardActionArea>
     <CardContent>
       <Box textAlign='center'>
         <Grid container spacing={STANDARD_SPACING}>
@@ -136,7 +140,8 @@ export function ImageCard(props: ImageCardProps) {
             </Tooltip>
           </GridItem>
           <GridItem xs={4}>
-            {visibleIndex(index)} of {outputs.length}
+            <Typography>{visibleIndex(index)} of {outputs.length}</Typography>
+            {hasThumbnail(image, index) && <Typography>({t('image.thumbnail')})</Typography>}
           </GridItem>
           <GridItem xs={4}>
             <Tooltip title={t('tooltip.next')}>
@@ -239,4 +244,8 @@ export function selectActions(state: OnnxState) {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     setUpscale: state.setUpscale,
   };
+}
+
+export function hasThumbnail(job: SuccessJobResponse, index: number) {
+  return doesExist(job.thumbnails) && doesExist(job.thumbnails[index]);
 }

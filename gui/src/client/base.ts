@@ -1,9 +1,10 @@
+import { Maybe } from '@apextoaster/js-utils';
 import { ServerParams } from '../config.js';
-import { ExtrasFile } from '../types/model.js';
-import { WriteExtrasResponse, FilterResponse, ModelResponse, RetryParams } from '../types/api.js';
-import { ChainPipeline } from '../types/chain.js';
-import { ModelParams, Txt2ImgParams, UpscaleParams, HighresParams, Img2ImgParams, InpaintParams, OutpaintParams, UpscaleReqParams, BlendParams } from '../types/params.js';
 import { JobResponse, JobResponseWithRetry, SuccessJobResponse } from '../types/api-v2.js';
+import { FilterResponse, ModelResponse, RetryParams, WriteExtrasResponse } from '../types/api.js';
+import { ChainPipeline } from '../types/chain.js';
+import { ExtrasFile } from '../types/model.js';
+import { BlendParams, HighresParams, Img2ImgParams, InpaintParams, ModelParams, OutpaintParams, Txt2ImgParams, UpscaleParams, UpscaleReqParams } from '../types/params.js';
 
 export interface ApiClient {
   /**
@@ -124,4 +125,6 @@ export interface ApiClient {
   workers(): Promise<Array<unknown>>;
 
   outputURL(image: SuccessJobResponse, index: number): string;
+
+  thumbnailURL(image: SuccessJobResponse, index: number): Maybe<string>;
 }

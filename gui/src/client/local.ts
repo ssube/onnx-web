@@ -84,4 +84,7 @@ export const LOCAL_CLIENT = {
   outputURL(image, index) {
     throw new NoServerError();
   },
+  thumbnailURL(image, index) {
+    throw new NoServerError();
+  },
 } as ApiClient;

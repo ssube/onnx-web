@@ -22,7 +22,11 @@ def make_output_names(
     count: int = 1,
     offset: int = 0,
     extension: Optional[str] = None,
+    suffix: Optional[str] = None,
 ) -> List[str]:
+    if suffix is not None:
+        job_name = f"{job_name}_{suffix}"
+
     return [
         f"{job_name}_{i}.{extension or server.image_format}"
         for i in range(offset, count + offset)
@@ -63,14 +67,15 @@ def save_result(
     server: ServerContext,
     result: StageResult,
     base_name: str,
+    save_thumbnails: bool = False,
 ) -> List[str]:
     images = result.as_images()
-    outputs = make_output_names(server, base_name, len(images))
-    logger.debug("saving %s images: %s", len(images), outputs)
+    output_names = make_output_names(server, base_name, len(images))
+    logger.debug("saving %s images: %s", len(images), output_names)
 
-    results = []
-    for image, metadata, filename in zip(images, result.metadata, outputs):
-        results.append(
+    outputs = []
+    for image, metadata, filename in zip(images, result.metadata, output_names):
+        outputs.append(
             save_image(
                 server,
                 filename,
@@ -79,7 +84,33 @@ def save_result(
             )
         )
 
-    return results
+    result.outputs = outputs
+
+    if save_thumbnails:
+        thumbnail_names = make_output_names(
+            server,
+            base_name,
+            len(images),
+            suffix="thumbnail",
+        )
+        logger.debug("saving %s thumbnails: %s", len(images), thumbnail_names)
+
+        thumbnails = []
+        for image, filename in zip(images, thumbnail_names):
+            thumbnail = image.copy()
+            thumbnail.thumbnail((server.thumbnail_size, server.thumbnail_size))
+
+            thumbnails.append(
+                save_image(
+                    server,
+                    filename,
+                    image,
+                )
+            )
+
+        result.thumbnails = thumbnails
+
+    return outputs
 
 
 def save_image(

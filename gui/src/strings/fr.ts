@@ -53,6 +53,9 @@ export const I18N_STRINGS_FR = {
       history: {
         empty: 'pas d\'histoire récente. appuyez sur générer pour créer une image.',
       },
+      image: {
+        thumbnail: 'vignette',
+      },
       input: {
         image: {
           empty: 'veuillez sélectionner une image',

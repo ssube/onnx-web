@@ -53,6 +53,9 @@ export const I18N_STRINGS_ES = {
         lanczos: 'Lanczos',
         upscale: '',
       },
+      image: {
+        thumbnail: 'Miniatura',
+      },
       input: {
         image: {
           empty: 'Por favor, seleccione una imagen.',
