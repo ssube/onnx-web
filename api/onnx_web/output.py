@@ -102,7 +102,7 @@ def save_result(
                 save_image(
                     server,
                     filename,
-                    image,
+                    thumbnail,
                 )
             )
 
