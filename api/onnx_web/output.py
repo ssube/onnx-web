@@ -70,11 +70,11 @@ def save_result(
     save_thumbnails: bool = False,
 ) -> List[str]:
     images = result.as_images()
-    output_names = make_output_names(server, base_name, len(images))
-    logger.debug("saving %s images: %s", len(images), output_names)
+    result.outputs = make_output_names(server, base_name, len(images))
+    logger.debug("saving %s images: %s", len(images), result.outputs)
 
     outputs = []
-    for image, metadata, filename in zip(images, result.metadata, output_names):
+    for image, metadata, filename in zip(images, result.metadata, result.outputs):
         outputs.append(
             save_image(
                 server,
@@ -84,19 +84,17 @@ def save_result(
             )
         )
 
-    result.outputs = outputs
-
     if save_thumbnails:
-        thumbnail_names = make_output_names(
+        result.thumbnails = make_output_names(
             server,
             base_name,
             len(images),
             suffix="thumbnail",
         )
-        logger.debug("saving %s thumbnails: %s", len(images), thumbnail_names)
+        logger.debug("saving %s thumbnails: %s", len(images), result.thumbnails)
 
         thumbnails = []
-        for image, filename in zip(images, thumbnail_names):
+        for image, filename in zip(images, result.thumbnails):
             thumbnail = image.copy()
             thumbnail.thumbnail((server.thumbnail_size, server.thumbnail_size))
 
@@ -107,8 +105,6 @@ def save_result(
                     image,
                 )
             )
-
-        result.thumbnails = thumbnails
 
     return outputs
 
