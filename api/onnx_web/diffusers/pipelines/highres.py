@@ -362,7 +362,7 @@ def export_unet(pipeline, output_path, unet_sample_size=1024):
     )
 
 
-def load_and_export(source="stabilityai/sd-x2-latent-upscaler"):
+def load_and_export(output, source="stabilityai/sd-x2-latent-upscaler"):
     from pathlib import Path
 
     from diffusers import StableDiffusionLatentUpscalePipeline
@@ -370,11 +370,12 @@ def load_and_export(source="stabilityai/sd-x2-latent-upscaler"):
     upscaler = StableDiffusionLatentUpscalePipeline.from_pretrained(
         source, torch_dtype=torch.float32
     )
-    export_unet(upscaler, Path("/tmp/latent-upscaler"))
+    export_unet(upscaler, Path(output))
 
 
 def load_and_run(
     prompt,
+    output,
     source="stabilityai/sd-x2-latent-upscaler",
     checkpoint="../models/stable-diffusion-onnx-v1-5",
 ):
@@ -396,7 +397,7 @@ def load_and_run(
     # run
     result = highres.text2img(prompt, num_inference_steps=25, num_upscale_steps=25)
     image = result.images[0]
-    image.save("/tmp/highres.png")
+    image.save(output)
 
 
 class RetorchModel:

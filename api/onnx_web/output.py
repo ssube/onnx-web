@@ -95,6 +95,7 @@ def save_result(
 
         thumbnails = []
         for image, filename in zip(images, result.thumbnails):
+            # TODO: only make a thumbnail if the image is larger than the thumbnail size
             thumbnail = image.copy()
             thumbnail.thumbnail((server.thumbnail_size, server.thumbnail_size))
 
