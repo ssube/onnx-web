@@ -591,3 +591,20 @@ class HighresParams:
             method=coalesce(method, self.method),
             iterations=coalesce(iterations, self.iterations),
         )
+
+
+def get_size(val: Union[int, str, None]) -> Union[int, SizeChart]:
+    if val is None:
+        return SizeChart.auto
+
+    if type(val) is int:
+        return val
+
+    if type(val) is str:
+        for size in SizeChart:
+            if val == size.name:
+                return size
+
+        return int(val)
+
+    raise ValueError("invalid size")
