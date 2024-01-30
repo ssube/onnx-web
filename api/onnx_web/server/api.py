@@ -19,7 +19,7 @@ from ..diffusers.run import (
 )
 from ..diffusers.utils import replace_wildcards
 from ..output import make_job_name
-from ..params import Size, StageParams, TileOrder
+from ..params import Size, StageParams, TileOrder, get_size
 from ..transformers.run import run_txt2txt_pipeline
 from ..utils import (
     base_join,
@@ -30,7 +30,6 @@ from ..utils import (
     get_from_map,
     get_list,
     get_not_empty,
-    get_size,
     load_config,
     load_config_str,
     sanitize_name,
