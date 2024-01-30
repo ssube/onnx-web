@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 from .models.meta import NetworkModel
 from .torch_before_ort import GraphOptimizationLevel, SessionOptions
+from .utils import coalesce
 
 logger = getLogger(__name__)
 
@@ -417,10 +418,10 @@ class StageParams:
     ):
         logger.debug("ignoring extra kwargs for stage: %s", kwargs)
         return StageParams(
-            name=name or self.name,
-            outscale=outscale or self.outscale,
-            tile_order=tile_order or self.tile_order,
-            tile_size=tile_size or self.tile_size,
+            name=coalesce(name, self.name),
+            outscale=coalesce(outscale, self.outscale),
+            tile_order=coalesce(tile_order, self.tile_order),
+            tile_size=coalesce(tile_size, self.tile_size),
         )
 
 
@@ -516,18 +517,18 @@ class UpscaleParams:
     ):
         logger.debug("ignoring extra kwargs for upscale: %s", kwargs)
         return UpscaleParams(
-            upscale_model=upscale_model or self.upscale_model,
-            correction_model=correction_model or self.correction_model,
-            denoise=denoise or self.denoise,
-            upscale=upscale or self.upscale,
-            faces=faces or self.faces,
-            face_outscale=face_outscale or self.face_outscale,
-            face_strength=face_strength or self.face_strength,
-            outscale=outscale or self.outscale,
-            scale=scale or self.scale,
-            pre_pad=pre_pad or self.pre_pad,
-            tile_pad=tile_pad or self.tile_pad,
-            upscale_order=upscale_order or self.upscale_order,
+            upscale_model=coalesce(upscale_model, self.upscale_model),
+            correction_model=coalesce(correction_model, self.correction_model),
+            denoise=coalesce(denoise, self.denoise),
+            upscale=coalesce(upscale, self.upscale),
+            faces=coalesce(faces, self.faces),
+            face_outscale=coalesce(face_outscale, self.face_outscale),
+            face_strength=coalesce(face_strength, self.face_strength),
+            outscale=coalesce(outscale, self.outscale),
+            scale=coalesce(scale, self.scale),
+            pre_pad=coalesce(pre_pad, self.pre_pad),
+            tile_pad=coalesce(tile_pad, self.tile_pad),
+            upscale_order=coalesce(upscale_order, self.upscale_order),
         )
 
 
@@ -583,10 +584,10 @@ class HighresParams:
     ):
         logger.debug("ignoring extra kwargs for highres: %s", kwargs)
         return HighresParams(
-            enabled=enabled or self.enabled,
-            scale=scale or self.scale,
-            steps=steps or self.steps,
-            strength=strength or self.strength,
-            method=method or self.method,
-            iterations=iterations or self.iterations,
+            enabled=coalesce(enabled, self.enabled),
+            scale=coalesce(scale, self.scale),
+            steps=coalesce(steps, self.steps),
+            strength=coalesce(strength, self.strength),
+            method=coalesce(method, self.method),
+            iterations=coalesce(iterations, self.iterations),
         )

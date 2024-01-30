@@ -11,7 +11,7 @@ from ..convert.utils import resolve_tensor
 from ..params import Border, HighresParams, ImageParams, Size, UpscaleParams
 from ..server.context import ServerContext
 from ..server.load import get_extra_hashes
-from ..utils import hash_file, load_config_str
+from ..utils import coalesce, hash_file, load_config_str
 
 logger = getLogger(__name__)
 
@@ -269,13 +269,13 @@ class ImageMetadata:
         return ImageMetadata(
             params or self.params,
             size or self.size,
-            upscale=upscale or self.upscale,
-            border=border or self.border,
-            highres=highres or self.highres,
-            inversions=inversions or self.inversions,
-            loras=loras or self.loras,
-            models=models or self.models,
-            ancestors=ancestors or self.ancestors,
+            upscale=coalesce(upscale, self.upscale),
+            border=coalesce(border, self.border),
+            highres=coalesce(highres, self.highres),
+            inversions=coalesce(inversions, self.inversions),
+            loras=coalesce(loras, self.loras),
+            models=coalesce(models, self.models),
+            ancestors=coalesce(ancestors, self.ancestors),
         )
 
     @staticmethod

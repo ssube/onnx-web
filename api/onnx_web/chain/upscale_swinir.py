@@ -73,10 +73,14 @@ class UpscaleSwinIRStage(BaseStage):
         upscale = upscale.with_args(**kwargs)
 
         if upscale.upscale_model is None:
-            logger.warning("no correction model given, skipping")
+            logger.warning("no upscale model given, skipping")
             return sources
 
-        logger.info("correcting faces with SwinIR model: %s", upscale.upscale_model)
+        logger.info(
+            "upscaling %sx with SwinIR model: %s",
+            upscale.outscale,
+            upscale.upscale_model,
+        )
         device = worker.get_device()
         swinir = self.load(server, stage, upscale, device)
 

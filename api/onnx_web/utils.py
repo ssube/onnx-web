@@ -251,3 +251,14 @@ def hash_value(sha, param: Optional[Param]):
         sha.update(param.encode("utf-8"))
     else:
         logger.warning("cannot hash param: %s, %s", param, type(param))
+
+
+def coalesce(*args, throw=False):
+    for arg in args:
+        if arg is not None:
+            return arg
+
+    if throw:
+        raise ValueError("no value found")
+
+    return None
