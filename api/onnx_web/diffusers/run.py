@@ -404,11 +404,9 @@ def run_inpaint_pipeline(
     )
 
     # custom version of save for full-res inpainting
-    output_names = make_output_names(server, worker.job, len(images))
-    outputs = []
-
+    images.outputs = make_output_names(server, worker.job, len(images))
     for image, metadata, output in zip(
-        images.as_images(), images.metadata, output_names
+        images.as_images(), images.metadata, images.outputs
     ):
         if full_res_inpaint:
             if is_debug():
@@ -418,33 +416,23 @@ def run_inpaint_pipeline(
             image = original_source
             image.paste(mini_image, box=adj_mask_border)
 
-        outputs.append(
             save_image(
                 server,
                 output,
                 image,
                 metadata,
             )
-        )
 
-    thumbnails = None
     if params.thumbnail:
-        thumbnail_names = make_output_names(
+        images.thumbnails = make_output_names(
             server, worker.job, len(images), suffix="thumbnail"
         )
-        thumbnails = []
-
-        for image, thumbnail in zip(images.as_images(), thumbnail_names):
-            thumbnails.append(
-                save_image(
-                    server,
-                    thumbnail,
-                    image,
-                )
+        for image, thumbnail in zip(images.as_images(), images.thumbnails):
+            save_image(
+                server,
+                thumbnail,
+                image,
             )
-
-    images.outputs = outputs
-    images.thumbnails = thumbnails
 
     # clean up
     run_gc([worker.get_device()])
