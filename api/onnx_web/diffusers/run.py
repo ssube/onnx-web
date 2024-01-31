@@ -416,12 +416,12 @@ def run_inpaint_pipeline(
             image = original_source
             image.paste(mini_image, box=adj_mask_border)
 
-            save_image(
-                server,
-                output,
-                image,
-                metadata,
-            )
+        save_image(
+            server,
+            output,
+            image,
+            metadata,
+        )
 
     if params.thumbnail:
         images.thumbnails = make_output_names(
