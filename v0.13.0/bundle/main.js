@@ -1021,7 +1021,7 @@
             return lazyType;
           }
           __name(lazy, "lazy");
-          function forwardRef74(render) {
+          function forwardRef75(render) {
             {
               if (render != null && render.$$typeof === REACT_MEMO_TYPE) {
                 error2("forwardRef requires a render function but received a `memo` component. Instead of forwardRef(memo(...)), use memo(forwardRef(...)).");
@@ -1060,7 +1060,7 @@
             }
             return elementType;
           }
-          __name(forwardRef74, "forwardRef");
+          __name(forwardRef75, "forwardRef");
           var REACT_MODULE_REFERENCE;
           {
             REACT_MODULE_REFERENCE = Symbol.for("react.module.reference");
@@ -1154,19 +1154,19 @@
             return dispatcher.useRef(initialValue);
           }
           __name(useRef32, "useRef");
-          function useEffect32(create2, deps) {
+          function useEffect32(create3, deps) {
             var dispatcher = resolveDispatcher();
-            return dispatcher.useEffect(create2, deps);
+            return dispatcher.useEffect(create3, deps);
           }
           __name(useEffect32, "useEffect");
-          function useInsertionEffect3(create2, deps) {
+          function useInsertionEffect3(create3, deps) {
             var dispatcher = resolveDispatcher();
-            return dispatcher.useInsertionEffect(create2, deps);
+            return dispatcher.useInsertionEffect(create3, deps);
           }
           __name(useInsertionEffect3, "useInsertionEffect");
-          function useLayoutEffect3(create2, deps) {
+          function useLayoutEffect3(create3, deps) {
             var dispatcher = resolveDispatcher();
-            return dispatcher.useLayoutEffect(create2, deps);
+            return dispatcher.useLayoutEffect(create3, deps);
           }
           __name(useLayoutEffect3, "useLayoutEffect");
           function useCallback19(callback, deps) {
@@ -1174,14 +1174,14 @@
             return dispatcher.useCallback(callback, deps);
           }
           __name(useCallback19, "useCallback");
-          function useMemo23(create2, deps) {
+          function useMemo23(create3, deps) {
             var dispatcher = resolveDispatcher();
-            return dispatcher.useMemo(create2, deps);
+            return dispatcher.useMemo(create3, deps);
           }
           __name(useMemo23, "useMemo");
-          function useImperativeHandle8(ref, create2, deps) {
+          function useImperativeHandle8(ref, create3, deps) {
             var dispatcher = resolveDispatcher();
-            return dispatcher.useImperativeHandle(ref, create2, deps);
+            return dispatcher.useImperativeHandle(ref, create3, deps);
           }
           __name(useImperativeHandle8, "useImperativeHandle");
           function useDebugValue5(value, formatterFn) {
@@ -1965,7 +1965,7 @@
           exports.createElement = createElement$1;
           exports.createFactory = createFactory;
           exports.createRef = createRef;
-          exports.forwardRef = forwardRef74;
+          exports.forwardRef = forwardRef75;
           exports.isValidElement = isValidElement14;
           exports.lazy = lazy;
           exports.memo = memo4;
@@ -2505,9 +2505,9 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React169 = require_react();
+          var React170 = require_react();
           var Scheduler = require_scheduler();
-          var ReactSharedInternals = React169.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React170.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           var suppressWarning = false;
           function setSuppressWarning(newSuppressWarning) {
             {
@@ -4181,7 +4181,7 @@
             {
               if (props.value == null) {
                 if (typeof props.children === "object" && props.children !== null) {
-                  React169.Children.forEach(props.children, function(child) {
+                  React170.Children.forEach(props.children, function(child) {
                     if (child == null) {
                       return;
                     }
@@ -13086,7 +13086,7 @@
           }
           __name(commitUpdateQueue, "commitUpdateQueue");
           var fakeInternalInstance = {};
-          var emptyRefsObject = new React169.Component().refs;
+          var emptyRefsObject = new React170.Component().refs;
           var didWarnAboutStateAssignmentForComponent;
           var didWarnAboutUninitializedState;
           var didWarnAboutGetSnapshotBeforeUpdateWithoutDidUpdate;
@@ -15284,10 +15284,10 @@
             return rerenderReducer(basicStateReducer);
           }
           __name(rerenderState, "rerenderState");
-          function pushEffect(tag, create2, destroy, deps) {
+          function pushEffect(tag, create3, destroy, deps) {
             var effect4 = {
               tag,
-              create: create2,
+              create: create3,
               destroy,
               deps,
               // Circular
@@ -15328,14 +15328,14 @@
             return hook.memoizedState;
           }
           __name(updateRef, "updateRef");
-          function mountEffectImpl(fiberFlags, hookFlags, create2, deps) {
+          function mountEffectImpl(fiberFlags, hookFlags, create3, deps) {
             var hook = mountWorkInProgressHook();
             var nextDeps = deps === void 0 ? null : deps;
             currentlyRenderingFiber$1.flags |= fiberFlags;
-            hook.memoizedState = pushEffect(HasEffect | hookFlags, create2, void 0, nextDeps);
+            hook.memoizedState = pushEffect(HasEffect | hookFlags, create3, void 0, nextDeps);
           }
           __name(mountEffectImpl, "mountEffectImpl");
-          function updateEffectImpl(fiberFlags, hookFlags, create2, deps) {
+          function updateEffectImpl(fiberFlags, hookFlags, create3, deps) {
             var hook = updateWorkInProgressHook();
             var nextDeps = deps === void 0 ? null : deps;
             var destroy = void 0;
@@ -15345,36 +15345,36 @@
               if (nextDeps !== null) {
                 var prevDeps = prevEffect.deps;
                 if (areHookInputsEqual(nextDeps, prevDeps)) {
-                  hook.memoizedState = pushEffect(hookFlags, create2, destroy, nextDeps);
+                  hook.memoizedState = pushEffect(hookFlags, create3, destroy, nextDeps);
                   return;
                 }
               }
             }
             currentlyRenderingFiber$1.flags |= fiberFlags;
-            hook.memoizedState = pushEffect(HasEffect | hookFlags, create2, destroy, nextDeps);
+            hook.memoizedState = pushEffect(HasEffect | hookFlags, create3, destroy, nextDeps);
           }
           __name(updateEffectImpl, "updateEffectImpl");
-          function mountEffect(create2, deps) {
+          function mountEffect(create3, deps) {
             if ((currentlyRenderingFiber$1.mode & StrictEffectsMode) !== NoMode) {
-              return mountEffectImpl(MountPassiveDev | Passive | PassiveStatic, Passive$1, create2, deps);
+              return mountEffectImpl(MountPassiveDev | Passive | PassiveStatic, Passive$1, create3, deps);
             } else {
-              return mountEffectImpl(Passive | PassiveStatic, Passive$1, create2, deps);
+              return mountEffectImpl(Passive | PassiveStatic, Passive$1, create3, deps);
             }
           }
           __name(mountEffect, "mountEffect");
-          function updateEffect(create2, deps) {
-            return updateEffectImpl(Passive, Passive$1, create2, deps);
+          function updateEffect(create3, deps) {
+            return updateEffectImpl(Passive, Passive$1, create3, deps);
           }
           __name(updateEffect, "updateEffect");
-          function mountInsertionEffect(create2, deps) {
-            return mountEffectImpl(Update, Insertion7, create2, deps);
+          function mountInsertionEffect(create3, deps) {
+            return mountEffectImpl(Update, Insertion7, create3, deps);
           }
           __name(mountInsertionEffect, "mountInsertionEffect");
-          function updateInsertionEffect(create2, deps) {
-            return updateEffectImpl(Update, Insertion7, create2, deps);
+          function updateInsertionEffect(create3, deps) {
+            return updateEffectImpl(Update, Insertion7, create3, deps);
           }
           __name(updateInsertionEffect, "updateInsertionEffect");
-          function mountLayoutEffect(create2, deps) {
+          function mountLayoutEffect(create3, deps) {
             var fiberFlags = Update;
             {
               fiberFlags |= LayoutStatic;
@@ -15382,17 +15382,17 @@
             if ((currentlyRenderingFiber$1.mode & StrictEffectsMode) !== NoMode) {
               fiberFlags |= MountLayoutDev;
             }
-            return mountEffectImpl(fiberFlags, Layout, create2, deps);
+            return mountEffectImpl(fiberFlags, Layout, create3, deps);
           }
           __name(mountLayoutEffect, "mountLayoutEffect");
-          function updateLayoutEffect(create2, deps) {
-            return updateEffectImpl(Update, Layout, create2, deps);
+          function updateLayoutEffect(create3, deps) {
+            return updateEffectImpl(Update, Layout, create3, deps);
           }
           __name(updateLayoutEffect, "updateLayoutEffect");
-          function imperativeHandleEffect(create2, ref) {
+          function imperativeHandleEffect(create3, ref) {
             if (typeof ref === "function") {
               var refCallback = ref;
-              var _inst = create2();
+              var _inst = create3();
               refCallback(_inst);
               return function() {
                 refCallback(null);
@@ -15404,7 +15404,7 @@
                   error2("Expected useImperativeHandle() first argument to either be a ref callback or React.createRef() object. Instead received: %s.", "an object with keys {" + Object.keys(refObject).join(", ") + "}");
                 }
               }
-              var _inst2 = create2();
+              var _inst2 = create3();
               refObject.current = _inst2;
               return function() {
                 refObject.current = null;
@@ -15412,10 +15412,10 @@
             }
           }
           __name(imperativeHandleEffect, "imperativeHandleEffect");
-          function mountImperativeHandle(ref, create2, deps) {
+          function mountImperativeHandle(ref, create3, deps) {
             {
-              if (typeof create2 !== "function") {
-                error2("Expected useImperativeHandle() second argument to be a function that creates a handle. Instead received: %s.", create2 !== null ? typeof create2 : "null");
+              if (typeof create3 !== "function") {
+                error2("Expected useImperativeHandle() second argument to be a function that creates a handle. Instead received: %s.", create3 !== null ? typeof create3 : "null");
               }
             }
             var effectDeps = deps !== null && deps !== void 0 ? deps.concat([ref]) : null;
@@ -15426,17 +15426,17 @@
             if ((currentlyRenderingFiber$1.mode & StrictEffectsMode) !== NoMode) {
               fiberFlags |= MountLayoutDev;
             }
-            return mountEffectImpl(fiberFlags, Layout, imperativeHandleEffect.bind(null, create2, ref), effectDeps);
+            return mountEffectImpl(fiberFlags, Layout, imperativeHandleEffect.bind(null, create3, ref), effectDeps);
           }
           __name(mountImperativeHandle, "mountImperativeHandle");
-          function updateImperativeHandle(ref, create2, deps) {
+          function updateImperativeHandle(ref, create3, deps) {
             {
-              if (typeof create2 !== "function") {
-                error2("Expected useImperativeHandle() second argument to be a function that creates a handle. Instead received: %s.", create2 !== null ? typeof create2 : "null");
+              if (typeof create3 !== "function") {
+                error2("Expected useImperativeHandle() second argument to be a function that creates a handle. Instead received: %s.", create3 !== null ? typeof create3 : "null");
               }
             }
             var effectDeps = deps !== null && deps !== void 0 ? deps.concat([ref]) : null;
-            return updateEffectImpl(Update, Layout, imperativeHandleEffect.bind(null, create2, ref), effectDeps);
+            return updateEffectImpl(Update, Layout, imperativeHandleEffect.bind(null, create3, ref), effectDeps);
           }
           __name(updateImperativeHandle, "updateImperativeHandle");
           function mountDebugValue(value, formatterFn) {
@@ -15781,38 +15781,38 @@
                 mountHookTypesDev();
                 return readContext(context);
               },
-              useEffect: function(create2, deps) {
+              useEffect: function(create3, deps) {
                 currentHookNameInDev = "useEffect";
                 mountHookTypesDev();
                 checkDepsAreArrayDev(deps);
-                return mountEffect(create2, deps);
+                return mountEffect(create3, deps);
               },
-              useImperativeHandle: function(ref, create2, deps) {
+              useImperativeHandle: function(ref, create3, deps) {
                 currentHookNameInDev = "useImperativeHandle";
                 mountHookTypesDev();
                 checkDepsAreArrayDev(deps);
-                return mountImperativeHandle(ref, create2, deps);
+                return mountImperativeHandle(ref, create3, deps);
               },
-              useInsertionEffect: function(create2, deps) {
+              useInsertionEffect: function(create3, deps) {
                 currentHookNameInDev = "useInsertionEffect";
                 mountHookTypesDev();
                 checkDepsAreArrayDev(deps);
-                return mountInsertionEffect(create2, deps);
+                return mountInsertionEffect(create3, deps);
               },
-              useLayoutEffect: function(create2, deps) {
+              useLayoutEffect: function(create3, deps) {
                 currentHookNameInDev = "useLayoutEffect";
                 mountHookTypesDev();
                 checkDepsAreArrayDev(deps);
-                return mountLayoutEffect(create2, deps);
+                return mountLayoutEffect(create3, deps);
               },
-              useMemo: function(create2, deps) {
+              useMemo: function(create3, deps) {
                 currentHookNameInDev = "useMemo";
                 mountHookTypesDev();
                 checkDepsAreArrayDev(deps);
                 var prevDispatcher = ReactCurrentDispatcher$1.current;
                 ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
                 try {
-                  return mountMemo(create2, deps);
+                  return mountMemo(create3, deps);
                 } finally {
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
@@ -15890,33 +15890,33 @@
                 updateHookTypesDev();
                 return readContext(context);
               },
-              useEffect: function(create2, deps) {
+              useEffect: function(create3, deps) {
                 currentHookNameInDev = "useEffect";
                 updateHookTypesDev();
-                return mountEffect(create2, deps);
+                return mountEffect(create3, deps);
               },
-              useImperativeHandle: function(ref, create2, deps) {
+              useImperativeHandle: function(ref, create3, deps) {
                 currentHookNameInDev = "useImperativeHandle";
                 updateHookTypesDev();
-                return mountImperativeHandle(ref, create2, deps);
+                return mountImperativeHandle(ref, create3, deps);
               },
-              useInsertionEffect: function(create2, deps) {
+              useInsertionEffect: function(create3, deps) {
                 currentHookNameInDev = "useInsertionEffect";
                 updateHookTypesDev();
-                return mountInsertionEffect(create2, deps);
+                return mountInsertionEffect(create3, deps);
               },
-              useLayoutEffect: function(create2, deps) {
+              useLayoutEffect: function(create3, deps) {
                 currentHookNameInDev = "useLayoutEffect";
                 updateHookTypesDev();
-                return mountLayoutEffect(create2, deps);
+                return mountLayoutEffect(create3, deps);
               },
-              useMemo: function(create2, deps) {
+              useMemo: function(create3, deps) {
                 currentHookNameInDev = "useMemo";
                 updateHookTypesDev();
                 var prevDispatcher = ReactCurrentDispatcher$1.current;
                 ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
                 try {
-                  return mountMemo(create2, deps);
+                  return mountMemo(create3, deps);
                 } finally {
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
@@ -15994,33 +15994,33 @@
                 updateHookTypesDev();
                 return readContext(context);
               },
-              useEffect: function(create2, deps) {
+              useEffect: function(create3, deps) {
                 currentHookNameInDev = "useEffect";
                 updateHookTypesDev();
-                return updateEffect(create2, deps);
+                return updateEffect(create3, deps);
               },
-              useImperativeHandle: function(ref, create2, deps) {
+              useImperativeHandle: function(ref, create3, deps) {
                 currentHookNameInDev = "useImperativeHandle";
                 updateHookTypesDev();
-                return updateImperativeHandle(ref, create2, deps);
+                return updateImperativeHandle(ref, create3, deps);
               },
-              useInsertionEffect: function(create2, deps) {
+              useInsertionEffect: function(create3, deps) {
                 currentHookNameInDev = "useInsertionEffect";
                 updateHookTypesDev();
-                return updateInsertionEffect(create2, deps);
+                return updateInsertionEffect(create3, deps);
               },
-              useLayoutEffect: function(create2, deps) {
+              useLayoutEffect: function(create3, deps) {
                 currentHookNameInDev = "useLayoutEffect";
                 updateHookTypesDev();
-                return updateLayoutEffect(create2, deps);
+                return updateLayoutEffect(create3, deps);
               },
-              useMemo: function(create2, deps) {
+              useMemo: function(create3, deps) {
                 currentHookNameInDev = "useMemo";
                 updateHookTypesDev();
                 var prevDispatcher = ReactCurrentDispatcher$1.current;
                 ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
                 try {
-                  return updateMemo(create2, deps);
+                  return updateMemo(create3, deps);
                 } finally {
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
@@ -16098,33 +16098,33 @@
                 updateHookTypesDev();
                 return readContext(context);
               },
-              useEffect: function(create2, deps) {
+              useEffect: function(create3, deps) {
                 currentHookNameInDev = "useEffect";
                 updateHookTypesDev();
-                return updateEffect(create2, deps);
+                return updateEffect(create3, deps);
               },
-              useImperativeHandle: function(ref, create2, deps) {
+              useImperativeHandle: function(ref, create3, deps) {
                 currentHookNameInDev = "useImperativeHandle";
                 updateHookTypesDev();
-                return updateImperativeHandle(ref, create2, deps);
+                return updateImperativeHandle(ref, create3, deps);
               },
-              useInsertionEffect: function(create2, deps) {
+              useInsertionEffect: function(create3, deps) {
                 currentHookNameInDev = "useInsertionEffect";
                 updateHookTypesDev();
-                return updateInsertionEffect(create2, deps);
+                return updateInsertionEffect(create3, deps);
               },
-              useLayoutEffect: function(create2, deps) {
+              useLayoutEffect: function(create3, deps) {
                 currentHookNameInDev = "useLayoutEffect";
                 updateHookTypesDev();
-                return updateLayoutEffect(create2, deps);
+                return updateLayoutEffect(create3, deps);
               },
-              useMemo: function(create2, deps) {
+              useMemo: function(create3, deps) {
                 currentHookNameInDev = "useMemo";
                 updateHookTypesDev();
                 var prevDispatcher = ReactCurrentDispatcher$1.current;
                 ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnRerenderInDEV;
                 try {
-                  return updateMemo(create2, deps);
+                  return updateMemo(create3, deps);
                 } finally {
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
@@ -16205,38 +16205,38 @@
                 mountHookTypesDev();
                 return readContext(context);
               },
-              useEffect: function(create2, deps) {
+              useEffect: function(create3, deps) {
                 currentHookNameInDev = "useEffect";
                 warnInvalidHookAccess();
                 mountHookTypesDev();
-                return mountEffect(create2, deps);
+                return mountEffect(create3, deps);
               },
-              useImperativeHandle: function(ref, create2, deps) {
+              useImperativeHandle: function(ref, create3, deps) {
                 currentHookNameInDev = "useImperativeHandle";
                 warnInvalidHookAccess();
                 mountHookTypesDev();
-                return mountImperativeHandle(ref, create2, deps);
+                return mountImperativeHandle(ref, create3, deps);
               },
-              useInsertionEffect: function(create2, deps) {
+              useInsertionEffect: function(create3, deps) {
                 currentHookNameInDev = "useInsertionEffect";
                 warnInvalidHookAccess();
                 mountHookTypesDev();
-                return mountInsertionEffect(create2, deps);
+                return mountInsertionEffect(create3, deps);
               },
-              useLayoutEffect: function(create2, deps) {
+              useLayoutEffect: function(create3, deps) {
                 currentHookNameInDev = "useLayoutEffect";
                 warnInvalidHookAccess();
                 mountHookTypesDev();
-                return mountLayoutEffect(create2, deps);
+                return mountLayoutEffect(create3, deps);
               },
-              useMemo: function(create2, deps) {
+              useMemo: function(create3, deps) {
                 currentHookNameInDev = "useMemo";
                 warnInvalidHookAccess();
                 mountHookTypesDev();
                 var prevDispatcher = ReactCurrentDispatcher$1.current;
                 ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnMountInDEV;
                 try {
-                  return mountMemo(create2, deps);
+                  return mountMemo(create3, deps);
                 } finally {
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
@@ -16326,38 +16326,38 @@
                 updateHookTypesDev();
                 return readContext(context);
               },
-              useEffect: function(create2, deps) {
+              useEffect: function(create3, deps) {
                 currentHookNameInDev = "useEffect";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
-                return updateEffect(create2, deps);
+                return updateEffect(create3, deps);
               },
-              useImperativeHandle: function(ref, create2, deps) {
+              useImperativeHandle: function(ref, create3, deps) {
                 currentHookNameInDev = "useImperativeHandle";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
-                return updateImperativeHandle(ref, create2, deps);
+                return updateImperativeHandle(ref, create3, deps);
               },
-              useInsertionEffect: function(create2, deps) {
+              useInsertionEffect: function(create3, deps) {
                 currentHookNameInDev = "useInsertionEffect";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
-                return updateInsertionEffect(create2, deps);
+                return updateInsertionEffect(create3, deps);
               },
-              useLayoutEffect: function(create2, deps) {
+              useLayoutEffect: function(create3, deps) {
                 currentHookNameInDev = "useLayoutEffect";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
-                return updateLayoutEffect(create2, deps);
+                return updateLayoutEffect(create3, deps);
               },
-              useMemo: function(create2, deps) {
+              useMemo: function(create3, deps) {
                 currentHookNameInDev = "useMemo";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
                 var prevDispatcher = ReactCurrentDispatcher$1.current;
                 ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
                 try {
-                  return updateMemo(create2, deps);
+                  return updateMemo(create3, deps);
                 } finally {
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
@@ -16447,38 +16447,38 @@
                 updateHookTypesDev();
                 return readContext(context);
               },
-              useEffect: function(create2, deps) {
+              useEffect: function(create3, deps) {
                 currentHookNameInDev = "useEffect";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
-                return updateEffect(create2, deps);
+                return updateEffect(create3, deps);
               },
-              useImperativeHandle: function(ref, create2, deps) {
+              useImperativeHandle: function(ref, create3, deps) {
                 currentHookNameInDev = "useImperativeHandle";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
-                return updateImperativeHandle(ref, create2, deps);
+                return updateImperativeHandle(ref, create3, deps);
               },
-              useInsertionEffect: function(create2, deps) {
+              useInsertionEffect: function(create3, deps) {
                 currentHookNameInDev = "useInsertionEffect";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
-                return updateInsertionEffect(create2, deps);
+                return updateInsertionEffect(create3, deps);
               },
-              useLayoutEffect: function(create2, deps) {
+              useLayoutEffect: function(create3, deps) {
                 currentHookNameInDev = "useLayoutEffect";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
-                return updateLayoutEffect(create2, deps);
+                return updateLayoutEffect(create3, deps);
               },
-              useMemo: function(create2, deps) {
+              useMemo: function(create3, deps) {
                 currentHookNameInDev = "useMemo";
                 warnInvalidHookAccess();
                 updateHookTypesDev();
                 var prevDispatcher = ReactCurrentDispatcher$1.current;
                 ReactCurrentDispatcher$1.current = InvalidNestedHooksDispatcherOnUpdateInDEV;
                 try {
-                  return updateMemo(create2, deps);
+                  return updateMemo(create3, deps);
                 } finally {
                   ReactCurrentDispatcher$1.current = prevDispatcher;
                 }
@@ -19672,13 +19672,13 @@
                       markComponentLayoutEffectMountStarted(finishedWork);
                     }
                   }
-                  var create2 = effect4.create;
+                  var create3 = effect4.create;
                   {
                     if ((flags & Insertion7) !== NoFlags$1) {
                       setIsRunningInsertionEffect(true);
                     }
                   }
-                  effect4.destroy = create2();
+                  effect4.destroy = create3();
                   {
                     if ((flags & Insertion7) !== NoFlags$1) {
                       setIsRunningInsertionEffect(false);
@@ -24547,8 +24547,8 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React169 = require_react();
-          var ReactSharedInternals = React169.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var React170 = require_react();
+          var ReactSharedInternals = React170.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function error2(format2) {
             {
               {
@@ -24581,13 +24581,13 @@
           }
           __name(is, "is");
           var objectIs = typeof Object.is === "function" ? Object.is : is;
-          var useState32 = React169.useState, useEffect32 = React169.useEffect, useLayoutEffect3 = React169.useLayoutEffect, useDebugValue5 = React169.useDebugValue;
+          var useState32 = React170.useState, useEffect32 = React170.useEffect, useLayoutEffect3 = React170.useLayoutEffect, useDebugValue5 = React170.useDebugValue;
           var didWarnOld18Alpha = false;
           var didWarnUncachedGetSnapshot = false;
           function useSyncExternalStore3(subscribe, getSnapshot, getServerSnapshot) {
             {
               if (!didWarnOld18Alpha) {
-                if (React169.startTransition !== void 0) {
+                if (React170.startTransition !== void 0) {
                   didWarnOld18Alpha = true;
                   error2("You are using an outdated, pre-release alpha of React 18 that does not support useSyncExternalStore. The use-sync-external-store shim will not work correctly. Upgrade to a newer pre-release.");
                 }
@@ -24655,7 +24655,7 @@
           var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined");
           var isServerEnvironment = !canUseDOM;
           var shim = isServerEnvironment ? useSyncExternalStore$12 : useSyncExternalStore3;
-          var useSyncExternalStore$2 = React169.useSyncExternalStore !== void 0 ? React169.useSyncExternalStore : shim;
+          var useSyncExternalStore$2 = React170.useSyncExternalStore !== void 0 ? React170.useSyncExternalStore : shim;
           exports.useSyncExternalStore = useSyncExternalStore$2;
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(new Error());
@@ -27152,7 +27152,7 @@
           if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function") {
             __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(new Error());
           }
-          var React169 = require_react();
+          var React170 = require_react();
           var shim = require_shim();
           function is(x2, y3) {
             return x2 === y3 && (x2 !== 0 || 1 / x2 === 1 / y3) || x2 !== x2 && y3 !== y3;
@@ -27160,7 +27160,7 @@
           __name(is, "is");
           var objectIs = typeof Object.is === "function" ? Object.is : is;
           var useSyncExternalStore3 = shim.useSyncExternalStore;
-          var useRef32 = React169.useRef, useEffect32 = React169.useEffect, useMemo23 = React169.useMemo, useDebugValue5 = React169.useDebugValue;
+          var useRef32 = React170.useRef, useEffect32 = React170.useEffect, useMemo23 = React170.useMemo, useDebugValue5 = React170.useDebugValue;
           function useSyncExternalStoreWithSelector2(subscribe, getSnapshot, getServerSnapshot, selector, isEqual) {
             var instRef = useRef32(null);
             var inst;
@@ -28566,7 +28566,7 @@
       if (true) {
         (function() {
           "use strict";
-          var React169 = require_react();
+          var React170 = require_react();
           var REACT_ELEMENT_TYPE = Symbol.for("react.element");
           var REACT_PORTAL_TYPE = Symbol.for("react.portal");
           var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
@@ -28593,7 +28593,7 @@
             return null;
           }
           __name(getIteratorFn, "getIteratorFn");
-          var ReactSharedInternals = React169.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
+          var ReactSharedInternals = React170.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
           function error2(format2) {
             {
               {
@@ -29489,7 +29489,7 @@
     }
   });
 
-  // node_modules/tslib/tslib.es6.js
+  // node_modules/react-use/node_modules/tslib/tslib.es6.js
   var tslib_es6_exports = {};
   __export(tslib_es6_exports, {
     __assign: () => __assign,
@@ -29923,7 +29923,7 @@
   }
   var extendStatics, __assign, __createBinding, __setModuleDefault;
   var init_tslib_es6 = __esm({
-    "node_modules/tslib/tslib.es6.js"() {
+    "node_modules/react-use/node_modules/tslib/tslib.es6.js"() {
       extendStatics = /* @__PURE__ */ __name(function(d3, b3) {
         extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d4, b4) {
           d4.__proto__ = b4;
@@ -34757,11 +34757,11 @@
             copyObject(source, keys(source), object, customizer);
           });
           var at = flatRest(baseAt);
-          function create2(prototype, properties2) {
+          function create3(prototype, properties2) {
             var result2 = baseCreate(prototype);
             return properties2 == null ? result2 : baseAssign(result2, properties2);
           }
-          __name(create2, "create");
+          __name(create3, "create");
           var defaults2 = baseRest(function(object, sources) {
             object = Object2(object);
             var index = -1;
@@ -35586,7 +35586,7 @@
           lodash.conforms = conforms;
           lodash.constant = constant;
           lodash.countBy = countBy;
-          lodash.create = create2;
+          lodash.create = create3;
           lodash.curry = curry;
           lodash.curryRight = curryRight;
           lodash.debounce = debounce3;
@@ -36054,6 +36054,91 @@
           root._ = _28;
         }
       }).call(exports);
+    }
+  });
+
+  // node_modules/react-use/lib/useDrop.js
+  var require_useDrop = __commonJS({
+    "node_modules/react-use/lib/useDrop.js"(exports) {
+      "use strict";
+      Object.defineProperty(exports, "__esModule", { value: true });
+      var tslib_1 = (init_tslib_es6(), __toCommonJS(tslib_es6_exports));
+      var react_1 = require_react();
+      var util_1 = require_util();
+      var createProcess = /* @__PURE__ */ __name(function(options) {
+        return function(dataTransfer, event) {
+          var uri = dataTransfer.getData("text/uri-list");
+          if (uri) {
+            (options.onUri || util_1.noop)(uri, event);
+            return;
+          }
+          if (dataTransfer.files && dataTransfer.files.length) {
+            (options.onFiles || util_1.noop)(Array.from(dataTransfer.files), event);
+            return;
+          }
+          if (event.clipboardData) {
+            var text = event.clipboardData.getData("text");
+            (options.onText || util_1.noop)(text, event);
+            return;
+          }
+        };
+      }, "createProcess");
+      var useDrop2 = /* @__PURE__ */ __name(function(options, args) {
+        if (options === void 0) {
+          options = {};
+        }
+        if (args === void 0) {
+          args = [];
+        }
+        var onFiles = options.onFiles, onText = options.onText, onUri = options.onUri;
+        var _a = react_1.useState(false), over = _a[0], setOverRaw = _a[1];
+        var setOver = react_1.useCallback(setOverRaw, []);
+        var process2 = react_1.useMemo(function() {
+          return createProcess(options);
+        }, [onFiles, onText, onUri]);
+        react_1.useEffect(function() {
+          var onDragOver = /* @__PURE__ */ __name(function(event) {
+            event.preventDefault();
+            setOver(true);
+          }, "onDragOver");
+          var onDragEnter = /* @__PURE__ */ __name(function(event) {
+            event.preventDefault();
+            setOver(true);
+          }, "onDragEnter");
+          var onDragLeave = /* @__PURE__ */ __name(function() {
+            setOver(false);
+          }, "onDragLeave");
+          var onDragExit = /* @__PURE__ */ __name(function() {
+            setOver(false);
+          }, "onDragExit");
+          var onDrop = /* @__PURE__ */ __name(function(event) {
+            event.preventDefault();
+            setOver(false);
+            process2(event.dataTransfer, event);
+          }, "onDrop");
+          var onPaste = /* @__PURE__ */ __name(function(event) {
+            process2(event.clipboardData, event);
+          }, "onPaste");
+          util_1.on(document, "dragover", onDragOver);
+          util_1.on(document, "dragenter", onDragEnter);
+          util_1.on(document, "dragleave", onDragLeave);
+          util_1.on(document, "dragexit", onDragExit);
+          util_1.on(document, "drop", onDrop);
+          if (onText) {
+            util_1.on(document, "paste", onPaste);
+          }
+          return function() {
+            util_1.off(document, "dragover", onDragOver);
+            util_1.off(document, "dragenter", onDragEnter);
+            util_1.off(document, "dragleave", onDragLeave);
+            util_1.off(document, "dragexit", onDragExit);
+            util_1.off(document, "drop", onDrop);
+            util_1.off(document, "paste", onPaste);
+          };
+        }, tslib_1.__spreadArrays([process2], args));
+        return { over };
+      }, "useDrop");
+      exports.default = useDrop2;
     }
   });
 
@@ -39413,7 +39498,7 @@
       }, "forward")
     }, {
       key: "create",
-      value: /* @__PURE__ */ __name(function create2(moduleName) {
+      value: /* @__PURE__ */ __name(function create3(moduleName) {
         return new Logger2(this.logger, _objectSpread$6(_objectSpread$6({}, {
           prefix: "".concat(this.prefix, ":").concat(moduleName, ":")
         }), this.options));
@@ -41850,7 +41935,7 @@
             return _this2;
           };
         });
-        var deferred = defer2();
+        var deferred2 = defer2();
         var load2 = /* @__PURE__ */ __name(function load3() {
           var finish = /* @__PURE__ */ __name(function finish2(err, t3) {
             if (_this2.isInitialized && !_this2.initializedStoreOnce)
@@ -41859,7 +41944,7 @@
             if (!_this2.options.isClone)
               _this2.logger.log("initialized", _this2.options);
             _this2.emit("initialized", _this2.options);
-            deferred.resolve(t3);
+            deferred2.resolve(t3);
             callback(err, t3);
           }, "finish");
           if (_this2.languages && _this2.options.compatibilityAPI !== "v1" && !_this2.isInitialized)
@@ -41871,7 +41956,7 @@
         } else {
           setTimeout(load2, 0);
         }
-        return deferred;
+        return deferred2;
       }, "init")
     }, {
       key: "loadResources",
@@ -41920,7 +42005,7 @@
     }, {
       key: "reloadResources",
       value: /* @__PURE__ */ __name(function reloadResources2(lngs, ns, callback) {
-        var deferred = defer2();
+        var deferred2 = defer2();
         if (!lngs)
           lngs = this.languages;
         if (!ns)
@@ -41928,10 +42013,10 @@
         if (!callback)
           callback = noop3;
         this.services.backendConnector.reload(lngs, ns, function(err) {
-          deferred.resolve();
+          deferred2.resolve();
           callback(err);
         });
-        return deferred;
+        return deferred2;
       }, "reloadResources")
     }, {
       key: "use",
@@ -41985,7 +42070,7 @@
       value: /* @__PURE__ */ __name(function changeLanguage2(lng, callback) {
         var _this4 = this;
         this.isLanguageChangingTo = lng;
-        var deferred = defer2();
+        var deferred2 = defer2();
         this.emit("languageChanging", lng);
         var setLngProps = /* @__PURE__ */ __name(function setLngProps2(l3) {
           _this4.language = l3;
@@ -42003,7 +42088,7 @@
           } else {
             _this4.isLanguageChangingTo = void 0;
           }
-          deferred.resolve(function() {
+          deferred2.resolve(function() {
             return _this4.t.apply(_this4, arguments);
           });
           if (callback)
@@ -42039,7 +42124,7 @@
         } else {
           setLng(lng);
         }
-        return deferred;
+        return deferred2;
       }, "changeLanguage")
     }, {
       key: "getFixedT",
@@ -42135,7 +42220,7 @@
       key: "loadNamespaces",
       value: /* @__PURE__ */ __name(function loadNamespaces3(ns, callback) {
         var _this7 = this;
-        var deferred = defer2();
+        var deferred2 = defer2();
         if (!this.options.ns) {
           if (callback)
             callback();
@@ -42148,16 +42233,16 @@
             _this7.options.ns.push(n2);
         });
         this.loadResources(function(err) {
-          deferred.resolve();
+          deferred2.resolve();
           if (callback)
             callback(err);
         });
-        return deferred;
+        return deferred2;
       }, "loadNamespaces")
     }, {
       key: "loadLanguages",
       value: /* @__PURE__ */ __name(function loadLanguages2(lngs, callback) {
-        var deferred = defer2();
+        var deferred2 = defer2();
         if (typeof lngs === "string")
           lngs = [lngs];
         var preloaded = this.options.preload || [];
@@ -42171,11 +42256,11 @@
         }
         this.options.preload = preloaded.concat(newLngs);
         this.loadResources(function(err) {
-          deferred.resolve();
+          deferred2.resolve();
           if (callback)
             callback(err);
         });
-        return deferred;
+        return deferred2;
       }, "loadLanguages")
     }, {
       key: "dir",
@@ -42614,7 +42699,7 @@
   Browser.type = "languageDetector";
 
   // out/src/main.js
-  var React168 = __toESM(require_react(), 1);
+  var React169 = __toESM(require_react(), 1);
   var import_client = __toESM(require_client(), 1);
 
   // node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
@@ -43437,6 +43522,98 @@
   }, "persistImpl");
   var persist = persistImpl;
 
+  // node_modules/@yornaath/batshit/dist/deferred.mjs
+  var deferred = /* @__PURE__ */ __name(() => {
+    let resolve;
+    let reject;
+    const value = new Promise((_resolve, _reject) => {
+      resolve = _resolve;
+      reject = _reject;
+    });
+    return {
+      resolve,
+      reject,
+      value
+    };
+  }, "deferred");
+
+  // node_modules/@yornaath/batshit/dist/index.mjs
+  var create2 = /* @__PURE__ */ __name((config, memory) => {
+    const name = config.name ?? `batcher:${Math.random().toString(16).slice(2)})`;
+    const scheduler = config.scheduler ?? windowScheduler(10);
+    const devtools = globalThis.__BATSHIT_DEVTOOLS__?.for(name);
+    let mem = memory ?? {
+      seq: 0,
+      batch: /* @__PURE__ */ new Set(),
+      currentRequest: deferred(),
+      timer: void 0,
+      start: null,
+      latest: null
+    };
+    devtools?.create({ seq: mem.seq });
+    const nextBatch = /* @__PURE__ */ __name(() => {
+      mem.batch = /* @__PURE__ */ new Set();
+      mem.currentRequest = deferred();
+      mem.timer = void 0;
+      mem.start = null;
+      mem.latest = null;
+    }, "nextBatch");
+    const fetch2 = /* @__PURE__ */ __name((query) => {
+      if (!mem.start)
+        mem.start = Date.now();
+      mem.latest = Date.now();
+      mem.batch.add(query);
+      clearTimeout(mem.timer);
+      const scheduled = scheduler(mem.start, mem.latest, mem.batch.size);
+      devtools?.queue({
+        seq: mem.seq,
+        query,
+        batch: [...mem.batch],
+        scheduled,
+        latest: mem.latest,
+        start: mem.start
+      });
+      const fetchBatch = /* @__PURE__ */ __name(() => {
+        const currentSeq = mem.seq;
+        const req = config.fetcher([...mem.batch]);
+        const currentRequest = mem.currentRequest;
+        devtools?.fetch({ seq: currentSeq, batch: [...mem.batch] });
+        nextBatch();
+        req.then((data) => {
+          devtools?.data({ seq: currentSeq, data });
+          currentRequest.resolve(data);
+        }).catch((error2) => {
+          devtools?.error({ seq: currentSeq, error: error2 });
+          currentRequest.reject(error2);
+        });
+        mem.seq++;
+        return req;
+      }, "fetchBatch");
+      if (scheduled === "immediate") {
+        const req = mem.currentRequest;
+        fetchBatch();
+        return req.value.then((items) => config.resolver(items, query));
+      } else if (scheduled === "never") {
+        return mem.currentRequest.value.then((items) => config.resolver(items, query));
+      } else {
+        mem.timer = setTimeout(fetchBatch, scheduled);
+        return mem.currentRequest.value.then((items) => config.resolver(items, query));
+      }
+    }, "fetch");
+    return { fetch: fetch2 };
+  }, "create");
+  var keyResolver = /* @__PURE__ */ __name((key) => (items, query) => items.find((item) => item[key] == query), "keyResolver");
+  var windowScheduler = /* @__PURE__ */ __name((ms) => (start2, latest) => {
+    const spent = latest - start2;
+    return ms - spent;
+  }, "windowScheduler");
+  var windowedFiniteBatchScheduler = /* @__PURE__ */ __name(({ windowMs, maxBatchSize }) => (start2, latest, batchSize) => {
+    if (batchSize >= maxBatchSize)
+      return "immediate";
+    const spent = latest - start2;
+    return windowMs - spent;
+  }, "windowedFiniteBatchScheduler");
+
   // out/src/constants.js
   var BLEND_SOURCES = 2;
   var DEFAULT_BRUSH = {
@@ -43492,7 +43669,6 @@
   };
   var INITIAL_LOAD_TIMEOUT = 5e3;
   var STALE_TIME = 3e5;
-  var POLL_TIME = 5e3;
   var SAVE_TIME = 5e3;
   var IMAGE_FILTER = ".bmp, .jpg, .jpeg, .png";
   var PARAM_VERSION = ">=0.10.0";
@@ -43607,12 +43783,12 @@
     }
   }
   __name(appendHighresToURL, "appendHighresToURL");
-  function makeClient(root, token2 = void 0, f3 = fetch) {
+  function makeClient(root, batchInterval, token2 = void 0, f3 = fetch) {
     function parseRequest(url, options) {
       return f3(url, options).then((res) => parseJobResponse(root, res));
     }
     __name(parseRequest, "parseRequest");
-    return {
+    const client = {
       async extras() {
         const path2 = makeApiUrl(root, "extras");
         if (doesExist2(token2)) {
@@ -43927,8 +44103,25 @@
       },
       outputURL(image, index) {
         return new URL(joinPath("output", image.outputs[index]), root).toString();
+      },
+      thumbnailURL(image, index) {
+        if (doesExist2(image.thumbnails) && doesExist2(image.thumbnails[index])) {
+          return new URL(joinPath("output", image.thumbnails[index]), root).toString();
+        }
+        return void 0;
       }
     };
+    const batchStatus = create2({
+      fetcher: async (jobs) => client.status(jobs),
+      resolver: keyResolver("name"),
+      scheduler: windowedFiniteBatchScheduler({
+        windowMs: batchInterval,
+        maxBatchSize: 10
+      })
+    });
+    return Object.assign(Object.assign({}, client), { async status(keys) {
+      return Promise.all(keys.map((key) => batchStatus.fetch(key)));
+    } });
   }
   __name(makeClient, "makeClient");
   async function parseJobResponse(root, res) {
@@ -44018,6 +44211,9 @@
       throw new NoServerError();
     },
     outputURL(image, index) {
+      throw new NoServerError();
+    },
+    thumbnailURL(image, index) {
       throw new NoServerError();
     }
   };
@@ -46226,8 +46422,8 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_liter
   // node_modules/@emotion/use-insertion-effect-with-fallbacks/dist/emotion-use-insertion-effect-with-fallbacks.browser.esm.js
   var React15 = __toESM(require_react());
   var import_react10 = __toESM(require_react());
-  var syncFallback = /* @__PURE__ */ __name(function syncFallback2(create2) {
-    return create2();
+  var syncFallback = /* @__PURE__ */ __name(function syncFallback2(create3) {
+    return create3();
   }, "syncFallback");
   var useInsertionEffect2 = React15["useInsertionEffect"] ? React15["useInsertionEffect"] : false;
   var useInsertionEffectAlwaysWithSyncFallback = useInsertionEffect2 || syncFallback;
@@ -49080,7 +49276,7 @@ The following color spaces are supported: srgb, display-p3, a98-rgb, prophoto-rg
       useThemeProps: useThemeProps3 = useThemePropsDefault2,
       componentName = "MuiStack"
     } = options;
-    const useUtilityClasses61 = /* @__PURE__ */ __name(() => {
+    const useUtilityClasses62 = /* @__PURE__ */ __name(() => {
       const slots = {
         root: ["root"]
       };
@@ -49104,7 +49300,7 @@ The following color spaces are supported: srgb, display-p3, a98-rgb, prophoto-rg
         spacing: spacing2,
         useFlexGap
       };
-      const classes = useUtilityClasses61();
+      const classes = useUtilityClasses62();
       return /* @__PURE__ */ (0, import_jsx_runtime7.jsx)(StackRoot, _extends({
         as: component,
         ownerState,
@@ -49625,7 +49821,7 @@ const theme2 = createTheme({ palette: {
   function createTransitions(inputTransitions) {
     const mergedEasing = _extends({}, easing, inputTransitions.easing);
     const mergedDuration = _extends({}, duration, inputTransitions.duration);
-    const create2 = /* @__PURE__ */ __name((props = ["all"], options = {}) => {
+    const create3 = /* @__PURE__ */ __name((props = ["all"], options = {}) => {
       const {
         duration: durationOption = mergedDuration.standard,
         easing: easingOption = mergedEasing.easeInOut,
@@ -49654,7 +49850,7 @@ const theme2 = createTheme({ palette: {
     }, "create");
     return _extends({
       getAutoHeightDuration,
-      create: create2
+      create: create3
     }, inputTransitions, {
       easing: mergedEasing,
       duration: mergedDuration
@@ -61712,9 +61908,130 @@ Please use another name.` : formatMuiErrorMessage(18));
   } : void 0;
   var Card_default = Card;
 
-  // node_modules/@mui/material/CardContent/CardContent.js
+  // node_modules/@mui/material/CardActionArea/CardActionArea.js
   var React74 = __toESM(require_react());
   var import_prop_types45 = __toESM(require_prop_types());
+
+  // node_modules/@mui/material/CardActionArea/cardActionAreaClasses.js
+  function getCardActionAreaUtilityClass(slot) {
+    return generateUtilityClass("MuiCardActionArea", slot);
+  }
+  __name(getCardActionAreaUtilityClass, "getCardActionAreaUtilityClass");
+  var cardActionAreaClasses = generateUtilityClasses("MuiCardActionArea", ["root", "focusVisible", "focusHighlight"]);
+  var cardActionAreaClasses_default = cardActionAreaClasses;
+
+  // node_modules/@mui/material/CardActionArea/CardActionArea.js
+  var import_jsx_runtime58 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime59 = __toESM(require_jsx_runtime());
+  var _excluded40 = ["children", "className", "focusVisibleClassName"];
+  var useUtilityClasses22 = /* @__PURE__ */ __name((ownerState) => {
+    const {
+      classes
+    } = ownerState;
+    const slots = {
+      root: ["root"],
+      focusHighlight: ["focusHighlight"]
+    };
+    return composeClasses(slots, getCardActionAreaUtilityClass, classes);
+  }, "useUtilityClasses");
+  var CardActionAreaRoot = styled_default2(ButtonBase_default, {
+    name: "MuiCardActionArea",
+    slot: "Root",
+    overridesResolver: (props, styles6) => styles6.root
+  })(({
+    theme
+  }) => ({
+    display: "block",
+    textAlign: "inherit",
+    borderRadius: "inherit",
+    // for Safari to work https://github.com/mui/material-ui/issues/36285.
+    width: "100%",
+    [`&:hover .${cardActionAreaClasses_default.focusHighlight}`]: {
+      opacity: (theme.vars || theme).palette.action.hoverOpacity,
+      "@media (hover: none)": {
+        opacity: 0
+      }
+    },
+    [`&.${cardActionAreaClasses_default.focusVisible} .${cardActionAreaClasses_default.focusHighlight}`]: {
+      opacity: (theme.vars || theme).palette.action.focusOpacity
+    }
+  }));
+  var CardActionAreaFocusHighlight = styled_default2("span", {
+    name: "MuiCardActionArea",
+    slot: "FocusHighlight",
+    overridesResolver: (props, styles6) => styles6.focusHighlight
+  })(({
+    theme
+  }) => ({
+    overflow: "hidden",
+    pointerEvents: "none",
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    borderRadius: "inherit",
+    opacity: 0,
+    backgroundColor: "currentcolor",
+    transition: theme.transitions.create("opacity", {
+      duration: theme.transitions.duration.short
+    })
+  }));
+  var CardActionArea = /* @__PURE__ */ React74.forwardRef(/* @__PURE__ */ __name(function CardActionArea2(inProps, ref) {
+    const props = useThemeProps2({
+      props: inProps,
+      name: "MuiCardActionArea"
+    });
+    const {
+      children,
+      className,
+      focusVisibleClassName
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded40);
+    const ownerState = props;
+    const classes = useUtilityClasses22(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime59.jsxs)(CardActionAreaRoot, _extends({
+      className: clsx_m_default(classes.root, className),
+      focusVisibleClassName: clsx_m_default(focusVisibleClassName, classes.focusVisible),
+      ref,
+      ownerState
+    }, other, {
+      children: [children, /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(CardActionAreaFocusHighlight, {
+        className: classes.focusHighlight,
+        ownerState
+      })]
+    }));
+  }, "CardActionArea"));
+  true ? CardActionArea.propTypes = {
+    // ----------------------------- Warning --------------------------------
+    // | These PropTypes are generated from the TypeScript type definitions |
+    // |     To update them edit the d.ts file and run "yarn proptypes"     |
+    // ----------------------------------------------------------------------
+    /**
+     * The content of the component.
+     */
+    children: import_prop_types45.default.node,
+    /**
+     * Override or extend the styles applied to the component.
+     */
+    classes: import_prop_types45.default.object,
+    /**
+     * @ignore
+     */
+    className: import_prop_types45.default.string,
+    /**
+     * @ignore
+     */
+    focusVisibleClassName: import_prop_types45.default.string,
+    /**
+     * The system prop that allows defining system overrides as well as additional CSS styles.
+     */
+    sx: import_prop_types45.default.oneOfType([import_prop_types45.default.arrayOf(import_prop_types45.default.oneOfType([import_prop_types45.default.func, import_prop_types45.default.object, import_prop_types45.default.bool])), import_prop_types45.default.func, import_prop_types45.default.object])
+  } : void 0;
+  var CardActionArea_default = CardActionArea;
+
+  // node_modules/@mui/material/CardContent/CardContent.js
+  var React75 = __toESM(require_react());
+  var import_prop_types46 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/CardContent/cardContentClasses.js
   function getCardContentUtilityClass(slot) {
@@ -61724,9 +62041,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var cardContentClasses = generateUtilityClasses("MuiCardContent", ["root"]);
 
   // node_modules/@mui/material/CardContent/CardContent.js
-  var import_jsx_runtime58 = __toESM(require_jsx_runtime());
-  var _excluded40 = ["className", "component"];
-  var useUtilityClasses22 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime60 = __toESM(require_jsx_runtime());
+  var _excluded41 = ["className", "component"];
+  var useUtilityClasses23 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes
     } = ownerState;
@@ -61747,7 +62064,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     };
   });
-  var CardContent = /* @__PURE__ */ React74.forwardRef(/* @__PURE__ */ __name(function CardContent2(inProps, ref) {
+  var CardContent = /* @__PURE__ */ React75.forwardRef(/* @__PURE__ */ __name(function CardContent2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiCardContent"
@@ -61755,12 +62072,12 @@ Please use another name.` : formatMuiErrorMessage(18));
     const {
       className,
       component = "div"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded40);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded41);
     const ownerState = _extends({}, props, {
       component
     });
-    const classes = useUtilityClasses22(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime58.jsx)(CardContentRoot, _extends({
+    const classes = useUtilityClasses23(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime60.jsx)(CardContentRoot, _extends({
       as: component,
       className: clsx_m_default(classes.root, className),
       ownerState,
@@ -61775,30 +62092,30 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types45.default.node,
+    children: import_prop_types46.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types45.default.object,
+    classes: import_prop_types46.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types45.default.string,
+    className: import_prop_types46.default.string,
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types45.default.elementType,
+    component: import_prop_types46.default.elementType,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types45.default.oneOfType([import_prop_types45.default.arrayOf(import_prop_types45.default.oneOfType([import_prop_types45.default.func, import_prop_types45.default.object, import_prop_types45.default.bool])), import_prop_types45.default.func, import_prop_types45.default.object])
+    sx: import_prop_types46.default.oneOfType([import_prop_types46.default.arrayOf(import_prop_types46.default.oneOfType([import_prop_types46.default.func, import_prop_types46.default.object, import_prop_types46.default.bool])), import_prop_types46.default.func, import_prop_types46.default.object])
   } : void 0;
   var CardContent_default = CardContent;
 
   // node_modules/@mui/material/CardMedia/CardMedia.js
-  var React75 = __toESM(require_react());
-  var import_prop_types46 = __toESM(require_prop_types());
+  var React76 = __toESM(require_react());
+  var import_prop_types47 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/CardMedia/cardMediaClasses.js
   function getCardMediaUtilityClass(slot) {
@@ -61808,9 +62125,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var cardMediaClasses = generateUtilityClasses("MuiCardMedia", ["root", "media", "img"]);
 
   // node_modules/@mui/material/CardMedia/CardMedia.js
-  var import_jsx_runtime59 = __toESM(require_jsx_runtime());
-  var _excluded41 = ["children", "className", "component", "image", "src", "style"];
-  var useUtilityClasses23 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime61 = __toESM(require_jsx_runtime());
+  var _excluded42 = ["children", "className", "component", "image", "src", "style"];
+  var useUtilityClasses24 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       isMediaComponent,
@@ -61849,7 +62166,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   }));
   var MEDIA_COMPONENTS = ["video", "audio", "picture", "iframe", "img"];
   var IMAGE_COMPONENTS = ["picture", "img"];
-  var CardMedia = /* @__PURE__ */ React75.forwardRef(/* @__PURE__ */ __name(function CardMedia2(inProps, ref) {
+  var CardMedia = /* @__PURE__ */ React76.forwardRef(/* @__PURE__ */ __name(function CardMedia2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiCardMedia"
@@ -61861,7 +62178,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       image,
       src,
       style: style4
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded41);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded42);
     const isMediaComponent = MEDIA_COMPONENTS.indexOf(component) !== -1;
     const composedStyle = !isMediaComponent && image ? _extends({
       backgroundImage: `url("${image}")`
@@ -61871,8 +62188,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       isMediaComponent,
       isImageComponent: IMAGE_COMPONENTS.indexOf(component) !== -1
     });
-    const classes = useUtilityClasses23(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime59.jsx)(CardMediaRoot, _extends({
+    const classes = useUtilityClasses24(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime61.jsx)(CardMediaRoot, _extends({
       className: clsx_m_default(classes.root, className),
       as: component,
       role: !isMediaComponent && image ? "img" : void 0,
@@ -61892,7 +62209,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: chainPropTypes(import_prop_types46.default.node, (props) => {
+    children: chainPropTypes(import_prop_types47.default.node, (props) => {
       if (!props.children && !props.image && !props.src && !props.component) {
         return new Error("MUI: Either `children`, `image`, `src` or `component` prop must be specified.");
       }
@@ -61901,46 +62218,46 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types46.default.object,
+    classes: import_prop_types47.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types46.default.string,
+    className: import_prop_types47.default.string,
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types46.default.elementType,
+    component: import_prop_types47.default.elementType,
     /**
      * Image to be displayed as a background image.
      * Either `image` or `src` prop must be specified.
      * Note that caller must specify height otherwise the image will not be visible.
      */
-    image: import_prop_types46.default.string,
+    image: import_prop_types47.default.string,
     /**
      * An alias for `image` property.
      * Available only with media components.
      * Media components: `video`, `audio`, `picture`, `iframe`, `img`.
      */
-    src: import_prop_types46.default.string,
+    src: import_prop_types47.default.string,
     /**
      * @ignore
      */
-    style: import_prop_types46.default.object,
+    style: import_prop_types47.default.object,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types46.default.oneOfType([import_prop_types46.default.arrayOf(import_prop_types46.default.oneOfType([import_prop_types46.default.func, import_prop_types46.default.object, import_prop_types46.default.bool])), import_prop_types46.default.func, import_prop_types46.default.object])
+    sx: import_prop_types47.default.oneOfType([import_prop_types47.default.arrayOf(import_prop_types47.default.oneOfType([import_prop_types47.default.func, import_prop_types47.default.object, import_prop_types47.default.bool])), import_prop_types47.default.func, import_prop_types47.default.object])
   } : void 0;
   var CardMedia_default = CardMedia;
 
   // node_modules/@mui/material/Checkbox/Checkbox.js
-  var React80 = __toESM(require_react());
-  var import_prop_types48 = __toESM(require_prop_types());
+  var React81 = __toESM(require_react());
+  var import_prop_types49 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/internal/SwitchBase.js
-  var React76 = __toESM(require_react());
-  var import_prop_types47 = __toESM(require_prop_types());
+  var React77 = __toESM(require_react());
+  var import_prop_types48 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/internal/switchBaseClasses.js
   function getSwitchBaseUtilityClass(slot) {
@@ -61950,10 +62267,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   var switchBaseClasses = generateUtilityClasses("PrivateSwitchBase", ["root", "checked", "disabled", "input", "edgeStart", "edgeEnd"]);
 
   // node_modules/@mui/material/internal/SwitchBase.js
-  var import_jsx_runtime60 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime61 = __toESM(require_jsx_runtime());
-  var _excluded42 = ["autoFocus", "checked", "checkedIcon", "className", "defaultChecked", "disabled", "disableFocusRipple", "edge", "icon", "id", "inputProps", "inputRef", "name", "onBlur", "onChange", "onFocus", "readOnly", "required", "tabIndex", "type", "value"];
-  var useUtilityClasses24 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime62 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime63 = __toESM(require_jsx_runtime());
+  var _excluded43 = ["autoFocus", "checked", "checkedIcon", "className", "defaultChecked", "disabled", "disableFocusRipple", "edge", "icon", "id", "inputProps", "inputRef", "name", "onBlur", "onChange", "onFocus", "readOnly", "required", "tabIndex", "type", "value"];
+  var useUtilityClasses25 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       checked,
@@ -61988,7 +62305,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     padding: 0,
     zIndex: 1
   });
-  var SwitchBase = /* @__PURE__ */ React76.forwardRef(/* @__PURE__ */ __name(function SwitchBase2(props, ref) {
+  var SwitchBase = /* @__PURE__ */ React77.forwardRef(/* @__PURE__ */ __name(function SwitchBase2(props, ref) {
     const {
       autoFocus,
       checked: checkedProp,
@@ -62011,7 +62328,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       tabIndex,
       type,
       value
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded42);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded43);
     const [checked, setCheckedState] = useControlled_default({
       controlled: checkedProp,
       default: Boolean(defaultChecked),
@@ -62058,8 +62375,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       disableFocusRipple,
       edge
     });
-    const classes = useUtilityClasses24(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime61.jsxs)(SwitchBaseRoot, _extends({
+    const classes = useUtilityClasses25(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime63.jsxs)(SwitchBaseRoot, _extends({
       component: "span",
       className: clsx_m_default(classes.root, className),
       centerRipple: true,
@@ -62072,7 +62389,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       ownerState,
       ref
     }, other, {
-      children: [/* @__PURE__ */ (0, import_jsx_runtime60.jsx)(SwitchBaseInput, _extends({
+      children: [/* @__PURE__ */ (0, import_jsx_runtime62.jsx)(SwitchBaseInput, _extends({
         autoFocus,
         checked: checkedProp,
         defaultChecked,
@@ -62096,37 +62413,37 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * If `true`, the `input` element is focused during the first mount.
      */
-    autoFocus: import_prop_types47.default.bool,
+    autoFocus: import_prop_types48.default.bool,
     /**
      * If `true`, the component is checked.
      */
-    checked: import_prop_types47.default.bool,
+    checked: import_prop_types48.default.bool,
     /**
      * The icon to display when the component is checked.
      */
-    checkedIcon: import_prop_types47.default.node.isRequired,
+    checkedIcon: import_prop_types48.default.node.isRequired,
     /**
      * Override or extend the styles applied to the component.
      * See [CSS API](#css) below for more details.
      */
-    classes: import_prop_types47.default.object,
+    classes: import_prop_types48.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types47.default.string,
+    className: import_prop_types48.default.string,
     /**
      * @ignore
      */
-    defaultChecked: import_prop_types47.default.bool,
+    defaultChecked: import_prop_types48.default.bool,
     /**
      * If `true`, the component is disabled.
      */
-    disabled: import_prop_types47.default.bool,
+    disabled: import_prop_types48.default.bool,
     /**
      * If `true`, the  keyboard focus ripple is disabled.
      * @default false
      */
-    disableFocusRipple: import_prop_types47.default.bool,
+    disableFocusRipple: import_prop_types48.default.bool,
     /**
      * If given, uses a negative margin to counteract the padding on one
      * side (this is often helpful for aligning the left or right
@@ -62134,19 +62451,19 @@ Please use another name.` : formatMuiErrorMessage(18));
      * size and shape).
      * @default false
      */
-    edge: import_prop_types47.default.oneOf(["end", "start", false]),
+    edge: import_prop_types48.default.oneOf(["end", "start", false]),
     /**
      * The icon to display when the component is unchecked.
      */
-    icon: import_prop_types47.default.node.isRequired,
+    icon: import_prop_types48.default.node.isRequired,
     /**
      * The id of the `input` element.
      */
-    id: import_prop_types47.default.string,
+    id: import_prop_types48.default.string,
     /**
      * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes) applied to the `input` element.
      */
-    inputProps: import_prop_types47.default.object,
+    inputProps: import_prop_types48.default.object,
     /**
      * Pass a ref to the `input` element.
      */
@@ -62154,68 +62471,68 @@ Please use another name.` : formatMuiErrorMessage(18));
     /*
      * @ignore
      */
-    name: import_prop_types47.default.string,
+    name: import_prop_types48.default.string,
     /**
      * @ignore
      */
-    onBlur: import_prop_types47.default.func,
+    onBlur: import_prop_types48.default.func,
     /**
      * Callback fired when the state is changed.
      *
      * @param {object} event The event source of the callback.
      * You can pull out the new checked state by accessing `event.target.checked` (boolean).
      */
-    onChange: import_prop_types47.default.func,
+    onChange: import_prop_types48.default.func,
     /**
      * @ignore
      */
-    onFocus: import_prop_types47.default.func,
+    onFocus: import_prop_types48.default.func,
     /**
      * It prevents the user from changing the value of the field
      * (not from interacting with the field).
      */
-    readOnly: import_prop_types47.default.bool,
+    readOnly: import_prop_types48.default.bool,
     /**
      * If `true`, the `input` element is required.
      */
-    required: import_prop_types47.default.bool,
+    required: import_prop_types48.default.bool,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types47.default.object,
+    sx: import_prop_types48.default.object,
     /**
      * @ignore
      */
-    tabIndex: import_prop_types47.default.oneOfType([import_prop_types47.default.number, import_prop_types47.default.string]),
+    tabIndex: import_prop_types48.default.oneOfType([import_prop_types48.default.number, import_prop_types48.default.string]),
     /**
      * The input component prop `type`.
      */
-    type: import_prop_types47.default.string.isRequired,
+    type: import_prop_types48.default.string.isRequired,
     /**
      * The value of the component.
      */
-    value: import_prop_types47.default.any
+    value: import_prop_types48.default.any
   } : void 0;
   var SwitchBase_default = SwitchBase;
 
   // node_modules/@mui/material/internal/svg-icons/CheckBoxOutlineBlank.js
-  var React77 = __toESM(require_react());
-  var import_jsx_runtime62 = __toESM(require_jsx_runtime());
-  var CheckBoxOutlineBlank_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime62.jsx)("path", {
+  var React78 = __toESM(require_react());
+  var import_jsx_runtime64 = __toESM(require_jsx_runtime());
+  var CheckBoxOutlineBlank_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime64.jsx)("path", {
     d: "M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"
   }), "CheckBoxOutlineBlank");
 
   // node_modules/@mui/material/internal/svg-icons/CheckBox.js
-  var React78 = __toESM(require_react());
-  var import_jsx_runtime63 = __toESM(require_jsx_runtime());
-  var CheckBox_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime63.jsx)("path", {
+  var React79 = __toESM(require_react());
+  var import_jsx_runtime65 = __toESM(require_jsx_runtime());
+  var CheckBox_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime65.jsx)("path", {
     d: "M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
   }), "CheckBox");
 
   // node_modules/@mui/material/internal/svg-icons/IndeterminateCheckBox.js
-  var React79 = __toESM(require_react());
-  var import_jsx_runtime64 = __toESM(require_jsx_runtime());
-  var IndeterminateCheckBox_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime64.jsx)("path", {
+  var React80 = __toESM(require_react());
+  var import_jsx_runtime66 = __toESM(require_jsx_runtime());
+  var IndeterminateCheckBox_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime66.jsx)("path", {
     d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"
   }), "IndeterminateCheckBox");
 
@@ -62228,9 +62545,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var checkboxClasses_default = checkboxClasses;
 
   // node_modules/@mui/material/Checkbox/Checkbox.js
-  var import_jsx_runtime65 = __toESM(require_jsx_runtime());
-  var _excluded43 = ["checkedIcon", "color", "icon", "indeterminate", "indeterminateIcon", "inputProps", "size", "className"];
-  var useUtilityClasses25 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime67 = __toESM(require_jsx_runtime());
+  var _excluded44 = ["checkedIcon", "color", "icon", "indeterminate", "indeterminateIcon", "inputProps", "size", "className"];
+  var useUtilityClasses26 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       indeterminate,
@@ -62273,10 +62590,10 @@ Please use another name.` : formatMuiErrorMessage(18));
       color: (theme.vars || theme).palette.action.disabled
     }
   }));
-  var defaultCheckedIcon = /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(CheckBox_default, {});
-  var defaultIcon = /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(CheckBoxOutlineBlank_default, {});
-  var defaultIndeterminateIcon = /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(IndeterminateCheckBox_default, {});
-  var Checkbox = /* @__PURE__ */ React80.forwardRef(/* @__PURE__ */ __name(function Checkbox2(inProps, ref) {
+  var defaultCheckedIcon = /* @__PURE__ */ (0, import_jsx_runtime67.jsx)(CheckBox_default, {});
+  var defaultIcon = /* @__PURE__ */ (0, import_jsx_runtime67.jsx)(CheckBoxOutlineBlank_default, {});
+  var defaultIndeterminateIcon = /* @__PURE__ */ (0, import_jsx_runtime67.jsx)(IndeterminateCheckBox_default, {});
+  var Checkbox = /* @__PURE__ */ React81.forwardRef(/* @__PURE__ */ __name(function Checkbox2(inProps, ref) {
     var _icon$props$fontSize, _indeterminateIcon$pr;
     const props = useThemeProps2({
       props: inProps,
@@ -62291,7 +62608,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       inputProps,
       size = "medium",
       className
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded43);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded44);
     const icon = indeterminate ? indeterminateIconProp : iconProp;
     const indeterminateIcon = indeterminate ? indeterminateIconProp : checkedIcon;
     const ownerState = _extends({}, props, {
@@ -62299,16 +62616,16 @@ Please use another name.` : formatMuiErrorMessage(18));
       indeterminate,
       size
     });
-    const classes = useUtilityClasses25(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime65.jsx)(CheckboxRoot, _extends({
+    const classes = useUtilityClasses26(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime67.jsx)(CheckboxRoot, _extends({
       type: "checkbox",
       inputProps: _extends({
         "data-indeterminate": indeterminate
       }, inputProps),
-      icon: /* @__PURE__ */ React80.cloneElement(icon, {
+      icon: /* @__PURE__ */ React81.cloneElement(icon, {
         fontSize: (_icon$props$fontSize = icon.props.fontSize) != null ? _icon$props$fontSize : size
       }),
-      checkedIcon: /* @__PURE__ */ React80.cloneElement(indeterminateIcon, {
+      checkedIcon: /* @__PURE__ */ React81.cloneElement(indeterminateIcon, {
         fontSize: (_indeterminateIcon$pr = indeterminateIcon.props.fontSize) != null ? _indeterminateIcon$pr : size
       }),
       ownerState,
@@ -62326,50 +62643,50 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * If `true`, the component is checked.
      */
-    checked: import_prop_types48.default.bool,
+    checked: import_prop_types49.default.bool,
     /**
      * The icon to display when the component is checked.
      * @default <CheckBoxIcon />
      */
-    checkedIcon: import_prop_types48.default.node,
+    checkedIcon: import_prop_types49.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types48.default.object,
+    classes: import_prop_types49.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types48.default.string,
+    className: import_prop_types49.default.string,
     /**
      * The color of the component.
      * It supports both default and custom theme colors, which can be added as shown in the
      * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
      * @default 'primary'
      */
-    color: import_prop_types48.default.oneOfType([import_prop_types48.default.oneOf(["default", "primary", "secondary", "error", "info", "success", "warning"]), import_prop_types48.default.string]),
+    color: import_prop_types49.default.oneOfType([import_prop_types49.default.oneOf(["default", "primary", "secondary", "error", "info", "success", "warning"]), import_prop_types49.default.string]),
     /**
      * The default checked state. Use when the component is not controlled.
      */
-    defaultChecked: import_prop_types48.default.bool,
+    defaultChecked: import_prop_types49.default.bool,
     /**
      * If `true`, the component is disabled.
      * @default false
      */
-    disabled: import_prop_types48.default.bool,
+    disabled: import_prop_types49.default.bool,
     /**
      * If `true`, the ripple effect is disabled.
      * @default false
      */
-    disableRipple: import_prop_types48.default.bool,
+    disableRipple: import_prop_types49.default.bool,
     /**
      * The icon to display when the component is unchecked.
      * @default <CheckBoxOutlineBlankIcon />
      */
-    icon: import_prop_types48.default.node,
+    icon: import_prop_types49.default.node,
     /**
      * The id of the `input` element.
      */
-    id: import_prop_types48.default.string,
+    id: import_prop_types49.default.string,
     /**
      * If `true`, the component appears indeterminate.
      * This does not set the native input element to indeterminate due
@@ -62377,16 +62694,16 @@ Please use another name.` : formatMuiErrorMessage(18));
      * However, we set a `data-indeterminate` attribute on the `input`.
      * @default false
      */
-    indeterminate: import_prop_types48.default.bool,
+    indeterminate: import_prop_types49.default.bool,
     /**
      * The icon to display when the component is indeterminate.
      * @default <IndeterminateCheckBoxIcon />
      */
-    indeterminateIcon: import_prop_types48.default.node,
+    indeterminateIcon: import_prop_types49.default.node,
     /**
      * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes) applied to the `input` element.
      */
-    inputProps: import_prop_types48.default.object,
+    inputProps: import_prop_types49.default.object,
     /**
      * Pass a ref to the `input` element.
      */
@@ -62397,33 +62714,33 @@ Please use another name.` : formatMuiErrorMessage(18));
      * @param {React.ChangeEvent<HTMLInputElement>} event The event source of the callback.
      * You can pull out the new checked state by accessing `event.target.checked` (boolean).
      */
-    onChange: import_prop_types48.default.func,
+    onChange: import_prop_types49.default.func,
     /**
      * If `true`, the `input` element is required.
      * @default false
      */
-    required: import_prop_types48.default.bool,
+    required: import_prop_types49.default.bool,
     /**
      * The size of the component.
      * `small` is equivalent to the dense checkbox styling.
      * @default 'medium'
      */
-    size: import_prop_types48.default.oneOfType([import_prop_types48.default.oneOf(["medium", "small"]), import_prop_types48.default.string]),
+    size: import_prop_types49.default.oneOfType([import_prop_types49.default.oneOf(["medium", "small"]), import_prop_types49.default.string]),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types48.default.oneOfType([import_prop_types48.default.arrayOf(import_prop_types48.default.oneOfType([import_prop_types48.default.func, import_prop_types48.default.object, import_prop_types48.default.bool])), import_prop_types48.default.func, import_prop_types48.default.object]),
+    sx: import_prop_types49.default.oneOfType([import_prop_types49.default.arrayOf(import_prop_types49.default.oneOfType([import_prop_types49.default.func, import_prop_types49.default.object, import_prop_types49.default.bool])), import_prop_types49.default.func, import_prop_types49.default.object]),
     /**
      * The value of the component. The DOM API casts this to a string.
      * The browser uses "on" as the default value.
      */
-    value: import_prop_types48.default.any
+    value: import_prop_types49.default.any
   } : void 0;
   var Checkbox_default = Checkbox;
 
   // node_modules/@mui/material/CircularProgress/CircularProgress.js
-  var React81 = __toESM(require_react());
-  var import_prop_types49 = __toESM(require_prop_types());
+  var React82 = __toESM(require_react());
+  var import_prop_types50 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/CircularProgress/circularProgressClasses.js
   function getCircularProgressUtilityClass(slot) {
@@ -62433,8 +62750,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   var circularProgressClasses = generateUtilityClasses("MuiCircularProgress", ["root", "determinate", "indeterminate", "colorPrimary", "colorSecondary", "svg", "circle", "circleDeterminate", "circleIndeterminate", "circleDisableShrink"]);
 
   // node_modules/@mui/material/CircularProgress/CircularProgress.js
-  var import_jsx_runtime66 = __toESM(require_jsx_runtime());
-  var _excluded44 = ["className", "color", "disableShrink", "size", "style", "thickness", "value", "variant"];
+  var import_jsx_runtime68 = __toESM(require_jsx_runtime());
+  var _excluded45 = ["className", "color", "disableShrink", "size", "style", "thickness", "value", "variant"];
   var _24 = /* @__PURE__ */ __name((t3) => t3, "_");
   var _t5;
   var _t22;
@@ -62466,7 +62783,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     stroke-dashoffset: -125px;
   }
 `));
-  var useUtilityClasses26 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses27 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       variant,
@@ -62537,7 +62854,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   }) => ownerState.variant === "indeterminate" && !ownerState.disableShrink && css(_t42 || (_t42 = _24`
       animation: ${0} 1.4s ease-in-out infinite;
     `), circularDashKeyframe));
-  var CircularProgress = /* @__PURE__ */ React81.forwardRef(/* @__PURE__ */ __name(function CircularProgress2(inProps, ref) {
+  var CircularProgress = /* @__PURE__ */ React82.forwardRef(/* @__PURE__ */ __name(function CircularProgress2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiCircularProgress"
@@ -62551,7 +62868,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       thickness = 3.6,
       value = 0,
       variant = "indeterminate"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded44);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded45);
     const ownerState = _extends({}, props, {
       color: color2,
       disableShrink,
@@ -62560,7 +62877,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       value,
       variant
     });
-    const classes = useUtilityClasses26(ownerState);
+    const classes = useUtilityClasses27(ownerState);
     const circleStyle = {};
     const rootStyle = {};
     const rootProps = {};
@@ -62571,7 +62888,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       circleStyle.strokeDashoffset = `${((100 - value) / 100 * circumference).toFixed(3)}px`;
       rootStyle.transform = "rotate(-90deg)";
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime66.jsx)(CircularProgressRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime68.jsx)(CircularProgressRoot, _extends({
       className: clsx_m_default(classes.root, className),
       style: _extends({
         width: size,
@@ -62581,11 +62898,11 @@ Please use another name.` : formatMuiErrorMessage(18));
       ref,
       role: "progressbar"
     }, rootProps, other, {
-      children: /* @__PURE__ */ (0, import_jsx_runtime66.jsx)(CircularProgressSVG, {
+      children: /* @__PURE__ */ (0, import_jsx_runtime68.jsx)(CircularProgressSVG, {
         className: classes.svg,
         ownerState,
         viewBox: `${SIZE / 2} ${SIZE / 2} ${SIZE} ${SIZE}`,
-        children: /* @__PURE__ */ (0, import_jsx_runtime66.jsx)(CircularProgressCircle, {
+        children: /* @__PURE__ */ (0, import_jsx_runtime68.jsx)(CircularProgressCircle, {
           className: classes.circle,
           style: circleStyle,
           ownerState,
@@ -62606,24 +62923,24 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types49.default.object,
+    classes: import_prop_types50.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types49.default.string,
+    className: import_prop_types50.default.string,
     /**
      * The color of the component.
      * It supports both default and custom theme colors, which can be added as shown in the
      * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
      * @default 'primary'
      */
-    color: import_prop_types49.default.oneOfType([import_prop_types49.default.oneOf(["inherit", "primary", "secondary", "error", "info", "success", "warning"]), import_prop_types49.default.string]),
+    color: import_prop_types50.default.oneOfType([import_prop_types50.default.oneOf(["inherit", "primary", "secondary", "error", "info", "success", "warning"]), import_prop_types50.default.string]),
     /**
      * If `true`, the shrink animation is disabled.
      * This only works if variant is `indeterminate`.
      * @default false
      */
-    disableShrink: chainPropTypes(import_prop_types49.default.bool, (props) => {
+    disableShrink: chainPropTypes(import_prop_types50.default.bool, (props) => {
       if (props.disableShrink && props.variant && props.variant !== "indeterminate") {
         return new Error("MUI: You have provided the `disableShrink` prop with a variant other than `indeterminate`. This will have no effect.");
       }
@@ -62635,37 +62952,37 @@ Please use another name.` : formatMuiErrorMessage(18));
      * If using a string, you need to provide the CSS unit, e.g '3rem'.
      * @default 40
      */
-    size: import_prop_types49.default.oneOfType([import_prop_types49.default.number, import_prop_types49.default.string]),
+    size: import_prop_types50.default.oneOfType([import_prop_types50.default.number, import_prop_types50.default.string]),
     /**
      * @ignore
      */
-    style: import_prop_types49.default.object,
+    style: import_prop_types50.default.object,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types49.default.oneOfType([import_prop_types49.default.arrayOf(import_prop_types49.default.oneOfType([import_prop_types49.default.func, import_prop_types49.default.object, import_prop_types49.default.bool])), import_prop_types49.default.func, import_prop_types49.default.object]),
+    sx: import_prop_types50.default.oneOfType([import_prop_types50.default.arrayOf(import_prop_types50.default.oneOfType([import_prop_types50.default.func, import_prop_types50.default.object, import_prop_types50.default.bool])), import_prop_types50.default.func, import_prop_types50.default.object]),
     /**
      * The thickness of the circle.
      * @default 3.6
      */
-    thickness: import_prop_types49.default.number,
+    thickness: import_prop_types50.default.number,
     /**
      * The value of the progress indicator for the determinate variant.
      * Value between 0 and 100.
      * @default 0
      */
-    value: import_prop_types49.default.number,
+    value: import_prop_types50.default.number,
     /**
      * The variant to use.
      * Use indeterminate when there is no progress value.
      * @default 'indeterminate'
      */
-    variant: import_prop_types49.default.oneOf(["determinate", "indeterminate"])
+    variant: import_prop_types50.default.oneOf(["determinate", "indeterminate"])
   } : void 0;
   var CircularProgress_default = CircularProgress;
 
   // node_modules/@mui/material/Container/Container.js
-  var import_prop_types50 = __toESM(require_prop_types());
+  var import_prop_types51 = __toESM(require_prop_types());
   var Container2 = createContainer({
     createStyledComponent: styled_default2("div", {
       name: "MuiContainer",
@@ -62690,21 +63007,21 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * @ignore
      */
-    children: import_prop_types50.default.node,
+    children: import_prop_types51.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types50.default.object,
+    classes: import_prop_types51.default.object,
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types50.default.elementType,
+    component: import_prop_types51.default.elementType,
     /**
      * If `true`, the left and right padding is removed.
      * @default false
      */
-    disableGutters: import_prop_types50.default.bool,
+    disableGutters: import_prop_types51.default.bool,
     /**
      * Set the max-width to match the min-width of the current breakpoint.
      * This is useful if you'd prefer to design for a fixed set of sizes
@@ -62712,26 +63029,26 @@ Please use another name.` : formatMuiErrorMessage(18));
      * It's fluid by default.
      * @default false
      */
-    fixed: import_prop_types50.default.bool,
+    fixed: import_prop_types51.default.bool,
     /**
      * Determine the max-width of the container.
      * The container width grows with the size of the screen.
      * Set to `false` to disable `maxWidth`.
      * @default 'lg'
      */
-    maxWidth: import_prop_types50.default.oneOfType([import_prop_types50.default.oneOf(["xs", "sm", "md", "lg", "xl", false]), import_prop_types50.default.string]),
+    maxWidth: import_prop_types51.default.oneOfType([import_prop_types51.default.oneOf(["xs", "sm", "md", "lg", "xl", false]), import_prop_types51.default.string]),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types50.default.oneOfType([import_prop_types50.default.arrayOf(import_prop_types50.default.oneOfType([import_prop_types50.default.func, import_prop_types50.default.object, import_prop_types50.default.bool])), import_prop_types50.default.func, import_prop_types50.default.object])
+    sx: import_prop_types51.default.oneOfType([import_prop_types51.default.arrayOf(import_prop_types51.default.oneOfType([import_prop_types51.default.func, import_prop_types51.default.object, import_prop_types51.default.bool])), import_prop_types51.default.func, import_prop_types51.default.object])
   } : void 0;
   var Container_default = Container2;
 
   // node_modules/@mui/material/CssBaseline/CssBaseline.js
-  var React82 = __toESM(require_react());
-  var import_prop_types51 = __toESM(require_prop_types());
-  var import_jsx_runtime67 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime68 = __toESM(require_jsx_runtime());
+  var React83 = __toESM(require_react());
+  var import_prop_types52 = __toESM(require_prop_types());
+  var import_jsx_runtime69 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime70 = __toESM(require_jsx_runtime());
   var html = /* @__PURE__ */ __name((theme, enableColorScheme) => _extends({
     WebkitFontSmoothing: "antialiased",
     // Antialiasing.
@@ -62798,8 +63115,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       children,
       enableColorScheme = false
     } = props;
-    return /* @__PURE__ */ (0, import_jsx_runtime68.jsxs)(React82.Fragment, {
-      children: [/* @__PURE__ */ (0, import_jsx_runtime67.jsx)(GlobalStyles_default2, {
+    return /* @__PURE__ */ (0, import_jsx_runtime70.jsxs)(React83.Fragment, {
+      children: [/* @__PURE__ */ (0, import_jsx_runtime69.jsx)(GlobalStyles_default2, {
         styles: (theme) => styles3(theme, enableColorScheme)
       }), children]
     });
@@ -62813,26 +63130,26 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * You can wrap a node.
      */
-    children: import_prop_types51.default.node,
+    children: import_prop_types52.default.node,
     /**
      * Enable `color-scheme` CSS property to use `theme.palette.mode`.
      * For more details, check out https://developer.mozilla.org/en-US/docs/Web/CSS/color-scheme
      * For browser support, check out https://caniuse.com/?search=color-scheme
      * @default false
      */
-    enableColorScheme: import_prop_types51.default.bool
+    enableColorScheme: import_prop_types52.default.bool
   } : void 0;
   var CssBaseline_default = CssBaseline;
 
   // node_modules/@mui/material/Dialog/Dialog.js
-  var React85 = __toESM(require_react());
-  var import_prop_types53 = __toESM(require_prop_types());
+  var React86 = __toESM(require_react());
+  var import_prop_types54 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/Modal/Modal.js
-  var React83 = __toESM(require_react());
-  var import_prop_types52 = __toESM(require_prop_types());
-  var import_jsx_runtime69 = __toESM(require_jsx_runtime());
-  var _excluded45 = ["BackdropComponent", "BackdropProps", "classes", "className", "closeAfterTransition", "children", "component", "components", "componentsProps", "disableAutoFocus", "disableEnforceFocus", "disableEscapeKeyDown", "disablePortal", "disableRestoreFocus", "disableScrollLock", "hideBackdrop", "keepMounted", "slotProps", "slots", "theme"];
+  var React84 = __toESM(require_react());
+  var import_prop_types53 = __toESM(require_prop_types());
+  var import_jsx_runtime71 = __toESM(require_jsx_runtime());
+  var _excluded46 = ["BackdropComponent", "BackdropProps", "classes", "className", "closeAfterTransition", "children", "component", "components", "componentsProps", "disableAutoFocus", "disableEnforceFocus", "disableEscapeKeyDown", "disablePortal", "disableRestoreFocus", "disableScrollLock", "hideBackdrop", "keepMounted", "slotProps", "slots", "theme"];
   var ModalRoot = styled_default2("div", {
     name: "MuiModal",
     slot: "Root",
@@ -62864,7 +63181,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   })({
     zIndex: -1
   });
-  var Modal = /* @__PURE__ */ React83.forwardRef(/* @__PURE__ */ __name(function Modal2(inProps, ref) {
+  var Modal = /* @__PURE__ */ React84.forwardRef(/* @__PURE__ */ __name(function Modal2(inProps, ref) {
     var _ref, _slots$root, _ref2, _slots$backdrop, _slotProps$root, _slotProps$backdrop;
     const props = useThemeProps2({
       name: "MuiModal",
@@ -62892,8 +63209,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       slots,
       // eslint-disable-next-line react/prop-types
       theme
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded45);
-    const [exited, setExited] = React83.useState(true);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded46);
+    const [exited, setExited] = React84.useState(true);
     const commonProps = {
       closeAfterTransition,
       disableAutoFocus,
@@ -62912,7 +63229,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const BackdropSlot = (_ref2 = (_slots$backdrop = slots == null ? void 0 : slots.backdrop) != null ? _slots$backdrop : components.Backdrop) != null ? _ref2 : BackdropComponent;
     const rootSlotProps = (_slotProps$root = slotProps == null ? void 0 : slotProps.root) != null ? _slotProps$root : componentsProps.root;
     const backdropSlotProps = (_slotProps$backdrop = slotProps == null ? void 0 : slotProps.backdrop) != null ? _slotProps$backdrop : componentsProps.backdrop;
-    return /* @__PURE__ */ (0, import_jsx_runtime69.jsx)(ModalUnstyled_default, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime71.jsx)(ModalUnstyled_default, _extends({
       slots: {
         root: RootSlot,
         backdrop: BackdropSlot
@@ -62954,12 +63271,12 @@ Please use another name.` : formatMuiErrorMessage(18));
      *   zIndex: -1,
      * })
      */
-    BackdropComponent: import_prop_types52.default.elementType,
+    BackdropComponent: import_prop_types53.default.elementType,
     /**
      * Props applied to the [`Backdrop`](/material-ui/api/backdrop/) element.
      * @deprecated Use `slotProps.backdrop` instead.
      */
-    BackdropProps: import_prop_types52.default.object,
+    BackdropProps: import_prop_types53.default.object,
     /**
      * A single child content element.
      */
@@ -62967,21 +63284,21 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types52.default.object,
+    classes: import_prop_types53.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types52.default.string,
+    className: import_prop_types53.default.string,
     /**
      * When set to true the Modal waits until a nested Transition is completed before closing.
      * @default false
      */
-    closeAfterTransition: import_prop_types52.default.bool,
+    closeAfterTransition: import_prop_types53.default.bool,
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types52.default.elementType,
+    component: import_prop_types53.default.elementType,
     /**
      * The components used for each slot inside.
      *
@@ -62990,9 +63307,9 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    components: import_prop_types52.default.shape({
-      Backdrop: import_prop_types52.default.elementType,
-      Root: import_prop_types52.default.elementType
+    components: import_prop_types53.default.shape({
+      Backdrop: import_prop_types53.default.elementType,
+      Root: import_prop_types53.default.elementType
     }),
     /**
      * The extra props for the slot components.
@@ -63003,9 +63320,9 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    componentsProps: import_prop_types52.default.shape({
-      backdrop: import_prop_types52.default.oneOfType([import_prop_types52.default.func, import_prop_types52.default.object]),
-      root: import_prop_types52.default.oneOfType([import_prop_types52.default.func, import_prop_types52.default.object])
+    componentsProps: import_prop_types53.default.shape({
+      backdrop: import_prop_types53.default.oneOfType([import_prop_types53.default.func, import_prop_types53.default.object]),
+      root: import_prop_types53.default.oneOfType([import_prop_types53.default.func, import_prop_types53.default.object])
     }),
     /**
      * An HTML element or function that returns one.
@@ -63014,7 +63331,7 @@ Please use another name.` : formatMuiErrorMessage(18));
      * By default, it uses the body of the top-level document object,
      * so it's simply `document.body` most of the time.
      */
-    container: import_prop_types52.default.oneOfType([HTMLElementType, import_prop_types52.default.func]),
+    container: import_prop_types53.default.oneOfType([HTMLElementType, import_prop_types53.default.func]),
     /**
      * If `true`, the modal will not automatically shift focus to itself when it opens, and
      * replace it to the last focused element when it closes.
@@ -63024,7 +63341,7 @@ Please use another name.` : formatMuiErrorMessage(18));
      * accessible to assistive technologies, like screen readers.
      * @default false
      */
-    disableAutoFocus: import_prop_types52.default.bool,
+    disableAutoFocus: import_prop_types53.default.bool,
     /**
      * If `true`, the modal will not prevent focus from leaving the modal while open.
      *
@@ -63032,45 +63349,45 @@ Please use another name.` : formatMuiErrorMessage(18));
      * accessible to assistive technologies, like screen readers.
      * @default false
      */
-    disableEnforceFocus: import_prop_types52.default.bool,
+    disableEnforceFocus: import_prop_types53.default.bool,
     /**
      * If `true`, hitting escape will not fire the `onClose` callback.
      * @default false
      */
-    disableEscapeKeyDown: import_prop_types52.default.bool,
+    disableEscapeKeyDown: import_prop_types53.default.bool,
     /**
      * The `children` will be under the DOM hierarchy of the parent component.
      * @default false
      */
-    disablePortal: import_prop_types52.default.bool,
+    disablePortal: import_prop_types53.default.bool,
     /**
      * If `true`, the modal will not restore focus to previously focused element once
      * modal is hidden or unmounted.
      * @default false
      */
-    disableRestoreFocus: import_prop_types52.default.bool,
+    disableRestoreFocus: import_prop_types53.default.bool,
     /**
      * Disable the scroll lock behavior.
      * @default false
      */
-    disableScrollLock: import_prop_types52.default.bool,
+    disableScrollLock: import_prop_types53.default.bool,
     /**
      * If `true`, the backdrop is not rendered.
      * @default false
      */
-    hideBackdrop: import_prop_types52.default.bool,
+    hideBackdrop: import_prop_types53.default.bool,
     /**
      * Always keep the children in the DOM.
      * This prop can be useful in SEO situation or
      * when you want to maximize the responsiveness of the Modal.
      * @default false
      */
-    keepMounted: import_prop_types52.default.bool,
+    keepMounted: import_prop_types53.default.bool,
     /**
      * Callback fired when the backdrop is clicked.
      * @deprecated Use the `onClose` prop with the `reason` argument to handle the `backdropClick` events.
      */
-    onBackdropClick: import_prop_types52.default.func,
+    onBackdropClick: import_prop_types53.default.func,
     /**
      * Callback fired when the component requests to be closed.
      * The `reason` parameter can optionally be used to control the response to `onClose`.
@@ -63078,32 +63395,32 @@ Please use another name.` : formatMuiErrorMessage(18));
      * @param {object} event The event source of the callback.
      * @param {string} reason Can be: `"escapeKeyDown"`, `"backdropClick"`.
      */
-    onClose: import_prop_types52.default.func,
+    onClose: import_prop_types53.default.func,
     /**
      * If `true`, the component is shown.
      */
-    open: import_prop_types52.default.bool.isRequired,
+    open: import_prop_types53.default.bool.isRequired,
     /**
      * The props used for each slot inside the Modal.
      * @default {}
      */
-    slotProps: import_prop_types52.default.shape({
-      backdrop: import_prop_types52.default.oneOfType([import_prop_types52.default.func, import_prop_types52.default.object]),
-      root: import_prop_types52.default.oneOfType([import_prop_types52.default.func, import_prop_types52.default.object])
+    slotProps: import_prop_types53.default.shape({
+      backdrop: import_prop_types53.default.oneOfType([import_prop_types53.default.func, import_prop_types53.default.object]),
+      root: import_prop_types53.default.oneOfType([import_prop_types53.default.func, import_prop_types53.default.object])
     }),
     /**
      * The components used for each slot inside the Modal.
      * Either a string to use a HTML element or a component.
      * @default {}
      */
-    slots: import_prop_types52.default.shape({
-      backdrop: import_prop_types52.default.elementType,
-      root: import_prop_types52.default.elementType
+    slots: import_prop_types53.default.shape({
+      backdrop: import_prop_types53.default.elementType,
+      root: import_prop_types53.default.elementType
     }),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types52.default.oneOfType([import_prop_types52.default.arrayOf(import_prop_types52.default.oneOfType([import_prop_types52.default.func, import_prop_types52.default.object, import_prop_types52.default.bool])), import_prop_types52.default.func, import_prop_types52.default.object])
+    sx: import_prop_types53.default.oneOfType([import_prop_types53.default.arrayOf(import_prop_types53.default.oneOfType([import_prop_types53.default.func, import_prop_types53.default.object, import_prop_types53.default.bool])), import_prop_types53.default.func, import_prop_types53.default.object])
   } : void 0;
   var Modal_default = Modal;
 
@@ -63116,16 +63433,16 @@ Please use another name.` : formatMuiErrorMessage(18));
   var dialogClasses_default = dialogClasses;
 
   // node_modules/@mui/material/Dialog/DialogContext.js
-  var React84 = __toESM(require_react());
-  var DialogContext = /* @__PURE__ */ React84.createContext({});
+  var React85 = __toESM(require_react());
+  var DialogContext = /* @__PURE__ */ React85.createContext({});
   if (true) {
     DialogContext.displayName = "DialogContext";
   }
   var DialogContext_default = DialogContext;
 
   // node_modules/@mui/material/Dialog/Dialog.js
-  var import_jsx_runtime70 = __toESM(require_jsx_runtime());
-  var _excluded46 = ["aria-describedby", "aria-labelledby", "BackdropComponent", "BackdropProps", "children", "className", "disableEscapeKeyDown", "fullScreen", "fullWidth", "maxWidth", "onBackdropClick", "onClose", "open", "PaperComponent", "PaperProps", "scroll", "TransitionComponent", "transitionDuration", "TransitionProps"];
+  var import_jsx_runtime72 = __toESM(require_jsx_runtime());
+  var _excluded47 = ["aria-describedby", "aria-labelledby", "BackdropComponent", "BackdropProps", "children", "className", "disableEscapeKeyDown", "fullScreen", "fullWidth", "maxWidth", "onBackdropClick", "onClose", "open", "PaperComponent", "PaperProps", "scroll", "TransitionComponent", "transitionDuration", "TransitionProps"];
   var DialogBackdrop = styled_default2(Backdrop_default, {
     name: "MuiDialog",
     slot: "Backdrop",
@@ -63134,7 +63451,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     // Improve scrollable dialog support.
     zIndex: -1
   });
-  var useUtilityClasses27 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses28 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       scroll,
@@ -63253,7 +63570,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       maxWidth: "100%"
     }
   }));
-  var Dialog = /* @__PURE__ */ React85.forwardRef(/* @__PURE__ */ __name(function Dialog2(inProps, ref) {
+  var Dialog = /* @__PURE__ */ React86.forwardRef(/* @__PURE__ */ __name(function Dialog2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiDialog"
@@ -63283,7 +63600,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       TransitionComponent = Fade_default,
       transitionDuration = defaultTransitionDuration,
       TransitionProps
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded46);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded47);
     const ownerState = _extends({}, props, {
       disableEscapeKeyDown,
       fullScreen,
@@ -63291,8 +63608,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       maxWidth: maxWidth2,
       scroll
     });
-    const classes = useUtilityClasses27(ownerState);
-    const backdropClick = React85.useRef();
+    const classes = useUtilityClasses28(ownerState);
+    const backdropClick = React86.useRef();
     const handleMouseDown = /* @__PURE__ */ __name((event) => {
       backdropClick.current = event.target === event.currentTarget;
     }, "handleMouseDown");
@@ -63309,12 +63626,12 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }, "handleBackdropClick");
     const ariaLabelledby = useId2(ariaLabelledbyProp);
-    const dialogContextValue = React85.useMemo(() => {
+    const dialogContextValue = React86.useMemo(() => {
       return {
         titleId: ariaLabelledby
       };
     }, [ariaLabelledby]);
-    return /* @__PURE__ */ (0, import_jsx_runtime70.jsx)(DialogRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime72.jsx)(DialogRoot, _extends({
       className: clsx_m_default(classes.root, className),
       closeAfterTransition: true,
       components: {
@@ -63333,17 +63650,17 @@ Please use another name.` : formatMuiErrorMessage(18));
       onClick: handleBackdropClick,
       ownerState
     }, other, {
-      children: /* @__PURE__ */ (0, import_jsx_runtime70.jsx)(TransitionComponent, _extends({
+      children: /* @__PURE__ */ (0, import_jsx_runtime72.jsx)(TransitionComponent, _extends({
         appear: true,
         in: open,
         timeout: transitionDuration,
         role: "presentation"
       }, TransitionProps, {
-        children: /* @__PURE__ */ (0, import_jsx_runtime70.jsx)(DialogContainer, {
+        children: /* @__PURE__ */ (0, import_jsx_runtime72.jsx)(DialogContainer, {
           className: clsx_m_default(classes.container),
           onMouseDown: handleMouseDown,
           ownerState,
-          children: /* @__PURE__ */ (0, import_jsx_runtime70.jsx)(DialogPaper, _extends({
+          children: /* @__PURE__ */ (0, import_jsx_runtime72.jsx)(DialogPaper, _extends({
             as: PaperComponent,
             elevation: 24,
             role: "dialog",
@@ -63352,7 +63669,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           }, PaperProps, {
             className: clsx_m_default(classes.paper, PaperProps.className),
             ownerState,
-            children: /* @__PURE__ */ (0, import_jsx_runtime70.jsx)(DialogContext_default.Provider, {
+            children: /* @__PURE__ */ (0, import_jsx_runtime72.jsx)(DialogContext_default.Provider, {
               value: dialogContextValue,
               children
             })
@@ -63369,11 +63686,11 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The id(s) of the element(s) that describe the dialog.
      */
-    "aria-describedby": import_prop_types53.default.string,
+    "aria-describedby": import_prop_types54.default.string,
     /**
      * The id(s) of the element(s) that label the dialog.
      */
-    "aria-labelledby": import_prop_types53.default.string,
+    "aria-labelledby": import_prop_types54.default.string,
     /**
      * A backdrop component. This prop enables custom backdrop rendering.
      * @deprecated Use `slots.backdrop` instead. While this prop currently works, it will be removed in the next major version.
@@ -63388,88 +63705,88 @@ Please use another name.` : formatMuiErrorMessage(18));
      *   zIndex: -1,
      * })
      */
-    BackdropComponent: import_prop_types53.default.elementType,
+    BackdropComponent: import_prop_types54.default.elementType,
     /**
      * @ignore
      */
-    BackdropProps: import_prop_types53.default.object,
+    BackdropProps: import_prop_types54.default.object,
     /**
      * Dialog children, usually the included sub-components.
      */
-    children: import_prop_types53.default.node,
+    children: import_prop_types54.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types53.default.object,
+    classes: import_prop_types54.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types53.default.string,
+    className: import_prop_types54.default.string,
     /**
      * If `true`, hitting escape will not fire the `onClose` callback.
      * @default false
      */
-    disableEscapeKeyDown: import_prop_types53.default.bool,
+    disableEscapeKeyDown: import_prop_types54.default.bool,
     /**
      * If `true`, the dialog is full-screen.
      * @default false
      */
-    fullScreen: import_prop_types53.default.bool,
+    fullScreen: import_prop_types54.default.bool,
     /**
      * If `true`, the dialog stretches to `maxWidth`.
      *
      * Notice that the dialog width grow is limited by the default margin.
      * @default false
      */
-    fullWidth: import_prop_types53.default.bool,
+    fullWidth: import_prop_types54.default.bool,
     /**
      * Determine the max-width of the dialog.
      * The dialog width grows with the size of the screen.
      * Set to `false` to disable `maxWidth`.
      * @default 'sm'
      */
-    maxWidth: import_prop_types53.default.oneOfType([import_prop_types53.default.oneOf(["xs", "sm", "md", "lg", "xl", false]), import_prop_types53.default.string]),
+    maxWidth: import_prop_types54.default.oneOfType([import_prop_types54.default.oneOf(["xs", "sm", "md", "lg", "xl", false]), import_prop_types54.default.string]),
     /**
      * Callback fired when the backdrop is clicked.
      * @deprecated Use the `onClose` prop with the `reason` argument to handle the `backdropClick` events.
      */
-    onBackdropClick: import_prop_types53.default.func,
+    onBackdropClick: import_prop_types54.default.func,
     /**
      * Callback fired when the component requests to be closed.
      *
      * @param {object} event The event source of the callback.
      * @param {string} reason Can be: `"escapeKeyDown"`, `"backdropClick"`.
      */
-    onClose: import_prop_types53.default.func,
+    onClose: import_prop_types54.default.func,
     /**
      * If `true`, the component is shown.
      */
-    open: import_prop_types53.default.bool.isRequired,
+    open: import_prop_types54.default.bool.isRequired,
     /**
      * The component used to render the body of the dialog.
      * @default Paper
      */
-    PaperComponent: import_prop_types53.default.elementType,
+    PaperComponent: import_prop_types54.default.elementType,
     /**
      * Props applied to the [`Paper`](/material-ui/api/paper/) element.
      * @default {}
      */
-    PaperProps: import_prop_types53.default.object,
+    PaperProps: import_prop_types54.default.object,
     /**
      * Determine the container for scrolling the dialog.
      * @default 'paper'
      */
-    scroll: import_prop_types53.default.oneOf(["body", "paper"]),
+    scroll: import_prop_types54.default.oneOf(["body", "paper"]),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types53.default.oneOfType([import_prop_types53.default.arrayOf(import_prop_types53.default.oneOfType([import_prop_types53.default.func, import_prop_types53.default.object, import_prop_types53.default.bool])), import_prop_types53.default.func, import_prop_types53.default.object]),
+    sx: import_prop_types54.default.oneOfType([import_prop_types54.default.arrayOf(import_prop_types54.default.oneOfType([import_prop_types54.default.func, import_prop_types54.default.object, import_prop_types54.default.bool])), import_prop_types54.default.func, import_prop_types54.default.object]),
     /**
      * The component used for the transition.
      * [Follow this guide](/material-ui/transitions/#transitioncomponent-prop) to learn more about the requirements for this component.
      * @default Fade
      */
-    TransitionComponent: import_prop_types53.default.elementType,
+    TransitionComponent: import_prop_types54.default.elementType,
     /**
      * The duration for the transition, in milliseconds.
      * You may specify a single timeout for all transitions, or individually with an object.
@@ -63478,22 +63795,22 @@ Please use another name.` : formatMuiErrorMessage(18));
      *   exit: theme.transitions.duration.leavingScreen,
      * }
      */
-    transitionDuration: import_prop_types53.default.oneOfType([import_prop_types53.default.number, import_prop_types53.default.shape({
-      appear: import_prop_types53.default.number,
-      enter: import_prop_types53.default.number,
-      exit: import_prop_types53.default.number
+    transitionDuration: import_prop_types54.default.oneOfType([import_prop_types54.default.number, import_prop_types54.default.shape({
+      appear: import_prop_types54.default.number,
+      enter: import_prop_types54.default.number,
+      exit: import_prop_types54.default.number
     })]),
     /**
      * Props applied to the transition element.
      * By default, the element is based on this [`Transition`](http://reactcommunity.org/react-transition-group/transition/) component.
      */
-    TransitionProps: import_prop_types53.default.object
+    TransitionProps: import_prop_types54.default.object
   } : void 0;
   var Dialog_default = Dialog;
 
   // node_modules/@mui/material/DialogActions/DialogActions.js
-  var React86 = __toESM(require_react());
-  var import_prop_types54 = __toESM(require_prop_types());
+  var React87 = __toESM(require_react());
+  var import_prop_types55 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/DialogActions/dialogActionsClasses.js
   function getDialogActionsUtilityClass(slot) {
@@ -63503,9 +63820,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var dialogActionsClasses = generateUtilityClasses("MuiDialogActions", ["root", "spacing"]);
 
   // node_modules/@mui/material/DialogActions/DialogActions.js
-  var import_jsx_runtime71 = __toESM(require_jsx_runtime());
-  var _excluded47 = ["className", "disableSpacing"];
-  var useUtilityClasses28 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime73 = __toESM(require_jsx_runtime());
+  var _excluded48 = ["className", "disableSpacing"];
+  var useUtilityClasses29 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       disableSpacing
@@ -63537,7 +63854,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       marginLeft: 8
     }
   }));
-  var DialogActions = /* @__PURE__ */ React86.forwardRef(/* @__PURE__ */ __name(function DialogActions2(inProps, ref) {
+  var DialogActions = /* @__PURE__ */ React87.forwardRef(/* @__PURE__ */ __name(function DialogActions2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiDialogActions"
@@ -63545,12 +63862,12 @@ Please use another name.` : formatMuiErrorMessage(18));
     const {
       className,
       disableSpacing = false
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded47);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded48);
     const ownerState = _extends({}, props, {
       disableSpacing
     });
-    const classes = useUtilityClasses28(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime71.jsx)(DialogActionsRoot, _extends({
+    const classes = useUtilityClasses29(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime73.jsx)(DialogActionsRoot, _extends({
       className: clsx_m_default(classes.root, className),
       ownerState,
       ref
@@ -63564,30 +63881,30 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types54.default.node,
+    children: import_prop_types55.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types54.default.object,
+    classes: import_prop_types55.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types54.default.string,
+    className: import_prop_types55.default.string,
     /**
      * If `true`, the actions do not have additional margin.
      * @default false
      */
-    disableSpacing: import_prop_types54.default.bool,
+    disableSpacing: import_prop_types55.default.bool,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types54.default.oneOfType([import_prop_types54.default.arrayOf(import_prop_types54.default.oneOfType([import_prop_types54.default.func, import_prop_types54.default.object, import_prop_types54.default.bool])), import_prop_types54.default.func, import_prop_types54.default.object])
+    sx: import_prop_types55.default.oneOfType([import_prop_types55.default.arrayOf(import_prop_types55.default.oneOfType([import_prop_types55.default.func, import_prop_types55.default.object, import_prop_types55.default.bool])), import_prop_types55.default.func, import_prop_types55.default.object])
   } : void 0;
   var DialogActions_default = DialogActions;
 
   // node_modules/@mui/material/DialogContent/DialogContent.js
-  var React87 = __toESM(require_react());
-  var import_prop_types55 = __toESM(require_prop_types());
+  var React88 = __toESM(require_react());
+  var import_prop_types56 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/DialogContent/dialogContentClasses.js
   function getDialogContentUtilityClass(slot) {
@@ -63605,9 +63922,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var dialogTitleClasses_default = dialogTitleClasses;
 
   // node_modules/@mui/material/DialogContent/DialogContent.js
-  var import_jsx_runtime72 = __toESM(require_jsx_runtime());
-  var _excluded48 = ["className", "dividers"];
-  var useUtilityClasses29 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime74 = __toESM(require_jsx_runtime());
+  var _excluded49 = ["className", "dividers"];
+  var useUtilityClasses30 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       dividers
@@ -63644,7 +63961,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       paddingTop: 0
     }
   }));
-  var DialogContent = /* @__PURE__ */ React87.forwardRef(/* @__PURE__ */ __name(function DialogContent2(inProps, ref) {
+  var DialogContent = /* @__PURE__ */ React88.forwardRef(/* @__PURE__ */ __name(function DialogContent2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiDialogContent"
@@ -63652,92 +63969,18 @@ Please use another name.` : formatMuiErrorMessage(18));
     const {
       className,
       dividers = false
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded48);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded49);
     const ownerState = _extends({}, props, {
       dividers
     });
-    const classes = useUtilityClasses29(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime72.jsx)(DialogContentRoot, _extends({
+    const classes = useUtilityClasses30(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime74.jsx)(DialogContentRoot, _extends({
       className: clsx_m_default(classes.root, className),
       ownerState,
       ref
     }, other));
   }, "DialogContent"));
   true ? DialogContent.propTypes = {
-    // ----------------------------- Warning --------------------------------
-    // | These PropTypes are generated from the TypeScript type definitions |
-    // |     To update them edit the d.ts file and run "yarn proptypes"     |
-    // ----------------------------------------------------------------------
-    /**
-     * The content of the component.
-     */
-    children: import_prop_types55.default.node,
-    /**
-     * Override or extend the styles applied to the component.
-     */
-    classes: import_prop_types55.default.object,
-    /**
-     * @ignore
-     */
-    className: import_prop_types55.default.string,
-    /**
-     * Display the top and bottom dividers.
-     * @default false
-     */
-    dividers: import_prop_types55.default.bool,
-    /**
-     * The system prop that allows defining system overrides as well as additional CSS styles.
-     */
-    sx: import_prop_types55.default.oneOfType([import_prop_types55.default.arrayOf(import_prop_types55.default.oneOfType([import_prop_types55.default.func, import_prop_types55.default.object, import_prop_types55.default.bool])), import_prop_types55.default.func, import_prop_types55.default.object])
-  } : void 0;
-  var DialogContent_default = DialogContent;
-
-  // node_modules/@mui/material/DialogTitle/DialogTitle.js
-  var React88 = __toESM(require_react());
-  var import_prop_types56 = __toESM(require_prop_types());
-  var import_jsx_runtime73 = __toESM(require_jsx_runtime());
-  var _excluded49 = ["className", "id"];
-  var useUtilityClasses30 = /* @__PURE__ */ __name((ownerState) => {
-    const {
-      classes
-    } = ownerState;
-    const slots = {
-      root: ["root"]
-    };
-    return composeClasses(slots, getDialogTitleUtilityClass, classes);
-  }, "useUtilityClasses");
-  var DialogTitleRoot = styled_default2(Typography_default, {
-    name: "MuiDialogTitle",
-    slot: "Root",
-    overridesResolver: (props, styles6) => styles6.root
-  })({
-    padding: "16px 24px",
-    flex: "0 0 auto"
-  });
-  var DialogTitle = /* @__PURE__ */ React88.forwardRef(/* @__PURE__ */ __name(function DialogTitle2(inProps, ref) {
-    const props = useThemeProps2({
-      props: inProps,
-      name: "MuiDialogTitle"
-    });
-    const {
-      className,
-      id: idProp
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded49);
-    const ownerState = props;
-    const classes = useUtilityClasses30(ownerState);
-    const {
-      titleId = idProp
-    } = React88.useContext(DialogContext_default);
-    return /* @__PURE__ */ (0, import_jsx_runtime73.jsx)(DialogTitleRoot, _extends({
-      component: "h2",
-      className: clsx_m_default(classes.root, className),
-      ownerState,
-      ref,
-      variant: "h6",
-      id: idProp != null ? idProp : titleId
-    }, other));
-  }, "DialogTitle"));
-  true ? DialogTitle.propTypes = {
     // ----------------------------- Warning --------------------------------
     // | These PropTypes are generated from the TypeScript type definitions |
     // |     To update them edit the d.ts file and run "yarn proptypes"     |
@@ -63755,19 +63998,93 @@ Please use another name.` : formatMuiErrorMessage(18));
      */
     className: import_prop_types56.default.string,
     /**
-     * @ignore
+     * Display the top and bottom dividers.
+     * @default false
      */
-    id: import_prop_types56.default.string,
+    dividers: import_prop_types56.default.bool,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
     sx: import_prop_types56.default.oneOfType([import_prop_types56.default.arrayOf(import_prop_types56.default.oneOfType([import_prop_types56.default.func, import_prop_types56.default.object, import_prop_types56.default.bool])), import_prop_types56.default.func, import_prop_types56.default.object])
   } : void 0;
+  var DialogContent_default = DialogContent;
+
+  // node_modules/@mui/material/DialogTitle/DialogTitle.js
+  var React89 = __toESM(require_react());
+  var import_prop_types57 = __toESM(require_prop_types());
+  var import_jsx_runtime75 = __toESM(require_jsx_runtime());
+  var _excluded50 = ["className", "id"];
+  var useUtilityClasses31 = /* @__PURE__ */ __name((ownerState) => {
+    const {
+      classes
+    } = ownerState;
+    const slots = {
+      root: ["root"]
+    };
+    return composeClasses(slots, getDialogTitleUtilityClass, classes);
+  }, "useUtilityClasses");
+  var DialogTitleRoot = styled_default2(Typography_default, {
+    name: "MuiDialogTitle",
+    slot: "Root",
+    overridesResolver: (props, styles6) => styles6.root
+  })({
+    padding: "16px 24px",
+    flex: "0 0 auto"
+  });
+  var DialogTitle = /* @__PURE__ */ React89.forwardRef(/* @__PURE__ */ __name(function DialogTitle2(inProps, ref) {
+    const props = useThemeProps2({
+      props: inProps,
+      name: "MuiDialogTitle"
+    });
+    const {
+      className,
+      id: idProp
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded50);
+    const ownerState = props;
+    const classes = useUtilityClasses31(ownerState);
+    const {
+      titleId = idProp
+    } = React89.useContext(DialogContext_default);
+    return /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(DialogTitleRoot, _extends({
+      component: "h2",
+      className: clsx_m_default(classes.root, className),
+      ownerState,
+      ref,
+      variant: "h6",
+      id: idProp != null ? idProp : titleId
+    }, other));
+  }, "DialogTitle"));
+  true ? DialogTitle.propTypes = {
+    // ----------------------------- Warning --------------------------------
+    // | These PropTypes are generated from the TypeScript type definitions |
+    // |     To update them edit the d.ts file and run "yarn proptypes"     |
+    // ----------------------------------------------------------------------
+    /**
+     * The content of the component.
+     */
+    children: import_prop_types57.default.node,
+    /**
+     * Override or extend the styles applied to the component.
+     */
+    classes: import_prop_types57.default.object,
+    /**
+     * @ignore
+     */
+    className: import_prop_types57.default.string,
+    /**
+     * @ignore
+     */
+    id: import_prop_types57.default.string,
+    /**
+     * The system prop that allows defining system overrides as well as additional CSS styles.
+     */
+    sx: import_prop_types57.default.oneOfType([import_prop_types57.default.arrayOf(import_prop_types57.default.oneOfType([import_prop_types57.default.func, import_prop_types57.default.object, import_prop_types57.default.bool])), import_prop_types57.default.func, import_prop_types57.default.object])
+  } : void 0;
   var DialogTitle_default = DialogTitle;
 
   // node_modules/@mui/material/Divider/Divider.js
-  var React89 = __toESM(require_react());
-  var import_prop_types57 = __toESM(require_prop_types());
+  var React90 = __toESM(require_react());
+  var import_prop_types58 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/Divider/dividerClasses.js
   function getDividerUtilityClass(slot) {
@@ -63778,9 +64095,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var dividerClasses_default = dividerClasses;
 
   // node_modules/@mui/material/Divider/Divider.js
-  var import_jsx_runtime74 = __toESM(require_jsx_runtime());
-  var _excluded50 = ["absolute", "children", "className", "component", "flexItem", "light", "orientation", "role", "textAlign", "variant"];
-  var useUtilityClasses31 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime76 = __toESM(require_jsx_runtime());
+  var _excluded51 = ["absolute", "children", "className", "component", "flexItem", "light", "orientation", "role", "textAlign", "variant"];
+  var useUtilityClasses32 = /* @__PURE__ */ __name((ownerState) => {
     const {
       absolute,
       children,
@@ -63905,7 +64222,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     paddingTop: `calc(${theme.spacing(1)} * 1.2)`,
     paddingBottom: `calc(${theme.spacing(1)} * 1.2)`
   }));
-  var Divider = /* @__PURE__ */ React89.forwardRef(/* @__PURE__ */ __name(function Divider2(inProps, ref) {
+  var Divider = /* @__PURE__ */ React90.forwardRef(/* @__PURE__ */ __name(function Divider2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiDivider"
@@ -63921,7 +64238,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       role = component !== "hr" ? "separator" : void 0,
       textAlign = "center",
       variant = "fullWidth"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded50);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded51);
     const ownerState = _extends({}, props, {
       absolute,
       component,
@@ -63932,15 +64249,15 @@ Please use another name.` : formatMuiErrorMessage(18));
       textAlign,
       variant
     });
-    const classes = useUtilityClasses31(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime74.jsx)(DividerRoot, _extends({
+    const classes = useUtilityClasses32(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(DividerRoot, _extends({
       as: component,
       className: clsx_m_default(classes.root, className),
       role,
       ref,
       ownerState
     }, other, {
-      children: children ? /* @__PURE__ */ (0, import_jsx_runtime74.jsx)(DividerWrapper, {
+      children: children ? /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(DividerWrapper, {
         className: classes.wrapper,
         ownerState,
         children
@@ -63956,67 +64273,67 @@ Please use another name.` : formatMuiErrorMessage(18));
      * Absolutely position the element.
      * @default false
      */
-    absolute: import_prop_types57.default.bool,
+    absolute: import_prop_types58.default.bool,
     /**
      * The content of the component.
      */
-    children: import_prop_types57.default.node,
+    children: import_prop_types58.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types57.default.object,
+    classes: import_prop_types58.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types57.default.string,
+    className: import_prop_types58.default.string,
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types57.default.elementType,
+    component: import_prop_types58.default.elementType,
     /**
      * If `true`, a vertical divider will have the correct height when used in flex container.
      * (By default, a vertical divider will have a calculated height of `0px` if it is the child of a flex container.)
      * @default false
      */
-    flexItem: import_prop_types57.default.bool,
+    flexItem: import_prop_types58.default.bool,
     /**
      * If `true`, the divider will have a lighter color.
      * @default false
      */
-    light: import_prop_types57.default.bool,
+    light: import_prop_types58.default.bool,
     /**
      * The component orientation.
      * @default 'horizontal'
      */
-    orientation: import_prop_types57.default.oneOf(["horizontal", "vertical"]),
+    orientation: import_prop_types58.default.oneOf(["horizontal", "vertical"]),
     /**
      * @ignore
      */
-    role: import_prop_types57.default.string,
+    role: import_prop_types58.default.string,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types57.default.oneOfType([import_prop_types57.default.arrayOf(import_prop_types57.default.oneOfType([import_prop_types57.default.func, import_prop_types57.default.object, import_prop_types57.default.bool])), import_prop_types57.default.func, import_prop_types57.default.object]),
+    sx: import_prop_types58.default.oneOfType([import_prop_types58.default.arrayOf(import_prop_types58.default.oneOfType([import_prop_types58.default.func, import_prop_types58.default.object, import_prop_types58.default.bool])), import_prop_types58.default.func, import_prop_types58.default.object]),
     /**
      * The text alignment.
      * @default 'center'
      */
-    textAlign: import_prop_types57.default.oneOf(["center", "left", "right"]),
+    textAlign: import_prop_types58.default.oneOf(["center", "left", "right"]),
     /**
      * The variant to use.
      * @default 'fullWidth'
      */
-    variant: import_prop_types57.default.oneOfType([import_prop_types57.default.oneOf(["fullWidth", "inset", "middle"]), import_prop_types57.default.string])
+    variant: import_prop_types58.default.oneOfType([import_prop_types58.default.oneOf(["fullWidth", "inset", "middle"]), import_prop_types58.default.string])
   } : void 0;
   var Divider_default = Divider;
 
   // node_modules/@mui/material/FilledInput/FilledInput.js
-  var React90 = __toESM(require_react());
-  var import_prop_types58 = __toESM(require_prop_types());
-  var import_jsx_runtime75 = __toESM(require_jsx_runtime());
-  var _excluded51 = ["disableUnderline", "components", "componentsProps", "fullWidth", "hiddenLabel", "inputComponent", "multiline", "slotProps", "slots", "type"];
-  var useUtilityClasses32 = /* @__PURE__ */ __name((ownerState) => {
+  var React91 = __toESM(require_react());
+  var import_prop_types59 = __toESM(require_prop_types());
+  var import_jsx_runtime77 = __toESM(require_jsx_runtime());
+  var _excluded52 = ["disableUnderline", "components", "componentsProps", "fullWidth", "hiddenLabel", "inputComponent", "multiline", "slotProps", "slots", "type"];
+  var useUtilityClasses33 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       disableUnderline
@@ -64182,7 +64499,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     paddingTop: 8,
     paddingBottom: 9
   }));
-  var FilledInput = /* @__PURE__ */ React90.forwardRef(/* @__PURE__ */ __name(function FilledInput2(inProps, ref) {
+  var FilledInput = /* @__PURE__ */ React91.forwardRef(/* @__PURE__ */ __name(function FilledInput2(inProps, ref) {
     var _ref, _slots$root, _ref2, _slots$input;
     const props = useThemeProps2({
       props: inProps,
@@ -64198,14 +64515,14 @@ Please use another name.` : formatMuiErrorMessage(18));
       slotProps,
       slots = {},
       type = "text"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded51);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded52);
     const ownerState = _extends({}, props, {
       fullWidth,
       inputComponent,
       multiline,
       type
     });
-    const classes = useUtilityClasses32(props);
+    const classes = useUtilityClasses33(props);
     const filledInputComponentsProps = {
       root: {
         ownerState
@@ -64217,7 +64534,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const componentsProps = (slotProps != null ? slotProps : componentsPropsProp) ? deepmerge(slotProps != null ? slotProps : componentsPropsProp, filledInputComponentsProps) : filledInputComponentsProps;
     const RootSlot = (_ref = (_slots$root = slots.root) != null ? _slots$root : components.Root) != null ? _ref : FilledInputRoot;
     const InputSlot = (_ref2 = (_slots$input = slots.input) != null ? _slots$input : components.Input) != null ? _ref2 : FilledInputInput;
-    return /* @__PURE__ */ (0, import_jsx_runtime75.jsx)(InputBase_default, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime77.jsx)(InputBase_default, _extends({
       slots: {
         root: RootSlot,
         input: InputSlot
@@ -64242,22 +64559,22 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The name can be confusing, as it's more like an autofill.
      * You can learn more about it [following the specification](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill).
      */
-    autoComplete: import_prop_types58.default.string,
+    autoComplete: import_prop_types59.default.string,
     /**
      * If `true`, the `input` element is focused during the first mount.
      */
-    autoFocus: import_prop_types58.default.bool,
+    autoFocus: import_prop_types59.default.bool,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types58.default.object,
+    classes: import_prop_types59.default.object,
     /**
      * The color of the component.
      * It supports both default and custom theme colors, which can be added as shown in the
      * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
      * The prop defaults to the value (`'primary'`) inherited from the parent FormControl component.
      */
-    color: import_prop_types58.default.oneOfType([import_prop_types58.default.oneOf(["primary", "secondary"]), import_prop_types58.default.string]),
+    color: import_prop_types59.default.oneOfType([import_prop_types59.default.oneOf(["primary", "secondary"]), import_prop_types59.default.string]),
     /**
      * The components used for each slot inside.
      *
@@ -64266,9 +64583,9 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    components: import_prop_types58.default.shape({
-      Input: import_prop_types58.default.elementType,
-      Root: import_prop_types58.default.elementType
+    components: import_prop_types59.default.shape({
+      Input: import_prop_types59.default.elementType,
+      Root: import_prop_types59.default.elementType
     }),
     /**
      * The extra props for the slot components.
@@ -64279,59 +64596,59 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    componentsProps: import_prop_types58.default.shape({
-      input: import_prop_types58.default.object,
-      root: import_prop_types58.default.object
+    componentsProps: import_prop_types59.default.shape({
+      input: import_prop_types59.default.object,
+      root: import_prop_types59.default.object
     }),
     /**
      * The default value. Use when the component is not controlled.
      */
-    defaultValue: import_prop_types58.default.any,
+    defaultValue: import_prop_types59.default.any,
     /**
      * If `true`, the component is disabled.
      * The prop defaults to the value (`false`) inherited from the parent FormControl component.
      */
-    disabled: import_prop_types58.default.bool,
+    disabled: import_prop_types59.default.bool,
     /**
      * If `true`, the input will not have an underline.
      */
-    disableUnderline: import_prop_types58.default.bool,
+    disableUnderline: import_prop_types59.default.bool,
     /**
      * End `InputAdornment` for this component.
      */
-    endAdornment: import_prop_types58.default.node,
+    endAdornment: import_prop_types59.default.node,
     /**
      * If `true`, the `input` will indicate an error.
      * The prop defaults to the value (`false`) inherited from the parent FormControl component.
      */
-    error: import_prop_types58.default.bool,
+    error: import_prop_types59.default.bool,
     /**
      * If `true`, the `input` will take up the full width of its container.
      * @default false
      */
-    fullWidth: import_prop_types58.default.bool,
+    fullWidth: import_prop_types59.default.bool,
     /**
      * If `true`, the label is hidden.
      * This is used to increase density for a `FilledInput`.
      * Be sure to add `aria-label` to the `input` element.
      * @default false
      */
-    hiddenLabel: import_prop_types58.default.bool,
+    hiddenLabel: import_prop_types59.default.bool,
     /**
      * The id of the `input` element.
      */
-    id: import_prop_types58.default.string,
+    id: import_prop_types59.default.string,
     /**
      * The component used for the `input` element.
      * Either a string to use a HTML element or a component.
      * @default 'input'
      */
-    inputComponent: import_prop_types58.default.elementType,
+    inputComponent: import_prop_types59.default.elementType,
     /**
      * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes) applied to the `input` element.
      * @default {}
      */
-    inputProps: import_prop_types58.default.object,
+    inputProps: import_prop_types59.default.object,
     /**
      * Pass a ref to the `input` element.
      */
@@ -64341,49 +64658,49 @@ Please use another name.` : formatMuiErrorMessage(18));
      * FormControl.
      * The prop defaults to the value (`'none'`) inherited from the parent FormControl component.
      */
-    margin: import_prop_types58.default.oneOf(["dense", "none"]),
+    margin: import_prop_types59.default.oneOf(["dense", "none"]),
     /**
      * Maximum number of rows to display when multiline option is set to true.
      */
-    maxRows: import_prop_types58.default.oneOfType([import_prop_types58.default.number, import_prop_types58.default.string]),
+    maxRows: import_prop_types59.default.oneOfType([import_prop_types59.default.number, import_prop_types59.default.string]),
     /**
      * Minimum number of rows to display when multiline option is set to true.
      */
-    minRows: import_prop_types58.default.oneOfType([import_prop_types58.default.number, import_prop_types58.default.string]),
+    minRows: import_prop_types59.default.oneOfType([import_prop_types59.default.number, import_prop_types59.default.string]),
     /**
      * If `true`, a [TextareaAutosize](/material-ui/react-textarea-autosize/) element is rendered.
      * @default false
      */
-    multiline: import_prop_types58.default.bool,
+    multiline: import_prop_types59.default.bool,
     /**
      * Name attribute of the `input` element.
      */
-    name: import_prop_types58.default.string,
+    name: import_prop_types59.default.string,
     /**
      * Callback fired when the value is changed.
      *
      * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} event The event source of the callback.
      * You can pull out the new value by accessing `event.target.value` (string).
      */
-    onChange: import_prop_types58.default.func,
+    onChange: import_prop_types59.default.func,
     /**
      * The short hint displayed in the `input` before the user enters a value.
      */
-    placeholder: import_prop_types58.default.string,
+    placeholder: import_prop_types59.default.string,
     /**
      * It prevents the user from changing the value of the field
      * (not from interacting with the field).
      */
-    readOnly: import_prop_types58.default.bool,
+    readOnly: import_prop_types59.default.bool,
     /**
      * If `true`, the `input` element is required.
      * The prop defaults to the value (`false`) inherited from the parent FormControl component.
      */
-    required: import_prop_types58.default.bool,
+    required: import_prop_types59.default.bool,
     /**
      * Number of rows to display when multiline option is set to true.
      */
-    rows: import_prop_types58.default.oneOfType([import_prop_types58.default.number, import_prop_types58.default.string]),
+    rows: import_prop_types59.default.oneOfType([import_prop_types59.default.number, import_prop_types59.default.string]),
     /**
      * The extra props for the slot components.
      * You can override the existing props or add new ones.
@@ -64392,9 +64709,9 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    slotProps: import_prop_types58.default.shape({
-      input: import_prop_types58.default.object,
-      root: import_prop_types58.default.object
+    slotProps: import_prop_types59.default.shape({
+      input: import_prop_types59.default.object,
+      root: import_prop_types59.default.object
     }),
     /**
      * The components used for each slot inside.
@@ -64403,34 +64720,34 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    slots: import_prop_types58.default.shape({
-      input: import_prop_types58.default.elementType,
-      root: import_prop_types58.default.elementType
+    slots: import_prop_types59.default.shape({
+      input: import_prop_types59.default.elementType,
+      root: import_prop_types59.default.elementType
     }),
     /**
      * Start `InputAdornment` for this component.
      */
-    startAdornment: import_prop_types58.default.node,
+    startAdornment: import_prop_types59.default.node,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types58.default.oneOfType([import_prop_types58.default.arrayOf(import_prop_types58.default.oneOfType([import_prop_types58.default.func, import_prop_types58.default.object, import_prop_types58.default.bool])), import_prop_types58.default.func, import_prop_types58.default.object]),
+    sx: import_prop_types59.default.oneOfType([import_prop_types59.default.arrayOf(import_prop_types59.default.oneOfType([import_prop_types59.default.func, import_prop_types59.default.object, import_prop_types59.default.bool])), import_prop_types59.default.func, import_prop_types59.default.object]),
     /**
      * Type of the `input` element. It should be [a valid HTML5 input type](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types).
      * @default 'text'
      */
-    type: import_prop_types58.default.string,
+    type: import_prop_types59.default.string,
     /**
      * The value of the `input` element, required for a controlled component.
      */
-    value: import_prop_types58.default.any
+    value: import_prop_types59.default.any
   } : void 0;
   FilledInput.muiName = "Input";
   var FilledInput_default = FilledInput;
 
   // node_modules/@mui/material/FormControl/FormControl.js
-  var React91 = __toESM(require_react());
-  var import_prop_types59 = __toESM(require_prop_types());
+  var React92 = __toESM(require_react());
+  var import_prop_types60 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/FormControl/formControlClasses.js
   function getFormControlUtilityClasses(slot) {
@@ -64440,9 +64757,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var formControlClasses = generateUtilityClasses("MuiFormControl", ["root", "marginNone", "marginNormal", "marginDense", "fullWidth", "disabled"]);
 
   // node_modules/@mui/material/FormControl/FormControl.js
-  var import_jsx_runtime76 = __toESM(require_jsx_runtime());
-  var _excluded52 = ["children", "className", "color", "component", "disabled", "error", "focused", "fullWidth", "hiddenLabel", "margin", "required", "size", "variant"];
-  var useUtilityClasses33 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime78 = __toESM(require_jsx_runtime());
+  var _excluded53 = ["children", "className", "color", "component", "disabled", "error", "focused", "fullWidth", "hiddenLabel", "margin", "required", "size", "variant"];
+  var useUtilityClasses34 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       margin: margin2,
@@ -64482,7 +64799,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   }, ownerState.fullWidth && {
     width: "100%"
   }));
-  var FormControl = /* @__PURE__ */ React91.forwardRef(/* @__PURE__ */ __name(function FormControl2(inProps, ref) {
+  var FormControl = /* @__PURE__ */ React92.forwardRef(/* @__PURE__ */ __name(function FormControl2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiFormControl"
@@ -64501,7 +64818,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       required = false,
       size = "medium",
       variant = "outlined"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded52);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded53);
     const ownerState = _extends({}, props, {
       color: color2,
       component,
@@ -64514,11 +64831,11 @@ Please use another name.` : formatMuiErrorMessage(18));
       size,
       variant
     });
-    const classes = useUtilityClasses33(ownerState);
-    const [adornedStart, setAdornedStart] = React91.useState(() => {
+    const classes = useUtilityClasses34(ownerState);
+    const [adornedStart, setAdornedStart] = React92.useState(() => {
       let initialAdornedStart = false;
       if (children) {
-        React91.Children.forEach(children, (child) => {
+        React92.Children.forEach(children, (child) => {
           if (!isMuiElement_default(child, ["Input", "Select"])) {
             return;
           }
@@ -64530,10 +64847,10 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
       return initialAdornedStart;
     });
-    const [filled, setFilled] = React91.useState(() => {
+    const [filled, setFilled] = React92.useState(() => {
       let initialFilled = false;
       if (children) {
-        React91.Children.forEach(children, (child) => {
+        React92.Children.forEach(children, (child) => {
           if (!isMuiElement_default(child, ["Input", "Select"])) {
             return;
           }
@@ -64544,14 +64861,14 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
       return initialFilled;
     });
-    const [focusedState, setFocused] = React91.useState(false);
+    const [focusedState, setFocused] = React92.useState(false);
     if (disabled && focusedState) {
       setFocused(false);
     }
     const focused = visuallyFocused !== void 0 && !disabled ? visuallyFocused : focusedState;
     let registerEffect;
     if (true) {
-      const registeredInput = React91.useRef(false);
+      const registeredInput = React92.useRef(false);
       registerEffect = /* @__PURE__ */ __name(() => {
         if (registeredInput.current) {
           console.error(["MUI: There are multiple `InputBase` components inside a FormControl.", "This creates visual inconsistencies, only use one `InputBase`."].join("\n"));
@@ -64562,7 +64879,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         };
       }, "registerEffect");
     }
-    const childContext = React91.useMemo(() => {
+    const childContext = React92.useMemo(() => {
       return {
         adornedStart,
         setAdornedStart,
@@ -64591,9 +64908,9 @@ Please use another name.` : formatMuiErrorMessage(18));
         variant
       };
     }, [adornedStart, color2, disabled, error2, filled, focused, fullWidth, hiddenLabel, registerEffect, required, size, variant]);
-    return /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(FormControlContext_default.Provider, {
+    return /* @__PURE__ */ (0, import_jsx_runtime78.jsx)(FormControlContext_default.Provider, {
       value: childContext,
-      children: /* @__PURE__ */ (0, import_jsx_runtime76.jsx)(FormControlRoot, _extends({
+      children: /* @__PURE__ */ (0, import_jsx_runtime78.jsx)(FormControlRoot, _extends({
         as: component,
         ownerState,
         className: clsx_m_default(classes.root, className),
@@ -64611,83 +64928,83 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types59.default.node,
+    children: import_prop_types60.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types59.default.object,
+    classes: import_prop_types60.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types59.default.string,
+    className: import_prop_types60.default.string,
     /**
      * The color of the component.
      * It supports both default and custom theme colors, which can be added as shown in the
      * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
      * @default 'primary'
      */
-    color: import_prop_types59.default.oneOfType([import_prop_types59.default.oneOf(["primary", "secondary", "error", "info", "success", "warning"]), import_prop_types59.default.string]),
+    color: import_prop_types60.default.oneOfType([import_prop_types60.default.oneOf(["primary", "secondary", "error", "info", "success", "warning"]), import_prop_types60.default.string]),
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types59.default.elementType,
+    component: import_prop_types60.default.elementType,
     /**
      * If `true`, the label, input and helper text should be displayed in a disabled state.
      * @default false
      */
-    disabled: import_prop_types59.default.bool,
+    disabled: import_prop_types60.default.bool,
     /**
      * If `true`, the label is displayed in an error state.
      * @default false
      */
-    error: import_prop_types59.default.bool,
+    error: import_prop_types60.default.bool,
     /**
      * If `true`, the component is displayed in focused state.
      */
-    focused: import_prop_types59.default.bool,
+    focused: import_prop_types60.default.bool,
     /**
      * If `true`, the component will take up the full width of its container.
      * @default false
      */
-    fullWidth: import_prop_types59.default.bool,
+    fullWidth: import_prop_types60.default.bool,
     /**
      * If `true`, the label is hidden.
      * This is used to increase density for a `FilledInput`.
      * Be sure to add `aria-label` to the `input` element.
      * @default false
      */
-    hiddenLabel: import_prop_types59.default.bool,
+    hiddenLabel: import_prop_types60.default.bool,
     /**
      * If `dense` or `normal`, will adjust vertical spacing of this and contained components.
      * @default 'none'
      */
-    margin: import_prop_types59.default.oneOf(["dense", "none", "normal"]),
+    margin: import_prop_types60.default.oneOf(["dense", "none", "normal"]),
     /**
      * If `true`, the label will indicate that the `input` is required.
      * @default false
      */
-    required: import_prop_types59.default.bool,
+    required: import_prop_types60.default.bool,
     /**
      * The size of the component.
      * @default 'medium'
      */
-    size: import_prop_types59.default.oneOfType([import_prop_types59.default.oneOf(["medium", "small"]), import_prop_types59.default.string]),
+    size: import_prop_types60.default.oneOfType([import_prop_types60.default.oneOf(["medium", "small"]), import_prop_types60.default.string]),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types59.default.oneOfType([import_prop_types59.default.arrayOf(import_prop_types59.default.oneOfType([import_prop_types59.default.func, import_prop_types59.default.object, import_prop_types59.default.bool])), import_prop_types59.default.func, import_prop_types59.default.object]),
+    sx: import_prop_types60.default.oneOfType([import_prop_types60.default.arrayOf(import_prop_types60.default.oneOfType([import_prop_types60.default.func, import_prop_types60.default.object, import_prop_types60.default.bool])), import_prop_types60.default.func, import_prop_types60.default.object]),
     /**
      * The variant to use.
      * @default 'outlined'
      */
-    variant: import_prop_types59.default.oneOf(["filled", "outlined", "standard"])
+    variant: import_prop_types60.default.oneOf(["filled", "outlined", "standard"])
   } : void 0;
   var FormControl_default = FormControl;
 
   // node_modules/@mui/material/FormControlLabel/FormControlLabel.js
-  var React92 = __toESM(require_react());
-  var import_prop_types60 = __toESM(require_prop_types());
+  var React93 = __toESM(require_react());
+  var import_prop_types61 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/FormControlLabel/formControlLabelClasses.js
   function getFormControlLabelUtilityClasses(slot) {
@@ -64698,10 +65015,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   var formControlLabelClasses_default = formControlLabelClasses;
 
   // node_modules/@mui/material/FormControlLabel/FormControlLabel.js
-  var import_jsx_runtime77 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime78 = __toESM(require_jsx_runtime());
-  var _excluded53 = ["checked", "className", "componentsProps", "control", "disabled", "disableTypography", "inputRef", "label", "labelPlacement", "name", "onChange", "slotProps", "value"];
-  var useUtilityClasses34 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime79 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime80 = __toESM(require_jsx_runtime());
+  var _excluded54 = ["checked", "className", "componentsProps", "control", "disabled", "disableTypography", "inputRef", "label", "labelPlacement", "name", "onChange", "slotProps", "value"];
+  var useUtilityClasses35 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       disabled,
@@ -64759,7 +65076,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }
   }));
-  var FormControlLabel = /* @__PURE__ */ React92.forwardRef(/* @__PURE__ */ __name(function FormControlLabel2(inProps, ref) {
+  var FormControlLabel = /* @__PURE__ */ React93.forwardRef(/* @__PURE__ */ __name(function FormControlLabel2(inProps, ref) {
     var _slotProps$typography;
     const props = useThemeProps2({
       props: inProps,
@@ -64774,7 +65091,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       label: labelProp,
       labelPlacement = "end",
       slotProps = {}
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded53);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded54);
     const muiFormControl = useFormControl();
     let disabled = disabledProp;
     if (typeof disabled === "undefined" && typeof control.props.disabled !== "undefined") {
@@ -64801,23 +65118,23 @@ Please use another name.` : formatMuiErrorMessage(18));
       labelPlacement,
       error: fcs.error
     });
-    const classes = useUtilityClasses34(ownerState);
+    const classes = useUtilityClasses35(ownerState);
     const typographySlotProps = (_slotProps$typography = slotProps.typography) != null ? _slotProps$typography : componentsProps.typography;
     let label = labelProp;
     if (label != null && label.type !== Typography_default && !disableTypography) {
-      label = /* @__PURE__ */ (0, import_jsx_runtime77.jsx)(Typography_default, _extends({
+      label = /* @__PURE__ */ (0, import_jsx_runtime79.jsx)(Typography_default, _extends({
         component: "span"
       }, typographySlotProps, {
         className: clsx_m_default(classes.label, typographySlotProps == null ? void 0 : typographySlotProps.className),
         children: label
       }));
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime78.jsxs)(FormControlLabelRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime80.jsxs)(FormControlLabelRoot, _extends({
       className: clsx_m_default(classes.root, className),
       ownerState,
       ref
     }, other, {
-      children: [/* @__PURE__ */ React92.cloneElement(control, controlProps), label]
+      children: [/* @__PURE__ */ React93.cloneElement(control, controlProps), label]
     }));
   }, "FormControlLabel"));
   true ? FormControlLabel.propTypes = {
@@ -64828,34 +65145,34 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * If `true`, the component appears selected.
      */
-    checked: import_prop_types60.default.bool,
+    checked: import_prop_types61.default.bool,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types60.default.object,
+    classes: import_prop_types61.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types60.default.string,
+    className: import_prop_types61.default.string,
     /**
      * The props used for each slot inside.
      * @default {}
      */
-    componentsProps: import_prop_types60.default.shape({
-      typography: import_prop_types60.default.object
+    componentsProps: import_prop_types61.default.shape({
+      typography: import_prop_types61.default.object
     }),
     /**
      * A control element. For instance, it can be a `Radio`, a `Switch` or a `Checkbox`.
      */
-    control: import_prop_types60.default.element.isRequired,
+    control: import_prop_types61.default.element.isRequired,
     /**
      * If `true`, the control is disabled.
      */
-    disabled: import_prop_types60.default.bool,
+    disabled: import_prop_types61.default.bool,
     /**
      * If `true`, the label is rendered as it is passed without an additional typography node.
      */
-    disableTypography: import_prop_types60.default.bool,
+    disableTypography: import_prop_types61.default.bool,
     /**
      * Pass a ref to the `input` element.
      */
@@ -64863,44 +65180,44 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * A text or an element to be used in an enclosing label element.
      */
-    label: import_prop_types60.default.node,
+    label: import_prop_types61.default.node,
     /**
      * The position of the label.
      * @default 'end'
      */
-    labelPlacement: import_prop_types60.default.oneOf(["bottom", "end", "start", "top"]),
+    labelPlacement: import_prop_types61.default.oneOf(["bottom", "end", "start", "top"]),
     /**
      * @ignore
      */
-    name: import_prop_types60.default.string,
+    name: import_prop_types61.default.string,
     /**
      * Callback fired when the state is changed.
      *
      * @param {React.SyntheticEvent} event The event source of the callback.
      * You can pull out the new checked state by accessing `event.target.checked` (boolean).
      */
-    onChange: import_prop_types60.default.func,
+    onChange: import_prop_types61.default.func,
     /**
      * The props used for each slot inside.
      * @default {}
      */
-    slotProps: import_prop_types60.default.shape({
-      typography: import_prop_types60.default.object
+    slotProps: import_prop_types61.default.shape({
+      typography: import_prop_types61.default.object
     }),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types60.default.oneOfType([import_prop_types60.default.arrayOf(import_prop_types60.default.oneOfType([import_prop_types60.default.func, import_prop_types60.default.object, import_prop_types60.default.bool])), import_prop_types60.default.func, import_prop_types60.default.object]),
+    sx: import_prop_types61.default.oneOfType([import_prop_types61.default.arrayOf(import_prop_types61.default.oneOfType([import_prop_types61.default.func, import_prop_types61.default.object, import_prop_types61.default.bool])), import_prop_types61.default.func, import_prop_types61.default.object]),
     /**
      * The value of the component.
      */
-    value: import_prop_types60.default.any
+    value: import_prop_types61.default.any
   } : void 0;
   var FormControlLabel_default = FormControlLabel;
 
   // node_modules/@mui/material/FormHelperText/FormHelperText.js
-  var React93 = __toESM(require_react());
-  var import_prop_types61 = __toESM(require_prop_types());
+  var React94 = __toESM(require_react());
+  var import_prop_types62 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/FormHelperText/formHelperTextClasses.js
   function getFormHelperTextUtilityClasses(slot) {
@@ -64911,10 +65228,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   var formHelperTextClasses_default = formHelperTextClasses;
 
   // node_modules/@mui/material/FormHelperText/FormHelperText.js
-  var import_jsx_runtime79 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime81 = __toESM(require_jsx_runtime());
   var _span;
-  var _excluded54 = ["children", "className", "component", "disabled", "error", "filled", "focused", "margin", "required", "variant"];
-  var useUtilityClasses35 = /* @__PURE__ */ __name((ownerState) => {
+  var _excluded55 = ["children", "className", "component", "disabled", "error", "filled", "focused", "margin", "required", "variant"];
+  var useUtilityClasses36 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       contained,
@@ -64962,7 +65279,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     marginLeft: 14,
     marginRight: 14
   }));
-  var FormHelperText = /* @__PURE__ */ React93.forwardRef(/* @__PURE__ */ __name(function FormHelperText2(inProps, ref) {
+  var FormHelperText = /* @__PURE__ */ React94.forwardRef(/* @__PURE__ */ __name(function FormHelperText2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiFormHelperText"
@@ -64971,7 +65288,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       children,
       className,
       component = "p"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded54);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded55);
     const muiFormControl = useFormControl();
     const fcs = formControlState({
       props,
@@ -64989,8 +65306,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       focused: fcs.focused,
       required: fcs.required
     });
-    const classes = useUtilityClasses35(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime79.jsx)(FormHelperTextRoot, _extends({
+    const classes = useUtilityClasses36(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime81.jsx)(FormHelperTextRoot, _extends({
       as: component,
       ownerState,
       className: clsx_m_default(classes.root, className),
@@ -64998,7 +65315,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     }, other, {
       children: children === " " ? (
         // notranslate needed while Google Translate will not fix zero-width space issue
-        _span || (_span = /* @__PURE__ */ (0, import_jsx_runtime79.jsx)("span", {
+        _span || (_span = /* @__PURE__ */ (0, import_jsx_runtime81.jsx)("span", {
           className: "notranslate",
           children: "\u200B"
         }))
@@ -65015,59 +65332,59 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * If `' '` is provided, the component reserves one line height for displaying a future message.
      */
-    children: import_prop_types61.default.node,
+    children: import_prop_types62.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types61.default.object,
+    classes: import_prop_types62.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types61.default.string,
+    className: import_prop_types62.default.string,
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types61.default.elementType,
+    component: import_prop_types62.default.elementType,
     /**
      * If `true`, the helper text should be displayed in a disabled state.
      */
-    disabled: import_prop_types61.default.bool,
+    disabled: import_prop_types62.default.bool,
     /**
      * If `true`, helper text should be displayed in an error state.
      */
-    error: import_prop_types61.default.bool,
+    error: import_prop_types62.default.bool,
     /**
      * If `true`, the helper text should use filled classes key.
      */
-    filled: import_prop_types61.default.bool,
+    filled: import_prop_types62.default.bool,
     /**
      * If `true`, the helper text should use focused classes key.
      */
-    focused: import_prop_types61.default.bool,
+    focused: import_prop_types62.default.bool,
     /**
      * If `dense`, will adjust vertical spacing. This is normally obtained via context from
      * FormControl.
      */
-    margin: import_prop_types61.default.oneOf(["dense"]),
+    margin: import_prop_types62.default.oneOf(["dense"]),
     /**
      * If `true`, the helper text should use required classes key.
      */
-    required: import_prop_types61.default.bool,
+    required: import_prop_types62.default.bool,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types61.default.oneOfType([import_prop_types61.default.arrayOf(import_prop_types61.default.oneOfType([import_prop_types61.default.func, import_prop_types61.default.object, import_prop_types61.default.bool])), import_prop_types61.default.func, import_prop_types61.default.object]),
+    sx: import_prop_types62.default.oneOfType([import_prop_types62.default.arrayOf(import_prop_types62.default.oneOfType([import_prop_types62.default.func, import_prop_types62.default.object, import_prop_types62.default.bool])), import_prop_types62.default.func, import_prop_types62.default.object]),
     /**
      * The variant to use.
      */
-    variant: import_prop_types61.default.oneOfType([import_prop_types61.default.oneOf(["filled", "outlined", "standard"]), import_prop_types61.default.string])
+    variant: import_prop_types62.default.oneOfType([import_prop_types62.default.oneOf(["filled", "outlined", "standard"]), import_prop_types62.default.string])
   } : void 0;
   var FormHelperText_default = FormHelperText;
 
   // node_modules/@mui/material/FormLabel/FormLabel.js
-  var React94 = __toESM(require_react());
-  var import_prop_types62 = __toESM(require_prop_types());
+  var React95 = __toESM(require_react());
+  var import_prop_types63 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/FormLabel/formLabelClasses.js
   function getFormLabelUtilityClasses(slot) {
@@ -65078,9 +65395,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var formLabelClasses_default = formLabelClasses;
 
   // node_modules/@mui/material/FormLabel/FormLabel.js
-  var import_jsx_runtime80 = __toESM(require_jsx_runtime());
-  var _excluded55 = ["children", "className", "color", "component", "disabled", "error", "filled", "focused", "required"];
-  var useUtilityClasses36 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime82 = __toESM(require_jsx_runtime());
+  var _excluded56 = ["children", "className", "color", "component", "disabled", "error", "filled", "focused", "required"];
+  var useUtilityClasses37 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       color: color2,
@@ -65134,7 +65451,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       color: (theme.vars || theme).palette.error.main
     }
   }));
-  var FormLabel = /* @__PURE__ */ React94.forwardRef(/* @__PURE__ */ __name(function FormLabel2(inProps, ref) {
+  var FormLabel = /* @__PURE__ */ React95.forwardRef(/* @__PURE__ */ __name(function FormLabel2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiFormLabel"
@@ -65143,7 +65460,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       children,
       className,
       component = "label"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded55);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded56);
     const muiFormControl = useFormControl();
     const fcs = formControlState({
       props,
@@ -65159,14 +65476,14 @@ Please use another name.` : formatMuiErrorMessage(18));
       focused: fcs.focused,
       required: fcs.required
     });
-    const classes = useUtilityClasses36(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime80.jsxs)(FormLabelRoot, _extends({
+    const classes = useUtilityClasses37(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime82.jsxs)(FormLabelRoot, _extends({
       as: component,
       ownerState,
       className: clsx_m_default(classes.root, className),
       ref
     }, other, {
-      children: [children, fcs.required && /* @__PURE__ */ (0, import_jsx_runtime80.jsxs)(AsteriskComponent, {
+      children: [children, fcs.required && /* @__PURE__ */ (0, import_jsx_runtime82.jsxs)(AsteriskComponent, {
         ownerState,
         "aria-hidden": true,
         className: classes.asterisk,
@@ -65182,60 +65499,60 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types62.default.node,
+    children: import_prop_types63.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types62.default.object,
+    classes: import_prop_types63.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types62.default.string,
+    className: import_prop_types63.default.string,
     /**
      * The color of the component.
      * It supports both default and custom theme colors, which can be added as shown in the
      * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
      */
-    color: import_prop_types62.default.oneOfType([import_prop_types62.default.oneOf(["error", "info", "primary", "secondary", "success", "warning"]), import_prop_types62.default.string]),
+    color: import_prop_types63.default.oneOfType([import_prop_types63.default.oneOf(["error", "info", "primary", "secondary", "success", "warning"]), import_prop_types63.default.string]),
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types62.default.elementType,
+    component: import_prop_types63.default.elementType,
     /**
      * If `true`, the label should be displayed in a disabled state.
      */
-    disabled: import_prop_types62.default.bool,
+    disabled: import_prop_types63.default.bool,
     /**
      * If `true`, the label is displayed in an error state.
      */
-    error: import_prop_types62.default.bool,
+    error: import_prop_types63.default.bool,
     /**
      * If `true`, the label should use filled classes key.
      */
-    filled: import_prop_types62.default.bool,
+    filled: import_prop_types63.default.bool,
     /**
      * If `true`, the input of this label is focused (used by `FormGroup` components).
      */
-    focused: import_prop_types62.default.bool,
+    focused: import_prop_types63.default.bool,
     /**
      * If `true`, the label will indicate that the `input` is required.
      */
-    required: import_prop_types62.default.bool,
+    required: import_prop_types63.default.bool,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types62.default.oneOfType([import_prop_types62.default.arrayOf(import_prop_types62.default.oneOfType([import_prop_types62.default.func, import_prop_types62.default.object, import_prop_types62.default.bool])), import_prop_types62.default.func, import_prop_types62.default.object])
+    sx: import_prop_types63.default.oneOfType([import_prop_types63.default.arrayOf(import_prop_types63.default.oneOfType([import_prop_types63.default.func, import_prop_types63.default.object, import_prop_types63.default.bool])), import_prop_types63.default.func, import_prop_types63.default.object])
   } : void 0;
   var FormLabel_default = FormLabel;
 
   // node_modules/@mui/material/Grid/Grid.js
-  var React96 = __toESM(require_react());
-  var import_prop_types63 = __toESM(require_prop_types());
+  var React97 = __toESM(require_react());
+  var import_prop_types64 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/Grid/GridContext.js
-  var React95 = __toESM(require_react());
-  var GridContext = /* @__PURE__ */ React95.createContext();
+  var React96 = __toESM(require_react());
+  var GridContext = /* @__PURE__ */ React96.createContext();
   if (true) {
     GridContext.displayName = "GridContext";
   }
@@ -65271,8 +65588,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   var gridClasses_default = gridClasses;
 
   // node_modules/@mui/material/Grid/Grid.js
-  var import_jsx_runtime81 = __toESM(require_jsx_runtime());
-  var _excluded56 = ["className", "columns", "columnSpacing", "component", "container", "direction", "item", "rowSpacing", "spacing", "wrap", "zeroMinWidth"];
+  var import_jsx_runtime83 = __toESM(require_jsx_runtime());
+  var _excluded57 = ["className", "columns", "columnSpacing", "component", "container", "direction", "item", "rowSpacing", "spacing", "wrap", "zeroMinWidth"];
   function getOffset(val) {
     const parse2 = parseFloat(val);
     return `${parse2}${String(val).replace(String(parse2), "") || "px"}`;
@@ -65561,7 +65878,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     return classes;
   }
   __name(resolveSpacingClasses, "resolveSpacingClasses");
-  var useUtilityClasses37 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses38 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       container,
@@ -65588,7 +65905,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     };
     return composeClasses(slots, getGridUtilityClass, classes);
   }, "useUtilityClasses");
-  var Grid = /* @__PURE__ */ React96.forwardRef(/* @__PURE__ */ __name(function Grid2(inProps, ref) {
+  var Grid = /* @__PURE__ */ React97.forwardRef(/* @__PURE__ */ __name(function Grid2(inProps, ref) {
     const themeProps = useThemeProps2({
       props: inProps,
       name: "MuiGrid"
@@ -65609,10 +65926,10 @@ Please use another name.` : formatMuiErrorMessage(18));
       spacing: spacing2 = 0,
       wrap = "wrap",
       zeroMinWidth = false
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded56);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded57);
     const rowSpacing = rowSpacingProp || spacing2;
     const columnSpacing = columnSpacingProp || spacing2;
-    const columnsContext = React96.useContext(GridContext_default);
+    const columnsContext = React97.useContext(GridContext_default);
     const columns = container ? columnsProp || 12 : columnsContext;
     const breakpointsValues = {};
     const otherFiltered = _extends({}, other);
@@ -65635,10 +65952,10 @@ Please use another name.` : formatMuiErrorMessage(18));
     }, breakpointsValues, {
       breakpoints: breakpoints.keys
     });
-    const classes = useUtilityClasses37(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime81.jsx)(GridContext_default.Provider, {
+    const classes = useUtilityClasses38(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime83.jsx)(GridContext_default.Provider, {
       value: columns,
-      children: /* @__PURE__ */ (0, import_jsx_runtime81.jsx)(GridRoot, _extends({
+      children: /* @__PURE__ */ (0, import_jsx_runtime83.jsx)(GridRoot, _extends({
         ownerState,
         className: clsx_m_default(classes.root, className),
         as: component,
@@ -65654,48 +65971,48 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types63.default.node,
+    children: import_prop_types64.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types63.default.object,
+    classes: import_prop_types64.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types63.default.string,
+    className: import_prop_types64.default.string,
     /**
      * The number of columns.
      * @default 12
      */
-    columns: import_prop_types63.default.oneOfType([import_prop_types63.default.arrayOf(import_prop_types63.default.number), import_prop_types63.default.number, import_prop_types63.default.object]),
+    columns: import_prop_types64.default.oneOfType([import_prop_types64.default.arrayOf(import_prop_types64.default.number), import_prop_types64.default.number, import_prop_types64.default.object]),
     /**
      * Defines the horizontal space between the type `item` components.
      * It overrides the value of the `spacing` prop.
      */
-    columnSpacing: import_prop_types63.default.oneOfType([import_prop_types63.default.arrayOf(import_prop_types63.default.oneOfType([import_prop_types63.default.number, import_prop_types63.default.string])), import_prop_types63.default.number, import_prop_types63.default.object, import_prop_types63.default.string]),
+    columnSpacing: import_prop_types64.default.oneOfType([import_prop_types64.default.arrayOf(import_prop_types64.default.oneOfType([import_prop_types64.default.number, import_prop_types64.default.string])), import_prop_types64.default.number, import_prop_types64.default.object, import_prop_types64.default.string]),
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types63.default.elementType,
+    component: import_prop_types64.default.elementType,
     /**
      * If `true`, the component will have the flex *container* behavior.
      * You should be wrapping *items* with a *container*.
      * @default false
      */
-    container: import_prop_types63.default.bool,
+    container: import_prop_types64.default.bool,
     /**
      * Defines the `flex-direction` style property.
      * It is applied for all screen sizes.
      * @default 'row'
      */
-    direction: import_prop_types63.default.oneOfType([import_prop_types63.default.oneOf(["column-reverse", "column", "row-reverse", "row"]), import_prop_types63.default.arrayOf(import_prop_types63.default.oneOf(["column-reverse", "column", "row-reverse", "row"])), import_prop_types63.default.object]),
+    direction: import_prop_types64.default.oneOfType([import_prop_types64.default.oneOf(["column-reverse", "column", "row-reverse", "row"]), import_prop_types64.default.arrayOf(import_prop_types64.default.oneOf(["column-reverse", "column", "row-reverse", "row"])), import_prop_types64.default.object]),
     /**
      * If `true`, the component will have the flex *item* behavior.
      * You should be wrapping *items* with a *container*.
      * @default false
      */
-    item: import_prop_types63.default.bool,
+    item: import_prop_types64.default.bool,
     /**
      * If a number, it sets the number of columns the grid item uses.
      * It can't be greater than the total number of columns of the container (12 by default).
@@ -65705,7 +66022,7 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The value is applied for the `lg` breakpoint and wider screens if not overridden.
      * @default false
      */
-    lg: import_prop_types63.default.oneOfType([import_prop_types63.default.oneOf(["auto"]), import_prop_types63.default.number, import_prop_types63.default.bool]),
+    lg: import_prop_types64.default.oneOfType([import_prop_types64.default.oneOf(["auto"]), import_prop_types64.default.number, import_prop_types64.default.bool]),
     /**
      * If a number, it sets the number of columns the grid item uses.
      * It can't be greater than the total number of columns of the container (12 by default).
@@ -65715,12 +66032,12 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The value is applied for the `md` breakpoint and wider screens if not overridden.
      * @default false
      */
-    md: import_prop_types63.default.oneOfType([import_prop_types63.default.oneOf(["auto"]), import_prop_types63.default.number, import_prop_types63.default.bool]),
+    md: import_prop_types64.default.oneOfType([import_prop_types64.default.oneOf(["auto"]), import_prop_types64.default.number, import_prop_types64.default.bool]),
     /**
      * Defines the vertical space between the type `item` components.
      * It overrides the value of the `spacing` prop.
      */
-    rowSpacing: import_prop_types63.default.oneOfType([import_prop_types63.default.arrayOf(import_prop_types63.default.oneOfType([import_prop_types63.default.number, import_prop_types63.default.string])), import_prop_types63.default.number, import_prop_types63.default.object, import_prop_types63.default.string]),
+    rowSpacing: import_prop_types64.default.oneOfType([import_prop_types64.default.arrayOf(import_prop_types64.default.oneOfType([import_prop_types64.default.number, import_prop_types64.default.string])), import_prop_types64.default.number, import_prop_types64.default.object, import_prop_types64.default.string]),
     /**
      * If a number, it sets the number of columns the grid item uses.
      * It can't be greater than the total number of columns of the container (12 by default).
@@ -65730,23 +66047,23 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The value is applied for the `sm` breakpoint and wider screens if not overridden.
      * @default false
      */
-    sm: import_prop_types63.default.oneOfType([import_prop_types63.default.oneOf(["auto"]), import_prop_types63.default.number, import_prop_types63.default.bool]),
+    sm: import_prop_types64.default.oneOfType([import_prop_types64.default.oneOf(["auto"]), import_prop_types64.default.number, import_prop_types64.default.bool]),
     /**
      * Defines the space between the type `item` components.
      * It can only be used on a type `container` component.
      * @default 0
      */
-    spacing: import_prop_types63.default.oneOfType([import_prop_types63.default.arrayOf(import_prop_types63.default.oneOfType([import_prop_types63.default.number, import_prop_types63.default.string])), import_prop_types63.default.number, import_prop_types63.default.object, import_prop_types63.default.string]),
+    spacing: import_prop_types64.default.oneOfType([import_prop_types64.default.arrayOf(import_prop_types64.default.oneOfType([import_prop_types64.default.number, import_prop_types64.default.string])), import_prop_types64.default.number, import_prop_types64.default.object, import_prop_types64.default.string]),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types63.default.oneOfType([import_prop_types63.default.arrayOf(import_prop_types63.default.oneOfType([import_prop_types63.default.func, import_prop_types63.default.object, import_prop_types63.default.bool])), import_prop_types63.default.func, import_prop_types63.default.object]),
+    sx: import_prop_types64.default.oneOfType([import_prop_types64.default.arrayOf(import_prop_types64.default.oneOfType([import_prop_types64.default.func, import_prop_types64.default.object, import_prop_types64.default.bool])), import_prop_types64.default.func, import_prop_types64.default.object]),
     /**
      * Defines the `flex-wrap` style property.
      * It's applied for all screen sizes.
      * @default 'wrap'
      */
-    wrap: import_prop_types63.default.oneOf(["nowrap", "wrap-reverse", "wrap"]),
+    wrap: import_prop_types64.default.oneOf(["nowrap", "wrap-reverse", "wrap"]),
     /**
      * If a number, it sets the number of columns the grid item uses.
      * It can't be greater than the total number of columns of the container (12 by default).
@@ -65756,7 +66073,7 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The value is applied for the `xl` breakpoint and wider screens if not overridden.
      * @default false
      */
-    xl: import_prop_types63.default.oneOfType([import_prop_types63.default.oneOf(["auto"]), import_prop_types63.default.number, import_prop_types63.default.bool]),
+    xl: import_prop_types64.default.oneOfType([import_prop_types64.default.oneOf(["auto"]), import_prop_types64.default.number, import_prop_types64.default.bool]),
     /**
      * If a number, it sets the number of columns the grid item uses.
      * It can't be greater than the total number of columns of the container (12 by default).
@@ -65766,13 +66083,13 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The value is applied for all the screen sizes with the lowest priority.
      * @default false
      */
-    xs: import_prop_types63.default.oneOfType([import_prop_types63.default.oneOf(["auto"]), import_prop_types63.default.number, import_prop_types63.default.bool]),
+    xs: import_prop_types64.default.oneOfType([import_prop_types64.default.oneOf(["auto"]), import_prop_types64.default.number, import_prop_types64.default.bool]),
     /**
      * If `true`, it sets `min-width: 0` on the item.
      * Refer to the limitations section of the documentation to better understand the use case.
      * @default false
      */
-    zeroMinWidth: import_prop_types63.default.bool
+    zeroMinWidth: import_prop_types64.default.bool
   } : void 0;
   if (true) {
     const requireProp = requirePropFactory_default("Grid", Grid);
@@ -65790,10 +66107,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   var Grid_default = Grid;
 
   // node_modules/@mui/material/Grow/Grow.js
-  var React97 = __toESM(require_react());
-  var import_prop_types64 = __toESM(require_prop_types());
-  var import_jsx_runtime82 = __toESM(require_jsx_runtime());
-  var _excluded57 = ["addEndListener", "appear", "children", "easing", "in", "onEnter", "onEntered", "onEntering", "onExit", "onExited", "onExiting", "style", "timeout", "TransitionComponent"];
+  var React98 = __toESM(require_react());
+  var import_prop_types65 = __toESM(require_prop_types());
+  var import_jsx_runtime84 = __toESM(require_jsx_runtime());
+  var _excluded58 = ["addEndListener", "appear", "children", "easing", "in", "onEnter", "onEntered", "onEntering", "onExit", "onExited", "onExiting", "style", "timeout", "TransitionComponent"];
   function getScale(value) {
     return `scale(${value}, ${value ** 2})`;
   }
@@ -65809,7 +66126,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     }
   };
   var isWebKit154 = typeof navigator !== "undefined" && /^((?!chrome|android).)*(safari|mobile)/i.test(navigator.userAgent) && /(os |version\/)15(.|_)4/i.test(navigator.userAgent);
-  var Grow = /* @__PURE__ */ React97.forwardRef(/* @__PURE__ */ __name(function Grow2(props, ref) {
+  var Grow = /* @__PURE__ */ React98.forwardRef(/* @__PURE__ */ __name(function Grow2(props, ref) {
     const {
       addEndListener,
       appear = true,
@@ -65826,11 +66143,11 @@ Please use another name.` : formatMuiErrorMessage(18));
       timeout: timeout3 = "auto",
       // eslint-disable-next-line react/prop-types
       TransitionComponent = Transition_default
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded57);
-    const timer = React97.useRef();
-    const autoTimeout = React97.useRef();
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded58);
+    const timer = React98.useRef();
+    const autoTimeout = React98.useRef();
     const theme = useTheme5();
-    const nodeRef = React97.useRef(null);
+    const nodeRef = React98.useRef(null);
     const handleRef = useForkRef_default(nodeRef, children.ref, ref);
     const normalizedTransitionCallback = /* @__PURE__ */ __name((callback) => (maybeIsAppearing) => {
       if (callback) {
@@ -65919,12 +66236,12 @@ Please use another name.` : formatMuiErrorMessage(18));
         addEndListener(nodeRef.current, next2);
       }
     }, "handleAddEndListener");
-    React97.useEffect(() => {
+    React98.useEffect(() => {
       return () => {
         clearTimeout(timer.current);
       };
     }, []);
-    return /* @__PURE__ */ (0, import_jsx_runtime82.jsx)(TransitionComponent, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime84.jsx)(TransitionComponent, _extends({
       appear,
       in: inProp,
       nodeRef,
@@ -65938,7 +66255,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       timeout: timeout3 === "auto" ? null : timeout3
     }, other, {
       children: (state, childProps) => {
-        return /* @__PURE__ */ React97.cloneElement(children, _extends({
+        return /* @__PURE__ */ React98.cloneElement(children, _extends({
           style: _extends({
             opacity: 0,
             transform: getScale(0.75),
@@ -65959,13 +66276,13 @@ Please use another name.` : formatMuiErrorMessage(18));
      * node and a done callback. Allows for more fine grained transition end
      * logic. Note: Timeouts are still used as a fallback if provided.
      */
-    addEndListener: import_prop_types64.default.func,
+    addEndListener: import_prop_types65.default.func,
     /**
      * Perform the enter transition when it first mounts if `in` is also `true`.
      * Set this to `false` to disable this behavior.
      * @default true
      */
-    appear: import_prop_types64.default.bool,
+    appear: import_prop_types65.default.bool,
     /**
      * A single child content element.
      */
@@ -65974,42 +66291,42 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The transition timing function.
      * You may specify a single easing or a object containing enter and exit values.
      */
-    easing: import_prop_types64.default.oneOfType([import_prop_types64.default.shape({
-      enter: import_prop_types64.default.string,
-      exit: import_prop_types64.default.string
-    }), import_prop_types64.default.string]),
+    easing: import_prop_types65.default.oneOfType([import_prop_types65.default.shape({
+      enter: import_prop_types65.default.string,
+      exit: import_prop_types65.default.string
+    }), import_prop_types65.default.string]),
     /**
      * If `true`, the component will transition in.
      */
-    in: import_prop_types64.default.bool,
+    in: import_prop_types65.default.bool,
     /**
      * @ignore
      */
-    onEnter: import_prop_types64.default.func,
+    onEnter: import_prop_types65.default.func,
     /**
      * @ignore
      */
-    onEntered: import_prop_types64.default.func,
+    onEntered: import_prop_types65.default.func,
     /**
      * @ignore
      */
-    onEntering: import_prop_types64.default.func,
+    onEntering: import_prop_types65.default.func,
     /**
      * @ignore
      */
-    onExit: import_prop_types64.default.func,
+    onExit: import_prop_types65.default.func,
     /**
      * @ignore
      */
-    onExited: import_prop_types64.default.func,
+    onExited: import_prop_types65.default.func,
     /**
      * @ignore
      */
-    onExiting: import_prop_types64.default.func,
+    onExiting: import_prop_types65.default.func,
     /**
      * @ignore
      */
-    style: import_prop_types64.default.object,
+    style: import_prop_types65.default.object,
     /**
      * The duration for the transition, in milliseconds.
      * You may specify a single timeout for all transitions, or individually with an object.
@@ -66017,19 +66334,19 @@ Please use another name.` : formatMuiErrorMessage(18));
      * Set to 'auto' to automatically calculate transition time based on height.
      * @default 'auto'
      */
-    timeout: import_prop_types64.default.oneOfType([import_prop_types64.default.oneOf(["auto"]), import_prop_types64.default.number, import_prop_types64.default.shape({
-      appear: import_prop_types64.default.number,
-      enter: import_prop_types64.default.number,
-      exit: import_prop_types64.default.number
+    timeout: import_prop_types65.default.oneOfType([import_prop_types65.default.oneOf(["auto"]), import_prop_types65.default.number, import_prop_types65.default.shape({
+      appear: import_prop_types65.default.number,
+      enter: import_prop_types65.default.number,
+      exit: import_prop_types65.default.number
     })])
   } : void 0;
   Grow.muiSupportAuto = true;
   var Grow_default = Grow;
 
   // node_modules/@mui/material/useMediaQuery/useMediaQuery.js
-  var React98 = __toESM(require_react());
+  var React99 = __toESM(require_react());
   function useMediaQueryOld(query, defaultMatches, matchMedia, ssrMatchMedia, noSsr) {
-    const [match2, setMatch] = React98.useState(() => {
+    const [match2, setMatch] = React99.useState(() => {
       if (noSsr && matchMedia) {
         return matchMedia(query).matches;
       }
@@ -66059,10 +66376,10 @@ Please use another name.` : formatMuiErrorMessage(18));
     return match2;
   }
   __name(useMediaQueryOld, "useMediaQueryOld");
-  var maybeReactUseSyncExternalStore = React98["useSyncExternalStore"];
+  var maybeReactUseSyncExternalStore = React99["useSyncExternalStore"];
   function useMediaQueryNew(query, defaultMatches, matchMedia, ssrMatchMedia, noSsr) {
-    const getDefaultSnapshot = React98.useCallback(() => defaultMatches, [defaultMatches]);
-    const getServerSnapshot = React98.useMemo(() => {
+    const getDefaultSnapshot = React99.useCallback(() => defaultMatches, [defaultMatches]);
+    const getServerSnapshot = React99.useMemo(() => {
       if (noSsr && matchMedia) {
         return () => matchMedia(query).matches;
       }
@@ -66074,7 +66391,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
       return getDefaultSnapshot;
     }, [getDefaultSnapshot, query, ssrMatchMedia, noSsr, matchMedia]);
-    const [getSnapshot, subscribe] = React98.useMemo(() => {
+    const [getSnapshot, subscribe] = React99.useMemo(() => {
       if (matchMedia === null) {
         return [getDefaultSnapshot, () => () => {
         }];
@@ -66114,7 +66431,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const useMediaQueryImplementation = maybeReactUseSyncExternalStore !== void 0 ? useMediaQueryNew : useMediaQueryOld;
     const match2 = useMediaQueryImplementation(query, defaultMatches, matchMedia, ssrMatchMedia, noSsr);
     if (true) {
-      React98.useDebugValue({
+      React99.useDebugValue({
         query,
         match: match2
       });
@@ -66124,11 +66441,11 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(useMediaQuery, "useMediaQuery");
 
   // node_modules/@mui/material/Input/Input.js
-  var React99 = __toESM(require_react());
-  var import_prop_types65 = __toESM(require_prop_types());
-  var import_jsx_runtime83 = __toESM(require_jsx_runtime());
-  var _excluded58 = ["disableUnderline", "components", "componentsProps", "fullWidth", "inputComponent", "multiline", "slotProps", "slots", "type"];
-  var useUtilityClasses38 = /* @__PURE__ */ __name((ownerState) => {
+  var React100 = __toESM(require_react());
+  var import_prop_types66 = __toESM(require_prop_types());
+  var import_jsx_runtime85 = __toESM(require_jsx_runtime());
+  var _excluded59 = ["disableUnderline", "components", "componentsProps", "fullWidth", "inputComponent", "multiline", "slotProps", "slots", "type"];
+  var useUtilityClasses39 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       disableUnderline
@@ -66223,7 +66540,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     slot: "Input",
     overridesResolver: inputOverridesResolver
   })({});
-  var Input = /* @__PURE__ */ React99.forwardRef(/* @__PURE__ */ __name(function Input2(inProps, ref) {
+  var Input = /* @__PURE__ */ React100.forwardRef(/* @__PURE__ */ __name(function Input2(inProps, ref) {
     var _ref, _slots$root, _ref2, _slots$input;
     const props = useThemeProps2({
       props: inProps,
@@ -66239,8 +66556,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       slotProps,
       slots = {},
       type = "text"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded58);
-    const classes = useUtilityClasses38(props);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded59);
+    const classes = useUtilityClasses39(props);
     const ownerState = {
       disableUnderline
     };
@@ -66252,7 +66569,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const componentsProps = (slotProps != null ? slotProps : componentsPropsProp) ? deepmerge(slotProps != null ? slotProps : componentsPropsProp, inputComponentsProps) : inputComponentsProps;
     const RootSlot = (_ref = (_slots$root = slots.root) != null ? _slots$root : components.Root) != null ? _ref : InputRoot;
     const InputSlot = (_ref2 = (_slots$input = slots.input) != null ? _slots$input : components.Input) != null ? _ref2 : InputInput;
-    return /* @__PURE__ */ (0, import_jsx_runtime83.jsx)(InputBase_default, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime85.jsx)(InputBase_default, _extends({
       slots: {
         root: RootSlot,
         input: InputSlot
@@ -66277,22 +66594,22 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The name can be confusing, as it's more like an autofill.
      * You can learn more about it [following the specification](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill).
      */
-    autoComplete: import_prop_types65.default.string,
+    autoComplete: import_prop_types66.default.string,
     /**
      * If `true`, the `input` element is focused during the first mount.
      */
-    autoFocus: import_prop_types65.default.bool,
+    autoFocus: import_prop_types66.default.bool,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types65.default.object,
+    classes: import_prop_types66.default.object,
     /**
      * The color of the component.
      * It supports both default and custom theme colors, which can be added as shown in the
      * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
      * The prop defaults to the value (`'primary'`) inherited from the parent FormControl component.
      */
-    color: import_prop_types65.default.oneOfType([import_prop_types65.default.oneOf(["primary", "secondary"]), import_prop_types65.default.string]),
+    color: import_prop_types66.default.oneOfType([import_prop_types66.default.oneOf(["primary", "secondary"]), import_prop_types66.default.string]),
     /**
      * The components used for each slot inside.
      *
@@ -66301,9 +66618,9 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    components: import_prop_types65.default.shape({
-      Input: import_prop_types65.default.elementType,
-      Root: import_prop_types65.default.elementType
+    components: import_prop_types66.default.shape({
+      Input: import_prop_types66.default.elementType,
+      Root: import_prop_types66.default.elementType
     }),
     /**
      * The extra props for the slot components.
@@ -66314,52 +66631,52 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    componentsProps: import_prop_types65.default.shape({
-      input: import_prop_types65.default.object,
-      root: import_prop_types65.default.object
+    componentsProps: import_prop_types66.default.shape({
+      input: import_prop_types66.default.object,
+      root: import_prop_types66.default.object
     }),
     /**
      * The default value. Use when the component is not controlled.
      */
-    defaultValue: import_prop_types65.default.any,
+    defaultValue: import_prop_types66.default.any,
     /**
      * If `true`, the component is disabled.
      * The prop defaults to the value (`false`) inherited from the parent FormControl component.
      */
-    disabled: import_prop_types65.default.bool,
+    disabled: import_prop_types66.default.bool,
     /**
      * If `true`, the `input` will not have an underline.
      */
-    disableUnderline: import_prop_types65.default.bool,
+    disableUnderline: import_prop_types66.default.bool,
     /**
      * End `InputAdornment` for this component.
      */
-    endAdornment: import_prop_types65.default.node,
+    endAdornment: import_prop_types66.default.node,
     /**
      * If `true`, the `input` will indicate an error.
      * The prop defaults to the value (`false`) inherited from the parent FormControl component.
      */
-    error: import_prop_types65.default.bool,
+    error: import_prop_types66.default.bool,
     /**
      * If `true`, the `input` will take up the full width of its container.
      * @default false
      */
-    fullWidth: import_prop_types65.default.bool,
+    fullWidth: import_prop_types66.default.bool,
     /**
      * The id of the `input` element.
      */
-    id: import_prop_types65.default.string,
+    id: import_prop_types66.default.string,
     /**
      * The component used for the `input` element.
      * Either a string to use a HTML element or a component.
      * @default 'input'
      */
-    inputComponent: import_prop_types65.default.elementType,
+    inputComponent: import_prop_types66.default.elementType,
     /**
      * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes) applied to the `input` element.
      * @default {}
      */
-    inputProps: import_prop_types65.default.object,
+    inputProps: import_prop_types66.default.object,
     /**
      * Pass a ref to the `input` element.
      */
@@ -66369,49 +66686,49 @@ Please use another name.` : formatMuiErrorMessage(18));
      * FormControl.
      * The prop defaults to the value (`'none'`) inherited from the parent FormControl component.
      */
-    margin: import_prop_types65.default.oneOf(["dense", "none"]),
+    margin: import_prop_types66.default.oneOf(["dense", "none"]),
     /**
      * Maximum number of rows to display when multiline option is set to true.
      */
-    maxRows: import_prop_types65.default.oneOfType([import_prop_types65.default.number, import_prop_types65.default.string]),
+    maxRows: import_prop_types66.default.oneOfType([import_prop_types66.default.number, import_prop_types66.default.string]),
     /**
      * Minimum number of rows to display when multiline option is set to true.
      */
-    minRows: import_prop_types65.default.oneOfType([import_prop_types65.default.number, import_prop_types65.default.string]),
+    minRows: import_prop_types66.default.oneOfType([import_prop_types66.default.number, import_prop_types66.default.string]),
     /**
      * If `true`, a [TextareaAutosize](/material-ui/react-textarea-autosize/) element is rendered.
      * @default false
      */
-    multiline: import_prop_types65.default.bool,
+    multiline: import_prop_types66.default.bool,
     /**
      * Name attribute of the `input` element.
      */
-    name: import_prop_types65.default.string,
+    name: import_prop_types66.default.string,
     /**
      * Callback fired when the value is changed.
      *
      * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} event The event source of the callback.
      * You can pull out the new value by accessing `event.target.value` (string).
      */
-    onChange: import_prop_types65.default.func,
+    onChange: import_prop_types66.default.func,
     /**
      * The short hint displayed in the `input` before the user enters a value.
      */
-    placeholder: import_prop_types65.default.string,
+    placeholder: import_prop_types66.default.string,
     /**
      * It prevents the user from changing the value of the field
      * (not from interacting with the field).
      */
-    readOnly: import_prop_types65.default.bool,
+    readOnly: import_prop_types66.default.bool,
     /**
      * If `true`, the `input` element is required.
      * The prop defaults to the value (`false`) inherited from the parent FormControl component.
      */
-    required: import_prop_types65.default.bool,
+    required: import_prop_types66.default.bool,
     /**
      * Number of rows to display when multiline option is set to true.
      */
-    rows: import_prop_types65.default.oneOfType([import_prop_types65.default.number, import_prop_types65.default.string]),
+    rows: import_prop_types66.default.oneOfType([import_prop_types66.default.number, import_prop_types66.default.string]),
     /**
      * The extra props for the slot components.
      * You can override the existing props or add new ones.
@@ -66420,9 +66737,9 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    slotProps: import_prop_types65.default.shape({
-      input: import_prop_types65.default.object,
-      root: import_prop_types65.default.object
+    slotProps: import_prop_types66.default.shape({
+      input: import_prop_types66.default.object,
+      root: import_prop_types66.default.object
     }),
     /**
      * The components used for each slot inside.
@@ -66431,34 +66748,34 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    slots: import_prop_types65.default.shape({
-      input: import_prop_types65.default.elementType,
-      root: import_prop_types65.default.elementType
+    slots: import_prop_types66.default.shape({
+      input: import_prop_types66.default.elementType,
+      root: import_prop_types66.default.elementType
     }),
     /**
      * Start `InputAdornment` for this component.
      */
-    startAdornment: import_prop_types65.default.node,
+    startAdornment: import_prop_types66.default.node,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types65.default.oneOfType([import_prop_types65.default.arrayOf(import_prop_types65.default.oneOfType([import_prop_types65.default.func, import_prop_types65.default.object, import_prop_types65.default.bool])), import_prop_types65.default.func, import_prop_types65.default.object]),
+    sx: import_prop_types66.default.oneOfType([import_prop_types66.default.arrayOf(import_prop_types66.default.oneOfType([import_prop_types66.default.func, import_prop_types66.default.object, import_prop_types66.default.bool])), import_prop_types66.default.func, import_prop_types66.default.object]),
     /**
      * Type of the `input` element. It should be [a valid HTML5 input type](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types).
      * @default 'text'
      */
-    type: import_prop_types65.default.string,
+    type: import_prop_types66.default.string,
     /**
      * The value of the `input` element, required for a controlled component.
      */
-    value: import_prop_types65.default.any
+    value: import_prop_types66.default.any
   } : void 0;
   Input.muiName = "Input";
   var Input_default = Input;
 
   // node_modules/@mui/material/InputLabel/InputLabel.js
-  var React100 = __toESM(require_react());
-  var import_prop_types66 = __toESM(require_prop_types());
+  var React101 = __toESM(require_react());
+  var import_prop_types67 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/InputLabel/inputLabelClasses.js
   function getInputLabelUtilityClasses(slot) {
@@ -66468,9 +66785,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var inputLabelClasses = generateUtilityClasses("MuiInputLabel", ["root", "focused", "disabled", "error", "required", "asterisk", "formControl", "sizeSmall", "shrink", "animated", "standard", "filled", "outlined"]);
 
   // node_modules/@mui/material/InputLabel/InputLabel.js
-  var import_jsx_runtime84 = __toESM(require_jsx_runtime());
-  var _excluded59 = ["disableAnimation", "margin", "shrink", "variant", "className"];
-  var useUtilityClasses39 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime86 = __toESM(require_jsx_runtime());
+  var _excluded60 = ["disableAnimation", "margin", "shrink", "variant", "className"];
+  var useUtilityClasses40 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       formControl,
@@ -66561,7 +66878,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     maxWidth: "calc(133% - 32px)",
     transform: "translate(14px, -9px) scale(0.75)"
   })));
-  var InputLabel = /* @__PURE__ */ React100.forwardRef(/* @__PURE__ */ __name(function InputLabel2(inProps, ref) {
+  var InputLabel = /* @__PURE__ */ React101.forwardRef(/* @__PURE__ */ __name(function InputLabel2(inProps, ref) {
     const props = useThemeProps2({
       name: "MuiInputLabel",
       props: inProps
@@ -66570,7 +66887,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       disableAnimation = false,
       shrink: shrinkProp,
       className
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded59);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded60);
     const muiFormControl = useFormControl();
     let shrink = shrinkProp;
     if (typeof shrink === "undefined" && muiFormControl) {
@@ -66589,8 +66906,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       variant: fcs.variant,
       required: fcs.required
     });
-    const classes = useUtilityClasses39(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime84.jsx)(InputLabelRoot, _extends({
+    const classes = useUtilityClasses40(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime86.jsx)(InputLabelRoot, _extends({
       "data-shrink": shrink,
       ownerState,
       ref,
@@ -66607,70 +66924,70 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types66.default.node,
+    children: import_prop_types67.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types66.default.object,
+    classes: import_prop_types67.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types66.default.string,
+    className: import_prop_types67.default.string,
     /**
      * The color of the component.
      * It supports both default and custom theme colors, which can be added as shown in the
      * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
      */
-    color: import_prop_types66.default.oneOfType([import_prop_types66.default.oneOf(["error", "info", "primary", "secondary", "success", "warning"]), import_prop_types66.default.string]),
+    color: import_prop_types67.default.oneOfType([import_prop_types67.default.oneOf(["error", "info", "primary", "secondary", "success", "warning"]), import_prop_types67.default.string]),
     /**
      * If `true`, the transition animation is disabled.
      * @default false
      */
-    disableAnimation: import_prop_types66.default.bool,
+    disableAnimation: import_prop_types67.default.bool,
     /**
      * If `true`, the component is disabled.
      */
-    disabled: import_prop_types66.default.bool,
+    disabled: import_prop_types67.default.bool,
     /**
      * If `true`, the label is displayed in an error state.
      */
-    error: import_prop_types66.default.bool,
+    error: import_prop_types67.default.bool,
     /**
      * If `true`, the `input` of this label is focused.
      */
-    focused: import_prop_types66.default.bool,
+    focused: import_prop_types67.default.bool,
     /**
      * If `dense`, will adjust vertical spacing. This is normally obtained via context from
      * FormControl.
      */
-    margin: import_prop_types66.default.oneOf(["dense"]),
+    margin: import_prop_types67.default.oneOf(["dense"]),
     /**
      * if `true`, the label will indicate that the `input` is required.
      */
-    required: import_prop_types66.default.bool,
+    required: import_prop_types67.default.bool,
     /**
      * If `true`, the label is shrunk.
      */
-    shrink: import_prop_types66.default.bool,
+    shrink: import_prop_types67.default.bool,
     /**
      * The size of the component.
      * @default 'normal'
      */
-    size: import_prop_types66.default.oneOfType([import_prop_types66.default.oneOf(["normal", "small"]), import_prop_types66.default.string]),
+    size: import_prop_types67.default.oneOfType([import_prop_types67.default.oneOf(["normal", "small"]), import_prop_types67.default.string]),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types66.default.oneOfType([import_prop_types66.default.arrayOf(import_prop_types66.default.oneOfType([import_prop_types66.default.func, import_prop_types66.default.object, import_prop_types66.default.bool])), import_prop_types66.default.func, import_prop_types66.default.object]),
+    sx: import_prop_types67.default.oneOfType([import_prop_types67.default.arrayOf(import_prop_types67.default.oneOfType([import_prop_types67.default.func, import_prop_types67.default.object, import_prop_types67.default.bool])), import_prop_types67.default.func, import_prop_types67.default.object]),
     /**
      * The variant to use.
      */
-    variant: import_prop_types66.default.oneOf(["filled", "outlined", "standard"])
+    variant: import_prop_types67.default.oneOf(["filled", "outlined", "standard"])
   } : void 0;
   var InputLabel_default = InputLabel;
 
   // node_modules/@mui/material/LinearProgress/LinearProgress.js
-  var React101 = __toESM(require_react());
-  var import_prop_types67 = __toESM(require_prop_types());
+  var React102 = __toESM(require_react());
+  var import_prop_types68 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/LinearProgress/linearProgressClasses.js
   function getLinearProgressUtilityClass(slot) {
@@ -66680,9 +66997,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var linearProgressClasses = generateUtilityClasses("MuiLinearProgress", ["root", "colorPrimary", "colorSecondary", "determinate", "indeterminate", "buffer", "query", "dashed", "dashedColorPrimary", "dashedColorSecondary", "bar", "barColorPrimary", "barColorSecondary", "bar1Indeterminate", "bar1Determinate", "bar1Buffer", "bar2Indeterminate", "bar2Buffer"]);
 
   // node_modules/@mui/material/LinearProgress/LinearProgress.js
-  var import_jsx_runtime85 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime86 = __toESM(require_jsx_runtime());
-  var _excluded60 = ["className", "color", "value", "valueBuffer", "variant"];
+  var import_jsx_runtime87 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime88 = __toESM(require_jsx_runtime());
+  var _excluded61 = ["className", "color", "value", "valueBuffer", "variant"];
   var _25 = /* @__PURE__ */ __name((t3) => t3, "_");
   var _t6;
   var _t23;
@@ -66739,7 +67056,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     background-position: -200px -23px;
   }
 `));
-  var useUtilityClasses40 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses41 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       variant,
@@ -66896,7 +67213,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       width: auto;
       animation: ${0} 2.1s cubic-bezier(0.165, 0.84, 0.44, 1) 1.15s infinite;
     `), indeterminate2Keyframe));
-  var LinearProgress = /* @__PURE__ */ React101.forwardRef(/* @__PURE__ */ __name(function LinearProgress2(inProps, ref) {
+  var LinearProgress = /* @__PURE__ */ React102.forwardRef(/* @__PURE__ */ __name(function LinearProgress2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiLinearProgress"
@@ -66907,12 +67224,12 @@ Please use another name.` : formatMuiErrorMessage(18));
       value,
       valueBuffer,
       variant = "indeterminate"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded60);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded61);
     const ownerState = _extends({}, props, {
       color: color2,
       variant
     });
-    const classes = useUtilityClasses40(ownerState);
+    const classes = useUtilityClasses41(ownerState);
     const theme = useTheme5();
     const rootProps = {};
     const inlineStyles = {
@@ -66944,21 +67261,21 @@ Please use another name.` : formatMuiErrorMessage(18));
         console.error("MUI: You need to provide a valueBuffer prop when using the buffer variant of LinearProgress.");
       }
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime86.jsxs)(LinearProgressRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime88.jsxs)(LinearProgressRoot, _extends({
       className: clsx_m_default(classes.root, className),
       ownerState,
       role: "progressbar"
     }, rootProps, {
       ref
     }, other, {
-      children: [variant === "buffer" ? /* @__PURE__ */ (0, import_jsx_runtime85.jsx)(LinearProgressDashed, {
+      children: [variant === "buffer" ? /* @__PURE__ */ (0, import_jsx_runtime87.jsx)(LinearProgressDashed, {
         className: classes.dashed,
         ownerState
-      }) : null, /* @__PURE__ */ (0, import_jsx_runtime85.jsx)(LinearProgressBar1, {
+      }) : null, /* @__PURE__ */ (0, import_jsx_runtime87.jsx)(LinearProgressBar1, {
         className: classes.bar1,
         ownerState,
         style: inlineStyles.bar1
-      }), variant === "determinate" ? null : /* @__PURE__ */ (0, import_jsx_runtime85.jsx)(LinearProgressBar2, {
+      }), variant === "determinate" ? null : /* @__PURE__ */ (0, import_jsx_runtime87.jsx)(LinearProgressBar2, {
         className: classes.bar2,
         ownerState,
         style: inlineStyles.bar2
@@ -66973,44 +67290,44 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types67.default.object,
+    classes: import_prop_types68.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types67.default.string,
+    className: import_prop_types68.default.string,
     /**
      * The color of the component.
      * It supports both default and custom theme colors, which can be added as shown in the
      * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
      * @default 'primary'
      */
-    color: import_prop_types67.default.oneOfType([import_prop_types67.default.oneOf(["inherit", "primary", "secondary"]), import_prop_types67.default.string]),
+    color: import_prop_types68.default.oneOfType([import_prop_types68.default.oneOf(["inherit", "primary", "secondary"]), import_prop_types68.default.string]),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types67.default.oneOfType([import_prop_types67.default.arrayOf(import_prop_types67.default.oneOfType([import_prop_types67.default.func, import_prop_types67.default.object, import_prop_types67.default.bool])), import_prop_types67.default.func, import_prop_types67.default.object]),
+    sx: import_prop_types68.default.oneOfType([import_prop_types68.default.arrayOf(import_prop_types68.default.oneOfType([import_prop_types68.default.func, import_prop_types68.default.object, import_prop_types68.default.bool])), import_prop_types68.default.func, import_prop_types68.default.object]),
     /**
      * The value of the progress indicator for the determinate and buffer variants.
      * Value between 0 and 100.
      */
-    value: import_prop_types67.default.number,
+    value: import_prop_types68.default.number,
     /**
      * The value for the buffer variant.
      * Value between 0 and 100.
      */
-    valueBuffer: import_prop_types67.default.number,
+    valueBuffer: import_prop_types68.default.number,
     /**
      * The variant to use.
      * Use indeterminate or query when there is no progress value.
      * @default 'indeterminate'
      */
-    variant: import_prop_types67.default.oneOf(["buffer", "determinate", "indeterminate", "query"])
+    variant: import_prop_types68.default.oneOf(["buffer", "determinate", "indeterminate", "query"])
   } : void 0;
   var LinearProgress_default = LinearProgress;
 
   // node_modules/@mui/material/Link/Link.js
-  var React102 = __toESM(require_react());
-  var import_prop_types68 = __toESM(require_prop_types());
+  var React103 = __toESM(require_react());
+  var import_prop_types69 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/Link/linkClasses.js
   function getLinkUtilityClass(slot) {
@@ -67046,9 +67363,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var getTextDecoration_default = getTextDecoration;
 
   // node_modules/@mui/material/Link/Link.js
-  var import_jsx_runtime87 = __toESM(require_jsx_runtime());
-  var _excluded61 = ["className", "color", "component", "onBlur", "onFocus", "TypographyClasses", "underline", "variant", "sx"];
-  var useUtilityClasses41 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime89 = __toESM(require_jsx_runtime());
+  var _excluded62 = ["className", "color", "component", "onBlur", "onFocus", "TypographyClasses", "underline", "variant", "sx"];
+  var useUtilityClasses42 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       component,
@@ -67120,7 +67437,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     });
   });
-  var Link = /* @__PURE__ */ React102.forwardRef(/* @__PURE__ */ __name(function Link2(inProps, ref) {
+  var Link = /* @__PURE__ */ React103.forwardRef(/* @__PURE__ */ __name(function Link2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiLink"
@@ -67135,14 +67452,14 @@ Please use another name.` : formatMuiErrorMessage(18));
       underline = "always",
       variant = "inherit",
       sx
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded61);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded62);
     const {
       isFocusVisibleRef,
       onBlur: handleBlurVisible,
       onFocus: handleFocusVisible,
       ref: focusVisibleRef
     } = useIsFocusVisible_default();
-    const [focusVisible, setFocusVisible] = React102.useState(false);
+    const [focusVisible, setFocusVisible] = React103.useState(false);
     const handlerRef = useForkRef_default(ref, focusVisibleRef);
     const handleBlur = /* @__PURE__ */ __name((event) => {
       handleBlurVisible(event);
@@ -67169,8 +67486,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       underline,
       variant
     });
-    const classes = useUtilityClasses41(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime87.jsx)(LinkRoot, _extends({
+    const classes = useUtilityClasses42(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime89.jsx)(LinkRoot, _extends({
       color: color2,
       className: clsx_m_default(classes.root, className),
       classes: TypographyClasses,
@@ -67193,20 +67510,20 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types68.default.node,
+    children: import_prop_types69.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types68.default.object,
+    classes: import_prop_types69.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types68.default.string,
+    className: import_prop_types69.default.string,
     /**
      * The color of the link.
      * @default 'primary'
      */
-    color: import_prop_types68.default.any,
+    color: import_prop_types69.default.any,
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
@@ -67215,39 +67532,39 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * @ignore
      */
-    onBlur: import_prop_types68.default.func,
+    onBlur: import_prop_types69.default.func,
     /**
      * @ignore
      */
-    onFocus: import_prop_types68.default.func,
+    onFocus: import_prop_types69.default.func,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types68.default.oneOfType([import_prop_types68.default.arrayOf(import_prop_types68.default.oneOfType([import_prop_types68.default.func, import_prop_types68.default.object, import_prop_types68.default.bool])), import_prop_types68.default.func, import_prop_types68.default.object]),
+    sx: import_prop_types69.default.oneOfType([import_prop_types69.default.arrayOf(import_prop_types69.default.oneOfType([import_prop_types69.default.func, import_prop_types69.default.object, import_prop_types69.default.bool])), import_prop_types69.default.func, import_prop_types69.default.object]),
     /**
      * `classes` prop applied to the [`Typography`](/material-ui/api/typography/) element.
      */
-    TypographyClasses: import_prop_types68.default.object,
+    TypographyClasses: import_prop_types69.default.object,
     /**
      * Controls when the link should have an underline.
      * @default 'always'
      */
-    underline: import_prop_types68.default.oneOf(["always", "hover", "none"]),
+    underline: import_prop_types69.default.oneOf(["always", "hover", "none"]),
     /**
      * Applies the theme typography styles.
      * @default 'inherit'
      */
-    variant: import_prop_types68.default.oneOfType([import_prop_types68.default.oneOf(["body1", "body2", "button", "caption", "h1", "h2", "h3", "h4", "h5", "h6", "inherit", "overline", "subtitle1", "subtitle2"]), import_prop_types68.default.string])
+    variant: import_prop_types69.default.oneOfType([import_prop_types69.default.oneOf(["body1", "body2", "button", "caption", "h1", "h2", "h3", "h4", "h5", "h6", "inherit", "overline", "subtitle1", "subtitle2"]), import_prop_types69.default.string])
   } : void 0;
   var Link_default = Link;
 
   // node_modules/@mui/material/List/List.js
-  var React104 = __toESM(require_react());
-  var import_prop_types69 = __toESM(require_prop_types());
+  var React105 = __toESM(require_react());
+  var import_prop_types70 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/List/ListContext.js
-  var React103 = __toESM(require_react());
-  var ListContext = /* @__PURE__ */ React103.createContext({});
+  var React104 = __toESM(require_react());
+  var ListContext = /* @__PURE__ */ React104.createContext({});
   if (true) {
     ListContext.displayName = "ListContext";
   }
@@ -67261,10 +67578,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   var listClasses = generateUtilityClasses("MuiList", ["root", "padding", "dense", "subheader"]);
 
   // node_modules/@mui/material/List/List.js
-  var import_jsx_runtime88 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime89 = __toESM(require_jsx_runtime());
-  var _excluded62 = ["children", "className", "component", "dense", "disablePadding", "subheader"];
-  var useUtilityClasses42 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime90 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime91 = __toESM(require_jsx_runtime());
+  var _excluded63 = ["children", "className", "component", "dense", "disablePadding", "subheader"];
+  var useUtilityClasses43 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       disablePadding,
@@ -67298,7 +67615,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   }, ownerState.subheader && {
     paddingTop: 0
   }));
-  var List = /* @__PURE__ */ React104.forwardRef(/* @__PURE__ */ __name(function List2(inProps, ref) {
+  var List = /* @__PURE__ */ React105.forwardRef(/* @__PURE__ */ __name(function List2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiList"
@@ -67310,8 +67627,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       dense = false,
       disablePadding = false,
       subheader
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded62);
-    const context = React104.useMemo(() => ({
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded63);
+    const context = React105.useMemo(() => ({
       dense
     }), [dense]);
     const ownerState = _extends({}, props, {
@@ -67319,10 +67636,10 @@ Please use another name.` : formatMuiErrorMessage(18));
       dense,
       disablePadding
     });
-    const classes = useUtilityClasses42(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime89.jsx)(ListContext_default.Provider, {
+    const classes = useUtilityClasses43(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime91.jsx)(ListContext_default.Provider, {
       value: context,
-      children: /* @__PURE__ */ (0, import_jsx_runtime88.jsxs)(ListRoot, _extends({
+      children: /* @__PURE__ */ (0, import_jsx_runtime90.jsxs)(ListRoot, _extends({
         as: component,
         className: clsx_m_default(classes.root, className),
         ref,
@@ -67340,46 +67657,46 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types69.default.node,
+    children: import_prop_types70.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types69.default.object,
+    classes: import_prop_types70.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types69.default.string,
+    className: import_prop_types70.default.string,
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types69.default.elementType,
+    component: import_prop_types70.default.elementType,
     /**
      * If `true`, compact vertical padding designed for keyboard and mouse input is used for
      * the list and list items.
      * The prop is available to descendant components as the `dense` context.
      * @default false
      */
-    dense: import_prop_types69.default.bool,
+    dense: import_prop_types70.default.bool,
     /**
      * If `true`, vertical padding is removed from the list.
      * @default false
      */
-    disablePadding: import_prop_types69.default.bool,
+    disablePadding: import_prop_types70.default.bool,
     /**
      * The content of the subheader, normally `ListSubheader`.
      */
-    subheader: import_prop_types69.default.node,
+    subheader: import_prop_types70.default.node,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types69.default.oneOfType([import_prop_types69.default.arrayOf(import_prop_types69.default.oneOfType([import_prop_types69.default.func, import_prop_types69.default.object, import_prop_types69.default.bool])), import_prop_types69.default.func, import_prop_types69.default.object])
+    sx: import_prop_types70.default.oneOfType([import_prop_types70.default.arrayOf(import_prop_types70.default.oneOfType([import_prop_types70.default.func, import_prop_types70.default.object, import_prop_types70.default.bool])), import_prop_types70.default.func, import_prop_types70.default.object])
   } : void 0;
   var List_default = List;
 
   // node_modules/@mui/material/ListItem/ListItem.js
-  var React106 = __toESM(require_react());
-  var import_prop_types71 = __toESM(require_prop_types());
+  var React107 = __toESM(require_react());
+  var import_prop_types72 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/ListItem/listItemClasses.js
   function getListItemUtilityClass(slot) {
@@ -67394,8 +67711,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   var listItemButtonClasses_default = listItemButtonClasses;
 
   // node_modules/@mui/material/ListItemSecondaryAction/ListItemSecondaryAction.js
-  var React105 = __toESM(require_react());
-  var import_prop_types70 = __toESM(require_prop_types());
+  var React106 = __toESM(require_react());
+  var import_prop_types71 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/ListItemSecondaryAction/listItemSecondaryActionClasses.js
   function getListItemSecondaryActionClassesUtilityClass(slot) {
@@ -67405,9 +67722,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var listItemSecondaryActionClasses = generateUtilityClasses("MuiListItemSecondaryAction", ["root", "disableGutters"]);
 
   // node_modules/@mui/material/ListItemSecondaryAction/ListItemSecondaryAction.js
-  var import_jsx_runtime90 = __toESM(require_jsx_runtime());
-  var _excluded63 = ["className"];
-  var useUtilityClasses43 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime92 = __toESM(require_jsx_runtime());
+  var _excluded64 = ["className"];
+  var useUtilityClasses44 = /* @__PURE__ */ __name((ownerState) => {
     const {
       disableGutters,
       classes
@@ -67436,20 +67753,20 @@ Please use another name.` : formatMuiErrorMessage(18));
   }, ownerState.disableGutters && {
     right: 0
   }));
-  var ListItemSecondaryAction = /* @__PURE__ */ React105.forwardRef(/* @__PURE__ */ __name(function ListItemSecondaryAction2(inProps, ref) {
+  var ListItemSecondaryAction = /* @__PURE__ */ React106.forwardRef(/* @__PURE__ */ __name(function ListItemSecondaryAction2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiListItemSecondaryAction"
     });
     const {
       className
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded63);
-    const context = React105.useContext(ListContext_default);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded64);
+    const context = React106.useContext(ListContext_default);
     const ownerState = _extends({}, props, {
       disableGutters: context.disableGutters
     });
-    const classes = useUtilityClasses43(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime90.jsx)(ListItemSecondaryActionRoot, _extends({
+    const classes = useUtilityClasses44(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime92.jsx)(ListItemSecondaryActionRoot, _extends({
       className: clsx_m_default(classes.root, className),
       ownerState,
       ref
@@ -67463,27 +67780,27 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component, normally an `IconButton` or selection control.
      */
-    children: import_prop_types70.default.node,
+    children: import_prop_types71.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types70.default.object,
+    classes: import_prop_types71.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types70.default.string,
+    className: import_prop_types71.default.string,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types70.default.oneOfType([import_prop_types70.default.arrayOf(import_prop_types70.default.oneOfType([import_prop_types70.default.func, import_prop_types70.default.object, import_prop_types70.default.bool])), import_prop_types70.default.func, import_prop_types70.default.object])
+    sx: import_prop_types71.default.oneOfType([import_prop_types71.default.arrayOf(import_prop_types71.default.oneOfType([import_prop_types71.default.func, import_prop_types71.default.object, import_prop_types71.default.bool])), import_prop_types71.default.func, import_prop_types71.default.object])
   } : void 0;
   ListItemSecondaryAction.muiName = "ListItemSecondaryAction";
   var ListItemSecondaryAction_default = ListItemSecondaryAction;
 
   // node_modules/@mui/material/ListItem/ListItem.js
-  var import_jsx_runtime91 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime92 = __toESM(require_jsx_runtime());
-  var _excluded64 = ["className"];
+  var import_jsx_runtime93 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime94 = __toESM(require_jsx_runtime());
+  var _excluded65 = ["className"];
   var _excluded210 = ["alignItems", "autoFocus", "button", "children", "className", "component", "components", "componentsProps", "ContainerComponent", "ContainerProps", "dense", "disabled", "disableGutters", "disablePadding", "divider", "focusVisibleClassName", "secondaryAction", "selected", "slotProps", "slots"];
   var overridesResolver = /* @__PURE__ */ __name((props, styles6) => {
     const {
@@ -67491,7 +67808,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     } = props;
     return [styles6.root, ownerState.dense && styles6.dense, ownerState.alignItems === "flex-start" && styles6.alignItemsFlexStart, ownerState.divider && styles6.divider, !ownerState.disableGutters && styles6.gutters, !ownerState.disablePadding && styles6.padding, ownerState.button && styles6.button, ownerState.hasSecondaryAction && styles6.secondaryAction];
   }, "overridesResolver");
-  var useUtilityClasses44 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses45 = /* @__PURE__ */ __name((ownerState) => {
     const {
       alignItems,
       button,
@@ -67592,7 +67909,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   })({
     position: "relative"
   });
-  var ListItem = /* @__PURE__ */ React106.forwardRef(/* @__PURE__ */ __name(function ListItem2(inProps, ref) {
+  var ListItem = /* @__PURE__ */ React107.forwardRef(/* @__PURE__ */ __name(function ListItem2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiListItem"
@@ -67620,14 +67937,14 @@ Please use another name.` : formatMuiErrorMessage(18));
       selected = false,
       slotProps = {},
       slots = {}
-    } = props, ContainerProps = _objectWithoutPropertiesLoose(props.ContainerProps, _excluded64), other = _objectWithoutPropertiesLoose(props, _excluded210);
-    const context = React106.useContext(ListContext_default);
-    const childContext = React106.useMemo(() => ({
+    } = props, ContainerProps = _objectWithoutPropertiesLoose(props.ContainerProps, _excluded65), other = _objectWithoutPropertiesLoose(props, _excluded210);
+    const context = React107.useContext(ListContext_default);
+    const childContext = React107.useMemo(() => ({
       dense: dense || context.dense || false,
       alignItems,
       disableGutters
     }), [alignItems, context.dense, dense, disableGutters]);
-    const listItemRef = React106.useRef(null);
+    const listItemRef = React107.useRef(null);
     useEnhancedEffect_default2(() => {
       if (autoFocus) {
         if (listItemRef.current) {
@@ -67637,7 +67954,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         }
       }
     }, [autoFocus]);
-    const children = React106.Children.toArray(childrenProp);
+    const children = React107.Children.toArray(childrenProp);
     const hasSecondaryAction = children.length && isMuiElement_default(children[children.length - 1], ["ListItemSecondaryAction"]);
     const ownerState = _extends({}, props, {
       alignItems,
@@ -67651,7 +67968,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       hasSecondaryAction,
       selected
     });
-    const classes = useUtilityClasses44(ownerState);
+    const classes = useUtilityClasses45(ownerState);
     const handleRef = useForkRef_default(listItemRef, ref);
     const Root = slots.root || components.Root || ListItemRoot;
     const rootProps = slotProps.root || componentsProps.root || {};
@@ -67674,15 +67991,15 @@ Please use another name.` : formatMuiErrorMessage(18));
           componentProps.component = "div";
         }
       }
-      return /* @__PURE__ */ (0, import_jsx_runtime91.jsx)(ListContext_default.Provider, {
+      return /* @__PURE__ */ (0, import_jsx_runtime93.jsx)(ListContext_default.Provider, {
         value: childContext,
-        children: /* @__PURE__ */ (0, import_jsx_runtime92.jsxs)(ListItemContainer, _extends({
+        children: /* @__PURE__ */ (0, import_jsx_runtime94.jsxs)(ListItemContainer, _extends({
           as: ContainerComponent,
           className: clsx_m_default(classes.container, ContainerClassName),
           ref: handleRef,
           ownerState
         }, ContainerProps, {
-          children: [/* @__PURE__ */ (0, import_jsx_runtime91.jsx)(Root, _extends({}, rootProps, !isHostComponent(Root) && {
+          children: [/* @__PURE__ */ (0, import_jsx_runtime93.jsx)(Root, _extends({}, rootProps, !isHostComponent(Root) && {
             as: Component,
             ownerState: _extends({}, ownerState, rootProps.ownerState)
           }, componentProps, {
@@ -67691,15 +68008,15 @@ Please use another name.` : formatMuiErrorMessage(18));
         }))
       });
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime91.jsx)(ListContext_default.Provider, {
+    return /* @__PURE__ */ (0, import_jsx_runtime93.jsx)(ListContext_default.Provider, {
       value: childContext,
-      children: /* @__PURE__ */ (0, import_jsx_runtime92.jsxs)(Root, _extends({}, rootProps, {
+      children: /* @__PURE__ */ (0, import_jsx_runtime94.jsxs)(Root, _extends({}, rootProps, {
         as: Component,
         ref: handleRef
       }, !isHostComponent(Root) && {
         ownerState: _extends({}, ownerState, rootProps.ownerState)
       }, componentProps, {
-        children: [children, secondaryAction && /* @__PURE__ */ (0, import_jsx_runtime91.jsx)(ListItemSecondaryAction_default, {
+        children: [children, secondaryAction && /* @__PURE__ */ (0, import_jsx_runtime93.jsx)(ListItemSecondaryAction_default, {
           children: secondaryAction
         })]
       }))
@@ -67714,27 +68031,27 @@ Please use another name.` : formatMuiErrorMessage(18));
      * Defines the `align-items` style property.
      * @default 'center'
      */
-    alignItems: import_prop_types71.default.oneOf(["center", "flex-start"]),
+    alignItems: import_prop_types72.default.oneOf(["center", "flex-start"]),
     /**
      * If `true`, the list item is focused during the first mount.
      * Focus will also be triggered if the value changes from false to true.
      * @default false
      * @deprecated checkout [ListItemButton](/material-ui/api/list-item-button/) instead
      */
-    autoFocus: import_prop_types71.default.bool,
+    autoFocus: import_prop_types72.default.bool,
     /**
      * If `true`, the list item is a button (using `ButtonBase`). Props intended
      * for `ButtonBase` can then be applied to `ListItem`.
      * @default false
      * @deprecated checkout [ListItemButton](/material-ui/api/list-item-button/) instead
      */
-    button: import_prop_types71.default.bool,
+    button: import_prop_types72.default.bool,
     /**
      * The content of the component if a `ListItemSecondaryAction` is used it must
      * be the last child.
      */
-    children: chainPropTypes(import_prop_types71.default.node, (props) => {
-      const children = React106.Children.toArray(props.children);
+    children: chainPropTypes(import_prop_types72.default.node, (props) => {
+      const children = React107.Children.toArray(props.children);
       let secondaryActionIndex = -1;
       for (let i2 = children.length - 1; i2 >= 0; i2 -= 1) {
         const child = children[i2];
@@ -67751,16 +68068,16 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types71.default.object,
+    classes: import_prop_types72.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types71.default.string,
+    className: import_prop_types72.default.string,
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types71.default.elementType,
+    component: import_prop_types72.default.elementType,
     /**
      * The components used for each slot inside.
      *
@@ -67769,8 +68086,8 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    components: import_prop_types71.default.shape({
-      Root: import_prop_types71.default.elementType
+    components: import_prop_types72.default.shape({
+      Root: import_prop_types72.default.elementType
     }),
     /**
      * The extra props for the slot components.
@@ -67781,8 +68098,8 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    componentsProps: import_prop_types71.default.shape({
-      root: import_prop_types71.default.object
+    componentsProps: import_prop_types72.default.shape({
+      root: import_prop_types72.default.object
     }),
     /**
      * The container component used when a `ListItemSecondaryAction` is the last child.
@@ -67795,48 +68112,48 @@ Please use another name.` : formatMuiErrorMessage(18));
      * @default {}
      * @deprecated
      */
-    ContainerProps: import_prop_types71.default.object,
+    ContainerProps: import_prop_types72.default.object,
     /**
      * If `true`, compact vertical padding designed for keyboard and mouse input is used.
      * The prop defaults to the value inherited from the parent List component.
      * @default false
      */
-    dense: import_prop_types71.default.bool,
+    dense: import_prop_types72.default.bool,
     /**
      * If `true`, the component is disabled.
      * @default false
      * @deprecated checkout [ListItemButton](/material-ui/api/list-item-button/) instead
      */
-    disabled: import_prop_types71.default.bool,
+    disabled: import_prop_types72.default.bool,
     /**
      * If `true`, the left and right padding is removed.
      * @default false
      */
-    disableGutters: import_prop_types71.default.bool,
+    disableGutters: import_prop_types72.default.bool,
     /**
      * If `true`, all padding is removed.
      * @default false
      */
-    disablePadding: import_prop_types71.default.bool,
+    disablePadding: import_prop_types72.default.bool,
     /**
      * If `true`, a 1px light border is added to the bottom of the list item.
      * @default false
      */
-    divider: import_prop_types71.default.bool,
+    divider: import_prop_types72.default.bool,
     /**
      * @ignore
      */
-    focusVisibleClassName: import_prop_types71.default.string,
+    focusVisibleClassName: import_prop_types72.default.string,
     /**
      * The element to display at the end of ListItem.
      */
-    secondaryAction: import_prop_types71.default.node,
+    secondaryAction: import_prop_types72.default.node,
     /**
      * Use to apply selected styling.
      * @default false
      * @deprecated checkout [ListItemButton](/material-ui/api/list-item-button/) instead
      */
-    selected: import_prop_types71.default.bool,
+    selected: import_prop_types72.default.bool,
     /**
      * The extra props for the slot components.
      * You can override the existing props or add new ones.
@@ -67845,8 +68162,8 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    slotProps: import_prop_types71.default.shape({
-      root: import_prop_types71.default.object
+    slotProps: import_prop_types72.default.shape({
+      root: import_prop_types72.default.object
     }),
     /**
      * The components used for each slot inside.
@@ -67855,13 +68172,13 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    slots: import_prop_types71.default.shape({
-      root: import_prop_types71.default.elementType
+    slots: import_prop_types72.default.shape({
+      root: import_prop_types72.default.elementType
     }),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types71.default.oneOfType([import_prop_types71.default.arrayOf(import_prop_types71.default.oneOfType([import_prop_types71.default.func, import_prop_types71.default.object, import_prop_types71.default.bool])), import_prop_types71.default.func, import_prop_types71.default.object])
+    sx: import_prop_types72.default.oneOfType([import_prop_types72.default.arrayOf(import_prop_types72.default.oneOfType([import_prop_types72.default.func, import_prop_types72.default.object, import_prop_types72.default.bool])), import_prop_types72.default.func, import_prop_types72.default.object])
   } : void 0;
   var ListItem_default = ListItem;
 
@@ -67870,8 +68187,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   var listItemIconClasses_default = listItemIconClasses;
 
   // node_modules/@mui/material/ListItemText/ListItemText.js
-  var React107 = __toESM(require_react());
-  var import_prop_types72 = __toESM(require_prop_types());
+  var React108 = __toESM(require_react());
+  var import_prop_types73 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/ListItemText/listItemTextClasses.js
   function getListItemTextUtilityClass(slot) {
@@ -67882,10 +68199,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   var listItemTextClasses_default = listItemTextClasses;
 
   // node_modules/@mui/material/ListItemText/ListItemText.js
-  var import_jsx_runtime93 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime94 = __toESM(require_jsx_runtime());
-  var _excluded65 = ["children", "className", "disableTypography", "inset", "primary", "primaryTypographyProps", "secondary", "secondaryTypographyProps"];
-  var useUtilityClasses45 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime95 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime96 = __toESM(require_jsx_runtime());
+  var _excluded66 = ["children", "className", "disableTypography", "inset", "primary", "primaryTypographyProps", "secondary", "secondaryTypographyProps"];
+  var useUtilityClasses46 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       inset,
@@ -67926,7 +68243,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   }, ownerState.inset && {
     paddingLeft: 56
   }));
-  var ListItemText = /* @__PURE__ */ React107.forwardRef(/* @__PURE__ */ __name(function ListItemText2(inProps, ref) {
+  var ListItemText = /* @__PURE__ */ React108.forwardRef(/* @__PURE__ */ __name(function ListItemText2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiListItemText"
@@ -67940,10 +68257,10 @@ Please use another name.` : formatMuiErrorMessage(18));
       primaryTypographyProps,
       secondary: secondaryProp,
       secondaryTypographyProps
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded65);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded66);
     const {
       dense
-    } = React107.useContext(ListContext_default);
+    } = React108.useContext(ListContext_default);
     let primary = primaryProp != null ? primaryProp : children;
     let secondary = secondaryProp;
     const ownerState = _extends({}, props, {
@@ -67953,9 +68270,9 @@ Please use another name.` : formatMuiErrorMessage(18));
       secondary: !!secondary,
       dense
     });
-    const classes = useUtilityClasses45(ownerState);
+    const classes = useUtilityClasses46(ownerState);
     if (primary != null && primary.type !== Typography_default && !disableTypography) {
-      primary = /* @__PURE__ */ (0, import_jsx_runtime93.jsx)(Typography_default, _extends({
+      primary = /* @__PURE__ */ (0, import_jsx_runtime95.jsx)(Typography_default, _extends({
         variant: dense ? "body2" : "body1",
         className: classes.primary,
         component: primaryTypographyProps != null && primaryTypographyProps.variant ? void 0 : "span",
@@ -67965,7 +68282,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }));
     }
     if (secondary != null && secondary.type !== Typography_default && !disableTypography) {
-      secondary = /* @__PURE__ */ (0, import_jsx_runtime93.jsx)(Typography_default, _extends({
+      secondary = /* @__PURE__ */ (0, import_jsx_runtime95.jsx)(Typography_default, _extends({
         variant: "body2",
         className: classes.secondary,
         color: "text.secondary",
@@ -67974,7 +68291,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         children: secondary
       }));
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime94.jsxs)(ListItemTextRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime96.jsxs)(ListItemTextRoot, _extends({
       className: clsx_m_default(classes.root, className),
       ownerState,
       ref
@@ -67990,15 +68307,15 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * Alias for the `primary` prop.
      */
-    children: import_prop_types72.default.node,
+    children: import_prop_types73.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types72.default.object,
+    classes: import_prop_types73.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types72.default.string,
+    className: import_prop_types73.default.string,
     /**
      * If `true`, the children won't be wrapped by a Typography component.
      * This can be useful to render an alternative Typography variant by wrapping
@@ -68006,54 +68323,54 @@ Please use another name.` : formatMuiErrorMessage(18));
      * with the Typography component.
      * @default false
      */
-    disableTypography: import_prop_types72.default.bool,
+    disableTypography: import_prop_types73.default.bool,
     /**
      * If `true`, the children are indented.
      * This should be used if there is no left avatar or left icon.
      * @default false
      */
-    inset: import_prop_types72.default.bool,
+    inset: import_prop_types73.default.bool,
     /**
      * The main content element.
      */
-    primary: import_prop_types72.default.node,
+    primary: import_prop_types73.default.node,
     /**
      * These props will be forwarded to the primary typography component
      * (as long as disableTypography is not `true`).
      */
-    primaryTypographyProps: import_prop_types72.default.object,
+    primaryTypographyProps: import_prop_types73.default.object,
     /**
      * The secondary content element.
      */
-    secondary: import_prop_types72.default.node,
+    secondary: import_prop_types73.default.node,
     /**
      * These props will be forwarded to the secondary typography component
      * (as long as disableTypography is not `true`).
      */
-    secondaryTypographyProps: import_prop_types72.default.object,
+    secondaryTypographyProps: import_prop_types73.default.object,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types72.default.oneOfType([import_prop_types72.default.arrayOf(import_prop_types72.default.oneOfType([import_prop_types72.default.func, import_prop_types72.default.object, import_prop_types72.default.bool])), import_prop_types72.default.func, import_prop_types72.default.object])
+    sx: import_prop_types73.default.oneOfType([import_prop_types73.default.arrayOf(import_prop_types73.default.oneOfType([import_prop_types73.default.func, import_prop_types73.default.object, import_prop_types73.default.bool])), import_prop_types73.default.func, import_prop_types73.default.object])
   } : void 0;
   var ListItemText_default = ListItemText;
 
   // node_modules/@mui/material/Menu/Menu.js
-  var React110 = __toESM(require_react());
+  var React111 = __toESM(require_react());
   var import_react_is4 = __toESM(require_react_is2());
-  var import_prop_types75 = __toESM(require_prop_types());
+  var import_prop_types76 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/MenuList/MenuList.js
-  var React108 = __toESM(require_react());
+  var React109 = __toESM(require_react());
   var import_react_is3 = __toESM(require_react_is2());
-  var import_prop_types73 = __toESM(require_prop_types());
+  var import_prop_types74 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/utils/getScrollbarSize.js
   var getScrollbarSize_default = getScrollbarSize;
 
   // node_modules/@mui/material/MenuList/MenuList.js
-  var import_jsx_runtime95 = __toESM(require_jsx_runtime());
-  var _excluded66 = ["actions", "autoFocus", "autoFocusItem", "children", "className", "disabledItemsFocusable", "disableListWrap", "onKeyDown", "variant"];
+  var import_jsx_runtime97 = __toESM(require_jsx_runtime());
+  var _excluded67 = ["actions", "autoFocus", "autoFocusItem", "children", "className", "disabledItemsFocusable", "disableListWrap", "onKeyDown", "variant"];
   function nextItem(list, item, disableListWrap) {
     if (list === item) {
       return list.firstChild;
@@ -68113,7 +68430,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     return false;
   }
   __name(moveFocus, "moveFocus");
-  var MenuList = /* @__PURE__ */ React108.forwardRef(/* @__PURE__ */ __name(function MenuList2(props, ref) {
+  var MenuList = /* @__PURE__ */ React109.forwardRef(/* @__PURE__ */ __name(function MenuList2(props, ref) {
     const {
       // private
       // eslint-disable-next-line react/prop-types
@@ -68126,9 +68443,9 @@ Please use another name.` : formatMuiErrorMessage(18));
       disableListWrap = false,
       onKeyDown,
       variant = "selectedMenu"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded66);
-    const listRef = React108.useRef(null);
-    const textCriteriaRef = React108.useRef({
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded67);
+    const listRef = React109.useRef(null);
+    const textCriteriaRef = React109.useRef({
       keys: [],
       repeating: true,
       previousKeyMatched: true,
@@ -68139,7 +68456,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         listRef.current.focus();
       }
     }, [autoFocus]);
-    React108.useImperativeHandle(actions, () => ({
+    React109.useImperativeHandle(actions, () => ({
       adjustStyleForScrollbar: (containerElement, theme) => {
         const noExplicitWidth = !listRef.current.style.width;
         if (containerElement.clientHeight < listRef.current.clientHeight && noExplicitWidth) {
@@ -68194,8 +68511,8 @@ Please use another name.` : formatMuiErrorMessage(18));
     }, "handleKeyDown");
     const handleRef = useForkRef_default(listRef, ref);
     let activeItemIndex = -1;
-    React108.Children.forEach(children, (child, index) => {
-      if (!/* @__PURE__ */ React108.isValidElement(child)) {
+    React109.Children.forEach(children, (child, index) => {
+      if (!/* @__PURE__ */ React109.isValidElement(child)) {
         return;
       }
       if (true) {
@@ -68217,7 +68534,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         }
       }
     });
-    const items = React108.Children.map(children, (child, index) => {
+    const items = React109.Children.map(children, (child, index) => {
       if (index === activeItemIndex) {
         const newChildProps = {};
         if (autoFocusItem) {
@@ -68226,11 +68543,11 @@ Please use another name.` : formatMuiErrorMessage(18));
         if (child.props.tabIndex === void 0 && variant === "selectedMenu") {
           newChildProps.tabIndex = 0;
         }
-        return /* @__PURE__ */ React108.cloneElement(child, newChildProps);
+        return /* @__PURE__ */ React109.cloneElement(child, newChildProps);
       }
       return child;
     });
-    return /* @__PURE__ */ (0, import_jsx_runtime95.jsx)(List_default, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime97.jsx)(List_default, _extends({
       role: "menu",
       ref: handleRef,
       className,
@@ -68249,47 +68566,47 @@ Please use another name.` : formatMuiErrorMessage(18));
      * If `true`, will focus the `[role="menu"]` container and move into tab order.
      * @default false
      */
-    autoFocus: import_prop_types73.default.bool,
+    autoFocus: import_prop_types74.default.bool,
     /**
      * If `true`, will focus the first menuitem if `variant="menu"` or selected item
      * if `variant="selectedMenu"`.
      * @default false
      */
-    autoFocusItem: import_prop_types73.default.bool,
+    autoFocusItem: import_prop_types74.default.bool,
     /**
      * MenuList contents, normally `MenuItem`s.
      */
-    children: import_prop_types73.default.node,
+    children: import_prop_types74.default.node,
     /**
      * @ignore
      */
-    className: import_prop_types73.default.string,
+    className: import_prop_types74.default.string,
     /**
      * If `true`, will allow focus on disabled items.
      * @default false
      */
-    disabledItemsFocusable: import_prop_types73.default.bool,
+    disabledItemsFocusable: import_prop_types74.default.bool,
     /**
      * If `true`, the menu items will not wrap focus.
      * @default false
      */
-    disableListWrap: import_prop_types73.default.bool,
+    disableListWrap: import_prop_types74.default.bool,
     /**
      * @ignore
      */
-    onKeyDown: import_prop_types73.default.func,
+    onKeyDown: import_prop_types74.default.func,
     /**
      * The variant to use. Use `menu` to prevent selected items from impacting the initial focus
      * and the vertical alignment relative to the anchor element.
      * @default 'selectedMenu'
      */
-    variant: import_prop_types73.default.oneOf(["menu", "selectedMenu"])
+    variant: import_prop_types74.default.oneOf(["menu", "selectedMenu"])
   } : void 0;
   var MenuList_default = MenuList;
 
   // node_modules/@mui/material/Popover/Popover.js
-  var React109 = __toESM(require_react());
-  var import_prop_types74 = __toESM(require_prop_types());
+  var React110 = __toESM(require_react());
+  var import_prop_types75 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/Popover/popoverClasses.js
   function getPopoverUtilityClass(slot) {
@@ -68299,8 +68616,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   var popoverClasses = generateUtilityClasses("MuiPopover", ["root", "paper"]);
 
   // node_modules/@mui/material/Popover/Popover.js
-  var import_jsx_runtime96 = __toESM(require_jsx_runtime());
-  var _excluded67 = ["onEntering"];
+  var import_jsx_runtime98 = __toESM(require_jsx_runtime());
+  var _excluded68 = ["onEntering"];
   var _excluded211 = ["action", "anchorEl", "anchorOrigin", "anchorPosition", "anchorReference", "children", "className", "container", "elevation", "marginThreshold", "open", "PaperProps", "transformOrigin", "TransitionComponent", "transitionDuration", "TransitionProps"];
   function getOffsetTop(rect, vertical) {
     let offset2 = 0;
@@ -68334,7 +68651,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     return typeof anchorEl === "function" ? anchorEl() : anchorEl;
   }
   __name(resolveAnchorEl2, "resolveAnchorEl");
-  var useUtilityClasses46 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses47 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes
     } = ownerState;
@@ -68366,7 +68683,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     // We disable the focus ring for mouse, touch and keyboard users.
     outline: 0
   });
-  var Popover = /* @__PURE__ */ React109.forwardRef(/* @__PURE__ */ __name(function Popover2(inProps, ref) {
+  var Popover = /* @__PURE__ */ React110.forwardRef(/* @__PURE__ */ __name(function Popover2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiPopover"
@@ -68396,8 +68713,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       TransitionProps: {
         onEntering
       } = {}
-    } = props, TransitionProps = _objectWithoutPropertiesLoose(props.TransitionProps, _excluded67), other = _objectWithoutPropertiesLoose(props, _excluded211);
-    const paperRef = React109.useRef();
+    } = props, TransitionProps = _objectWithoutPropertiesLoose(props.TransitionProps, _excluded68), other = _objectWithoutPropertiesLoose(props, _excluded211);
+    const paperRef = React110.useRef();
     const handlePaperRef = useForkRef_default(paperRef, PaperProps.ref);
     const ownerState = _extends({}, props, {
       anchorOrigin,
@@ -68410,8 +68727,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       transitionDuration: transitionDurationProp,
       TransitionProps
     });
-    const classes = useUtilityClasses46(ownerState);
-    const getAnchorOffset = React109.useCallback(() => {
+    const classes = useUtilityClasses47(ownerState);
+    const getAnchorOffset = React110.useCallback(() => {
       if (anchorReference === "anchorPosition") {
         if (true) {
           if (!anchorPosition) {
@@ -68434,13 +68751,13 @@ Please use another name.` : formatMuiErrorMessage(18));
         left: anchorRect.left + getOffsetLeft(anchorRect, anchorOrigin.horizontal)
       };
     }, [anchorEl, anchorOrigin.horizontal, anchorOrigin.vertical, anchorPosition, anchorReference]);
-    const getTransformOrigin = React109.useCallback((elemRect) => {
+    const getTransformOrigin = React110.useCallback((elemRect) => {
       return {
         vertical: getOffsetTop(elemRect, transformOrigin.vertical),
         horizontal: getOffsetLeft(elemRect, transformOrigin.horizontal)
       };
     }, [transformOrigin.horizontal, transformOrigin.vertical]);
-    const getPositioningStyle = React109.useCallback((element) => {
+    const getPositioningStyle = React110.useCallback((element) => {
       const elemRect = {
         width: element.offsetWidth,
         height: element.offsetHeight
@@ -68490,8 +68807,8 @@ Please use another name.` : formatMuiErrorMessage(18));
         transformOrigin: getTransformOriginValue(elemTransformOrigin)
       };
     }, [anchorEl, anchorReference, getAnchorOffset, getTransformOrigin, marginThreshold]);
-    const [isPositioned, setIsPositioned] = React109.useState(open);
-    const setPositioningStyles = React109.useCallback(() => {
+    const [isPositioned, setIsPositioned] = React110.useState(open);
+    const setPositioningStyles = React110.useCallback(() => {
       const element = paperRef.current;
       if (!element) {
         return;
@@ -68515,17 +68832,17 @@ Please use another name.` : formatMuiErrorMessage(18));
     const handleExited = /* @__PURE__ */ __name(() => {
       setIsPositioned(false);
     }, "handleExited");
-    React109.useEffect(() => {
+    React110.useEffect(() => {
       if (open) {
         setPositioningStyles();
       }
     });
-    React109.useImperativeHandle(action, () => open ? {
+    React110.useImperativeHandle(action, () => open ? {
       updatePosition: () => {
         setPositioningStyles();
       }
     } : null, [open, setPositioningStyles]);
-    React109.useEffect(() => {
+    React110.useEffect(() => {
       if (!open) {
         return void 0;
       }
@@ -68544,7 +68861,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       transitionDuration = void 0;
     }
     const container = containerProp || (anchorEl ? ownerDocument_default(resolveAnchorEl2(anchorEl)).body : void 0);
-    return /* @__PURE__ */ (0, import_jsx_runtime96.jsx)(PopoverRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime98.jsx)(PopoverRoot, _extends({
       BackdropProps: {
         invisible: true
       },
@@ -68554,14 +68871,14 @@ Please use another name.` : formatMuiErrorMessage(18));
       ref,
       ownerState
     }, other, {
-      children: /* @__PURE__ */ (0, import_jsx_runtime96.jsx)(TransitionComponent, _extends({
+      children: /* @__PURE__ */ (0, import_jsx_runtime98.jsx)(TransitionComponent, _extends({
         appear: true,
         in: open,
         onEntering: handleEntering,
         onExited: handleExited,
         timeout: transitionDuration
       }, TransitionProps, {
-        children: /* @__PURE__ */ (0, import_jsx_runtime96.jsx)(PopoverPaper, _extends({
+        children: /* @__PURE__ */ (0, import_jsx_runtime98.jsx)(PopoverPaper, _extends({
           elevation
         }, PaperProps, {
           ref: handlePaperRef,
@@ -68591,7 +68908,7 @@ Please use another name.` : formatMuiErrorMessage(18));
      * An HTML element, or a function that returns one.
      * It's used to set the position of the popover.
      */
-    anchorEl: chainPropTypes(import_prop_types74.default.oneOfType([HTMLElementType, import_prop_types74.default.func]), (props) => {
+    anchorEl: chainPropTypes(import_prop_types75.default.oneOfType([HTMLElementType, import_prop_types75.default.func]), (props) => {
       if (props.open && (!props.anchorReference || props.anchorReference === "anchorEl")) {
         const resolvedAnchorEl = resolveAnchorEl2(props.anchorEl);
         if (resolvedAnchorEl && resolvedAnchorEl.nodeType === 1) {
@@ -68618,36 +68935,36 @@ Please use another name.` : formatMuiErrorMessage(18));
      *   horizontal: 'left',
      * }
      */
-    anchorOrigin: import_prop_types74.default.shape({
-      horizontal: import_prop_types74.default.oneOfType([import_prop_types74.default.oneOf(["center", "left", "right"]), import_prop_types74.default.number]).isRequired,
-      vertical: import_prop_types74.default.oneOfType([import_prop_types74.default.oneOf(["bottom", "center", "top"]), import_prop_types74.default.number]).isRequired
+    anchorOrigin: import_prop_types75.default.shape({
+      horizontal: import_prop_types75.default.oneOfType([import_prop_types75.default.oneOf(["center", "left", "right"]), import_prop_types75.default.number]).isRequired,
+      vertical: import_prop_types75.default.oneOfType([import_prop_types75.default.oneOf(["bottom", "center", "top"]), import_prop_types75.default.number]).isRequired
     }),
     /**
      * This is the position that may be used to set the position of the popover.
      * The coordinates are relative to the application's client area.
      */
-    anchorPosition: import_prop_types74.default.shape({
-      left: import_prop_types74.default.number.isRequired,
-      top: import_prop_types74.default.number.isRequired
+    anchorPosition: import_prop_types75.default.shape({
+      left: import_prop_types75.default.number.isRequired,
+      top: import_prop_types75.default.number.isRequired
     }),
     /**
      * This determines which anchor prop to refer to when setting
      * the position of the popover.
      * @default 'anchorEl'
      */
-    anchorReference: import_prop_types74.default.oneOf(["anchorEl", "anchorPosition", "none"]),
+    anchorReference: import_prop_types75.default.oneOf(["anchorEl", "anchorPosition", "none"]),
     /**
      * The content of the component.
      */
-    children: import_prop_types74.default.node,
+    children: import_prop_types75.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types74.default.object,
+    classes: import_prop_types75.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types74.default.string,
+    className: import_prop_types75.default.string,
     /**
      * An HTML element, component instance, or function that returns either.
      * The `container` will passed to the Modal component.
@@ -68655,7 +68972,7 @@ Please use another name.` : formatMuiErrorMessage(18));
      * By default, it uses the body of the anchorEl's top-level document object,
      * so it's simply `document.body` most of the time.
      */
-    container: import_prop_types74.default.oneOfType([HTMLElementType, import_prop_types74.default.func]),
+    container: import_prop_types75.default.oneOfType([HTMLElementType, import_prop_types75.default.func]),
     /**
      * The elevation of the popover.
      * @default 8
@@ -68665,27 +68982,27 @@ Please use another name.` : formatMuiErrorMessage(18));
      * Specifies how close to the edge of the window the popover can appear.
      * @default 16
      */
-    marginThreshold: import_prop_types74.default.number,
+    marginThreshold: import_prop_types75.default.number,
     /**
      * Callback fired when the component requests to be closed.
      * The `reason` parameter can optionally be used to control the response to `onClose`.
      */
-    onClose: import_prop_types74.default.func,
+    onClose: import_prop_types75.default.func,
     /**
      * If `true`, the component is shown.
      */
-    open: import_prop_types74.default.bool.isRequired,
+    open: import_prop_types75.default.bool.isRequired,
     /**
      * Props applied to the [`Paper`](/material-ui/api/paper/) element.
      * @default {}
      */
-    PaperProps: import_prop_types74.default.shape({
+    PaperProps: import_prop_types75.default.shape({
       component: elementTypeAcceptingRef_default
     }),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types74.default.oneOfType([import_prop_types74.default.arrayOf(import_prop_types74.default.oneOfType([import_prop_types74.default.func, import_prop_types74.default.object, import_prop_types74.default.bool])), import_prop_types74.default.func, import_prop_types74.default.object]),
+    sx: import_prop_types75.default.oneOfType([import_prop_types75.default.arrayOf(import_prop_types75.default.oneOfType([import_prop_types75.default.func, import_prop_types75.default.object, import_prop_types75.default.bool])), import_prop_types75.default.func, import_prop_types75.default.object]),
     /**
      * This is the point on the popover which
      * will attach to the anchor's origin.
@@ -68698,31 +69015,31 @@ Please use another name.` : formatMuiErrorMessage(18));
      *   horizontal: 'left',
      * }
      */
-    transformOrigin: import_prop_types74.default.shape({
-      horizontal: import_prop_types74.default.oneOfType([import_prop_types74.default.oneOf(["center", "left", "right"]), import_prop_types74.default.number]).isRequired,
-      vertical: import_prop_types74.default.oneOfType([import_prop_types74.default.oneOf(["bottom", "center", "top"]), import_prop_types74.default.number]).isRequired
+    transformOrigin: import_prop_types75.default.shape({
+      horizontal: import_prop_types75.default.oneOfType([import_prop_types75.default.oneOf(["center", "left", "right"]), import_prop_types75.default.number]).isRequired,
+      vertical: import_prop_types75.default.oneOfType([import_prop_types75.default.oneOf(["bottom", "center", "top"]), import_prop_types75.default.number]).isRequired
     }),
     /**
      * The component used for the transition.
      * [Follow this guide](/material-ui/transitions/#transitioncomponent-prop) to learn more about the requirements for this component.
      * @default Grow
      */
-    TransitionComponent: import_prop_types74.default.elementType,
+    TransitionComponent: import_prop_types75.default.elementType,
     /**
      * Set to 'auto' to automatically calculate transition time based on height.
      * @default 'auto'
      */
-    transitionDuration: import_prop_types74.default.oneOfType([import_prop_types74.default.oneOf(["auto"]), import_prop_types74.default.number, import_prop_types74.default.shape({
-      appear: import_prop_types74.default.number,
-      enter: import_prop_types74.default.number,
-      exit: import_prop_types74.default.number
+    transitionDuration: import_prop_types75.default.oneOfType([import_prop_types75.default.oneOf(["auto"]), import_prop_types75.default.number, import_prop_types75.default.shape({
+      appear: import_prop_types75.default.number,
+      enter: import_prop_types75.default.number,
+      exit: import_prop_types75.default.number
     })]),
     /**
      * Props applied to the transition element.
      * By default, the element is based on this [`Transition`](http://reactcommunity.org/react-transition-group/transition/) component.
      * @default {}
      */
-    TransitionProps: import_prop_types74.default.object
+    TransitionProps: import_prop_types75.default.object
   } : void 0;
   var Popover_default = Popover;
 
@@ -68734,8 +69051,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   var menuClasses = generateUtilityClasses("MuiMenu", ["root", "paper", "list"]);
 
   // node_modules/@mui/material/Menu/Menu.js
-  var import_jsx_runtime97 = __toESM(require_jsx_runtime());
-  var _excluded68 = ["onEntering"];
+  var import_jsx_runtime99 = __toESM(require_jsx_runtime());
+  var _excluded69 = ["onEntering"];
   var _excluded212 = ["autoFocus", "children", "disableAutoFocusItem", "MenuListProps", "onClose", "open", "PaperProps", "PopoverClasses", "transitionDuration", "TransitionProps", "variant"];
   var RTL_ORIGIN = {
     vertical: "top",
@@ -68745,7 +69062,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     vertical: "top",
     horizontal: "left"
   };
-  var useUtilityClasses47 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses48 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes
     } = ownerState;
@@ -68782,7 +69099,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     // We disable the focus ring for mouse, touch and keyboard users.
     outline: 0
   });
-  var Menu = /* @__PURE__ */ React110.forwardRef(/* @__PURE__ */ __name(function Menu2(inProps, ref) {
+  var Menu = /* @__PURE__ */ React111.forwardRef(/* @__PURE__ */ __name(function Menu2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiMenu"
@@ -68801,7 +69118,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         onEntering
       } = {},
       variant = "selectedMenu"
-    } = props, TransitionProps = _objectWithoutPropertiesLoose(props.TransitionProps, _excluded68), other = _objectWithoutPropertiesLoose(props, _excluded212);
+    } = props, TransitionProps = _objectWithoutPropertiesLoose(props.TransitionProps, _excluded69), other = _objectWithoutPropertiesLoose(props, _excluded212);
     const theme = useTheme5();
     const isRtl = theme.direction === "rtl";
     const ownerState = _extends({}, props, {
@@ -68814,9 +69131,9 @@ Please use another name.` : formatMuiErrorMessage(18));
       TransitionProps,
       variant
     });
-    const classes = useUtilityClasses47(ownerState);
+    const classes = useUtilityClasses48(ownerState);
     const autoFocusItem = autoFocus && !disableAutoFocusItem && open;
-    const menuListActionsRef = React110.useRef(null);
+    const menuListActionsRef = React111.useRef(null);
     const handleEntering = /* @__PURE__ */ __name((element, isAppearing) => {
       if (menuListActionsRef.current) {
         menuListActionsRef.current.adjustStyleForScrollbar(element, theme);
@@ -68834,8 +69151,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }, "handleListKeyDown");
     let activeItemIndex = -1;
-    React110.Children.map(children, (child, index) => {
-      if (!/* @__PURE__ */ React110.isValidElement(child)) {
+    React111.Children.map(children, (child, index) => {
+      if (!/* @__PURE__ */ React111.isValidElement(child)) {
         return;
       }
       if (true) {
@@ -68851,7 +69168,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         }
       }
     });
-    return /* @__PURE__ */ (0, import_jsx_runtime97.jsx)(MenuRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime99.jsx)(MenuRoot, _extends({
       onClose,
       anchorOrigin: {
         vertical: "bottom",
@@ -68875,7 +69192,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       ownerState
     }, other, {
       classes: PopoverClasses,
-      children: /* @__PURE__ */ (0, import_jsx_runtime97.jsx)(MenuMenuList, _extends({
+      children: /* @__PURE__ */ (0, import_jsx_runtime99.jsx)(MenuMenuList, _extends({
         onKeyDown: handleListKeyDown,
         actions: menuListActionsRef,
         autoFocus: autoFocus && (activeItemIndex === -1 || disableAutoFocusItem),
@@ -68896,7 +69213,7 @@ Please use another name.` : formatMuiErrorMessage(18));
      * An HTML element, or a function that returns one.
      * It's used to set the position of the menu.
      */
-    anchorEl: import_prop_types75.default.oneOfType([HTMLElementType, import_prop_types75.default.func]),
+    anchorEl: import_prop_types76.default.oneOfType([HTMLElementType, import_prop_types76.default.func]),
     /**
      * If `true` (Default) will focus the `[role="menu"]` if no focusable child is found. Disabled
      * children are not focusable. If you set this prop to `false` focus will be placed
@@ -68904,15 +69221,15 @@ Please use another name.` : formatMuiErrorMessage(18));
      * and should only be considered if you manage focus otherwise.
      * @default true
      */
-    autoFocus: import_prop_types75.default.bool,
+    autoFocus: import_prop_types76.default.bool,
     /**
      * Menu contents, normally `MenuItem`s.
      */
-    children: import_prop_types75.default.node,
+    children: import_prop_types76.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types75.default.object,
+    classes: import_prop_types76.default.object,
     /**
      * When opening the menu will not focus the active item but the `[role="menu"]`
      * unless `autoFocus` is also set to `false`. Not using the default means not
@@ -68920,61 +69237,61 @@ Please use another name.` : formatMuiErrorMessage(18));
      * accessibility implications.
      * @default false
      */
-    disableAutoFocusItem: import_prop_types75.default.bool,
+    disableAutoFocusItem: import_prop_types76.default.bool,
     /**
      * Props applied to the [`MenuList`](/material-ui/api/menu-list/) element.
      * @default {}
      */
-    MenuListProps: import_prop_types75.default.object,
+    MenuListProps: import_prop_types76.default.object,
     /**
      * Callback fired when the component requests to be closed.
      *
      * @param {object} event The event source of the callback.
      * @param {string} reason Can be: `"escapeKeyDown"`, `"backdropClick"`, `"tabKeyDown"`.
      */
-    onClose: import_prop_types75.default.func,
+    onClose: import_prop_types76.default.func,
     /**
      * If `true`, the component is shown.
      */
-    open: import_prop_types75.default.bool.isRequired,
+    open: import_prop_types76.default.bool.isRequired,
     /**
      * @ignore
      */
-    PaperProps: import_prop_types75.default.object,
+    PaperProps: import_prop_types76.default.object,
     /**
      * `classes` prop applied to the [`Popover`](/material-ui/api/popover/) element.
      */
-    PopoverClasses: import_prop_types75.default.object,
+    PopoverClasses: import_prop_types76.default.object,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types75.default.oneOfType([import_prop_types75.default.arrayOf(import_prop_types75.default.oneOfType([import_prop_types75.default.func, import_prop_types75.default.object, import_prop_types75.default.bool])), import_prop_types75.default.func, import_prop_types75.default.object]),
+    sx: import_prop_types76.default.oneOfType([import_prop_types76.default.arrayOf(import_prop_types76.default.oneOfType([import_prop_types76.default.func, import_prop_types76.default.object, import_prop_types76.default.bool])), import_prop_types76.default.func, import_prop_types76.default.object]),
     /**
      * The length of the transition in `ms`, or 'auto'
      * @default 'auto'
      */
-    transitionDuration: import_prop_types75.default.oneOfType([import_prop_types75.default.oneOf(["auto"]), import_prop_types75.default.number, import_prop_types75.default.shape({
-      appear: import_prop_types75.default.number,
-      enter: import_prop_types75.default.number,
-      exit: import_prop_types75.default.number
+    transitionDuration: import_prop_types76.default.oneOfType([import_prop_types76.default.oneOf(["auto"]), import_prop_types76.default.number, import_prop_types76.default.shape({
+      appear: import_prop_types76.default.number,
+      enter: import_prop_types76.default.number,
+      exit: import_prop_types76.default.number
     })]),
     /**
      * Props applied to the transition element.
      * By default, the element is based on this [`Transition`](http://reactcommunity.org/react-transition-group/transition/) component.
      * @default {}
      */
-    TransitionProps: import_prop_types75.default.object,
+    TransitionProps: import_prop_types76.default.object,
     /**
      * The variant to use. Use `menu` to prevent selected items from impacting the initial focus.
      * @default 'selectedMenu'
      */
-    variant: import_prop_types75.default.oneOf(["menu", "selectedMenu"])
+    variant: import_prop_types76.default.oneOf(["menu", "selectedMenu"])
   } : void 0;
   var Menu_default = Menu;
 
   // node_modules/@mui/material/MenuItem/MenuItem.js
-  var React111 = __toESM(require_react());
-  var import_prop_types76 = __toESM(require_prop_types());
+  var React112 = __toESM(require_react());
+  var import_prop_types77 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/MenuItem/menuItemClasses.js
   function getMenuItemUtilityClass(slot) {
@@ -68985,15 +69302,15 @@ Please use another name.` : formatMuiErrorMessage(18));
   var menuItemClasses_default = menuItemClasses;
 
   // node_modules/@mui/material/MenuItem/MenuItem.js
-  var import_jsx_runtime98 = __toESM(require_jsx_runtime());
-  var _excluded69 = ["autoFocus", "component", "dense", "divider", "disableGutters", "focusVisibleClassName", "role", "tabIndex", "className"];
+  var import_jsx_runtime100 = __toESM(require_jsx_runtime());
+  var _excluded70 = ["autoFocus", "component", "dense", "divider", "disableGutters", "focusVisibleClassName", "role", "tabIndex", "className"];
   var overridesResolver2 = /* @__PURE__ */ __name((props, styles6) => {
     const {
       ownerState
     } = props;
     return [styles6.root, ownerState.dense && styles6.dense, ownerState.divider && styles6.divider, !ownerState.disableGutters && styles6.gutters];
   }, "overridesResolver");
-  var useUtilityClasses48 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses49 = /* @__PURE__ */ __name((ownerState) => {
     const {
       disabled,
       dense,
@@ -69092,7 +69409,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       fontSize: "1.25rem"
     }
   })));
-  var MenuItem = /* @__PURE__ */ React111.forwardRef(/* @__PURE__ */ __name(function MenuItem2(inProps, ref) {
+  var MenuItem = /* @__PURE__ */ React112.forwardRef(/* @__PURE__ */ __name(function MenuItem2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiMenuItem"
@@ -69107,13 +69424,13 @@ Please use another name.` : formatMuiErrorMessage(18));
       role = "menuitem",
       tabIndex: tabIndexProp,
       className
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded69);
-    const context = React111.useContext(ListContext_default);
-    const childContext = React111.useMemo(() => ({
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded70);
+    const context = React112.useContext(ListContext_default);
+    const childContext = React112.useMemo(() => ({
       dense: dense || context.dense || false,
       disableGutters
     }), [context.dense, dense, disableGutters]);
-    const menuItemRef = React111.useRef(null);
+    const menuItemRef = React112.useRef(null);
     useEnhancedEffect_default2(() => {
       if (autoFocus) {
         if (menuItemRef.current) {
@@ -69128,15 +69445,15 @@ Please use another name.` : formatMuiErrorMessage(18));
       divider,
       disableGutters
     });
-    const classes = useUtilityClasses48(props);
+    const classes = useUtilityClasses49(props);
     const handleRef = useForkRef_default(menuItemRef, ref);
     let tabIndex;
     if (!props.disabled) {
       tabIndex = tabIndexProp !== void 0 ? tabIndexProp : -1;
     }
-    return /* @__PURE__ */ (0, import_jsx_runtime98.jsx)(ListContext_default.Provider, {
+    return /* @__PURE__ */ (0, import_jsx_runtime100.jsx)(ListContext_default.Provider, {
       value: childContext,
-      children: /* @__PURE__ */ (0, import_jsx_runtime98.jsx)(MenuItemRoot, _extends({
+      children: /* @__PURE__ */ (0, import_jsx_runtime100.jsx)(MenuItemRoot, _extends({
         ref: handleRef,
         role,
         tabIndex,
@@ -69159,44 +69476,44 @@ Please use another name.` : formatMuiErrorMessage(18));
      * Focus will also be triggered if the value changes from false to true.
      * @default false
      */
-    autoFocus: import_prop_types76.default.bool,
+    autoFocus: import_prop_types77.default.bool,
     /**
      * The content of the component.
      */
-    children: import_prop_types76.default.node,
+    children: import_prop_types77.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types76.default.object,
+    classes: import_prop_types77.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types76.default.string,
+    className: import_prop_types77.default.string,
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types76.default.elementType,
+    component: import_prop_types77.default.elementType,
     /**
      * If `true`, compact vertical padding designed for keyboard and mouse input is used.
      * The prop defaults to the value inherited from the parent Menu component.
      * @default false
      */
-    dense: import_prop_types76.default.bool,
+    dense: import_prop_types77.default.bool,
     /**
      * @ignore
      */
-    disabled: import_prop_types76.default.bool,
+    disabled: import_prop_types77.default.bool,
     /**
      * If `true`, the left and right padding is removed.
      * @default false
      */
-    disableGutters: import_prop_types76.default.bool,
+    disableGutters: import_prop_types77.default.bool,
     /**
      * If `true`, a 1px light border is added to the bottom of the menu item.
      * @default false
      */
-    divider: import_prop_types76.default.bool,
+    divider: import_prop_types77.default.bool,
     /**
      * This prop can help identify which element has keyboard focus.
      * The class name will be applied when the element gains the focus through keyboard interaction.
@@ -69205,30 +69522,30 @@ Please use another name.` : formatMuiErrorMessage(18));
      * A [polyfill can be used](https://github.com/WICG/focus-visible) to apply a `focus-visible` class to other components
      * if needed.
      */
-    focusVisibleClassName: import_prop_types76.default.string,
+    focusVisibleClassName: import_prop_types77.default.string,
     /**
      * @ignore
      */
-    role: import_prop_types76.default.string,
+    role: import_prop_types77.default.string,
     /**
      * If `true`, the component is selected.
      * @default false
      */
-    selected: import_prop_types76.default.bool,
+    selected: import_prop_types77.default.bool,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types76.default.oneOfType([import_prop_types76.default.arrayOf(import_prop_types76.default.oneOfType([import_prop_types76.default.func, import_prop_types76.default.object, import_prop_types76.default.bool])), import_prop_types76.default.func, import_prop_types76.default.object]),
+    sx: import_prop_types77.default.oneOfType([import_prop_types77.default.arrayOf(import_prop_types77.default.oneOfType([import_prop_types77.default.func, import_prop_types77.default.object, import_prop_types77.default.bool])), import_prop_types77.default.func, import_prop_types77.default.object]),
     /**
      * @default 0
      */
-    tabIndex: import_prop_types76.default.number
+    tabIndex: import_prop_types77.default.number
   } : void 0;
   var MenuItem_default = MenuItem;
 
   // node_modules/@mui/material/NativeSelect/NativeSelectInput.js
-  var React112 = __toESM(require_react());
-  var import_prop_types77 = __toESM(require_prop_types());
+  var React113 = __toESM(require_react());
+  var import_prop_types78 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/NativeSelect/nativeSelectClasses.js
   function getNativeSelectUtilityClasses(slot) {
@@ -69239,10 +69556,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   var nativeSelectClasses_default = nativeSelectClasses;
 
   // node_modules/@mui/material/NativeSelect/NativeSelectInput.js
-  var import_jsx_runtime99 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime100 = __toESM(require_jsx_runtime());
-  var _excluded70 = ["className", "disabled", "error", "IconComponent", "inputRef", "variant"];
-  var useUtilityClasses49 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime101 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime102 = __toESM(require_jsx_runtime());
+  var _excluded71 = ["className", "disabled", "error", "IconComponent", "inputRef", "variant"];
+  var useUtilityClasses50 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       variant,
@@ -69358,7 +69675,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       return [styles6.icon, ownerState.variant && styles6[`icon${capitalize_default(ownerState.variant)}`], ownerState.open && styles6.iconOpen];
     }
   })(nativeSelectIconStyles);
-  var NativeSelectInput = /* @__PURE__ */ React112.forwardRef(/* @__PURE__ */ __name(function NativeSelectInput2(props, ref) {
+  var NativeSelectInput = /* @__PURE__ */ React113.forwardRef(/* @__PURE__ */ __name(function NativeSelectInput2(props, ref) {
     const {
       className,
       disabled,
@@ -69366,20 +69683,20 @@ Please use another name.` : formatMuiErrorMessage(18));
       IconComponent,
       inputRef,
       variant = "standard"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded70);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded71);
     const ownerState = _extends({}, props, {
       disabled,
       variant,
       error: error2
     });
-    const classes = useUtilityClasses49(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime100.jsxs)(React112.Fragment, {
-      children: [/* @__PURE__ */ (0, import_jsx_runtime99.jsx)(NativeSelectSelect, _extends({
+    const classes = useUtilityClasses50(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime102.jsxs)(React113.Fragment, {
+      children: [/* @__PURE__ */ (0, import_jsx_runtime101.jsx)(NativeSelectSelect, _extends({
         ownerState,
         className: clsx_m_default(classes.select, className),
         disabled,
         ref: inputRef || ref
-      }, other)), props.multiple ? null : /* @__PURE__ */ (0, import_jsx_runtime99.jsx)(NativeSelectIcon, {
+      }, other)), props.multiple ? null : /* @__PURE__ */ (0, import_jsx_runtime101.jsx)(NativeSelectIcon, {
         as: IconComponent,
         ownerState,
         className: classes.icon
@@ -69391,28 +69708,28 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The option elements to populate the select with.
      * Can be some `<option>` elements.
      */
-    children: import_prop_types77.default.node,
+    children: import_prop_types78.default.node,
     /**
      * Override or extend the styles applied to the component.
      * See [CSS API](#css) below for more details.
      */
-    classes: import_prop_types77.default.object,
+    classes: import_prop_types78.default.object,
     /**
      * The CSS class name of the select element.
      */
-    className: import_prop_types77.default.string,
+    className: import_prop_types78.default.string,
     /**
      * If `true`, the select is disabled.
      */
-    disabled: import_prop_types77.default.bool,
+    disabled: import_prop_types78.default.bool,
     /**
      * If `true`, the `select input` will indicate an error.
      */
-    error: import_prop_types77.default.bool,
+    error: import_prop_types78.default.bool,
     /**
      * The icon that displays the arrow.
      */
-    IconComponent: import_prop_types77.default.elementType.isRequired,
+    IconComponent: import_prop_types78.default.elementType.isRequired,
     /**
      * Use that prop to pass a ref to the native select element.
      * @deprecated
@@ -69421,39 +69738,39 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * @ignore
      */
-    multiple: import_prop_types77.default.bool,
+    multiple: import_prop_types78.default.bool,
     /**
      * Name attribute of the `select` or hidden `input` element.
      */
-    name: import_prop_types77.default.string,
+    name: import_prop_types78.default.string,
     /**
      * Callback fired when a menu item is selected.
      *
      * @param {object} event The event source of the callback.
      * You can pull out the new value by accessing `event.target.value` (string).
      */
-    onChange: import_prop_types77.default.func,
+    onChange: import_prop_types78.default.func,
     /**
      * The input value.
      */
-    value: import_prop_types77.default.any,
+    value: import_prop_types78.default.any,
     /**
      * The variant to use.
      */
-    variant: import_prop_types77.default.oneOf(["standard", "outlined", "filled"])
+    variant: import_prop_types78.default.oneOf(["standard", "outlined", "filled"])
   } : void 0;
   var NativeSelectInput_default = NativeSelectInput;
 
   // node_modules/@mui/material/OutlinedInput/OutlinedInput.js
-  var React114 = __toESM(require_react());
-  var import_prop_types79 = __toESM(require_prop_types());
+  var React115 = __toESM(require_react());
+  var import_prop_types80 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/OutlinedInput/NotchedOutline.js
-  var React113 = __toESM(require_react());
-  var import_prop_types78 = __toESM(require_prop_types());
-  var import_jsx_runtime101 = __toESM(require_jsx_runtime());
+  var React114 = __toESM(require_react());
+  var import_prop_types79 = __toESM(require_prop_types());
+  var import_jsx_runtime103 = __toESM(require_jsx_runtime());
   var _span2;
-  var _excluded71 = ["children", "classes", "className", "label", "notched"];
+  var _excluded72 = ["children", "classes", "className", "label", "notched"];
   var NotchedOutlineRoot = styled_default2("fieldset")({
     textAlign: "left",
     position: "absolute",
@@ -69521,24 +69838,24 @@ Please use another name.` : formatMuiErrorMessage(18));
       className,
       label,
       notched
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded71);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded72);
     const withLabel = label != null && label !== "";
     const ownerState = _extends({}, props, {
       notched,
       withLabel
     });
-    return /* @__PURE__ */ (0, import_jsx_runtime101.jsx)(NotchedOutlineRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime103.jsx)(NotchedOutlineRoot, _extends({
       "aria-hidden": true,
       className,
       ownerState
     }, other, {
-      children: /* @__PURE__ */ (0, import_jsx_runtime101.jsx)(NotchedOutlineLegend, {
+      children: /* @__PURE__ */ (0, import_jsx_runtime103.jsx)(NotchedOutlineLegend, {
         ownerState,
-        children: withLabel ? /* @__PURE__ */ (0, import_jsx_runtime101.jsx)("span", {
+        children: withLabel ? /* @__PURE__ */ (0, import_jsx_runtime103.jsx)("span", {
           children: label
         }) : (
           // notranslate needed while Google Translate will not fix zero-width space issue
-          _span2 || (_span2 = /* @__PURE__ */ (0, import_jsx_runtime101.jsx)("span", {
+          _span2 || (_span2 = /* @__PURE__ */ (0, import_jsx_runtime103.jsx)("span", {
             className: "notranslate",
             children: "\u200B"
           }))
@@ -69551,35 +69868,35 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types78.default.node,
+    children: import_prop_types79.default.node,
     /**
      * Override or extend the styles applied to the component.
      * See [CSS API](#css) below for more details.
      */
-    classes: import_prop_types78.default.object,
+    classes: import_prop_types79.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types78.default.string,
+    className: import_prop_types79.default.string,
     /**
      * The label.
      */
-    label: import_prop_types78.default.node,
+    label: import_prop_types79.default.node,
     /**
      * If `true`, the outline is notched to accommodate the label.
      */
-    notched: import_prop_types78.default.bool.isRequired,
+    notched: import_prop_types79.default.bool.isRequired,
     /**
      * @ignore
      */
-    style: import_prop_types78.default.object
+    style: import_prop_types79.default.object
   } : void 0;
 
   // node_modules/@mui/material/OutlinedInput/OutlinedInput.js
-  var import_jsx_runtime102 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime103 = __toESM(require_jsx_runtime());
-  var _excluded72 = ["components", "fullWidth", "inputComponent", "label", "multiline", "notched", "slots", "type"];
-  var useUtilityClasses50 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime104 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime105 = __toESM(require_jsx_runtime());
+  var _excluded73 = ["components", "fullWidth", "inputComponent", "label", "multiline", "notched", "slots", "type"];
+  var useUtilityClasses51 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes
     } = ownerState;
@@ -69681,7 +69998,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   }, ownerState.endAdornment && {
     paddingRight: 0
   }));
-  var OutlinedInput = /* @__PURE__ */ React114.forwardRef(/* @__PURE__ */ __name(function OutlinedInput2(inProps, ref) {
+  var OutlinedInput = /* @__PURE__ */ React115.forwardRef(/* @__PURE__ */ __name(function OutlinedInput2(inProps, ref) {
     var _ref, _slots$root, _ref2, _slots$input, _React$Fragment;
     const props = useThemeProps2({
       props: inProps,
@@ -69696,8 +70013,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       notched,
       slots = {},
       type = "text"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded72);
-    const classes = useUtilityClasses50(props);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded73);
+    const classes = useUtilityClasses51(props);
     const muiFormControl = useFormControl();
     const fcs = formControlState({
       props,
@@ -69718,15 +70035,15 @@ Please use another name.` : formatMuiErrorMessage(18));
     });
     const RootSlot = (_ref = (_slots$root = slots.root) != null ? _slots$root : components.Root) != null ? _ref : OutlinedInputRoot;
     const InputSlot = (_ref2 = (_slots$input = slots.input) != null ? _slots$input : components.Input) != null ? _ref2 : OutlinedInputInput;
-    return /* @__PURE__ */ (0, import_jsx_runtime103.jsx)(InputBase_default, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime105.jsx)(InputBase_default, _extends({
       slots: {
         root: RootSlot,
         input: InputSlot
       },
-      renderSuffix: (state) => /* @__PURE__ */ (0, import_jsx_runtime103.jsx)(NotchedOutlineRoot2, {
+      renderSuffix: (state) => /* @__PURE__ */ (0, import_jsx_runtime105.jsx)(NotchedOutlineRoot2, {
         ownerState,
         className: classes.notchedOutline,
-        label: label != null && label !== "" && fcs.required ? _React$Fragment || (_React$Fragment = /* @__PURE__ */ (0, import_jsx_runtime102.jsxs)(React114.Fragment, {
+        label: label != null && label !== "" && fcs.required ? _React$Fragment || (_React$Fragment = /* @__PURE__ */ (0, import_jsx_runtime104.jsxs)(React115.Fragment, {
           children: [label, "\u2009", "*"]
         })) : label,
         notched: typeof notched !== "undefined" ? notched : Boolean(state.startAdornment || state.filled || state.focused)
@@ -69752,22 +70069,22 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The name can be confusing, as it's more like an autofill.
      * You can learn more about it [following the specification](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill).
      */
-    autoComplete: import_prop_types79.default.string,
+    autoComplete: import_prop_types80.default.string,
     /**
      * If `true`, the `input` element is focused during the first mount.
      */
-    autoFocus: import_prop_types79.default.bool,
+    autoFocus: import_prop_types80.default.bool,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types79.default.object,
+    classes: import_prop_types80.default.object,
     /**
      * The color of the component.
      * It supports both default and custom theme colors, which can be added as shown in the
      * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
      * The prop defaults to the value (`'primary'`) inherited from the parent FormControl component.
      */
-    color: import_prop_types79.default.oneOfType([import_prop_types79.default.oneOf(["primary", "secondary"]), import_prop_types79.default.string]),
+    color: import_prop_types80.default.oneOfType([import_prop_types80.default.oneOf(["primary", "secondary"]), import_prop_types80.default.string]),
     /**
      * The components used for each slot inside.
      *
@@ -69776,48 +70093,48 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    components: import_prop_types79.default.shape({
-      Input: import_prop_types79.default.elementType,
-      Root: import_prop_types79.default.elementType
+    components: import_prop_types80.default.shape({
+      Input: import_prop_types80.default.elementType,
+      Root: import_prop_types80.default.elementType
     }),
     /**
      * The default value. Use when the component is not controlled.
      */
-    defaultValue: import_prop_types79.default.any,
+    defaultValue: import_prop_types80.default.any,
     /**
      * If `true`, the component is disabled.
      * The prop defaults to the value (`false`) inherited from the parent FormControl component.
      */
-    disabled: import_prop_types79.default.bool,
+    disabled: import_prop_types80.default.bool,
     /**
      * End `InputAdornment` for this component.
      */
-    endAdornment: import_prop_types79.default.node,
+    endAdornment: import_prop_types80.default.node,
     /**
      * If `true`, the `input` will indicate an error.
      * The prop defaults to the value (`false`) inherited from the parent FormControl component.
      */
-    error: import_prop_types79.default.bool,
+    error: import_prop_types80.default.bool,
     /**
      * If `true`, the `input` will take up the full width of its container.
      * @default false
      */
-    fullWidth: import_prop_types79.default.bool,
+    fullWidth: import_prop_types80.default.bool,
     /**
      * The id of the `input` element.
      */
-    id: import_prop_types79.default.string,
+    id: import_prop_types80.default.string,
     /**
      * The component used for the `input` element.
      * Either a string to use a HTML element or a component.
      * @default 'input'
      */
-    inputComponent: import_prop_types79.default.elementType,
+    inputComponent: import_prop_types80.default.elementType,
     /**
      * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes) applied to the `input` element.
      * @default {}
      */
-    inputProps: import_prop_types79.default.object,
+    inputProps: import_prop_types80.default.object,
     /**
      * Pass a ref to the `input` element.
      */
@@ -69826,59 +70143,59 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The label of the `input`. It is only used for layout. The actual labelling
      * is handled by `InputLabel`.
      */
-    label: import_prop_types79.default.node,
+    label: import_prop_types80.default.node,
     /**
      * If `dense`, will adjust vertical spacing. This is normally obtained via context from
      * FormControl.
      * The prop defaults to the value (`'none'`) inherited from the parent FormControl component.
      */
-    margin: import_prop_types79.default.oneOf(["dense", "none"]),
+    margin: import_prop_types80.default.oneOf(["dense", "none"]),
     /**
      * Maximum number of rows to display when multiline option is set to true.
      */
-    maxRows: import_prop_types79.default.oneOfType([import_prop_types79.default.number, import_prop_types79.default.string]),
+    maxRows: import_prop_types80.default.oneOfType([import_prop_types80.default.number, import_prop_types80.default.string]),
     /**
      * Minimum number of rows to display when multiline option is set to true.
      */
-    minRows: import_prop_types79.default.oneOfType([import_prop_types79.default.number, import_prop_types79.default.string]),
+    minRows: import_prop_types80.default.oneOfType([import_prop_types80.default.number, import_prop_types80.default.string]),
     /**
      * If `true`, a [TextareaAutosize](/material-ui/react-textarea-autosize/) element is rendered.
      * @default false
      */
-    multiline: import_prop_types79.default.bool,
+    multiline: import_prop_types80.default.bool,
     /**
      * Name attribute of the `input` element.
      */
-    name: import_prop_types79.default.string,
+    name: import_prop_types80.default.string,
     /**
      * If `true`, the outline is notched to accommodate the label.
      */
-    notched: import_prop_types79.default.bool,
+    notched: import_prop_types80.default.bool,
     /**
      * Callback fired when the value is changed.
      *
      * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} event The event source of the callback.
      * You can pull out the new value by accessing `event.target.value` (string).
      */
-    onChange: import_prop_types79.default.func,
+    onChange: import_prop_types80.default.func,
     /**
      * The short hint displayed in the `input` before the user enters a value.
      */
-    placeholder: import_prop_types79.default.string,
+    placeholder: import_prop_types80.default.string,
     /**
      * It prevents the user from changing the value of the field
      * (not from interacting with the field).
      */
-    readOnly: import_prop_types79.default.bool,
+    readOnly: import_prop_types80.default.bool,
     /**
      * If `true`, the `input` element is required.
      * The prop defaults to the value (`false`) inherited from the parent FormControl component.
      */
-    required: import_prop_types79.default.bool,
+    required: import_prop_types80.default.bool,
     /**
      * Number of rows to display when multiline option is set to true.
      */
-    rows: import_prop_types79.default.oneOfType([import_prop_types79.default.number, import_prop_types79.default.string]),
+    rows: import_prop_types80.default.oneOfType([import_prop_types80.default.number, import_prop_types80.default.string]),
     /**
      * The components used for each slot inside.
      *
@@ -69886,39 +70203,39 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    slots: import_prop_types79.default.shape({
-      input: import_prop_types79.default.elementType,
-      root: import_prop_types79.default.elementType
+    slots: import_prop_types80.default.shape({
+      input: import_prop_types80.default.elementType,
+      root: import_prop_types80.default.elementType
     }),
     /**
      * Start `InputAdornment` for this component.
      */
-    startAdornment: import_prop_types79.default.node,
+    startAdornment: import_prop_types80.default.node,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types79.default.oneOfType([import_prop_types79.default.arrayOf(import_prop_types79.default.oneOfType([import_prop_types79.default.func, import_prop_types79.default.object, import_prop_types79.default.bool])), import_prop_types79.default.func, import_prop_types79.default.object]),
+    sx: import_prop_types80.default.oneOfType([import_prop_types80.default.arrayOf(import_prop_types80.default.oneOfType([import_prop_types80.default.func, import_prop_types80.default.object, import_prop_types80.default.bool])), import_prop_types80.default.func, import_prop_types80.default.object]),
     /**
      * Type of the `input` element. It should be [a valid HTML5 input type](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types).
      * @default 'text'
      */
-    type: import_prop_types79.default.string,
+    type: import_prop_types80.default.string,
     /**
      * The value of the `input` element, required for a controlled component.
      */
-    value: import_prop_types79.default.any
+    value: import_prop_types80.default.any
   } : void 0;
   OutlinedInput.muiName = "Input";
   var OutlinedInput_default = OutlinedInput;
 
   // node_modules/@mui/material/Select/Select.js
-  var React116 = __toESM(require_react());
-  var import_prop_types81 = __toESM(require_prop_types());
+  var React117 = __toESM(require_react());
+  var import_prop_types82 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/Select/SelectInput.js
-  var React115 = __toESM(require_react());
+  var React116 = __toESM(require_react());
   var import_react_is5 = __toESM(require_react_is2());
-  var import_prop_types80 = __toESM(require_prop_types());
+  var import_prop_types81 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/Select/selectClasses.js
   function getSelectUtilityClasses(slot) {
@@ -69929,10 +70246,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   var selectClasses_default = selectClasses;
 
   // node_modules/@mui/material/Select/SelectInput.js
-  var import_jsx_runtime104 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime105 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime106 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime107 = __toESM(require_jsx_runtime());
   var _span3;
-  var _excluded73 = ["aria-describedby", "aria-label", "autoFocus", "autoWidth", "children", "className", "defaultOpen", "defaultValue", "disabled", "displayEmpty", "error", "IconComponent", "inputRef", "labelId", "MenuProps", "multiple", "name", "onBlur", "onChange", "onClose", "onFocus", "onOpen", "open", "readOnly", "renderValue", "SelectDisplayProps", "tabIndex", "type", "value", "variant"];
+  var _excluded74 = ["aria-describedby", "aria-label", "autoFocus", "autoWidth", "children", "className", "defaultOpen", "defaultValue", "disabled", "displayEmpty", "error", "IconComponent", "inputRef", "labelId", "MenuProps", "multiple", "name", "onBlur", "onChange", "onClose", "onFocus", "onOpen", "open", "readOnly", "renderValue", "SelectDisplayProps", "tabIndex", "type", "value", "variant"];
   var SelectSelect = styled_default2("div", {
     name: "MuiSelect",
     slot: "Select",
@@ -70003,7 +70320,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     return display == null || typeof display === "string" && !display.trim();
   }
   __name(isEmpty6, "isEmpty");
-  var useUtilityClasses51 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses52 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       variant,
@@ -70019,7 +70336,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     };
     return composeClasses(slots, getSelectUtilityClasses, classes);
   }, "useUtilityClasses");
-  var SelectInput = /* @__PURE__ */ React115.forwardRef(/* @__PURE__ */ __name(function SelectInput2(props, ref) {
+  var SelectInput = /* @__PURE__ */ React116.forwardRef(/* @__PURE__ */ __name(function SelectInput2(props, ref) {
     const {
       "aria-describedby": ariaDescribedby,
       "aria-label": ariaLabel,
@@ -70050,7 +70367,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       tabIndex: tabIndexProp,
       value: valueProp,
       variant = "standard"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded73);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded74);
     const [value, setValueState] = useControlled_default({
       controlled: valueProp,
       default: defaultValue,
@@ -70061,40 +70378,40 @@ Please use another name.` : formatMuiErrorMessage(18));
       default: defaultOpen,
       name: "Select"
     });
-    const inputRef = React115.useRef(null);
-    const displayRef = React115.useRef(null);
-    const [displayNode, setDisplayNode] = React115.useState(null);
+    const inputRef = React116.useRef(null);
+    const displayRef = React116.useRef(null);
+    const [displayNode, setDisplayNode] = React116.useState(null);
     const {
       current: isOpenControlled
-    } = React115.useRef(openProp != null);
-    const [menuMinWidthState, setMenuMinWidthState] = React115.useState();
+    } = React116.useRef(openProp != null);
+    const [menuMinWidthState, setMenuMinWidthState] = React116.useState();
     const handleRef = useForkRef_default(ref, inputRefProp);
-    const handleDisplayRef = React115.useCallback((node2) => {
+    const handleDisplayRef = React116.useCallback((node2) => {
       displayRef.current = node2;
       if (node2) {
         setDisplayNode(node2);
       }
     }, []);
     const anchorElement = displayNode == null ? void 0 : displayNode.parentNode;
-    React115.useImperativeHandle(handleRef, () => ({
+    React116.useImperativeHandle(handleRef, () => ({
       focus: () => {
         displayRef.current.focus();
       },
       node: inputRef.current,
       value
     }), [value]);
-    React115.useEffect(() => {
+    React116.useEffect(() => {
       if (defaultOpen && openState && displayNode && !isOpenControlled) {
         setMenuMinWidthState(autoWidth ? null : anchorElement.clientWidth);
         displayRef.current.focus();
       }
     }, [displayNode, autoWidth]);
-    React115.useEffect(() => {
+    React116.useEffect(() => {
       if (autoFocus) {
         displayRef.current.focus();
       }
     }, [autoFocus]);
-    React115.useEffect(() => {
+    React116.useEffect(() => {
       if (!labelId) {
         return void 0;
       }
@@ -70136,7 +70453,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const handleClose = /* @__PURE__ */ __name((event) => {
       update(false, event);
     }, "handleClose");
-    const childrenArray = React115.Children.toArray(children);
+    const childrenArray = React116.Children.toArray(children);
     const handleChange = /* @__PURE__ */ __name((event) => {
       const index = childrenArray.map((child2) => child2.props.value).indexOf(event.target.value);
       if (index === -1) {
@@ -70231,7 +70548,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }
     const items = childrenArray.map((child) => {
-      if (!/* @__PURE__ */ React115.isValidElement(child)) {
+      if (!/* @__PURE__ */ React116.isValidElement(child)) {
         return null;
       }
       if (true) {
@@ -70257,7 +70574,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       if (selected) {
         foundMatch = true;
       }
-      return /* @__PURE__ */ React115.cloneElement(child, {
+      return /* @__PURE__ */ React116.cloneElement(child, {
         "aria-selected": selected ? "true" : "false",
         onClick: handleItemClick(child),
         onKeyUp: (event) => {
@@ -70277,7 +70594,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       });
     });
     if (true) {
-      React115.useEffect(() => {
+      React116.useEffect(() => {
         if (!foundMatch && !multiple && value !== "") {
           const values3 = childrenArray.map((child) => child.props.value);
           console.warn([`MUI: You have provided an out-of-range value \`${value}\` for the select ${name ? `(name="${name}") ` : ""}component.`, "Consider providing a value that matches one of the available options or ''.", `The available values are ${values3.filter((x2) => x2 != null).map((x2) => `\`${x2}\``).join(", ") || '""'}.`].join("\n"));
@@ -70318,9 +70635,9 @@ Please use another name.` : formatMuiErrorMessage(18));
       open,
       error: error2
     });
-    const classes = useUtilityClasses51(ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime105.jsxs)(React115.Fragment, {
-      children: [/* @__PURE__ */ (0, import_jsx_runtime104.jsx)(SelectSelect, _extends({
+    const classes = useUtilityClasses52(ownerState);
+    return /* @__PURE__ */ (0, import_jsx_runtime107.jsxs)(React116.Fragment, {
+      children: [/* @__PURE__ */ (0, import_jsx_runtime106.jsx)(SelectSelect, _extends({
         ref: handleDisplayRef,
         tabIndex,
         role: "button",
@@ -70340,12 +70657,12 @@ Please use another name.` : formatMuiErrorMessage(18));
         id: buttonId,
         children: isEmpty6(display) ? (
           // notranslate needed while Google Translate will not fix zero-width space issue
-          _span3 || (_span3 = /* @__PURE__ */ (0, import_jsx_runtime104.jsx)("span", {
+          _span3 || (_span3 = /* @__PURE__ */ (0, import_jsx_runtime106.jsx)("span", {
             className: "notranslate",
             children: "\u200B"
           }))
         ) : display
-      })), /* @__PURE__ */ (0, import_jsx_runtime104.jsx)(SelectNativeInput, _extends({
+      })), /* @__PURE__ */ (0, import_jsx_runtime106.jsx)(SelectNativeInput, _extends({
         "aria-invalid": error2,
         value: Array.isArray(value) ? value.join(",") : value,
         name,
@@ -70357,11 +70674,11 @@ Please use another name.` : formatMuiErrorMessage(18));
         className: classes.nativeInput,
         autoFocus,
         ownerState
-      }, other)), /* @__PURE__ */ (0, import_jsx_runtime104.jsx)(SelectIcon, {
+      }, other)), /* @__PURE__ */ (0, import_jsx_runtime106.jsx)(SelectIcon, {
         as: IconComponent,
         className: classes.icon,
         ownerState
-      }), /* @__PURE__ */ (0, import_jsx_runtime104.jsx)(Menu_default, _extends({
+      }), /* @__PURE__ */ (0, import_jsx_runtime106.jsx)(Menu_default, _extends({
         id: `menu-${name || ""}`,
         anchorEl: anchorElement,
         open,
@@ -70393,59 +70710,59 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * @ignore
      */
-    "aria-describedby": import_prop_types80.default.string,
+    "aria-describedby": import_prop_types81.default.string,
     /**
      * @ignore
      */
-    "aria-label": import_prop_types80.default.string,
+    "aria-label": import_prop_types81.default.string,
     /**
      * @ignore
      */
-    autoFocus: import_prop_types80.default.bool,
+    autoFocus: import_prop_types81.default.bool,
     /**
      * If `true`, the width of the popover will automatically be set according to the items inside the
      * menu, otherwise it will be at least the width of the select input.
      */
-    autoWidth: import_prop_types80.default.bool,
+    autoWidth: import_prop_types81.default.bool,
     /**
      * The option elements to populate the select with.
      * Can be some `<MenuItem>` elements.
      */
-    children: import_prop_types80.default.node,
+    children: import_prop_types81.default.node,
     /**
      * Override or extend the styles applied to the component.
      * See [CSS API](#css) below for more details.
      */
-    classes: import_prop_types80.default.object,
+    classes: import_prop_types81.default.object,
     /**
      * The CSS class name of the select element.
      */
-    className: import_prop_types80.default.string,
+    className: import_prop_types81.default.string,
     /**
      * If `true`, the component is toggled on mount. Use when the component open state is not controlled.
      * You can only use it when the `native` prop is `false` (default).
      */
-    defaultOpen: import_prop_types80.default.bool,
+    defaultOpen: import_prop_types81.default.bool,
     /**
      * The default value. Use when the component is not controlled.
      */
-    defaultValue: import_prop_types80.default.any,
+    defaultValue: import_prop_types81.default.any,
     /**
      * If `true`, the select is disabled.
      */
-    disabled: import_prop_types80.default.bool,
+    disabled: import_prop_types81.default.bool,
     /**
      * If `true`, the selected item is displayed even if its value is empty.
      */
-    displayEmpty: import_prop_types80.default.bool,
+    displayEmpty: import_prop_types81.default.bool,
     /**
      * If `true`, the `select input` will indicate an error.
      */
-    error: import_prop_types80.default.bool,
+    error: import_prop_types81.default.bool,
     /**
      * The icon that displays the arrow.
      */
-    IconComponent: import_prop_types80.default.elementType.isRequired,
+    IconComponent: import_prop_types81.default.elementType.isRequired,
     /**
      * Imperative handle implementing `{ value: T, node: HTMLElement, focus(): void }`
      * Equivalent to `ref`
@@ -70455,23 +70772,23 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The ID of an element that acts as an additional label. The Select will
      * be labelled by the additional label and the selected value.
      */
-    labelId: import_prop_types80.default.string,
+    labelId: import_prop_types81.default.string,
     /**
      * Props applied to the [`Menu`](/material-ui/api/menu/) element.
      */
-    MenuProps: import_prop_types80.default.object,
+    MenuProps: import_prop_types81.default.object,
     /**
      * If `true`, `value` must be an array and the menu will support multiple selections.
      */
-    multiple: import_prop_types80.default.bool,
+    multiple: import_prop_types81.default.bool,
     /**
      * Name attribute of the `select` or hidden `input` element.
      */
-    name: import_prop_types80.default.string,
+    name: import_prop_types81.default.string,
     /**
      * @ignore
      */
-    onBlur: import_prop_types80.default.func,
+    onBlur: import_prop_types81.default.func,
     /**
      * Callback fired when a menu item is selected.
      *
@@ -70479,67 +70796,67 @@ Please use another name.` : formatMuiErrorMessage(18));
      * You can pull out the new value by accessing `event.target.value` (any).
      * @param {object} [child] The react element that was selected.
      */
-    onChange: import_prop_types80.default.func,
+    onChange: import_prop_types81.default.func,
     /**
      * Callback fired when the component requests to be closed.
      * Use in controlled mode (see open).
      *
      * @param {object} event The event source of the callback.
      */
-    onClose: import_prop_types80.default.func,
+    onClose: import_prop_types81.default.func,
     /**
      * @ignore
      */
-    onFocus: import_prop_types80.default.func,
+    onFocus: import_prop_types81.default.func,
     /**
      * Callback fired when the component requests to be opened.
      * Use in controlled mode (see open).
      *
      * @param {object} event The event source of the callback.
      */
-    onOpen: import_prop_types80.default.func,
+    onOpen: import_prop_types81.default.func,
     /**
      * If `true`, the component is shown.
      */
-    open: import_prop_types80.default.bool,
+    open: import_prop_types81.default.bool,
     /**
      * @ignore
      */
-    readOnly: import_prop_types80.default.bool,
+    readOnly: import_prop_types81.default.bool,
     /**
      * Render the selected value.
      *
      * @param {any} value The `value` provided to the component.
      * @returns {ReactNode}
      */
-    renderValue: import_prop_types80.default.func,
+    renderValue: import_prop_types81.default.func,
     /**
      * Props applied to the clickable div element.
      */
-    SelectDisplayProps: import_prop_types80.default.object,
+    SelectDisplayProps: import_prop_types81.default.object,
     /**
      * @ignore
      */
-    tabIndex: import_prop_types80.default.oneOfType([import_prop_types80.default.number, import_prop_types80.default.string]),
+    tabIndex: import_prop_types81.default.oneOfType([import_prop_types81.default.number, import_prop_types81.default.string]),
     /**
      * @ignore
      */
-    type: import_prop_types80.default.any,
+    type: import_prop_types81.default.any,
     /**
      * The input value.
      */
-    value: import_prop_types80.default.any,
+    value: import_prop_types81.default.any,
     /**
      * The variant to use.
      */
-    variant: import_prop_types80.default.oneOf(["standard", "outlined", "filled"])
+    variant: import_prop_types81.default.oneOf(["standard", "outlined", "filled"])
   } : void 0;
   var SelectInput_default = SelectInput;
 
   // node_modules/@mui/material/Select/Select.js
-  var import_jsx_runtime106 = __toESM(require_jsx_runtime());
-  var _excluded74 = ["autoWidth", "children", "classes", "className", "defaultOpen", "displayEmpty", "IconComponent", "id", "input", "inputProps", "label", "labelId", "MenuProps", "multiple", "native", "onClose", "onOpen", "open", "renderValue", "SelectDisplayProps", "variant"];
-  var useUtilityClasses52 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime108 = __toESM(require_jsx_runtime());
+  var _excluded75 = ["autoWidth", "children", "classes", "className", "defaultOpen", "displayEmpty", "IconComponent", "id", "input", "inputProps", "label", "labelId", "MenuProps", "multiple", "native", "onClose", "onOpen", "open", "renderValue", "SelectDisplayProps", "variant"];
+  var useUtilityClasses53 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes
     } = ownerState;
@@ -70554,7 +70871,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   var StyledInput = styled_default2(Input_default, styledRootConfig)("");
   var StyledOutlinedInput = styled_default2(OutlinedInput_default, styledRootConfig)("");
   var StyledFilledInput = styled_default2(FilledInput_default, styledRootConfig)("");
-  var Select = /* @__PURE__ */ React116.forwardRef(/* @__PURE__ */ __name(function Select2(inProps, ref) {
+  var Select = /* @__PURE__ */ React117.forwardRef(/* @__PURE__ */ __name(function Select2(inProps, ref) {
     const props = useThemeProps2({
       name: "MuiSelect",
       props: inProps
@@ -70581,7 +70898,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       renderValue,
       SelectDisplayProps,
       variant: variantProp = "outlined"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded74);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded75);
     const inputComponent = native ? NativeSelectInput_default : SelectInput_default;
     const muiFormControl = useFormControl();
     const fcs = formControlState({
@@ -70594,22 +70911,22 @@ Please use another name.` : formatMuiErrorMessage(18));
       variant,
       classes: classesProp
     });
-    const classes = useUtilityClasses52(ownerState);
+    const classes = useUtilityClasses53(ownerState);
     const InputComponent = input || {
-      standard: /* @__PURE__ */ (0, import_jsx_runtime106.jsx)(StyledInput, {
+      standard: /* @__PURE__ */ (0, import_jsx_runtime108.jsx)(StyledInput, {
         ownerState
       }),
-      outlined: /* @__PURE__ */ (0, import_jsx_runtime106.jsx)(StyledOutlinedInput, {
+      outlined: /* @__PURE__ */ (0, import_jsx_runtime108.jsx)(StyledOutlinedInput, {
         label,
         ownerState
       }),
-      filled: /* @__PURE__ */ (0, import_jsx_runtime106.jsx)(StyledFilledInput, {
+      filled: /* @__PURE__ */ (0, import_jsx_runtime108.jsx)(StyledFilledInput, {
         ownerState
       })
     }[variant];
     const inputComponentRef = useForkRef_default(ref, InputComponent.ref);
-    return /* @__PURE__ */ (0, import_jsx_runtime106.jsx)(React116.Fragment, {
-      children: /* @__PURE__ */ React116.cloneElement(InputComponent, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime108.jsx)(React117.Fragment, {
+      children: /* @__PURE__ */ React117.cloneElement(InputComponent, _extends({
         // Most of the logic is implemented in `SelectInput`.
         // The `Select` component is a simple API wrapper to expose something better to play with.
         inputComponent,
@@ -70659,33 +70976,33 @@ Please use another name.` : formatMuiErrorMessage(18));
      * menu, otherwise it will be at least the width of the select input.
      * @default false
      */
-    autoWidth: import_prop_types81.default.bool,
+    autoWidth: import_prop_types82.default.bool,
     /**
      * The option elements to populate the select with.
      * Can be some `MenuItem` when `native` is false and `option` when `native` is true.
      *
      * ⚠️The `MenuItem` elements **must** be direct descendants when `native` is false.
      */
-    children: import_prop_types81.default.node,
+    children: import_prop_types82.default.node,
     /**
      * Override or extend the styles applied to the component.
      * @default {}
      */
-    classes: import_prop_types81.default.object,
+    classes: import_prop_types82.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types81.default.string,
+    className: import_prop_types82.default.string,
     /**
      * If `true`, the component is initially open. Use when the component open state is not controlled (i.e. the `open` prop is not defined).
      * You can only use it when the `native` prop is `false` (default).
      * @default false
      */
-    defaultOpen: import_prop_types81.default.bool,
+    defaultOpen: import_prop_types82.default.bool,
     /**
      * The default value. Use when the component is not controlled.
      */
-    defaultValue: import_prop_types81.default.any,
+    defaultValue: import_prop_types82.default.any,
     /**
      * If `true`, a value is displayed even if no items are selected.
      *
@@ -70696,48 +71013,48 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The label should either be hidden or forced to a shrunk state.
      * @default false
      */
-    displayEmpty: import_prop_types81.default.bool,
+    displayEmpty: import_prop_types82.default.bool,
     /**
      * The icon that displays the arrow.
      * @default ArrowDropDownIcon
      */
-    IconComponent: import_prop_types81.default.elementType,
+    IconComponent: import_prop_types82.default.elementType,
     /**
      * The `id` of the wrapper element or the `select` element when `native`.
      */
-    id: import_prop_types81.default.string,
+    id: import_prop_types82.default.string,
     /**
      * An `Input` element; does not have to be a material-ui specific `Input`.
      */
-    input: import_prop_types81.default.element,
+    input: import_prop_types82.default.element,
     /**
      * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes) applied to the `input` element.
      * When `native` is `true`, the attributes are applied on the `select` element.
      */
-    inputProps: import_prop_types81.default.object,
+    inputProps: import_prop_types82.default.object,
     /**
      * See [OutlinedInput#label](/material-ui/api/outlined-input/#props)
      */
-    label: import_prop_types81.default.node,
+    label: import_prop_types82.default.node,
     /**
      * The ID of an element that acts as an additional label. The Select will
      * be labelled by the additional label and the selected value.
      */
-    labelId: import_prop_types81.default.string,
+    labelId: import_prop_types82.default.string,
     /**
      * Props applied to the [`Menu`](/material-ui/api/menu/) element.
      */
-    MenuProps: import_prop_types81.default.object,
+    MenuProps: import_prop_types82.default.object,
     /**
      * If `true`, `value` must be an array and the menu will support multiple selections.
      * @default false
      */
-    multiple: import_prop_types81.default.bool,
+    multiple: import_prop_types82.default.bool,
     /**
      * If `true`, the component uses a native `select` element.
      * @default false
      */
-    native: import_prop_types81.default.bool,
+    native: import_prop_types82.default.bool,
     /**
      * Callback fired when a menu item is selected.
      *
@@ -70746,26 +71063,26 @@ Please use another name.` : formatMuiErrorMessage(18));
      * **Warning**: This is a generic event, not a change event, unless the change event is caused by browser autofill.
      * @param {object} [child] The react element that was selected when `native` is `false` (default).
      */
-    onChange: import_prop_types81.default.func,
+    onChange: import_prop_types82.default.func,
     /**
      * Callback fired when the component requests to be closed.
      * Use it in either controlled (see the `open` prop), or uncontrolled mode (to detect when the Select collapses).
      *
      * @param {object} event The event source of the callback.
      */
-    onClose: import_prop_types81.default.func,
+    onClose: import_prop_types82.default.func,
     /**
      * Callback fired when the component requests to be opened.
      * Use it in either controlled (see the `open` prop), or uncontrolled mode (to detect when the Select expands).
      *
      * @param {object} event The event source of the callback.
      */
-    onOpen: import_prop_types81.default.func,
+    onOpen: import_prop_types82.default.func,
     /**
      * If `true`, the component is shown.
      * You can only use it when the `native` prop is `false` (default).
      */
-    open: import_prop_types81.default.bool,
+    open: import_prop_types82.default.bool,
     /**
      * Render the selected value.
      * You can only use it when the `native` prop is `false` (default).
@@ -70773,15 +71090,15 @@ Please use another name.` : formatMuiErrorMessage(18));
      * @param {any} value The `value` provided to the component.
      * @returns {ReactNode}
      */
-    renderValue: import_prop_types81.default.func,
+    renderValue: import_prop_types82.default.func,
     /**
      * Props applied to the clickable div element.
      */
-    SelectDisplayProps: import_prop_types81.default.object,
+    SelectDisplayProps: import_prop_types82.default.object,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types81.default.oneOfType([import_prop_types81.default.arrayOf(import_prop_types81.default.oneOfType([import_prop_types81.default.func, import_prop_types81.default.object, import_prop_types81.default.bool])), import_prop_types81.default.func, import_prop_types81.default.object]),
+    sx: import_prop_types82.default.oneOfType([import_prop_types82.default.arrayOf(import_prop_types82.default.oneOfType([import_prop_types82.default.func, import_prop_types82.default.object, import_prop_types82.default.bool])), import_prop_types82.default.func, import_prop_types82.default.object]),
     /**
      * The `input` value. Providing an empty string will select no options.
      * Set to an empty string `''` if you don't want any of the available options to be selected.
@@ -70789,19 +71106,19 @@ Please use another name.` : formatMuiErrorMessage(18));
      * If the value is an object it must have reference equality with the option in order to be selected.
      * If the value is not an object, the string representation must match with the string representation of the option in order to be selected.
      */
-    value: import_prop_types81.default.oneOfType([import_prop_types81.default.oneOf([""]), import_prop_types81.default.any]),
+    value: import_prop_types82.default.oneOfType([import_prop_types82.default.oneOf([""]), import_prop_types82.default.any]),
     /**
      * The variant to use.
      * @default 'outlined'
      */
-    variant: import_prop_types81.default.oneOf(["filled", "outlined", "standard"])
+    variant: import_prop_types82.default.oneOf(["filled", "outlined", "standard"])
   } : void 0;
   Select.muiName = "Select";
   var Select_default = Select;
 
   // node_modules/@mui/material/Slider/Slider.js
-  var React118 = __toESM(require_react());
-  var import_prop_types83 = __toESM(require_prop_types());
+  var React119 = __toESM(require_react());
+  var import_prop_types84 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/utils/shouldSpreadAdditionalProps.js
   var shouldSpreadAdditionalProps = /* @__PURE__ */ __name((Slot) => {
@@ -70810,8 +71127,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   var shouldSpreadAdditionalProps_default = shouldSpreadAdditionalProps;
 
   // node_modules/@mui/material/Slider/SliderValueLabel.js
-  var React117 = __toESM(require_react());
-  var import_prop_types82 = __toESM(require_prop_types());
+  var React118 = __toESM(require_react());
+  var import_prop_types83 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/Slider/sliderClasses.js
   function getSliderUtilityClass(slot) {
@@ -70822,8 +71139,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   var sliderClasses_default = sliderClasses;
 
   // node_modules/@mui/material/Slider/SliderValueLabel.js
-  var import_jsx_runtime107 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime108 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime109 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime110 = __toESM(require_jsx_runtime());
   var useValueLabelClasses = /* @__PURE__ */ __name((props) => {
     const {
       open
@@ -70845,15 +71162,15 @@ Please use another name.` : formatMuiErrorMessage(18));
     if (!children) {
       return null;
     }
-    return /* @__PURE__ */ React117.cloneElement(children, {
+    return /* @__PURE__ */ React118.cloneElement(children, {
       className: clsx_m_default(children.props.className)
-    }, /* @__PURE__ */ (0, import_jsx_runtime108.jsxs)(React117.Fragment, {
-      children: [children.props.children, /* @__PURE__ */ (0, import_jsx_runtime107.jsx)("span", {
+    }, /* @__PURE__ */ (0, import_jsx_runtime110.jsxs)(React118.Fragment, {
+      children: [children.props.children, /* @__PURE__ */ (0, import_jsx_runtime109.jsx)("span", {
         className: clsx_m_default(classes.offset, className),
         "aria-hidden": true,
-        children: /* @__PURE__ */ (0, import_jsx_runtime107.jsx)("span", {
+        children: /* @__PURE__ */ (0, import_jsx_runtime109.jsx)("span", {
           className: classes.circle,
-          children: /* @__PURE__ */ (0, import_jsx_runtime107.jsx)("span", {
+          children: /* @__PURE__ */ (0, import_jsx_runtime109.jsx)("span", {
             className: classes.label,
             children: value
           })
@@ -70863,15 +71180,15 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(SliderValueLabel, "SliderValueLabel");
   true ? SliderValueLabel.propTypes = {
-    children: import_prop_types82.default.element.isRequired,
-    className: import_prop_types82.default.string,
-    value: import_prop_types82.default.node
+    children: import_prop_types83.default.element.isRequired,
+    className: import_prop_types83.default.string,
+    value: import_prop_types83.default.node
   } : void 0;
 
   // node_modules/@mui/material/Slider/Slider.js
-  var import_jsx_runtime109 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime110 = __toESM(require_jsx_runtime());
-  var _excluded75 = ["aria-label", "aria-valuetext", "aria-labelledby", "component", "components", "componentsProps", "color", "classes", "className", "disableSwap", "disabled", "getAriaLabel", "getAriaValueText", "marks", "max", "min", "name", "onChange", "onChangeCommitted", "orientation", "size", "step", "scale", "slotProps", "slots", "tabIndex", "track", "value", "valueLabelDisplay", "valueLabelFormat"];
+  var import_jsx_runtime111 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime112 = __toESM(require_jsx_runtime());
+  var _excluded76 = ["aria-label", "aria-valuetext", "aria-labelledby", "component", "components", "componentsProps", "color", "classes", "className", "disableSwap", "disabled", "getAriaLabel", "getAriaValueText", "marks", "max", "min", "name", "onChange", "onChangeCommitted", "orientation", "size", "step", "scale", "slotProps", "slots", "tabIndex", "track", "value", "valueLabelDisplay", "valueLabelFormat"];
   function Identity2(x2) {
     return x2;
   }
@@ -70946,7 +71263,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * @ignore
      */
-    children: import_prop_types83.default.node
+    children: import_prop_types84.default.node
   } : void 0;
   var SliderRail = styled_default2("span", {
     name: "MuiSlider",
@@ -70981,7 +71298,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * @ignore
      */
-    children: import_prop_types83.default.node
+    children: import_prop_types84.default.node
   } : void 0;
   var SliderTrack = styled_default2("span", {
     name: "MuiSlider",
@@ -71029,7 +71346,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * @ignore
      */
-    children: import_prop_types83.default.node
+    children: import_prop_types84.default.node
   } : void 0;
   var SliderThumb = styled_default2("span", {
     name: "MuiSlider",
@@ -71111,7 +71428,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * @ignore
      */
-    children: import_prop_types83.default.node
+    children: import_prop_types84.default.node
   } : void 0;
   var StyledSliderValueLabel = styled_default2(SliderValueLabel, {
     name: "MuiSlider",
@@ -71179,7 +71496,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * @ignore
      */
-    children: import_prop_types83.default.node
+    children: import_prop_types84.default.node
   } : void 0;
   var SliderMark = styled_default2("span", {
     name: "MuiSlider",
@@ -71219,7 +71536,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * @ignore
      */
-    children: import_prop_types83.default.node
+    children: import_prop_types84.default.node
   } : void 0;
   var SliderMarkLabel = styled_default2("span", {
     name: "MuiSlider",
@@ -71257,9 +71574,9 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * @ignore
      */
-    children: import_prop_types83.default.node
+    children: import_prop_types84.default.node
   } : void 0;
-  var useUtilityClasses53 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses54 = /* @__PURE__ */ __name((ownerState) => {
     const {
       disabled,
       dragging,
@@ -71289,7 +71606,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   var Forward = /* @__PURE__ */ __name(({
     children
   }) => children, "Forward");
-  var Slider = /* @__PURE__ */ React118.forwardRef(/* @__PURE__ */ __name(function Slider2(inputProps, ref) {
+  var Slider = /* @__PURE__ */ React119.forwardRef(/* @__PURE__ */ __name(function Slider2(inputProps, ref) {
     var _ref, _slots$root, _ref2, _slots$rail, _ref3, _slots$track, _ref4, _slots$thumb, _ref5, _slots$valueLabel, _ref6, _slots$mark, _ref7, _slots$markLabel, _ref8, _slots$input, _slotProps$root, _slotProps$rail, _slotProps$track, _slotProps$thumb, _slotProps$valueLabel, _slotProps$mark, _slotProps$markLabel, _slotProps$input;
     const props = useThemeProps2({
       props: inputProps,
@@ -71324,7 +71641,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       track = "normal",
       valueLabelDisplay = "off",
       valueLabelFormat = Identity2
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded75);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded76);
     const ownerState = _extends({}, props, {
       isRtl,
       max: max2,
@@ -71363,7 +71680,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     ownerState.marked = marks.length > 0 && marks.some((mark) => mark.label);
     ownerState.dragging = dragging;
     ownerState.focusedThumbIndex = focusedThumbIndex;
-    const classes = useUtilityClasses53(ownerState);
+    const classes = useUtilityClasses54(ownerState);
     const RootSlot = (_ref = (_slots$root = slots == null ? void 0 : slots.root) != null ? _slots$root : components.Root) != null ? _ref : SliderRoot;
     const RailSlot = (_ref2 = (_slots$rail = slots == null ? void 0 : slots.rail) != null ? _slots$rail : components.Rail) != null ? _ref2 : SliderRail;
     const TrackSlot = (_ref3 = (_slots$track = slots == null ? void 0 : slots.track) != null ? _slots$track : components.Track) != null ? _ref3 : SliderTrack;
@@ -71437,8 +71754,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       externalSlotProps: inputSlotProps,
       ownerState
     });
-    return /* @__PURE__ */ (0, import_jsx_runtime110.jsxs)(RootSlot, _extends({}, rootProps, {
-      children: [/* @__PURE__ */ (0, import_jsx_runtime109.jsx)(RailSlot, _extends({}, railProps)), /* @__PURE__ */ (0, import_jsx_runtime109.jsx)(TrackSlot, _extends({}, trackProps)), marks.filter((mark) => mark.value >= min2 && mark.value <= max2).map((mark, index) => {
+    return /* @__PURE__ */ (0, import_jsx_runtime112.jsxs)(RootSlot, _extends({}, rootProps, {
+      children: [/* @__PURE__ */ (0, import_jsx_runtime111.jsx)(RailSlot, _extends({}, railProps)), /* @__PURE__ */ (0, import_jsx_runtime111.jsx)(TrackSlot, _extends({}, trackProps)), marks.filter((mark) => mark.value >= min2 && mark.value <= max2).map((mark, index) => {
         const percent = valueToPercent(mark.value, min2, max2);
         const style4 = axisProps2[axis].offset(percent);
         let markActive;
@@ -71447,15 +71764,15 @@ Please use another name.` : formatMuiErrorMessage(18));
         } else {
           markActive = track === "normal" && (range2 ? mark.value >= values3[0] && mark.value <= values3[values3.length - 1] : mark.value <= values3[0]) || track === "inverted" && (range2 ? mark.value <= values3[0] || mark.value >= values3[values3.length - 1] : mark.value >= values3[0]);
         }
-        return /* @__PURE__ */ (0, import_jsx_runtime110.jsxs)(React118.Fragment, {
-          children: [/* @__PURE__ */ (0, import_jsx_runtime109.jsx)(MarkSlot, _extends({
+        return /* @__PURE__ */ (0, import_jsx_runtime112.jsxs)(React119.Fragment, {
+          children: [/* @__PURE__ */ (0, import_jsx_runtime111.jsx)(MarkSlot, _extends({
             "data-index": index
           }, markProps, !isHostComponent(MarkSlot) && {
             markActive
           }, {
             style: _extends({}, style4, markProps.style),
             className: clsx_m_default(markProps.className, markActive && classes.markActive)
-          })), mark.label != null ? /* @__PURE__ */ (0, import_jsx_runtime109.jsx)(MarkLabelSlot, _extends({
+          })), mark.label != null ? /* @__PURE__ */ (0, import_jsx_runtime111.jsx)(MarkLabelSlot, _extends({
             "aria-hidden": true,
             "data-index": index
           }, markLabelProps, !isHostComponent(MarkLabelSlot) && {
@@ -71472,7 +71789,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         const ValueLabelComponent = valueLabelDisplay === "off" ? Forward : ValueLabelSlot;
         return (
           /* TODO v6: Change component structure. It will help in avoiding the complicated React.cloneElement API added in SliderValueLabel component. Should be: Thumb -> Input, ValueLabel. Follow Joy UI's Slider structure. */
-          /* @__PURE__ */ (0, import_jsx_runtime109.jsx)(ValueLabelComponent, _extends({}, !isHostComponent(ValueLabelComponent) && {
+          /* @__PURE__ */ (0, import_jsx_runtime111.jsx)(ValueLabelComponent, _extends({}, !isHostComponent(ValueLabelComponent) && {
             valueLabelFormat,
             valueLabelDisplay,
             value: typeof valueLabelFormat === "function" ? valueLabelFormat(scale(value), index) : valueLabelFormat,
@@ -71480,14 +71797,14 @@ Please use another name.` : formatMuiErrorMessage(18));
             open: open === index || active === index || valueLabelDisplay === "on",
             disabled
           }, valueLabelProps, {
-            children: /* @__PURE__ */ (0, import_jsx_runtime109.jsx)(ThumbSlot, _extends({
+            children: /* @__PURE__ */ (0, import_jsx_runtime111.jsx)(ThumbSlot, _extends({
               "data-index": index
             }, thumbProps, {
               className: clsx_m_default(classes.thumb, thumbProps.className, active === index && classes.active, focusedThumbIndex === index && classes.focusVisible),
               style: _extends({}, style4, {
                 pointerEvents: disableSwap && active !== index ? "none" : void 0
               }, thumbProps.style),
-              children: /* @__PURE__ */ (0, import_jsx_runtime109.jsx)(InputSlot, _extends({
+              children: /* @__PURE__ */ (0, import_jsx_runtime111.jsx)(InputSlot, _extends({
                 "data-index": index,
                 "aria-label": getAriaLabel ? getAriaLabel(index) : ariaLabel,
                 "aria-valuenow": scale(value),
@@ -71509,7 +71826,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The label of the slider.
      */
-    "aria-label": chainPropTypes(import_prop_types83.default.string, (props) => {
+    "aria-label": chainPropTypes(import_prop_types84.default.string, (props) => {
       const range2 = Array.isArray(props.value || props.defaultValue);
       if (range2 && props["aria-label"] != null) {
         return new Error("MUI: You need to use the `getAriaLabel` prop instead of `aria-label` when using a range slider.");
@@ -71519,11 +71836,11 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The id of the element containing a label for the slider.
      */
-    "aria-labelledby": import_prop_types83.default.string,
+    "aria-labelledby": import_prop_types84.default.string,
     /**
      * A string value that provides a user-friendly name for the current value of the slider.
      */
-    "aria-valuetext": chainPropTypes(import_prop_types83.default.string, (props) => {
+    "aria-valuetext": chainPropTypes(import_prop_types84.default.string, (props) => {
       const range2 = Array.isArray(props.value || props.defaultValue);
       if (range2 && props["aria-valuetext"] != null) {
         return new Error("MUI: You need to use the `getAriaValueText` prop instead of `aria-valuetext` when using a range slider.");
@@ -71533,22 +71850,22 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * @ignore
      */
-    children: import_prop_types83.default.node,
+    children: import_prop_types84.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types83.default.object,
+    classes: import_prop_types84.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types83.default.string,
+    className: import_prop_types84.default.string,
     /**
      * The color of the component.
      * It supports both default and custom theme colors, which can be added as shown in the
      * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
      * @default 'primary'
      */
-    color: import_prop_types83.default.oneOfType([import_prop_types83.default.oneOf(["primary", "secondary"]), import_prop_types83.default.string]),
+    color: import_prop_types84.default.oneOfType([import_prop_types84.default.oneOf(["primary", "secondary"]), import_prop_types84.default.string]),
     /**
      * The components used for each slot inside.
      *
@@ -71557,15 +71874,15 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    components: import_prop_types83.default.shape({
-      Input: import_prop_types83.default.elementType,
-      Mark: import_prop_types83.default.elementType,
-      MarkLabel: import_prop_types83.default.elementType,
-      Rail: import_prop_types83.default.elementType,
-      Root: import_prop_types83.default.elementType,
-      Thumb: import_prop_types83.default.elementType,
-      Track: import_prop_types83.default.elementType,
-      ValueLabel: import_prop_types83.default.elementType
+    components: import_prop_types84.default.shape({
+      Input: import_prop_types84.default.elementType,
+      Mark: import_prop_types84.default.elementType,
+      MarkLabel: import_prop_types84.default.elementType,
+      Rail: import_prop_types84.default.elementType,
+      Root: import_prop_types84.default.elementType,
+      Thumb: import_prop_types84.default.elementType,
+      Track: import_prop_types84.default.elementType,
+      ValueLabel: import_prop_types84.default.elementType
     }),
     /**
      * The extra props for the slot components.
@@ -71576,44 +71893,44 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    componentsProps: import_prop_types83.default.shape({
-      input: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      mark: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      markLabel: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      rail: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      root: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      thumb: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      track: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      valueLabel: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.shape({
-        children: import_prop_types83.default.element,
-        className: import_prop_types83.default.string,
-        open: import_prop_types83.default.bool,
-        style: import_prop_types83.default.object,
-        value: import_prop_types83.default.number,
-        valueLabelDisplay: import_prop_types83.default.oneOf(["auto", "off", "on"])
+    componentsProps: import_prop_types84.default.shape({
+      input: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      mark: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      markLabel: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      rail: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      root: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      thumb: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      track: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      valueLabel: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.shape({
+        children: import_prop_types84.default.element,
+        className: import_prop_types84.default.string,
+        open: import_prop_types84.default.bool,
+        style: import_prop_types84.default.object,
+        value: import_prop_types84.default.number,
+        valueLabelDisplay: import_prop_types84.default.oneOf(["auto", "off", "on"])
       })])
     }),
     /**
      * The default value. Use when the component is not controlled.
      */
-    defaultValue: import_prop_types83.default.oneOfType([import_prop_types83.default.arrayOf(import_prop_types83.default.number), import_prop_types83.default.number]),
+    defaultValue: import_prop_types84.default.oneOfType([import_prop_types84.default.arrayOf(import_prop_types84.default.number), import_prop_types84.default.number]),
     /**
      * If `true`, the component is disabled.
      * @default false
      */
-    disabled: import_prop_types83.default.bool,
+    disabled: import_prop_types84.default.bool,
     /**
      * If `true`, the active thumb doesn't swap when moving pointer over a thumb while dragging another thumb.
      * @default false
      */
-    disableSwap: import_prop_types83.default.bool,
+    disableSwap: import_prop_types84.default.bool,
     /**
      * Accepts a function which returns a string value that provides a user-friendly name for the thumb labels of the slider.
      * This is important for screen reader users.
      * @param {number} index The thumb label's index to format.
      * @returns {string}
      */
-    getAriaLabel: import_prop_types83.default.func,
+    getAriaLabel: import_prop_types84.default.func,
     /**
      * Accepts a function which returns a string value that provides a user-friendly name for the current value of the slider.
      * This is important for screen reader users.
@@ -71621,33 +71938,33 @@ Please use another name.` : formatMuiErrorMessage(18));
      * @param {number} index The thumb label's index to format.
      * @returns {string}
      */
-    getAriaValueText: import_prop_types83.default.func,
+    getAriaValueText: import_prop_types84.default.func,
     /**
      * Marks indicate predetermined values to which the user can move the slider.
      * If `true` the marks are spaced according the value of the `step` prop.
      * If an array, it should contain objects with `value` and an optional `label` keys.
      * @default false
      */
-    marks: import_prop_types83.default.oneOfType([import_prop_types83.default.arrayOf(import_prop_types83.default.shape({
-      label: import_prop_types83.default.node,
-      value: import_prop_types83.default.number.isRequired
-    })), import_prop_types83.default.bool]),
+    marks: import_prop_types84.default.oneOfType([import_prop_types84.default.arrayOf(import_prop_types84.default.shape({
+      label: import_prop_types84.default.node,
+      value: import_prop_types84.default.number.isRequired
+    })), import_prop_types84.default.bool]),
     /**
      * The maximum allowed value of the slider.
      * Should not be equal to min.
      * @default 100
      */
-    max: import_prop_types83.default.number,
+    max: import_prop_types84.default.number,
     /**
      * The minimum allowed value of the slider.
      * Should not be equal to max.
      * @default 0
      */
-    min: import_prop_types83.default.number,
+    min: import_prop_types84.default.number,
     /**
      * Name attribute of the hidden `input` element.
      */
-    name: import_prop_types83.default.string,
+    name: import_prop_types84.default.string,
     /**
      * Callback function that is fired when the slider's value changed.
      *
@@ -71657,19 +71974,19 @@ Please use another name.` : formatMuiErrorMessage(18));
      * @param {number | number[]} value The new value.
      * @param {number} activeThumb Index of the currently moved thumb.
      */
-    onChange: import_prop_types83.default.func,
+    onChange: import_prop_types84.default.func,
     /**
      * Callback function that is fired when the `mouseup` is triggered.
      *
      * @param {React.SyntheticEvent | Event} event The event source of the callback. **Warning**: This is a generic event not a change event.
      * @param {number | number[]} value The new value.
      */
-    onChangeCommitted: import_prop_types83.default.func,
+    onChangeCommitted: import_prop_types84.default.func,
     /**
      * The component orientation.
      * @default 'horizontal'
      */
-    orientation: import_prop_types83.default.oneOf(["horizontal", "vertical"]),
+    orientation: import_prop_types84.default.oneOf(["horizontal", "vertical"]),
     /**
      * A transformation function, to change the scale of the slider.
      * @param {any} x
@@ -71678,31 +71995,31 @@ Please use another name.` : formatMuiErrorMessage(18));
      *   return x;
      * }
      */
-    scale: import_prop_types83.default.func,
+    scale: import_prop_types84.default.func,
     /**
      * The size of the slider.
      * @default 'medium'
      */
-    size: import_prop_types83.default.oneOfType([import_prop_types83.default.oneOf(["small", "medium"]), import_prop_types83.default.string]),
+    size: import_prop_types84.default.oneOfType([import_prop_types84.default.oneOf(["small", "medium"]), import_prop_types84.default.string]),
     /**
      * The props used for each slot inside the Slider.
      * @default {}
      */
-    slotProps: import_prop_types83.default.shape({
-      input: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      mark: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      markLabel: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      rail: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      root: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      thumb: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      track: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object]),
-      valueLabel: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.shape({
-        children: import_prop_types83.default.element,
-        className: import_prop_types83.default.string,
-        open: import_prop_types83.default.bool,
-        style: import_prop_types83.default.object,
-        value: import_prop_types83.default.number,
-        valueLabelDisplay: import_prop_types83.default.oneOf(["auto", "off", "on"])
+    slotProps: import_prop_types84.default.shape({
+      input: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      mark: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      markLabel: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      rail: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      root: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      thumb: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      track: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object]),
+      valueLabel: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.shape({
+        children: import_prop_types84.default.element,
+        className: import_prop_types84.default.string,
+        open: import_prop_types84.default.bool,
+        style: import_prop_types84.default.object,
+        value: import_prop_types84.default.number,
+        valueLabelDisplay: import_prop_types84.default.oneOf(["auto", "off", "on"])
       })])
     }),
     /**
@@ -71710,15 +72027,15 @@ Please use another name.` : formatMuiErrorMessage(18));
      * Either a string to use a HTML element or a component.
      * @default {}
      */
-    slots: import_prop_types83.default.shape({
-      input: import_prop_types83.default.elementType,
-      mark: import_prop_types83.default.elementType,
-      markLabel: import_prop_types83.default.elementType,
-      rail: import_prop_types83.default.elementType,
-      root: import_prop_types83.default.elementType,
-      thumb: import_prop_types83.default.elementType,
-      track: import_prop_types83.default.elementType,
-      valueLabel: import_prop_types83.default.elementType
+    slots: import_prop_types84.default.shape({
+      input: import_prop_types84.default.elementType,
+      mark: import_prop_types84.default.elementType,
+      markLabel: import_prop_types84.default.elementType,
+      rail: import_prop_types84.default.elementType,
+      root: import_prop_types84.default.elementType,
+      thumb: import_prop_types84.default.elementType,
+      track: import_prop_types84.default.elementType,
+      valueLabel: import_prop_types84.default.elementType
     }),
     /**
      * The granularity with which the slider can step through values. (A "discrete" slider.)
@@ -71728,15 +72045,15 @@ Please use another name.` : formatMuiErrorMessage(18));
      * When step is `null`, the thumb can only be slid onto marks provided with the `marks` prop.
      * @default 1
      */
-    step: import_prop_types83.default.number,
+    step: import_prop_types84.default.number,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types83.default.oneOfType([import_prop_types83.default.arrayOf(import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.object, import_prop_types83.default.bool])), import_prop_types83.default.func, import_prop_types83.default.object]),
+    sx: import_prop_types84.default.oneOfType([import_prop_types84.default.arrayOf(import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object, import_prop_types84.default.bool])), import_prop_types84.default.func, import_prop_types84.default.object]),
     /**
      * Tab index attribute of the hidden `input` element.
      */
-    tabIndex: import_prop_types83.default.number,
+    tabIndex: import_prop_types84.default.number,
     /**
      * The track presentation:
      *
@@ -71745,12 +72062,12 @@ Please use another name.` : formatMuiErrorMessage(18));
      * - `false` the track will render without a bar.
      * @default 'normal'
      */
-    track: import_prop_types83.default.oneOf(["inverted", "normal", false]),
+    track: import_prop_types84.default.oneOf(["inverted", "normal", false]),
     /**
      * The value of the slider.
      * For ranged sliders, provide an array with two values.
      */
-    value: import_prop_types83.default.oneOfType([import_prop_types83.default.arrayOf(import_prop_types83.default.number), import_prop_types83.default.number]),
+    value: import_prop_types84.default.oneOfType([import_prop_types84.default.arrayOf(import_prop_types84.default.number), import_prop_types84.default.number]),
     /**
      * Controls when the value label is displayed:
      *
@@ -71759,7 +72076,7 @@ Please use another name.` : formatMuiErrorMessage(18));
      * - `off` will never display.
      * @default 'off'
      */
-    valueLabelDisplay: import_prop_types83.default.oneOf(["auto", "off", "on"]),
+    valueLabelDisplay: import_prop_types84.default.oneOf(["auto", "off", "on"]),
     /**
      * The format function the value label's value.
      *
@@ -71773,13 +72090,13 @@ Please use another name.` : formatMuiErrorMessage(18));
      *   return x;
      * }
      */
-    valueLabelFormat: import_prop_types83.default.oneOfType([import_prop_types83.default.func, import_prop_types83.default.string])
+    valueLabelFormat: import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.string])
   } : void 0;
   var Slider_default = Slider;
 
   // node_modules/@mui/material/Tooltip/Tooltip.js
-  var React119 = __toESM(require_react());
-  var import_prop_types84 = __toESM(require_prop_types());
+  var React120 = __toESM(require_react());
+  var import_prop_types85 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/Tooltip/tooltipClasses.js
   function getTooltipUtilityClass(slot) {
@@ -71790,14 +72107,14 @@ Please use another name.` : formatMuiErrorMessage(18));
   var tooltipClasses_default = tooltipClasses;
 
   // node_modules/@mui/material/Tooltip/Tooltip.js
-  var import_jsx_runtime111 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime112 = __toESM(require_jsx_runtime());
-  var _excluded76 = ["arrow", "children", "classes", "components", "componentsProps", "describeChild", "disableFocusListener", "disableHoverListener", "disableInteractive", "disableTouchListener", "enterDelay", "enterNextDelay", "enterTouchDelay", "followCursor", "id", "leaveDelay", "leaveTouchDelay", "onClose", "onOpen", "open", "placement", "PopperComponent", "PopperProps", "slotProps", "slots", "title", "TransitionComponent", "TransitionProps"];
+  var import_jsx_runtime113 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime114 = __toESM(require_jsx_runtime());
+  var _excluded77 = ["arrow", "children", "classes", "components", "componentsProps", "describeChild", "disableFocusListener", "disableHoverListener", "disableInteractive", "disableTouchListener", "enterDelay", "enterNextDelay", "enterTouchDelay", "followCursor", "id", "leaveDelay", "leaveTouchDelay", "onClose", "onOpen", "open", "placement", "PopperComponent", "PopperProps", "slotProps", "slots", "title", "TransitionComponent", "TransitionProps"];
   function round3(value) {
     return Math.round(value * 1e5) / 1e5;
   }
   __name(round3, "round");
-  var useUtilityClasses54 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses55 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       disableInteractive,
@@ -71979,7 +72296,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     };
   }
   __name(composeEventHandler, "composeEventHandler");
-  var Tooltip = /* @__PURE__ */ React119.forwardRef(/* @__PURE__ */ __name(function Tooltip2(inProps, ref) {
+  var Tooltip = /* @__PURE__ */ React120.forwardRef(/* @__PURE__ */ __name(function Tooltip2(inProps, ref) {
     var _ref, _slots$popper, _ref2, _ref3, _slots$transition, _ref4, _slots$tooltip, _ref5, _slots$arrow, _slotProps$popper, _ref6, _slotProps$popper2, _slotProps$transition, _slotProps$tooltip, _ref7, _slotProps$tooltip2, _slotProps$arrow, _ref8, _slotProps$arrow2;
     const props = useThemeProps2({
       props: inProps,
@@ -72013,17 +72330,17 @@ Please use another name.` : formatMuiErrorMessage(18));
       title,
       TransitionComponent: TransitionComponentProp = Grow_default,
       TransitionProps
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded76);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded77);
     const theme = useTheme5();
     const isRtl = theme.direction === "rtl";
-    const [childNode, setChildNode] = React119.useState();
-    const [arrowRef, setArrowRef] = React119.useState(null);
-    const ignoreNonTouchEvents = React119.useRef(false);
+    const [childNode, setChildNode] = React120.useState();
+    const [arrowRef, setArrowRef] = React120.useState(null);
+    const ignoreNonTouchEvents = React120.useRef(false);
     const disableInteractive = disableInteractiveProp || followCursor;
-    const closeTimer = React119.useRef();
-    const enterTimer = React119.useRef();
-    const leaveTimer = React119.useRef();
-    const touchTimer = React119.useRef();
+    const closeTimer = React120.useRef();
+    const enterTimer = React120.useRef();
+    const leaveTimer = React120.useRef();
+    const touchTimer = React120.useRef();
     const [openState, setOpenState] = useControlled_default({
       controlled: openProp,
       default: false,
@@ -72034,23 +72351,23 @@ Please use another name.` : formatMuiErrorMessage(18));
     if (true) {
       const {
         current: isControlled
-      } = React119.useRef(openProp !== void 0);
-      React119.useEffect(() => {
+      } = React120.useRef(openProp !== void 0);
+      React120.useEffect(() => {
         if (childNode && childNode.disabled && !isControlled && title !== "" && childNode.tagName.toLowerCase() === "button") {
           console.error(["MUI: You are providing a disabled `button` child to the Tooltip component.", "A disabled element does not fire events.", "Tooltip needs to listen to the child element's events to display the title.", "", "Add a simple wrapper element, such as a `span`."].join("\n"));
         }
       }, [title, childNode, isControlled]);
     }
     const id = useId_default(idProp);
-    const prevUserSelect = React119.useRef();
-    const stopTouchInteraction = React119.useCallback(() => {
+    const prevUserSelect = React120.useRef();
+    const stopTouchInteraction = React120.useCallback(() => {
       if (prevUserSelect.current !== void 0) {
         document.body.style.WebkitUserSelect = prevUserSelect.current;
         prevUserSelect.current = void 0;
       }
       clearTimeout(touchTimer.current);
     }, []);
-    React119.useEffect(() => {
+    React120.useEffect(() => {
       return () => {
         clearTimeout(closeTimer.current);
         clearTimeout(enterTimer.current);
@@ -72115,7 +72432,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       onFocus: handleFocusVisible,
       ref: focusVisibleRef
     } = useIsFocusVisible_default();
-    const [, setChildIsFocusVisible] = React119.useState(false);
+    const [, setChildIsFocusVisible] = React120.useState(false);
     const handleBlur = /* @__PURE__ */ __name((event) => {
       handleBlurVisible(event);
       if (isFocusVisibleRef.current === false) {
@@ -72164,7 +72481,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         handleClose(event);
       }, leaveTouchDelay);
     }, "handleTouchEnd");
-    React119.useEffect(() => {
+    React120.useEffect(() => {
       if (!open) {
         return void 0;
       }
@@ -72183,7 +72500,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     if (!title && title !== 0) {
       open = false;
     }
-    const popperRef = React119.useRef();
+    const popperRef = React120.useRef();
     const handleMouseMove = /* @__PURE__ */ __name((event) => {
       const childrenProps2 = children.props;
       if (childrenProps2.onMouseMove) {
@@ -72215,7 +72532,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     } : {});
     if (true) {
       childrenProps["data-mui-internal-clone-element"] = true;
-      React119.useEffect(() => {
+      React120.useEffect(() => {
         if (childNode && !childNode.getAttribute("data-mui-internal-clone-element")) {
           console.error(["MUI: The `children` component of the Tooltip is not forwarding its props correctly.", "Please make sure that props are spread on the same element that the ref is applied to."].join("\n"));
         }
@@ -72247,7 +72564,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         console.error(["MUI: You have provided a `title` prop to the child of <Tooltip />.", `Remove this title prop \`${children.props.title}\` or the Tooltip component.`].join("\n"));
       }
     }
-    const popperOptions = React119.useMemo(() => {
+    const popperOptions = React120.useMemo(() => {
       var _PopperProps$popperOp;
       let tooltipModifiers = [{
         name: "arrow",
@@ -72272,7 +72589,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       PopperComponentProp,
       touch: ignoreNonTouchEvents.current
     });
-    const classes = useUtilityClasses54(ownerState);
+    const classes = useUtilityClasses55(ownerState);
     const PopperComponent = (_ref = (_slots$popper = slots.popper) != null ? _slots$popper : components.Popper) != null ? _ref : TooltipPopper;
     const TransitionComponent = (_ref2 = (_ref3 = (_slots$transition = slots.transition) != null ? _slots$transition : components.Transition) != null ? _ref3 : TransitionComponentProp) != null ? _ref2 : Grow_default;
     const TooltipComponent = (_ref4 = (_slots$tooltip = slots.tooltip) != null ? _slots$tooltip : components.Tooltip) != null ? _ref4 : TooltipTooltip;
@@ -72287,8 +72604,8 @@ Please use another name.` : formatMuiErrorMessage(18));
     const tooltipArrowProps = appendOwnerState(ArrowComponent, _extends({}, (_slotProps$arrow = slotProps.arrow) != null ? _slotProps$arrow : componentsProps.arrow, {
       className: clsx_m_default(classes.arrow, (_ref8 = (_slotProps$arrow2 = slotProps.arrow) != null ? _slotProps$arrow2 : componentsProps.arrow) == null ? void 0 : _ref8.className)
     }), ownerState);
-    return /* @__PURE__ */ (0, import_jsx_runtime112.jsxs)(React119.Fragment, {
-      children: [/* @__PURE__ */ React119.cloneElement(children, childrenProps), /* @__PURE__ */ (0, import_jsx_runtime111.jsx)(PopperComponent, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime114.jsxs)(React120.Fragment, {
+      children: [/* @__PURE__ */ React120.cloneElement(children, childrenProps), /* @__PURE__ */ (0, import_jsx_runtime113.jsx)(PopperComponent, _extends({
         as: PopperComponentProp != null ? PopperComponentProp : Popper_default,
         placement,
         anchorEl: followCursor ? {
@@ -72309,11 +72626,11 @@ Please use another name.` : formatMuiErrorMessage(18));
         popperOptions,
         children: ({
           TransitionProps: TransitionPropsInner
-        }) => /* @__PURE__ */ (0, import_jsx_runtime111.jsx)(TransitionComponent, _extends({
+        }) => /* @__PURE__ */ (0, import_jsx_runtime113.jsx)(TransitionComponent, _extends({
           timeout: theme.transitions.duration.shorter
         }, TransitionPropsInner, transitionProps, {
-          children: /* @__PURE__ */ (0, import_jsx_runtime112.jsxs)(TooltipComponent, _extends({}, tooltipProps, {
-            children: [title, arrow2 ? /* @__PURE__ */ (0, import_jsx_runtime111.jsx)(ArrowComponent, _extends({}, tooltipArrowProps, {
+          children: /* @__PURE__ */ (0, import_jsx_runtime114.jsxs)(TooltipComponent, _extends({}, tooltipProps, {
+            children: [title, arrow2 ? /* @__PURE__ */ (0, import_jsx_runtime113.jsx)(ArrowComponent, _extends({}, tooltipArrowProps, {
               ref: setArrowRef
             })) : null]
           }))
@@ -72330,7 +72647,7 @@ Please use another name.` : formatMuiErrorMessage(18));
      * If `true`, adds an arrow to the tooltip.
      * @default false
      */
-    arrow: import_prop_types84.default.bool,
+    arrow: import_prop_types85.default.bool,
     /**
      * Tooltip reference element.
      */
@@ -72338,11 +72655,11 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types84.default.object,
+    classes: import_prop_types85.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types84.default.string,
+    className: import_prop_types85.default.string,
     /**
      * The components used for each slot inside.
      *
@@ -72351,11 +72668,11 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    components: import_prop_types84.default.shape({
-      Arrow: import_prop_types84.default.elementType,
-      Popper: import_prop_types84.default.elementType,
-      Tooltip: import_prop_types84.default.elementType,
-      Transition: import_prop_types84.default.elementType
+    components: import_prop_types85.default.shape({
+      Arrow: import_prop_types85.default.elementType,
+      Popper: import_prop_types85.default.elementType,
+      Tooltip: import_prop_types85.default.elementType,
+      Transition: import_prop_types85.default.elementType
     }),
     /**
      * The extra props for the slot components.
@@ -72366,107 +72683,107 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    componentsProps: import_prop_types84.default.shape({
-      arrow: import_prop_types84.default.object,
-      popper: import_prop_types84.default.object,
-      tooltip: import_prop_types84.default.object,
-      transition: import_prop_types84.default.object
+    componentsProps: import_prop_types85.default.shape({
+      arrow: import_prop_types85.default.object,
+      popper: import_prop_types85.default.object,
+      tooltip: import_prop_types85.default.object,
+      transition: import_prop_types85.default.object
     }),
     /**
      * Set to `true` if the `title` acts as an accessible description.
      * By default the `title` acts as an accessible label for the child.
      * @default false
      */
-    describeChild: import_prop_types84.default.bool,
+    describeChild: import_prop_types85.default.bool,
     /**
      * Do not respond to focus-visible events.
      * @default false
      */
-    disableFocusListener: import_prop_types84.default.bool,
+    disableFocusListener: import_prop_types85.default.bool,
     /**
      * Do not respond to hover events.
      * @default false
      */
-    disableHoverListener: import_prop_types84.default.bool,
+    disableHoverListener: import_prop_types85.default.bool,
     /**
      * Makes a tooltip not interactive, i.e. it will close when the user
      * hovers over the tooltip before the `leaveDelay` is expired.
      * @default false
      */
-    disableInteractive: import_prop_types84.default.bool,
+    disableInteractive: import_prop_types85.default.bool,
     /**
      * Do not respond to long press touch events.
      * @default false
      */
-    disableTouchListener: import_prop_types84.default.bool,
+    disableTouchListener: import_prop_types85.default.bool,
     /**
      * The number of milliseconds to wait before showing the tooltip.
      * This prop won't impact the enter touch delay (`enterTouchDelay`).
      * @default 100
      */
-    enterDelay: import_prop_types84.default.number,
+    enterDelay: import_prop_types85.default.number,
     /**
      * The number of milliseconds to wait before showing the tooltip when one was already recently opened.
      * @default 0
      */
-    enterNextDelay: import_prop_types84.default.number,
+    enterNextDelay: import_prop_types85.default.number,
     /**
      * The number of milliseconds a user must touch the element before showing the tooltip.
      * @default 700
      */
-    enterTouchDelay: import_prop_types84.default.number,
+    enterTouchDelay: import_prop_types85.default.number,
     /**
      * If `true`, the tooltip follow the cursor over the wrapped element.
      * @default false
      */
-    followCursor: import_prop_types84.default.bool,
+    followCursor: import_prop_types85.default.bool,
     /**
      * This prop is used to help implement the accessibility logic.
      * If you don't provide this prop. It falls back to a randomly generated id.
      */
-    id: import_prop_types84.default.string,
+    id: import_prop_types85.default.string,
     /**
      * The number of milliseconds to wait before hiding the tooltip.
      * This prop won't impact the leave touch delay (`leaveTouchDelay`).
      * @default 0
      */
-    leaveDelay: import_prop_types84.default.number,
+    leaveDelay: import_prop_types85.default.number,
     /**
      * The number of milliseconds after the user stops touching an element before hiding the tooltip.
      * @default 1500
      */
-    leaveTouchDelay: import_prop_types84.default.number,
+    leaveTouchDelay: import_prop_types85.default.number,
     /**
      * Callback fired when the component requests to be closed.
      *
      * @param {React.SyntheticEvent} event The event source of the callback.
      */
-    onClose: import_prop_types84.default.func,
+    onClose: import_prop_types85.default.func,
     /**
      * Callback fired when the component requests to be open.
      *
      * @param {React.SyntheticEvent} event The event source of the callback.
      */
-    onOpen: import_prop_types84.default.func,
+    onOpen: import_prop_types85.default.func,
     /**
      * If `true`, the component is shown.
      */
-    open: import_prop_types84.default.bool,
+    open: import_prop_types85.default.bool,
     /**
      * Tooltip placement.
      * @default 'bottom'
      */
-    placement: import_prop_types84.default.oneOf(["bottom-end", "bottom-start", "bottom", "left-end", "left-start", "left", "right-end", "right-start", "right", "top-end", "top-start", "top"]),
+    placement: import_prop_types85.default.oneOf(["bottom-end", "bottom-start", "bottom", "left-end", "left-start", "left", "right-end", "right-start", "right", "top-end", "top-start", "top"]),
     /**
      * The component used for the popper.
      * @default Popper
      */
-    PopperComponent: import_prop_types84.default.elementType,
+    PopperComponent: import_prop_types85.default.elementType,
     /**
      * Props applied to the [`Popper`](/material-ui/api/popper/) element.
      * @default {}
      */
-    PopperProps: import_prop_types84.default.object,
+    PopperProps: import_prop_types85.default.object,
     /**
      * The extra props for the slot components.
      * You can override the existing props or add new ones.
@@ -72475,11 +72792,11 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    slotProps: import_prop_types84.default.shape({
-      arrow: import_prop_types84.default.object,
-      popper: import_prop_types84.default.object,
-      tooltip: import_prop_types84.default.object,
-      transition: import_prop_types84.default.object
+    slotProps: import_prop_types85.default.shape({
+      arrow: import_prop_types85.default.object,
+      popper: import_prop_types85.default.object,
+      tooltip: import_prop_types85.default.object,
+      transition: import_prop_types85.default.object
     }),
     /**
      * The components used for each slot inside.
@@ -72488,36 +72805,36 @@ Please use another name.` : formatMuiErrorMessage(18));
      *
      * @default {}
      */
-    slots: import_prop_types84.default.shape({
-      arrow: import_prop_types84.default.elementType,
-      popper: import_prop_types84.default.elementType,
-      tooltip: import_prop_types84.default.elementType,
-      transition: import_prop_types84.default.elementType
+    slots: import_prop_types85.default.shape({
+      arrow: import_prop_types85.default.elementType,
+      popper: import_prop_types85.default.elementType,
+      tooltip: import_prop_types85.default.elementType,
+      transition: import_prop_types85.default.elementType
     }),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types84.default.oneOfType([import_prop_types84.default.arrayOf(import_prop_types84.default.oneOfType([import_prop_types84.default.func, import_prop_types84.default.object, import_prop_types84.default.bool])), import_prop_types84.default.func, import_prop_types84.default.object]),
+    sx: import_prop_types85.default.oneOfType([import_prop_types85.default.arrayOf(import_prop_types85.default.oneOfType([import_prop_types85.default.func, import_prop_types85.default.object, import_prop_types85.default.bool])), import_prop_types85.default.func, import_prop_types85.default.object]),
     /**
      * Tooltip title. Zero-length titles string, undefined, null and false are never displayed.
      */
-    title: import_prop_types84.default.node,
+    title: import_prop_types85.default.node,
     /**
      * The component used for the transition.
      * [Follow this guide](/material-ui/transitions/#transitioncomponent-prop) to learn more about the requirements for this component.
      * @default Grow
      */
-    TransitionComponent: import_prop_types84.default.elementType,
+    TransitionComponent: import_prop_types85.default.elementType,
     /**
      * Props applied to the transition element.
      * By default, the element is based on this [`Transition`](http://reactcommunity.org/react-transition-group/transition/) component.
      */
-    TransitionProps: import_prop_types84.default.object
+    TransitionProps: import_prop_types85.default.object
   } : void 0;
   var Tooltip_default = Tooltip;
 
   // node_modules/@mui/material/Stack/Stack.js
-  var import_prop_types85 = __toESM(require_prop_types());
+  var import_prop_types86 = __toESM(require_prop_types());
   var Stack2 = createStack({
     createStyledComponent: styled_default2("div", {
       name: "MuiStack",
@@ -72537,31 +72854,31 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types85.default.node,
+    children: import_prop_types86.default.node,
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types85.default.elementType,
+    component: import_prop_types86.default.elementType,
     /**
      * Defines the `flex-direction` style property.
      * It is applied for all screen sizes.
      * @default 'column'
      */
-    direction: import_prop_types85.default.oneOfType([import_prop_types85.default.oneOf(["column-reverse", "column", "row-reverse", "row"]), import_prop_types85.default.arrayOf(import_prop_types85.default.oneOf(["column-reverse", "column", "row-reverse", "row"])), import_prop_types85.default.object]),
+    direction: import_prop_types86.default.oneOfType([import_prop_types86.default.oneOf(["column-reverse", "column", "row-reverse", "row"]), import_prop_types86.default.arrayOf(import_prop_types86.default.oneOf(["column-reverse", "column", "row-reverse", "row"])), import_prop_types86.default.object]),
     /**
      * Add an element between each child.
      */
-    divider: import_prop_types85.default.node,
+    divider: import_prop_types86.default.node,
     /**
      * Defines the space between immediate children.
      * @default 0
      */
-    spacing: import_prop_types85.default.oneOfType([import_prop_types85.default.arrayOf(import_prop_types85.default.oneOfType([import_prop_types85.default.number, import_prop_types85.default.string])), import_prop_types85.default.number, import_prop_types85.default.object, import_prop_types85.default.string]),
+    spacing: import_prop_types86.default.oneOfType([import_prop_types86.default.arrayOf(import_prop_types86.default.oneOfType([import_prop_types86.default.number, import_prop_types86.default.string])), import_prop_types86.default.number, import_prop_types86.default.object, import_prop_types86.default.string]),
     /**
      * The system prop, which allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types85.default.oneOfType([import_prop_types85.default.arrayOf(import_prop_types85.default.oneOfType([import_prop_types85.default.func, import_prop_types85.default.object, import_prop_types85.default.bool])), import_prop_types85.default.func, import_prop_types85.default.object]),
+    sx: import_prop_types86.default.oneOfType([import_prop_types86.default.arrayOf(import_prop_types86.default.oneOfType([import_prop_types86.default.func, import_prop_types86.default.object, import_prop_types86.default.bool])), import_prop_types86.default.func, import_prop_types86.default.object]),
     /**
      * If `true`, the CSS flexbox `gap` is used instead of applying `margin` to children.
      *
@@ -72571,13 +72888,13 @@ Please use another name.` : formatMuiErrorMessage(18));
      * To enable this flag globally, follow the [theme's default props](https://mui.com/material-ui/customization/theme-components/#default-props) configuration.
      * @default false
      */
-    useFlexGap: import_prop_types85.default.bool
+    useFlexGap: import_prop_types86.default.bool
   } : void 0;
   var Stack_default2 = Stack2;
 
   // node_modules/@mui/material/Switch/Switch.js
-  var React120 = __toESM(require_react());
-  var import_prop_types86 = __toESM(require_prop_types());
+  var React121 = __toESM(require_react());
+  var import_prop_types87 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/Switch/switchClasses.js
   function getSwitchUtilityClass(slot) {
@@ -72588,10 +72905,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   var switchClasses_default = switchClasses;
 
   // node_modules/@mui/material/Switch/Switch.js
-  var import_jsx_runtime113 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime114 = __toESM(require_jsx_runtime());
-  var _excluded77 = ["className", "color", "edge", "size", "sx"];
-  var useUtilityClasses55 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime115 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime116 = __toESM(require_jsx_runtime());
+  var _excluded78 = ["className", "color", "edge", "size", "sx"];
+  var useUtilityClasses56 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       edge,
@@ -72753,7 +73070,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     height: 20,
     borderRadius: "50%"
   }));
-  var Switch = /* @__PURE__ */ React120.forwardRef(/* @__PURE__ */ __name(function Switch2(inProps, ref) {
+  var Switch = /* @__PURE__ */ React121.forwardRef(/* @__PURE__ */ __name(function Switch2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiSwitch"
@@ -72764,22 +73081,22 @@ Please use another name.` : formatMuiErrorMessage(18));
       edge = false,
       size = "medium",
       sx
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded77);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded78);
     const ownerState = _extends({}, props, {
       color: color2,
       edge,
       size
     });
-    const classes = useUtilityClasses55(ownerState);
-    const icon = /* @__PURE__ */ (0, import_jsx_runtime113.jsx)(SwitchThumb, {
+    const classes = useUtilityClasses56(ownerState);
+    const icon = /* @__PURE__ */ (0, import_jsx_runtime115.jsx)(SwitchThumb, {
       className: classes.thumb,
       ownerState
     });
-    return /* @__PURE__ */ (0, import_jsx_runtime114.jsxs)(SwitchRoot, {
+    return /* @__PURE__ */ (0, import_jsx_runtime116.jsxs)(SwitchRoot, {
       className: clsx_m_default(classes.root, className),
       sx,
       ownerState,
-      children: [/* @__PURE__ */ (0, import_jsx_runtime113.jsx)(SwitchSwitchBase, _extends({
+      children: [/* @__PURE__ */ (0, import_jsx_runtime115.jsx)(SwitchSwitchBase, _extends({
         type: "checkbox",
         icon,
         checkedIcon: icon,
@@ -72789,7 +73106,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         classes: _extends({}, classes, {
           root: classes.switchBase
         })
-      })), /* @__PURE__ */ (0, import_jsx_runtime113.jsx)(SwitchTrack, {
+      })), /* @__PURE__ */ (0, import_jsx_runtime115.jsx)(SwitchTrack, {
         className: classes.track,
         ownerState
       })]
@@ -72803,39 +73120,39 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * If `true`, the component is checked.
      */
-    checked: import_prop_types86.default.bool,
+    checked: import_prop_types87.default.bool,
     /**
      * The icon to display when the component is checked.
      */
-    checkedIcon: import_prop_types86.default.node,
+    checkedIcon: import_prop_types87.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types86.default.object,
+    classes: import_prop_types87.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types86.default.string,
+    className: import_prop_types87.default.string,
     /**
      * The color of the component.
      * It supports both default and custom theme colors, which can be added as shown in the
      * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
      * @default 'primary'
      */
-    color: import_prop_types86.default.oneOfType([import_prop_types86.default.oneOf(["default", "primary", "secondary", "error", "info", "success", "warning"]), import_prop_types86.default.string]),
+    color: import_prop_types87.default.oneOfType([import_prop_types87.default.oneOf(["default", "primary", "secondary", "error", "info", "success", "warning"]), import_prop_types87.default.string]),
     /**
      * The default checked state. Use when the component is not controlled.
      */
-    defaultChecked: import_prop_types86.default.bool,
+    defaultChecked: import_prop_types87.default.bool,
     /**
      * If `true`, the component is disabled.
      */
-    disabled: import_prop_types86.default.bool,
+    disabled: import_prop_types87.default.bool,
     /**
      * If `true`, the ripple effect is disabled.
      * @default false
      */
-    disableRipple: import_prop_types86.default.bool,
+    disableRipple: import_prop_types87.default.bool,
     /**
      * If given, uses a negative margin to counteract the padding on one
      * side (this is often helpful for aligning the left or right
@@ -72843,19 +73160,19 @@ Please use another name.` : formatMuiErrorMessage(18));
      * size and shape).
      * @default false
      */
-    edge: import_prop_types86.default.oneOf(["end", "start", false]),
+    edge: import_prop_types87.default.oneOf(["end", "start", false]),
     /**
      * The icon to display when the component is unchecked.
      */
-    icon: import_prop_types86.default.node,
+    icon: import_prop_types87.default.node,
     /**
      * The id of the `input` element.
      */
-    id: import_prop_types86.default.string,
+    id: import_prop_types87.default.string,
     /**
      * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes) applied to the `input` element.
      */
-    inputProps: import_prop_types86.default.object,
+    inputProps: import_prop_types87.default.object,
     /**
      * Pass a ref to the `input` element.
      */
@@ -72867,33 +73184,33 @@ Please use another name.` : formatMuiErrorMessage(18));
      * You can pull out the new value by accessing `event.target.value` (string).
      * You can pull out the new checked state by accessing `event.target.checked` (boolean).
      */
-    onChange: import_prop_types86.default.func,
+    onChange: import_prop_types87.default.func,
     /**
      * If `true`, the `input` element is required.
      * @default false
      */
-    required: import_prop_types86.default.bool,
+    required: import_prop_types87.default.bool,
     /**
      * The size of the component.
      * `small` is equivalent to the dense switch styling.
      * @default 'medium'
      */
-    size: import_prop_types86.default.oneOfType([import_prop_types86.default.oneOf(["medium", "small"]), import_prop_types86.default.string]),
+    size: import_prop_types87.default.oneOfType([import_prop_types87.default.oneOf(["medium", "small"]), import_prop_types87.default.string]),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types86.default.oneOfType([import_prop_types86.default.arrayOf(import_prop_types86.default.oneOfType([import_prop_types86.default.func, import_prop_types86.default.object, import_prop_types86.default.bool])), import_prop_types86.default.func, import_prop_types86.default.object]),
+    sx: import_prop_types87.default.oneOfType([import_prop_types87.default.arrayOf(import_prop_types87.default.oneOfType([import_prop_types87.default.func, import_prop_types87.default.object, import_prop_types87.default.bool])), import_prop_types87.default.func, import_prop_types87.default.object]),
     /**
      * The value of the component. The DOM API casts this to a string.
      * The browser uses "on" as the default value.
      */
-    value: import_prop_types86.default.any
+    value: import_prop_types87.default.any
   } : void 0;
   var Switch_default = Switch;
 
   // node_modules/@mui/material/Tab/Tab.js
-  var React121 = __toESM(require_react());
-  var import_prop_types87 = __toESM(require_prop_types());
+  var React122 = __toESM(require_react());
+  var import_prop_types88 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/Tab/tabClasses.js
   function getTabUtilityClass(slot) {
@@ -72904,9 +73221,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var tabClasses_default = tabClasses;
 
   // node_modules/@mui/material/Tab/Tab.js
-  var import_jsx_runtime115 = __toESM(require_jsx_runtime());
-  var _excluded78 = ["className", "disabled", "disableFocusRipple", "fullWidth", "icon", "iconPosition", "indicator", "label", "onChange", "onClick", "onFocus", "selected", "selectionFollowsFocus", "textColor", "value", "wrapped"];
-  var useUtilityClasses56 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime117 = __toESM(require_jsx_runtime());
+  var _excluded79 = ["className", "disabled", "disableFocusRipple", "fullWidth", "icon", "iconPosition", "indicator", "label", "onChange", "onClick", "onFocus", "selected", "selectionFollowsFocus", "textColor", "value", "wrapped"];
+  var useUtilityClasses57 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       textColor,
@@ -72996,7 +73313,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   }, ownerState.wrapped && {
     fontSize: theme.typography.pxToRem(12)
   }));
-  var Tab = /* @__PURE__ */ React121.forwardRef(/* @__PURE__ */ __name(function Tab2(inProps, ref) {
+  var Tab = /* @__PURE__ */ React122.forwardRef(/* @__PURE__ */ __name(function Tab2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiTab"
@@ -73023,7 +73340,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       textColor = "inherit",
       value,
       wrapped = false
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded78);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded79);
     const ownerState = _extends({}, props, {
       disabled,
       disableFocusRipple,
@@ -73035,8 +73352,8 @@ Please use another name.` : formatMuiErrorMessage(18));
       textColor,
       wrapped
     });
-    const classes = useUtilityClasses56(ownerState);
-    const icon = iconProp && label && /* @__PURE__ */ React121.isValidElement(iconProp) ? /* @__PURE__ */ React121.cloneElement(iconProp, {
+    const classes = useUtilityClasses57(ownerState);
+    const icon = iconProp && label && /* @__PURE__ */ React122.isValidElement(iconProp) ? /* @__PURE__ */ React122.cloneElement(iconProp, {
       className: clsx_m_default(classes.iconWrapper, iconProp.props.className)
     }) : iconProp;
     const handleClick = /* @__PURE__ */ __name((event) => {
@@ -73055,7 +73372,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         onFocus(event);
       }
     }, "handleFocus");
-    return /* @__PURE__ */ (0, import_jsx_runtime115.jsxs)(TabRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime117.jsxs)(TabRoot, _extends({
       focusRipple: !disableFocusRipple,
       className: clsx_m_default(classes.root, className),
       ref,
@@ -73067,9 +73384,9 @@ Please use another name.` : formatMuiErrorMessage(18));
       ownerState,
       tabIndex: selected ? 0 : -1
     }, other, {
-      children: [iconPosition === "top" || iconPosition === "start" ? /* @__PURE__ */ (0, import_jsx_runtime115.jsxs)(React121.Fragment, {
+      children: [iconPosition === "top" || iconPosition === "start" ? /* @__PURE__ */ (0, import_jsx_runtime117.jsxs)(React122.Fragment, {
         children: [icon, label]
-      }) : /* @__PURE__ */ (0, import_jsx_runtime115.jsxs)(React121.Fragment, {
+      }) : /* @__PURE__ */ (0, import_jsx_runtime117.jsxs)(React122.Fragment, {
         children: [label, icon]
       }), indicator]
     }));
@@ -73087,21 +73404,21 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types87.default.object,
+    classes: import_prop_types88.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types87.default.string,
+    className: import_prop_types88.default.string,
     /**
      * If `true`, the component is disabled.
      * @default false
      */
-    disabled: import_prop_types87.default.bool,
+    disabled: import_prop_types88.default.bool,
     /**
      * If `true`, the  keyboard focus ripple is disabled.
      * @default false
      */
-    disableFocusRipple: import_prop_types87.default.bool,
+    disableFocusRipple: import_prop_types88.default.bool,
     /**
      * If `true`, the ripple effect is disabled.
      *
@@ -73109,67 +73426,67 @@ Please use another name.` : formatMuiErrorMessage(18));
      * to highlight the element by applying separate styles with the `.Mui-focusVisible` class.
      * @default false
      */
-    disableRipple: import_prop_types87.default.bool,
+    disableRipple: import_prop_types88.default.bool,
     /**
      * The icon to display.
      */
-    icon: import_prop_types87.default.oneOfType([import_prop_types87.default.element, import_prop_types87.default.string]),
+    icon: import_prop_types88.default.oneOfType([import_prop_types88.default.element, import_prop_types88.default.string]),
     /**
      * The position of the icon relative to the label.
      * @default 'top'
      */
-    iconPosition: import_prop_types87.default.oneOf(["bottom", "end", "start", "top"]),
+    iconPosition: import_prop_types88.default.oneOf(["bottom", "end", "start", "top"]),
     /**
      * The label element.
      */
-    label: import_prop_types87.default.node,
+    label: import_prop_types88.default.node,
     /**
      * @ignore
      */
-    onChange: import_prop_types87.default.func,
+    onChange: import_prop_types88.default.func,
     /**
      * @ignore
      */
-    onClick: import_prop_types87.default.func,
+    onClick: import_prop_types88.default.func,
     /**
      * @ignore
      */
-    onFocus: import_prop_types87.default.func,
+    onFocus: import_prop_types88.default.func,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types87.default.oneOfType([import_prop_types87.default.arrayOf(import_prop_types87.default.oneOfType([import_prop_types87.default.func, import_prop_types87.default.object, import_prop_types87.default.bool])), import_prop_types87.default.func, import_prop_types87.default.object]),
+    sx: import_prop_types88.default.oneOfType([import_prop_types88.default.arrayOf(import_prop_types88.default.oneOfType([import_prop_types88.default.func, import_prop_types88.default.object, import_prop_types88.default.bool])), import_prop_types88.default.func, import_prop_types88.default.object]),
     /**
      * You can provide your own value. Otherwise, we fallback to the child position index.
      */
-    value: import_prop_types87.default.any,
+    value: import_prop_types88.default.any,
     /**
      * Tab labels appear in a single row.
      * They can use a second line if needed.
      * @default false
      */
-    wrapped: import_prop_types87.default.bool
+    wrapped: import_prop_types88.default.bool
   } : void 0;
   var Tab_default = Tab;
 
   // node_modules/@mui/material/internal/svg-icons/KeyboardArrowLeft.js
-  var React122 = __toESM(require_react());
-  var import_jsx_runtime116 = __toESM(require_jsx_runtime());
-  var KeyboardArrowLeft_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime116.jsx)("path", {
+  var React123 = __toESM(require_react());
+  var import_jsx_runtime118 = __toESM(require_jsx_runtime());
+  var KeyboardArrowLeft_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime118.jsx)("path", {
     d: "M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"
   }), "KeyboardArrowLeft");
 
   // node_modules/@mui/material/internal/svg-icons/KeyboardArrowRight.js
-  var React123 = __toESM(require_react());
-  var import_jsx_runtime117 = __toESM(require_jsx_runtime());
-  var KeyboardArrowRight_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime117.jsx)("path", {
+  var React124 = __toESM(require_react());
+  var import_jsx_runtime119 = __toESM(require_jsx_runtime());
+  var KeyboardArrowRight_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime119.jsx)("path", {
     d: "M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"
   }), "KeyboardArrowRight");
 
   // node_modules/@mui/material/Tabs/Tabs.js
-  var React126 = __toESM(require_react());
+  var React127 = __toESM(require_react());
   var import_react_is6 = __toESM(require_react_is2());
-  var import_prop_types90 = __toESM(require_prop_types());
+  var import_prop_types91 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/internal/animate.js
   function easeInOutSin(time) {
@@ -73217,10 +73534,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(animate, "animate");
 
   // node_modules/@mui/material/Tabs/ScrollbarSize.js
-  var React124 = __toESM(require_react());
-  var import_prop_types88 = __toESM(require_prop_types());
-  var import_jsx_runtime118 = __toESM(require_jsx_runtime());
-  var _excluded79 = ["onChange"];
+  var React125 = __toESM(require_react());
+  var import_prop_types89 = __toESM(require_prop_types());
+  var import_jsx_runtime120 = __toESM(require_jsx_runtime());
+  var _excluded80 = ["onChange"];
   var styles5 = {
     width: 99,
     height: 99,
@@ -73231,13 +73548,13 @@ Please use another name.` : formatMuiErrorMessage(18));
   function ScrollbarSize(props) {
     const {
       onChange
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded79);
-    const scrollbarHeight = React124.useRef();
-    const nodeRef = React124.useRef(null);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded80);
+    const scrollbarHeight = React125.useRef();
+    const nodeRef = React125.useRef(null);
     const setMeasurements = /* @__PURE__ */ __name(() => {
       scrollbarHeight.current = nodeRef.current.offsetHeight - nodeRef.current.clientHeight;
     }, "setMeasurements");
-    React124.useEffect(() => {
+    React125.useEffect(() => {
       const handleResize = debounce_default(() => {
         const prevHeight = scrollbarHeight.current;
         setMeasurements();
@@ -73252,23 +73569,23 @@ Please use another name.` : formatMuiErrorMessage(18));
         containerWindow.removeEventListener("resize", handleResize);
       };
     }, [onChange]);
-    React124.useEffect(() => {
+    React125.useEffect(() => {
       setMeasurements();
       onChange(scrollbarHeight.current);
     }, [onChange]);
-    return /* @__PURE__ */ (0, import_jsx_runtime118.jsx)("div", _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime120.jsx)("div", _extends({
       style: styles5,
       ref: nodeRef
     }, other));
   }
   __name(ScrollbarSize, "ScrollbarSize");
   true ? ScrollbarSize.propTypes = {
-    onChange: import_prop_types88.default.func.isRequired
+    onChange: import_prop_types89.default.func.isRequired
   } : void 0;
 
   // node_modules/@mui/material/TabScrollButton/TabScrollButton.js
-  var React125 = __toESM(require_react());
-  var import_prop_types89 = __toESM(require_prop_types());
+  var React126 = __toESM(require_react());
+  var import_prop_types90 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/TabScrollButton/tabScrollButtonClasses.js
   function getTabScrollButtonUtilityClass(slot) {
@@ -73279,9 +73596,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var tabScrollButtonClasses_default = tabScrollButtonClasses;
 
   // node_modules/@mui/material/TabScrollButton/TabScrollButton.js
-  var import_jsx_runtime119 = __toESM(require_jsx_runtime());
-  var _excluded80 = ["className", "slots", "slotProps", "direction", "orientation", "disabled"];
-  var useUtilityClasses57 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime121 = __toESM(require_jsx_runtime());
+  var _excluded81 = ["className", "slots", "slotProps", "direction", "orientation", "disabled"];
+  var useUtilityClasses58 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes,
       orientation,
@@ -73317,7 +73634,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       transform: `rotate(${ownerState.isRtl ? -90 : 90}deg)`
     }
   }));
-  var TabScrollButton = /* @__PURE__ */ React125.forwardRef(/* @__PURE__ */ __name(function TabScrollButton2(inProps, ref) {
+  var TabScrollButton = /* @__PURE__ */ React126.forwardRef(/* @__PURE__ */ __name(function TabScrollButton2(inProps, ref) {
     var _slots$StartScrollBut, _slots$EndScrollButto;
     const props = useThemeProps2({
       props: inProps,
@@ -73328,13 +73645,13 @@ Please use another name.` : formatMuiErrorMessage(18));
       slots = {},
       slotProps = {},
       direction
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded80);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded81);
     const theme = useTheme5();
     const isRtl = theme.direction === "rtl";
     const ownerState = _extends({
       isRtl
     }, props);
-    const classes = useUtilityClasses57(ownerState);
+    const classes = useUtilityClasses58(ownerState);
     const StartButtonIcon = (_slots$StartScrollBut = slots.StartScrollButtonIcon) != null ? _slots$StartScrollBut : KeyboardArrowLeft_default;
     const EndButtonIcon = (_slots$EndScrollButto = slots.EndScrollButtonIcon) != null ? _slots$EndScrollButto : KeyboardArrowRight_default;
     const startButtonIconProps = useSlotProps({
@@ -73353,7 +73670,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       },
       ownerState
     });
-    return /* @__PURE__ */ (0, import_jsx_runtime119.jsx)(TabScrollButtonRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime121.jsx)(TabScrollButtonRoot, _extends({
       component: "div",
       className: clsx_m_default(classes.root, className),
       ref,
@@ -73361,7 +73678,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       ownerState,
       tabIndex: null
     }, other, {
-      children: direction === "left" ? /* @__PURE__ */ (0, import_jsx_runtime119.jsx)(StartButtonIcon, _extends({}, startButtonIconProps)) : /* @__PURE__ */ (0, import_jsx_runtime119.jsx)(EndButtonIcon, _extends({}, endButtonIconProps))
+      children: direction === "left" ? /* @__PURE__ */ (0, import_jsx_runtime121.jsx)(StartButtonIcon, _extends({}, startButtonIconProps)) : /* @__PURE__ */ (0, import_jsx_runtime121.jsx)(EndButtonIcon, _extends({}, endButtonIconProps))
     }));
   }, "TabScrollButton"));
   true ? TabScrollButton.propTypes = {
@@ -73372,49 +73689,49 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types89.default.node,
+    children: import_prop_types90.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types89.default.object,
+    classes: import_prop_types90.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types89.default.string,
+    className: import_prop_types90.default.string,
     /**
      * The direction the button should indicate.
      */
-    direction: import_prop_types89.default.oneOf(["left", "right"]).isRequired,
+    direction: import_prop_types90.default.oneOf(["left", "right"]).isRequired,
     /**
      * If `true`, the component is disabled.
      * @default false
      */
-    disabled: import_prop_types89.default.bool,
+    disabled: import_prop_types90.default.bool,
     /**
      * The component orientation (layout flow direction).
      */
-    orientation: import_prop_types89.default.oneOf(["horizontal", "vertical"]).isRequired,
+    orientation: import_prop_types90.default.oneOf(["horizontal", "vertical"]).isRequired,
     /**
      * The extra props for the slot components.
      * You can override the existing props or add new ones.
      * @default {}
      */
-    slotProps: import_prop_types89.default.shape({
-      endScrollButtonIcon: import_prop_types89.default.oneOfType([import_prop_types89.default.func, import_prop_types89.default.object]),
-      startScrollButtonIcon: import_prop_types89.default.oneOfType([import_prop_types89.default.func, import_prop_types89.default.object])
+    slotProps: import_prop_types90.default.shape({
+      endScrollButtonIcon: import_prop_types90.default.oneOfType([import_prop_types90.default.func, import_prop_types90.default.object]),
+      startScrollButtonIcon: import_prop_types90.default.oneOfType([import_prop_types90.default.func, import_prop_types90.default.object])
     }),
     /**
      * The components used for each slot inside.
      * @default {}
      */
-    slots: import_prop_types89.default.shape({
-      EndScrollButtonIcon: import_prop_types89.default.elementType,
-      StartScrollButtonIcon: import_prop_types89.default.elementType
+    slots: import_prop_types90.default.shape({
+      EndScrollButtonIcon: import_prop_types90.default.elementType,
+      StartScrollButtonIcon: import_prop_types90.default.elementType
     }),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types89.default.oneOfType([import_prop_types89.default.arrayOf(import_prop_types89.default.oneOfType([import_prop_types89.default.func, import_prop_types89.default.object, import_prop_types89.default.bool])), import_prop_types89.default.func, import_prop_types89.default.object])
+    sx: import_prop_types90.default.oneOfType([import_prop_types90.default.arrayOf(import_prop_types90.default.oneOfType([import_prop_types90.default.func, import_prop_types90.default.object, import_prop_types90.default.bool])), import_prop_types90.default.func, import_prop_types90.default.object])
   } : void 0;
   var TabScrollButton_default = TabScrollButton;
 
@@ -73427,9 +73744,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var tabsClasses_default = tabsClasses;
 
   // node_modules/@mui/material/Tabs/Tabs.js
-  var import_jsx_runtime120 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime121 = __toESM(require_jsx_runtime());
-  var _excluded81 = ["aria-label", "aria-labelledby", "action", "centered", "children", "className", "component", "allowScrollButtonsMobile", "indicatorColor", "onChange", "orientation", "ScrollButtonComponent", "scrollButtons", "selectionFollowsFocus", "slots", "slotProps", "TabIndicatorProps", "TabScrollButtonProps", "textColor", "value", "variant", "visibleScrollbar"];
+  var import_jsx_runtime122 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime123 = __toESM(require_jsx_runtime());
+  var _excluded82 = ["aria-label", "aria-labelledby", "action", "centered", "children", "className", "component", "allowScrollButtonsMobile", "indicatorColor", "onChange", "orientation", "ScrollButtonComponent", "scrollButtons", "selectionFollowsFocus", "slots", "slotProps", "TabIndicatorProps", "TabScrollButtonProps", "textColor", "value", "variant", "visibleScrollbar"];
   var nextItem2 = /* @__PURE__ */ __name((list, item) => {
     if (list === item) {
       return list.firstChild;
@@ -73467,7 +73784,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }
   }, "moveFocus");
-  var useUtilityClasses58 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses59 = /* @__PURE__ */ __name((ownerState) => {
     const {
       vertical,
       fixed,
@@ -73610,7 +73927,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   });
   var defaultIndicatorStyle = {};
   var warnedOnceTabPresent = false;
-  var Tabs = /* @__PURE__ */ React126.forwardRef(/* @__PURE__ */ __name(function Tabs2(inProps, ref) {
+  var Tabs = /* @__PURE__ */ React127.forwardRef(/* @__PURE__ */ __name(function Tabs2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiTabs"
@@ -73640,7 +73957,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       value,
       variant = "standard",
       visibleScrollbar = false
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded81);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded82);
     const scrollable = variant === "scrollable";
     const vertical = orientation === "vertical";
     const scrollStart = vertical ? "scrollTop" : "scrollLeft";
@@ -73665,7 +73982,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       centered: centered && !scrollable,
       scrollButtonsHideMobile: !allowScrollButtonsMobile
     });
-    const classes = useUtilityClasses58(ownerState);
+    const classes = useUtilityClasses59(ownerState);
     const startScrollButtonIconProps = useSlotProps({
       elementType: slots.StartScrollButtonIcon,
       externalSlotProps: slotProps.startScrollButtonIcon,
@@ -73681,19 +73998,19 @@ Please use another name.` : formatMuiErrorMessage(18));
         console.error('MUI: You can not use the `centered={true}` and `variant="scrollable"` properties at the same time on a `Tabs` component.');
       }
     }
-    const [mounted, setMounted] = React126.useState(false);
-    const [indicatorStyle, setIndicatorStyle] = React126.useState(defaultIndicatorStyle);
-    const [displayScroll, setDisplayScroll] = React126.useState({
+    const [mounted, setMounted] = React127.useState(false);
+    const [indicatorStyle, setIndicatorStyle] = React127.useState(defaultIndicatorStyle);
+    const [displayScroll, setDisplayScroll] = React127.useState({
       start: false,
       end: false
     });
-    const [scrollerStyle, setScrollerStyle] = React126.useState({
+    const [scrollerStyle, setScrollerStyle] = React127.useState({
       overflow: "hidden",
       scrollbarWidth: 0
     });
     const valueToIndex = /* @__PURE__ */ new Map();
-    const tabsRef = React126.useRef(null);
-    const tabListRef = React126.useRef(null);
+    const tabsRef = React127.useRef(null);
+    const tabListRef = React127.useRef(null);
     const getTabsMeta = /* @__PURE__ */ __name(() => {
       const tabsNode = tabsRef.current;
       let tabsMeta;
@@ -73814,7 +74131,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const handleEndScrollClick = /* @__PURE__ */ __name(() => {
       moveTabsScroll(getScrollSize());
     }, "handleEndScrollClick");
-    const handleScrollbarSizeChange = React126.useCallback((scrollbarWidth) => {
+    const handleScrollbarSizeChange = React127.useCallback((scrollbarWidth) => {
       setScrollerStyle({
         overflow: null,
         scrollbarWidth
@@ -73822,13 +74139,13 @@ Please use another name.` : formatMuiErrorMessage(18));
     }, []);
     const getConditionalElements = /* @__PURE__ */ __name(() => {
       const conditionalElements2 = {};
-      conditionalElements2.scrollbarSizeListener = scrollable ? /* @__PURE__ */ (0, import_jsx_runtime120.jsx)(TabsScrollbarSize, {
+      conditionalElements2.scrollbarSizeListener = scrollable ? /* @__PURE__ */ (0, import_jsx_runtime122.jsx)(TabsScrollbarSize, {
         onChange: handleScrollbarSizeChange,
         className: clsx_m_default(classes.scrollableX, classes.hideScrollbar)
       }) : null;
       const scrollButtonsActive = displayScroll.start || displayScroll.end;
       const showScrollButtons = scrollable && (scrollButtons === "auto" && scrollButtonsActive || scrollButtons === true);
-      conditionalElements2.scrollButtonStart = showScrollButtons ? /* @__PURE__ */ (0, import_jsx_runtime120.jsx)(ScrollButtonComponent, _extends({
+      conditionalElements2.scrollButtonStart = showScrollButtons ? /* @__PURE__ */ (0, import_jsx_runtime122.jsx)(ScrollButtonComponent, _extends({
         slots: {
           StartScrollButtonIcon: slots.StartScrollButtonIcon
         },
@@ -73842,7 +74159,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       }, TabScrollButtonProps, {
         className: clsx_m_default(classes.scrollButtons, TabScrollButtonProps.className)
       })) : null;
-      conditionalElements2.scrollButtonEnd = showScrollButtons ? /* @__PURE__ */ (0, import_jsx_runtime120.jsx)(ScrollButtonComponent, _extends({
+      conditionalElements2.scrollButtonEnd = showScrollButtons ? /* @__PURE__ */ (0, import_jsx_runtime122.jsx)(ScrollButtonComponent, _extends({
         slots: {
           EndScrollButtonIcon: slots.EndScrollButtonIcon
         },
@@ -73905,7 +74222,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         }
       }
     });
-    React126.useEffect(() => {
+    React127.useEffect(() => {
       const handleResize = debounce_default(() => {
         if (tabsRef.current) {
           updateIndicatorState();
@@ -73929,36 +74246,36 @@ Please use another name.` : formatMuiErrorMessage(18));
         }
       };
     }, [updateIndicatorState, updateScrollButtonState]);
-    const handleTabsScroll = React126.useMemo(() => debounce_default(() => {
+    const handleTabsScroll = React127.useMemo(() => debounce_default(() => {
       updateScrollButtonState();
     }), [updateScrollButtonState]);
-    React126.useEffect(() => {
+    React127.useEffect(() => {
       return () => {
         handleTabsScroll.clear();
       };
     }, [handleTabsScroll]);
-    React126.useEffect(() => {
+    React127.useEffect(() => {
       setMounted(true);
     }, []);
-    React126.useEffect(() => {
+    React127.useEffect(() => {
       updateIndicatorState();
       updateScrollButtonState();
     });
-    React126.useEffect(() => {
+    React127.useEffect(() => {
       scrollSelectedIntoView(defaultIndicatorStyle !== indicatorStyle);
     }, [scrollSelectedIntoView, indicatorStyle]);
-    React126.useImperativeHandle(action, () => ({
+    React127.useImperativeHandle(action, () => ({
       updateIndicator: updateIndicatorState,
       updateScrollButtons: updateScrollButtonState
     }), [updateIndicatorState, updateScrollButtonState]);
-    const indicator = /* @__PURE__ */ (0, import_jsx_runtime120.jsx)(TabsIndicator, _extends({}, TabIndicatorProps, {
+    const indicator = /* @__PURE__ */ (0, import_jsx_runtime122.jsx)(TabsIndicator, _extends({}, TabIndicatorProps, {
       className: clsx_m_default(classes.indicator, TabIndicatorProps.className),
       ownerState,
       style: _extends({}, indicatorStyle, TabIndicatorProps.style)
     }));
     let childIndex = 0;
-    const children = React126.Children.map(childrenProp, (child) => {
-      if (!/* @__PURE__ */ React126.isValidElement(child)) {
+    const children = React127.Children.map(childrenProp, (child) => {
+      if (!/* @__PURE__ */ React127.isValidElement(child)) {
         return null;
       }
       if (true) {
@@ -73970,7 +74287,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       valueToIndex.set(childValue, childIndex);
       const selected = childValue === value;
       childIndex += 1;
-      return /* @__PURE__ */ React126.cloneElement(child, _extends({
+      return /* @__PURE__ */ React127.cloneElement(child, _extends({
         fullWidth: variant === "fullWidth",
         indicator: selected && !mounted && indicator,
         selected,
@@ -74017,13 +74334,13 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }, "handleKeyDown");
     const conditionalElements = getConditionalElements();
-    return /* @__PURE__ */ (0, import_jsx_runtime121.jsxs)(TabsRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime123.jsxs)(TabsRoot, _extends({
       className: clsx_m_default(classes.root, className),
       ownerState,
       ref,
       as: component
     }, other, {
-      children: [conditionalElements.scrollButtonStart, conditionalElements.scrollbarSizeListener, /* @__PURE__ */ (0, import_jsx_runtime121.jsxs)(TabsScroller, {
+      children: [conditionalElements.scrollButtonStart, conditionalElements.scrollbarSizeListener, /* @__PURE__ */ (0, import_jsx_runtime123.jsxs)(TabsScroller, {
         className: classes.scroller,
         ownerState,
         style: {
@@ -74032,7 +74349,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         },
         ref: tabsRef,
         onScroll: handleTabsScroll,
-        children: [/* @__PURE__ */ (0, import_jsx_runtime120.jsx)(FlexContainer, {
+        children: [/* @__PURE__ */ (0, import_jsx_runtime122.jsx)(FlexContainer, {
           "aria-label": ariaLabel,
           "aria-labelledby": ariaLabelledBy,
           "aria-orientation": orientation === "vertical" ? "vertical" : null,
@@ -74065,60 +74382,60 @@ Please use another name.` : formatMuiErrorMessage(18));
      * By default the scroll buttons are hidden on mobile and takes precedence over `scrollButtons`.
      * @default false
      */
-    allowScrollButtonsMobile: import_prop_types90.default.bool,
+    allowScrollButtonsMobile: import_prop_types91.default.bool,
     /**
      * The label for the Tabs as a string.
      */
-    "aria-label": import_prop_types90.default.string,
+    "aria-label": import_prop_types91.default.string,
     /**
      * An id or list of ids separated by a space that label the Tabs.
      */
-    "aria-labelledby": import_prop_types90.default.string,
+    "aria-labelledby": import_prop_types91.default.string,
     /**
      * If `true`, the tabs are centered.
      * This prop is intended for large views.
      * @default false
      */
-    centered: import_prop_types90.default.bool,
+    centered: import_prop_types91.default.bool,
     /**
      * The content of the component.
      */
-    children: import_prop_types90.default.node,
+    children: import_prop_types91.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types90.default.object,
+    classes: import_prop_types91.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types90.default.string,
+    className: import_prop_types91.default.string,
     /**
      * The component used for the root node.
      * Either a string to use a HTML element or a component.
      */
-    component: import_prop_types90.default.elementType,
+    component: import_prop_types91.default.elementType,
     /**
      * Determines the color of the indicator.
      * @default 'primary'
      */
-    indicatorColor: import_prop_types90.default.oneOfType([import_prop_types90.default.oneOf(["primary", "secondary"]), import_prop_types90.default.string]),
+    indicatorColor: import_prop_types91.default.oneOfType([import_prop_types91.default.oneOf(["primary", "secondary"]), import_prop_types91.default.string]),
     /**
      * Callback fired when the value changes.
      *
      * @param {React.SyntheticEvent} event The event source of the callback. **Warning**: This is a generic event not a change event.
      * @param {any} value We default to the index of the child (number)
      */
-    onChange: import_prop_types90.default.func,
+    onChange: import_prop_types91.default.func,
     /**
      * The component orientation (layout flow direction).
      * @default 'horizontal'
      */
-    orientation: import_prop_types90.default.oneOf(["horizontal", "vertical"]),
+    orientation: import_prop_types91.default.oneOf(["horizontal", "vertical"]),
     /**
      * The component used to render the scroll buttons.
      * @default TabScrollButton
      */
-    ScrollButtonComponent: import_prop_types90.default.elementType,
+    ScrollButtonComponent: import_prop_types91.default.elementType,
     /**
      * Determine behavior of scroll buttons when tabs are set to scroll:
      *
@@ -74130,53 +74447,53 @@ Please use another name.` : formatMuiErrorMessage(18));
      * This behavior can be disabled with `allowScrollButtonsMobile`.
      * @default 'auto'
      */
-    scrollButtons: import_prop_types90.default.oneOf(["auto", false, true]),
+    scrollButtons: import_prop_types91.default.oneOf(["auto", false, true]),
     /**
      * If `true` the selected tab changes on focus. Otherwise it only
      * changes on activation.
      */
-    selectionFollowsFocus: import_prop_types90.default.bool,
+    selectionFollowsFocus: import_prop_types91.default.bool,
     /**
      * The extra props for the slot components.
      * You can override the existing props or add new ones.
      * @default {}
      */
-    slotProps: import_prop_types90.default.shape({
-      endScrollButtonIcon: import_prop_types90.default.oneOfType([import_prop_types90.default.func, import_prop_types90.default.object]),
-      startScrollButtonIcon: import_prop_types90.default.oneOfType([import_prop_types90.default.func, import_prop_types90.default.object])
+    slotProps: import_prop_types91.default.shape({
+      endScrollButtonIcon: import_prop_types91.default.oneOfType([import_prop_types91.default.func, import_prop_types91.default.object]),
+      startScrollButtonIcon: import_prop_types91.default.oneOfType([import_prop_types91.default.func, import_prop_types91.default.object])
     }),
     /**
      * The components used for each slot inside.
      * @default {}
      */
-    slots: import_prop_types90.default.shape({
-      EndScrollButtonIcon: import_prop_types90.default.elementType,
-      StartScrollButtonIcon: import_prop_types90.default.elementType
+    slots: import_prop_types91.default.shape({
+      EndScrollButtonIcon: import_prop_types91.default.elementType,
+      StartScrollButtonIcon: import_prop_types91.default.elementType
     }),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types90.default.oneOfType([import_prop_types90.default.arrayOf(import_prop_types90.default.oneOfType([import_prop_types90.default.func, import_prop_types90.default.object, import_prop_types90.default.bool])), import_prop_types90.default.func, import_prop_types90.default.object]),
+    sx: import_prop_types91.default.oneOfType([import_prop_types91.default.arrayOf(import_prop_types91.default.oneOfType([import_prop_types91.default.func, import_prop_types91.default.object, import_prop_types91.default.bool])), import_prop_types91.default.func, import_prop_types91.default.object]),
     /**
      * Props applied to the tab indicator element.
      * @default  {}
      */
-    TabIndicatorProps: import_prop_types90.default.object,
+    TabIndicatorProps: import_prop_types91.default.object,
     /**
      * Props applied to the [`TabScrollButton`](/material-ui/api/tab-scroll-button/) element.
      * @default {}
      */
-    TabScrollButtonProps: import_prop_types90.default.object,
+    TabScrollButtonProps: import_prop_types91.default.object,
     /**
      * Determines the color of the `Tab`.
      * @default 'primary'
      */
-    textColor: import_prop_types90.default.oneOf(["inherit", "primary", "secondary"]),
+    textColor: import_prop_types91.default.oneOf(["inherit", "primary", "secondary"]),
     /**
      * The value of the currently selected `Tab`.
      * If you don't want any selected `Tab`, you can set this prop to `false`.
      */
-    value: import_prop_types90.default.any,
+    value: import_prop_types91.default.any,
     /**
      * Determines additional display behavior of the tabs:
      *
@@ -74187,19 +74504,19 @@ Please use another name.` : formatMuiErrorMessage(18));
      *  - `standard` will render the default state.
      * @default 'standard'
      */
-    variant: import_prop_types90.default.oneOf(["fullWidth", "scrollable", "standard"]),
+    variant: import_prop_types91.default.oneOf(["fullWidth", "scrollable", "standard"]),
     /**
      * If `true`, the scrollbar is visible. It can be useful when displaying
      * a long vertical list of tabs.
      * @default false
      */
-    visibleScrollbar: import_prop_types90.default.bool
+    visibleScrollbar: import_prop_types91.default.bool
   } : void 0;
   var Tabs_default = Tabs;
 
   // node_modules/@mui/material/TextField/TextField.js
-  var React127 = __toESM(require_react());
-  var import_prop_types91 = __toESM(require_prop_types());
+  var React128 = __toESM(require_react());
+  var import_prop_types92 = __toESM(require_prop_types());
 
   // node_modules/@mui/material/TextField/textFieldClasses.js
   function getTextFieldUtilityClass(slot) {
@@ -74209,15 +74526,15 @@ Please use another name.` : formatMuiErrorMessage(18));
   var textFieldClasses = generateUtilityClasses("MuiTextField", ["root"]);
 
   // node_modules/@mui/material/TextField/TextField.js
-  var import_jsx_runtime122 = __toESM(require_jsx_runtime());
-  var import_jsx_runtime123 = __toESM(require_jsx_runtime());
-  var _excluded82 = ["autoComplete", "autoFocus", "children", "className", "color", "defaultValue", "disabled", "error", "FormHelperTextProps", "fullWidth", "helperText", "id", "InputLabelProps", "inputProps", "InputProps", "inputRef", "label", "maxRows", "minRows", "multiline", "name", "onBlur", "onChange", "onFocus", "placeholder", "required", "rows", "select", "SelectProps", "type", "value", "variant"];
+  var import_jsx_runtime124 = __toESM(require_jsx_runtime());
+  var import_jsx_runtime125 = __toESM(require_jsx_runtime());
+  var _excluded83 = ["autoComplete", "autoFocus", "children", "className", "color", "defaultValue", "disabled", "error", "FormHelperTextProps", "fullWidth", "helperText", "id", "InputLabelProps", "inputProps", "InputProps", "inputRef", "label", "maxRows", "minRows", "multiline", "name", "onBlur", "onChange", "onFocus", "placeholder", "required", "rows", "select", "SelectProps", "type", "value", "variant"];
   var variantComponent = {
     standard: Input_default,
     filled: FilledInput_default,
     outlined: OutlinedInput_default
   };
-  var useUtilityClasses59 = /* @__PURE__ */ __name((ownerState) => {
+  var useUtilityClasses60 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes
     } = ownerState;
@@ -74231,7 +74548,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     slot: "Root",
     overridesResolver: (props, styles6) => styles6.root
   })({});
-  var TextField = /* @__PURE__ */ React127.forwardRef(/* @__PURE__ */ __name(function TextField2(inProps, ref) {
+  var TextField = /* @__PURE__ */ React128.forwardRef(/* @__PURE__ */ __name(function TextField2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiTextField"
@@ -74269,7 +74586,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       type,
       value,
       variant = "outlined"
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded82);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded83);
     const ownerState = _extends({}, props, {
       autoFocus,
       color: color2,
@@ -74281,7 +74598,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       select,
       variant
     });
-    const classes = useUtilityClasses59(ownerState);
+    const classes = useUtilityClasses60(ownerState);
     if (true) {
       if (select && !children) {
         console.error("MUI: `children` must be passed when using the `TextField` component with `select`.");
@@ -74304,7 +74621,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const helperTextId = helperText && id ? `${id}-helper-text` : void 0;
     const inputLabelId = label && id ? `${id}-label` : void 0;
     const InputComponent = variantComponent[variant];
-    const InputElement = /* @__PURE__ */ (0, import_jsx_runtime122.jsx)(InputComponent, _extends({
+    const InputElement = /* @__PURE__ */ (0, import_jsx_runtime124.jsx)(InputComponent, _extends({
       "aria-describedby": helperTextId,
       autoComplete,
       autoFocus,
@@ -74325,7 +74642,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       placeholder,
       inputProps
     }, InputMore, InputProps));
-    return /* @__PURE__ */ (0, import_jsx_runtime123.jsxs)(TextFieldRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime125.jsxs)(TextFieldRoot, _extends({
       className: clsx_m_default(classes.root, className),
       disabled,
       error: error2,
@@ -74336,12 +74653,12 @@ Please use another name.` : formatMuiErrorMessage(18));
       variant,
       ownerState
     }, other, {
-      children: [label != null && label !== "" && /* @__PURE__ */ (0, import_jsx_runtime122.jsx)(InputLabel_default, _extends({
+      children: [label != null && label !== "" && /* @__PURE__ */ (0, import_jsx_runtime124.jsx)(InputLabel_default, _extends({
         htmlFor: id,
         id: inputLabelId
       }, InputLabelProps, {
         children: label
-      })), select ? /* @__PURE__ */ (0, import_jsx_runtime122.jsx)(Select_default, _extends({
+      })), select ? /* @__PURE__ */ (0, import_jsx_runtime124.jsx)(Select_default, _extends({
         "aria-describedby": helperTextId,
         id,
         labelId: inputLabelId,
@@ -74349,7 +74666,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         input: InputElement
       }, SelectProps, {
         children
-      })) : InputElement, helperText && /* @__PURE__ */ (0, import_jsx_runtime122.jsx)(FormHelperText_default, _extends({
+      })) : InputElement, helperText && /* @__PURE__ */ (0, import_jsx_runtime124.jsx)(FormHelperText_default, _extends({
         id: helperTextId
       }, FormHelperTextProps, {
         children: helperText
@@ -74366,79 +74683,79 @@ Please use another name.` : formatMuiErrorMessage(18));
      * The name can be confusing, as it's more like an autofill.
      * You can learn more about it [following the specification](https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill).
      */
-    autoComplete: import_prop_types91.default.string,
+    autoComplete: import_prop_types92.default.string,
     /**
      * If `true`, the `input` element is focused during the first mount.
      * @default false
      */
-    autoFocus: import_prop_types91.default.bool,
+    autoFocus: import_prop_types92.default.bool,
     /**
      * @ignore
      */
-    children: import_prop_types91.default.node,
+    children: import_prop_types92.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types91.default.object,
+    classes: import_prop_types92.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types91.default.string,
+    className: import_prop_types92.default.string,
     /**
      * The color of the component.
      * It supports both default and custom theme colors, which can be added as shown in the
      * [palette customization guide](https://mui.com/material-ui/customization/palette/#adding-new-colors).
      * @default 'primary'
      */
-    color: import_prop_types91.default.oneOfType([import_prop_types91.default.oneOf(["primary", "secondary", "error", "info", "success", "warning"]), import_prop_types91.default.string]),
+    color: import_prop_types92.default.oneOfType([import_prop_types92.default.oneOf(["primary", "secondary", "error", "info", "success", "warning"]), import_prop_types92.default.string]),
     /**
      * The default value. Use when the component is not controlled.
      */
-    defaultValue: import_prop_types91.default.any,
+    defaultValue: import_prop_types92.default.any,
     /**
      * If `true`, the component is disabled.
      * @default false
      */
-    disabled: import_prop_types91.default.bool,
+    disabled: import_prop_types92.default.bool,
     /**
      * If `true`, the label is displayed in an error state.
      * @default false
      */
-    error: import_prop_types91.default.bool,
+    error: import_prop_types92.default.bool,
     /**
      * Props applied to the [`FormHelperText`](/material-ui/api/form-helper-text/) element.
      */
-    FormHelperTextProps: import_prop_types91.default.object,
+    FormHelperTextProps: import_prop_types92.default.object,
     /**
      * If `true`, the input will take up the full width of its container.
      * @default false
      */
-    fullWidth: import_prop_types91.default.bool,
+    fullWidth: import_prop_types92.default.bool,
     /**
      * The helper text content.
      */
-    helperText: import_prop_types91.default.node,
+    helperText: import_prop_types92.default.node,
     /**
      * The id of the `input` element.
      * Use this prop to make `label` and `helperText` accessible for screen readers.
      */
-    id: import_prop_types91.default.string,
+    id: import_prop_types92.default.string,
     /**
      * Props applied to the [`InputLabel`](/material-ui/api/input-label/) element.
      * Pointer events like `onClick` are enabled if and only if `shrink` is `true`.
      */
-    InputLabelProps: import_prop_types91.default.object,
+    InputLabelProps: import_prop_types92.default.object,
     /**
      * [Attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Attributes) applied to the `input` element.
      */
-    inputProps: import_prop_types91.default.object,
+    inputProps: import_prop_types92.default.object,
     /**
      * Props applied to the Input element.
      * It will be a [`FilledInput`](/material-ui/api/filled-input/),
      * [`OutlinedInput`](/material-ui/api/outlined-input/) or [`Input`](/material-ui/api/input/)
      * component depending on the `variant` prop value.
      */
-    InputProps: import_prop_types91.default.object,
+    InputProps: import_prop_types92.default.object,
     /**
      * Pass a ref to the `input` element.
      */
@@ -74446,106 +74763,106 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The label content.
      */
-    label: import_prop_types91.default.node,
+    label: import_prop_types92.default.node,
     /**
      * If `dense` or `normal`, will adjust vertical spacing of this and contained components.
      * @default 'none'
      */
-    margin: import_prop_types91.default.oneOf(["dense", "none", "normal"]),
+    margin: import_prop_types92.default.oneOf(["dense", "none", "normal"]),
     /**
      * Maximum number of rows to display when multiline option is set to true.
      */
-    maxRows: import_prop_types91.default.oneOfType([import_prop_types91.default.number, import_prop_types91.default.string]),
+    maxRows: import_prop_types92.default.oneOfType([import_prop_types92.default.number, import_prop_types92.default.string]),
     /**
      * Minimum number of rows to display when multiline option is set to true.
      */
-    minRows: import_prop_types91.default.oneOfType([import_prop_types91.default.number, import_prop_types91.default.string]),
+    minRows: import_prop_types92.default.oneOfType([import_prop_types92.default.number, import_prop_types92.default.string]),
     /**
      * If `true`, a `textarea` element is rendered instead of an input.
      * @default false
      */
-    multiline: import_prop_types91.default.bool,
+    multiline: import_prop_types92.default.bool,
     /**
      * Name attribute of the `input` element.
      */
-    name: import_prop_types91.default.string,
+    name: import_prop_types92.default.string,
     /**
      * @ignore
      */
-    onBlur: import_prop_types91.default.func,
+    onBlur: import_prop_types92.default.func,
     /**
      * Callback fired when the value is changed.
      *
      * @param {object} event The event source of the callback.
      * You can pull out the new value by accessing `event.target.value` (string).
      */
-    onChange: import_prop_types91.default.func,
+    onChange: import_prop_types92.default.func,
     /**
      * @ignore
      */
-    onFocus: import_prop_types91.default.func,
+    onFocus: import_prop_types92.default.func,
     /**
      * The short hint displayed in the `input` before the user enters a value.
      */
-    placeholder: import_prop_types91.default.string,
+    placeholder: import_prop_types92.default.string,
     /**
      * If `true`, the label is displayed as required and the `input` element is required.
      * @default false
      */
-    required: import_prop_types91.default.bool,
+    required: import_prop_types92.default.bool,
     /**
      * Number of rows to display when multiline option is set to true.
      */
-    rows: import_prop_types91.default.oneOfType([import_prop_types91.default.number, import_prop_types91.default.string]),
+    rows: import_prop_types92.default.oneOfType([import_prop_types92.default.number, import_prop_types92.default.string]),
     /**
      * Render a [`Select`](/material-ui/api/select/) element while passing the Input element to `Select` as `input` parameter.
      * If this option is set you must pass the options of the select as children.
      * @default false
      */
-    select: import_prop_types91.default.bool,
+    select: import_prop_types92.default.bool,
     /**
      * Props applied to the [`Select`](/material-ui/api/select/) element.
      */
-    SelectProps: import_prop_types91.default.object,
+    SelectProps: import_prop_types92.default.object,
     /**
      * The size of the component.
      */
-    size: import_prop_types91.default.oneOfType([import_prop_types91.default.oneOf(["medium", "small"]), import_prop_types91.default.string]),
+    size: import_prop_types92.default.oneOfType([import_prop_types92.default.oneOf(["medium", "small"]), import_prop_types92.default.string]),
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types91.default.oneOfType([import_prop_types91.default.arrayOf(import_prop_types91.default.oneOfType([import_prop_types91.default.func, import_prop_types91.default.object, import_prop_types91.default.bool])), import_prop_types91.default.func, import_prop_types91.default.object]),
+    sx: import_prop_types92.default.oneOfType([import_prop_types92.default.arrayOf(import_prop_types92.default.oneOfType([import_prop_types92.default.func, import_prop_types92.default.object, import_prop_types92.default.bool])), import_prop_types92.default.func, import_prop_types92.default.object]),
     /**
      * Type of the `input` element. It should be [a valid HTML5 input type](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#Form_%3Cinput%3E_types).
      */
-    type: import_prop_types91.default.string,
+    type: import_prop_types92.default.string,
     /**
      * The value of the `input` element, required for a controlled component.
      */
-    value: import_prop_types91.default.any,
+    value: import_prop_types92.default.any,
     /**
      * The variant to use.
      * @default 'outlined'
      */
-    variant: import_prop_types91.default.oneOf(["filled", "outlined", "standard"])
+    variant: import_prop_types92.default.oneOf(["filled", "outlined", "standard"])
   } : void 0;
   var TextField_default = TextField;
 
   // out/src/components/error/ParamsVersion.js
-  var React128 = __toESM(require_react(), 1);
+  var React129 = __toESM(require_react(), 1);
   function ParamsVersionError(props) {
-    return React128.createElement(
+    return React129.createElement(
       Alert_default,
       { severity: "error" },
-      React128.createElement(AlertTitle_default, null, "Parameter version error"),
-      React128.createElement(Typography_default, null, "The server returned parameters that are too old for the client to load."),
-      React128.createElement(
+      React129.createElement(AlertTitle_default, null, "Parameter version error"),
+      React129.createElement(Typography_default, null, "The server returned parameters that are too old for the client to load."),
+      React129.createElement(
         Typography_default,
         null,
         "The server parameters are version ",
-        React128.createElement("code", null, props.version),
+        React129.createElement("code", null, props.version),
         ", but this client's required version is ",
-        React128.createElement("code", null, PARAM_VERSION),
+        React129.createElement("code", null, PARAM_VERSION),
         ". Please update your server or use a matching version of the client."
       )
     );
@@ -74553,7 +74870,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(ParamsVersionError, "ParamsVersionError");
 
   // out/src/components/error/ServerParams.js
-  var React129 = __toESM(require_react(), 1);
+  var React130 = __toESM(require_react(), 1);
   function getErrorMessage(error2) {
     if (error2 instanceof Error) {
       return error2.message;
@@ -74565,27 +74882,27 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(getErrorMessage, "getErrorMessage");
   function ServerParamsError(props) {
-    return React129.createElement(
+    return React130.createElement(
       Alert_default,
       { severity: "error" },
-      React129.createElement(AlertTitle_default, null, "Error fetching server parameters"),
-      React129.createElement(
+      React130.createElement(AlertTitle_default, null, "Error fetching server parameters"),
+      React130.createElement(
         Typography_default,
         null,
         "Could not fetch parameters from the onnx-web API server at ",
-        React129.createElement("code", null, props.root),
+        React130.createElement("code", null, props.root),
         "."
       ),
-      React129.createElement(Typography_default, null, getErrorMessage(props.error))
+      React130.createElement(Typography_default, null, getErrorMessage(props.error))
     );
   }
   __name(ServerParamsError, "ServerParamsError");
 
   // out/src/components/LoadingScreen.js
-  var React130 = __toESM(require_react(), 1);
+  var React131 = __toESM(require_react(), 1);
   function LoadingScreen() {
     const { t: t3 } = useTranslation();
-    return React130.createElement(
+    return React131.createElement(
       Box_default,
       { sx: {
         display: "flex",
@@ -74593,18 +74910,18 @@ Please use another name.` : formatMuiErrorMessage(18));
         justifyContent: "center",
         minHeight: window.innerHeight
       } },
-      React130.createElement(
+      React131.createElement(
         Stack_default2,
         { direction: "column", spacing: STANDARD_SPACING, sx: { alignItems: "center" } },
-        React130.createElement(CircularProgress_default, null),
-        React130.createElement(Typography_default, null, t3("loading.server"))
+        React131.createElement(CircularProgress_default, null),
+        React131.createElement(Typography_default, null, t3("loading.server"))
       )
     );
   }
   __name(LoadingScreen, "LoadingScreen");
 
   // out/src/components/OnnxError.js
-  var React132 = __toESM(require_react(), 1);
+  var React133 = __toESM(require_react(), 1);
 
   // out/src/state/full.js
   var import_react22 = __toESM(require_react(), 1);
@@ -75263,17 +75580,17 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(createResetSlice, "createResetSlice");
 
   // out/src/state/settings.js
-  var DEFAULT_LAYOUT = {
+  var DEFAULT_SETTINGS = {
     historyWidth: 4,
     layout: "vertical"
   };
   function createSettingsSlice() {
-    return (set) => Object.assign(Object.assign({}, DEFAULT_LAYOUT), {
+    return (set) => Object.assign(Object.assign({}, DEFAULT_SETTINGS), {
       setLayout(layout) {
         set((prev2) => Object.assign(Object.assign({}, prev2), { layout }));
       },
-      setWidth(width2) {
-        set((prev2) => Object.assign(Object.assign({}, prev2), { historyWidth: width2 }));
+      setHistoryWidth(historyWidth) {
+        set((prev2) => Object.assign(Object.assign({}, prev2), { historyWidth }));
       }
     });
   }
@@ -75444,137 +75761,137 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(createStateSlices, "createStateSlices");
 
   // node_modules/@mui/icons-material/esm/ArrowLeft.js
-  var import_jsx_runtime124 = __toESM(require_jsx_runtime());
-  var ArrowLeft_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime124.jsx)("path", {
+  var import_jsx_runtime126 = __toESM(require_jsx_runtime());
+  var ArrowLeft_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime126.jsx)("path", {
     d: "m14 7-5 5 5 5V7z"
   }), "ArrowLeft");
 
   // node_modules/@mui/icons-material/esm/ArrowRight.js
-  var import_jsx_runtime125 = __toESM(require_jsx_runtime());
-  var ArrowRight_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime125.jsx)("path", {
+  var import_jsx_runtime127 = __toESM(require_jsx_runtime());
+  var ArrowRight_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime127.jsx)("path", {
     d: "m10 17 5-5-5-5v10z"
   }), "ArrowRight");
 
   // node_modules/@mui/icons-material/esm/Blender.js
-  var import_jsx_runtime126 = __toESM(require_jsx_runtime());
-  var Blender_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime126.jsx)("path", {
+  var import_jsx_runtime128 = __toESM(require_jsx_runtime());
+  var Blender_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime128.jsx)("path", {
     d: "M16.13 15.13 18 3h-4V2h-4v1H5c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h2.23l.64 4.13C6.74 16.05 6 17.43 6 19v1c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-1c0-1.57-.74-2.95-1.87-3.87zM5 9V5h1.31l.62 4H5zm7 10c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2.29-5H9.72L8.33 5h7.34l-1.38 9z"
   }), "Blender");
 
   // node_modules/@mui/icons-material/esm/Brush.js
-  var import_jsx_runtime127 = __toESM(require_jsx_runtime());
-  var Brush_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime127.jsx)("path", {
+  var import_jsx_runtime129 = __toESM(require_jsx_runtime());
+  var Brush_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime129.jsx)("path", {
     d: "M7 14c-1.66 0-3 1.34-3 3 0 1.31-1.16 2-2 2 .92 1.22 2.49 2 4 2 2.21 0 4-1.79 4-4 0-1.66-1.34-3-3-3zm13.71-9.37-1.34-1.34a.9959.9959 0 0 0-1.41 0L9 12.25 11.75 15l8.96-8.96c.39-.39.39-1.02 0-1.41z"
   }), "Brush");
 
   // node_modules/@mui/icons-material/esm/Casino.js
-  var import_jsx_runtime128 = __toESM(require_jsx_runtime());
-  var Casino_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime128.jsx)("path", {
+  var import_jsx_runtime130 = __toESM(require_jsx_runtime());
+  var Casino_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime130.jsx)("path", {
     d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"
   }), "Casino");
 
   // node_modules/@mui/icons-material/esm/Close.js
-  var import_jsx_runtime129 = __toESM(require_jsx_runtime());
-  var Close_default2 = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime129.jsx)("path", {
+  var import_jsx_runtime131 = __toESM(require_jsx_runtime());
+  var Close_default2 = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime131.jsx)("path", {
     d: "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
   }), "Close");
 
   // node_modules/@mui/icons-material/esm/ContentCopy.js
-  var import_jsx_runtime130 = __toESM(require_jsx_runtime());
-  var ContentCopy_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime130.jsx)("path", {
+  var import_jsx_runtime132 = __toESM(require_jsx_runtime());
+  var ContentCopy_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime132.jsx)("path", {
     d: "M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
   }), "ContentCopy");
 
   // node_modules/@mui/icons-material/esm/Delete.js
-  var import_jsx_runtime131 = __toESM(require_jsx_runtime());
-  var Delete_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime131.jsx)("path", {
+  var import_jsx_runtime133 = __toESM(require_jsx_runtime());
+  var Delete_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime133.jsx)("path", {
     d: "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
   }), "Delete");
 
   // node_modules/@mui/icons-material/esm/Download.js
-  var import_jsx_runtime132 = __toESM(require_jsx_runtime());
-  var Download_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime132.jsx)("path", {
+  var import_jsx_runtime134 = __toESM(require_jsx_runtime());
+  var Download_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime134.jsx)("path", {
     d: "M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"
   }), "Download");
 
   // node_modules/@mui/icons-material/esm/FormatColorFill.js
-  var import_jsx_runtime133 = __toESM(require_jsx_runtime());
-  var FormatColorFill_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime133.jsx)("path", {
+  var import_jsx_runtime135 = __toESM(require_jsx_runtime());
+  var FormatColorFill_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime135.jsx)("path", {
     d: "M16.56 8.94 7.62 0 6.21 1.41l2.38 2.38-5.15 5.15c-.59.59-.59 1.54 0 2.12l5.5 5.5c.29.29.68.44 1.06.44s.77-.15 1.06-.44l5.5-5.5c.59-.58.59-1.53 0-2.12zM5.21 10 10 5.21 14.79 10H5.21zM19 11.5s-2 2.17-2 3.5c0 1.1.9 2 2 2s2-.9 2-2c0-1.33-2-3.5-2-3.5zM2 20h20v4H2v-4z"
   }), "FormatColorFill");
 
   // node_modules/@mui/icons-material/esm/Gradient.js
-  var import_jsx_runtime134 = __toESM(require_jsx_runtime());
-  var Gradient_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime134.jsx)("path", {
+  var import_jsx_runtime136 = __toESM(require_jsx_runtime());
+  var Gradient_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime136.jsx)("path", {
     d: "M11 9h2v2h-2zm-2 2h2v2H9zm4 0h2v2h-2zm2-2h2v2h-2zM7 9h2v2H7zm12-6H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 18H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2zm2-7h-2v2h2v2h-2v-2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2h2v-2H5V5h14v6z"
   }), "Gradient");
 
   // node_modules/@mui/icons-material/esm/Help.js
-  var import_jsx_runtime135 = __toESM(require_jsx_runtime());
-  var Help_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime135.jsx)("path", {
+  var import_jsx_runtime137 = __toESM(require_jsx_runtime());
+  var Help_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime137.jsx)("path", {
     d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"
   }), "Help");
 
   // node_modules/@mui/icons-material/esm/ImageSearch.js
-  var import_jsx_runtime136 = __toESM(require_jsx_runtime());
-  var ImageSearch_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime136.jsx)("path", {
+  var import_jsx_runtime138 = __toESM(require_jsx_runtime());
+  var ImageSearch_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime138.jsx)("path", {
     d: "M18 13v7H4V6h5.02c.05-.71.22-1.38.48-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-5l-2-2zm-1.5 5h-11l2.75-3.53 1.96 2.36 2.75-3.54zm2.8-9.11c.44-.7.7-1.51.7-2.39C20 4.01 17.99 2 15.5 2S11 4.01 11 6.5s2.01 4.5 4.49 4.5c.88 0 1.7-.26 2.39-.7L21 13.42 22.42 12 19.3 8.89zM15.5 9C14.12 9 13 7.88 13 6.5S14.12 4 15.5 4 18 5.12 18 6.5 16.88 9 15.5 9z"
   }), "ImageSearch");
 
   // node_modules/@mui/icons-material/esm/InvertColors.js
-  var import_jsx_runtime137 = __toESM(require_jsx_runtime());
-  var InvertColors_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime137.jsx)("path", {
+  var import_jsx_runtime139 = __toESM(require_jsx_runtime());
+  var InvertColors_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime139.jsx)("path", {
     d: "M12 4.81V19c-3.31 0-6-2.63-6-5.87 0-1.56.62-3.03 1.75-4.14L12 4.81M6.35 7.56C4.9 8.99 4 10.96 4 13.13 4 17.48 7.58 21 12 21s8-3.52 8-7.87c0-2.17-.9-4.14-2.35-5.57L12 2 6.35 7.56z"
   }), "InvertColors");
 
   // node_modules/@mui/icons-material/esm/KeyboardArrowDown.js
-  var import_jsx_runtime138 = __toESM(require_jsx_runtime());
-  var KeyboardArrowDown_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime138.jsx)("path", {
+  var import_jsx_runtime140 = __toESM(require_jsx_runtime());
+  var KeyboardArrowDown_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime140.jsx)("path", {
     d: "M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"
   }), "KeyboardArrowDown");
 
   // node_modules/@mui/icons-material/esm/PhotoCamera.js
-  var import_jsx_runtime139 = __toESM(require_jsx_runtime());
-  var PhotoCamera_default = createSvgIcon([/* @__PURE__ */ (0, import_jsx_runtime139.jsx)("circle", {
+  var import_jsx_runtime141 = __toESM(require_jsx_runtime());
+  var PhotoCamera_default = createSvgIcon([/* @__PURE__ */ (0, import_jsx_runtime141.jsx)("circle", {
     cx: "12",
     cy: "12",
     r: "3.2"
-  }, "0"), /* @__PURE__ */ (0, import_jsx_runtime139.jsx)("path", {
+  }, "0"), /* @__PURE__ */ (0, import_jsx_runtime141.jsx)("path", {
     d: "M9 2 7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"
   }, "1")], "PhotoCamera");
 
   // node_modules/@mui/icons-material/esm/Refresh.js
-  var import_jsx_runtime140 = __toESM(require_jsx_runtime());
-  var Refresh_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime140.jsx)("path", {
+  var import_jsx_runtime142 = __toESM(require_jsx_runtime());
+  var Refresh_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime142.jsx)("path", {
     d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
   }), "Refresh");
 
   // node_modules/@mui/icons-material/esm/Replay.js
-  var import_jsx_runtime141 = __toESM(require_jsx_runtime());
-  var Replay_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime141.jsx)("path", {
+  var import_jsx_runtime143 = __toESM(require_jsx_runtime());
+  var Replay_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime143.jsx)("path", {
     d: "M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"
   }), "Replay");
 
   // node_modules/@mui/icons-material/esm/Save.js
-  var import_jsx_runtime142 = __toESM(require_jsx_runtime());
-  var Save_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime142.jsx)("path", {
+  var import_jsx_runtime144 = __toESM(require_jsx_runtime());
+  var Save_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime144.jsx)("path", {
     d: "M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"
   }), "Save");
 
   // node_modules/@mui/icons-material/esm/Undo.js
-  var import_jsx_runtime143 = __toESM(require_jsx_runtime());
-  var Undo_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime143.jsx)("path", {
+  var import_jsx_runtime145 = __toESM(require_jsx_runtime());
+  var Undo_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime145.jsx)("path", {
     d: "M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"
   }), "Undo");
 
   // node_modules/@mui/icons-material/esm/ZoomOutMap.js
-  var import_jsx_runtime144 = __toESM(require_jsx_runtime());
-  var ZoomOutMap_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime144.jsx)("path", {
+  var import_jsx_runtime146 = __toESM(require_jsx_runtime());
+  var ZoomOutMap_default = createSvgIcon(/* @__PURE__ */ (0, import_jsx_runtime146.jsx)("path", {
     d: "m15 3 2.3 2.3-2.89 2.87 1.42 1.42L18.7 6.7 21 9V3h-6zM3 9l2.3-2.3 2.87 2.89 1.42-1.42L6.7 5.3 9 3H3v6zm6 12-2.3-2.3 2.89-2.87-1.42-1.42L5.3 17.3 3 15v6h6zm12-6-2.3 2.3-2.87-2.89-1.42 1.42 2.89 2.87L15 21h6v-6z"
   }), "ZoomOutMap");
 
   // out/src/components/Logo.js
-  var React131 = __toESM(require_react(), 1);
+  var React132 = __toESM(require_react(), 1);
   var URL_DOCS = "https://www.onnx-web.ai/docs";
   var URL_REPO = "https://github.com/ssube/onnx-web";
   var NEW_WINDOW = "_blank";
@@ -75583,14 +75900,14 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(openDocSite, "openDocSite");
   function Logo() {
-    return React131.createElement(
+    return React132.createElement(
       Typography_default,
       { variant: "h3", gutterBottom: true },
-      React131.createElement(Link_default, { href: URL_REPO, target: NEW_WINDOW, underline: "hover" }, "ONNX Web"),
-      React131.createElement(
+      React132.createElement(Link_default, { href: URL_REPO, target: NEW_WINDOW, underline: "hover" }, "ONNX Web"),
+      React132.createElement(
         IconButton_default,
         { onClick: openDocSite },
-        React131.createElement(Help_default, null)
+        React132.createElement(Help_default, null)
       )
     );
   }
@@ -75604,40 +75921,40 @@ Please use another name.` : formatMuiErrorMessage(18));
       window.location.reload();
     }
     __name(clearState, "clearState");
-    return React132.createElement(
+    return React133.createElement(
       Container_default,
       null,
-      React132.createElement(
+      React133.createElement(
         Box_default,
         { sx: { my: STANDARD_MARGIN } },
-        React132.createElement(Logo, null)
+        React133.createElement(Logo, null)
       ),
-      React132.createElement(
+      React133.createElement(
         Box_default,
         { sx: { my: STANDARD_MARGIN } },
-        React132.createElement(
+        React133.createElement(
           Stack_default2,
           { spacing: STANDARD_SPACING },
           props.children,
-          React132.createElement(Typography_default, { variant: "body1" }, "This is a web UI for running ONNX models with GPU acceleration or in software, running locally or on a remote machine."),
-          React132.createElement(Typography_default, { variant: "body1" }, "The API runs on both Linux and Windows and provides access to the major functionality of diffusers, along with metadata about the available models and accelerators, and the output of previous runs. Hardware acceleration is supported on both AMD and Nvidia, with a CPU fallback capable of running on laptop-class machines."),
-          React132.createElement(Typography_default, { variant: "body1", gutterBottom: true }, "The GUI runs in all major browsers, including on mobile devices, and allows you to select the model and accelerator being used, along with the prompt and other image parameters. The last few output images are shown below the image controls, making it easy to refer back to previous parameters or save an image from earlier."),
-          React132.createElement(
+          React133.createElement(Typography_default, { variant: "body1" }, "This is a web UI for running ONNX models with GPU acceleration or in software, running locally or on a remote machine."),
+          React133.createElement(Typography_default, { variant: "body1" }, "The API runs on both Linux and Windows and provides access to the major functionality of diffusers, along with metadata about the available models and accelerators, and the output of previous runs. Hardware acceleration is supported on both AMD and Nvidia, with a CPU fallback capable of running on laptop-class machines."),
+          React133.createElement(Typography_default, { variant: "body1", gutterBottom: true }, "The GUI runs in all major browsers, including on mobile devices, and allows you to select the model and accelerator being used, along with the prompt and other image parameters. The last few output images are shown below the image controls, making it easy to refer back to previous parameters or save an image from earlier."),
+          React133.createElement(
             Typography_default,
             { variant: "body1" },
             "Please ",
-            React132.createElement("a", { href: "https://github.com/ssube/onnx-web" }, "visit the Github project"),
+            React133.createElement("a", { href: "https://github.com/ssube/onnx-web" }, "visit the Github project"),
             " for more information and make sure that ",
-            React132.createElement("a", { href: "https://github.com/ssube/onnx-web#configuring-and-running-the-server" }, "your API server is running"),
+            React133.createElement("a", { href: "https://github.com/ssube/onnx-web#configuring-and-running-the-server" }, "your API server is running"),
             " at ",
-            React132.createElement("a", { href: props.root }, props.root),
+            React133.createElement("a", { href: props.root }, props.root),
             "."
           ),
-          React132.createElement(
+          React133.createElement(
             Typography_default,
             { variant: "body1" },
             "If you are trying to use a remote API server or an alternative port, you can put the address into the query string, like ",
-            React132.createElement(
+            React133.createElement(
               "code",
               null,
               linkback,
@@ -75646,22 +75963,22 @@ Please use another name.` : formatMuiErrorMessage(18));
             ),
             "."
           ),
-          React132.createElement(
+          React133.createElement(
             Typography_default,
             { variant: "body1" },
             "If you recently upgraded and keep seeing errors, especially if you have been using a pre-release version or you are getting ",
-            React132.createElement("code", null, "Cannot read properties of undefined"),
+            React133.createElement("code", null, "Cannot read properties of undefined"),
             " errors, you can try resetting the client state:"
           ),
-          React132.createElement(Button_default, { onClick: clearState, color: "error" }, "Reset State"),
-          React132.createElement(
+          React133.createElement(Button_default, { onClick: clearState, color: "error" }, "Reset State"),
+          React133.createElement(
             Typography_default,
             { variant: "body1" },
             "If your server is running and available at ",
-            React132.createElement("a", { href: props.root }, props.root),
+            React133.createElement("a", { href: props.root }, props.root),
             ", make sure you are using a compatible client and try updating to the latest release or unstable version:"
           ),
-          React132.createElement(
+          React133.createElement(
             "pre",
             null,
             "> git branch",
@@ -75672,11 +75989,11 @@ Please use another name.` : formatMuiErrorMessage(18));
             "> git pull",
             "\n"
           ),
-          React132.createElement(
+          React133.createElement(
             Typography_default,
             { variant: "body1", gutterBottom: true },
             "You can also use ",
-            React132.createElement("a", { href: "https://github.com/ssube/onnx-web/releases" }, "a recent release"),
+            React133.createElement("a", { href: "https://github.com/ssube/onnx-web/releases" }, "a recent release"),
             "."
           )
         )
@@ -75686,16 +76003,16 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(OnnxError, "OnnxError");
 
   // node_modules/@mui/lab/TabContext/TabContext.js
-  var React133 = __toESM(require_react());
-  var import_prop_types92 = __toESM(require_prop_types());
-  var import_jsx_runtime145 = __toESM(require_jsx_runtime());
-  var Context = /* @__PURE__ */ React133.createContext(null);
+  var React134 = __toESM(require_react());
+  var import_prop_types93 = __toESM(require_prop_types());
+  var import_jsx_runtime147 = __toESM(require_jsx_runtime());
+  var Context = /* @__PURE__ */ React134.createContext(null);
   if (true) {
     Context.displayName = "TabContext";
   }
   function useUniquePrefix() {
-    const [id, setId] = React133.useState(null);
-    React133.useEffect(() => {
+    const [id, setId] = React134.useState(null);
+    React134.useEffect(() => {
       setId(`mui-p-${Math.round(Math.random() * 1e5)}`);
     }, []);
     return id;
@@ -75707,13 +76024,13 @@ Please use another name.` : formatMuiErrorMessage(18));
       value
     } = props;
     const idPrefix = useUniquePrefix();
-    const context = React133.useMemo(() => {
+    const context = React134.useMemo(() => {
       return {
         idPrefix,
         value
       };
     }, [idPrefix, value]);
-    return /* @__PURE__ */ (0, import_jsx_runtime145.jsx)(Context.Provider, {
+    return /* @__PURE__ */ (0, import_jsx_runtime147.jsx)(Context.Provider, {
       value: context,
       children
     });
@@ -75727,14 +76044,14 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types92.default.node,
+    children: import_prop_types93.default.node,
     /**
      * The value of the currently selected `Tab`.
      */
-    value: import_prop_types92.default.string.isRequired
+    value: import_prop_types93.default.string.isRequired
   } : void 0;
   function useTabContext() {
-    return React133.useContext(Context);
+    return React134.useContext(Context);
   }
   __name(useTabContext, "useTabContext");
   function getPanelId(context, value) {
@@ -75759,29 +76076,29 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(getTabId, "getTabId");
 
   // node_modules/@mui/lab/TabList/TabList.js
-  var React134 = __toESM(require_react());
-  var import_prop_types93 = __toESM(require_prop_types());
-  var import_jsx_runtime146 = __toESM(require_jsx_runtime());
-  var _excluded83 = ["children"];
-  var TabList = /* @__PURE__ */ React134.forwardRef(/* @__PURE__ */ __name(function TabList2(props, ref) {
+  var React135 = __toESM(require_react());
+  var import_prop_types94 = __toESM(require_prop_types());
+  var import_jsx_runtime148 = __toESM(require_jsx_runtime());
+  var _excluded84 = ["children"];
+  var TabList = /* @__PURE__ */ React135.forwardRef(/* @__PURE__ */ __name(function TabList2(props, ref) {
     const {
       children: childrenProp
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded83);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded84);
     const context = useTabContext();
     if (context === null) {
       throw new TypeError("No TabContext provided");
     }
-    const children = React134.Children.map(childrenProp, (child) => {
-      if (!/* @__PURE__ */ React134.isValidElement(child)) {
+    const children = React135.Children.map(childrenProp, (child) => {
+      if (!/* @__PURE__ */ React135.isValidElement(child)) {
         return null;
       }
-      return /* @__PURE__ */ React134.cloneElement(child, {
+      return /* @__PURE__ */ React135.cloneElement(child, {
         // SOMEDAY: `Tabs` will set those themselves
         "aria-controls": getPanelId(context, child.props.value),
         id: getTabId(context, child.props.value)
       });
     });
-    return /* @__PURE__ */ (0, import_jsx_runtime146.jsx)(Tabs_default, _extends({}, other, {
+    return /* @__PURE__ */ (0, import_jsx_runtime148.jsx)(Tabs_default, _extends({}, other, {
       ref,
       value: context.value,
       children
@@ -75795,13 +76112,13 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * A list of `<Tab />` elements.
      */
-    children: import_prop_types93.default.node
+    children: import_prop_types94.default.node
   } : void 0;
   var TabList_default = TabList;
 
   // node_modules/@mui/lab/TabPanel/TabPanel.js
-  var React135 = __toESM(require_react());
-  var import_prop_types94 = __toESM(require_prop_types());
+  var React136 = __toESM(require_react());
+  var import_prop_types95 = __toESM(require_prop_types());
 
   // node_modules/@mui/lab/TabPanel/tabPanelClasses.js
   function getTabPanelUtilityClass(slot) {
@@ -75811,9 +76128,9 @@ Please use another name.` : formatMuiErrorMessage(18));
   var tabPanelClasses = generateUtilityClasses("MuiTabPanel", ["root"]);
 
   // node_modules/@mui/lab/TabPanel/TabPanel.js
-  var import_jsx_runtime147 = __toESM(require_jsx_runtime());
-  var _excluded84 = ["children", "className", "value"];
-  var useUtilityClasses60 = /* @__PURE__ */ __name((ownerState) => {
+  var import_jsx_runtime149 = __toESM(require_jsx_runtime());
+  var _excluded85 = ["children", "className", "value"];
+  var useUtilityClasses61 = /* @__PURE__ */ __name((ownerState) => {
     const {
       classes
     } = ownerState;
@@ -75831,7 +76148,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   }) => ({
     padding: theme.spacing(3)
   }));
-  var TabPanel = /* @__PURE__ */ React135.forwardRef(/* @__PURE__ */ __name(function TabPanel2(inProps, ref) {
+  var TabPanel = /* @__PURE__ */ React136.forwardRef(/* @__PURE__ */ __name(function TabPanel2(inProps, ref) {
     const props = useThemeProps2({
       props: inProps,
       name: "MuiTabPanel"
@@ -75840,16 +76157,16 @@ Please use another name.` : formatMuiErrorMessage(18));
       children,
       className,
       value
-    } = props, other = _objectWithoutPropertiesLoose(props, _excluded84);
+    } = props, other = _objectWithoutPropertiesLoose(props, _excluded85);
     const ownerState = _extends({}, props);
-    const classes = useUtilityClasses60(ownerState);
+    const classes = useUtilityClasses61(ownerState);
     const context = useTabContext();
     if (context === null) {
       throw new TypeError("No TabContext provided");
     }
     const id = getPanelId(context, value);
     const tabId = getTabId(context, value);
-    return /* @__PURE__ */ (0, import_jsx_runtime147.jsx)(TabPanelRoot, _extends({
+    return /* @__PURE__ */ (0, import_jsx_runtime149.jsx)(TabPanelRoot, _extends({
       "aria-labelledby": tabId,
       className: clsx_m_default(classes.root, className),
       hidden: value !== context.value,
@@ -75869,24 +76186,24 @@ Please use another name.` : formatMuiErrorMessage(18));
     /**
      * The content of the component.
      */
-    children: import_prop_types94.default.node,
+    children: import_prop_types95.default.node,
     /**
      * Override or extend the styles applied to the component.
      */
-    classes: import_prop_types94.default.object,
+    classes: import_prop_types95.default.object,
     /**
      * @ignore
      */
-    className: import_prop_types94.default.string,
+    className: import_prop_types95.default.string,
     /**
      * The system prop that allows defining system overrides as well as additional CSS styles.
      */
-    sx: import_prop_types94.default.oneOfType([import_prop_types94.default.arrayOf(import_prop_types94.default.oneOfType([import_prop_types94.default.func, import_prop_types94.default.object, import_prop_types94.default.bool])), import_prop_types94.default.func, import_prop_types94.default.object]),
+    sx: import_prop_types95.default.oneOfType([import_prop_types95.default.arrayOf(import_prop_types95.default.oneOfType([import_prop_types95.default.func, import_prop_types95.default.object, import_prop_types95.default.bool])), import_prop_types95.default.func, import_prop_types95.default.object]),
     /**
      * The `value` of the corresponding `Tab`. Must use the index of the `Tab` when
      * no `value` was passed to `Tab`.
      */
-    value: import_prop_types94.default.string.isRequired
+    value: import_prop_types95.default.string.isRequired
   } : void 0;
   var TabPanel_default = TabPanel;
 
@@ -77499,7 +77816,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   });
 
   // out/src/components/OnnxWeb.js
-  var React167 = __toESM(require_react(), 1);
+  var React168 = __toESM(require_react(), 1);
   var import_react48 = __toESM(require_react(), 1);
   var import_useHash2 = __toESM(require_useHash(), 1);
 
@@ -77523,7 +77840,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(Motd, "Motd");
 
   // out/src/components/ImageHistory.js
-  var React140 = __toESM(require_react(), 1);
+  var React141 = __toESM(require_react(), 1);
   var import_react28 = __toESM(require_react(), 1);
 
   // node_modules/zustand/esm/shallow.mjs
@@ -77588,7 +77905,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   })(JobType || (JobType = {}));
 
   // out/src/components/card/ErrorCard.js
-  var React137 = __toESM(require_react(), 1);
+  var React138 = __toESM(require_react(), 1);
   var import_react25 = __toESM(require_react(), 1);
   function ErrorCard(props) {
     const { image, retry: retryParams } = props;
@@ -77606,13 +77923,13 @@ Please use another name.` : formatMuiErrorMessage(18));
     }
     __name(retryImage, "retryImage");
     const retry = useMutation(retryImage);
-    return React137.createElement(
+    return React138.createElement(
       Card_default,
       { sx: { maxWidth: params.width.default } },
-      React137.createElement(
+      React138.createElement(
         CardContent_default,
         { sx: { height: params.height.default } },
-        React137.createElement(
+        React138.createElement(
           Box_default,
           { sx: {
             display: "flex",
@@ -77620,35 +77937,35 @@ Please use another name.` : formatMuiErrorMessage(18));
             justifyContent: "center",
             minHeight: params.height.default
           } },
-          React137.createElement(
+          React138.createElement(
             Stack_default,
             { direction: "column", spacing: STANDARD_SPACING, sx: { alignItems: "center" } },
-            React137.createElement(
+            React138.createElement(
               Alert_default,
               { severity: "error" },
               t3("loading.progress", image),
-              React137.createElement("br", null),
+              React138.createElement("br", null),
               t3(getImageErrorReason(image))
             ),
-            React137.createElement(
+            React138.createElement(
               Stack_default,
               { direction: "row", spacing: STANDARD_SPACING },
-              React137.createElement(
+              React138.createElement(
                 Tooltip_default,
                 { title: t3("tooltip.retry") },
-                React137.createElement(
+                React138.createElement(
                   IconButton_default,
                   { onClick: () => retry.mutate() },
-                  React137.createElement(Replay_default, null)
+                  React138.createElement(Replay_default, null)
                 )
               ),
-              React137.createElement(
+              React138.createElement(
                 Tooltip_default,
                 { title: t3("tooltip.delete") },
-                React137.createElement(
+                React138.createElement(
                   IconButton_default,
                   { onClick: () => removeHistory(image) },
-                  React137.createElement(Delete_default, null)
+                  React138.createElement(Delete_default, null)
                 )
               )
             )
@@ -77682,20 +77999,20 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(getImageErrorReason, "getImageErrorReason");
 
   // out/src/components/card/ImageCard.js
-  var React138 = __toESM(require_react(), 1);
+  var React139 = __toESM(require_react(), 1);
   var import_react26 = __toESM(require_react(), 1);
   var import_useHash = __toESM(require_useHash(), 1);
   function GridItem(props) {
-    return React138.createElement(
+    return React139.createElement(
       Grid_default,
       { item: true, xs: props.xs },
-      React138.createElement(Paper_default, { elevation: 0, sx: { padding: 1 } }, props.children)
+      React139.createElement(Paper_default, { elevation: 0, sx: { padding: 1 } }, props.children)
     );
   }
   __name(GridItem, "GridItem");
   function ImageCard(props) {
     const { image } = props;
-    const { metadata, outputs } = image;
+    const { metadata, outputs, thumbnails } = image;
     const [_hash, setHash] = (0, import_useHash.useHash)();
     const [blendAnchor, setBlendAnchor] = (0, import_react26.useState)();
     const [saveAnchor, setSaveAnchor] = (0, import_react26.useState)();
@@ -77704,7 +78021,7 @@ Please use another name.` : formatMuiErrorMessage(18));
     const store = mustExist((0, import_react26.useContext)(StateContext));
     const { setBlend, setImg2Img, setInpaint, setUpscale } = useStore(store, selectActions2, shallow);
     async function loadSource() {
-      const req = await fetch(url);
+      const req = await fetch(outputURL);
       return req.blob();
     }
     __name(loadSource, "loadSource");
@@ -77750,12 +78067,12 @@ Please use another name.` : formatMuiErrorMessage(18));
     }
     __name(deleteImage, "deleteImage");
     function downloadImage() {
-      window.open(url, "_blank");
+      window.open(outputURL, "_blank");
       close();
     }
     __name(downloadImage, "downloadImage");
     function downloadMetadata() {
-      window.open(url + ".json", "_blank");
+      window.open(outputURL + ".json", "_blank");
       close();
     }
     __name(downloadMetadata, "downloadMetadata");
@@ -77770,29 +78087,35 @@ Please use another name.` : formatMuiErrorMessage(18));
       return mustDefault(t3(`${key}.${name}`), name);
     }
     __name(getLabel, "getLabel");
-    const url = (0, import_react26.useMemo)(() => client.outputURL(image, index), [image, index]);
+    const outputURL = (0, import_react26.useMemo)(() => client.outputURL(image, index), [image, index]);
+    const thumbnailURL = (0, import_react26.useMemo)(() => client.thumbnailURL(image, index), [image, index]);
+    const previewURL = thumbnailURL !== null && thumbnailURL !== void 0 ? thumbnailURL : outputURL;
     const model = getLabel("model", metadata[index].models[0].name);
     const scheduler = getLabel("scheduler", metadata[index].params.scheduler);
-    return React138.createElement(
+    return React139.createElement(
       Card_default,
       { sx: { maxWidth: config.params.width.default }, elevation: 2 },
-      React138.createElement(CardMedia_default, { sx: { height: config.params.height.default }, component: "img", image: url, title: metadata[index].params.prompt }),
-      React138.createElement(
+      React139.createElement(
+        CardActionArea_default,
+        { onClick: downloadImage },
+        React139.createElement(CardMedia_default, { sx: { height: config.params.height.default }, component: "img", image: previewURL, title: metadata[index].params.prompt })
+      ),
+      React139.createElement(
         CardContent_default,
         null,
-        React138.createElement(
+        React139.createElement(
           Box_default,
           { textAlign: "center" },
-          React138.createElement(
+          React139.createElement(
             Grid_default,
             { container: true, spacing: STANDARD_SPACING },
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 4 },
-              React138.createElement(
+              React139.createElement(
                 Tooltip_default,
                 { title: t3("tooltip.previous") },
-                React138.createElement(
+                React139.createElement(
                   IconButton_default,
                   { onClick: () => {
                     const prevIndex = index - 1;
@@ -77802,68 +78125,79 @@ Please use another name.` : formatMuiErrorMessage(18));
                       setIndex(prevIndex);
                     }
                   } },
-                  React138.createElement(ArrowLeft_default, null)
+                  React139.createElement(ArrowLeft_default, null)
                 )
               )
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 4 },
-              visibleIndex(index),
-              " of ",
-              outputs.length
+              React139.createElement(
+                Typography_default,
+                null,
+                visibleIndex(index),
+                " of ",
+                outputs.length
+              ),
+              hasThumbnail(image, index) && React139.createElement(
+                Typography_default,
+                null,
+                "(",
+                t3("image.thumbnail"),
+                ")"
+              )
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 4 },
-              React138.createElement(
+              React139.createElement(
                 Tooltip_default,
                 { title: t3("tooltip.next") },
-                React138.createElement(
+                React139.createElement(
                   IconButton_default,
                   { onClick: () => {
                     setIndex((index + 1) % outputs.length);
                   } },
-                  React138.createElement(ArrowRight_default, null)
+                  React139.createElement(ArrowRight_default, null)
                 )
               )
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 4 },
               t3("modelType.diffusion", { count: 1 }),
               ": ",
               model
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 4 },
               t3("parameter.scheduler"),
               ": ",
               scheduler
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 4 },
               t3("parameter.seed"),
               ": ",
               metadata[index].params.seed
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 4 },
               t3("parameter.cfg"),
               ": ",
               metadata[index].params.cfg
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 4 },
               t3("parameter.steps"),
               ": ",
               metadata[index].params.steps
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 4 },
               t3("parameter.size"),
@@ -77872,101 +78206,101 @@ Please use another name.` : formatMuiErrorMessage(18));
               "x",
               metadata[index].size.height
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 12 },
-              React138.createElement(Box_default, { textAlign: "left" }, metadata[index].params.prompt)
+              React139.createElement(Box_default, { textAlign: "left" }, metadata[index].params.prompt)
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 2 },
-              React138.createElement(
+              React139.createElement(
                 Tooltip_default,
                 { title: t3("tooltip.save") },
-                React138.createElement(
+                React139.createElement(
                   IconButton_default,
                   { onClick: (event) => {
                     setSaveAnchor(event.currentTarget);
                   } },
-                  React138.createElement(Download_default, null)
+                  React139.createElement(Download_default, null)
                 )
               ),
-              React138.createElement(
+              React139.createElement(
                 Menu_default,
                 { anchorEl: saveAnchor, open: doesExist2(saveAnchor), onClose: close },
-                React138.createElement(MenuItem_default, { key: "save-image", onClick: downloadImage }, t3("save.image")),
-                React138.createElement(MenuItem_default, { key: "save-metadata", onClick: downloadMetadata }, t3("save.metadata"))
+                React139.createElement(MenuItem_default, { key: "save-image", onClick: downloadImage }, t3("save.image")),
+                React139.createElement(MenuItem_default, { key: "save-metadata", onClick: downloadMetadata }, t3("save.metadata"))
               )
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 2 },
-              React138.createElement(
+              React139.createElement(
                 Tooltip_default,
                 { title: t3("tab.img2img") },
-                React138.createElement(
+                React139.createElement(
                   IconButton_default,
                   { onClick: copySourceToImg2Img },
-                  React138.createElement(ContentCopy_default, null)
+                  React139.createElement(ContentCopy_default, null)
                 )
               )
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 2 },
-              React138.createElement(
+              React139.createElement(
                 Tooltip_default,
                 { title: t3("tab.inpaint") },
-                React138.createElement(
+                React139.createElement(
                   IconButton_default,
                   { onClick: copySourceToInpaint },
-                  React138.createElement(Brush_default, null)
+                  React139.createElement(Brush_default, null)
                 )
               )
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 2 },
-              React138.createElement(
+              React139.createElement(
                 Tooltip_default,
                 { title: t3("tab.upscale") },
-                React138.createElement(
+                React139.createElement(
                   IconButton_default,
                   { onClick: copySourceToUpscale },
-                  React138.createElement(ZoomOutMap_default, null)
+                  React139.createElement(ZoomOutMap_default, null)
                 )
               )
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 2 },
-              React138.createElement(
+              React139.createElement(
                 Tooltip_default,
                 { title: t3("tab.blend") },
-                React138.createElement(
+                React139.createElement(
                   IconButton_default,
                   { onClick: (event) => {
                     setBlendAnchor(event.currentTarget);
                   } },
-                  React138.createElement(Blender_default, null)
+                  React139.createElement(Blender_default, null)
                 )
               ),
-              React138.createElement(Menu_default, { anchorEl: blendAnchor, open: doesExist2(blendAnchor), onClose: close }, range(BLEND_SOURCES).map((idx) => React138.createElement(MenuItem_default, { key: idx, onClick: () => {
+              React139.createElement(Menu_default, { anchorEl: blendAnchor, open: doesExist2(blendAnchor), onClose: close }, range(BLEND_SOURCES).map((idx) => React139.createElement(MenuItem_default, { key: idx, onClick: () => {
                 copySourceToBlend(idx).catch((err) => {
                 });
                 close();
               } }, visibleIndex(idx))))
             ),
-            React138.createElement(
+            React139.createElement(
               GridItem,
               { xs: 2 },
-              React138.createElement(
+              React139.createElement(
                 Tooltip_default,
                 { title: t3("tooltip.delete") },
-                React138.createElement(
+                React139.createElement(
                   IconButton_default,
                   { onClick: deleteImage },
-                  React138.createElement(Delete_default, null)
+                  React139.createElement(Delete_default, null)
                 )
               )
             )
@@ -77989,14 +78323,64 @@ Please use another name.` : formatMuiErrorMessage(18));
     };
   }
   __name(selectActions2, "selectActions");
+  function hasThumbnail(job, index) {
+    return doesExist2(job.thumbnails) && doesExist2(job.thumbnails[index]);
+  }
+  __name(hasThumbnail, "hasThumbnail");
 
   // out/src/components/card/LoadingCard.js
-  var React139 = __toESM(require_react(), 1);
+  var React140 = __toESM(require_react(), 1);
   var import_react27 = __toESM(require_react(), 1);
+
+  // out/src/components/utils.js
+  var TAB_LABELS = [
+    "txt2img",
+    "img2img",
+    "inpaint",
+    "upscale",
+    "blend",
+    "models",
+    "settings"
+  ];
+  function getTab(hash4) {
+    const route = trimHash(hash4);
+    if (route.length > 0) {
+      return route;
+    }
+    return TAB_LABELS[0];
+  }
+  __name(getTab, "getTab");
+  function getTheme(currentTheme, preferDark) {
+    if (currentTheme === "") {
+      if (preferDark) {
+        return "dark";
+      }
+      return "light";
+    }
+    return currentTheme;
+  }
+  __name(getTheme, "getTheme");
+  function getBatchInterval(defaultInterval = 5e3) {
+    const query = new URLSearchParams(window.location.search);
+    const interval = query.get("interval");
+    if (doesExist2(interval)) {
+      return parseInt(interval, 10);
+    }
+    return defaultInterval;
+  }
+  __name(getBatchInterval, "getBatchInterval");
+  function getToken() {
+    const query = new URLSearchParams(window.location.search);
+    return query.get("token");
+  }
+  __name(getToken, "getToken");
+
+  // out/src/components/card/LoadingCard.js
   var LOADING_PERCENT = 100;
   var LOADING_OVERAGE = 99;
   function LoadingCard(props) {
     const { image } = props;
+    const batch = getBatchInterval();
     const client = mustExist((0, import_react27.useContext)(ClientContext));
     const { params } = mustExist((0, import_react27.useContext)(ConfigContext));
     const store = mustExist((0, import_react27.useContext)(StateContext));
@@ -78006,15 +78390,15 @@ Please use another name.` : formatMuiErrorMessage(18));
     const ready = useQuery(["ready", image.name], () => client.status([image.name]), {
       // data will always be ready without this, even if the API says its not
       cacheTime: 0,
-      refetchInterval: POLL_TIME
+      refetchInterval: batch
     });
     function renderProgress2() {
       const progress = getProgress(ready.data);
       const total = getTotal(ready.data);
       if (progress > 0 && progress <= total) {
-        return React139.createElement(CircularProgress_default, { variant: "determinate", value: getPercent(progress, total) });
+        return React140.createElement(CircularProgress_default, { variant: "determinate", value: getPercent(progress, total) });
       } else {
-        return React139.createElement(CircularProgress_default, null);
+        return React140.createElement(CircularProgress_default, null);
       }
     }
     __name(renderProgress2, "renderProgress");
@@ -78029,13 +78413,13 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }, [ready.status, getStatus(ready.data), getProgress(ready.data)]);
     const status = (0, import_react27.useMemo)(() => getStatus(ready.data), [ready.data]);
-    return React139.createElement(
+    return React140.createElement(
       Card_default,
       { sx: { maxWidth: params.width.default } },
-      React139.createElement(
+      React140.createElement(
         CardContent_default,
         { sx: { height: params.height.default } },
-        React139.createElement(
+        React140.createElement(
           Box_default,
           { sx: {
             display: "flex",
@@ -78043,12 +78427,12 @@ Please use another name.` : formatMuiErrorMessage(18));
             justifyContent: "center",
             minHeight: params.height.default
           } },
-          React139.createElement(
+          React140.createElement(
             Stack_default,
             { direction: "column", spacing: STANDARD_SPACING, sx: { alignItems: "center" } },
             renderProgress2(),
-            status === JobStatus.PENDING ? React139.createElement(Typography_default, null, t3("loading.queue", getQueue(ready.data))) : React139.createElement(Typography_default, null, t3("loading.progress", selectStatus(ready.data, image))),
-            React139.createElement(Button_default, { onClick: () => cancel.mutate() }, t3("loading.cancel"))
+            status === JobStatus.PENDING ? React140.createElement(Typography_default, null, t3("loading.queue", getQueue(ready.data))) : React140.createElement(Typography_default, null, t3("loading.progress", selectStatus(ready.data, image))),
+            React140.createElement(Button_default, { onClick: () => cancel.mutate() }, t3("loading.cancel"))
           )
         )
       )
@@ -78132,29 +78516,29 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { t: t3 } = useTranslation();
     const children = [];
     if (history.length === 0) {
-      children.push(["empty", React140.createElement(Typography_default, null, t3("history.empty"))]);
+      children.push(["empty", React141.createElement(Typography_default, null, t3("history.empty"))]);
     }
     const limited = history.slice(0, limit);
     for (const item of limited) {
       const key = item.image.name;
       switch (item.image.status) {
         case JobStatus.SUCCESS:
-          children.push([key, React140.createElement(ImageCard, { key: `history-${key}`, image: item.image, onDelete: removeHistory })]);
+          children.push([key, React141.createElement(ImageCard, { key: `history-${key}`, image: item.image, onDelete: removeHistory })]);
           break;
         case JobStatus.UNKNOWN:
         case JobStatus.FAILED:
-          children.push([key, React140.createElement(ErrorCard, { key: `history-${key}`, image: item.image, retry: item.retry })]);
+          children.push([key, React141.createElement(ErrorCard, { key: `history-${key}`, image: item.image, retry: item.retry })]);
           break;
         default:
-          children.push([key, React140.createElement(LoadingCard, { key: `history-${key}`, image: item.image })]);
+          children.push([key, React141.createElement(LoadingCard, { key: `history-${key}`, image: item.image })]);
           break;
       }
     }
-    return React140.createElement(
+    return React141.createElement(
       Grid_default,
       { container: true, spacing: STANDARD_SPACING },
       // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-      children.map(([key, child]) => React140.createElement(Grid_default, { item: true, key, xs: 12 / width2 }, child))
+      children.map(([key, child]) => React141.createElement(Grid_default, { item: true, key, xs: 12 / width2 }, child))
     );
   }
   __name(ImageHistory, "ImageHistory");
@@ -78174,15 +78558,15 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(selectParams, "selectParams");
 
   // out/src/components/tab/Blend.js
-  var React145 = __toESM(require_react(), 1);
+  var React146 = __toESM(require_react(), 1);
   var import_react31 = __toESM(require_react(), 1);
 
   // out/src/components/control/UpscaleControl.js
-  var React142 = __toESM(require_react(), 1);
+  var React143 = __toESM(require_react(), 1);
   var import_react29 = __toESM(require_react(), 1);
 
   // out/src/components/input/NumericField.js
-  var React141 = __toESM(require_react(), 1);
+  var React142 = __toESM(require_react(), 1);
   function parseNumber(num, decimal = false) {
     if (decimal) {
       return parseFloat(num);
@@ -78195,15 +78579,15 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { decimal = false, disabled = false, label, min: min2, max: max2, step, value } = props;
     const error2 = value < min2 || value > max2;
     const { t: t3 } = useTranslation();
-    return React141.createElement(
+    return React142.createElement(
       Stack_default2,
       { spacing: STANDARD_SPACING },
-      React141.createElement(TextField_default, { error: error2, label, helperText: error2 && t3("input.numeric.error.range"), disabled, variant: "outlined", type: "number", inputProps: { min: min2, max: max2, step }, value, onChange: (event) => {
+      React142.createElement(TextField_default, { error: error2, label, helperText: error2 && t3("input.numeric.error.range"), disabled, variant: "outlined", type: "number", inputProps: { min: min2, max: max2, step }, value, onChange: (event) => {
         if (doesExist2(props.onChange)) {
           props.onChange(parseNumber(event.target.value, decimal));
         }
       } }),
-      React141.createElement(Slider_default, { disabled, min: min2, max: max2, step, value, onChange: (_event, newValue) => {
+      React142.createElement(Slider_default, { disabled, min: min2, max: max2, step, value, onChange: (_event, newValue) => {
         if (doesExist2(props.onChange)) {
           if (Array.isArray(newValue)) {
             props.onChange(newValue[0]);
@@ -78223,60 +78607,60 @@ Please use another name.` : formatMuiErrorMessage(18));
     const upscale = useStore(store, selectUpscale6);
     const { params } = mustExist((0, import_react29.useContext)(ConfigContext));
     const { t: t3 } = useTranslation();
-    return React142.createElement(
+    return React143.createElement(
       Stack_default2,
       { direction: "row", spacing: 4 },
-      React142.createElement(FormControlLabel_default, { label: t3("parameter.upscale.label"), control: React142.createElement(Checkbox_default, { checked: upscale.enabled, value: "check", onChange: (_event) => {
+      React143.createElement(FormControlLabel_default, { label: t3("parameter.upscale.label"), control: React143.createElement(Checkbox_default, { checked: upscale.enabled, value: "check", onChange: (_event) => {
         setUpscale({
           enabled: upscale.enabled === false
         });
       } }) }),
-      React142.createElement(NumericField, { label: t3("parameter.upscale.denoise"), decimal: true, disabled: upscale.enabled === false, min: params.denoise.min, max: params.denoise.max, step: params.denoise.step, value: upscale.denoise, onChange: (denoise) => {
+      React143.createElement(NumericField, { label: t3("parameter.upscale.denoise"), decimal: true, disabled: upscale.enabled === false, min: params.denoise.min, max: params.denoise.max, step: params.denoise.step, value: upscale.denoise, onChange: (denoise) => {
         setUpscale({
           denoise
         });
       } }),
-      React142.createElement(NumericField, { label: t3("parameter.upscale.scale"), disabled: upscale.enabled === false, min: params.scale.min, max: params.scale.max, step: params.scale.step, value: upscale.scale, onChange: (scale) => {
+      React143.createElement(NumericField, { label: t3("parameter.upscale.scale"), disabled: upscale.enabled === false, min: params.scale.min, max: params.scale.max, step: params.scale.step, value: upscale.scale, onChange: (scale) => {
         setUpscale({
           scale
         });
       } }),
-      React142.createElement(NumericField, { label: t3("parameter.upscale.outscale"), disabled: upscale.enabled === false, min: params.outscale.min, max: params.outscale.max, step: params.outscale.step, value: upscale.outscale, onChange: (outscale) => {
+      React143.createElement(NumericField, { label: t3("parameter.upscale.outscale"), disabled: upscale.enabled === false, min: params.outscale.min, max: params.outscale.max, step: params.outscale.step, value: upscale.outscale, onChange: (outscale) => {
         setUpscale({
           outscale
         });
       } }),
-      React142.createElement(FormControlLabel_default, { label: t3("parameter.correction.label"), control: React142.createElement(Checkbox_default, { checked: upscale.faces, value: "check", onChange: (event) => {
+      React143.createElement(FormControlLabel_default, { label: t3("parameter.correction.label"), control: React143.createElement(Checkbox_default, { checked: upscale.faces, value: "check", onChange: (event) => {
         setUpscale({
           faces: upscale.faces === false
         });
       } }) }),
-      React142.createElement(NumericField, { label: t3("parameter.correction.strength"), decimal: true, disabled: upscale.faces === false, min: params.faceStrength.min, max: params.faceStrength.max, step: params.faceStrength.step, value: upscale.faceStrength, onChange: (faceStrength) => {
+      React143.createElement(NumericField, { label: t3("parameter.correction.strength"), decimal: true, disabled: upscale.faces === false, min: params.faceStrength.min, max: params.faceStrength.max, step: params.faceStrength.step, value: upscale.faceStrength, onChange: (faceStrength) => {
         setUpscale({
           faceStrength
         });
       } }),
-      React142.createElement(NumericField, { label: t3("parameter.correction.outscale"), disabled: upscale.faces === false, min: params.faceOutscale.min, max: params.faceOutscale.max, step: params.faceOutscale.step, value: upscale.faceOutscale, onChange: (faceOutscale) => {
+      React143.createElement(NumericField, { label: t3("parameter.correction.outscale"), disabled: upscale.faces === false, min: params.faceOutscale.min, max: params.faceOutscale.max, step: params.faceOutscale.step, value: upscale.faceOutscale, onChange: (faceOutscale) => {
         setUpscale({
           faceOutscale
         });
       } }),
-      React142.createElement(
+      React143.createElement(
         FormControl_default,
         null,
-        React142.createElement(InputLabel_default, { id: "upscale-order" }, t3("parameter.upscale.order")),
-        React142.createElement(Select_default, { labelId: "upscale-order", label: t3("parameter.upscale.order"), value: upscale.upscaleOrder, onChange: (e3) => {
+        React143.createElement(InputLabel_default, { id: "upscale-order" }, t3("parameter.upscale.order")),
+        React143.createElement(Select_default, { labelId: "upscale-order", label: t3("parameter.upscale.order"), value: upscale.upscaleOrder, onChange: (e3) => {
           setUpscale({
             upscaleOrder: e3.target.value
           });
-        } }, Object.entries(params.upscaleOrder.keys).map(([key, name]) => React142.createElement(MenuItem_default, { key, value: name }, t3(`upscaleOrder.${name}`))))
+        } }, Object.entries(params.upscaleOrder.keys).map(([key, name]) => React143.createElement(MenuItem_default, { key, value: name }, t3(`upscaleOrder.${name}`))))
       )
     );
   }
   __name(UpscaleControl, "UpscaleControl");
 
   // out/src/components/input/ImageInput.js
-  var React143 = __toESM(require_react(), 1);
+  var React144 = __toESM(require_react(), 1);
   function ImageInput(props) {
     const { t: t3 } = useTranslation();
     function renderImage() {
@@ -78284,26 +78668,26 @@ Please use another name.` : formatMuiErrorMessage(18));
         if (mustDefault(props.hideSelection, false)) {
           return void 0;
         }
-        return React143.createElement("img", { src: URL.createObjectURL(props.image), style: {
+        return React144.createElement("img", { src: URL.createObjectURL(props.image), style: {
           maxWidth: 512,
           maxHeight: 512
         } });
       } else {
-        return React143.createElement(Typography_default, null, t3("input.image.empty"));
+        return React144.createElement(Typography_default, null, t3("input.image.empty"));
       }
     }
     __name(renderImage, "renderImage");
-    return React143.createElement(
+    return React144.createElement(
       Stack_default2,
       { direction: "row", spacing: STANDARD_SPACING },
-      React143.createElement(
+      React144.createElement(
         Stack_default2,
         null,
-        React143.createElement(
+        React144.createElement(
           Button_default,
-          { component: "label", startIcon: React143.createElement(PhotoCamera_default, null), variant: "outlined" },
+          { component: "label", startIcon: React144.createElement(PhotoCamera_default, null), variant: "outlined" },
           props.label,
-          React143.createElement("input", { hidden: true, accept: props.filter, type: "file", onChange: (event) => {
+          React144.createElement("input", { hidden: true, accept: props.filter, type: "file", onChange: (event) => {
             const { files } = event.target;
             if (doesExist2(files) && files.length > 0) {
               const file = mustExist(files[0]);
@@ -78458,10 +78842,9 @@ Please use another name.` : formatMuiErrorMessage(18));
     const painting = (0, import_react30.useRef)(false);
     const dirty = (0, import_react30.useRef)(false);
     const background = (0, import_react30.useRef)({
-      name: "",
+      source: void 0,
       url: void 0
     });
-    const state = mustExist((0, import_react30.useContext)(StateContext));
     const { t: t3 } = useTranslation();
     (0, import_react30.useEffect)(() => {
       if (dirty.current) {
@@ -78475,12 +78858,12 @@ Please use another name.` : formatMuiErrorMessage(18));
         });
       }
     }, [mask]);
-    if (doesExist2(source) && background.current.name !== source.name) {
+    if (doesExist2(source) && background.current.source !== source) {
       if (doesExist2(background.current.url)) {
         URL.revokeObjectURL(background.current.url);
       }
+      background.current.source = source;
       background.current.url = URL.createObjectURL(source);
-      background.current.name = source.name;
       if (doesExist2(maskRef.current) && doesExist2(mask) === false) {
         getClearContext(maskRef);
         dirty.current = true;
@@ -78652,26 +79035,26 @@ Please use another name.` : formatMuiErrorMessage(18));
     const blend = useStore(store, selectParams2);
     const { t: t3 } = useTranslation();
     const sources = mustDefault(blend.sources, []);
-    return React145.createElement(
+    return React146.createElement(
       Box_default,
       null,
-      React145.createElement(
+      React146.createElement(
         Stack_default2,
         { spacing: STANDARD_SPACING },
-        range(BLEND_SOURCES).map((idx) => React145.createElement(ImageInput, { key: `source-${idx.toFixed(0)}`, filter: IMAGE_FILTER, image: sources[idx], hideSelection: true, label: t3("input.image.source"), onChange: (file) => {
+        range(BLEND_SOURCES).map((idx) => React146.createElement(ImageInput, { key: `source-${idx.toFixed(0)}`, filter: IMAGE_FILTER, image: sources[idx], hideSelection: true, label: t3("input.image.source"), onChange: (file) => {
           const newSources = [...sources];
           newSources[idx] = file;
           setBlend({
             sources: newSources
           });
         } })),
-        React145.createElement(MaskCanvas, { brush, source: sources[0], mask: blend.mask, onSave: (mask) => {
+        React146.createElement(MaskCanvas, { brush, source: sources[0], mask: blend.mask, onSave: (mask) => {
           setBlend({
             mask
           });
         }, setBrush }),
-        React145.createElement(UpscaleControl, { selectUpscale, setUpscale }),
-        React145.createElement(Button_default, { disabled: sources.length < 2, variant: "contained", onClick: () => upload.mutate() }, t3("generate"))
+        React146.createElement(UpscaleControl, { selectUpscale, setUpscale }),
+        React146.createElement(Button_default, { disabled: sources.length < 2, variant: "contained", onClick: () => upload.mutate() }, t3("generate"))
       )
     );
   }
@@ -78703,7 +79086,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(selectUpscale, "selectUpscale");
 
   // out/src/components/tab/Img2Img.js
-  var React153 = __toESM(require_react(), 1);
+  var React154 = __toESM(require_react(), 1);
   var import_react39 = __toESM(require_react(), 1);
 
   // node_modules/exifreader/src/utils.js
@@ -83606,8 +83989,10 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/Profiles.js
   var import_lodash2 = __toESM(require_lodash(), 1);
-  var React146 = __toESM(require_react(), 1);
+  var React147 = __toESM(require_react(), 1);
   var import_react32 = __toESM(require_react(), 1);
+  var useDropModule = __toESM(require_useDrop(), 1);
+  var useDrop = useDropModule.default.default;
   var ALLOWED_EXTENSIONS = [".json", ".jpg", ".jpeg", ".png", ".txt", ".webp"];
   var EXTENSION_FILTER = ALLOWED_EXTENSIONS.join(",");
   function Profiles(props) {
@@ -83617,48 +84002,71 @@ Please use another name.` : formatMuiErrorMessage(18));
     const [dialogOpen, setDialogOpen] = (0, import_react32.useState)(false);
     const [profileName, setProfileName] = (0, import_react32.useState)("");
     const { t: t3 } = useTranslation();
-    return React146.createElement(
+    async function loadFromMetadata(metadata) {
+      if (doesExist2(metadata.params)) {
+        props.setParams(metadata.params);
+      }
+      if (doesExist2(metadata.highres)) {
+        props.setHighres(metadata.highres);
+      }
+      if (doesExist2(metadata.upscale)) {
+        props.setUpscale(metadata.upscale);
+      }
+    }
+    __name(loadFromMetadata, "loadFromMetadata");
+    async function loadFromFile(file) {
+      await loadParamsFromFile(file).then(loadFromMetadata);
+    }
+    __name(loadFromFile, "loadFromFile");
+    useDrop({
+      onFiles(files, event) {
+        event.preventDefault();
+        const file = files[0];
+        loadFromFile(file);
+      }
+    });
+    return React147.createElement(
       Stack_default2,
       { direction: "row", spacing: STANDARD_SPACING },
-      React146.createElement(Autocomplete_default, { id: "profile-select", options: profiles, sx: { width: "25em" }, getOptionLabel: (option) => option.name, clearOnBlur: true, renderOption: (optionProps, option) => React146.createElement(
+      React147.createElement(Autocomplete_default, { id: "profile-select", options: profiles, sx: { width: "25em" }, getOptionLabel: (option) => option.name, clearOnBlur: true, renderOption: (optionProps, option) => React147.createElement(
         ListItem_default,
-        Object.assign({}, optionProps, { secondaryAction: React146.createElement(
+        Object.assign({}, optionProps, { secondaryAction: React147.createElement(
           IconButton_default,
           { edge: "end", onClick: (event) => {
             event.preventDefault();
             removeProfile(option.name);
           } },
-          React146.createElement(Delete_default, null)
+          React147.createElement(Delete_default, null)
         ) }),
-        React146.createElement(ListItemText_default, { primary: option.name })
-      ), renderInput: (params) => React146.createElement(
+        React147.createElement(ListItemText_default, { primary: option.name })
+      ), renderInput: (params) => React147.createElement(
         Stack_default2,
         { direction: "row" },
-        React146.createElement(TextField_default, Object.assign({}, params, { label: t3("profile.load"), inputProps: Object.assign(Object.assign({}, params.inputProps), { autoComplete: "new-password" }) })),
-        React146.createElement(
+        React147.createElement(TextField_default, Object.assign({}, params, { label: t3("profile.load"), inputProps: Object.assign(Object.assign({}, params.inputProps), { autoComplete: "new-password" }) })),
+        React147.createElement(
           Button_default,
           { type: "button", variant: "contained", onClick: () => setDialogOpen(true) },
-          React146.createElement(Save_default, null)
+          React147.createElement(Save_default, null)
         )
       ), onChange: (event, value) => {
         if (doesExist2(value)) {
           props.setParams(Object.assign({}, value.params));
         }
       } }),
-      React146.createElement(
+      React147.createElement(
         Dialog_default,
         { open: dialogOpen, onClose: () => setDialogOpen(false) },
-        React146.createElement(DialogTitle_default, null, t3("profile.saveProfile")),
-        React146.createElement(
+        React147.createElement(DialogTitle_default, null, t3("profile.saveProfile")),
+        React147.createElement(
           DialogContent_default,
           null,
-          React146.createElement(TextField_default, { variant: "standard", label: t3("profile.name"), value: profileName, onChange: (event) => setProfileName(event.target.value), fullWidth: true })
+          React147.createElement(TextField_default, { variant: "standard", label: t3("profile.name"), value: profileName, onChange: (event) => setProfileName(event.target.value), fullWidth: true })
         ),
-        React146.createElement(
+        React147.createElement(
           DialogActions_default,
           null,
-          React146.createElement(Button_default, { variant: "contained", onClick: () => setDialogOpen(false) }, t3("profile.cancel")),
-          React146.createElement(Button_default, { variant: "contained", onClick: () => {
+          React147.createElement(Button_default, { variant: "contained", onClick: () => setDialogOpen(false) }, t3("profile.cancel")),
+          React147.createElement(Button_default, { variant: "contained", onClick: () => {
             const state = store.getState();
             saveProfile({
               name: profileName,
@@ -83672,31 +84080,21 @@ Please use another name.` : formatMuiErrorMessage(18));
           } }, t3("profile.save"))
         )
       ),
-      React146.createElement(
+      React147.createElement(
         Button_default,
         { component: "label", variant: "contained" },
-        React146.createElement(ImageSearch_default, null),
-        React146.createElement("input", { hidden: true, accept: EXTENSION_FILTER, type: "file", onChange: (event) => {
+        React147.createElement(ImageSearch_default, null),
+        React147.createElement("input", { hidden: true, accept: EXTENSION_FILTER, type: "file", onChange: (event) => {
           const { files } = event.target;
           if (doesExist2(files) && files.length > 0) {
             const file = mustExist(files[0]);
-            loadParamsFromFile(file).then((newParams) => {
-              if (doesExist2(newParams.params)) {
-                props.setParams(newParams.params);
-              }
-              if (doesExist2(newParams.highres)) {
-                props.setHighres(newParams.highres);
-              }
-              if (doesExist2(newParams.upscale)) {
-                props.setUpscale(newParams.upscale);
-              }
-            });
+            loadFromFile(file);
           }
         }, onClick: (event) => {
           event.currentTarget.value = "";
         } })
       ),
-      React146.createElement(
+      React147.createElement(
         Button_default,
         { component: "label", variant: "contained", onClick: () => {
           const state = store.getState();
@@ -83708,7 +84106,7 @@ Please use another name.` : formatMuiErrorMessage(18));
             upscale: props.selectUpscale(state)
           });
         } },
-        React146.createElement(Download_default, null)
+        React147.createElement(Download_default, null)
       )
     );
   }
@@ -83841,7 +84239,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(parseAutoComment, "parseAutoComment");
 
   // out/src/components/control/HighresControl.js
-  var React147 = __toESM(require_react(), 1);
+  var React148 = __toESM(require_react(), 1);
   var import_react33 = __toESM(require_react(), 1);
   function HighresControl(props) {
     const { selectHighres: selectHighres5, setHighres } = props;
@@ -83849,40 +84247,40 @@ Please use another name.` : formatMuiErrorMessage(18));
     const highres = useStore(store, selectHighres5);
     const { params } = mustExist((0, import_react33.useContext)(ConfigContext));
     const { t: t3 } = useTranslation();
-    return React147.createElement(
+    return React148.createElement(
       Stack_default2,
       { direction: "row", spacing: 4 },
-      React147.createElement(FormControlLabel_default, { label: t3("parameter.highres.label"), control: React147.createElement(Checkbox_default, { checked: highres.enabled, value: "check", onChange: (_event) => {
+      React148.createElement(FormControlLabel_default, { label: t3("parameter.highres.label"), control: React148.createElement(Checkbox_default, { checked: highres.enabled, value: "check", onChange: (_event) => {
         setHighres({
           enabled: highres.enabled === false
         });
       } }) }),
-      React147.createElement(NumericField, { label: t3("parameter.highres.steps"), disabled: highres.enabled === false, min: params.highresSteps.min, max: params.highresSteps.max, step: params.highresSteps.step, value: highres.highresSteps, onChange: (steps) => {
+      React148.createElement(NumericField, { label: t3("parameter.highres.steps"), disabled: highres.enabled === false, min: params.highresSteps.min, max: params.highresSteps.max, step: params.highresSteps.step, value: highres.highresSteps, onChange: (steps) => {
         setHighres({
           highresSteps: steps
         });
       } }),
-      React147.createElement(NumericField, { label: t3("parameter.highres.scale"), disabled: highres.enabled === false, min: params.highresScale.min, max: params.highresScale.max, step: params.highresScale.step, value: highres.highresScale, onChange: (scale) => {
+      React148.createElement(NumericField, { label: t3("parameter.highres.scale"), disabled: highres.enabled === false, min: params.highresScale.min, max: params.highresScale.max, step: params.highresScale.step, value: highres.highresScale, onChange: (scale) => {
         setHighres({
           highresScale: scale
         });
       } }),
-      React147.createElement(NumericField, { label: t3("parameter.highres.strength"), decimal: true, disabled: highres.enabled === false, min: params.highresStrength.min, max: params.highresStrength.max, step: params.highresStrength.step, value: highres.highresStrength, onChange: (strength) => {
+      React148.createElement(NumericField, { label: t3("parameter.highres.strength"), decimal: true, disabled: highres.enabled === false, min: params.highresStrength.min, max: params.highresStrength.max, step: params.highresStrength.step, value: highres.highresStrength, onChange: (strength) => {
         setHighres({
           highresStrength: strength
         });
       } }),
-      React147.createElement(
+      React148.createElement(
         FormControl_default,
         null,
-        React147.createElement(InputLabel_default, { id: "highres-method" }, t3("parameter.highres.method")),
-        React147.createElement(Select_default, { disabled: highres.enabled === false, labelId: "highres-method", label: t3("parameter.highres.method"), value: highres.highresMethod, onChange: (e3) => {
+        React148.createElement(InputLabel_default, { id: "highres-method" }, t3("parameter.highres.method")),
+        React148.createElement(Select_default, { disabled: highres.enabled === false, labelId: "highres-method", label: t3("parameter.highres.method"), value: highres.highresMethod, onChange: (e3) => {
           setHighres({
             highresMethod: e3.target.value
           });
-        } }, Object.entries(params.highresMethod.keys).map(([key, name]) => React147.createElement(MenuItem_default, { key, value: name }, t3(`highresMethod.${name}`))))
+        } }, Object.entries(params.highresMethod.keys).map(([key, name]) => React148.createElement(MenuItem_default, { key, value: name }, t3(`highresMethod.${name}`))))
       ),
-      React147.createElement(NumericField, { label: t3("parameter.highres.iterations"), disabled: highres.enabled === false, min: params.highresIterations.min, max: params.highresIterations.max, step: params.highresIterations.step, value: highres.highresIterations, onChange: (iterations) => {
+      React148.createElement(NumericField, { label: t3("parameter.highres.iterations"), disabled: highres.enabled === false, min: params.highresIterations.min, max: params.highresIterations.max, step: params.highresIterations.step, value: highres.highresIterations, onChange: (iterations) => {
         setHighres({
           highresIterations: iterations
         });
@@ -83893,15 +84291,15 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/control/ImageControl.js
   var import_lodash3 = __toESM(require_lodash(), 1);
-  var React151 = __toESM(require_react(), 1);
+  var React152 = __toESM(require_react(), 1);
   var import_react37 = __toESM(require_react(), 1);
 
   // out/src/components/input/PromptInput.js
-  var React149 = __toESM(require_react(), 1);
+  var React150 = __toESM(require_react(), 1);
   var import_react35 = __toESM(require_react(), 1);
 
   // out/src/components/input/QueryMenu.js
-  var React148 = __toESM(require_react(), 1);
+  var React149 = __toESM(require_react(), 1);
   var import_react34 = __toESM(require_react(), 1);
   function hasFilter(query) {
     return Reflect.has(query, "selector");
@@ -83951,29 +84349,29 @@ Please use another name.` : formatMuiErrorMessage(18));
     __name(getLabel, "getLabel");
     if (result.status === "error") {
       if (result.error instanceof Error) {
-        return React148.createElement(Alert_default, { severity: "error" }, t3("input.list.error.specific", {
+        return React149.createElement(Alert_default, { severity: "error" }, t3("input.list.error.specific", {
           message: result.error.message
         }));
       } else {
-        return React148.createElement(Alert_default, { severity: "error" }, t3("input.list.error.unknown"));
+        return React149.createElement(Alert_default, { severity: "error" }, t3("input.list.error.unknown"));
       }
     }
     if (result.status === "loading") {
-      return React148.createElement(
+      return React149.createElement(
         FormControl_default,
         null,
-        React148.createElement(FormLabel_default, { id: labelID }, props.name),
-        React148.createElement(LinearProgress_default, null)
+        React149.createElement(FormLabel_default, { id: labelID }, props.name),
+        React149.createElement(LinearProgress_default, null)
       );
     }
     const data = filterQuery(query, showEmpty);
     const labeledData = data.map((it) => [it, getLabel(it)]).sort((a3, b3) => a3[1].localeCompare(b3[1]));
-    const menuItems = labeledData.map(([key, label]) => React148.createElement(MenuItem_default, { key, onClick: () => selectItem(key) }, label));
-    return React148.createElement(
+    const menuItems = labeledData.map(([key, label]) => React149.createElement(MenuItem_default, { key, onClick: () => selectItem(key) }, label));
+    return React149.createElement(
       Box_default,
       null,
-      React148.createElement(Button_default, { id: `${id}-button`, onClick: openMenu, endIcon: React148.createElement(KeyboardArrowDown_default, null), variant: "outlined" }, name),
-      React148.createElement(Menu_default, { id: `${id}-menu`, anchorEl: anchor, open: doesExist2(anchor), onClose: closeMenu, MenuListProps: {
+      React149.createElement(Button_default, { id: `${id}-button`, onClick: openMenu, endIcon: React149.createElement(KeyboardArrowDown_default, null), variant: "outlined" }, name),
+      React149.createElement(Menu_default, { id: `${id}-menu`, anchorEl: anchor, open: doesExist2(anchor), onClose: closeMenu, MenuListProps: {
         "aria-labelledby": `${id}-button`
       } }, menuItems)
     );
@@ -83999,17 +84397,17 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
       return [];
     }, [models, prompt]);
-    return React149.createElement(
+    return React150.createElement(
       Stack_default,
       { spacing: STANDARD_SPACING },
-      React149.createElement(TextField_default, { label: t3("parameter.prompt"), variant: "outlined", value: prompt, onChange: (event) => {
+      React150.createElement(TextField_default, { label: t3("parameter.prompt"), variant: "outlined", value: prompt, onChange: (event) => {
         onChange({
           prompt: event.target.value,
           negativePrompt
         });
       } }),
-      React149.createElement(Stack_default, { direction: "row", spacing: STANDARD_SPACING }, tokens.map((token2) => React149.createElement(Chip_default, { color: prompt.includes(token2) ? "primary" : "default", label: token2, onClick: () => addToken(token2) }))),
-      React149.createElement(TextField_default, { label: t3("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
+      React150.createElement(Stack_default, { direction: "row", spacing: STANDARD_SPACING }, tokens.map((token2) => React150.createElement(Chip_default, { color: prompt.includes(token2) ? "primary" : "default", label: token2, onClick: () => addToken(token2) }))),
+      React150.createElement(TextField_default, { label: t3("parameter.negativePrompt"), variant: "outlined", value: negativePrompt, onChange: (event) => {
         props.onChange({
           prompt,
           negativePrompt: event.target.value
@@ -84058,16 +84456,16 @@ Please use another name.` : formatMuiErrorMessage(18));
     const wildcardSelector = (0, import_react35.useMemo)(() => ({
       result: wildcards
     }), [wildcards.status]);
-    return React149.createElement(
+    return React150.createElement(
       Stack_default,
       { spacing: STANDARD_SPACING },
-      React149.createElement(PromptTextBlock, { models: models.data, onChange, selector }),
-      React149.createElement(
+      React150.createElement(PromptTextBlock, { models: models.data, onChange, selector }),
+      React150.createElement(
         Stack_default,
         { direction: "row", spacing: STANDARD_SPACING },
-        React149.createElement(ModelMenu, { id: "inversion", labelKey: "model.inversion", name: t3("modelType.inversion"), query: inversionSelector, onSelect: addInversion }),
-        React149.createElement(ModelMenu, { id: "lora", labelKey: "model.lora", name: t3("modelType.lora"), query: loraSelector, onSelect: addLora }),
-        React149.createElement(StringMenu, { id: "wildcard", labelKey: "wildcard", name: t3("wildcard"), query: wildcardSelector, onSelect: addWildcard })
+        React150.createElement(ModelMenu, { id: "inversion", labelKey: "model.inversion", name: t3("modelType.inversion"), query: inversionSelector, onSelect: addInversion }),
+        React150.createElement(ModelMenu, { id: "lora", labelKey: "model.lora", name: t3("modelType.lora"), query: loraSelector, onSelect: addLora }),
+        React150.createElement(StringMenu, { id: "wildcard", labelKey: "wildcard", name: t3("wildcard"), query: wildcardSelector, onSelect: addWildcard })
       )
     );
   }
@@ -84122,7 +84520,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(getNetworkTokens, "getNetworkTokens");
 
   // out/src/components/input/QueryList.js
-  var React150 = __toESM(require_react(), 1);
+  var React151 = __toESM(require_react(), 1);
   var import_react36 = __toESM(require_react(), 1);
   function hasFilter2(query) {
     return Reflect.has(query, "selector");
@@ -84179,31 +84577,31 @@ Please use another name.` : formatMuiErrorMessage(18));
     }, [result.status]);
     if (result.status === "error") {
       if (result.error instanceof Error) {
-        return React150.createElement(Alert_default, { severity: "error" }, t3("input.list.error.specific", {
+        return React151.createElement(Alert_default, { severity: "error" }, t3("input.list.error.specific", {
           message: result.error.message
         }));
       } else {
-        return React150.createElement(Alert_default, { severity: "error" }, t3("input.list.error.unknown"));
+        return React151.createElement(Alert_default, { severity: "error" }, t3("input.list.error.unknown"));
       }
     }
     if (result.status === "loading") {
-      return React150.createElement(
+      return React151.createElement(
         FormControl_default,
         null,
-        React150.createElement(FormLabel_default, { id: labelID }, props.name),
-        React150.createElement(LinearProgress_default, null)
+        React151.createElement(FormLabel_default, { id: labelID }, props.name),
+        React151.createElement(LinearProgress_default, null)
       );
     }
     const data = filterQuery2(query, noneLabel());
-    return React150.createElement(
+    return React151.createElement(
       FormControl_default,
       null,
-      React150.createElement(InputLabel_default, { id: labelID }, props.name),
-      React150.createElement(Select_default, { labelId: labelID, label: props.name, value: firstValidValue(), onChange: (e3) => {
+      React151.createElement(InputLabel_default, { id: labelID }, props.name),
+      React151.createElement(Select_default, { labelId: labelID, label: props.name, value: firstValidValue(), onChange: (e3) => {
         if (doesExist2(props.onChange)) {
           props.onChange(e3.target.value);
         }
-      } }, data.map((name) => React150.createElement(MenuItem_default, { key: name, value: name }, getLabel(name))))
+      } }, data.map((name) => React151.createElement(MenuItem_default, { key: name, value: name }, getLabel(name))))
     );
   }
   __name(QueryList, "QueryList");
@@ -84224,91 +84622,91 @@ Please use another name.` : formatMuiErrorMessage(18));
     const schedulers = useQuery(["schedulers"], async () => client.schedulers(), {
       staleTime: STALE_TIME
     });
-    return React151.createElement(
+    return React152.createElement(
       Stack_default2,
       { spacing: STANDARD_SPACING },
-      React151.createElement(
+      React152.createElement(
         Stack_default2,
         { direction: "row", spacing: 4 },
-        React151.createElement(QueryList, { id: "schedulers", labelKey: "scheduler", name: t3("parameter.scheduler"), query: {
+        React152.createElement(QueryList, { id: "schedulers", labelKey: "scheduler", name: t3("parameter.scheduler"), query: {
           result: schedulers
         }, value: mustDefault(state.scheduler, ""), onChange: (value) => {
           if (doesExist2(onChange)) {
             onChange(Object.assign(Object.assign({}, state), { scheduler: value }));
           }
         } }),
-        React151.createElement(NumericField, { decimal: true, label: t3("parameter.eta"), min: params.eta.min, max: params.eta.max, step: params.eta.step, value: state.eta, onChange: (eta) => {
+        React152.createElement(NumericField, { decimal: true, label: t3("parameter.eta"), min: params.eta.min, max: params.eta.max, step: params.eta.step, value: state.eta, onChange: (eta) => {
           if (doesExist2(onChange)) {
             onChange({
               eta
             });
           }
         } }),
-        React151.createElement(NumericField, { decimal: true, label: t3("parameter.cfg"), min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: state.cfg, onChange: (cfg) => {
+        React152.createElement(NumericField, { decimal: true, label: t3("parameter.cfg"), min: params.cfg.min, max: params.cfg.max, step: params.cfg.step, value: state.cfg, onChange: (cfg) => {
           if (doesExist2(onChange)) {
             onChange({
               cfg
             });
           }
         } }),
-        React151.createElement(NumericField, { label: t3("parameter.steps"), min: params.steps.min, max: params.steps.max, step: params.steps.step, value: state.steps, onChange: (steps) => {
+        React152.createElement(NumericField, { label: t3("parameter.steps"), min: params.steps.min, max: params.steps.max, step: params.steps.step, value: state.steps, onChange: (steps) => {
           onChange({
             steps
           });
         } }),
-        React151.createElement(NumericField, { label: t3("parameter.seed"), min: params.seed.min, max: params.seed.max, step: params.seed.step, value: state.seed, onChange: (seed) => {
+        React152.createElement(NumericField, { label: t3("parameter.seed"), min: params.seed.min, max: params.seed.max, step: params.seed.step, value: state.seed, onChange: (seed) => {
           onChange({
             seed
           });
         } }),
-        React151.createElement(Button_default, { variant: "outlined", startIcon: React151.createElement(Casino_default, null), onClick: () => {
+        React152.createElement(Button_default, { variant: "outlined", startIcon: React152.createElement(Casino_default, null), onClick: () => {
           const seed = Math.floor(Math.random() * params.seed.max);
           props.onChange({
             seed
           });
         } }, t3("parameter.newSeed"))
       ),
-      React151.createElement(
+      React152.createElement(
         Stack_default2,
         { direction: "row", spacing: 4 },
-        React151.createElement(NumericField, { label: t3("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: state.batch, onChange: (batch) => {
+        React152.createElement(NumericField, { label: t3("parameter.batch"), min: params.batch.min, max: params.batch.max, step: params.batch.step, value: state.batch, onChange: (batch) => {
           props.onChange({
             batch
           });
         } }),
-        React151.createElement(NumericField, { label: t3("parameter.unet_tile"), min: params.unet_tile.min, max: params.unet_tile.max, step: params.unet_tile.step, value: state.unet_tile, onChange: (unet_tile) => {
+        React152.createElement(NumericField, { label: t3("parameter.unet_tile"), min: params.unet_tile.min, max: params.unet_tile.max, step: params.unet_tile.step, value: state.unet_tile, onChange: (unet_tile) => {
           props.onChange({
             unet_tile
           });
         } }),
-        React151.createElement(NumericField, { decimal: true, label: t3("parameter.unet_overlap"), min: params.unet_overlap.min, max: params.unet_overlap.max, step: params.unet_overlap.step, value: state.unet_overlap, onChange: (unet_overlap) => {
+        React152.createElement(NumericField, { decimal: true, label: t3("parameter.unet_overlap"), min: params.unet_overlap.min, max: params.unet_overlap.max, step: params.unet_overlap.step, value: state.unet_overlap, onChange: (unet_overlap) => {
           props.onChange({
             unet_overlap
           });
         } }),
-        React151.createElement(FormControlLabel_default, { label: t3("parameter.tiled_vae"), control: React151.createElement(Checkbox_default, { checked: state.tiled_vae, value: "check", onChange: (event) => {
+        React152.createElement(FormControlLabel_default, { label: t3("parameter.tiled_vae"), control: React152.createElement(Checkbox_default, { checked: state.tiled_vae, value: "check", onChange: (event) => {
           props.onChange({
             tiled_vae: state.tiled_vae === false
           });
         } }) }),
-        React151.createElement(NumericField, { disabled: state.tiled_vae === false, label: t3("parameter.vae_tile"), min: params.vae_tile.min, max: params.vae_tile.max, step: params.vae_tile.step, value: state.vae_tile, onChange: (vae_tile) => {
+        React152.createElement(NumericField, { disabled: state.tiled_vae === false, label: t3("parameter.vae_tile"), min: params.vae_tile.min, max: params.vae_tile.max, step: params.vae_tile.step, value: state.vae_tile, onChange: (vae_tile) => {
           props.onChange({
             vae_tile
           });
         } }),
-        React151.createElement(NumericField, { decimal: true, disabled: state.tiled_vae === false, label: t3("parameter.vae_overlap"), min: params.vae_overlap.min, max: params.vae_overlap.max, step: params.vae_overlap.step, value: state.vae_overlap, onChange: (vae_overlap) => {
+        React152.createElement(NumericField, { decimal: true, disabled: state.tiled_vae === false, label: t3("parameter.vae_overlap"), min: params.vae_overlap.min, max: params.vae_overlap.max, step: params.vae_overlap.step, value: state.vae_overlap, onChange: (vae_overlap) => {
           props.onChange({
             vae_overlap
           });
         } })
       ),
-      React151.createElement(PromptInput, { selector, onChange })
+      React152.createElement(PromptInput, { selector, onChange })
     );
   }
   __name(ImageControl, "ImageControl");
 
   // out/src/components/control/ModelControl.js
-  var React152 = __toESM(require_react(), 1);
+  var React153 = __toESM(require_react(), 1);
   var import_react38 = __toESM(require_react(), 1);
   function ModelControl(props) {
     const { model, setModel, tab } = props;
@@ -84324,17 +84722,17 @@ Please use another name.` : formatMuiErrorMessage(18));
     const platforms = useQuery(["platforms"], async () => client.platforms(), {
       staleTime: STALE_TIME
     });
-    return React152.createElement(
+    return React153.createElement(
       Stack_default2,
       { direction: "row", spacing: STANDARD_SPACING },
-      React152.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t3("parameter.platform"), query: {
+      React153.createElement(QueryList, { id: "platforms", labelKey: "platform", name: t3("parameter.platform"), query: {
         result: platforms
       }, value: model.platform, onChange: (platform) => {
         setModel({
           platform
         });
       } }),
-      React152.createElement(QueryList, { id: "pipeline", labelKey: "pipeline", name: t3("parameter.pipeline"), query: {
+      React153.createElement(QueryList, { id: "pipeline", labelKey: "pipeline", name: t3("parameter.pipeline"), query: {
         result: pipelines,
         selector: (result) => filterValidPipelines(result, tab)
       }, value: model.pipeline, onChange: (pipeline) => {
@@ -84342,7 +84740,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           pipeline
         });
       } }),
-      React152.createElement(QueryList, { id: "diffusion", labelKey: "model", name: t3("modelType.diffusion", { count: 1 }), query: {
+      React153.createElement(QueryList, { id: "diffusion", labelKey: "model", name: t3("modelType.diffusion", { count: 1 }), query: {
         result: models,
         selector: (result) => result.diffusion
       }, value: model.model, onChange: (newModel) => {
@@ -84350,7 +84748,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           model: newModel
         });
       } }),
-      React152.createElement(QueryList, { id: "upscaling", labelKey: "model", name: t3("modelType.upscaling", { count: 1 }), query: {
+      React153.createElement(QueryList, { id: "upscaling", labelKey: "model", name: t3("modelType.upscaling", { count: 1 }), query: {
         result: models,
         selector: (result) => result.upscaling
       }, value: model.upscaling, onChange: (upscaling) => {
@@ -84358,7 +84756,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           upscaling
         });
       } }),
-      React152.createElement(QueryList, { id: "correction", labelKey: "model", name: t3("modelType.correction", { count: 1 }), query: {
+      React153.createElement(QueryList, { id: "correction", labelKey: "model", name: t3("modelType.correction", { count: 1 }), query: {
         result: models,
         selector: (result) => result.correction
       }, value: model.correction, onChange: (correction) => {
@@ -84366,7 +84764,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           correction
         });
       } }),
-      React152.createElement(Button_default, { variant: "outlined", onClick: () => restart.mutate() }, t3("admin.restart"))
+      React153.createElement(Button_default, { variant: "outlined", onClick: () => restart.mutate() }, t3("admin.restart"))
     );
   }
   __name(ModelControl, "ModelControl");
@@ -84433,24 +84831,24 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { loopback, source, sourceFilter, strength } = useStore(store, selectReactParams, shallow);
     const model = useStore(store, selectModel);
     const { t: t3 } = useTranslation();
-    return React153.createElement(
+    return React154.createElement(
       Box_default,
       null,
-      React153.createElement(
+      React154.createElement(
         Stack_default2,
         { spacing: STANDARD_SPACING },
-        React153.createElement(Profiles, { selectHighres, selectModel, selectParams: selectParams3, selectUpscale: selectUpscale2, setHighres, setModel, setParams: setImg2Img, setUpscale }),
-        React153.createElement(ModelControl, { model, setModel, tab: JobType.IMG2IMG }),
-        React153.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t3("input.image.source"), onChange: (file) => {
+        React154.createElement(Profiles, { selectHighres, selectModel, selectParams: selectParams3, selectUpscale: selectUpscale2, setHighres, setModel, setParams: setImg2Img, setUpscale }),
+        React154.createElement(ModelControl, { model, setModel, tab: JobType.IMG2IMG }),
+        React154.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t3("input.image.source"), onChange: (file) => {
           setImg2Img({
             source: file
           });
         } }),
-        React153.createElement(ImageControl, { selector: selectParams3, onChange: setImg2Img }),
-        React153.createElement(
+        React154.createElement(ImageControl, { selector: selectParams3, onChange: setImg2Img }),
+        React154.createElement(
           Stack_default2,
           { direction: "row", spacing: STANDARD_SPACING },
-          React153.createElement(QueryList, { id: "control", labelKey: "model.control", name: t3("modelType.control"), query: {
+          React154.createElement(QueryList, { id: "control", labelKey: "model.control", name: t3("modelType.control"), query: {
             result: models,
             selector: (result) => result.networks.filter((network) => network.type === "control").map((network) => network.name)
           }, value: model.control, onChange: (newControl) => {
@@ -84458,7 +84856,7 @@ Please use another name.` : formatMuiErrorMessage(18));
               control: newControl
             });
           } }),
-          React153.createElement(QueryList, { id: "sources", labelKey: "sourceFilter", name: t3("parameter.sourceFilter"), query: {
+          React154.createElement(QueryList, { id: "sources", labelKey: "sourceFilter", name: t3("parameter.sourceFilter"), query: {
             result: filters,
             selector: (f3) => f3.source
           }, showNone: true, value: sourceFilter, onChange: (newFilter) => {
@@ -84466,20 +84864,20 @@ Please use another name.` : formatMuiErrorMessage(18));
               sourceFilter: newFilter
             });
           } }),
-          React153.createElement(NumericField, { decimal: true, label: t3("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
+          React154.createElement(NumericField, { decimal: true, label: t3("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
             setImg2Img({
               strength: value
             });
           } }),
-          React153.createElement(NumericField, { label: t3("parameter.loopback"), min: params.loopback.min, max: params.loopback.max, step: params.loopback.step, value: loopback, onChange: (value) => {
+          React154.createElement(NumericField, { label: t3("parameter.loopback"), min: params.loopback.min, max: params.loopback.max, step: params.loopback.step, value: loopback, onChange: (value) => {
             setImg2Img({
               loopback: value
             });
           } })
         ),
-        React153.createElement(HighresControl, { selectHighres, setHighres }),
-        React153.createElement(UpscaleControl, { selectUpscale: selectUpscale2, setUpscale }),
-        React153.createElement(Button_default, { disabled: doesExist2(source) === false, variant: "contained", onClick: () => upload.mutate() }, t3("generate"))
+        React154.createElement(HighresControl, { selectHighres, setHighres }),
+        React154.createElement(UpscaleControl, { selectUpscale: selectUpscale2, setUpscale }),
+        React154.createElement(Button_default, { disabled: doesExist2(source) === false, variant: "contained", onClick: () => upload.mutate() }, t3("generate"))
       )
     );
   }
@@ -84526,11 +84924,11 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(selectUpscale2, "selectUpscale");
 
   // out/src/components/tab/Inpaint.js
-  var React155 = __toESM(require_react(), 1);
+  var React156 = __toESM(require_react(), 1);
   var import_react41 = __toESM(require_react(), 1);
 
   // out/src/components/control/OutpaintControl.js
-  var React154 = __toESM(require_react(), 1);
+  var React155 = __toESM(require_react(), 1);
   var import_react40 = __toESM(require_react(), 1);
   function OutpaintControl() {
     const { params } = mustExist((0, import_react40.useContext)(ConfigContext));
@@ -84538,30 +84936,30 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { setOutpaint } = useStore(store, selectActions8, shallow);
     const outpaint = useStore(store, selectOutpaint);
     const { t: t3 } = useTranslation();
-    return React154.createElement(
+    return React155.createElement(
       Stack_default2,
       { direction: "row", spacing: 4 },
-      React154.createElement(FormControlLabel_default, { label: t3("parameter.outpaint.label"), control: React154.createElement(Checkbox_default, { checked: outpaint.enabled, value: "check", onChange: (_event) => {
+      React155.createElement(FormControlLabel_default, { label: t3("parameter.outpaint.label"), control: React155.createElement(Checkbox_default, { checked: outpaint.enabled, value: "check", onChange: (_event) => {
         setOutpaint({
           enabled: outpaint.enabled === false
         });
       } }) }),
-      React154.createElement(NumericField, { label: t3("parameter.outpaint.left"), disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.left, onChange: (left2) => {
+      React155.createElement(NumericField, { label: t3("parameter.outpaint.left"), disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.left, onChange: (left2) => {
         setOutpaint({
           left: left2
         });
       } }),
-      React154.createElement(NumericField, { label: t3("parameter.outpaint.right"), disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.right, onChange: (right2) => {
+      React155.createElement(NumericField, { label: t3("parameter.outpaint.right"), disabled: outpaint.enabled === false, min: 0, max: params.width.max, step: params.width.step, value: outpaint.right, onChange: (right2) => {
         setOutpaint({
           right: right2
         });
       } }),
-      React154.createElement(NumericField, { label: t3("parameter.outpaint.top"), disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.top, onChange: (top2) => {
+      React155.createElement(NumericField, { label: t3("parameter.outpaint.top"), disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.top, onChange: (top2) => {
         setOutpaint({
           top: top2
         });
       } }),
-      React154.createElement(NumericField, { label: t3("parameter.outpaint.bottom"), disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.bottom, onChange: (bottom2) => {
+      React155.createElement(NumericField, { label: t3("parameter.outpaint.bottom"), disabled: outpaint.enabled === false, min: 0, max: params.height.max, step: params.height.step, value: outpaint.bottom, onChange: (bottom2) => {
         setOutpaint({
           bottom: bottom2
         });
@@ -84626,46 +85024,46 @@ Please use another name.` : formatMuiErrorMessage(18));
       if (supportsInpaint()) {
         return void 0;
       } else {
-        return React155.createElement(Alert_default, { severity: "warning" }, t3("error.inpaint.support"));
+        return React156.createElement(Alert_default, { severity: "warning" }, t3("error.inpaint.support"));
       }
     }
     __name(renderBanner, "renderBanner");
-    return React155.createElement(
+    return React156.createElement(
       Box_default,
       null,
-      React155.createElement(
+      React156.createElement(
         Stack_default2,
         { spacing: STANDARD_SPACING },
-        React155.createElement(Profiles, { selectHighres: selectHighres2, selectModel: selectModel2, selectParams: selectParams4, selectUpscale: selectUpscale3, setHighres, setModel, setParams: setInpaint, setUpscale }),
-        React155.createElement(ModelControl, { model, setModel, tab: JobType.INPAINT }),
+        React156.createElement(Profiles, { selectHighres: selectHighres2, selectModel: selectModel2, selectParams: selectParams4, selectUpscale: selectUpscale3, setHighres, setModel, setParams: setInpaint, setUpscale }),
+        React156.createElement(ModelControl, { model, setModel, tab: JobType.INPAINT }),
         renderBanner(),
-        React155.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t3("input.image.source"), hideSelection: true, onChange: (file) => {
+        React156.createElement(ImageInput, { filter: IMAGE_FILTER, image: source, label: t3("input.image.source"), hideSelection: true, onChange: (file) => {
           setInpaint({
             source: file
           });
         } }),
-        React155.createElement(ImageInput, { filter: IMAGE_FILTER, image: mask, label: t3("input.image.mask"), hideSelection: true, onChange: (file) => {
+        React156.createElement(ImageInput, { filter: IMAGE_FILTER, image: mask, label: t3("input.image.mask"), hideSelection: true, onChange: (file) => {
           setInpaint({
             mask: file
           });
         } }),
-        React155.createElement(MaskCanvas, { brush, source, mask, onSave: (file) => {
+        React156.createElement(MaskCanvas, { brush, source, mask, onSave: (file) => {
           setInpaint({
             mask: file
           });
         }, setBrush }),
-        React155.createElement(ImageControl, { selector: selectParams4, onChange: (newParams) => {
+        React156.createElement(ImageControl, { selector: selectParams4, onChange: (newParams) => {
           setInpaint(newParams);
         } }),
-        React155.createElement(NumericField, { label: t3("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
+        React156.createElement(NumericField, { label: t3("parameter.strength"), min: params.strength.min, max: params.strength.max, step: params.strength.step, value: strength, onChange: (value) => {
           setInpaint({
             strength: value
           });
         } }),
-        React155.createElement(
+        React156.createElement(
           Stack_default2,
           { direction: "row", spacing: STANDARD_SPACING },
-          React155.createElement(QueryList, { id: "masks", labelKey: "maskFilter", name: t3("parameter.maskFilter"), query: {
+          React156.createElement(QueryList, { id: "masks", labelKey: "maskFilter", name: t3("parameter.maskFilter"), query: {
             result: filters,
             selector: (f3) => f3.mask
           }, value: filter, onChange: (newFilter) => {
@@ -84673,37 +85071,37 @@ Please use another name.` : formatMuiErrorMessage(18));
               filter: newFilter
             });
           } }),
-          React155.createElement(QueryList, { id: "noises", labelKey: "noiseSource", name: t3("parameter.noiseSource"), query: {
+          React156.createElement(QueryList, { id: "noises", labelKey: "noiseSource", name: t3("parameter.noiseSource"), query: {
             result: noises
           }, value: noise, onChange: (newNoise) => {
             setInpaint({
               noise: newNoise
             });
           } }),
-          React155.createElement(
+          React156.createElement(
             FormControl_default,
             null,
-            React155.createElement(InputLabel_default, { id: "outpaint-tiling" }, "Tile Order"),
-            React155.createElement(Select_default, { labelId: "outpaint-tiling", label: t3("parameter.tileOrder"), value: tileOrder, onChange: (e3) => {
+            React156.createElement(InputLabel_default, { id: "outpaint-tiling" }, "Tile Order"),
+            React156.createElement(Select_default, { labelId: "outpaint-tiling", label: t3("parameter.tileOrder"), value: tileOrder, onChange: (e3) => {
               setInpaint({
                 tileOrder: e3.target.value
               });
-            } }, Object.entries(params.tileOrder.keys).map(([_key, name]) => React155.createElement(MenuItem_default, { key: name, value: name }, t3(`tileOrder.${name}`))))
+            } }, Object.entries(params.tileOrder.keys).map(([_key, name]) => React156.createElement(MenuItem_default, { key: name, value: name }, t3(`tileOrder.${name}`))))
           ),
-          React155.createElement(
+          React156.createElement(
             Stack_default2,
             { direction: "row", spacing: STANDARD_SPACING },
-            React155.createElement(FormControlLabel_default, { label: t3("parameter.fillColor"), sx: { mx: 1 }, control: React155.createElement("input", { defaultValue: fillColor, name: "fill-color", type: "color", onBlur: (event) => {
+            React156.createElement(FormControlLabel_default, { label: t3("parameter.fillColor"), sx: { mx: 1 }, control: React156.createElement("input", { defaultValue: fillColor, name: "fill-color", type: "color", onBlur: (event) => {
               setInpaint({
                 fillColor: event.target.value
               });
             } }) })
           )
         ),
-        React155.createElement(OutpaintControl, null),
-        React155.createElement(HighresControl, { selectHighres: selectHighres2, setHighres }),
-        React155.createElement(UpscaleControl, { selectUpscale: selectUpscale3, setUpscale }),
-        React155.createElement(Button_default, { disabled: preventInpaint(), variant: "contained", onClick: () => upload.mutate(), color: supportsInpaint() ? void 0 : "warning" }, t3("generate"))
+        React156.createElement(OutpaintControl, null),
+        React156.createElement(HighresControl, { selectHighres: selectHighres2, setHighres }),
+        React156.createElement(UpscaleControl, { selectUpscale: selectUpscale3, setUpscale }),
+        React156.createElement(Button_default, { disabled: preventInpaint(), variant: "contained", onClick: () => upload.mutate(), color: supportsInpaint() ? void 0 : "warning" }, t3("generate"))
       )
     );
   }
@@ -84760,11 +85158,11 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/components/tab/Models.js
   var import_lodash4 = __toESM(require_lodash(), 1);
-  var React162 = __toESM(require_react(), 1);
+  var React163 = __toESM(require_react(), 1);
   var import_react43 = __toESM(require_react(), 1);
 
   // out/src/components/input/EditableList.js
-  var React156 = __toESM(require_react(), 1);
+  var React157 = __toESM(require_react(), 1);
   var import_react42 = __toESM(require_react(), 1);
   function EditableList(props) {
     const { newItem, removeItem, renderItem, setItem, selector } = props;
@@ -84774,16 +85172,16 @@ Please use another name.` : formatMuiErrorMessage(18));
     const [nextLabel, setNextLabel] = (0, import_react42.useState)("");
     const [nextSource, setNextSource] = (0, import_react42.useState)("");
     const RenderMemo = (0, import_react42.useMemo)(() => (0, import_react42.memo)(renderItem), [renderItem]);
-    return React156.createElement(
+    return React157.createElement(
       Stack_default2,
       { spacing: STANDARD_SPACING },
-      items.map((model, idx) => React156.createElement(RenderMemo, { key: idx, model, onChange: setItem, onRemove: removeItem })),
-      React156.createElement(
+      items.map((model, idx) => React157.createElement(RenderMemo, { key: idx, model, onChange: setItem, onRemove: removeItem })),
+      React157.createElement(
         Stack_default2,
         { direction: "row", spacing: STANDARD_SPACING },
-        React156.createElement(TextField_default, { label: t3("extras.label"), variant: "outlined", value: nextLabel, onChange: (event) => setNextLabel(event.target.value) }),
-        React156.createElement(TextField_default, { label: t3("extras.source"), variant: "outlined", value: nextSource, onChange: (event) => setNextSource(event.target.value) }),
-        React156.createElement(Button_default, { onClick: () => {
+        React157.createElement(TextField_default, { label: t3("extras.label"), variant: "outlined", value: nextLabel, onChange: (event) => setNextLabel(event.target.value) }),
+        React157.createElement(TextField_default, { label: t3("extras.source"), variant: "outlined", value: nextSource, onChange: (event) => setNextSource(event.target.value) }),
+        React157.createElement(Button_default, { onClick: () => {
           setItem(newItem(nextLabel, nextSource));
           setNextLabel("");
           setNextSource("");
@@ -84794,43 +85192,8 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(EditableList, "EditableList");
 
   // out/src/components/input/model/CorrectionModel.js
-  var React157 = __toESM(require_react(), 1);
-  function CorrectionModelInput(props) {
-    const { key, model, onChange, onRemove } = props;
-    const { t: t3 } = useTranslation();
-    return React157.createElement(
-      Stack_default2,
-      { direction: "row", spacing: STANDARD_SPACING, key },
-      React157.createElement(TextField_default, { label: t3("extras.label"), value: model.label, onChange: (event) => {
-        onChange(Object.assign(Object.assign({}, model), { label: event.target.value }));
-      } }),
-      React157.createElement(TextField_default, { label: t3("extras.source"), value: model.source, onChange: (event) => {
-        onChange(Object.assign(Object.assign({}, model), { source: event.target.value }));
-      } }),
-      React157.createElement(
-        Select_default,
-        { label: t3("extras.format"), value: model.format, onChange: (selection) => {
-          onChange(Object.assign(Object.assign({}, model), { format: selection.target.value }));
-        } },
-        React157.createElement(MenuItem_default, { value: "ckpt" }, "ckpt"),
-        React157.createElement(MenuItem_default, { value: "safetensors" }, "safetensors")
-      ),
-      React157.createElement(
-        Select_default,
-        { label: t3("extras.model"), value: model.model, onChange: (selection) => {
-          onChange(Object.assign(Object.assign({}, model), { model: selection.target.value }));
-        } },
-        React157.createElement(MenuItem_default, { value: "codeformer" }, "codeformer"),
-        React157.createElement(MenuItem_default, { value: "gfpgan" }, "gfpgan")
-      ),
-      React157.createElement(Button_default, { onClick: () => onRemove(model) }, t3("extras.remove"))
-    );
-  }
-  __name(CorrectionModelInput, "CorrectionModelInput");
-
-  // out/src/components/input/model/DiffusionModel.js
   var React158 = __toESM(require_react(), 1);
-  function DiffusionModelInput(props) {
+  function CorrectionModelInput(props) {
     const { key, model, onChange, onRemove } = props;
     const { t: t3 } = useTranslation();
     return React158.createElement(
@@ -84850,14 +85213,22 @@ Please use another name.` : formatMuiErrorMessage(18));
         React158.createElement(MenuItem_default, { value: "ckpt" }, "ckpt"),
         React158.createElement(MenuItem_default, { value: "safetensors" }, "safetensors")
       ),
+      React158.createElement(
+        Select_default,
+        { label: t3("extras.model"), value: model.model, onChange: (selection) => {
+          onChange(Object.assign(Object.assign({}, model), { model: selection.target.value }));
+        } },
+        React158.createElement(MenuItem_default, { value: "codeformer" }, "codeformer"),
+        React158.createElement(MenuItem_default, { value: "gfpgan" }, "gfpgan")
+      ),
       React158.createElement(Button_default, { onClick: () => onRemove(model) }, t3("extras.remove"))
     );
   }
-  __name(DiffusionModelInput, "DiffusionModelInput");
+  __name(CorrectionModelInput, "CorrectionModelInput");
 
-  // out/src/components/input/model/ExtraNetwork.js
+  // out/src/components/input/model/DiffusionModel.js
   var React159 = __toESM(require_react(), 1);
-  function ExtraNetworkInput(props) {
+  function DiffusionModelInput(props) {
     const { key, model, onChange, onRemove } = props;
     const { t: t3 } = useTranslation();
     return React159.createElement(
@@ -84874,42 +85245,24 @@ Please use another name.` : formatMuiErrorMessage(18));
         { label: t3("extras.format"), value: model.format, onChange: (selection) => {
           onChange(Object.assign(Object.assign({}, model), { format: selection.target.value }));
         } },
-        React159.createElement(MenuItem_default, { value: "bin" }, "bin"),
         React159.createElement(MenuItem_default, { value: "ckpt" }, "ckpt"),
         React159.createElement(MenuItem_default, { value: "safetensors" }, "safetensors")
-      ),
-      React159.createElement(
-        Select_default,
-        { label: t3("extras.type"), value: model.type, onChange: (selection) => {
-          onChange(Object.assign(Object.assign({}, model), { type: selection.target.value }));
-        } },
-        React159.createElement(MenuItem_default, { value: "inversion" }, t3("modelType.inversion")),
-        React159.createElement(MenuItem_default, { value: "lora" }, t3("modelType.lora"))
-      ),
-      React159.createElement(
-        Select_default,
-        { label: t3("extras.model"), value: model.model, onChange: (selection) => {
-          onChange(Object.assign(Object.assign({}, model), { model: selection.target.value }));
-        } },
-        React159.createElement(MenuItem_default, { value: "sd-scripts" }, "sd-scripts"),
-        React159.createElement(MenuItem_default, { value: "concept" }, "concept"),
-        React159.createElement(MenuItem_default, { value: "embeddings" }, "embeddings")
       ),
       React159.createElement(Button_default, { onClick: () => onRemove(model) }, t3("extras.remove"))
     );
   }
-  __name(ExtraNetworkInput, "ExtraNetworkInput");
+  __name(DiffusionModelInput, "DiffusionModelInput");
 
-  // out/src/components/input/model/ExtraSource.js
+  // out/src/components/input/model/ExtraNetwork.js
   var React160 = __toESM(require_react(), 1);
-  function ExtraSourceInput(props) {
+  function ExtraNetworkInput(props) {
     const { key, model, onChange, onRemove } = props;
     const { t: t3 } = useTranslation();
     return React160.createElement(
       Stack_default2,
       { direction: "row", spacing: STANDARD_SPACING, key },
-      React160.createElement(TextField_default, { label: t3("extras.name"), value: model.name, onChange: (event) => {
-        onChange(Object.assign(Object.assign({}, model), { name: event.target.value }));
+      React160.createElement(TextField_default, { label: t3("extras.label"), value: model.label, onChange: (event) => {
+        onChange(Object.assign(Object.assign({}, model), { label: event.target.value }));
       } }),
       React160.createElement(TextField_default, { label: t3("extras.source"), value: model.source, onChange: (event) => {
         onChange(Object.assign(Object.assign({}, model), { source: event.target.value }));
@@ -84919,29 +85272,42 @@ Please use another name.` : formatMuiErrorMessage(18));
         { label: t3("extras.format"), value: model.format, onChange: (selection) => {
           onChange(Object.assign(Object.assign({}, model), { format: selection.target.value }));
         } },
+        React160.createElement(MenuItem_default, { value: "bin" }, "bin"),
         React160.createElement(MenuItem_default, { value: "ckpt" }, "ckpt"),
-        React160.createElement(MenuItem_default, { value: "safetensors" }, "safetensors"),
-        React160.createElement(MenuItem_default, { value: "json" }, "json"),
-        React160.createElement(MenuItem_default, { value: "yaml" }, "yaml")
+        React160.createElement(MenuItem_default, { value: "safetensors" }, "safetensors")
       ),
-      React160.createElement(TextField_default, { label: t3("extras.dest"), value: model.dest, onChange: (event) => {
-        onChange(Object.assign(Object.assign({}, model), { dest: event.target.value }));
-      } }),
+      React160.createElement(
+        Select_default,
+        { label: t3("extras.type"), value: model.type, onChange: (selection) => {
+          onChange(Object.assign(Object.assign({}, model), { type: selection.target.value }));
+        } },
+        React160.createElement(MenuItem_default, { value: "inversion" }, t3("modelType.inversion")),
+        React160.createElement(MenuItem_default, { value: "lora" }, t3("modelType.lora"))
+      ),
+      React160.createElement(
+        Select_default,
+        { label: t3("extras.model"), value: model.model, onChange: (selection) => {
+          onChange(Object.assign(Object.assign({}, model), { model: selection.target.value }));
+        } },
+        React160.createElement(MenuItem_default, { value: "sd-scripts" }, "sd-scripts"),
+        React160.createElement(MenuItem_default, { value: "concept" }, "concept"),
+        React160.createElement(MenuItem_default, { value: "embeddings" }, "embeddings")
+      ),
       React160.createElement(Button_default, { onClick: () => onRemove(model) }, t3("extras.remove"))
     );
   }
-  __name(ExtraSourceInput, "ExtraSourceInput");
+  __name(ExtraNetworkInput, "ExtraNetworkInput");
 
-  // out/src/components/input/model/UpscalingModel.js
+  // out/src/components/input/model/ExtraSource.js
   var React161 = __toESM(require_react(), 1);
-  function UpscalingModelInput(props) {
+  function ExtraSourceInput(props) {
     const { key, model, onChange, onRemove } = props;
     const { t: t3 } = useTranslation();
     return React161.createElement(
       Stack_default2,
       { direction: "row", spacing: STANDARD_SPACING, key },
-      React161.createElement(TextField_default, { label: t3("extras.label"), value: model.label, onChange: (event) => {
-        onChange(Object.assign(Object.assign({}, model), { label: event.target.value }));
+      React161.createElement(TextField_default, { label: t3("extras.name"), value: model.name, onChange: (event) => {
+        onChange(Object.assign(Object.assign({}, model), { name: event.target.value }));
       } }),
       React161.createElement(TextField_default, { label: t3("extras.source"), value: model.source, onChange: (event) => {
         onChange(Object.assign(Object.assign({}, model), { source: event.target.value }));
@@ -84952,21 +85318,53 @@ Please use another name.` : formatMuiErrorMessage(18));
           onChange(Object.assign(Object.assign({}, model), { format: selection.target.value }));
         } },
         React161.createElement(MenuItem_default, { value: "ckpt" }, "ckpt"),
-        React161.createElement(MenuItem_default, { value: "safetensors" }, "safetensors")
+        React161.createElement(MenuItem_default, { value: "safetensors" }, "safetensors"),
+        React161.createElement(MenuItem_default, { value: "json" }, "json"),
+        React161.createElement(MenuItem_default, { value: "yaml" }, "yaml")
       ),
-      React161.createElement(
+      React161.createElement(TextField_default, { label: t3("extras.dest"), value: model.dest, onChange: (event) => {
+        onChange(Object.assign(Object.assign({}, model), { dest: event.target.value }));
+      } }),
+      React161.createElement(Button_default, { onClick: () => onRemove(model) }, t3("extras.remove"))
+    );
+  }
+  __name(ExtraSourceInput, "ExtraSourceInput");
+
+  // out/src/components/input/model/UpscalingModel.js
+  var React162 = __toESM(require_react(), 1);
+  function UpscalingModelInput(props) {
+    const { key, model, onChange, onRemove } = props;
+    const { t: t3 } = useTranslation();
+    return React162.createElement(
+      Stack_default2,
+      { direction: "row", spacing: STANDARD_SPACING, key },
+      React162.createElement(TextField_default, { label: t3("extras.label"), value: model.label, onChange: (event) => {
+        onChange(Object.assign(Object.assign({}, model), { label: event.target.value }));
+      } }),
+      React162.createElement(TextField_default, { label: t3("extras.source"), value: model.source, onChange: (event) => {
+        onChange(Object.assign(Object.assign({}, model), { source: event.target.value }));
+      } }),
+      React162.createElement(
+        Select_default,
+        { label: t3("extras.format"), value: model.format, onChange: (selection) => {
+          onChange(Object.assign(Object.assign({}, model), { format: selection.target.value }));
+        } },
+        React162.createElement(MenuItem_default, { value: "ckpt" }, "ckpt"),
+        React162.createElement(MenuItem_default, { value: "safetensors" }, "safetensors")
+      ),
+      React162.createElement(
         Select_default,
         { label: t3("extras.model"), value: model.model, onChange: (selection) => {
           onChange(Object.assign(Object.assign({}, model), { model: selection.target.value }));
         } },
-        React161.createElement(MenuItem_default, { value: "bsrgan" }, "BSRGAN"),
-        React161.createElement(MenuItem_default, { value: "resrgan" }, "Real ESRGAN"),
-        React161.createElement(MenuItem_default, { value: "swinir" }, "SwinIR")
+        React162.createElement(MenuItem_default, { value: "bsrgan" }, "BSRGAN"),
+        React162.createElement(MenuItem_default, { value: "resrgan" }, "Real ESRGAN"),
+        React162.createElement(MenuItem_default, { value: "swinir" }, "SwinIR")
       ),
-      React161.createElement(NumericField, { label: t3("extras.scale"), min: 1, max: 4, step: 1, value: model.scale, onChange: (value) => {
+      React162.createElement(NumericField, { label: t3("extras.scale"), min: 1, max: 4, step: 1, value: model.scale, onChange: (value) => {
         onChange(Object.assign(Object.assign({}, model), { scale: value }));
       } }),
-      React161.createElement(Button_default, { onClick: () => onRemove(model) }, t3("extras.remove"))
+      React162.createElement(Button_default, { onClick: () => onRemove(model) }, t3("extras.remove"))
     );
   }
   __name(UpscalingModelInput, "UpscalingModelInput");
@@ -85027,34 +85425,34 @@ Please use another name.` : formatMuiErrorMessage(18));
       }
     }, [result.status]);
     if (result.status === "error") {
-      return React162.createElement(
+      return React163.createElement(
         Stack_default2,
         { spacing: STANDARD_SPACING, direction: "row", sx: { alignItems: "center" } },
-        React162.createElement(Alert_default, { severity: "error" }, "Error")
+        React163.createElement(Alert_default, { severity: "error" }, "Error")
       );
     }
     if (result.status === "loading") {
-      return React162.createElement(
+      return React163.createElement(
         Stack_default2,
         { spacing: STANDARD_SPACING, direction: "row", sx: { alignItems: "center" } },
-        React162.createElement(CircularProgress_default, null)
+        React163.createElement(CircularProgress_default, null)
       );
     }
     async function writeExtras() {
       const resp = await client.writeExtras(store.getState().extras);
     }
     __name(writeExtras, "writeExtras");
-    return React162.createElement(
+    return React163.createElement(
       Stack_default2,
       { spacing: STANDARD_SPACING },
-      React162.createElement(
+      React163.createElement(
         Accordion_default,
         null,
-        React162.createElement(AccordionSummary_default, null, t3("modelType.diffusion", { count: 10 })),
-        React162.createElement(
+        React163.createElement(AccordionSummary_default, null, t3("modelType.diffusion", { count: 10 })),
+        React163.createElement(
           AccordionDetails_default,
           null,
-          React162.createElement(EditableList, { selector: selectDiffusionModels, newItem: (l3, s2) => ({
+          React163.createElement(EditableList, { selector: selectDiffusionModels, newItem: (l3, s2) => ({
             format: "safetensors",
             label: l3,
             name: `diffusion-${kebabCase(l3)}`,
@@ -85062,14 +85460,14 @@ Please use another name.` : formatMuiErrorMessage(18));
           }), removeItem: (m3) => removeDiffusionModel(m3), renderItem: DiffusionModelInput, setItem: (model) => setDiffusionModel(model) })
         )
       ),
-      React162.createElement(
+      React163.createElement(
         Accordion_default,
         null,
-        React162.createElement(AccordionSummary_default, null, t3("modelType.correction", { count: 10 })),
-        React162.createElement(
+        React163.createElement(AccordionSummary_default, null, t3("modelType.correction", { count: 10 })),
+        React163.createElement(
           AccordionDetails_default,
           null,
-          React162.createElement(EditableList, { selector: selectCorrectionModels, newItem: (l3, s2) => ({
+          React163.createElement(EditableList, { selector: selectCorrectionModels, newItem: (l3, s2) => ({
             format: "safetensors",
             label: l3,
             name: `correction-${kebabCase(l3)}`,
@@ -85077,14 +85475,14 @@ Please use another name.` : formatMuiErrorMessage(18));
           }), removeItem: (m3) => removeCorrectionModel(m3), renderItem: CorrectionModelInput, setItem: (model) => setCorrectionModel(model) })
         )
       ),
-      React162.createElement(
+      React163.createElement(
         Accordion_default,
         null,
-        React162.createElement(AccordionSummary_default, null, t3("modelType.upscaling", { count: 10 })),
-        React162.createElement(
+        React163.createElement(AccordionSummary_default, null, t3("modelType.upscaling", { count: 10 })),
+        React163.createElement(
           AccordionDetails_default,
           null,
-          React162.createElement(EditableList, { selector: selectUpscalingModels, newItem: (l3, s2) => ({
+          React163.createElement(EditableList, { selector: selectUpscalingModels, newItem: (l3, s2) => ({
             format: "safetensors",
             label: l3,
             name: `upscaling-${kebabCase(l3)}`,
@@ -85093,14 +85491,14 @@ Please use another name.` : formatMuiErrorMessage(18));
           }), removeItem: (m3) => removeUpscalingModel(m3), renderItem: UpscalingModelInput, setItem: (model) => setUpscalingModel(model) })
         )
       ),
-      React162.createElement(
+      React163.createElement(
         Accordion_default,
         null,
-        React162.createElement(AccordionSummary_default, null, t3("modelType.network", { count: 10 })),
-        React162.createElement(
+        React163.createElement(AccordionSummary_default, null, t3("modelType.network", { count: 10 })),
+        React163.createElement(
           AccordionDetails_default,
           null,
-          React162.createElement(EditableList, { selector: selectExtraNetworks, newItem: (l3, s2) => ({
+          React163.createElement(EditableList, { selector: selectExtraNetworks, newItem: (l3, s2) => ({
             format: "safetensors",
             label: l3,
             model: "embeddings",
@@ -85110,14 +85508,14 @@ Please use another name.` : formatMuiErrorMessage(18));
           }), removeItem: (m3) => removeExtraNetwork(m3), renderItem: ExtraNetworkInput, setItem: (model) => setExtraNetwork(model) })
         )
       ),
-      React162.createElement(
+      React163.createElement(
         Accordion_default,
         null,
-        React162.createElement(AccordionSummary_default, null, t3("modelType.source", { count: 10 })),
-        React162.createElement(
+        React163.createElement(AccordionSummary_default, null, t3("modelType.source", { count: 10 })),
+        React163.createElement(
           AccordionDetails_default,
           null,
-          React162.createElement(EditableList, { selector: selectExtraSources, newItem: (l3, s2) => ({
+          React163.createElement(EditableList, { selector: selectExtraSources, newItem: (l3, s2) => ({
             format: "safetensors",
             label: l3,
             name: kebabCase(l3),
@@ -85125,7 +85523,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           }), removeItem: (m3) => removeExtraSource(m3), renderItem: ExtraSourceInput, setItem: (model) => setExtraSource(model) })
         )
       ),
-      React162.createElement(Button_default, { color: "warning", onClick: () => write2.mutate() }, t3("convert"))
+      React163.createElement(Button_default, { color: "warning", onClick: () => write2.mutate() }, t3("convert"))
     );
   }
   __name(Models, "Models");
@@ -85158,7 +85556,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(selectActions10, "selectActions");
 
   // out/src/components/tab/Settings.js
-  var React163 = __toESM(require_react(), 1);
+  var React164 = __toESM(require_react(), 1);
   var import_react44 = __toESM(require_react(), 1);
 
   // out/src/config.js
@@ -85189,46 +85587,18 @@ Please use another name.` : formatMuiErrorMessage(18));
     }
   }
   __name(getApiRoot, "getApiRoot");
+  var TRUE_VALUES = ["1", "t", "true", "y", "yes"];
   function isDebug2() {
     const query = new URLSearchParams(window.location.search);
     const debug = query.get("debug");
     if (doesExist2(debug)) {
       const val = debug.toLowerCase();
-      return val === "1" || val === "t" || val === "true" || val === "y" || val === "yes";
+      return TRUE_VALUES.includes(val);
     } else {
       return false;
     }
   }
   __name(isDebug2, "isDebug");
-
-  // out/src/components/utils.js
-  var TAB_LABELS = [
-    "txt2img",
-    "img2img",
-    "inpaint",
-    "upscale",
-    "blend",
-    "models",
-    "settings"
-  ];
-  function getTab(hash4) {
-    const route = trimHash(hash4);
-    if (route.length > 0) {
-      return route;
-    }
-    return TAB_LABELS[0];
-  }
-  __name(getTab, "getTab");
-  function getTheme(currentTheme, preferDark) {
-    if (currentTheme === "") {
-      if (preferDark) {
-        return "dark";
-      }
-      return "light";
-    }
-    return currentTheme;
-  }
-  __name(getTheme, "getTheme");
 
   // out/src/components/tab/Settings.js
   function removeBlobs(key, value) {
@@ -85252,70 +85622,70 @@ Please use another name.` : formatMuiErrorMessage(18));
     const [json, setJson] = (0, import_react44.useState)(JSON.stringify(state, removeBlobs));
     const [root, setRoot] = (0, import_react44.useState)(getApiRoot(config));
     const { t: t3 } = useTranslation();
-    return React163.createElement(
+    return React164.createElement(
       Stack_default2,
       { spacing: STANDARD_SPACING },
-      React163.createElement(NumericField, { label: t3("setting.history.limit"), min: 2, max: 40, step: 1, value: state.limit, onChange: (value) => state.setLimit(value) }),
-      React163.createElement(NumericField, { label: t3("setting.history.width"), min: 2, max: 6, step: 1, value: state.historyWidth, onChange: (value) => state.setWidth(value) }),
-      React163.createElement(Button_default, { variant: "contained", onClick: () => state.setLayout(state.layout === "horizontal" ? "vertical" : "horizontal") }, "Toggle Layout"),
-      React163.createElement(TextField_default, { variant: "outlined", label: t3("setting.prompt"), value: state.defaults.prompt, onChange: (event) => {
+      React164.createElement(NumericField, { label: t3("setting.history.limit"), min: 2, max: 40, step: 1, value: state.limit, onChange: (value) => state.setLimit(value) }),
+      React164.createElement(NumericField, { label: t3("setting.history.width"), min: 2, max: 6, step: 1, value: state.historyWidth, onChange: (value) => state.setHistoryWidth(value) }),
+      React164.createElement(Button_default, { variant: "contained", onClick: () => state.setLayout(state.layout === "horizontal" ? "vertical" : "horizontal") }, "Toggle Layout"),
+      React164.createElement(TextField_default, { variant: "outlined", label: t3("setting.prompt"), value: state.defaults.prompt, onChange: (event) => {
         state.setDefaults({
           prompt: event.target.value
         });
       } }),
-      React163.createElement(TextField_default, { variant: "outlined", label: t3("setting.scheduler"), value: state.defaults.scheduler, onChange: (event) => {
+      React164.createElement(TextField_default, { variant: "outlined", label: t3("setting.scheduler"), value: state.defaults.scheduler, onChange: (event) => {
         state.setDefaults({
           scheduler: event.target.value
         });
       } }),
-      React163.createElement(
+      React164.createElement(
         Stack_default2,
         { direction: "row", spacing: STANDARD_SPACING },
-        React163.createElement(TextField_default, { variant: "outlined", label: t3("setting.server"), value: root, onChange: (event) => {
+        React164.createElement(TextField_default, { variant: "outlined", label: t3("setting.server"), value: root, onChange: (event) => {
           setRoot(event.target.value);
         } }),
-        React163.createElement(Button_default, { variant: "contained", startIcon: React163.createElement(Refresh_default, null), onClick: () => {
+        React164.createElement(Button_default, { variant: "contained", startIcon: React164.createElement(Refresh_default, null), onClick: () => {
           const query = new URLSearchParams(window.location.search);
           query.set("api", root);
           window.location.search = query.toString();
         } }, t3("setting.connectServer")),
-        React163.createElement(Alert_default, { variant: "outlined", severity: "success" }, config.params.version)
+        React164.createElement(Alert_default, { variant: "outlined", severity: "success" }, config.params.version)
       ),
-      React163.createElement(
+      React164.createElement(
         Stack_default2,
         { direction: "row", spacing: STANDARD_SPACING },
-        React163.createElement(TextField_default, { variant: "outlined", label: t3("setting.state.label"), value: json, onChange: (event) => {
+        React164.createElement(TextField_default, { variant: "outlined", label: t3("setting.state.label"), value: json, onChange: (event) => {
           setJson(event.target.value);
         } }),
-        React163.createElement(Button_default, { variant: "contained", startIcon: React163.createElement(Refresh_default, null), onClick: () => {
+        React164.createElement(Button_default, { variant: "contained", startIcon: React164.createElement(Refresh_default, null), onClick: () => {
           window.localStorage.setItem(STATE_KEY, json);
           window.location.reload();
         } }, t3("setting.state.load")),
-        React163.createElement(Button_default, { variant: "contained", startIcon: React163.createElement(Download_default, null), onClick: () => {
+        React164.createElement(Button_default, { variant: "contained", startIcon: React164.createElement(Download_default, null), onClick: () => {
           downloadAsJson(state, "state.json");
         } }, t3("setting.state.save"))
       ),
-      React163.createElement(FormControlLabel_default, { control: React163.createElement(Switch_default, { checked: theme === "dark", onClick: () => {
+      React164.createElement(FormControlLabel_default, { control: React164.createElement(Switch_default, { checked: theme === "dark", onClick: () => {
         if (theme === "light") {
           state.setTheme("dark");
         } else {
           state.setTheme("light");
         }
       } }), label: t3("setting.darkMode") }),
-      React163.createElement(
+      React164.createElement(
         Stack_default2,
         { direction: "row", spacing: STANDARD_SPACING },
-        React163.createElement(Button_default, { onClick: () => state.resetTxt2Img(), color: "warning" }, t3("setting.reset.txt2img")),
-        React163.createElement(Button_default, { onClick: () => state.resetImg2Img(), color: "warning" }, t3("setting.reset.img2img")),
-        React163.createElement(Button_default, { onClick: () => state.resetInpaint(), color: "warning" }, t3("setting.reset.inpaint")),
-        React163.createElement(Button_default, { onClick: () => state.resetAll(), color: "error" }, t3("setting.reset.all"))
+        React164.createElement(Button_default, { onClick: () => state.resetTxt2Img(), color: "warning" }, t3("setting.reset.txt2img")),
+        React164.createElement(Button_default, { onClick: () => state.resetImg2Img(), color: "warning" }, t3("setting.reset.img2img")),
+        React164.createElement(Button_default, { onClick: () => state.resetInpaint(), color: "warning" }, t3("setting.reset.inpaint")),
+        React164.createElement(Button_default, { onClick: () => state.resetAll(), color: "error" }, t3("setting.reset.all"))
       )
     );
   }
   __name(Settings, "Settings");
 
   // out/src/components/tab/Txt2Img.js
-  var React165 = __toESM(require_react(), 1);
+  var React166 = __toESM(require_react(), 1);
   var import_react46 = __toESM(require_react(), 1);
 
   // out/src/types/chain.js
@@ -85351,12 +85721,13 @@ Please use another name.` : formatMuiErrorMessage(18));
     return Math.floor(Math.random() * MAX_SEED);
   }
   __name(newSeed, "newSeed");
+  var RANDOM_SEED = [-1, "-1"];
   function replaceRandomSeeds(key, values3) {
     if (key !== "seed") {
       return values3;
     }
     return values3.map((it) => {
-      if (it === "-1" || it === -1) {
+      if (RANDOM_SEED.includes(it)) {
         return newSeed();
       }
       return it;
@@ -85391,7 +85762,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   var GRID_TILE_SIZE = 8192;
   function makeTxt2ImgGridPipeline(grid2, model, params, upscale, highres) {
     const pipeline = {
-      defaults: Object.assign(Object.assign(Object.assign(Object.assign({}, model), params), upscale || {}), highres || {}),
+      defaults: Object.assign(Object.assign(Object.assign(Object.assign({}, model), params), upscale !== null && upscale !== void 0 ? upscale : {}), highres !== null && highres !== void 0 ? highres : {}),
       stages: []
     };
     const tiles = {
@@ -85426,60 +85797,60 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(makeTxt2ImgGridPipeline, "makeTxt2ImgGridPipeline");
 
   // out/src/components/control/VariableControl.js
-  var React164 = __toESM(require_react(), 1);
+  var React165 = __toESM(require_react(), 1);
   var import_react45 = __toESM(require_react(), 1);
   function VariableControl(props) {
     const store = mustExist((0, import_react45.useContext)(StateContext));
     const grid2 = useStore(store, props.selectGrid);
     const stack = [
-      React164.createElement(
+      React165.createElement(
         Stack_default2,
         { direction: "row", spacing: STANDARD_SPACING, key: "variable-enable" },
-        React164.createElement(
+        React165.createElement(
           FormControl_default,
           null,
-          React164.createElement(FormControlLabel_default, { label: "Grid Mode", control: React164.createElement(Checkbox_default, { checked: grid2.enabled, onChange: () => props.setGrid({
+          React165.createElement(FormControlLabel_default, { label: "Grid Mode", control: React165.createElement(Checkbox_default, { checked: grid2.enabled, onChange: () => props.setGrid({
             enabled: grid2.enabled === false
           }) }) })
         )
       )
     ];
     if (grid2.enabled) {
-      stack.push(React164.createElement(
+      stack.push(React165.createElement(
         Stack_default2,
         { direction: "row", spacing: STANDARD_SPACING, key: "variable-row" },
-        React164.createElement(
+        React165.createElement(
           FormControl_default,
           null,
-          React164.createElement(InputLabel_default, { id: "TODO" }, "Columns"),
-          React164.createElement(Select_default, { onChange: (event) => props.setGrid({
+          React165.createElement(InputLabel_default, { id: "TODO" }, "Columns"),
+          React165.createElement(Select_default, { onChange: (event) => props.setGrid({
             columns: {
               parameter: event.target.value,
               value: ""
             }
           }), value: grid2.columns.parameter }, ...parameterList([grid2.rows.parameter]))
         ),
-        React164.createElement(TextField_default, { label: grid2.columns.parameter, value: grid2.columns.value, onChange: (event) => props.setGrid({
+        React165.createElement(TextField_default, { label: grid2.columns.parameter, value: grid2.columns.value, onChange: (event) => props.setGrid({
           columns: {
             parameter: grid2.columns.parameter,
             value: event.target.value
           }
         }) })
-      ), React164.createElement(
+      ), React165.createElement(
         Stack_default2,
         { direction: "row", spacing: STANDARD_SPACING, key: "variable-column" },
-        React164.createElement(
+        React165.createElement(
           FormControl_default,
           null,
-          React164.createElement(InputLabel_default, { id: "TODO" }, "Rows"),
-          React164.createElement(Select_default, { onChange: (event) => props.setGrid({
+          React165.createElement(InputLabel_default, { id: "TODO" }, "Rows"),
+          React165.createElement(Select_default, { onChange: (event) => props.setGrid({
             rows: {
               parameter: event.target.value,
               value: ""
             }
           }), value: grid2.rows.parameter }, ...parameterList([grid2.columns.parameter]))
         ),
-        React164.createElement(TextField_default, { label: grid2.rows.parameter, value: grid2.rows.value, onChange: (event) => props.setGrid({
+        React165.createElement(TextField_default, { label: grid2.rows.parameter, value: grid2.rows.value, onChange: (event) => props.setGrid({
           rows: {
             parameter: grid2.rows.parameter,
             value: event.target.value
@@ -85487,7 +85858,7 @@ Please use another name.` : formatMuiErrorMessage(18));
         }) })
       ));
     }
-    return React164.createElement(Stack_default2, { direction: "column", spacing: STANDARD_SPACING }, ...stack);
+    return React165.createElement(Stack_default2, { direction: "column", spacing: STANDARD_SPACING }, ...stack);
   }
   __name(VariableControl, "VariableControl");
   function parameterList(exclude) {
@@ -85496,7 +85867,7 @@ Please use another name.` : formatMuiErrorMessage(18));
       if (variable !== "token" && doesExist2(exclude) && exclude.includes(variable)) {
         continue;
       }
-      items.push(React164.createElement(MenuItem_default, { key: variable, value: variable }, variable));
+      items.push(React165.createElement(MenuItem_default, { key: variable, value: variable }, variable));
     }
     return items;
   }
@@ -85509,15 +85880,15 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { height: height2, width: width2 } = useStore(store, selectSize, shallow);
     const { setParams } = useStore(store, selectActions11, shallow);
     const { t: t3 } = useTranslation();
-    return React165.createElement(
+    return React166.createElement(
       Stack_default2,
       { direction: "row", spacing: 4 },
-      React165.createElement(NumericField, { label: t3("parameter.width"), min: params.width.min, max: params.width.max, step: params.width.step, value: width2, onChange: (value) => {
+      React166.createElement(NumericField, { label: t3("parameter.width"), min: params.width.min, max: params.width.max, step: params.width.step, value: width2, onChange: (value) => {
         setParams({
           width: value
         });
       } }),
-      React165.createElement(NumericField, { label: t3("parameter.height"), min: params.height.min, max: params.height.max, step: params.height.step, value: height2, onChange: (value) => {
+      React166.createElement(NumericField, { label: t3("parameter.height"), min: params.height.min, max: params.height.max, step: params.height.step, value: height2, onChange: (value) => {
         setParams({
           height: value
         });
@@ -85551,20 +85922,20 @@ Please use another name.` : formatMuiErrorMessage(18));
     const { pushHistory, setHighres, setModel, setParams, setUpscale, setVariable } = useStore(store, selectActions11, shallow);
     const model = useStore(store, selectModel3);
     const { t: t3 } = useTranslation();
-    return React165.createElement(
+    return React166.createElement(
       Box_default,
       null,
-      React165.createElement(
+      React166.createElement(
         Stack_default2,
         { spacing: STANDARD_SPACING },
-        React165.createElement(Profiles, { selectHighres: selectHighres3, selectModel: selectModel3, selectParams: selectParams5, selectUpscale: selectUpscale4, setHighres, setModel, setParams, setUpscale }),
-        React165.createElement(ModelControl, { model, setModel, tab: JobType.TXT2IMG }),
-        React165.createElement(ImageControl, { selector: selectParams5, onChange: setParams }),
-        React165.createElement(SizeControl, null),
-        React165.createElement(HighresControl, { selectHighres: selectHighres3, setHighres }),
-        React165.createElement(UpscaleControl, { selectUpscale: selectUpscale4, setUpscale }),
-        React165.createElement(VariableControl, { selectGrid: selectVariable, setGrid: setVariable }),
-        React165.createElement(Button_default, { variant: "contained", onClick: () => generate.mutate() }, t3("generate"))
+        React166.createElement(Profiles, { selectHighres: selectHighres3, selectModel: selectModel3, selectParams: selectParams5, selectUpscale: selectUpscale4, setHighres, setModel, setParams, setUpscale }),
+        React166.createElement(ModelControl, { model, setModel, tab: JobType.TXT2IMG }),
+        React166.createElement(ImageControl, { selector: selectParams5, onChange: setParams }),
+        React166.createElement(SizeControl, null),
+        React166.createElement(HighresControl, { selectHighres: selectHighres3, setHighres }),
+        React166.createElement(UpscaleControl, { selectUpscale: selectUpscale4, setUpscale }),
+        React166.createElement(VariableControl, { selectGrid: selectVariable, setGrid: setVariable }),
+        React166.createElement(Button_default, { variant: "contained", onClick: () => generate.mutate() }, t3("generate"))
       )
     );
   }
@@ -85615,7 +85986,7 @@ Please use another name.` : formatMuiErrorMessage(18));
   __name(selectVariable, "selectVariable");
 
   // out/src/components/tab/Upscale.js
-  var React166 = __toESM(require_react(), 1);
+  var React167 = __toESM(require_react(), 1);
   var import_react47 = __toESM(require_react(), 1);
   function Upscale() {
     async function uploadSource() {
@@ -85634,25 +86005,25 @@ Please use another name.` : formatMuiErrorMessage(18));
     const model = useStore(store, selectModel4);
     const params = useStore(store, selectParams6);
     const { t: t3 } = useTranslation();
-    return React166.createElement(
+    return React167.createElement(
       Box_default,
       null,
-      React166.createElement(
+      React167.createElement(
         Stack_default2,
         { spacing: STANDARD_SPACING },
-        React166.createElement(Profiles, { selectHighres: selectHighres4, selectModel: selectModel4, selectParams: selectParams6, selectUpscale: selectUpscale5, setHighres, setModel, setParams, setUpscale }),
-        React166.createElement(ModelControl, { model, setModel, tab: JobType.UPSCALE }),
-        React166.createElement(ImageInput, { filter: IMAGE_FILTER, image: params.source, label: t3("input.image.source"), onChange: (file) => {
+        React167.createElement(Profiles, { selectHighres: selectHighres4, selectModel: selectModel4, selectParams: selectParams6, selectUpscale: selectUpscale5, setHighres, setModel, setParams, setUpscale }),
+        React167.createElement(ModelControl, { model, setModel, tab: JobType.UPSCALE }),
+        React167.createElement(ImageInput, { filter: IMAGE_FILTER, image: params.source, label: t3("input.image.source"), onChange: (file) => {
           setParams({
             source: file
           });
         } }),
-        React166.createElement(PromptInput, { selector: selectParams6, onChange: (value) => {
+        React167.createElement(PromptInput, { selector: selectParams6, onChange: (value) => {
           setParams(value);
         } }),
-        React166.createElement(HighresControl, { selectHighres: selectHighres4, setHighres }),
-        React166.createElement(UpscaleControl, { selectUpscale: selectUpscale5, setUpscale }),
-        React166.createElement(Button_default, { disabled: doesExist2(params.source) === false, variant: "contained", onClick: () => upload.mutate() }, t3("generate"))
+        React167.createElement(HighresControl, { selectHighres: selectHighres4, setHighres }),
+        React167.createElement(UpscaleControl, { selectUpscale: selectUpscale5, setUpscale }),
+        React167.createElement(Button_default, { disabled: doesExist2(params.source) === false, variant: "contained", onClick: () => upload.mutate() }, t3("generate"))
       )
     );
   }
@@ -85702,21 +86073,20 @@ Please use another name.` : formatMuiErrorMessage(18));
         mode: getTheme(stateTheme, prefersDarkMode)
       }
     }), [prefersDarkMode, stateTheme]);
-    const historyStyle = layout.history.style;
-    return React167.createElement(
+    return React168.createElement(
       ThemeProvider4,
       { theme },
-      React167.createElement(CssBaseline_default, null),
-      React167.createElement(
+      React168.createElement(CssBaseline_default, null),
+      React168.createElement(
         Container_default,
         { maxWidth: layout.container },
-        React167.createElement(
+        React168.createElement(
           Box_default,
           { sx: { my: STANDARD_MARGIN } },
-          React167.createElement(Logo, null)
+          React168.createElement(Logo, null)
         ),
-        props.motd && React167.createElement(Motd, null),
-        renderBody(direction, historyStyle, historyWidth)
+        props.motd && React168.createElement(Motd, null),
+        renderBody(direction, historyWidth)
       )
     );
   }
@@ -85733,39 +86103,39 @@ Please use another name.` : formatMuiErrorMessage(18));
     return state.historyWidth;
   }
   __name(selectHistoryWidth, "selectHistoryWidth");
-  function renderBody(direction, historyStyle, historyWidth) {
+  function renderBody(direction, historyWidth) {
     if (direction === "vertical") {
-      return React167.createElement(VerticalBody, { direction, style: historyStyle, width: historyWidth });
+      return React168.createElement(VerticalBody, { direction, width: historyWidth });
     } else {
-      return React167.createElement(HorizontalBody, { direction, style: historyStyle, width: historyWidth });
+      return React168.createElement(HorizontalBody, { direction, width: historyWidth });
     }
   }
   __name(renderBody, "renderBody");
   function HorizontalBody(props) {
     const layout = LAYOUT_STYLES[props.direction];
-    return React167.createElement(
+    return React168.createElement(
       He,
-      { separator: true, className: "body-allotment", minSize: LAYOUT_MIN, defaultSizes: LAYOUT_PROPORTIONS, snap: true },
-      React167.createElement(TabGroup, { direction: props.direction }),
-      React167.createElement(
+      { className: "body-allotment", defaultSizes: LAYOUT_PROPORTIONS, minSize: LAYOUT_MIN, separator: true, snap: true },
+      React168.createElement(TabGroup, { direction: props.direction, panelClass: "scroll-controls" }),
+      React168.createElement(
         Box_default,
-        { className: "box-history", sx: layout.history.style },
-        React167.createElement(ImageHistory, { width: props.width })
+        { className: "scroll-history", sx: layout.history.style },
+        React168.createElement(ImageHistory, { width: props.width })
       )
     );
   }
   __name(HorizontalBody, "HorizontalBody");
   function VerticalBody(props) {
     const layout = LAYOUT_STYLES[props.direction];
-    return React167.createElement(
+    return React168.createElement(
       Stack_default2,
       { direction: layout.direction, spacing: STANDARD_SPACING },
-      React167.createElement(TabGroup, { direction: props.direction }),
-      React167.createElement(Divider_default, { flexItem: true, variant: "middle", orientation: layout.divider }),
-      React167.createElement(
+      React168.createElement(TabGroup, { direction: props.direction }),
+      React168.createElement(Divider_default, { flexItem: true, variant: "middle", orientation: layout.divider }),
+      React168.createElement(
         Box_default,
-        { className: "box-history", sx: layout.history.style },
-        React167.createElement(ImageHistory, { width: props.width })
+        { sx: layout.history.style },
+        React168.createElement(ImageHistory, { width: props.width })
       )
     );
   }
@@ -85773,67 +86143,90 @@ Please use another name.` : formatMuiErrorMessage(18));
   function TabGroup(props) {
     const layout = LAYOUT_STYLES[props.direction];
     const [hash4, setHash] = (0, import_useHash2.useHash)();
-    return React167.createElement(
+    const { t: t3 } = useTranslation();
+    return React168.createElement(
       Stack_default2,
       { direction: "column", minWidth: layout.control.width, sx: { mx: STANDARD_MARGIN } },
-      React167.createElement(
+      React168.createElement(
         TabContext,
         { value: getTab(hash4) },
-        React167.createElement(
+        React168.createElement(
           Box_default,
           { sx: { borderBottom: 1, borderColor: "divider" } },
-          React167.createElement(TabList_default, { onChange: (_e2, idx) => {
+          React168.createElement(TabList_default, { onChange: (_e2, idx) => {
             setHash(idx);
-          } }, TAB_LABELS.map((name) => React167.createElement(Tab_default, { key: name, label: name, value: name })))
+          } }, TAB_LABELS.map((name) => React168.createElement(Tab_default, { key: name, label: t3(`tab.${name}`), value: name })))
         ),
-        React167.createElement(
+        React168.createElement(
           TabPanel_default,
-          { value: "txt2img" },
-          React167.createElement(Txt2Img, null)
+          { className: props.panelClass, value: "txt2img" },
+          React168.createElement(Txt2Img, null)
         ),
-        React167.createElement(
+        React168.createElement(
           TabPanel_default,
-          { value: "img2img" },
-          React167.createElement(Img2Img, null)
+          { className: props.panelClass, value: "img2img" },
+          React168.createElement(Img2Img, null)
         ),
-        React167.createElement(
+        React168.createElement(
           TabPanel_default,
-          { value: "inpaint" },
-          React167.createElement(Inpaint, null)
+          { className: props.panelClass, value: "inpaint" },
+          React168.createElement(Inpaint, null)
         ),
-        React167.createElement(
+        React168.createElement(
           TabPanel_default,
-          { value: "upscale" },
-          React167.createElement(Upscale, null)
+          { className: props.panelClass, value: "upscale" },
+          React168.createElement(Upscale, null)
         ),
-        React167.createElement(
+        React168.createElement(
           TabPanel_default,
-          { value: "blend" },
-          React167.createElement(Blend, null)
+          { className: props.panelClass, value: "blend" },
+          React168.createElement(Blend, null)
         ),
-        React167.createElement(
+        React168.createElement(
           TabPanel_default,
-          { value: "models" },
-          React167.createElement(Models, null)
+          { className: props.panelClass, value: "models" },
+          React168.createElement(Models, null)
         ),
-        React167.createElement(
+        React168.createElement(
           TabPanel_default,
-          { value: "settings" },
-          React167.createElement(Settings, null)
+          { className: props.panelClass, value: "settings" },
+          React168.createElement(Settings, null)
         )
       )
     );
   }
   __name(TabGroup, "TabGroup");
 
+  // out/src/state/migration/default.js
+  var V7 = 7;
+  function applyStateMigrations(params, previousState, version, logger) {
+    logger.info("applying state migrations from version %s to version %s", version, STATE_VERSION);
+    if (version <= V7) {
+      return migrateV7ToV11(params, previousState);
+    }
+    return previousState;
+  }
+  __name(applyStateMigrations, "applyStateMigrations");
+  function migrateV7ToV11(params, previousState) {
+    const result = Object.assign(Object.assign(Object.assign({}, params), previousState), { img2img: Object.assign(Object.assign({}, previousState.img2img), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }), inpaint: Object.assign(Object.assign({}, previousState.inpaint), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }), txt2img: Object.assign(Object.assign({}, previousState.txt2img), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }), upscale: Object.assign(Object.assign({}, previousState.upscale), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }) });
+    const existingProfiles = new Set(result.profiles.map((it) => it.name));
+    for (const newProfile of DEFAULT_PROFILES) {
+      if (existingProfiles.has(newProfile.name) === false) {
+        result.profiles.push(newProfile);
+      }
+    }
+    return result;
+  }
+  __name(migrateV7ToV11, "migrateV7ToV11");
+
   // out/src/strings/de.js
   var I18N_STRINGS_DE = {
     de: {
       translation: {
         admin: {
-          restart: ""
+          restart: "Arbeiter neu starten"
         },
-        convert: "",
+        convert: "Speichern und konvertieren",
         error: {
           image: {
             csam: "",
@@ -85842,36 +86235,36 @@ Please use another name.` : formatMuiErrorMessage(18));
             unknown: ""
           },
           inpaint: {
-            support: ""
+            support: "Dieses Modell unterst\xFCtzt m\xF6glicherweise keine Bearbeitung."
           }
         },
         extras: {
-          add: "",
-          dest: "",
-          format: "",
-          label: "",
-          model: "",
-          name: "",
-          remove: "",
-          scale: "",
-          source: "",
-          type: ""
+          add: "Artikel hinzuf\xFCgen",
+          dest: "Ordnernamen",
+          format: "Datei Format",
+          label: "Etikett",
+          model: "Modell",
+          name: "Name",
+          remove: "Entfernen",
+          scale: "Skala",
+          source: "Ursprung",
+          type: "Typ"
         },
         generate: "Erzeugen",
         profile: {
-          add: "",
-          saveName: "",
-          saveProfile: "",
-          save: "",
-          saveCurrent: "",
-          name: "",
-          cancel: "",
-          load: ""
+          add: "Profil hinzuf\xFCgen",
+          saveName: "Profilnamen speichern",
+          saveProfile: "Profil speichern",
+          save: "Speichern",
+          saveCurrent: "Aktuelles Profil speichern",
+          name: "Name",
+          cancel: "Stornieren",
+          load: "Laden"
         },
         highresMethod: {
-          bilinear: "",
-          lanczos: "",
-          upscale: ""
+          bilinear: "Bilinear",
+          lanczos: "Lanczos",
+          upscale: "Hochskalierung"
         },
         history: {
           empty: "Keine neuere Geschichte. Dr\xFCcken Sie Generieren, um ein Bild zu erstellen."
@@ -85884,28 +86277,25 @@ Please use another name.` : formatMuiErrorMessage(18));
           },
           list: {
             error: {
-              specific: "",
+              specific: "Fehler: {{message}}",
               unknown: "unbekannter Fehler"
             },
-            idle: "",
-            loading: ""
+            idle: "Leerlauf",
+            loading: "Wird geladen"
           },
           numeric: {
             error: {
               range: "au\xDFerhalb der Reichweite"
             }
-          },
-          prompt: {
-            tokens: "",
-            error: {
-              length: ""
-            }
           }
+        },
+        image: {
+          thumbnail: "Miniaturansicht"
         },
         loading: {
           cancel: "Stornieren",
-          progress: "{{current}} von {{total}} Schritten",
-          queue: "",
+          progress: "{{steps.current}} von {{steps.total}} Schritten, {{tiles.current}} of {{tiles.total}} Kacheln, {{stages.current}} of {{stages.total}} Abschnitten",
+          queue: "{{current}} von {{total}} in der Warteschlange",
           server: "Verbindung zum Server...",
           unknown: "vielen"
         },
@@ -85928,18 +86318,18 @@ Please use another name.` : formatMuiErrorMessage(18));
         },
         modelType: {
           control: "",
-          correction_one: "Korrekturmodelle",
-          correction_other: "",
-          diffusion_one: "Diffusionsmodelle",
-          diffusion_other: "",
-          inversion: "",
-          lora: "",
-          network_one: "",
-          network_other: "",
-          source_one: "",
-          source_other: "",
-          upscaling_one: "Modelle vergr\xF6\xDFern",
-          upscaling_other: ""
+          correction_one: "Korrekturmodell",
+          correction_other: "Korrekturmodelle",
+          diffusion_one: "Diffusionsmodell",
+          diffusion_other: "Diffusionsmodelle",
+          inversion: "Einbettung",
+          lora: "LoRA",
+          network_one: "Extra Netzwerk",
+          network_other: "Extra Netzwerke",
+          source_one: "Andere Quelle",
+          source_other: "Andere Quellen",
+          upscaling_one: "Modell vergr\xF6\xDFern",
+          upscaling_other: "Modelle vergr\xF6\xDFern"
         },
         noiseSource: {
           "fill-edge": "Kanten f\xFCllen",
@@ -85956,56 +86346,55 @@ Please use another name.` : formatMuiErrorMessage(18));
             size: "Pinselgr\xF6\xDFe",
             strength: "Pinseldeckkraft"
           },
-          cfg: "",
-          eta: "",
+          cfg: "CFG",
+          eta: "Eta",
           fillColor: "F\xFCllfarbe",
           height: "H\xF6he",
           highres: {
-            iterations: "",
-            label: "",
-            method: "",
-            scale: "",
-            steps: "",
-            strength: ""
+            iterations: "Iterationen",
+            label: "Hohe Aufl\xF6sung",
+            method: "Methode",
+            scale: "Skala",
+            steps: "Schritte",
+            strength: "St\xE4rke"
           },
-          loopback: "",
-          lpw: "",
+          loopback: "Loopback",
+          lpw: "lange prompte Gewichtung",
           maskFilter: "Maskenfilter",
           noiseSource: "L\xE4rmquelle",
           negativePrompt: "Gegenprompt",
           newSeed: "neue Saat",
           outpaint: {
-            label: "",
+            label: "Au\xDFenmalerei",
             left: "Links",
             right: "Rechts",
             top: "Top",
             bottom: "Unterseite"
           },
-          overlap: "",
-          pipeline: "",
+          overlap: "\xDCberlappung",
+          pipeline: "Pipeline",
           platform: "Plattform",
           prompt: "Prompt",
           scheduler: "Planer",
           seed: "Saat",
           size: "Gr\xF6\xDFe",
-          sourceFilter: "",
+          sourceFilter: "Quellfilter",
           steps: "Schritte",
           strength: "St\xE4rke",
-          stride: "",
-          tiled_vae: "",
-          tiles: "",
-          tileOrder: "",
-          unet_overlap: "",
-          unet_tile: "",
+          tiled_vae: "Gekachelt VAE",
+          tiles: "Kacheln",
+          tileOrder: "Reihenfolge der Kacheln",
+          unet_overlap: "UNet \xDCberlappung",
+          unet_tile: "UNet Fliesengr\xF6\xDFe",
           upscale: {
-            label: "",
+            label: "Gehoben",
             denoise: "Entrauschen",
             scale: "Skala",
-            order: "",
+            order: "Gehobene Ordnung",
             outscale: "Ausgangsskala"
           },
-          vae_overlap: "",
-          vae_tile: "",
+          vae_overlap: "VAE \xDCberlappung",
+          vae_tile: "VAE Fliesengr\xF6\xDFe",
           width: "Breite",
           correction: {
             label: "Gesichtskorrektur",
@@ -86029,15 +86418,20 @@ Please use another name.` : formatMuiErrorMessage(18));
           "txt2txt": "",
           "upscale": ""
         },
+        platform: {
+          // mostly brand names, only the any platform needs to be replaced
+          // eslint-disable-next-line id-blacklist
+          any: "Jede Plattform"
+        },
         save: {
-          image: "",
+          image: "Bild",
           metadata: ""
         },
         setting: {
           connectServer: "verbinden zum Server",
           history: {
-            limit: "Bildgeschichte",
-            width: ""
+            limit: "L\xE4nge des Bildverlaufs",
+            width: "Breite des Bildverlaufs"
           },
           prompt: "Standard-Eingabeaufforderung",
           reset: {
@@ -86051,30 +86445,32 @@ Please use another name.` : formatMuiErrorMessage(18));
           state: {
             label: "Kundenstatus",
             load: "Laden",
-            save: ""
+            save: "Speichern"
           },
           darkMode: "Dunkelmodus"
         },
         sourceFilter: {
-          none: "",
-          gaussian: "",
-          noise: "",
-          face: "",
-          segment: "",
-          mlsd: "",
-          normal: "",
-          hed: "",
-          scribble: "",
-          depth: "",
-          canny: "",
-          openpose: ""
+          canny: "Canny kanten",
+          depth: "Tiefenkarte",
+          face: "Gesichtserkennung",
+          gaussian: "Gaussian verwischen",
+          hed: "HED kanten",
+          mlsd: "M-LSD bildsegmentierung",
+          noise: "Histogrammrauschen",
+          none: "Keiner",
+          normal: "normale Karte",
+          openpose: "OpenPose",
+          scribble: "Scribble",
+          segment: "Bildsegmentierung"
         },
         tab: {
           blend: "Mischung",
-          img2img: "",
+          img2img: "Img2img",
           inpaint: "",
-          txt2txt: "",
-          txt2img: "",
+          models: "Modelle",
+          settings: "Einstellungen",
+          txt2txt: "Txt2txt",
+          txt2img: "Txt2img",
           upscale: "Vergr\xF6\xDFern"
         },
         tileOrder: {
@@ -86085,7 +86481,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           delete: "L\xF6schen",
           next: "N\xE4chste",
           previous: "Vorherige",
-          retry: "",
+          retry: "Neu verhandeln",
           save: "Speichern"
         },
         upscaleOrder: {
@@ -86093,7 +86489,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           "correction-first": "Korrektur zuerst",
           "correction-last": "Korrektur zuletzt"
         },
-        wildcard: ""
+        wildcard: "Wildcard"
       }
     }
   };
@@ -86148,6 +86544,9 @@ Please use another name.` : formatMuiErrorMessage(18));
         history: {
           empty: "No recent history. Press Generate to create an image."
         },
+        image: {
+          thumbnail: "Thumbnail"
+        },
         input: {
           image: {
             empty: "Please select an image.",
@@ -86159,16 +86558,13 @@ Please use another name.` : formatMuiErrorMessage(18));
               specific: "Error: {{message}}",
               unknown: "Unknown Error"
             },
-            idle: "Idle?",
+            idle: "Idle",
             loading: "Loading..."
           },
           numeric: {
             error: {
               range: "Out of range"
             }
-          },
-          prompt: {
-            tokens: "{{tokens}} tokens, {{groups}} groups"
           }
         },
         loading: {
@@ -86390,8 +86786,8 @@ Please use another name.` : formatMuiErrorMessage(18));
           server: "API Server",
           state: {
             label: "Client State",
-            save: "Save",
-            load: "Load"
+            load: "Load",
+            save: "Save"
           },
           darkMode: "Dark Mode"
         },
@@ -86415,15 +86811,15 @@ Please use another name.` : formatMuiErrorMessage(18));
           "unipc-multi": "UniPC Multistep"
         },
         sourceFilter: {
-          none: "None",
           canny: "Canny Edges",
           depth: "Depth Map",
           face: "Face Detection",
           gaussian: "Gaussian Blur",
           hed: "HED Edges",
           mlsd: "M-LSD Segmentation",
-          normal: "Normal Map",
           noise: "Histogram Noise",
+          none: "None",
+          normal: "Normal Map",
           openpose: "OpenPose",
           scribble: "Scribble",
           segment: "Image Segmentation"
@@ -86432,6 +86828,8 @@ Please use another name.` : formatMuiErrorMessage(18));
           blend: "Blend",
           img2img: "Img2img",
           inpaint: "Inpaint",
+          models: "Models",
+          settings: "Settings",
           txt2txt: "Txt2txt",
           txt2img: "Txt2img",
           upscale: "Upscale"
@@ -86462,9 +86860,9 @@ Please use another name.` : formatMuiErrorMessage(18));
     es: {
       translation: {
         admin: {
-          restart: ""
+          restart: "Reiniciar trabajadores"
         },
-        convert: "",
+        convert: "Guardar y convertir",
         error: {
           image: {
             csam: "",
@@ -86473,39 +86871,42 @@ Please use another name.` : formatMuiErrorMessage(18));
             unknown: ""
           },
           inpaint: {
-            support: ""
+            support: "Es posible que este modelo no admita la edici\xF3n."
           }
         },
         extras: {
-          add: "",
-          dest: "",
-          format: "",
-          label: "",
-          model: "",
-          name: "",
-          remove: "",
-          scale: "",
-          source: "",
-          type: ""
+          add: "Agregar",
+          dest: "Nombre de la carpeta",
+          format: "Formato de archivo",
+          label: "Etiqueta",
+          model: "Modelo",
+          name: "Nombre",
+          remove: "Eliminar",
+          scale: "Nivel",
+          source: "Origen",
+          type: "Tipo"
         },
         generate: "Generar",
         profile: {
-          add: "",
-          saveName: "",
-          saveProfile: "",
-          save: "",
-          saveCurrent: "",
-          name: "",
-          cancel: "",
-          load: ""
+          add: "Agregar perfil",
+          saveName: "Guardar el nombre del perfil",
+          saveProfile: "Guardar perfil",
+          save: "Guardar",
+          saveCurrent: "Guardar perfil actual",
+          name: "Nombre",
+          cancel: "Cancelar",
+          load: "Cargar perfil"
         },
         history: {
           empty: "Sin antecedentes recientes. Presiona generar para crear una nueva imagen."
         },
         highresMethod: {
-          bilinear: "",
-          lanczos: "",
+          bilinear: "Bilineal",
+          lanczos: "Lanczos",
           upscale: ""
+        },
+        image: {
+          thumbnail: "Miniatura"
         },
         input: {
           image: {
@@ -86518,25 +86919,19 @@ Please use another name.` : formatMuiErrorMessage(18));
               specific: "Error: {{message}}",
               unknown: "Error desconocido"
             },
-            idle: "",
-            loading: ""
+            idle: "Inactivo",
+            loading: "Sobreprima"
           },
           numeric: {
             error: {
               range: "Fuera de intervalo"
             }
-          },
-          prompt: {
-            tokens: "",
-            error: {
-              length: ""
-            }
           }
         },
         loading: {
           cancel: "Cancelar",
-          progress: "{{current}} de {{total}} pasos",
-          queue: "",
+          progress: "{{steps.current}} de {{steps.total}} pasos, {{tiles.current}} de {{tiles.total}} fichas, {{stages.current}} de {{stages.total}} etapas",
+          queue: "{{current}} de {{total}} en la cola",
           server: "Conectando al servidor...",
           unknown: "muchos"
         },
@@ -86558,19 +86953,19 @@ Please use another name.` : formatMuiErrorMessage(18));
           "none": "Ninguno"
         },
         modelType: {
-          control: "",
+          control: "ControlNet",
           correction_one: "Modelo de correcci\xF3n",
-          correction_other: "",
+          correction_other: "Modelos de correcci\xF3n",
           diffusion_one: "Modelo de difusi\xF3n",
-          diffusion_other: "",
-          inversion: "",
-          lora: "",
-          network_one: "",
-          network_other: "",
-          source_one: "",
-          source_other: "",
+          diffusion_other: "Modelos de difusi\xF3n",
+          inversion: "Incrustar",
+          lora: "LoRA",
+          network_one: "Red adicional",
+          network_other: "Redes adicionales",
+          source_one: "Otra fuente",
+          source_other: "Otras fuentes",
           upscaling_one: "Modelo de aumento",
-          upscaling_other: ""
+          upscaling_other: "Modelos de aumento"
         },
         noiseSource: {
           "fill-edge": "Rellena los bordes",
@@ -86587,56 +86982,55 @@ Please use another name.` : formatMuiErrorMessage(18));
             size: "Tama\xF1o del pincel",
             strength: "Opacidad del pincel"
           },
-          cfg: "",
-          eta: "",
+          cfg: "CFG",
+          eta: "Eta",
           fillColor: "Color de relleno",
           height: "Altura",
           highres: {
-            iterations: "",
-            label: "",
+            iterations: "Iteraciones",
+            label: "Alta resoluci\xF3n",
             method: "",
-            scale: "",
-            steps: "",
-            strength: ""
+            scale: "Nivel",
+            steps: "Pasos",
+            strength: "Fortaleza"
           },
-          loopback: "",
-          lpw: "",
+          loopback: "Bucle invertido",
+          lpw: "Ponderaci\xF3n de entrada larga",
           maskFilter: "Filtro de m\xE1scara",
           noiseSource: "Fuente de ruido",
           negativePrompt: "Contraindicaci\xF3n",
           newSeed: "Nueva semilla",
           outpaint: {
-            label: "",
+            label: "Pintar afuera",
             left: "Izquierda",
             right: "Derecha",
             top: "Top",
             bottom: "Fondo"
           },
-          overlap: "",
-          pipeline: "",
+          overlap: "Superposici\xF3n",
+          pipeline: "Tuber\xEDa",
           platform: "Plataforma de hardware",
           prompt: "Aviso",
           scheduler: "Planificador",
           seed: "Semilla",
           size: "Tama\xF1o",
-          sourceFilter: "",
+          sourceFilter: "Filtro de fuente",
           steps: "Pasos",
           strength: "Fuerza",
-          stride: "",
-          tiled_vae: "",
-          tiles: "",
+          tiled_vae: "Embaldosado VAE",
+          tiles: "Losas",
           tileOrder: "Orden de secciones",
-          unet_overlap: "",
-          unet_tile: "",
+          unet_overlap: "UNet superposici\xF3n",
+          unet_tile: "UNet teja",
           upscale: {
             label: "Aumento",
-            denoise: "",
+            denoise: "Eliminar ruido",
             scale: "Escala",
-            order: "",
+            order: "Orden",
             outscale: "Escala de producci\xF3n"
           },
-          vae_overlap: "",
-          vae_tile: "",
+          vae_overlap: "VAE superposici\xF3n",
+          vae_tile: "VAE teja",
           width: "Anchura",
           correction: {
             label: "Correcci\xF3n facial",
@@ -86661,14 +87055,14 @@ Please use another name.` : formatMuiErrorMessage(18));
           "upscale": ""
         },
         save: {
-          image: "",
-          metadata: ""
+          image: "Imagen",
+          metadata: "Metadata"
         },
         setting: {
           connectServer: "Conectar al servidor",
           history: {
-            limit: "Historia de la imagen",
-            width: ""
+            limit: "Longitud del historial de la imagen",
+            width: "Ancho del historial de im\xE1genes"
           },
           prompt: "Solicitud predeterminada",
           reset: {
@@ -86682,7 +87076,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           state: {
             label: "Estado del cliente",
             load: "Carga estado",
-            save: ""
+            save: "Ahorrar"
           },
           darkMode: "Modo Oscuro"
         },
@@ -86704,6 +87098,8 @@ Please use another name.` : formatMuiErrorMessage(18));
           blend: "Mezclar",
           img2img: "Img2img",
           inpaint: "Inpaint",
+          models: "Modelos",
+          settings: "Ajustes",
           txt2txt: "Txt2txt",
           txt2img: "Txt2img",
           upscale: "Aumentar"
@@ -86716,7 +87112,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           delete: "Borrar",
           next: "Pr\xF3ximo",
           previous: "Anterior",
-          retry: "",
+          retry: "Rever",
           save: "Ahorrar"
         },
         upscaleOrder: {
@@ -86724,7 +87120,7 @@ Please use another name.` : formatMuiErrorMessage(18));
           "correction-first": "correcci\xF3n primero",
           "correction-last": "\xFAltima correcci\xF3n"
         },
-        wildcard: ""
+        wildcard: "Comod\xEDn"
       }
     }
   };
@@ -86734,9 +87130,9 @@ Please use another name.` : formatMuiErrorMessage(18));
     fr: {
       translation: {
         admin: {
-          restart: ""
+          restart: "red\xE9marrer les travailleurs"
         },
-        convert: "",
+        convert: "enregistrer et convertir",
         error: {
           image: {
             csam: "",
@@ -86745,39 +87141,42 @@ Please use another name.` : formatMuiErrorMessage(18));
             unknown: ""
           },
           inpaint: {
-            support: ""
+            support: "ce mod\xE8le peut ne pas prendre en charge l'\xE9dition"
           }
         },
         extras: {
-          add: "",
-          dest: "",
-          format: "",
-          label: "",
-          model: "",
-          name: "",
-          remove: "",
+          add: "ajouter",
+          dest: "nom de dossier",
+          format: "format de fichier",
+          label: "\xE9tiquette",
+          model: "mod\xE8le",
+          name: "nom",
+          remove: "retirer",
           scale: "",
-          source: "",
-          type: ""
+          source: "source",
+          type: "type"
         },
         generate: "g\xE9n\xE9rer",
         profile: {
-          add: "",
-          saveName: "",
-          saveProfile: "",
-          save: "",
-          saveCurrent: "",
-          name: "",
-          cancel: "",
-          load: ""
+          add: "ajouter un profil",
+          saveName: "enregistrer le nom du profil",
+          saveProfile: "enregistrer le profil",
+          save: "sauvegarder",
+          saveCurrent: "enregistrer le profil actuel",
+          name: "nom",
+          cancel: "annuler",
+          load: "profil de charge"
         },
         highresMethod: {
-          bilinear: "",
-          lanczos: "",
-          upscale: ""
+          bilinear: "bilin\xE9aire",
+          lanczos: "Lanczos",
+          upscale: "upscaler"
         },
         history: {
           empty: "pas d'histoire r\xE9cente. appuyez sur g\xE9n\xE9rer pour cr\xE9er une image."
+        },
+        image: {
+          thumbnail: "vignette"
         },
         input: {
           image: {
@@ -86787,28 +87186,22 @@ Please use another name.` : formatMuiErrorMessage(18));
           },
           list: {
             error: {
-              specific: "",
+              specific: "erreur: {{message}}",
               unknown: "erreur inconnue"
             },
-            idle: "",
-            loading: ""
+            idle: "inactif",
+            loading: "chargement"
           },
           numeric: {
             error: {
               range: "hors de port\xE9e"
             }
-          },
-          prompt: {
-            tokens: "",
-            error: {
-              length: ""
-            }
           }
         },
         loading: {
           cancel: "Annuler",
-          progress: "{{current}} des {{total}} \xE9tapes",
-          queue: "",
+          progress: "{{steps.current}} des {{steps.total}} pas, {{tiles.current}} des {{tiles.total}} tuiles, {{stages.current}} des {{stages.total}} \xE9tapes",
+          queue: "{{current}} des {{total}} images en file d'attente",
           server: "Connexion au serveur...",
           unknown: "nombreuses"
         },
@@ -86825,24 +87218,24 @@ Please use another name.` : formatMuiErrorMessage(18));
           invert: "Inverser les couleurs"
         },
         maskFilter: {
-          "gaussian-multiply": "",
-          "gaussian-screen": "",
-          "none": ""
+          "gaussian-multiply": "multiplication gaussienne",
+          "gaussian-screen": "\xE9cran gaussien",
+          "none": "aucun"
         },
         modelType: {
-          control: "",
+          control: "ControlNet",
           correction_one: "mod\xE8le de correction",
-          correction_other: "",
+          correction_other: "mod\xE8les de correction",
           diffusion_one: "mod\xE8le de diffusion",
-          diffusion_other: "",
-          inversion: "",
-          lora: "",
-          network_one: "",
-          network_other: "",
-          source_one: "",
-          source_other: "",
+          diffusion_other: "mod\xE8les de diffusion",
+          inversion: "int\xE9gration",
+          lora: "LoRA",
+          network_one: "r\xE9seau suppl\xE9mentaire",
+          network_other: "r\xE9seaux suppl\xE9mentaires",
+          source_one: "autre source",
+          source_other: "d'autres sources",
           upscaling_one: "mod\xE8le de grossissement",
-          upscaling_other: ""
+          upscaling_other: "mod\xE8les de grossissement"
         },
         noiseSource: {
           "fill-edge": "",
@@ -86976,6 +87369,8 @@ Please use another name.` : formatMuiErrorMessage(18));
           blend: "",
           img2img: "",
           inpaint: "",
+          models: "",
+          settings: "",
           txt2txt: "",
           txt2img: "",
           upscale: ""
@@ -87003,28 +87398,6 @@ Please use another name.` : formatMuiErrorMessage(18));
 
   // out/src/strings/all.js
   var I18N_STRINGS = Object.assign(Object.assign(Object.assign(Object.assign({}, I18N_STRINGS_DE), I18N_STRINGS_EN), I18N_STRINGS_ES), I18N_STRINGS_FR);
-
-  // out/src/state/migration/default.js
-  var V7 = 7;
-  function applyStateMigrations(params, previousState, version, logger) {
-    logger.info("applying state migrations from version %s to version %s", version, STATE_VERSION);
-    if (version <= V7) {
-      return migrateV7ToV11(params, previousState);
-    }
-    return previousState;
-  }
-  __name(applyStateMigrations, "applyStateMigrations");
-  function migrateV7ToV11(params, previousState) {
-    const result = Object.assign(Object.assign(Object.assign({}, params), previousState), { img2img: Object.assign(Object.assign({}, previousState.img2img), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }), inpaint: Object.assign(Object.assign({}, previousState.inpaint), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }), txt2img: Object.assign(Object.assign({}, previousState.txt2img), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }), upscale: Object.assign(Object.assign({}, previousState.upscale), { unet_overlap: params.unet_overlap.default, unet_tile: params.unet_tile.default, vae_overlap: params.vae_overlap.default, vae_tile: params.vae_tile.default }) });
-    const existingProfiles = new Set(result.profiles.map((it) => it.name));
-    for (const newProfile of DEFAULT_PROFILES) {
-      if (existingProfiles.has(newProfile.name) === false) {
-        result.profiles.push(newProfile);
-      }
-    }
-    return result;
-  }
-  __name(migrateV7ToV11, "migrateV7ToV11");
 
   // out/src/main.js
   async function renderApp(config, params, logger, client) {
@@ -87059,25 +87432,25 @@ Please use another name.` : formatMuiErrorMessage(18));
     const reactLogger = logger.child({
       system: "react"
     });
-    return React168.createElement(
+    return React169.createElement(
       QueryClientProvider,
       { client: query },
-      React168.createElement(
+      React169.createElement(
         ClientContext.Provider,
         { value: client },
-        React168.createElement(
+        React169.createElement(
           ConfigContext.Provider,
           { value: completeConfig },
-          React168.createElement(
+          React169.createElement(
             LoggerContext.Provider,
             { value: reactLogger },
-            React168.createElement(
+            React169.createElement(
               I18nextProvider,
               { i18n: instance },
-              React168.createElement(
+              React169.createElement(
                 StateContext.Provider,
                 { value: state },
-                React168.createElement(OnnxWeb, { motd: doesExist2(params.motd) })
+                React169.createElement(OnnxWeb, { motd: doesExist2(params.motd) })
               )
             )
           )
@@ -87087,10 +87460,10 @@ Please use another name.` : formatMuiErrorMessage(18));
   }
   __name(renderApp, "renderApp");
   async function renderProgress() {
-    return React168.createElement(
+    return React169.createElement(
       I18nextProvider,
       { i18n: instance },
-      React168.createElement(LoadingScreen, null)
+      React169.createElement(LoadingScreen, null)
     );
   }
   __name(renderProgress, "renderProgress");
@@ -87101,10 +87474,10 @@ Please use another name.` : formatMuiErrorMessage(18));
       level: debug ? "debug" : "info"
     });
     const config = await loadConfig();
-    const query = new URLSearchParams(window.location.search);
-    const token2 = query.get("token");
     const root = getApiRoot(config);
-    const client = makeClient(root, token2);
+    const batch = getBatchInterval();
+    const token2 = getToken();
+    const client = makeClient(root, batch, token2);
     const appElement = mustExist(document.getElementById("app"));
     const app = (0, import_client.createRoot)(appElement);
     await instance.use(Browser).use(initReactI18next).init({
@@ -87125,20 +87498,20 @@ Please use another name.` : formatMuiErrorMessage(18));
       if ((0, import_semver.satisfies)(version, PARAM_VERSION)) {
         app.render(await renderApp(config, params, logger, client));
       } else {
-        app.render(React168.createElement(
+        app.render(React169.createElement(
           OnnxError,
           { root },
-          React168.createElement(ParamsVersionError, { root, version })
+          React169.createElement(ParamsVersionError, { root, version })
         ));
       }
     } catch (err) {
       if (err instanceof TimeoutError || err instanceof Error && err.message.includes("Failed to fetch")) {
         app.render(await renderApp(config, config.params, logger, LOCAL_CLIENT));
       } else {
-        app.render(React168.createElement(
+        app.render(React169.createElement(
           OnnxError,
           { root },
-          React168.createElement(ServerParamsError, { root, error: err })
+          React169.createElement(ServerParamsError, { root, error: err })
         ));
       }
     }
