@@ -229,6 +229,9 @@ These extra images can be helpful when debugging inpainting, especially poorly b
   - unload UNet after converting and reload before ControlNet conversion
 - `ONNX_WEB_CONVERT_OPSET`
   - ONNX opset used when converting models
+- `ONNX_WEB_CONVERT_VALIDATE`
+  - perform validation after model conversion
+  - disable to accelerate conversion and save memory
 - `ONNX_WEB_CONVERT_CPU_ONLY`
   - perform conversion on the CPU, even if a CUDA GPU is available
   - can allow conversion of models that do not fit in VRAM
