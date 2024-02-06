@@ -272,7 +272,7 @@ def process_tile_stack(
 
     for counter, (left, top) in enumerate(tile_coords):
         logger.info(
-            "processing tile %s of %s, %sx%s", counter, len(tile_coords), left, top
+            "processing tile %s of %s, %sx%s", counter+1, len(tile_coords), left, top
         )
 
         right = left + tile

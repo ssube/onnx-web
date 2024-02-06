@@ -82,6 +82,7 @@ class ConversionContext(ServerContext):
         context.reload = get_boolean(environ, "ONNX_WEB_CONVERT_RELOAD", True)
         context.share_unet = get_boolean(environ, "ONNX_WEB_CONVERT_SHARE_UNET", True)
         context.opset = int(environ.get("ONNX_WEB_CONVERT_OPSET", DEFAULT_OPSET))
+        context.validate = get_boolean(environ, "ONNX_WEB_CONVERT_VALIDATE", True)
 
         cpu_only = get_boolean(environ, "ONNX_WEB_CONVERT_CPU_ONLY", False)
         if cpu_only:
