@@ -9,6 +9,7 @@ from ..chain import (
     BlendMaskStage,
     ChainPipeline,
     SourceTxt2ImgStage,
+    TextPromptStage,
     UpscaleOutpaintStage,
 )
 from ..chain.highres import stage_highres
@@ -76,6 +77,13 @@ def run_txt2img_pipeline(
 
     # prepare the chain pipeline and first stage
     chain = ChainPipeline()
+
+    if server.has_feature("prompt-filter"):
+        chain.stage(
+            TextPromptStage(),
+            StageParams(),
+        )
+
     chain.stage(
         SourceTxt2ImgStage(),
         StageParams(
