@@ -28,8 +28,14 @@ class TextPromptStage(BaseStage):
         prompt_model: str = "Gustavosta/MagicPrompt-Stable-Diffusion",
         **kwargs,
     ) -> StageResult:
-        gpt2_pipe = pipeline("text-generation", model=prompt_model, tokenizer="gpt2")
-        gpt2_pipe = gpt2_pipe.to("cuda")
+        device = worker.device.torch_str()
+        gpt2_pipe = pipeline(
+            "text-generation",
+            model=prompt_model,
+            tokenizer="gpt2",
+            device=device,
+            framework="pt",
+        )
 
         input = params.prompt
         max_length = len(input) + randint(60, 90)
