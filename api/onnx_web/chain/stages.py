@@ -20,6 +20,7 @@ from .source_noise import SourceNoiseStage
 from .source_s3 import SourceS3Stage
 from .source_txt2img import SourceTxt2ImgStage
 from .source_url import SourceURLStage
+from .text_prompt import TextPromptStage
 from .upscale_bsrgan import UpscaleBSRGANStage
 from .upscale_highres import UpscaleHighresStage
 from .upscale_outpaint import UpscaleOutpaintStage
@@ -52,6 +53,7 @@ CHAIN_STAGES = {
     "source-s3": SourceS3Stage,
     "source-txt2img": SourceTxt2ImgStage,
     "source-url": SourceURLStage,
+    "text-prompt": TextPromptStage,
     "upscale-bsrgan": UpscaleBSRGANStage,
     "upscale-highres": UpscaleHighresStage,
     "upscale-outpaint": UpscaleOutpaintStage,
