@@ -850,6 +850,7 @@ def convert_diffusion_diffusers_optimum(
             "torch-fp16"
         ),  # optimum's fp16 mode only works on CUDA or ROCm
         framework="pt",
+        do_validation=conversion.has_feature("optimum-validation"),
     )
 
     if "hash" in model:
