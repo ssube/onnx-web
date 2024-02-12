@@ -475,9 +475,16 @@ def repair_nan(tile: np.ndarray) -> np.ndarray:
         return tile
 
 
+def split_prompt(prompt: str) -> List[str]:
+    if "||" in prompt:
+        return prompt.split("||")
+
+    return [prompt]
+
+
 def slice_prompt(prompt: str, slice: int) -> str:
     if "||" in prompt:
-        parts = prompt.split("||")
+        parts = split_prompt(prompt)
         return parts[min(slice, len(parts) - 1)]
     else:
         return prompt
