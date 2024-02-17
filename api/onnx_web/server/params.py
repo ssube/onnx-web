@@ -473,10 +473,22 @@ def get_request_params(
     data = get_request_data()
 
     device, params, size = pipeline_from_json(server, data, default_pipeline)
-    border = build_border(data["border"])
-    upscale = build_upscale(data["upscale"])
-    highres = build_highres(data["highres"])
-    experimental = build_experimental(data["experimental"])
+
+    border = None
+    if "border" in data:
+        border = build_border(data["border"])
+
+    upscale = None
+    if "upscale" in data:
+        upscale = build_upscale(data["upscale"])
+
+    highres = None
+    if "highres" in data:
+        highres = build_highres(data["highres"])
+
+    experimental = None
+    if "experimental" in data:
+        experimental = build_experimental(data["experimental"])
 
     return RequestParams(
         device,
