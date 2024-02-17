@@ -300,7 +300,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
 
 def txt2img(server: ServerContext, pool: DevicePoolExecutor):
-    params = get_request_params()
+    params = get_request_params(server, JobType.TXT2IMG.value)
     replace_wildcards(params.image, get_wildcard_data())
 
     job_name = make_job_name(JobType.TXT2IMG.value, params.image, params.size)
@@ -406,7 +406,7 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
 
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
-    params = get_request_params(server)
+    params = get_request_params(server, JobType.UPSCALE.value)
     replace_wildcards(params.image, get_wildcard_data())
 
     job_name = make_job_name("upscale", params.image, params.size)
