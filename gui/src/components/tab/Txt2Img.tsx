@@ -106,11 +106,11 @@ export function Txt2Img() {
       <SizeControl />
       <HighresControl selectHighres={selectHighres} setHighres={setHighres} />
       <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
-      <VariableControl selectGrid={selectVariable} setGrid={setVariable} />
       <ExperimentalControl setExperimental={(props) => {
         // eslint-disable-next-line no-console
         console.log('setting experimental props', props);
       }} />
+      <VariableControl selectGrid={selectVariable} setGrid={setVariable} />
       <Button
         variant='contained'
         onClick={() => generate.mutate()}

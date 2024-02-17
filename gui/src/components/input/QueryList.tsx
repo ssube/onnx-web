@@ -15,6 +15,7 @@ export interface QueryListFilter<T> {
 }
 
 export interface QueryListProps<T> {
+  disabled?: boolean;
   id: string;
   labelKey: string;
   name: string;
@@ -107,6 +108,7 @@ export function QueryList<T>(props: QueryListProps<T>) {
   return <FormControl>
     <InputLabel id={labelID}>{props.name}</InputLabel>
     <Select
+      disabled={props.disabled}
       labelId={labelID}
       label={props.name}
       value={firstValidValue()}

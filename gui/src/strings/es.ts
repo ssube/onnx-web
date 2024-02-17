@@ -22,6 +22,20 @@ export const I18N_STRINGS_ES = {
           support: 'Es posible que este modelo no admita la edición.',
         },
       },
+      experimental: {
+        latent_symmetry: {
+          label: '',
+          gradient_start: '',
+          gradient_end: '',
+          line_of_symmetry: '',
+        },
+        prompt_editing: {
+          add_suffix: '',
+          filter: '',
+          label: '',
+          remove_tokens: '',
+        },
+      },
       extras: {
         add: 'Agregar',
         dest: 'Nombre de la carpeta',

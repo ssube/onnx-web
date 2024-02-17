@@ -22,6 +22,20 @@ export const I18N_STRINGS_FR = {
           support: 'ce modèle peut ne pas prendre en charge l\'édition',
         },
       },
+      experimental: {
+        latent_symmetry: {
+          label: '',
+          gradient_start: '',
+          gradient_end: '',
+          line_of_symmetry: '',
+        },
+        prompt_editing: {
+          add_suffix: '',
+          filter: '',
+          label: '',
+          remove_tokens: '',
+        },
+      },
       extras: {
         add: 'ajouter',
         dest: 'nom de dossier',

@@ -22,6 +22,20 @@ export const I18N_STRINGS_DE = {
           support: 'Dieses Modell unterstützt möglicherweise keine Bearbeitung.',
         },
       },
+      experimental: {
+        latent_symmetry: {
+          label: '', // 'Latente Symmetrie',
+          gradient_start: '', // 'Gradientenstart',
+          gradient_end: '', // 'Gradientenende',
+          line_of_symmetry: '', // 'Symmetrielinie',
+        },
+        prompt_editing: {
+          add_suffix: '', // 'Suffix hinzufügen',
+          filter: '', // 'Prompt-Filter',
+          label: '', // 'Prompt-Bearbeitung',
+          remove_tokens: '', // 'Entfernen Sie Token',
+        },
+      },
       extras: {
         add: 'Artikel hinzufügen',
         dest: 'Ordnernamen',

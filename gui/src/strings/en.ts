@@ -17,6 +17,20 @@ export const I18N_STRINGS_EN = {
           support: 'This diffusion model may not support inpainting.',
         },
       },
+      experimental: {
+        latent_symmetry: {
+          label: 'Latent Symmetry',
+          gradient_start: 'Gradient Start',
+          gradient_end: 'Gradient End',
+          line_of_symmetry: 'Line of Symmetry',
+        },
+        prompt_editing: {
+          add_suffix: 'Add Suffix',
+          filter: 'Prompt Filter',
+          label: 'Prompt Editing',
+          remove_tokens: 'Remove Tokens',
+        },
+      },
       extras: {
         add: 'Add',
         dest: 'Folder',
@@ -156,6 +170,12 @@ export const I18N_STRINGS_EN = {
           scribble: 'Scribble',
           seg: 'Image Segmentation',
         },
+        'prompt': {
+          'AUTOMATIC/promptgen-lexart': 'LexArt',
+          'AUTOMATIC/promptgen-majinai-safe': 'Majinai (Safe)',
+          'AUTOMATIC/promptgen-majinai-unsafe': 'Majinai (Unsafe)',
+          'Gustavosta/MagicPrompt-Stable-Diffusion': 'MagicPrompt',
+        }
       },
       modelType: {
         control: 'ControlNet',
