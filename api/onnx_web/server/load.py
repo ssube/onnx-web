@@ -83,6 +83,12 @@ source_filters = {
     "segment": source_filter_segment,
     "scribble": source_filter_scribble,
 }
+prompt_filters = [
+    "AUTOMATIC/promptgen-lexart",
+    "AUTOMATIC/promptgen-majinai-safe",
+    "AUTOMATIC/promptgen-majinai-unsafe",
+    "Gustavosta/MagicPrompt-Stable-Diffusion",
+]
 
 # Available ORT providers
 available_platforms: List[DeviceParams] = []
@@ -146,6 +152,10 @@ def get_mask_filters():
 
 def get_noise_sources():
     return noise_sources
+
+
+def get_prompt_filters():
+    return prompt_filters
 
 
 def get_source_filters():

@@ -22,6 +22,7 @@ import { ImageInput } from '../input/ImageInput.js';
 import { MaskCanvas } from '../input/MaskCanvas.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
+import { ExperimentalControl } from '../control/ExperimentalControl.js';
 
 export function Inpaint() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -222,6 +223,10 @@ export function Inpaint() {
       <OutpaintControl />
       <HighresControl selectHighres={selectHighres} setHighres={setHighres} />
       <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
+      <ExperimentalControl setExperimental={(props) => {
+        // eslint-disable-next-line no-console
+        console.log('setting experimental props', props);
+      }} />
       <Button
         disabled={preventInpaint()}
         variant='contained'

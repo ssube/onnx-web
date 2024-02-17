@@ -20,6 +20,7 @@ import { ModelControl } from '../control/ModelControl.js';
 import { UpscaleControl } from '../control/UpscaleControl.js';
 import { VariableControl } from '../control/VariableControl.js';
 import { NumericField } from '../input/NumericField.js';
+import { ExperimentalControl } from '../control/ExperimentalControl.js';
 
 export function SizeControl() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -106,6 +107,10 @@ export function Txt2Img() {
       <HighresControl selectHighres={selectHighres} setHighres={setHighres} />
       <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
       <VariableControl selectGrid={selectVariable} setGrid={setVariable} />
+      <ExperimentalControl setExperimental={(props) => {
+        // eslint-disable-next-line no-console
+        console.log('setting experimental props', props);
+      }} />
       <Button
         variant='contained'
         onClick={() => generate.mutate()}

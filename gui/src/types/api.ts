@@ -44,6 +44,7 @@ export type NetworkModel = EmbeddingNetwork | LoraNetwork | ControlNetwork;
 
 export interface FilterResponse {
   mask: Array<string>;
+  prompt: Array<string>;
   source: Array<string>;
 }
 

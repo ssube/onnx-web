@@ -20,6 +20,7 @@ import { UpscaleControl } from '../control/UpscaleControl.js';
 import { ImageInput } from '../input/ImageInput.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
+import { ExperimentalControl } from '../control/ExperimentalControl.js';
 
 export function Img2Img() {
   const { params } = mustExist(useContext(ConfigContext));
@@ -140,6 +141,10 @@ export function Img2Img() {
       </Stack>
       <HighresControl selectHighres={selectHighres} setHighres={setHighres} />
       <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
+      <ExperimentalControl setExperimental={(props) => {
+        // eslint-disable-next-line no-console
+        console.log('setting experimental props', props);
+      }} />
       <Button
         disabled={doesExist(source) === false}
         variant='contained'

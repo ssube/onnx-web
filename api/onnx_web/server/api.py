@@ -47,6 +47,7 @@ from .load import (
     get_mask_filters,
     get_network_models,
     get_noise_sources,
+    get_prompt_filters,
     get_source_filters,
     get_upscaling_models,
     get_wildcard_data,
@@ -203,10 +204,12 @@ def list_extra_strings(server: ServerContext):
 
 def list_filters(server: ServerContext):
     mask_filters = list(get_mask_filters().keys())
+    prompt_filters = list(get_prompt_filters().keys())
     source_filters = list(get_source_filters().keys())
     return jsonify(
         {
             "mask": mask_filters,
+            "prompt": prompt_filters,
             "source": source_filters,
         }
     )
