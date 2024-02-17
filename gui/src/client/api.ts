@@ -17,6 +17,7 @@ import { ExtrasFile } from '../types/model.js';
 import {
   BaseImgParams,
   BlendParams,
+  ExperimentalParams,
   HighresParams,
   ImageSize,
   Img2ImgJSONParams,
@@ -60,12 +61,21 @@ export interface ImageJSON {
   highres?: HighresParams;
   img2img?: Img2ImgJSONParams;
   inpaint?: InpaintJSONParams;
+  experimental?: ExperimentalParams;
+}
+
+export interface JSONInner {
+  [key: string]: string | number | boolean | undefined | JSONInner;
+}
+
+export interface JSONBody extends JSONInner {
+  params: JSONInner;
 }
 
 export function makeImageJSON(params: ImageJSON): string {
-  const { model, base, img2img, inpaint, size, border, upscale, highres } = params;
+  const { model, base, img2img, inpaint, size, border, upscale, highres, experimental } = params;
 
-  const body: Record<string, Record<string, string | number | boolean | undefined>> = {
+  const body: JSONBody = {
     device: {
       platform: model.platform,
     },
@@ -150,6 +160,23 @@ export function makeImageJSON(params: ImageJSON): string {
       highresScale: highres.highresScale,
       highresSteps: highres.highresSteps,
       highresStrength: highres.highresStrength,
+    };
+  }
+
+  if (doesExist(experimental)) {
+    body.experimental = {
+      latentSymmetry: {
+        enabled: experimental.latentSymmetry.enabled,
+        gradientStart: experimental.latentSymmetry.gradientStart,
+        gradientEnd: experimental.latentSymmetry.gradientEnd,
+        lineOfSymmetry: experimental.latentSymmetry.lineOfSymmetry,
+      },
+      promptEditing: {
+        enabled: experimental.promptEditing.enabled,
+        promptFilter: experimental.promptEditing.filter,
+        removeTokens: experimental.promptEditing.removeTokens,
+        addSuffix: experimental.promptEditing.addSuffix,
+      },
     };
   }
 
