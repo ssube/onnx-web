@@ -31,10 +31,10 @@ class TextPromptStage(BaseStage):
         sources: StageResult,
         *,
         callback: Optional[ProgressCallback] = None,
-        prompt_filter: str = "Gustavosta/MagicPrompt-Stable-Diffusion",
+        prompt_filter: str,
         remove_tokens: Optional[str] = None,
         add_suffix: Optional[str] = None,
-        min_length: int = 75,
+        min_length: int = 150,
         **kwargs,
     ) -> StageResult:
         device = worker.device.torch_str()

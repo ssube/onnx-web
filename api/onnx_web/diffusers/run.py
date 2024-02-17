@@ -74,6 +74,10 @@ def add_prompt_filter(
             pipeline.stage(
                 TextPromptStage(),
                 StageParams(),
+                prompt_filter=experimental.prompt_editing.model,
+                remove_tokens=experimental.prompt_editing.remove_tokens,
+                add_suffix=experimental.prompt_editing.add_suffix,
+                # TODO: add min length to experimental params
             )
         else:
             logger.warning("prompt editing is not supported by the server")
