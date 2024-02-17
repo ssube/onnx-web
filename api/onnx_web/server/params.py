@@ -472,7 +472,7 @@ def get_request_params(
 ) -> RequestParams:
     data = get_request_data()
 
-    device, params, size = pipeline_from_json(server, default_pipeline)
+    device, params, size = pipeline_from_json(server, data, default_pipeline)
     border = build_border(data["border"])
     upscale = build_upscale(data["upscale"])
     highres = build_highres(data["highres"])
