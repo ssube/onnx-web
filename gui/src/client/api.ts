@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable max-lines */
 import { doesExist, InvalidArgumentError, Maybe } from '@apextoaster/js-utils';
 import { create as batcher, keyResolver, windowedFiniteBatchScheduler } from '@yornaath/batshit';
@@ -17,16 +18,28 @@ import {
   BaseImgParams,
   BlendParams,
   HighresParams,
+  ImageSize,
+  Img2ImgJSONParams,
   Img2ImgParams,
+  InpaintJSONParams,
   InpaintParams,
   ModelParams,
   OutpaintParams,
+  OutpaintPixels,
   Txt2ImgParams,
   UpscaleParams,
   UpscaleReqParams,
 } from '../types/params.js';
 import { range } from '../utils.js';
 import { ApiClient } from './base.js';
+
+const FORM_HEADERS = {
+  'Content-Type': 'multipart/form-data',
+};
+
+const JSON_HEADERS = {
+  'Content-Type': 'application/json',
+};
 
 export function equalResponse(a: JobResponse, b: JobResponse): boolean {
   return a.name === b.name;
@@ -42,15 +55,122 @@ export function joinPath(...parts: Array<string>): string {
 /**
  * Build the URL to an API endpoint, given the API root and a list of segments.
  */
-export function makeApiUrl(root: string, ...path: Array<string>) {
+export function makeApiURL(root: string, ...path: Array<string>): URL {
   return new URL(joinPath('api', ...path), root);
+}
+
+export interface ImageJSON {
+  model: ModelParams;
+  base: BaseImgParams;
+  size?: ImageSize;
+  border?: OutpaintPixels;
+  upscale?: UpscaleParams;
+  highres?: HighresParams;
+  img2img?: Img2ImgJSONParams;
+  inpaint?: InpaintJSONParams;
+}
+
+export function makeImageJSON(params: ImageJSON): string {
+  const { model, base, img2img, inpaint, size, border, upscale, highres } = params;
+
+  const body: Record<string, Record<string, string | number | boolean | undefined>> = {
+    device: {
+      platform: model.platform,
+    },
+    params: {
+      // model params
+      model: model.model,
+      pipeline: model.pipeline,
+      upscaling: model.upscaling,
+      correction: model.correction,
+      control: model.control,
+      // image params
+      batch: base.batch,
+      cfg: base.cfg,
+      eta: base.eta,
+      steps: base.steps,
+      tiled_vae: base.tiled_vae,
+      unet_overlap: base.unet_overlap,
+      unet_tile: base.unet_tile,
+      vae_overlap: base.vae_overlap,
+      vae_tile: base.vae_tile,
+      scheduler: base.scheduler,
+      seed: base.seed,
+      prompt: base.prompt,
+      negativePrompt: base.negativePrompt,
+    },
+  };
+
+  if (doesExist(img2img)) {
+    body.params = {
+      ...body.params,
+      loopback: img2img.loopback,
+      source_filter: img2img.sourceFilter,
+      strength: img2img.strength,
+    };
+  }
+
+  if (doesExist(inpaint)) {
+    body.params = {
+      ...body.params,
+      filter: inpaint.filter,
+      noise: inpaint.noise,
+      strength: inpaint.strength,
+      fillColor: inpaint.fillColor,
+      tileOrder: inpaint.tileOrder,
+    };
+  }
+
+  if (doesExist(size)) {
+    body.size = {
+      width: size.width,
+      height: size.height,
+    };
+  }
+
+  if (doesExist(border) && border.enabled) {
+    body.border = {
+      left: border.left,
+      right: border.right,
+      top: border.top,
+      bottom: border.bottom,
+    };
+  }
+
+  if (doesExist(upscale)) {
+    body.upscale = {
+      enabled: upscale.enabled,
+      upscaleOrder: upscale.upscaleOrder,
+      denoise: upscale.denoise,
+      scale: upscale.scale,
+      outscale: upscale.outscale,
+      faces: upscale.faces,
+      faceOutscale: upscale.faceOutscale,
+      faceStrength: upscale.faceStrength,
+    };
+  }
+
+  if (doesExist(highres)) {
+    body.highres = {
+      highres: highres.enabled,
+      highresIterations: highres.highresIterations,
+      highresMethod: highres.highresMethod,
+      highresScale: highres.highresScale,
+      highresSteps: highres.highresSteps,
+      highresStrength: highres.highresStrength,
+    };
+  }
+
+  return JSON.stringify(body);
 }
 
 /**
  * Build the URL for an image request, including all of the base image parameters.
+ *
+ * @deprecated use `makeImageJSON` and `makeApiURL` instead
  */
 export function makeImageURL(root: string, type: string, params: BaseImgParams): URL {
-  const url = makeApiUrl(root, type);
+  const url = makeApiURL(root, type);
   url.searchParams.append('batch', params.batch.toFixed(FIXED_INTEGER));
   url.searchParams.append('cfg', params.cfg.toFixed(FIXED_FLOAT));
   url.searchParams.append('eta', params.eta.toFixed(FIXED_FLOAT));
@@ -81,6 +201,8 @@ export function makeImageURL(root: string, type: string, params: BaseImgParams):
 
 /**
  * Append the model parameters to an existing URL.
+ *
+ * @deprecated use `makeImageJSON` instead
  */
 export function appendModelToURL(url: URL, params: ModelParams) {
   url.searchParams.append('model', params.model);
@@ -93,6 +215,8 @@ export function appendModelToURL(url: URL, params: ModelParams) {
 
 /**
  * Append the upscale parameters to an existing URL.
+ *
+ * @deprecated use `makeImageJSON` instead
  */
 export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
   url.searchParams.append('upscale', String(upscale.enabled));
@@ -111,6 +235,11 @@ export function appendUpscaleToURL(url: URL, upscale: UpscaleParams) {
   }
 }
 
+/**
+ * Append the highres parameters to an existing URL.
+ *
+ * @deprecated use `makeImageJSON` instead
+ */
 export function appendHighresToURL(url: URL, highres: HighresParams) {
   if (highres.enabled) {
     url.searchParams.append('highres', String(highres.enabled));
@@ -132,7 +261,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
 
   const client = {
     async extras(): Promise<ExtrasFile> {
-      const path = makeApiUrl(root, 'extras');
+      const path = makeApiURL(root, 'extras');
 
       if (doesExist(token)) {
         path.searchParams.append('token', token);
@@ -142,7 +271,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       return await res.json() as ExtrasFile;
     },
     async writeExtras(extras: ExtrasFile): Promise<WriteExtrasResponse> {
-      const path = makeApiUrl(root, 'extras');
+      const path = makeApiURL(root, 'extras');
 
       if (doesExist(token)) {
         path.searchParams.append('token', token);
@@ -155,78 +284,71 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       return await res.json() as WriteExtrasResponse;
     },
     async filters(): Promise<FilterResponse> {
-      const path = makeApiUrl(root, 'settings', 'filters');
+      const path = makeApiURL(root, 'settings', 'filters');
       const res = await f(path);
       return await res.json() as FilterResponse;
     },
     async models(): Promise<ModelResponse> {
-      const path = makeApiUrl(root, 'settings', 'models');
+      const path = makeApiURL(root, 'settings', 'models');
       const res = await f(path);
       return await res.json() as ModelResponse;
     },
     async noises(): Promise<Array<string>> {
-      const path = makeApiUrl(root, 'settings', 'noises');
+      const path = makeApiURL(root, 'settings', 'noises');
       const res = await f(path);
       return await res.json() as Array<string>;
     },
     async params(): Promise<ServerParams> {
-      const path = makeApiUrl(root, 'settings', 'params');
+      const path = makeApiURL(root, 'settings', 'params');
       const res = await f(path);
       return await res.json() as ServerParams;
     },
     async schedulers(): Promise<Array<string>> {
-      const path = makeApiUrl(root, 'settings', 'schedulers');
+      const path = makeApiURL(root, 'settings', 'schedulers');
       const res = await f(path);
       return await res.json() as Array<string>;
     },
     async pipelines(): Promise<Array<string>> {
-      const path = makeApiUrl(root, 'settings', 'pipelines');
+      const path = makeApiURL(root, 'settings', 'pipelines');
       const res = await f(path);
       return await res.json() as Array<string>;
     },
     async platforms(): Promise<Array<string>> {
-      const path = makeApiUrl(root, 'settings', 'platforms');
+      const path = makeApiURL(root, 'settings', 'platforms');
       const res = await f(path);
       return await res.json() as Array<string>;
     },
     async strings(): Promise<Record<string, {
       translation: Record<string, string>;
     }>> {
-      const path = makeApiUrl(root, 'settings', 'strings');
+      const path = makeApiURL(root, 'settings', 'strings');
       const res = await f(path);
       return await res.json() as Record<string, {
         translation: Record<string, string>;
       }>;
     },
     async wildcards(): Promise<Array<string>> {
-      const path = makeApiUrl(root, 'settings', 'wildcards');
+      const path = makeApiURL(root, 'settings', 'wildcards');
       const res = await f(path);
       return await res.json() as Array<string>;
     },
     async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
-      const url = makeImageURL(root, 'img2img', params);
-      appendModelToURL(url, model);
+      const url = makeApiURL(root, 'img2img');
+      const json = makeImageJSON({
+        model,
+        base: params,
+        upscale,
+        highres,
+        img2img: params,
+      });
 
-      url.searchParams.append('loopback', params.loopback.toFixed(FIXED_INTEGER));
-      url.searchParams.append('strength', params.strength.toFixed(FIXED_FLOAT));
-
-      if (doesExist(params.sourceFilter)) {
-        url.searchParams.append('sourceFilter', params.sourceFilter);
-      }
-
-      if (doesExist(upscale)) {
-        appendUpscaleToURL(url, upscale);
-      }
-
-      if (doesExist(highres)) {
-        appendHighresToURL(url, highres);
-      }
-
-      const body = new FormData();
-      body.append('source', params.source, 'source');
+      const form = new FormData();
+      form.append('json', json);
+      form.append('source', params.source, 'source');
 
       const job = await parseRequest(url, {
-        body,
+        body: form,
+        headers: FORM_HEADERS,
         method: 'POST',
       });
       return {
@@ -240,26 +362,21 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       };
     },
     async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
-      const url = makeImageURL(root, 'txt2img', params);
-      appendModelToURL(url, model);
+      const url = makeApiURL(root, 'txt2img');
+      const json = makeImageJSON({
+        model,
+        base: params,
+        size: params,
+        upscale,
+        highres,
+      });
 
-      if (doesExist(params.width)) {
-        url.searchParams.append('width', params.width.toFixed(FIXED_INTEGER));
-      }
-
-      if (doesExist(params.height)) {
-        url.searchParams.append('height', params.height.toFixed(FIXED_INTEGER));
-      }
-
-      if (doesExist(upscale)) {
-        appendUpscaleToURL(url, upscale);
-      }
-
-      if (doesExist(highres)) {
-        appendHighresToURL(url, highres);
-      }
+      const form = new FormData();
+      form.append('json', json);
 
       const job = await parseRequest(url, {
+        body: form,
+        headers: FORM_HEADERS,
         method: 'POST',
       });
       return {
@@ -274,28 +391,23 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       };
     },
     async inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
-      const url = makeImageURL(root, 'inpaint', params);
-      appendModelToURL(url, model);
+      const url = makeApiURL(root, 'inpaint');
+      const json = makeImageJSON({
+        model,
+        base: params,
+        upscale,
+        highres,
+        inpaint: params,
+      });
 
-      url.searchParams.append('filter', params.filter);
-      url.searchParams.append('noise', params.noise);
-      url.searchParams.append('strength', params.strength.toFixed(FIXED_FLOAT));
-      url.searchParams.append('fillColor', params.fillColor);
-
-      if (doesExist(upscale)) {
-        appendUpscaleToURL(url, upscale);
-      }
-
-      if (doesExist(highres)) {
-        appendHighresToURL(url, highres);
-      }
-
-      const body = new FormData();
-      body.append('mask', params.mask, 'mask');
-      body.append('source', params.source, 'source');
+      const form = new FormData();
+      form.append('json', json);
+      form.append('mask', params.mask, 'mask');
+      form.append('source', params.source, 'source');
 
       const job = await parseRequest(url, {
-        body,
+        body: form,
+        headers: FORM_HEADERS,
         method: 'POST',
       });
       return {
@@ -309,45 +421,23 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       };
     },
     async outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
-      const url = makeImageURL(root, 'inpaint', params);
-      appendModelToURL(url, model);
+      const url = makeApiURL(root, 'inpaint');
+      const json = makeImageJSON({
+        model,
+        base: params,
+        upscale,
+        highres,
+        inpaint: params,
+      });
 
-      url.searchParams.append('filter', params.filter);
-      url.searchParams.append('noise', params.noise);
-      url.searchParams.append('strength', params.strength.toFixed(FIXED_FLOAT));
-      url.searchParams.append('fillColor', params.fillColor);
-      url.searchParams.append('tileOrder', params.tileOrder);
-
-      if (doesExist(upscale)) {
-        appendUpscaleToURL(url, upscale);
-      }
-
-      if (doesExist(highres)) {
-        appendHighresToURL(url, highres);
-      }
-
-      if (doesExist(params.left)) {
-        url.searchParams.append('left', params.left.toFixed(FIXED_INTEGER));
-      }
-
-      if (doesExist(params.right)) {
-        url.searchParams.append('right', params.right.toFixed(FIXED_INTEGER));
-      }
-
-      if (doesExist(params.top)) {
-        url.searchParams.append('top', params.top.toFixed(FIXED_INTEGER));
-      }
-
-      if (doesExist(params.bottom)) {
-        url.searchParams.append('bottom', params.bottom.toFixed(FIXED_INTEGER));
-      }
-
-      const body = new FormData();
-      body.append('mask', params.mask, 'mask');
-      body.append('source', params.source, 'source');
+      const form = new FormData();
+      form.append('json', json);
+      form.append('mask', params.mask, 'mask');
+      form.append('source', params.source, 'source');
 
       const job = await parseRequest(url, {
-        body,
+        body: form,
+        headers: FORM_HEADERS,
         method: 'POST',
       });
       return {
@@ -361,28 +451,21 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       };
     },
     async upscale(model: ModelParams, params: UpscaleReqParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
-      const url = makeApiUrl(root, 'upscale');
-      appendModelToURL(url, model);
+      const url = makeApiURL(root, 'upscale');
+      const json = makeImageJSON({
+        model,
+        base: params,
+        upscale,
+        highres,
+      });
 
-      if (doesExist(upscale)) {
-        appendUpscaleToURL(url, upscale);
-      }
-
-      if (doesExist(highres)) {
-        appendHighresToURL(url, highres);
-      }
-
-      url.searchParams.append('prompt', params.prompt);
-
-      if (doesExist(params.negativePrompt)) {
-        url.searchParams.append('negativePrompt', params.negativePrompt);
-      }
-
-      const body = new FormData();
-      body.append('source', params.source, 'source');
+      const form = new FormData();
+      form.append('json', json);
+      form.append('source', params.source, 'source');
 
       const job = await parseRequest(url, {
-        body,
+        body: form,
+        headers: FORM_HEADERS,
         method: 'POST',
       });
       return {
@@ -396,23 +479,25 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       };
     },
     async blend(model: ModelParams, params: BlendParams, upscale?: UpscaleParams): Promise<JobResponseWithRetry> {
-      const url = makeApiUrl(root, 'blend');
-      appendModelToURL(url, model);
+      const url = makeApiURL(root, 'blend');
+      const json = makeImageJSON({
+        model,
+        base: params as unknown as BaseImgParams, // TODO: fix this
+        upscale,
+      });
 
-      if (doesExist(upscale)) {
-        appendUpscaleToURL(url, upscale);
-      }
-
-      const body = new FormData();
-      body.append('mask', params.mask, 'mask');
+      const form = new FormData();
+      form.append('json', json);
+      form.append('mask', params.mask, 'mask');
 
       for (const i of range(params.sources.length)) {
         const name = `source:${i.toFixed(0)}`;
-        body.append(name, params.sources[i], name);
+        form.append(name, params.sources[i], name);
       }
 
       const job = await parseRequest(url, {
-        body,
+        body: form,
+        headers: FORM_HEADERS,
         method: 'POST',
       });
       return {
@@ -426,7 +511,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       };
     },
     async chain(model: ModelParams, chain: ChainPipeline): Promise<JobResponse> {
-      const url = makeApiUrl(root, 'job');
+      const url = makeApiURL(root, 'job');
       const body = JSON.stringify({
         ...chain,
         platform: model.platform,
@@ -442,14 +527,14 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       });
     },
     async status(keys: Array<string>): Promise<Array<JobResponse>> {
-      const path = makeApiUrl(root, 'job', 'status');
+      const path = makeApiURL(root, 'job', 'status');
       path.searchParams.append('jobs', keys.join(','));
 
       const res = await f(path);
       return await res.json() as Array<JobResponse>;
     },
     async cancel(keys: Array<string>): Promise<Array<JobResponse>> {
-      const path = makeApiUrl(root, 'job', 'cancel');
+      const path = makeApiURL(root, 'job', 'cancel');
       path.searchParams.append('jobs', keys.join(','));
 
       const res = await f(path, {
@@ -476,7 +561,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       }
     },
     async restart(): Promise<boolean> {
-      const path = makeApiUrl(root, 'worker', 'restart');
+      const path = makeApiURL(root, 'worker', 'restart');
 
       if (doesExist(token)) {
         path.searchParams.append('token', token);
@@ -488,7 +573,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       return res.status === STATUS_SUCCESS;
     },
     async workers(): Promise<Array<unknown>> {
-      const path = makeApiUrl(root, 'worker', 'status');
+      const path = makeApiURL(root, 'worker', 'status');
 
       if (doesExist(token)) {
         path.searchParams.append('token', token);

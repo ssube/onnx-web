@@ -67,30 +67,34 @@ export interface BaseImgParams {
  */
 export type Txt2ImgParams = BaseImgParams & ImageSize;
 
-/**
- * Parameters for img2img requests.
- */
-export interface Img2ImgParams extends BaseImgParams {
-  source: Blob;
-
+export interface Img2ImgJSONParams {
   loopback: number;
   sourceFilter: string;
   strength: number;
 }
 
 /**
- * Parameters for inpaint requests.
+ * Parameters for img2img requests.
  */
-export interface InpaintParams extends BaseImgParams {
-  mask: Blob;
+export type Img2ImgParams = BaseImgParams & Img2ImgJSONParams & {
   source: Blob;
+};
 
+export interface InpaintJSONParams {
   filter: string;
   noise: string;
   strength: number;
   fillColor: string;
   tileOrder: string;
 }
+
+/**
+ * Parameters for inpaint requests.
+ */
+export type InpaintParams = BaseImgParams & InpaintJSONParams & {
+  mask: Blob;
+  source: Blob;
+};
 
 /**
  * Additional parameters for outpaint border.

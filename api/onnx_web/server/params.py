@@ -368,10 +368,19 @@ def pipeline_from_request(
     default_pipeline: str = "txt2img",
 ) -> PipelineParams:
     user = request.remote_addr
+    mime = request.mimetype
 
-    device = build_device(server, request.args)
-    params = build_params(server, default_pipeline, request.args)
-    size = build_size(server, request.args)
+    if mime == "application/json":
+        device, params, size = pipeline_from_json(
+            server, request.json, default_pipeline
+        )
+    elif mime == "multipart/form-data":
+        form_json = request.form.get("json")
+        device, params, size = pipeline_from_json(server, form_json, default_pipeline)
+    else:
+        device = build_device(server, request.args)
+        params = build_params(server, default_pipeline, request.args)
+        size = build_size(server, request.args)
 
     logger.info(
         "request from %s: %s steps of %s using %s in %s on %s, %sx%s, %s, %s - %s",
