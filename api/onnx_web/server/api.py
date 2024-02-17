@@ -204,7 +204,7 @@ def list_extra_strings(server: ServerContext):
 
 def list_filters(server: ServerContext):
     mask_filters = list(get_mask_filters().keys())
-    prompt_filters = list(get_prompt_filters().keys())
+    prompt_filters = get_prompt_filters()
     source_filters = list(get_source_filters().keys())
     return jsonify(
         {
