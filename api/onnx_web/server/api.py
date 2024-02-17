@@ -52,7 +52,13 @@ from .load import (
     get_upscaling_models,
     get_wildcard_data,
 )
-from .params import build_border, build_upscale, get_request_params, pipeline_from_json
+from .params import (
+    build_border,
+    build_upscale,
+    get_request_data,
+    get_request_params,
+    pipeline_from_json,
+)
 from .utils import wrap_route
 
 logger = getLogger(__name__)
@@ -256,14 +262,13 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
-    # TODO: look up the correct request field
+    data = get_request_data()
     source_filter = get_from_list(
-        request.args, "sourceFilter", list(get_source_filters().keys())
+        data["params"], "sourceFilter", list(get_source_filters().keys())
     )
 
-    # TODO: look up the correct request field
     strength = get_and_clamp_float(
-        request.args,
+        data["params"],
         "strength",
         get_config_value("strength"),
         get_config_value("strength", "max"),
@@ -330,12 +335,12 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     mask.alpha_composite(mask_top_layer)
     mask.convert(mode="L")
 
-    # TODO: look up the correct request field
+    data = get_request_data()
     full_res_inpaint = get_boolean(
-        request.args, "fullresInpaint", get_config_value("fullresInpaint")
+        data["params"], "fullresInpaint", get_config_value("fullresInpaint")
     )
     full_res_inpaint_padding = get_and_clamp_float(
-        request.args,
+        data["params"],
         "fullresInpaintPadding",
         get_config_value("fullresInpaintPadding"),
         get_config_value("fullresInpaintPadding", "max"),
@@ -345,13 +350,16 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     params = get_request_params(server, JobType.INPAINT.value)
     replace_wildcards(params.image, get_wildcard_data())
 
-    fill_color = get_not_empty(request.args, "fillColor", "white")
-    mask_filter = get_from_map(request.args, "filter", get_mask_filters(), "none")
-    noise_source = get_from_map(request.args, "noise", get_noise_sources(), "histogram")
-    tile_order = get_from_list(
-        request.args, "tileOrder", [TileOrder.grid, TileOrder.kernel, TileOrder.spiral]
+    fill_color = get_not_empty(data["params"], "fillColor", "white")
+    mask_filter = get_from_map(data["params"], "filter", get_mask_filters(), "none")
+    noise_source = get_from_map(
+        data["params"], "noise", get_noise_sources(), "histogram"
     )
-    tile_order = TileOrder.spiral
+    tile_order = get_from_list(
+        data["params"],
+        "tileOrder",
+        [TileOrder.grid, TileOrder.kernel, TileOrder.spiral],
+    )
 
     job_name = make_job_name(
         JobType.INPAINT.value,

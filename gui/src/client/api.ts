@@ -97,7 +97,7 @@ export function makeImageJSON(params: ImageJSON): string {
     body.params = {
       ...body.params,
       loopback: img2img.loopback,
-      source_filter: img2img.sourceFilter,
+      sourceFilter: img2img.sourceFilter,
       strength: img2img.strength,
     };
   }
