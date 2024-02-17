@@ -19,6 +19,7 @@ from ..utils import (
     get_boolean,
     get_from_list,
     get_not_empty,
+    load_config_str,
 )
 from .context import ServerContext
 from .load import (
@@ -375,7 +376,7 @@ def pipeline_from_request(
             server, request.json, default_pipeline
         )
     elif mime == "multipart/form-data":
-        form_json = request.form.get("json")
+        form_json = load_config_str(request.form.get("json"))
         device, params, size = pipeline_from_json(server, form_json, default_pipeline)
     else:
         device = build_device(server, request.args)
