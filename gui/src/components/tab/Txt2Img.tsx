@@ -63,16 +63,17 @@ export function Txt2Img() {
   async function generateImage() {
     const state = store.getState();
     const grid = selectVariable(state);
-    const params2 = selectParams(state);
+    const params = selectParams(state);
     const upscale = selectUpscale(state);
     const highres = selectHighres(state);
+    const experimental = selectExperimental(state);
 
     if (grid.enabled) {
-      const chain = makeTxt2ImgGridPipeline(grid, model, params2, upscale, highres);
+      const chain = makeTxt2ImgGridPipeline(grid, model, params, upscale, highres);
       const image = await client.chain(model, chain);
       pushHistory(image);
     } else {
-      const { job, retry } = await client.txt2img(model, params2, upscale, highres);
+      const { job, retry } = await client.txt2img(model, params, upscale, highres, experimental);
       pushHistory(job, retry);
     }
   }

@@ -94,7 +94,7 @@ def run_txt2img_pipeline(
 
     # prepare the chain pipeline and first stage
     chain = ChainPipeline()
-    add_prompt_filter(server, chain)
+    add_prompt_filter(server, chain, request.experimental)
 
     chain.stage(
         SourceTxt2ImgStage(),

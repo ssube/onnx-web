@@ -31,15 +31,16 @@ class TextPromptStage(BaseStage):
         sources: StageResult,
         *,
         callback: Optional[ProgressCallback] = None,
-        prompt_model: str = "Gustavosta/MagicPrompt-Stable-Diffusion",
-        exclude_tokens: Optional[str] = None,
+        prompt_filter: str = "Gustavosta/MagicPrompt-Stable-Diffusion",
+        remove_tokens: Optional[str] = None,
+        add_suffix: Optional[str] = None,
         min_length: int = 75,
         **kwargs,
     ) -> StageResult:
         device = worker.device.torch_str()
         text_pipe = pipeline(
             "text-generation",
-            model=prompt_model,
+            model=prompt_filter,
             device=device,
             framework="pt",
         )
@@ -64,11 +65,11 @@ class TextPromptStage(BaseStage):
                 )
                 prompt = result[0]["generated_text"].strip()
 
-                if exclude_tokens:
+                if remove_tokens:
                     logger.debug(
-                        "removing excluded tokens from prompt: %s", exclude_tokens
+                        "removing excluded tokens from prompt: %s", remove_tokens
                     )
-                    prompt = sub(exclude_tokens, "", prompt)
+                    prompt = sub(remove_tokens, "", prompt)
 
             if retries >= RETRY_LIMIT:
                 logger.warning(
@@ -77,6 +78,10 @@ class TextPromptStage(BaseStage):
                     len(prompt),
                     prompt,
                 )
+
+            if add_suffix:
+                prompt = f"{prompt}, {add_suffix}"
+                logger.trace("adding suffix to prompt: %s", prompt)
 
             prompt_results.append(prompt)
 

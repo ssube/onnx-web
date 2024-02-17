@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 /* eslint-disable camelcase */
 /* eslint-disable max-lines */
 import { doesExist, InvalidArgumentError, Maybe } from '@apextoaster/js-utils';
@@ -351,7 +352,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       const res = await f(path);
       return await res.json() as Array<string>;
     },
-    async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
+    async img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams, highres?: HighresParams, experimental?: ExperimentalParams): Promise<JobResponseWithRetry> {
       const url = makeApiURL(root, 'img2img');
       const json = makeImageJSON({
         model,
@@ -359,6 +360,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
         upscale,
         highres,
         img2img: params,
+        experimental,
       });
 
       const form = new FormData();
@@ -379,7 +381,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
         },
       };
     },
-    async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
+    async txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams, experimental?: ExperimentalParams): Promise<JobResponseWithRetry> {
       const url = makeApiURL(root, 'txt2img');
       const json = makeImageJSON({
         model,
@@ -387,6 +389,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
         size: params,
         upscale,
         highres,
+        experimental,
       });
 
       const form = new FormData();
@@ -407,7 +410,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
         },
       };
     },
-    async inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
+    async inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams, highres?: HighresParams, experimental?: ExperimentalParams): Promise<JobResponseWithRetry> {
       const url = makeApiURL(root, 'inpaint');
       const json = makeImageJSON({
         model,
@@ -415,6 +418,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
         upscale,
         highres,
         inpaint: params,
+        experimental,
       });
 
       const form = new FormData();
@@ -436,7 +440,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
         },
       };
     },
-    async outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry> {
+    async outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams, highres?: HighresParams, experimental?: ExperimentalParams): Promise<JobResponseWithRetry> {
       const url = makeApiURL(root, 'inpaint');
       const json = makeImageJSON({
         model,
@@ -444,6 +448,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
         upscale,
         highres,
         inpaint: params,
+        experimental,
       });
 
       const form = new FormData();

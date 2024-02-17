@@ -32,7 +32,7 @@ export function Img2Img() {
     const { job, retry } = await client.img2img(model, {
       ...img2img,
       source: mustExist(img2img.source), // TODO: show an error if this doesn't exist
-    }, selectUpscale(state), selectHighres(state));
+    }, selectUpscale(state), selectHighres(state), selectExperimental(state));
 
     pushHistory(job, retry);
   }

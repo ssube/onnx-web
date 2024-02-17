@@ -46,7 +46,7 @@ export function Inpaint() {
         ...outpaint,
         mask: mustExist(mask),
         source: mustExist(source),
-      }, selectUpscale(state), selectHighres(state));
+      }, selectUpscale(state), selectHighres(state), selectExperimental(state));
 
       pushHistory(job, retry);
     } else {
@@ -54,7 +54,7 @@ export function Inpaint() {
         ...inpaint,
         mask: mustExist(mask),
         source: mustExist(source),
-      }, selectUpscale(state), selectHighres(state));
+      }, selectUpscale(state), selectHighres(state), selectExperimental(state));
 
       pushHistory(job, retry);
     }

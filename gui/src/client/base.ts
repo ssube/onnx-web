@@ -4,7 +4,18 @@ import { JobResponse, JobResponseWithRetry, SuccessJobResponse } from '../types/
 import { FilterResponse, ModelResponse, RetryParams, WriteExtrasResponse } from '../types/api.js';
 import { ChainPipeline } from '../types/chain.js';
 import { ExtrasFile } from '../types/model.js';
-import { BlendParams, HighresParams, Img2ImgParams, InpaintParams, ModelParams, OutpaintParams, Txt2ImgParams, UpscaleParams, UpscaleReqParams } from '../types/params.js';
+import {
+  BlendParams,
+  ExperimentalParams,
+  HighresParams,
+  Img2ImgParams,
+  InpaintParams,
+  ModelParams,
+  OutpaintParams,
+  Txt2ImgParams,
+  UpscaleParams,
+  UpscaleReqParams,
+} from '../types/params.js';
 
 export interface ApiClient {
   /**
@@ -67,22 +78,22 @@ export interface ApiClient {
   /**
    * Start a txt2img pipeline.
    */
-  txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry>;
+  txt2img(model: ModelParams, params: Txt2ImgParams, upscale?: UpscaleParams, highres?: HighresParams, experimental?: ExperimentalParams): Promise<JobResponseWithRetry>;
 
   /**
    * Start an im2img pipeline.
    */
-  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry>;
+  img2img(model: ModelParams, params: Img2ImgParams, upscale?: UpscaleParams, highres?: HighresParams, experimental?: ExperimentalParams): Promise<JobResponseWithRetry>;
 
   /**
    * Start an inpaint pipeline.
    */
-  inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry>;
+  inpaint(model: ModelParams, params: InpaintParams, upscale?: UpscaleParams, highres?: HighresParams, experimental?: ExperimentalParams): Promise<JobResponseWithRetry>;
 
   /**
    * Start an outpaint pipeline.
    */
-  outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams, highres?: HighresParams): Promise<JobResponseWithRetry>;
+  outpaint(model: ModelParams, params: OutpaintParams, upscale?: UpscaleParams, highres?: HighresParams, experimental?: ExperimentalParams): Promise<JobResponseWithRetry>;
 
   /**
    * Start an upscale pipeline.
