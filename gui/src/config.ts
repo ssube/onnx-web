@@ -2,6 +2,7 @@ import { doesExist, Maybe } from '@apextoaster/js-utils';
 import { merge } from 'lodash';
 
 import {
+  ExperimentalParams,
   HighresParams,
   Img2ImgParams,
   InpaintParams,
@@ -69,7 +70,8 @@ export type ServerParams = ConfigRanges<Required<
   ModelParams &
   OutpaintParams &
   UpscaleParams &
-  HighresParams
+  HighresParams &
+  ExperimentalParams
 >> & {
   motd?: Record<string, string>;
   version: string;

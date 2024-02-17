@@ -2,6 +2,7 @@
 import { ServerParams } from '../config.js';
 import {
   BaseImgParams,
+  ExperimentalParams,
   HighresParams,
   Img2ImgParams,
   ModelParams,
@@ -14,6 +15,7 @@ export interface Img2ImgSlice {
   img2imgModel: ModelParams;
   img2imgHighres: HighresParams;
   img2imgUpscale: UpscaleParams;
+  img2imgExperimental: ExperimentalParams;
 
   resetImg2Img(): void;
 
@@ -21,6 +23,7 @@ export interface Img2ImgSlice {
   setImg2ImgModel(params: Partial<ModelParams>): void;
   setImg2ImgHighres(params: Partial<HighresParams>): void;
   setImg2ImgUpscale(params: Partial<UpscaleParams>): void;
+  setImg2ImgExperimental(params: Partial<ExperimentalParams>): void;
 }
 
 // eslint-disable-next-line max-params
@@ -29,7 +32,8 @@ export function createImg2ImgSlice<TState extends Img2ImgSlice>(
   defaultParams: Required<BaseImgParams>,
   defaultHighres: HighresParams,
   defaultModel: ModelParams,
-  defaultUpscale: UpscaleParams
+  defaultUpscale: UpscaleParams,
+  defaultExperimental: ExperimentalParams,
 ): Slice<TState, Img2ImgSlice> {
   return (set) => ({
     img2img: {
@@ -48,6 +52,9 @@ export function createImg2ImgSlice<TState extends Img2ImgSlice>(
     },
     img2imgUpscale: {
       ...defaultUpscale,
+    },
+    img2imgExperimental: {
+      ...defaultExperimental,
     },
     resetImg2Img() {
       set({
@@ -93,6 +100,13 @@ export function createImg2ImgSlice<TState extends Img2ImgSlice>(
         },
       } as Partial<TState>));
     },
+    setImg2ImgExperimental(params) {
+      set((prev) => ({
+        img2imgExperimental: {
+          ...prev.img2imgExperimental,
+          ...params,
+        },
+      } as Partial<TState>));
+    },
   });
-
 }

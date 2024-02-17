@@ -11,7 +11,7 @@ import { IMAGE_FILTER, STALE_TIME, STANDARD_SPACING } from '../../constants.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { TabState } from '../../state/types.js';
 import { JobType } from '../../types/api-v2.js';
-import { BrushParams, HighresParams, InpaintParams, ModelParams, UpscaleParams } from '../../types/params.js';
+import { BrushParams, ExperimentalParams, HighresParams, InpaintParams, ModelParams, UpscaleParams } from '../../types/params.js';
 import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';
 import { ImageControl } from '../control/ImageControl.js';
@@ -69,7 +69,7 @@ export function Inpaint() {
   }
 
   const store = mustExist(useContext(StateContext));
-  const { pushHistory, setBrush, setHighres, setModel, setInpaint, setUpscale } = useStore(store, selectActions, shallow);
+  const { pushHistory, setBrush, setHighres, setModel, setInpaint, setUpscale, setExperimental } = useStore(store, selectActions, shallow);
   const { source, mask, strength, noise, filter, tileOrder, fillColor } = useStore(store, selectReactParams, shallow);
   const model = useStore(store, selectModel);
   const brush = useStore(store, selectBrush);
@@ -223,10 +223,7 @@ export function Inpaint() {
       <OutpaintControl />
       <HighresControl selectHighres={selectHighres} setHighres={setHighres} />
       <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
-      <ExperimentalControl setExperimental={(props) => {
-        // eslint-disable-next-line no-console
-        console.log('setting experimental props', props);
-      }} />
+      <ExperimentalControl selectExperimental={selectExperimental} setExperimental={setExperimental} />
       <Button
         disabled={preventInpaint()}
         variant='contained'
@@ -243,6 +240,8 @@ export function selectActions(state: OnnxState) {
     pushHistory: state.pushHistory,
     // eslint-disable-next-line @typescript-eslint/unbound-method
     setBrush: state.setInpaintBrush,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setExperimental: state.setInpaintExperimental,
     // eslint-disable-next-line @typescript-eslint/unbound-method
     setHighres: state.setInpaintHighres,
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -284,4 +283,8 @@ export function selectHighres(state: OnnxState): HighresParams {
 
 export function selectUpscale(state: OnnxState): UpscaleParams {
   return state.inpaintUpscale;
+}
+
+export function selectExperimental(state: OnnxState): ExperimentalParams {
+  return state.inpaintExperimental;
 }

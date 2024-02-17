@@ -22,6 +22,7 @@ import { Txt2ImgSlice, createTxt2ImgSlice } from './txt2img.js';
 import { UpscaleSlice, createUpscaleSlice } from './upscale.js';
 import {
   BaseImgParams,
+  ExperimentalParams,
   HighresParams,
   ModelParams,
   UpscaleParams,
@@ -125,6 +126,20 @@ export function createStateSlices(server: ServerParams) {
     scale: server.scale.default,
     upscaleOrder: server.upscaleOrder.default,
   };
+  const defaultExperimental: ExperimentalParams = {
+    promptEditing: {
+      enabled: false,
+      filter: '',
+      addSuffix  : '',
+      removeTokens: '',
+    },
+    latentSymmetry: {
+      enabled: false,
+      gradientStart: 0,
+      gradientEnd: 0,
+      lineOfSymmetry: 0,
+    },
+  };
   const defaultGrid: PipelineGrid = {
     enabled: false,
     columns: {
@@ -141,13 +156,13 @@ export function createStateSlices(server: ServerParams) {
     createBlendSlice: createBlendSlice(defaultModel, defaultUpscale),
     createDefaultSlice: createDefaultSlice(defaultParams),
     createHistorySlice: createHistorySlice(),
-    createImg2ImgSlice: createImg2ImgSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale),
-    createInpaintSlice: createInpaintSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale),
+    createImg2ImgSlice: createImg2ImgSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale, defaultExperimental),
+    createInpaintSlice: createInpaintSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale, defaultExperimental),
     createModelSlice: createModelSlice(),
     createProfileSlice: createProfileSlice(),
     createResetSlice: createResetSlice(),
     createSettingsSlice: createSettingsSlice(),
-    createTxt2ImgSlice: createTxt2ImgSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale, defaultGrid),
+    createTxt2ImgSlice: createTxt2ImgSlice(server, defaultParams, defaultHighres, defaultModel, defaultUpscale, defaultExperimental, defaultGrid),
     createUpscaleSlice: createUpscaleSlice(defaultParams, defaultHighres, defaultModel, defaultUpscale),
   };
 }

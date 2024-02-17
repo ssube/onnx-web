@@ -2,6 +2,7 @@ import { PipelineGrid } from '../client/utils.js';
 import { ServerParams } from '../config.js';
 import {
   BaseImgParams,
+  ExperimentalParams,
   HighresParams,
   ModelParams,
   Txt2ImgParams,
@@ -15,6 +16,7 @@ export interface Txt2ImgSlice {
   txt2imgHighres: HighresParams;
   txt2imgUpscale: UpscaleParams;
   txt2imgVariable: PipelineGrid;
+  txt2imgExperimental: ExperimentalParams;
 
   resetTxt2Img(): void;
 
@@ -23,6 +25,7 @@ export interface Txt2ImgSlice {
   setTxt2ImgHighres(params: Partial<HighresParams>): void;
   setTxt2ImgUpscale(params: Partial<UpscaleParams>): void;
   setTxt2ImgVariable(params: Partial<PipelineGrid>): void;
+  setTxt2ImgExperimental(params: Partial<ExperimentalParams>): void;
 }
 
 // eslint-disable-next-line max-params
@@ -32,6 +35,7 @@ export function createTxt2ImgSlice<TState extends Txt2ImgSlice>(
   defaultHighres: HighresParams,
   defaultModel: ModelParams,
   defaultUpscale: UpscaleParams,
+  defaultExperimental: ExperimentalParams,
   defaultGrid: PipelineGrid,
 ): Slice<TState, Txt2ImgSlice> {
   return (set) => ({
@@ -51,6 +55,9 @@ export function createTxt2ImgSlice<TState extends Txt2ImgSlice>(
     },
     txt2imgVariable: {
       ...defaultGrid,
+    },
+    txt2imgExperimental: {
+      ...defaultExperimental,
     },
     setTxt2Img(params) {
       set((prev) => ({
@@ -88,6 +95,14 @@ export function createTxt2ImgSlice<TState extends Txt2ImgSlice>(
       set((prev) => ({
         txt2imgVariable: {
           ...prev.txt2imgVariable,
+          ...params,
+        },
+      } as Partial<TState>));
+    },
+    setTxt2ImgExperimental(params) {
+      set((prev) => ({
+        txt2imgExperimental: {
+          ...prev.txt2imgExperimental,
           ...params,
         },
       } as Partial<TState>));

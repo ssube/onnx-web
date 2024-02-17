@@ -3,41 +3,28 @@ import { mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Checkbox, FormControlLabel, Stack, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import * as React from 'react';
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useStore } from 'zustand';
 
 import { STALE_TIME, STANDARD_SPACING } from '../../constants.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
-import { ClientContext } from '../../state/full.js';
-
-export interface ExperimentalParams {
-  latent_symmetry: boolean;
-  latent_symmetry_gradient_start: number;
-  latent_symmetry_gradient_end: number;
-  latent_symmetry_line_of_symmetry: number;
-  prompt_editing: boolean;
-  prompt_filter: string;
-  remove_tokens: string;
-  add_suffix: string;
-}
+import { ClientContext, OnnxState, StateContext } from '../../state/full.js';
+import { ExperimentalParams } from '../../types/params.js';
 
 export interface ExperimentalControlProps {
+  selectExperimental(state: OnnxState): ExperimentalParams;
   setExperimental(params: Record<string, unknown>): void;
 }
 
 export function ExperimentalControl(props: ExperimentalControlProps) {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  const { selectExperimental, setExperimental } = props;
+
+  const store = mustExist(React.useContext(StateContext));
+  const experimental = useStore(store, selectExperimental);
+
   const { t } = useTranslation();
-  const [state, setState] = useState<ExperimentalParams>({
-    latent_symmetry: false,
-    latent_symmetry_gradient_start: 0.1,
-    latent_symmetry_gradient_end: 0.3,
-    latent_symmetry_line_of_symmetry: 0.5,
-    prompt_editing: false,
-    prompt_filter: '',
-    remove_tokens: '',
-    add_suffix: '',
-  });
 
   const client = mustExist(React.useContext(ClientContext));
   const filters = useQuery(['filters'], async () => client.filters(), {
@@ -50,58 +37,66 @@ export function ExperimentalControl(props: ExperimentalControlProps) {
         label={t('experimental.latent_symmetry.label')}
         control={
           <Checkbox
-            checked={state.latent_symmetry}
+            checked={experimental.latentSymmetry.enabled}
             value='check'
             onChange={(event) => {
-              setState({
-                ...state,
-                latent_symmetry: state.latent_symmetry === false,
+              setExperimental({
+                latentSymmetry: {
+                  ...experimental.latentSymmetry,
+                  enabled: experimental.latentSymmetry.enabled === false,
+                },
               });
             }}
           />}
       />
       <NumericField
         decimal
-        disabled={state.latent_symmetry === false}
+        disabled={experimental.latentSymmetry.enabled === false}
         label={t('experimental.latent_symmetry.gradient_start')}
         min={0}
         max={0.5}
         step={0.01}
-        value={state.latent_symmetry_gradient_start}
+        value={experimental.latentSymmetry.gradientStart}
         onChange={(latent_symmetry_gradient_start) => {
-          setState({
-            ...state,
-            latent_symmetry_gradient_start,
+          setExperimental({
+            latentSymmetry: {
+              ...experimental.latentSymmetry,
+              gradientStart: latent_symmetry_gradient_start,
+            },
           });
         }}
       />
       <NumericField
         decimal
-        disabled={state.latent_symmetry === false}
+        disabled={experimental.latentSymmetry.enabled === false}
         label={t('experimental.latent_symmetry.gradient_end')}
         min={0}
         max={0.5}
         step={0.01}
-        value={state.latent_symmetry_gradient_end}
+        value={experimental.latentSymmetry.gradientEnd}
         onChange={(latent_symmetry_gradient_end) => {
-          setState({
-            ...state,
-            latent_symmetry_gradient_end,
+          setExperimental({
+            latentSymmetry: {
+              ...experimental.latentSymmetry,
+              gradientEnd: latent_symmetry_gradient_end,
+            },
           });
         }}
       />
       <NumericField
         decimal
-        disabled={state.latent_symmetry === false}
+        disabled={experimental.latentSymmetry.enabled === false}
         label={t('experimental.latent_symmetry.line_of_symmetry')}
         min={0}
         max={1}
         step={0.01}
-        value={state.latent_symmetry_line_of_symmetry}
+        value={experimental.latentSymmetry.lineOfSymmetry}
         onChange={(latent_symmetry_line_of_symmetry) => {
-          setState({
-            ...state,
-            latent_symmetry_line_of_symmetry,
+          setExperimental({
+            latentSymmetry: {
+              ...experimental.latentSymmetry,
+              lineOfSymmetry: latent_symmetry_line_of_symmetry,
+            },
           });
         }}
       />
@@ -111,18 +106,20 @@ export function ExperimentalControl(props: ExperimentalControlProps) {
         label={t('experimental.prompt_editing.label')}
         control={
           <Checkbox
-            checked={state.prompt_editing}
+            checked={experimental.promptEditing.enabled}
             value='check'
             onChange={(event) => {
-              setState({
-                ...state,
-                prompt_editing: state.prompt_editing === false,
+              setExperimental({
+                promptEditing: {
+                  ...experimental.promptEditing,
+                  enabled: experimental.promptEditing.enabled === false,
+                },
               });
             }}
           />}
       />
       <QueryList
-        disabled={state.prompt_editing === false}
+        disabled={experimental.promptEditing.enabled === false}
         id='prompt_filters'
         labelKey='model.prompt'
         name={t('experimental.prompt_editing.filter')}
@@ -130,35 +127,41 @@ export function ExperimentalControl(props: ExperimentalControlProps) {
           result: filters,
           selector: (f) => f.prompt,
         }}
-        value={mustDefault(state.prompt_filter, '')}
+        value={mustDefault(experimental.promptEditing.filter, '')}
         onChange={(prompt_filter) => {
-          setState({
-            ...state,
-            prompt_filter,
+          setExperimental({
+            promptEditing: {
+              ...experimental.promptEditing,
+              filter: prompt_filter,
+            },
           });
         }}
       />
       <TextField
-        disabled={state.prompt_editing === false}
+        disabled={experimental.promptEditing.enabled === false}
         label={t('experimental.prompt_editing.remove_tokens')}
         variant='outlined'
-        value={state.remove_tokens}
+        value={experimental.promptEditing.removeTokens}
         onChange={(event) => {
-          setState({
-            ...state,
-            remove_tokens: event.target.value,
+          setExperimental({
+            promptEditing: {
+              ...experimental.promptEditing,
+              removeTokens: event.target.value,
+            },
           });
         }}
       />
       <TextField
-        disabled={state.prompt_editing === false}
+        disabled={experimental.promptEditing.enabled === false}
         label={t('experimental.prompt_editing.add_suffix')}
         variant='outlined'
-        value={state.add_suffix}
+        value={experimental.promptEditing.addSuffix}
         onChange={(event) => {
-          setState({
-            ...state,
-            add_suffix: event.target.value,
+          setExperimental({
+            promptEditing: {
+              ...experimental.promptEditing,
+              addSuffix: event.target.value,
+            },
           });
         }}
       />

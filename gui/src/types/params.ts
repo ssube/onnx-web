@@ -164,3 +164,18 @@ export interface HighresParams {
   highresSteps: number;
   highresStrength: number;
 }
+
+export interface ExperimentalParams {
+  latentSymmetry: {
+    enabled: boolean;
+    gradientStart: number;
+    gradientEnd: number;
+    lineOfSymmetry: number;
+  };
+  promptEditing: {
+    enabled: boolean;
+    filter: string;
+    removeTokens: string;
+    addSuffix: string;
+  };
+}

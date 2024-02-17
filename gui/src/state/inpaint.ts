@@ -3,6 +3,7 @@ import { DEFAULT_BRUSH } from '../constants.js';
 import {
   BaseImgParams,
   BrushParams,
+  ExperimentalParams,
   HighresParams,
   InpaintParams,
   ModelParams,
@@ -16,6 +17,7 @@ export interface InpaintSlice {
   inpaintModel: ModelParams;
   inpaintHighres: HighresParams;
   inpaintUpscale: UpscaleParams;
+  inpaintExperimental: ExperimentalParams;
   outpaint: OutpaintPixels;
 
   resetInpaint(): void;
@@ -25,6 +27,7 @@ export interface InpaintSlice {
   setInpaintModel(params: Partial<ModelParams>): void;
   setInpaintHighres(params: Partial<HighresParams>): void;
   setInpaintUpscale(params: Partial<UpscaleParams>): void;
+  setInpaintExperimental(params: Partial<ExperimentalParams>): void;
   setOutpaint(pixels: Partial<OutpaintPixels>): void;
 }
 
@@ -35,6 +38,7 @@ export function createInpaintSlice<TState extends InpaintSlice>(
   defaultHighres: HighresParams,
   defaultModel: ModelParams,
   defaultUpscale: UpscaleParams,
+  defaultExperimental: ExperimentalParams,
 ): Slice<TState, InpaintSlice> {
   return (set) => ({
     inpaint: {
@@ -60,6 +64,9 @@ export function createInpaintSlice<TState extends InpaintSlice>(
     },
     inpaintUpscale: {
       ...defaultUpscale,
+    },
+    inpaintExperimental: {
+      ...defaultExperimental
     },
     outpaint: {
       enabled: false,
@@ -120,6 +127,14 @@ export function createInpaintSlice<TState extends InpaintSlice>(
       set((prev) => ({
         inpaintUpscale: {
           ...prev.inpaintUpscale,
+          ...params,
+        },
+      } as Partial<TState>));
+    },
+    setInpaintExperimental(params) {
+      set((prev) => ({
+        inpaintExperimental: {
+          ...prev.inpaintExperimental,
           ...params,
         },
       } as Partial<TState>));

@@ -12,7 +12,7 @@ import { STANDARD_SPACING } from '../../constants.js';
 import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { TabState } from '../../state/types.js';
 import { JobType } from '../../types/api-v2.js';
-import { HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../../types/params.js';
+import { ExperimentalParams, HighresParams, ModelParams, Txt2ImgParams, UpscaleParams } from '../../types/params.js';
 import { Profiles } from '../Profiles.js';
 import { HighresControl } from '../control/HighresControl.js';
 import { ImageControl } from '../control/ImageControl.js';
@@ -84,7 +84,7 @@ export function Txt2Img() {
   });
 
   const store = mustExist(useContext(StateContext));
-  const { pushHistory, setHighres, setModel, setParams, setUpscale, setVariable } = useStore(store, selectActions, shallow);
+  const { pushHistory, setHighres, setModel, setParams, setUpscale, setVariable, setExperimental } = useStore(store, selectActions, shallow);
   const model = useStore(store, selectModel);
 
   const { t } = useTranslation();
@@ -106,10 +106,7 @@ export function Txt2Img() {
       <SizeControl />
       <HighresControl selectHighres={selectHighres} setHighres={setHighres} />
       <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
-      <ExperimentalControl setExperimental={(props) => {
-        // eslint-disable-next-line no-console
-        console.log('setting experimental props', props);
-      }} />
+      <ExperimentalControl selectExperimental={selectExperimental} setExperimental={setExperimental} />
       <VariableControl selectGrid={selectVariable} setGrid={setVariable} />
       <Button
         variant='contained'
@@ -123,6 +120,8 @@ export function selectActions(state: OnnxState) {
   return {
     // eslint-disable-next-line @typescript-eslint/unbound-method
     pushHistory: state.pushHistory,
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    setExperimental: state.setTxt2ImgExperimental,
     // eslint-disable-next-line @typescript-eslint/unbound-method
     setHighres: state.setTxt2ImgHighres,
     // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -161,4 +160,8 @@ export function selectUpscale(state: OnnxState): UpscaleParams {
 
 export function selectVariable(state: OnnxState): PipelineGrid {
   return state.txt2imgVariable;
+}
+
+export function selectExperimental(state: OnnxState): ExperimentalParams {
+  return state.txt2imgExperimental;
 }
