@@ -33,14 +33,6 @@ import {
 import { range } from '../utils.js';
 import { ApiClient } from './base.js';
 
-const FORM_HEADERS = {
-  'Content-Type': 'multipart/form-data',
-};
-
-const JSON_HEADERS = {
-  'Content-Type': 'application/json',
-};
-
 export function equalResponse(a: JobResponse, b: JobResponse): boolean {
   return a.name === b.name;
 }
@@ -348,7 +340,6 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
 
       const job = await parseRequest(url, {
         body: form,
-        headers: FORM_HEADERS,
         method: 'POST',
       });
       return {
@@ -376,7 +367,6 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
 
       const job = await parseRequest(url, {
         body: form,
-        headers: FORM_HEADERS,
         method: 'POST',
       });
       return {
@@ -407,7 +397,6 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
 
       const job = await parseRequest(url, {
         body: form,
-        headers: FORM_HEADERS,
         method: 'POST',
       });
       return {
@@ -437,7 +426,6 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
 
       const job = await parseRequest(url, {
         body: form,
-        headers: FORM_HEADERS,
         method: 'POST',
       });
       return {
@@ -465,7 +453,6 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
 
       const job = await parseRequest(url, {
         body: form,
-        headers: FORM_HEADERS,
         method: 'POST',
       });
       return {
@@ -497,7 +484,6 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
 
       const job = await parseRequest(url, {
         body: form,
-        headers: FORM_HEADERS,
         method: 'POST',
       });
       return {

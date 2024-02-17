@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 from flask import request
 
@@ -8,8 +8,12 @@ from ..diffusers.utils import random_seed
 from ..params import (
     Border,
     DeviceParams,
+    ExperimentalParams,
     HighresParams,
     ImageParams,
+    LatentSymmetryParams,
+    PromptEditingParams,
+    RequestParams,
     Size,
     UpscaleParams,
 )
@@ -345,6 +349,79 @@ def build_highres(
     )
 
 
+def build_latent_symmetry(
+    data: Dict[str, str] = None,
+) -> LatentSymmetryParams:
+    if data is None:
+        data = request.args
+
+    enabled = get_boolean(data, "enabled", get_config_value("latentSymmetry"))
+
+    gradient_start = get_and_clamp_float(
+        data,
+        "gradientStart",
+        get_config_value("gradientStart"),
+        get_config_value("gradientStart", "max"),
+        get_config_value("gradientStart", "min"),
+    )
+
+    gradient_end = get_and_clamp_float(
+        data,
+        "gradientEnd",
+        get_config_value("gradientEnd"),
+        get_config_value("gradientEnd", "max"),
+        get_config_value("gradientEnd", "min"),
+    )
+
+    line_of_symmetry = get_and_clamp_float(
+        data,
+        "lineOfSymmetry",
+        get_config_value("lineOfSymmetry"),
+        get_config_value("lineOfSymmetry", "max"),
+        get_config_value("lineOfSymmetry", "min"),
+    )
+
+    return LatentSymmetryParams(enabled, gradient_start, gradient_end, line_of_symmetry)
+
+
+def build_prompt_editing(
+    data: Dict[str, str] = None,
+) -> Dict[str, str]:
+    if data is None:
+        data = request.args
+
+    enabled = get_boolean(data, "enabled", get_config_value("promptEditing"))
+
+    prompt_filter = data.get("promptFilter", "")
+    remove_tokens = data.get("removeTokens", "")
+    add_suffix = data.get("addSuffix", "")
+
+    return PromptEditingParams(enabled, prompt_filter, remove_tokens, add_suffix)
+
+
+def build_experimental(
+    data: Dict[str, str] = None,
+) -> ExperimentalParams:
+    if data is None:
+        data = request.args
+
+    latent_symmetry_data = data.get("latentSymmetry", {})
+    latent_symmetry = build_latent_symmetry(latent_symmetry_data)
+
+    prompt_editing_data = data.get("promptEditing", {})
+    prompt_editing = build_prompt_editing(prompt_editing_data)
+
+    return ExperimentalParams(latent_symmetry, prompt_editing)
+
+
+def is_json_request() -> bool:
+    return request.mimetype == "application/json"
+
+
+def is_json_form_request() -> bool:
+    return request.mimetype == "multipart/form-data" and "json" in request.form
+
+
 PipelineParams = Tuple[Optional[DeviceParams], ImageParams, Size]
 
 
@@ -353,36 +430,11 @@ def pipeline_from_json(
     data: Dict[str, Union[str, Dict[str, str]]],
     default_pipeline: str = "txt2img",
 ) -> PipelineParams:
-    """
-    Like pipeline_from_request but expects a nested structure.
-    """
-
     device = build_device(server, data.get("device", data))
     params = build_params(server, default_pipeline, data.get("params", data))
     size = build_size(server, data.get("params", data))
 
-    return (device, params, size)
-
-
-def pipeline_from_request(
-    server: ServerContext,
-    default_pipeline: str = "txt2img",
-) -> PipelineParams:
     user = request.remote_addr
-    mime = request.mimetype
-
-    if mime == "application/json":
-        device, params, size = pipeline_from_json(
-            server, request.json, default_pipeline
-        )
-    elif mime == "multipart/form-data":
-        form_json = load_config_str(request.form.get("json"))
-        device, params, size = pipeline_from_json(server, form_json, default_pipeline)
-    else:
-        device = build_device(server, request.args)
-        params = build_params(server, default_pipeline, request.args)
-        size = build_size(server, request.args)
-
     logger.info(
         "request from %s: %s steps of %s using %s in %s on %s, %sx%s, %s, %s - %s",
         user,
@@ -399,3 +451,39 @@ def pipeline_from_request(
     )
 
     return (device, params, size)
+
+
+def get_request_data(key: str | None = None) -> Any:
+    if is_json_request():
+        json = request.json
+    elif is_json_form_request():
+        json = load_config_str(request.form.get("json"))
+    else:
+        json = None
+
+    if key is not None and json is not None:
+        json = json.get(key)
+
+    return json or request.args
+
+
+def get_request_params(
+    server: ServerContext, default_pipeline: str = None
+) -> RequestParams:
+    data = get_request_data()
+
+    device, params, size = pipeline_from_json(server, default_pipeline)
+    border = build_border(data["border"])
+    upscale = build_upscale(data["upscale"])
+    highres = build_highres(data["highres"])
+    experimental = build_experimental(data["experimental"])
+
+    return RequestParams(
+        device,
+        params,
+        size=size,
+        border=border,
+        upscale=upscale,
+        highres=highres,
+        experimental=experimental,
+    )

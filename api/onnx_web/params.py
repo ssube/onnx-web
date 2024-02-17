@@ -12,6 +12,8 @@ logger = getLogger(__name__)
 
 Param = Union[str, int, float]
 Point = Tuple[int, int]
+UpscaleOrder = Literal["correction-first", "correction-last", "correction-both"]
+UpscaleMethod = Literal["bilinear", "lanczos", "upscale"]
 
 
 class SizeChart(IntEnum):
@@ -425,9 +427,6 @@ class StageParams:
         )
 
 
-UpscaleOrder = Literal["correction-first", "correction-last", "correction-both"]
-
-
 class UpscaleParams:
     def __init__(
         self,
@@ -532,9 +531,6 @@ class UpscaleParams:
         )
 
 
-UpscaleMethod = Literal["bilinear", "lanczos", "upscale"]
-
-
 class HighresParams:
     def __init__(
         self,
@@ -591,6 +587,85 @@ class HighresParams:
             method=coalesce(method, self.method),
             iterations=coalesce(iterations, self.iterations),
         )
+
+
+class LatentSymmetryParams:
+    enabled: bool
+    gradient_start: float
+    gradient_end: float
+    line_of_symmetry: float
+
+    def __init__(
+        self,
+        enabled: bool,
+        gradient_start: float,
+        gradient_end: float,
+        line_of_symmetry: float,
+    ) -> None:
+        self.enabled = enabled
+        self.gradient_start = gradient_start
+        self.gradient_end = gradient_end
+        self.line_of_symmetry = line_of_symmetry
+
+
+class PromptEditingParams:
+    enabled: bool
+    filter: str
+    remove_tokens: str
+    add_suffix: str
+
+    def __init__(
+        self,
+        enabled: bool,
+        filter: str,
+        remove_tokens: str,
+        add_suffix: str,
+    ) -> None:
+        self.enabled = enabled
+        self.filter = filter
+        self.remove_tokens = remove_tokens
+        self.add_suffix = add_suffix
+
+
+class ExperimentalParams:
+    latent_symmetry: LatentSymmetryParams
+    prompt_editing: PromptEditingParams
+
+    def __init__(
+        self,
+        latent_symmetry: LatentSymmetryParams,
+        prompt_editing: PromptEditingParams,
+    ) -> None:
+        self.latent_symmetry = latent_symmetry
+        self.prompt_editing = prompt_editing
+
+
+class RequestParams:
+    device: DeviceParams
+    image: ImageParams
+    size: Size | None
+    border: Border | None
+    upscale: UpscaleParams | None
+    highres: HighresParams | None
+    experimental: ExperimentalParams | None
+
+    def __init__(
+        self,
+        device: DeviceParams,
+        image: ImageParams,
+        size: Optional[Size] = None,
+        border: Optional[Border] = None,
+        upscale: Optional[UpscaleParams] = None,
+        highres: Optional[HighresParams] = None,
+        experimental: Optional[ExperimentalParams] = None,
+    ) -> None:
+        self.device = device
+        self.image = image
+        self.size = size
+        self.border = border
+        self.upscale = upscale
+        self.highres = highres
+        self.experimental = experimental
 
 
 def get_size(val: Union[int, str, None]) -> Union[int, SizeChart]:

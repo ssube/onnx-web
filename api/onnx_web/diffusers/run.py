@@ -8,6 +8,7 @@ from ..chain import (
     BlendImg2ImgStage,
     BlendMaskStage,
     ChainPipeline,
+    EditSafetyStage,
     SourceTxt2ImgStage,
     TextPromptStage,
     UpscaleOutpaintStage,
@@ -19,11 +20,12 @@ from ..image import expand_image
 from ..output import make_output_names, read_metadata, save_image, save_result
 from ..params import (
     Border,
+    ExperimentalParams,
     HighresParams,
     ImageParams,
+    RequestParams,
     Size,
     StageParams,
-    UpscaleParams,
 )
 from ..server import ServerContext
 from ..server.load import get_source_filters
@@ -57,39 +59,49 @@ def add_safety_stage(
     pipeline: ChainPipeline,
 ) -> None:
     if server.has_feature("horde-safety"):
-        from ..chain.edit_safety import EditSafetyStage
-
         pipeline.stage(
             EditSafetyStage(), StageParams(tile_size=EditSafetyStage.max_tile)
         )
 
 
+def add_prompt_filter(
+    server: ServerContext,
+    pipeline: ChainPipeline,
+    experimental: ExperimentalParams = None,
+) -> None:
+    if experimental and experimental.prompt_editing.enabled:
+        if server.has_feature("prompt-filter"):
+            pipeline.stage(
+                TextPromptStage(),
+                StageParams(),
+            )
+        else:
+            logger.warning("prompt editing is not supported by the server")
+
+
 def run_txt2img_pipeline(
     worker: WorkerContext,
     server: ServerContext,
-    params: ImageParams,
-    size: Size,
-    upscale: UpscaleParams,
-    highres: HighresParams,
+    request: RequestParams,
 ) -> None:
+    params = request.image
+    size = request.size
+    upscale = request.upscale
+    highres = request.highres
+
     # if using panorama, the pipeline will tile itself (views)
     tile_size = get_base_tile(params, size)
 
     # prepare the chain pipeline and first stage
     chain = ChainPipeline()
-
-    if server.has_feature("prompt-filter"):
-        chain.stage(
-            TextPromptStage(),
-            StageParams(),
-        )
+    add_prompt_filter(server, chain)
 
     chain.stage(
         SourceTxt2ImgStage(),
         StageParams(
             tile_size=tile_size,
         ),
-        size=size,
+        size=request.size,
         prompt_index=0,
         overlap=params.vae_overlap,
     )
@@ -145,13 +157,15 @@ def run_txt2img_pipeline(
 def run_img2img_pipeline(
     worker: WorkerContext,
     server: ServerContext,
-    params: ImageParams,
-    upscale: UpscaleParams,
-    highres: HighresParams,
+    request: RequestParams,
     source: Image.Image,
     strength: float,
     source_filter: Optional[str] = None,
 ) -> None:
+    params = request.image
+    upscale = request.upscale
+    highres = request.highres
+
     # run filter on the source image
     if source_filter is not None:
         f = get_source_filters().get(source_filter, None)
@@ -246,10 +260,7 @@ def run_img2img_pipeline(
 def run_inpaint_pipeline(
     worker: WorkerContext,
     server: ServerContext,
-    params: ImageParams,
-    size: Size,
-    upscale: UpscaleParams,
-    highres: HighresParams,
+    request: RequestParams,
     source: Image.Image,
     mask: Image.Image,
     border: Border,
@@ -260,6 +271,11 @@ def run_inpaint_pipeline(
     full_res_inpaint: bool,
     full_res_inpaint_padding: float,
 ) -> None:
+    params = request.image
+    size = request.size
+    upscale = request.upscale
+    highres = request.highres
+
     logger.debug("building inpaint pipeline")
     tile_size = get_base_tile(params, size)
 
@@ -453,12 +469,14 @@ def run_inpaint_pipeline(
 def run_upscale_pipeline(
     worker: WorkerContext,
     server: ServerContext,
-    params: ImageParams,
-    size: Size,
-    upscale: UpscaleParams,
-    highres: HighresParams,
+    request: RequestParams,
     source: Image.Image,
 ) -> None:
+    params = request.image
+    size = request.size
+    upscale = request.upscale
+    highres = request.highres
+
     # set up the chain pipeline, no base stage for upscaling
     chain = ChainPipeline()
     tile_size = get_base_tile(params, size)
@@ -521,13 +539,14 @@ def run_upscale_pipeline(
 def run_blend_pipeline(
     worker: WorkerContext,
     server: ServerContext,
-    params: ImageParams,
-    size: Size,
-    upscale: UpscaleParams,
-    # highres: HighresParams,
+    request: RequestParams,
     sources: List[Image.Image],
     mask: Image.Image,
 ) -> None:
+    params = request.image
+    size = request.size
+    upscale = request.upscale
+
     # set up the chain pipeline and base stage
     chain = ChainPipeline()
     tile_size = get_base_tile(params, size)

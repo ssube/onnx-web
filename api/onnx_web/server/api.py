@@ -52,13 +52,7 @@ from .load import (
     get_upscaling_models,
     get_wildcard_data,
 )
-from .params import (
-    build_border,
-    build_highres,
-    build_upscale,
-    pipeline_from_json,
-    pipeline_from_request,
-)
+from .params import build_border, build_upscale, get_request_params, pipeline_from_json
 from .utils import wrap_route
 
 logger = getLogger(__name__)
@@ -261,15 +255,13 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         return error_reply("source image is required")
 
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
-    size = Size(source.width, source.height)
 
-    device, params, _size = pipeline_from_request(server, "img2img")
-    upscale = build_upscale()
-    highres = build_highres()
+    # TODO: look up the correct request field
     source_filter = get_from_list(
         request.args, "sourceFilter", list(get_source_filters().keys())
     )
 
+    # TODO: look up the correct request field
     strength = get_and_clamp_float(
         request.args,
         "strength",
@@ -278,20 +270,22 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
         get_config_value("strength", "min"),
     )
 
-    replace_wildcards(params, get_wildcard_data())
+    params = get_request_params(server, JobType.IMG2IMG.value)
+    params.size = Size(source.width, source.height)
+    replace_wildcards(params.image, get_wildcard_data())
 
-    job_name = make_job_name("img2img", params, size, extras=[strength])
+    job_name = make_job_name(
+        JobType.IMG2IMG.value, params, params.size, extras=[strength]
+    )
     queue = pool.submit(
         job_name,
         JobType.IMG2IMG,
         run_img2img_pipeline,
         server,
         params,
-        upscale,
-        highres,
         source,
         strength,
-        needs_device=device,
+        needs_device=params.device,
         source_filter=source_filter,
     )
 
@@ -301,24 +295,17 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
 
 
 def txt2img(server: ServerContext, pool: DevicePoolExecutor):
-    device, params, size = pipeline_from_request(server, "txt2img")
-    upscale = build_upscale()
-    highres = build_highres()
+    params = get_request_params()
+    replace_wildcards(params.image, get_wildcard_data())
 
-    replace_wildcards(params, get_wildcard_data())
-
-    job_name = make_job_name("txt2img", params, size)
-
+    job_name = make_job_name(JobType.TXT2IMG.value, params.image, params.size)
     queue = pool.submit(
         job_name,
         JobType.TXT2IMG,
         run_txt2img_pipeline,
         server,
         params,
-        size,
-        upscale,
-        highres,
-        needs_device=device,
+        needs_device=params.device,
     )
 
     logger.info("txt2img job queued for: %s", job_name)
@@ -343,6 +330,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     mask.alpha_composite(mask_top_layer)
     mask.convert(mode="L")
 
+    # TODO: look up the correct request field
     full_res_inpaint = get_boolean(
         request.args, "fullresInpaint", get_config_value("fullresInpaint")
     )
@@ -354,10 +342,8 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
         get_config_value("fullresInpaintPadding", "min"),
     )
 
-    device, params, _size = pipeline_from_request(server, "inpaint")
-    expand = build_border()
-    upscale = build_upscale()
-    highres = build_highres()
+    params = get_request_params(server, JobType.INPAINT.value)
+    replace_wildcards(params.image, get_wildcard_data())
 
     fill_color = get_not_empty(request.args, "fillColor", "white")
     mask_filter = get_from_map(request.args, "filter", get_mask_filters(), "none")
@@ -367,17 +353,15 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     )
     tile_order = TileOrder.spiral
 
-    replace_wildcards(params, get_wildcard_data())
-
     job_name = make_job_name(
-        "inpaint",
+        JobType.INPAINT.value,
         params,
         size,
         extras=[
-            expand.left,
-            expand.right,
-            expand.top,
-            expand.bottom,
+            params.border.left,
+            params.border.right,
+            params.border.top,
+            params.border.bottom,
             mask_filter.__name__,
             noise_source.__name__,
             fill_color,
@@ -391,19 +375,15 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
         run_inpaint_pipeline,
         server,
         params,
-        size,
-        upscale,
-        highres,
         source,
         mask,
-        expand,
         noise_source,
         mask_filter,
         fill_color,
         tile_order,
         full_res_inpaint,
         full_res_inpaint_padding,
-        needs_device=device,
+        needs_device=params.device,
     )
 
     logger.info("inpaint job queued for: %s", job_name)
@@ -418,24 +398,18 @@ def upscale(server: ServerContext, pool: DevicePoolExecutor):
 
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
-    device, params, size = pipeline_from_request(server)
-    upscale = build_upscale()
-    highres = build_highres()
+    params = get_request_params(server)
+    replace_wildcards(params.image, get_wildcard_data())
 
-    replace_wildcards(params, get_wildcard_data())
-
-    job_name = make_job_name("upscale", params, size)
+    job_name = make_job_name("upscale", params.image, params.size)
     queue = pool.submit(
         job_name,
         JobType.UPSCALE,
         run_upscale_pipeline,
         server,
         params,
-        size,
-        upscale,
-        highres,
         source,
-        needs_device=device,
+        needs_device=params.device,
     )
 
     logger.info("upscale job queued for: %s", job_name)
@@ -571,22 +545,18 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
             source = Image.open(BytesIO(source_file.read())).convert("RGB")
             sources.append(source)
 
-    device, params, size = pipeline_from_request(server)
-    upscale = build_upscale()
+    params = get_request_params(server)
 
-    job_name = make_job_name("blend", params, size)
+    job_name = make_job_name("blend", params.image, params.size)
     queue = pool.submit(
         job_name,
         JobType.BLEND,
         run_blend_pipeline,
         server,
         params,
-        size,
-        upscale,
-        # TODO: highres
         sources,
         mask,
-        needs_device=device,
+        needs_device=params.device,
     )
 
     logger.info("upscale job queued for: %s", job_name)
@@ -595,9 +565,9 @@ def blend(server: ServerContext, pool: DevicePoolExecutor):
 
 
 def txt2txt(server: ServerContext, pool: DevicePoolExecutor):
-    device, params, size = pipeline_from_request(server)
+    params = get_request_params(server)
 
-    job_name = make_job_name("txt2txt", params, size)
+    job_name = make_job_name("txt2txt", params.image, params.size)
     logger.info("upscale job queued for: %s", job_name)
 
     queue = pool.submit(
@@ -606,8 +576,7 @@ def txt2txt(server: ServerContext, pool: DevicePoolExecutor):
         run_txt2txt_pipeline,
         server,
         params,
-        size,
-        needs_device=device,
+        needs_device=params.device,
     )
 
     return job_reply(job_name, queue=queue)
