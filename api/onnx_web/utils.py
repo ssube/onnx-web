@@ -50,21 +50,21 @@ def get_boolean(args: Any, key: str, default_value: bool) -> bool:
 
 
 def get_list(args: Any, key: str, default="") -> List[str]:
-    val = recursive_get(args, key.split("."), default=default)
+    val = recursive_get(args, key.split("."), default_value=default)
     return split_list(val)
 
 
 def get_and_clamp_float(
     args: Any, key: str, default_value: float, max_value: float, min_value=0.0
 ) -> float:
-    val = recursive_get(args, key.split("."), default=default_value)
+    val = recursive_get(args, key.split("."), default_value=default_value)
     return min(max(float(val), min_value), max_value)
 
 
 def get_and_clamp_int(
     args: Any, key: str, default_value: int, max_value: int, min_value=1
 ) -> int:
-    val = recursive_get(args, key.split("."), default=default_value)
+    val = recursive_get(args, key.split("."), default_value=default_value)
     return min(max(int(val), min_value), max_value)
 
 
