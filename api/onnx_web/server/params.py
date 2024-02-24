@@ -395,8 +395,17 @@ def build_prompt_editing(
     prompt_filter = data.get("promptFilter", "")
     remove_tokens = data.get("removeTokens", "")
     add_suffix = data.get("addSuffix", "")
+    min_length = get_and_clamp_int(
+        data,
+        "minLength",
+        get_config_value("minLength"),
+        get_config_value("minLength", "max"),
+        get_config_value("minLength", "min"),
+    )
 
-    return PromptEditingParams(enabled, prompt_filter, remove_tokens, add_suffix)
+    return PromptEditingParams(
+        enabled, prompt_filter, remove_tokens, add_suffix, min_length
+    )
 
 
 def build_experimental(

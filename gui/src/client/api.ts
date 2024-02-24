@@ -125,7 +125,8 @@ export function makeImageJSON(params: ImageJSON): string {
   }
 
   if (doesExist(size)) {
-    body.size = {
+    body.params = {
+      ...body.params,
       width: size.width,
       height: size.height,
     };
@@ -174,9 +175,10 @@ export function makeImageJSON(params: ImageJSON): string {
       },
       promptEditing: {
         enabled: experimental.promptEditing.enabled,
+        addSuffix: experimental.promptEditing.addSuffix,
+        minLength: experimental.promptEditing.minLength,
         promptFilter: experimental.promptEditing.filter,
         removeTokens: experimental.promptEditing.removeTokens,
-        addSuffix: experimental.promptEditing.addSuffix,
       },
     };
   }

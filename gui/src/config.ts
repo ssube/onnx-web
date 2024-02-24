@@ -47,7 +47,12 @@ export type ConfigFiles<T extends object> = {
  * Map numbers and strings to their corresponding config types and drop the rest of the fields.
  */
 export type ConfigRanges<T extends object> = {
-  [K in KeyFilter<T>]: T[K] extends boolean ? ConfigBoolean : T[K] extends number ? ConfigNumber : T[K] extends string ? ConfigString : never;
+  [K in KeyFilter<T, boolean | number | string | object>]:
+  T[K] extends boolean ? ConfigBoolean :
+    T[K] extends number ? ConfigNumber :
+      T[K] extends string ? ConfigString :
+        T[K] extends object ? ConfigRanges<T[K]> :
+          never;
 };
 
 /**

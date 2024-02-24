@@ -1,5 +1,6 @@
 import importlib
 import json
+from functools import reduce
 from hashlib import sha256
 from json import JSONDecodeError
 from logging import getLogger
@@ -27,6 +28,10 @@ def base_join(base: str, tail: str) -> str:
 
 def is_debug() -> bool:
     return get_boolean(environ, "DEBUG", False)
+
+
+def recursive_get(d, *keys):
+    return reduce(lambda c, k: c.get(k, {}), keys, d)
 
 
 def get_boolean(args: Any, key: str, default_value: bool) -> bool:

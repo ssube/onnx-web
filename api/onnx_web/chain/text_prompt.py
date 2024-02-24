@@ -1,6 +1,6 @@
 from logging import getLogger
 from random import randint
-from re import sub
+from re import match, sub
 from typing import Optional
 
 from transformers import pipeline
@@ -34,7 +34,7 @@ class TextPromptStage(BaseStage):
         prompt_filter: str,
         remove_tokens: Optional[str] = None,
         add_suffix: Optional[str] = None,
-        min_length: int = 150,
+        min_length: int = 80,
         **kwargs,
     ) -> StageResult:
         device = worker.device.torch_str()
@@ -69,7 +69,11 @@ class TextPromptStage(BaseStage):
                     logger.debug(
                         "removing excluded tokens from prompt: %s", remove_tokens
                     )
-                    prompt = sub(remove_tokens, "", prompt)
+
+                    remove_limit = 3
+                    while remove_limit > 0 and match(remove_tokens, prompt):
+                        prompt = sub(remove_tokens, "", prompt)
+                        remove_limit -= 1
 
             if retries >= RETRY_LIMIT:
                 logger.warning(

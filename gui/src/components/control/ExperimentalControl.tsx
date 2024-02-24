@@ -34,6 +34,87 @@ export function ExperimentalControl(props: ExperimentalControlProps) {
   return <Stack spacing={STANDARD_SPACING}>
     <Stack direction='row' spacing={STANDARD_SPACING}>
       <FormControlLabel
+        label={t('experimental.prompt_editing.label')}
+        control={
+          <Checkbox
+            checked={experimental.promptEditing.enabled}
+            value='check'
+            onChange={(event) => {
+              setExperimental({
+                promptEditing: {
+                  ...experimental.promptEditing,
+                  enabled: experimental.promptEditing.enabled === false,
+                },
+              });
+            }}
+          />}
+      />
+      <QueryList
+        disabled={experimental.promptEditing.enabled === false}
+        id='prompt_filters'
+        labelKey='model.prompt'
+        name={t('experimental.prompt_editing.filter')}
+        query={{
+          result: filters,
+          selector: (f) => f.prompt,
+        }}
+        value={mustDefault(experimental.promptEditing.filter, '')}
+        onChange={(prompt_filter) => {
+          setExperimental({
+            promptEditing: {
+              ...experimental.promptEditing,
+              filter: prompt_filter,
+            },
+          });
+        }}
+      />
+      <TextField
+        disabled={experimental.promptEditing.enabled === false}
+        label={t('experimental.prompt_editing.remove_tokens')}
+        variant='outlined'
+        value={experimental.promptEditing.removeTokens}
+        onChange={(event) => {
+          setExperimental({
+            promptEditing: {
+              ...experimental.promptEditing,
+              removeTokens: event.target.value,
+            },
+          });
+        }}
+      />
+      <TextField
+        disabled={experimental.promptEditing.enabled === false}
+        label={t('experimental.prompt_editing.add_suffix')}
+        variant='outlined'
+        value={experimental.promptEditing.addSuffix}
+        onChange={(event) => {
+          setExperimental({
+            promptEditing: {
+              ...experimental.promptEditing,
+              addSuffix: event.target.value,
+            },
+          });
+        }}
+      />
+      <NumericField
+        disabled={experimental.promptEditing.enabled === false}
+        label={t('experimental.prompt_editing.min_length')}
+        min={1}
+        max={1000}
+        step={1}
+        value={experimental.promptEditing.minLength}
+        onChange={(prompt_editing_min_length) => {
+          setExperimental({
+            promptEditing: {
+              ...experimental.promptEditing,
+              minLength: prompt_editing_min_length,
+            },
+          });
+        }}
+      />
+    </Stack>
+    <Stack direction='row' spacing={STANDARD_SPACING}>
+      <FormControlLabel
         label={t('experimental.latent_symmetry.label')}
         control={
           <Checkbox
@@ -96,71 +177,6 @@ export function ExperimentalControl(props: ExperimentalControlProps) {
             latentSymmetry: {
               ...experimental.latentSymmetry,
               lineOfSymmetry: latent_symmetry_line_of_symmetry,
-            },
-          });
-        }}
-      />
-    </Stack>
-    <Stack direction='row' spacing={STANDARD_SPACING}>
-      <FormControlLabel
-        label={t('experimental.prompt_editing.label')}
-        control={
-          <Checkbox
-            checked={experimental.promptEditing.enabled}
-            value='check'
-            onChange={(event) => {
-              setExperimental({
-                promptEditing: {
-                  ...experimental.promptEditing,
-                  enabled: experimental.promptEditing.enabled === false,
-                },
-              });
-            }}
-          />}
-      />
-      <QueryList
-        disabled={experimental.promptEditing.enabled === false}
-        id='prompt_filters'
-        labelKey='model.prompt'
-        name={t('experimental.prompt_editing.filter')}
-        query={{
-          result: filters,
-          selector: (f) => f.prompt,
-        }}
-        value={mustDefault(experimental.promptEditing.filter, '')}
-        onChange={(prompt_filter) => {
-          setExperimental({
-            promptEditing: {
-              ...experimental.promptEditing,
-              filter: prompt_filter,
-            },
-          });
-        }}
-      />
-      <TextField
-        disabled={experimental.promptEditing.enabled === false}
-        label={t('experimental.prompt_editing.remove_tokens')}
-        variant='outlined'
-        value={experimental.promptEditing.removeTokens}
-        onChange={(event) => {
-          setExperimental({
-            promptEditing: {
-              ...experimental.promptEditing,
-              removeTokens: event.target.value,
-            },
-          });
-        }}
-      />
-      <TextField
-        disabled={experimental.promptEditing.enabled === false}
-        label={t('experimental.prompt_editing.add_suffix')}
-        variant='outlined'
-        value={experimental.promptEditing.addSuffix}
-        onChange={(event) => {
-          setExperimental({
-            promptEditing: {
-              ...experimental.promptEditing,
-              addSuffix: event.target.value,
             },
           });
         }}

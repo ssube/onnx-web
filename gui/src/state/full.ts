@@ -129,15 +129,16 @@ export function createStateSlices(server: ServerParams) {
   const defaultExperimental: ExperimentalParams = {
     promptEditing: {
       enabled: false,
-      filter: '',
-      addSuffix  : '',
-      removeTokens: '',
+      filter: server.promptEditing.filter.default,
+      addSuffix: server.promptEditing.addSuffix.default,
+      removeTokens: server.promptEditing.removeTokens.default,
+      minLength: server.promptEditing.minLength.default,
     },
     latentSymmetry: {
       enabled: false,
-      gradientStart: 0,
-      gradientEnd: 0,
-      lineOfSymmetry: 0,
+      gradientStart: server.latentSymmetry.gradientStart.default,
+      gradientEnd: server.latentSymmetry.gradientEnd.default,
+      lineOfSymmetry: server.latentSymmetry.lineOfSymmetry.default,
     },
   };
   const defaultGrid: PipelineGrid = {

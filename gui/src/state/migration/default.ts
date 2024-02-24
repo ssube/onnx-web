@@ -122,49 +122,45 @@ export function migrateV7ToV11(params: ServerParams, previousState: OnnxStateV7)
 
 export function migrateV11ToV13(params: ServerParams, previousState: OnnxStateV11): CurrentState {
   // add any missing keys
+  const defaultLatentSymmetry = {
+    enabled: params.latentSymmetry.enabled.default,
+    gradientStart: params.latentSymmetry.gradientStart.default,
+    gradientEnd: params.latentSymmetry.gradientEnd.default,
+    lineOfSymmetry: params.latentSymmetry.lineOfSymmetry.default,
+  };
+  const defaultPromptEditing = {
+    enabled: params.promptEditing.enabled.default,
+    filter: params.promptEditing.filter.default,
+    addSuffix: params.promptEditing.addSuffix.default,
+    minLength: params.promptEditing.minLength.default,
+    removeTokens: params.promptEditing.removeTokens.default,
+  };
+
   const result: CurrentState = {
     ...params,
     ...previousState,
     txt2imgExperimental: {
       latentSymmetry: {
-        enabled: false,
-        gradientStart: 0,
-        gradientEnd: 0,
-        lineOfSymmetry: 0,
+        ...defaultLatentSymmetry,
       },
       promptEditing: {
-        enabled: false,
-        filter: '',
-        addSuffix: '',
-        removeTokens: '',
+        ...defaultPromptEditing,
       },
     },
     img2imgExperimental: {
       latentSymmetry: {
-        enabled: false,
-        gradientStart: 0,
-        gradientEnd: 0,
-        lineOfSymmetry: 0,
+        ...defaultLatentSymmetry,
       },
       promptEditing: {
-        enabled: false,
-        filter: '',
-        addSuffix: '',
-        removeTokens: '',
+        ...defaultPromptEditing,
       },
     },
     inpaintExperimental: {
       latentSymmetry: {
-        enabled: false,
-        gradientStart: 0,
-        gradientEnd: 0,
-        lineOfSymmetry: 0,
+        ...defaultLatentSymmetry,
       },
       promptEditing: {
-        enabled: false,
-        filter: '',
-        addSuffix: '',
-        removeTokens: '',
+        ...defaultPromptEditing,
       },
     },
   };

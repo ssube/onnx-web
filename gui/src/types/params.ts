@@ -181,5 +181,6 @@ export interface ExperimentalParams {
     filter: string;
     removeTokens: string;
     addSuffix: string;
+    minLength: number;
   };
 }

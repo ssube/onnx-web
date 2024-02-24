@@ -68,6 +68,7 @@
       "default": "none",
       "keys": []
     },
+
     "height": {
       "default": 512,
       "min": 128,
@@ -112,6 +113,29 @@
     "inversion": {
       "default": "",
       "keys": []
+    },
+    "latentSymmetry": {
+      "enabled": {
+        "default": false
+      },
+      "gradientStart": {
+        "default": 0.0,
+        "min": 0,
+        "max": 0.5,
+        "step": 0.01
+      },
+      "gradientEnd": {
+        "default": 0.25,
+        "min": 0.0,
+        "max": 0.5,
+        "step": 0.01
+      },
+      "lineOfSymmetry": {
+        "default": 0.5,
+        "min": 0,
+        "max": 1,
+        "step": 0.01
+      }
     },
     "left": {
       "default": 0,
@@ -158,6 +182,25 @@
     "prompt": {
       "default": "an astronaut eating a hamburger",
       "keys": []
+    },
+    "promptEditing": {
+      "default": false,
+      "addSuffix": {
+        "default": ""
+      },
+      "filter": {
+        "default": "none",
+        "keys": []
+      },
+      "minLength": {
+        "default": 80,
+        "min": 1,
+        "max": 200,
+        "step": 1
+      },
+      "removeTokens": {
+        "default": ""
+      }
     },
     "right": {
       "default": 0,

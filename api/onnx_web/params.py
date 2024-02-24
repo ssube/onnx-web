@@ -613,6 +613,7 @@ class PromptEditingParams:
     filter: str
     remove_tokens: str
     add_suffix: str
+    min_length: int
 
     def __init__(
         self,
@@ -620,11 +621,13 @@ class PromptEditingParams:
         filter: str,
         remove_tokens: str,
         add_suffix: str,
+        min_length: int,
     ) -> None:
         self.enabled = enabled
         self.filter = filter
         self.remove_tokens = remove_tokens
         self.add_suffix = add_suffix
+        self.min_length = min_length
 
 
 class ExperimentalParams:

@@ -153,6 +153,12 @@
     "max": 10,
     "step": 1
   },
+  "minLength": {
+    "default": 150,
+    "min": 1,
+    "max": 1000,
+    "step": 1
+  },
   "model": {
     "default": "stable-diffusion-onnx-v1-5",
     "keys": []
