@@ -399,7 +399,7 @@ def build_prompt_editing(
     add_suffix = data.get("addSuffix", get_config_value("promptEditing.addSuffix"))
     min_length = get_and_clamp_int(
         data,
-        "promptEditing.minLength",
+        "minLength",
         get_config_value("promptEditing.minLength"),
         get_config_value("promptEditing.minLength", "max"),
         get_config_value("promptEditing.minLength", "min"),
