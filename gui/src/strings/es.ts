@@ -23,6 +23,7 @@ export const I18N_STRINGS_ES = {
         },
       },
       experimental: {
+        label: 'Características Experimentales',
         latent_symmetry: {
           label: 'Simetría latente',
           gradient_start: 'Inicio de gradiente',

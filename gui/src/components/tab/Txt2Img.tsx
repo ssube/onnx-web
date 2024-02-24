@@ -107,8 +107,8 @@ export function Txt2Img() {
       <SizeControl />
       <HighresControl selectHighres={selectHighres} setHighres={setHighres} />
       <UpscaleControl selectUpscale={selectUpscale} setUpscale={setUpscale} />
-      <ExperimentalControl selectExperimental={selectExperimental} setExperimental={setExperimental} />
       <VariableControl selectGrid={selectVariable} setGrid={setVariable} />
+      <ExperimentalControl selectExperimental={selectExperimental} setExperimental={setExperimental} />
       <Button
         variant='contained'
         onClick={() => generate.mutate()}
