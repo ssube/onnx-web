@@ -646,11 +646,11 @@ class ExperimentalParams:
 class RequestParams:
     device: DeviceParams
     image: ImageParams
-    size: Size | None
-    border: Border | None
-    upscale: UpscaleParams | None
-    highres: HighresParams | None
-    experimental: ExperimentalParams | None
+    size: Optional[Size]
+    border: Optional[Border]
+    upscale: Optional[UpscaleParams]
+    highres: Optional[HighresParams]
+    experimental: Optional[ExperimentalParams]
 
     def __init__(
         self,

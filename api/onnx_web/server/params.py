@@ -472,7 +472,7 @@ def pipeline_from_json(
     return (device, params, size)
 
 
-def get_request_data(key: str | None = None) -> Any:
+def get_request_data(key: Optional[str] = None) -> Any:
     if is_json_request():
         json = request.json
     elif is_json_form_request():
