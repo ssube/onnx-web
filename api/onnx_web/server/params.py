@@ -392,10 +392,6 @@ def build_prompt_editing(
 
     enabled = get_boolean(data, "enabled", get_config_value("promptEditing.enabled"))
 
-    prompt_filter = data.get("filter", get_config_value("promptEditing.filter"))
-    remove_tokens = data.get(
-        "removeTokens", get_config_value("promptEditing.removeTokens")
-    )
     add_suffix = data.get("addSuffix", get_config_value("promptEditing.addSuffix"))
     min_length = get_and_clamp_int(
         data,
@@ -403,6 +399,10 @@ def build_prompt_editing(
         get_config_value("promptEditing.minLength"),
         get_config_value("promptEditing.minLength", "max"),
         get_config_value("promptEditing.minLength", "min"),
+    )
+    prompt_filter = data.get("promptFilter", get_config_value("promptEditing.filter"))
+    remove_tokens = data.get(
+        "removeTokens", get_config_value("promptEditing.removeTokens")
     )
 
     return PromptEditingParams(
