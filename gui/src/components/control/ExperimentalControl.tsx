@@ -3,13 +3,14 @@ import { mustDefault, mustExist } from '@apextoaster/js-utils';
 import { Checkbox, FormControlLabel, Stack, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import * as React from 'react';
+import { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useStore } from 'zustand';
 
 import { STALE_TIME, STANDARD_SPACING } from '../../constants.js';
 import { NumericField } from '../input/NumericField.js';
 import { QueryList } from '../input/QueryList.js';
-import { ClientContext, OnnxState, StateContext } from '../../state/full.js';
+import { ClientContext, ConfigContext, OnnxState, StateContext } from '../../state/full.js';
 import { ExperimentalParams } from '../../types/params.js';
 
 export interface ExperimentalControlProps {
@@ -24,6 +25,7 @@ export function ExperimentalControl(props: ExperimentalControlProps) {
   const store = mustExist(React.useContext(StateContext));
   const experimental = useStore(store, selectExperimental);
 
+  const { params } = mustExist(useContext(ConfigContext));
   const { t } = useTranslation();
 
   const client = mustExist(React.useContext(ClientContext));
@@ -99,9 +101,9 @@ export function ExperimentalControl(props: ExperimentalControlProps) {
       <NumericField
         disabled={experimental.promptEditing.enabled === false}
         label={t('experimental.prompt_editing.min_length')}
-        min={1}
-        max={1000}
-        step={1}
+        min={params.promptEditing.minLength.min}
+        max={params.promptEditing.minLength.max}
+        step={params.promptEditing.minLength.step}
         value={experimental.promptEditing.minLength}
         onChange={(prompt_editing_min_length) => {
           setExperimental({
@@ -134,9 +136,9 @@ export function ExperimentalControl(props: ExperimentalControlProps) {
         decimal
         disabled={experimental.latentSymmetry.enabled === false}
         label={t('experimental.latent_symmetry.gradient_start')}
-        min={0}
-        max={0.5}
-        step={0.01}
+        min={params.latentSymmetry.gradientStart.min}
+        max={params.latentSymmetry.gradientStart.max}
+        step={params.latentSymmetry.gradientStart.step}
         value={experimental.latentSymmetry.gradientStart}
         onChange={(latent_symmetry_gradient_start) => {
           setExperimental({
@@ -151,9 +153,9 @@ export function ExperimentalControl(props: ExperimentalControlProps) {
         decimal
         disabled={experimental.latentSymmetry.enabled === false}
         label={t('experimental.latent_symmetry.gradient_end')}
-        min={0}
-        max={0.5}
-        step={0.01}
+        min={params.latentSymmetry.gradientEnd.min}
+        max={params.latentSymmetry.gradientEnd.max}
+        step={params.latentSymmetry.gradientEnd.step}
         value={experimental.latentSymmetry.gradientEnd}
         onChange={(latent_symmetry_gradient_end) => {
           setExperimental({
@@ -168,9 +170,9 @@ export function ExperimentalControl(props: ExperimentalControlProps) {
         decimal
         disabled={experimental.latentSymmetry.enabled === false}
         label={t('experimental.latent_symmetry.line_of_symmetry')}
-        min={0}
-        max={1}
-        step={0.01}
+        min={params.latentSymmetry.lineOfSymmetry.min}
+        max={params.latentSymmetry.lineOfSymmetry.max}
+        step={params.latentSymmetry.lineOfSymmetry.step}
         value={experimental.latentSymmetry.lineOfSymmetry}
         onChange={(latent_symmetry_line_of_symmetry) => {
           setExperimental({
