@@ -68,7 +68,6 @@
       "default": "none",
       "keys": []
     },
-
     "height": {
       "default": 512,
       "min": 128,
