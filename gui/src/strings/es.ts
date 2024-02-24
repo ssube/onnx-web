@@ -24,16 +24,17 @@ export const I18N_STRINGS_ES = {
       },
       experimental: {
         latent_symmetry: {
-          label: '',
-          gradient_start: '',
-          gradient_end: '',
-          line_of_symmetry: '',
+          label: 'Simetría latente',
+          gradient_start: 'Inicio de gradiente',
+          gradient_end: 'Final del gradiente',
+          line_of_symmetry: 'Línea de simetría',
         },
         prompt_editing: {
-          add_suffix: '',
-          filter: '',
+          add_suffix: 'Agregar sufijo',
+          filter: 'Filtrar',
           label: '',
-          remove_tokens: '',
+          min_length: 'Longitud mínima',
+          remove_tokens: 'Eliminar fichas',
         },
       },
       extras: {

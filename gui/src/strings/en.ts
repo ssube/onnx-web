@@ -28,6 +28,7 @@ export const I18N_STRINGS_EN = {
           add_suffix: 'Add Suffix',
           filter: 'Prompt Filter',
           label: 'Prompt Editing',
+          min_length: 'Min Length',
           remove_tokens: 'Remove Tokens',
         },
       },

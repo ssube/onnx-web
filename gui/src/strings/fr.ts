@@ -24,16 +24,17 @@ export const I18N_STRINGS_FR = {
       },
       experimental: {
         latent_symmetry: {
-          label: '',
-          gradient_start: '',
-          gradient_end: '',
-          line_of_symmetry: '',
+          label: 'symétrie latente',
+          gradient_start: 'début du dégradé',
+          gradient_end: 'fin du dégradé',
+          line_of_symmetry: 'axe de symétrie',
         },
         prompt_editing: {
-          add_suffix: '',
-          filter: '',
+          add_suffix: 'ajouter un suffixe',
+          filter: 'filtre d\'invite',
           label: '',
-          remove_tokens: '',
+          min_length: 'longueur minimale',
+          remove_tokens: 'supprimer des jetons',
         },
       },
       extras: {
