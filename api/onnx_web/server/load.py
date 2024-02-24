@@ -35,7 +35,7 @@ from ..image import (  # mask filters; noise sources
 from ..models.meta import NetworkModel
 from ..params import DeviceParams
 from ..torch_before_ort import get_available_providers
-from ..utils import load_config, merge
+from ..utils import load_config, merge, recursive_get
 from .context import ServerContext
 
 logger = getLogger(__name__)
@@ -163,7 +163,8 @@ def get_source_filters():
 
 
 def get_config_value(key: str, subkey: str = "default", default=None):
-    return config_params.get(key, {}).get(subkey, default)
+    val = recursive_get(config_params, key.split("."), default_value={})
+    return val.get(subkey, default)
 
 
 def load_extras(server: ServerContext):

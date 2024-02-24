@@ -355,30 +355,32 @@ def build_latent_symmetry(
     if data is None:
         data = request.args
 
-    enabled = get_boolean(data, "enabled", get_config_value("latentSymmetry"))
+    enabled = get_boolean(
+        data, "latentSymmetry.enabled", get_config_value("latentSymmetry.enabled")
+    )
 
     gradient_start = get_and_clamp_float(
         data,
-        "gradientStart",
-        get_config_value("gradientStart"),
-        get_config_value("gradientStart", "max"),
-        get_config_value("gradientStart", "min"),
+        "latentSymmetry.gradientStart",
+        get_config_value("latentSymmetry.gradientStart"),
+        get_config_value("latentSymmetry.gradientStart", "max"),
+        get_config_value("latentSymmetry.gradientStart", "min"),
     )
 
     gradient_end = get_and_clamp_float(
         data,
-        "gradientEnd",
-        get_config_value("gradientEnd"),
-        get_config_value("gradientEnd", "max"),
-        get_config_value("gradientEnd", "min"),
+        "latentSymmetry.gradientEnd",
+        get_config_value("latentSymmetry.gradientEnd"),
+        get_config_value("latentSymmetry.gradientEnd", "max"),
+        get_config_value("latentSymmetry.gradientEnd", "min"),
     )
 
     line_of_symmetry = get_and_clamp_float(
         data,
-        "lineOfSymmetry",
-        get_config_value("lineOfSymmetry"),
-        get_config_value("lineOfSymmetry", "max"),
-        get_config_value("lineOfSymmetry", "min"),
+        "latentSymmetry.lineOfSymmetry",
+        get_config_value("latentSymmetry.lineOfSymmetry"),
+        get_config_value("latentSymmetry.lineOfSymmetry", "max"),
+        get_config_value("latentSymmetry.lineOfSymmetry", "min"),
     )
 
     return LatentSymmetryParams(enabled, gradient_start, gradient_end, line_of_symmetry)
@@ -390,17 +392,25 @@ def build_prompt_editing(
     if data is None:
         data = request.args
 
-    enabled = get_boolean(data, "enabled", get_config_value("promptEditing"))
+    enabled = get_boolean(
+        data, "promptEditing.enabled", get_config_value("promptEditing.enabled")
+    )
 
-    prompt_filter = data.get("promptFilter", "")
-    remove_tokens = data.get("removeTokens", "")
-    add_suffix = data.get("addSuffix", "")
+    prompt_filter = data.get(
+        "promptEditing.filter", get_config_value("promptEditing.filter")
+    )
+    remove_tokens = data.get(
+        "promptEditing.removeTokens", get_config_value("promptEditing.removeTokens")
+    )
+    add_suffix = data.get(
+        "promptEditing.addSuffix", get_config_value("promptEditing.addSuffix")
+    )
     min_length = get_and_clamp_int(
         data,
-        "minLength",
-        get_config_value("minLength"),
-        get_config_value("minLength", "max"),
-        get_config_value("minLength", "min"),
+        "promptEditing.minLength",
+        get_config_value("promptEditing.minLength"),
+        get_config_value("promptEditing.minLength", "max"),
+        get_config_value("promptEditing.minLength", "min"),
     )
 
     return PromptEditingParams(

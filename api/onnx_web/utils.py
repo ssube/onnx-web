@@ -30,12 +30,18 @@ def is_debug() -> bool:
     return get_boolean(environ, "DEBUG", False)
 
 
-def recursive_get(d, *keys):
-    return reduce(lambda c, k: c.get(k, {}), keys, d)
+def recursive_get(d, keys, default_value=None):
+    empty_dict = {}
+    val = reduce(lambda c, k: c.get(k, empty_dict), keys, d)
+
+    if val == empty_dict:
+        return default_value
+
+    return val
 
 
 def get_boolean(args: Any, key: str, default_value: bool) -> bool:
-    val = args.get(key, str(default_value))
+    val = recursive_get(args, key.split("."), default_value=str(default_value))
 
     if isinstance(val, bool):
         return val
@@ -44,19 +50,22 @@ def get_boolean(args: Any, key: str, default_value: bool) -> bool:
 
 
 def get_list(args: Any, key: str, default="") -> List[str]:
-    return split_list(args.get(key, default))
+    val = recursive_get(args, key.split("."), default=default)
+    return split_list(val)
 
 
 def get_and_clamp_float(
     args: Any, key: str, default_value: float, max_value: float, min_value=0.0
 ) -> float:
-    return min(max(float(args.get(key, default_value)), min_value), max_value)
+    val = recursive_get(args, key.split("."), default=default_value)
+    return min(max(float(val), min_value), max_value)
 
 
 def get_and_clamp_int(
     args: Any, key: str, default_value: int, max_value: int, min_value=1
 ) -> int:
-    return min(max(int(args.get(key, default_value)), min_value), max_value)
+    val = recursive_get(args, key.split("."), default=default_value)
+    return min(max(int(val), min_value), max_value)
 
 
 TElem = TypeVar("TElem")
