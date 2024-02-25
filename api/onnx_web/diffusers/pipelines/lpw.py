@@ -465,6 +465,7 @@ class OnnxStableDiffusionLongPromptWeightingPipeline(OnnxStableDiffusionPipeline
     This model inherits from [`DiffusionPipeline`]. Check the superclass documentation for the generic methods the
     library implements for all the pipelines (such as downloading or saving, running on a particular device, etc.)
     """
+
     if version.parse(
         version.parse(diffusers.__version__).base_version
     ) >= version.parse("0.9.0"):

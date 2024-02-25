@@ -244,9 +244,9 @@ def load_extras(server: ServerContext):
                                             inversion_name,
                                             model_name,
                                         )
-                                        labels[
-                                            f"inversion.{inversion_name}"
-                                        ] = inversion["label"]
+                                        labels[f"inversion.{inversion_name}"] = (
+                                            inversion["label"]
+                                        )
 
                             if "loras" in model:
                                 for lora in model["loras"]:
