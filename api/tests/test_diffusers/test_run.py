@@ -17,6 +17,7 @@ from onnx_web.params import (
     Border,
     HighresParams,
     ImageParams,
+    RequestParams,
     Size,
     TileOrder,
     UpscaleParams,
@@ -381,9 +382,10 @@ class TestBlendPipeline(unittest.TestCase):
         active = Value("L", 0)
         idle = Value("L", 0)
 
+        device = test_device()
         worker = WorkerContext(
             "test",
-            test_device(),
+            device,
             cancel,
             logs,
             pending,
@@ -397,9 +399,8 @@ class TestBlendPipeline(unittest.TestCase):
 
         source = Image.new("RGBA", (64, 64), "black")
         mask = Image.new("RGBA", (64, 64), "white")
-        run_blend_pipeline(
-            worker,
-            ServerContext(model_path="../models", output_path="../outputs"),
+        params = RequestParams(
+            device,
             ImageParams(
                 TEST_MODEL_DIFFUSION_SD15,
                 "txt2img",
@@ -410,8 +411,13 @@ class TestBlendPipeline(unittest.TestCase):
                 1,
                 unet_tile=64,
             ),
-            Size(64, 64),
-            UpscaleParams("test"),
+            size=Size(64, 64),
+            upscale=UpscaleParams("test"),
+        )
+        run_blend_pipeline(
+            worker,
+            ServerContext(model_path="../models", output_path="../outputs"),
+            params,
             [source, source],
             mask,
         )
