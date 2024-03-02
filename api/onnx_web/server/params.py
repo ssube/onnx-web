@@ -203,11 +203,8 @@ def build_size(
 
 
 def build_border(
-    data: Dict[str, str] = None,
+    data: Dict[str, str],
 ) -> Border:
-    if data is None:
-        data = request.args
-
     left = get_and_clamp_int(
         data,
         "left",
@@ -241,11 +238,8 @@ def build_border(
 
 
 def build_upscale(
-    data: Dict[str, str] = None,
+    data: Dict[str, str],
 ) -> UpscaleParams:
-    if data is None:
-        data = request.args
-
     upscale = get_boolean(data, "upscale", False)
     denoise = get_and_clamp_float(
         data,
@@ -303,11 +297,8 @@ def build_upscale(
 
 
 def build_highres(
-    data: Dict[str, str] = None,
+    data: Dict[str, str],
 ) -> HighresParams:
-    if data is None:
-        data = request.args
-
     enabled = get_boolean(data, "highres", get_config_value("highres"))
     iterations = get_and_clamp_int(
         data,
@@ -485,21 +476,10 @@ def get_request_params(
 
     device, params, size = pipeline_from_json(server, data, default_pipeline)
 
-    border = None
-    if "border" in data:
-        border = build_border(data["border"])
-
-    upscale = None
-    if "upscale" in data:
-        upscale = build_upscale(data["upscale"])
-
-    highres = None
-    if "highres" in data:
-        highres = build_highres(data["highres"])
-
-    experimental = None
-    if "experimental" in data:
-        experimental = build_experimental(data["experimental"])
+    border = build_border(data.get("border"))
+    upscale = build_upscale(data.get("upscale"))
+    highres = build_highres(data.get("highres"))
+    experimental = build_experimental(data.get("experimental"))
 
     return RequestParams(
         device,
