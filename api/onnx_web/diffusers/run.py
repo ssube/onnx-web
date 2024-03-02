@@ -19,7 +19,6 @@ from ..chain.upscale import split_upscale, stage_upscale_correction
 from ..image import expand_image
 from ..output import make_output_names, read_metadata, save_image, save_result
 from ..params import (
-    Border,
     ExperimentalParams,
     HighresParams,
     ImageParams,
@@ -267,7 +266,6 @@ def run_inpaint_pipeline(
     request: RequestParams,
     source: Image.Image,
     mask: Image.Image,
-    border: Border,
     noise_source: Any,
     mask_filter: Any,
     fill_color: str,
@@ -275,6 +273,7 @@ def run_inpaint_pipeline(
     full_res_inpaint: bool,
     full_res_inpaint_padding: float,
 ) -> None:
+    border = request.border
     params = request.image
     size = request.size
     upscale = request.upscale
