@@ -492,10 +492,10 @@ def get_request_params(
     )
 
 
-def get_dict_or_self(dict: Dict[str, Any], key: str) -> Any:
-    if key in dict:
-        value = dict[key]
+def get_dict_or_self(obj: Dict[str, Any], key: str) -> Any:
+    if key in obj:
+        value = obj[key]
         if isinstance(value, dict):
             return value
 
-    return dict
+    return obj
