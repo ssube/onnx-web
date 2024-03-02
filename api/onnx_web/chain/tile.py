@@ -181,6 +181,14 @@ def blend_tiles(
         equalized = np.array(tile_image).astype(np.float32)
         mask = np.ones_like(equalized[:, :, 0])
 
+        # match channels by adding an alpha channel
+        if equalized.shape[-1] < value.shape[-1]:
+            logger.debug("adding alpha channel to tile")
+            alpha = np.ones_like(equalized[:, :, 0])
+            equalized = np.concatenate(
+                [equalized, np.expand_dims(alpha, axis=-1)], axis=-1
+            )
+
         if adj_tile < tile:
             # sort gradient points
             p1 = (adj_tile * scale) - 1
