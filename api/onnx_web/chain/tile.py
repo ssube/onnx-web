@@ -184,7 +184,7 @@ def blend_tiles(
         # match channels by adding an alpha channel
         if equalized.shape[-1] < value.shape[-1]:
             logger.debug("adding alpha channel to tile")
-            alpha = np.ones_like(equalized[:, :, 0])
+            alpha = np.ones_like(equalized[:, :, 0]) * 255.0
             equalized = np.concatenate(
                 [equalized, np.expand_dims(alpha, axis=-1)], axis=-1
             )
