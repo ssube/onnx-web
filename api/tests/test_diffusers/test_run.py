@@ -90,7 +90,7 @@ class TestTxt2ImgPipeline(unittest.TestCase):
 
         self.assertTrue(path.exists("../outputs/test-txt2img-basic_0.png"))
 
-        with Image.open("../outputs/test-txt2img-basic.png") as output:
+        with Image.open("../outputs/test-txt2img-basic_0.png") as output:
             self.assertEqual(output.size, (256, 256))
             # TODO: test contents of image
 

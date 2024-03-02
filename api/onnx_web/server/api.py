@@ -263,12 +263,13 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
     source = Image.open(BytesIO(source_file.read())).convert("RGB")
 
     data = get_request_data()
+    data_params = data.get("params", data)
     source_filter = get_from_list(
-        data["params"], "sourceFilter", list(get_source_filters().keys())
+        data_params, "sourceFilter", list(get_source_filters().keys())
     )
 
     strength = get_and_clamp_float(
-        data["params"],
+        data_params,
         "strength",
         get_config_value("strength"),
         get_config_value("strength", "max"),
@@ -336,11 +337,12 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     mask.convert(mode="L")
 
     data = get_request_data()
+    data_params = data.get("params", data)
     full_res_inpaint = get_boolean(
-        data["params"], "fullresInpaint", get_config_value("fullresInpaint")
+        data_params, "fullresInpaint", get_config_value("fullresInpaint")
     )
     full_res_inpaint_padding = get_and_clamp_float(
-        data["params"],
+        data_params,
         "fullresInpaintPadding",
         get_config_value("fullresInpaintPadding"),
         get_config_value("fullresInpaintPadding", "max"),
@@ -350,13 +352,11 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
     params = get_request_params(server, JobType.INPAINT.value)
     replace_wildcards(params.image, get_wildcard_data())
 
-    fill_color = get_not_empty(data["params"], "fillColor", "white")
-    mask_filter = get_from_map(data["params"], "filter", get_mask_filters(), "none")
-    noise_source = get_from_map(
-        data["params"], "noise", get_noise_sources(), "histogram"
-    )
+    fill_color = get_not_empty(data_params, "fillColor", "white")
+    mask_filter = get_from_map(data_params, "filter", get_mask_filters(), "none")
+    noise_source = get_from_map(data_params, "noise", get_noise_sources(), "histogram")
     tile_order = get_from_list(
-        data["params"],
+        data_params,
         "tileOrder",
         [TileOrder.grid, TileOrder.kernel, TileOrder.spiral],
     )
