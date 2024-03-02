@@ -476,10 +476,10 @@ def get_request_params(
 
     device, params, size = pipeline_from_json(server, data, default_pipeline)
 
-    border = build_border(data.get("border", data))
-    upscale = build_upscale(data.get("upscale", data))
-    highres = build_highres(data.get("highres", data))
-    experimental = build_experimental(data.get("experimental", data))
+    border = build_border(get_dict_or_self(data, "border"))
+    upscale = build_upscale(get_dict_or_self(data, "upscale"))
+    highres = build_highres(get_dict_or_self(data, "highres"))
+    experimental = build_experimental(get_dict_or_self(data, "experimental"))
 
     return RequestParams(
         device,
@@ -490,3 +490,12 @@ def get_request_params(
         highres=highres,
         experimental=experimental,
     )
+
+
+def get_dict_or_self(dict: Dict[str, Any], key: str) -> Any:
+    if key in dict:
+        value = dict[key]
+        if isinstance(value, dict):
+            return value
+
+    return dict
