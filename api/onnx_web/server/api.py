@@ -281,7 +281,7 @@ def img2img(server: ServerContext, pool: DevicePoolExecutor):
     replace_wildcards(params.image, get_wildcard_data())
 
     job_name = make_job_name(
-        JobType.IMG2IMG.value, params, params.size, extras=[strength]
+        JobType.IMG2IMG.value, params.image, params.size, extras=[strength]
     )
     queue = pool.submit(
         job_name,
