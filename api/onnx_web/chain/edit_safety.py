@@ -39,7 +39,7 @@ class EditSafetyStage(BaseStage):
             deep_danbooru_model,
         )
 
-        server.cache.set(ModelTypes.safety, cache_key)
+        server.cache.set(ModelTypes.safety, cache_key, nsfw_checker)
 
         return nsfw_checker
 
