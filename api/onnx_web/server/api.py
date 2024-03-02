@@ -363,7 +363,7 @@ def inpaint(server: ServerContext, pool: DevicePoolExecutor):
 
     job_name = make_job_name(
         JobType.INPAINT.value,
-        params,
+        params.image,
         size,
         extras=[
             params.border.left,
