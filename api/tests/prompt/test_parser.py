@@ -38,6 +38,17 @@ class ParserTests(unittest.TestCase):
             ],
         )
 
+    def test_clip_skip_token(self):
+        res = parse_prompt_onnx(None, "foo <clip:skip:2> bin", debug=False)
+        self.assertListEqual(
+            [str(i) for i in res],
+            [
+                str(["foo"]),
+                str(PromptToken("clip", "skip", 2)),
+                str(["bin"]),
+            ],
+        )
+
     def test_lora_token(self):
         res = parse_prompt_onnx(None, "foo <lora:name:1.5> bin", debug=False)
         self.assertListEqual(

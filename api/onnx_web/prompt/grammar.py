@@ -23,6 +23,10 @@ def integer():
     return RegExMatch(r"\d+")
 
 
+def token_clip_skip():
+    return ("clip", token_delimiter, "skip", token_delimiter, integer)
+
+
 def token_inversion():
     return ("inversion", token_delimiter, token_run, token_delimiter, decimal)
 
@@ -68,7 +72,7 @@ def token_reseed():
 
 
 def token_inner():
-    return [token_inversion, token_lora, token_region, token_reseed]
+    return [token_clip_skip, token_inversion, token_lora, token_region, token_reseed]
 
 
 def phrase_inner():
@@ -145,6 +149,9 @@ class OnnxPromptVisitor(PTNodeVisitor):
 
     def visit_token(self, node, children):
         return str(node.value)
+
+    def visit_token_clip_skip(self, node, children):
+        return PromptToken("clip", "skip", children[0])
 
     def visit_token_inversion(self, node, children):
         return PromptToken("inversion", children[0][0], children[1])
