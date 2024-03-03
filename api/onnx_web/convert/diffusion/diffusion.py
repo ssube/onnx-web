@@ -20,6 +20,7 @@ from diffusers import (
     AutoencoderKL,
     OnnxRuntimeModel,
     OnnxStableDiffusionPipeline,
+    StableDiffusionInpaintPipeline,
     StableDiffusionInstructPix2PixPipeline,
     StableDiffusionPipeline,
     StableDiffusionUpscalePipeline,
@@ -55,7 +56,7 @@ logger = getLogger(__name__)
 CONVERT_PIPELINES = {
     "controlnet": OnnxStableDiffusionControlNetPipeline,
     "img2img": StableDiffusionPipeline,
-    "inpaint": StableDiffusionPipeline,
+    "inpaint": StableDiffusionInpaintPipeline,
     "lpw": StableDiffusionPipeline,
     "panorama": StableDiffusionPipeline,
     "pix2pix": StableDiffusionInstructPix2PixPipeline,
@@ -853,6 +854,7 @@ def convert_diffusion_diffusers_optimum(
             "torch-fp16"
         ),  # optimum's fp16 mode only works on CUDA or ROCm
         framework="pt",
+        library_name="diffusers",
         do_validation=conversion.has_feature("optimum-validation"),
     )
 
