@@ -664,13 +664,15 @@ def patch_pipeline(
 ) -> None:
     logger.debug("patching SD pipeline")
 
-    if not params.is_lpw() and not params.is_xl():
-        if server.has_feature("compel-prompts"):
-            logger.debug("patching prompt encoder with Compel")
-            pipe._encode_prompt = expand_prompt_compel.__get__(pipe, pipeline)
-        else:
+    if server.has_feature("compel-prompts"):
+        logger.debug("patching prompt encoder with Compel")
+        pipe._encode_prompt = expand_prompt_compel.__get__(pipe, pipeline)
+    else:
+        if not params.is_lpw() and not params.is_xl():
             logger.debug("patching prompt encoder with ONNX legacy method")
             pipe._encode_prompt = expand_prompt_onnx_legacy.__get__(pipe, pipeline)
+        else:
+            logger.warning("no prompt encoder patch available")
 
     # the pipeline requested in params may not be the one currently being used, especially during the later img2img
     # stages of a highres pipeline, so we need to check the pipeline type
