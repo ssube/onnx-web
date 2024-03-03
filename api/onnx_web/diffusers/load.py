@@ -13,9 +13,9 @@ from ..constants import LATENT_FACTOR, ONNX_MODEL
 from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
 from ..convert.diffusion.textual_inversion import blend_textual_inversions
 from ..diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
-from ..diffusers.utils import expand_prompt as expand_prompt_onnx_legacy
+from ..diffusers.utils import expand_prompt as encode_prompt_onnx_legacy
 from ..params import DeviceParams, ImageParams
-from ..prompt.compel import expand_prompt as expand_prompt_compel
+from ..prompt.compel import encode_prompt_compel, encode_prompt_compel_sdxl
 from ..server import ModelTypes, ServerContext
 from ..torch_before_ort import InferenceSession
 from ..utils import run_gc
@@ -666,11 +666,14 @@ def patch_pipeline(
 
     if server.has_feature("compel-prompts"):
         logger.debug("patching prompt encoder with Compel")
-        pipe._encode_prompt = expand_prompt_compel.__get__(pipe, pipeline)
+        if params.is_xl():
+            pipe._encode_prompt = encode_prompt_compel_sdxl.__get__(pipe, pipeline)
+        else:
+            pipe._encode_prompt = encode_prompt_compel.__get__(pipe, pipeline)
     else:
         if not params.is_lpw() and not params.is_xl():
             logger.debug("patching prompt encoder with ONNX legacy method")
-            pipe._encode_prompt = expand_prompt_onnx_legacy.__get__(pipe, pipeline)
+            pipe._encode_prompt = encode_prompt_onnx_legacy.__get__(pipe, pipeline)
         else:
             logger.warning("no prompt encoder patch available")
 
