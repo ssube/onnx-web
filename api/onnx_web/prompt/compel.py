@@ -7,7 +7,7 @@ from compel import Compel, ReturnedEmbeddingsType
 from diffusers import OnnxStableDiffusionPipeline
 
 
-def wrap_encoder(text_encoder):
+def wrap_encoder(text_encoder, sdxl=False):
     class WrappedEncoder:
         device = "cpu"
 
@@ -26,7 +26,7 @@ def wrap_encoder(text_encoder):
 
             # TODO: does compel use attention masks?
             outputs = text_encoder(input_ids=token_ids.numpy().astype(dtype))
-            if return_dict:
+            if return_dict and not sdxl:
                 if output_hidden_states:
                     hidden_states = outputs[2:]
                     return SimpleNamespace(
@@ -94,8 +94,8 @@ def encode_prompt_compel_sdxl(
     negative_pooled_prompt_embeds: Optional[np.ndarray] = None,
     skip_clip_states: int = 0,
 ) -> np.ndarray:
-    wrapped_encoder = wrap_encoder(self.text_encoder)
-    wrapped_encoder_2 = wrap_encoder(self.text_encoder_2)
+    wrapped_encoder = wrap_encoder(self.text_encoder, sdxl=True)
+    wrapped_encoder_2 = wrap_encoder(self.text_encoder_2, sdxl=True)
     compel = Compel(
         tokenizer=[self.tokenizer, self.tokenizer_2],
         text_encoder=[wrapped_encoder, wrapped_encoder_2],
