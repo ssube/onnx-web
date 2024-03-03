@@ -19,7 +19,7 @@ def get_inference_session(model):
     raise ValueError("Model does not have an inference session")
 
 
-def wrap_encoder(text_encoder, sdxl=False):
+def wrap_encoder(text_encoder):
     class WrappedEncoder:
         device = "cpu"
 
@@ -120,8 +120,8 @@ def encode_prompt_compel_sdxl(
     pooled_prompt_embeds: Optional[np.ndarray] = None,
     negative_pooled_prompt_embeds: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    wrapped_encoder = wrap_encoder(self.text_encoder, sdxl=True)
-    wrapped_encoder_2 = wrap_encoder(self.text_encoder_2, sdxl=True)
+    wrapped_encoder = wrap_encoder(self.text_encoder)
+    wrapped_encoder_2 = wrap_encoder(self.text_encoder_2)
     compel = Compel(
         tokenizer=[self.tokenizer, self.tokenizer_2],
         text_encoder=[wrapped_encoder, wrapped_encoder_2],

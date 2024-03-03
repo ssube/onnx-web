@@ -48,3 +48,27 @@ class ParserTests(unittest.TestCase):
                 str(["bin"]),
             ],
         )
+
+    def test_region_token(self):
+        res = parse_prompt_onnx(
+            None, "foo <region:1:2:3:4:0.5:0.75:prompt> bin", debug=False
+        )
+        self.assertListEqual(
+            [str(i) for i in res],
+            [
+                str(["foo"]),
+                str(PromptToken("region", None, [1, 2, 3, 4, 0.5, 0.75, ["prompt"]])),
+                str(["bin"]),
+            ],
+        )
+
+    def test_reseed_token(self):
+        res = parse_prompt_onnx(None, "foo <reseed:1:2:3:4:12345> bin", debug=False)
+        self.assertListEqual(
+            [str(i) for i in res],
+            [
+                str(["foo"]),
+                str(PromptToken("reseed", None, [1, 2, 3, 4, 12345])),
+                str(["bin"]),
+            ],
+        )

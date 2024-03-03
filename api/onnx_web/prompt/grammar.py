@@ -19,6 +19,10 @@ def decimal():
     return RegExMatch(r"\d+\.\d*")
 
 
+def integer():
+    return RegExMatch(r"\d+")
+
+
 def token_inversion():
     return ("inversion", token_delimiter, token_run, token_delimiter, decimal)
 
@@ -27,8 +31,44 @@ def token_lora():
     return ("lora", token_delimiter, token_run, token_delimiter, decimal)
 
 
+def token_region():
+    return (
+        "region",
+        token_delimiter,
+        integer,
+        token_delimiter,
+        integer,
+        token_delimiter,
+        integer,
+        token_delimiter,
+        integer,
+        token_delimiter,
+        decimal,
+        token_delimiter,
+        decimal,
+        token_delimiter,
+        token_run,
+    )
+
+
+def token_reseed():
+    return (
+        "reseed",
+        token_delimiter,
+        integer,
+        token_delimiter,
+        integer,
+        token_delimiter,
+        integer,
+        token_delimiter,
+        integer,
+        token_delimiter,
+        integer,
+    )
+
+
 def token_inner():
-    return [token_inversion, token_lora]
+    return [token_inversion, token_lora, token_region, token_reseed]
 
 
 def phrase_inner():
@@ -100,14 +140,23 @@ class OnnxPromptVisitor(PTNodeVisitor):
     def visit_decimal(self, node, children):
         return float(node.value)
 
+    def visit_integer(self, node, children):
+        return int(node.value)
+
     def visit_token(self, node, children):
         return str(node.value)
 
     def visit_token_inversion(self, node, children):
-        return PromptToken("lora", children[0][0], children[1])
+        return PromptToken("inversion", children[0][0], children[1])
 
     def visit_token_lora(self, node, children):
         return PromptToken("lora", children[0][0], children[1])
+
+    def visit_token_region(self, node, children):
+        return PromptToken("region", None, children)
+
+    def visit_token_reseed(self, node, children):
+        return PromptToken("reseed", None, children)
 
     def visit_token_run(self, node, children):
         return children
