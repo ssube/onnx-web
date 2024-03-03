@@ -21,7 +21,7 @@ def wrap_encoder(text_encoder):
             self, token_ids, attention_mask, output_hidden_states=True, return_dict=True
         ):
             # TODO: does compel use attention masks?
-            outputs = text_encoder(inputs_ids=token_ids.numpy().astype(np.int32))
+            outputs = text_encoder(input_ids=token_ids.numpy().astype(np.int32))
             if return_dict:
                 if output_hidden_states:
                     hidden_states = outputs[2:]
