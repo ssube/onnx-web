@@ -9,6 +9,8 @@ from diffusers import OnnxStableDiffusionPipeline
 
 def wrap_encoder(text_encoder):
     class WrappedEncoder:
+        device = "cpu"
+
         def __init__(self, text_encoder):
             self.text_encoder = text_encoder
 
@@ -18,7 +20,8 @@ def wrap_encoder(text_encoder):
         def forward(
             self, token_ids, attention_mask, output_hidden_states=True, return_dict=True
         ):
-            outputs = text_encoder(token_ids.numpy().astype(np.int32))
+            # TODO: does compel use attention masks?
+            outputs = text_encoder(inputs_ids=token_ids.numpy().astype(np.int32))
             if return_dict:
                 if output_hidden_states:
                     hidden_states = outputs[2:]
@@ -33,10 +36,7 @@ def wrap_encoder(text_encoder):
                         pooler_output=torch.from_numpy(outputs[1]),
                     )
             else:
-                if output_hidden_states:
-                    return outputs[:1]
-                else:
-                    return outputs[0]
+                return outputs
 
         def __getattr__(self, name):
             return getattr(self.text_encoder, name)
@@ -64,11 +64,9 @@ def expand_prompt(
     compel = Compel(tokenizer=self.tokenizer, text_encoder=wrapped_encoder)
 
     prompt_embeds = compel(prompt)
-    prompt_embeds = prompt_embeds.numpy().astype(np.int32)
 
     if negative_prompt is not None:
         negative_prompt_embeds = encode_prompt(self, negative_prompt)
-        negative_prompt_embeds = negative_prompt_embeds.numpy().astype(np.int32)
 
     if negative_prompt_embeds is not None:
         [prompt_embeds, negative_prompt_embeds] = (
@@ -76,5 +74,9 @@ def expand_prompt(
                 [prompt_embeds, negative_prompt_embeds]
             )
         )
+
+    prompt_embeds = prompt_embeds.numpy().astype(np.int32)
+    if negative_prompt_embeds is not None:
+        negative_prompt_embeds = negative_prompt_embeds.numpy().astype(np.int32)
 
     return np.concatenate([negative_prompt_embeds, prompt_embeds])
