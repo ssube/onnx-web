@@ -8,8 +8,6 @@ from diffusers import OnnxStableDiffusionPipeline
 
 
 def wrap_encoder(text_encoder):
-    original_forward = text_encoder.forward
-
     class WrappedEncoder:
         def __init__(self, text_encoder):
             self.text_encoder = text_encoder
@@ -20,7 +18,7 @@ def wrap_encoder(text_encoder):
         def forward(
             self, token_ids, attention_mask, output_hidden_states=True, return_dict=True
         ):
-            outputs = original_forward(token_ids.numpy().astype(np.int32))
+            outputs = text_encoder(token_ids.numpy().astype(np.int32))
             if return_dict:
                 if output_hidden_states:
                     hidden_states = outputs[2:]
