@@ -15,15 +15,22 @@ def override_override_arguments(args, kwargs, signature, model_kwargs=None):
     """
     Override the arguments of the `override_arguments` function.
     """
-    logger.info(
+    logger.debug(
         "overriding arguments for `override_arguments`: %s, %s, %s",
         args,
         kwargs,
         signature,
     )
 
-    # if "return_hidden_states" signature.parameters:
-    #     args[4] = True
+    if "output_hidden_states" in signature.parameters:
+        logger.debug("enabling hidden states for model")
+        parameter_names = list(signature.parameters.keys())
+        hidden_states_index = parameter_names.index("output_hidden_states")
+
+        # convert the arguments to a list for modification
+        arg_list = list(args)
+        arg_list[hidden_states_index] = True
+        args = tuple(arg_list)
 
     return original_override_arguments(args, kwargs, signature, model_kwargs)
 
