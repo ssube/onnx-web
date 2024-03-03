@@ -6,6 +6,8 @@ import torch
 from compel import Compel, ReturnedEmbeddingsType
 from diffusers import OnnxStableDiffusionPipeline
 
+from ..diffusers.utils import split_clip_skip
+
 
 def get_inference_session(model):
     if hasattr(model, "session"):
@@ -73,8 +75,9 @@ def encode_prompt_compel(
     negative_prompt: Optional[str] = None,
     prompt_embeds: Optional[np.ndarray] = None,
     negative_prompt_embeds: Optional[np.ndarray] = None,
-    skip_clip_states: int = 0,
 ) -> np.ndarray:
+    prompt, skip_clip_states = split_clip_skip(prompt)
+
     embeddings_type = (
         ReturnedEmbeddingsType.LAST_HIDDEN_STATES_NORMALIZED
         if skip_clip_states == 0
@@ -116,7 +119,6 @@ def encode_prompt_compel_sdxl(
     negative_prompt_embeds: Optional[np.ndarray] = None,
     pooled_prompt_embeds: Optional[np.ndarray] = None,
     negative_pooled_prompt_embeds: Optional[np.ndarray] = None,
-    skip_clip_states: int = 0,
 ) -> np.ndarray:
     wrapped_encoder = wrap_encoder(self.text_encoder, sdxl=True)
     wrapped_encoder_2 = wrap_encoder(self.text_encoder_2, sdxl=True)
@@ -127,6 +129,7 @@ def encode_prompt_compel_sdxl(
         requires_pooled=[False, True],
     )
 
+    prompt, _skip_clip_states = split_clip_skip(prompt)
     prompt_embeds, prompt_pooled = compel(prompt)
 
     if negative_prompt is not None:

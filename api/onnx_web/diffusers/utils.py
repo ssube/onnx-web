@@ -79,6 +79,17 @@ def expand_alternative_ranges(prompt: str) -> List[str]:
     return prompts
 
 
+def split_clip_skip(prompt: str) -> Tuple[str, int]:
+    prompt, clip_tokens = get_tokens_from_prompt(prompt, CLIP_TOKEN)
+
+    skip_clip_states = 0
+    if len(clip_tokens) > 0:
+        skip_clip_states = int(clip_tokens[0][1])
+        logger.info("skipping %s CLIP layers", skip_clip_states)
+
+    return prompt, skip_clip_states
+
+
 @torch.no_grad()
 def expand_prompt(
     self: OnnxStableDiffusionPipeline,
@@ -94,10 +105,7 @@ def expand_prompt(
     #   tokenizer: CLIPTokenizer
     #   encoder: OnnxRuntimeModel
 
-    prompt, clip_tokens = get_tokens_from_prompt(prompt, CLIP_TOKEN)
-    if len(clip_tokens) > 0:
-        skip_clip_states = int(clip_tokens[0][1])
-        logger.info("skipping %s CLIP layers", skip_clip_states)
+    prompt, skip_clip_states = split_clip_skip(prompt)
 
     batch_size = len(prompt) if isinstance(prompt, list) else 1
     prompt = expand_interval_ranges(prompt)
@@ -403,9 +411,6 @@ def encode_prompt(
     num_images_per_prompt: int = 1,
     do_classifier_free_guidance: bool = True,
 ) -> List[np.ndarray]:
-    """
-    TODO: does not work with SDXL, fix or turn into a pipeline patch
-    """
     return [
         pipe._encode_prompt(
             remove_tokens(prompt),
