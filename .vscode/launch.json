@@ -2,6 +2,14 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Python Debugger: Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "args": ["--name", "outpaint"],
+      "console": "integratedTerminal"
+    },
+    {
       "name": "Python: Remote Attach",
       "type": "python",
       "request": "attach",
@@ -15,6 +23,16 @@
           "remoteRoot": "/opt/onnx-web"
         }
       ],
+      "justMyCode": false
+    },
+    {
+      "name": "Python: Local Attach",
+      "type": "python",
+      "request": "attach",
+      "connect": {
+        "host": "127.0.0.1",
+        "port": 5679
+      },
       "justMyCode": false
     }
   ]
