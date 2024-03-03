@@ -75,8 +75,17 @@ def encode_prompt_compel(
     negative_prompt_embeds: Optional[np.ndarray] = None,
     skip_clip_states: int = 0,
 ) -> np.ndarray:
+    embeddings_type = (
+        ReturnedEmbeddingsType.LAST_HIDDEN_STATES_NORMALIZED
+        if skip_clip_states == 0
+        else ReturnedEmbeddingsType.PENULTIMATE_HIDDEN_STATES_NORMALIZED
+    )
     wrapped_encoder = wrap_encoder(self.text_encoder)
-    compel = Compel(tokenizer=self.tokenizer, text_encoder=wrapped_encoder)
+    compel = Compel(
+        tokenizer=self.tokenizer,
+        text_encoder=wrapped_encoder,
+        returned_embeddings_type=embeddings_type,
+    )
 
     prompt_embeds = compel(prompt)
 
@@ -90,9 +99,9 @@ def encode_prompt_compel(
             )
         )
 
-    prompt_embeds = prompt_embeds.numpy().astype(np.int32)
+    prompt_embeds = prompt_embeds.numpy().astype(np.float32)
     if negative_prompt_embeds is not None:
-        negative_prompt_embeds = negative_prompt_embeds.numpy().astype(np.int32)
+        negative_prompt_embeds = negative_prompt_embeds.numpy().astype(np.float32)
 
     return np.concatenate([negative_prompt_embeds, prompt_embeds])
 
