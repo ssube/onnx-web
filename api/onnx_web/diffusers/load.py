@@ -13,8 +13,9 @@ from ..constants import LATENT_FACTOR, ONNX_MODEL
 from ..convert.diffusion.lora import blend_loras, buffer_external_data_tensors
 from ..convert.diffusion.textual_inversion import blend_textual_inversions
 from ..diffusers.pipelines.upscale import OnnxStableDiffusionUpscalePipeline
-from ..diffusers.utils import expand_prompt
+from ..diffusers.utils import expand_prompt as expand_prompt_onnx_legacy
 from ..params import DeviceParams, ImageParams
+from ..prompt.compel import expand_prompt as expand_prompt_compel
 from ..server import ModelTypes, ServerContext
 from ..torch_before_ort import InferenceSession
 from ..utils import run_gc
@@ -664,8 +665,12 @@ def patch_pipeline(
     logger.debug("patching SD pipeline")
 
     if not params.is_lpw() and not params.is_xl():
-        logger.debug("patching prompt encoder")
-        pipe._encode_prompt = expand_prompt.__get__(pipe, pipeline)
+        if server.has_feature("compel-prompts"):
+            logger.debug("patching prompt encoder with Compel")
+            pipe._encode_prompt = expand_prompt_compel.__get__(pipe, pipeline)
+        else:
+            logger.debug("patching prompt encoder with ONNX legacy method")
+            pipe._encode_prompt = expand_prompt_onnx_legacy.__get__(pipe, pipeline)
 
     # the pipeline requested in params may not be the one currently being used, especially during the later img2img
     # stages of a highres pipeline, so we need to check the pipeline type
