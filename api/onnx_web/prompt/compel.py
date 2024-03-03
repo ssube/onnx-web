@@ -67,6 +67,7 @@ def wrap_encoder(text_encoder):
     return WrappedEncoder(text_encoder)
 
 
+@torch.no_grad()
 def encode_prompt_compel(
     self: OnnxStableDiffusionPipeline,
     prompt: str,
@@ -111,9 +112,12 @@ def encode_prompt_compel(
     if negative_prompt_embeds is not None:
         negative_prompt_embeds = negative_prompt_embeds.numpy().astype(np.float32)
 
-    return np.concatenate([negative_prompt_embeds, prompt_embeds])
+        prompt_embeds = np.concatenate([negative_prompt_embeds, prompt_embeds])
+
+    return prompt_embeds
 
 
+@torch.no_grad()
 def encode_prompt_compel_sdxl(
     self: OnnxStableDiffusionPipeline,
     prompt: Union[str, List[str]],
@@ -137,6 +141,7 @@ def encode_prompt_compel_sdxl(
     prompt, _skip_clip_states = split_clip_skip(prompt)
     prompt_embeds, prompt_pooled = compel(prompt)
 
+    negative_pooled = None
     if negative_prompt is not None:
         negative_prompt_embeds, negative_pooled = compel(negative_prompt)
 
