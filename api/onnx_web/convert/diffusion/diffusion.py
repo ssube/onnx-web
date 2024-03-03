@@ -48,6 +48,7 @@ from ..utils import (
     remove_prefix,
 )
 from .checkpoint import convert_extract_checkpoint
+from .patches import patch_optimum
 
 logger = getLogger(__name__)
 
@@ -841,6 +842,8 @@ def convert_diffusion_diffusers_optimum(
     del pipeline
     run_gc()
 
+    # patch Optimum for conversion and convert to ONNX
+    patch_optimum()
     main_export(
         temp_path,
         output=dest_path,

@@ -76,6 +76,11 @@ def encode_prompt_compel(
     prompt_embeds: Optional[np.ndarray] = None,
     negative_prompt_embeds: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    """
+    Text encoder patch for SD v1 and v2.
+
+    Using clip skip requires an ONNX model compiled with `return_hidden_states=True`.
+    """
     prompt, skip_clip_states = split_clip_skip(prompt)
 
     embeddings_type = (
