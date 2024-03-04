@@ -98,8 +98,10 @@ def encode_prompt_compel(
 
     prompt_embeds = compel(prompt)
 
-    if negative_prompt is not None:
-        negative_prompt_embeds = compel(negative_prompt)
+    if negative_prompt is None:
+        negative_prompt = ""
+
+    negative_prompt_embeds = compel(negative_prompt)
 
     if negative_prompt_embeds is not None:
         [prompt_embeds, negative_prompt_embeds] = (
@@ -142,8 +144,10 @@ def encode_prompt_compel_sdxl(
     prompt_embeds, prompt_pooled = compel(prompt)
 
     negative_pooled = None
-    if negative_prompt is not None:
-        negative_prompt_embeds, negative_pooled = compel(negative_prompt)
+    if negative_prompt is None:
+        negative_prompt = ""
+
+    negative_prompt_embeds, negative_pooled = compel(negative_prompt)
 
     if negative_prompt_embeds is not None:
         [prompt_embeds, negative_prompt_embeds] = (
