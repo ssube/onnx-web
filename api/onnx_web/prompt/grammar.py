@@ -99,7 +99,7 @@ def prompt():
     return OneOrMore(phrase), EOF
 
 
-class PromptPhrase:
+class PhraseNode:
     def __init__(self, tokens: Union[List[str], str], weight: float = 1.0) -> None:
         self.tokens = tokens
         self.weight = weight
@@ -114,20 +114,20 @@ class PromptPhrase:
         return False
 
 
-class PromptToken:
-    def __init__(self, token_type: str, token_name: str, *rest):
-        self.token_type = token_type
-        self.token_name = token_name
+class TokenNode:
+    def __init__(self, type: str, name: str, *rest):
+        self.type = type
+        self.name = name
         self.rest = rest
 
     def __repr__(self) -> str:
-        return f"<{self.token_type}:{self.token_name}:{self.rest}>"
+        return f"<{self.type}:{self.name}:{self.rest}>"
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, self.__class__):
             return (
-                other.token_type == self.token_type
-                and other.token_name == self.token_name
+                other.type == self.type
+                and other.name == self.name
                 and other.rest == self.rest
             )
 
@@ -151,44 +151,44 @@ class OnnxPromptVisitor(PTNodeVisitor):
         return str(node.value)
 
     def visit_token_clip_skip(self, node, children):
-        return PromptToken("clip", "skip", children[0])
+        return TokenNode("clip", "skip", children[0])
 
     def visit_token_inversion(self, node, children):
-        return PromptToken("inversion", children[0][0], children[1])
+        return TokenNode("inversion", children[0][0], children[1])
 
     def visit_token_lora(self, node, children):
-        return PromptToken("lora", children[0][0], children[1])
+        return TokenNode("lora", children[0][0], children[1])
 
     def visit_token_region(self, node, children):
-        return PromptToken("region", None, children)
+        return TokenNode("region", None, children)
 
     def visit_token_reseed(self, node, children):
-        return PromptToken("reseed", None, children)
+        return TokenNode("reseed", None, children)
 
     def visit_token_run(self, node, children):
         return children
 
     def visit_phrase_inner(self, node, children):
-        if isinstance(children[0], PromptPhrase):
+        if isinstance(children[0], PhraseNode):
             return children[0]
-        elif isinstance(children[0], PromptToken):
+        elif isinstance(children[0], TokenNode):
             return children[0]
         else:
-            return PromptPhrase(children[0])
+            return PhraseNode(children[0])
 
     def visit_pos_phrase(self, node, children):
         c = children[0]
-        if isinstance(c, PromptPhrase):
-            return PromptPhrase(c.tokens, c.weight * self.pos_weight)
+        if isinstance(c, PhraseNode):
+            return PhraseNode(c.tokens, c.weight * self.pos_weight)
         elif isinstance(c, str):
-            return PromptPhrase(c, self.pos_weight)
+            return PhraseNode(c, self.pos_weight)
 
     def visit_neg_phrase(self, node, children):
         c = children[0]
-        if isinstance(c, PromptPhrase):
-            return PromptPhrase(c.tokens, c.weight * self.neg_weight)
+        if isinstance(c, PhraseNode):
+            return PhraseNode(c.tokens, c.weight * self.neg_weight)
         elif isinstance(c, str):
-            return PromptPhrase(c, self.neg_weight)
+            return PhraseNode(c, self.neg_weight)
 
     def visit_phrase(self, node, children):
         return children[0]
