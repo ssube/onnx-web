@@ -447,6 +447,7 @@ export function makeClient(root: string, batchInterval: number, token: Maybe<str
       const json = makeImageJSON({
         model,
         base: params,
+        border: params,
         upscale,
         highres,
         inpaint: params,
