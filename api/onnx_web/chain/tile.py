@@ -172,6 +172,7 @@ def blend_tiles(
     )
 
     channels = max([get_channels(tile_image) for _left, _top, tile_image in tiles])
+    channels = min(channels, 3)  # remove alpha channels for now
     scaled_size = (height * scale, width * scale, channels)
 
     count = np.zeros(scaled_size)
@@ -181,13 +182,10 @@ def blend_tiles(
         equalized = np.array(tile_image).astype(np.float32)
         mask = np.ones_like(equalized[:, :, 0])
 
-        # match channels by adding an alpha channel
-        if equalized.shape[-1] < value.shape[-1]:
-            logger.debug("adding alpha channel to tile")
-            alpha = np.ones_like(equalized[:, :, 0]) * 255.0
-            equalized = np.concatenate(
-                [equalized, np.expand_dims(alpha, axis=-1)], axis=-1
-            )
+        # match channels by removing the alpha channel, if present
+        if equalized.shape[-1] > value.shape[-1]:
+            logger.debug("removing alpha channel from tile")
+            equalized = equalized[:, :, :channels]
 
         if adj_tile < tile:
             # sort gradient points
@@ -241,7 +239,7 @@ def blend_tiles(
         ] += equalized[
             margin_top : equalized.shape[0] + margin_bottom,
             margin_left : equalized.shape[1] + margin_right,
-            :,
+            :channels,
         ]
         count[
             writable_top:writable_bottom, writable_left:writable_right, :
