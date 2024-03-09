@@ -19,7 +19,7 @@ from ..server import ServerContext
 from ..utils import is_debug
 from ..worker import ProgressCallback, WorkerContext
 from .base import BaseStage
-from .result import StageResult
+from .result import ImageMetadata, StageResult
 
 logger = getLogger(__name__)
 
@@ -123,4 +123,11 @@ class UpscaleOutpaintStage(BaseStage):
 
             outputs.extend(result.images)
 
-        return StageResult(images=outputs, metadata=sources.metadata)
+        metadata = [
+            ImageMetadata(
+                params, size, inversions=inversions, loras=loras, ancestors=[source]
+            )
+            for source in sources.metadata
+        ]
+
+        return StageResult(images=outputs, metadata=metadata)
