@@ -203,7 +203,7 @@ class ChainPipeline:
                             )
 
                             if is_debug():
-                                for j, image in enumerate(tile_result.as_image()):
+                                for j, image in enumerate(tile_result.as_images()):
                                     save_image(server, f"last-tile-{j}.png", image)
 
                             worker.set_tiles(current=progress[0], total=progress[1])
@@ -224,7 +224,7 @@ class ChainPipeline:
 
                     raise RetryException("exhausted retries on tile")
 
-                stage_results = process_tile_order(
+                stage_result = process_tile_order(
                     stage_params.tile_order,
                     stage_sources,
                     tile,
@@ -233,8 +233,7 @@ class ChainPipeline:
                     **kwargs,
                 )
 
-                metadata = stage_sources.metadata
-                stage_sources = StageResult(images=stage_results, metadata=metadata)
+                stage_sources = stage_result
             else:
                 logger.debug(
                     "image does not contain sources and is within tile size of %s, running stage",
