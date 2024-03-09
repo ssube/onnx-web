@@ -61,6 +61,7 @@ class UpscaleOutpaintStage(BaseStage):
             loras=loras,
         )
 
+        sizes = []
         outputs = []
         for source in sources.as_images():
             if is_debug():
@@ -121,13 +122,14 @@ class UpscaleOutpaintStage(BaseStage):
                     callback=callback,
                 )
 
+            sizes.extend([size] * len(result.images))
             outputs.extend(result.images)
 
         metadata = [
             ImageMetadata(
                 params, size, inversions=inversions, loras=loras, ancestors=[source]
             )
-            for source in sources.metadata
+            for size, source in zip(sizes, sources.metadata)
         ]
 
         return StageResult(images=outputs, metadata=metadata)
