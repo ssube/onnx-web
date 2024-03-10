@@ -54,6 +54,7 @@ def compile_prompt_onnx(prompt: str) -> Prompt:
     ast = parse_prompt_onnx(None, prompt)
 
     tokens = [node for node in ast if isinstance(node, TokenNode)]
+    clip_skip = [token.rest[0] for token in tokens if token.type == "clip"]
     networks = [
         PromptNetwork(token.type, token.name, token.rest[0])
         for token in tokens
@@ -68,6 +69,7 @@ def compile_prompt_onnx(prompt: str) -> Prompt:
         if isinstance(node, (list, PhraseNode, str))
     ]
     phrases = list(flatten(phrases))
+    # TODO: collapse phrases with the same weight
 
     return Prompt(
         networks=networks,
@@ -75,6 +77,7 @@ def compile_prompt_onnx(prompt: str) -> Prompt:
         negative_phrases=[],
         region_prompts=regions,
         region_seeds=reseeds,
+        clip_skip=next(iter(clip_skip), 0),
     )
 
 
@@ -83,7 +86,7 @@ def compile_prompt_phrase(node: Union[PhraseNode, str]) -> PromptPhrase:
         return [compile_prompt_phrase(subnode) for subnode in node]
 
     if isinstance(node, str):
-        return PromptPhrase(node)
+        return PromptPhrase([node])
 
     return PromptPhrase(node.tokens, node.weight)
 

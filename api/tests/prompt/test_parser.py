@@ -11,9 +11,9 @@ class ParserTests(unittest.TestCase):
         self.assertListEqual(
             res,
             [
-                ["foo"],
+                PhraseNode(["foo"]),
                 PhraseNode(["bar"], weight=1.5),
-                ["bin"],
+                PhraseNode(["bin"]),
             ],
         )
 
@@ -22,9 +22,9 @@ class ParserTests(unittest.TestCase):
         self.assertListEqual(
             res,
             [
-                ["foo", "bar"],
+                PhraseNode(["foo", "bar"]),
                 PhraseNode(["middle", "words"], weight=1.5),
-                ["bin", "bun"],
+                PhraseNode(["bin", "bun"]),
             ],
         )
 
@@ -33,9 +33,9 @@ class ParserTests(unittest.TestCase):
         self.assertListEqual(
             res,
             [
-                ["foo"],
+                PhraseNode(["foo"]),
                 PhraseNode(["bar"], weight=(1.5**3)),
-                ["bin"],
+                PhraseNode(["bin"]),
             ],
         )
 
@@ -44,9 +44,9 @@ class ParserTests(unittest.TestCase):
         self.assertListEqual(
             res,
             [
-                ["foo"],
+                PhraseNode(["foo"]),
                 TokenNode("clip", "skip", 2),
-                ["bin"],
+                PhraseNode(["bin"]),
             ],
         )
 
@@ -55,9 +55,9 @@ class ParserTests(unittest.TestCase):
         self.assertListEqual(
             res,
             [
-                ["foo"],
+                PhraseNode(["foo"]),
                 TokenNode("lora", "name", 1.5),
-                ["bin"],
+                PhraseNode(["bin"]),
             ],
         )
 
@@ -68,9 +68,9 @@ class ParserTests(unittest.TestCase):
         self.assertListEqual(
             res,
             [
-                ["foo"],
+                PhraseNode(["foo"]),
                 TokenNode("region", None, [1, 2, 3, 4, 0.5, 0.75, ["prompt"]]),
-                ["bin"],
+                PhraseNode(["bin"]),
             ],
         )
 
@@ -79,20 +79,38 @@ class ParserTests(unittest.TestCase):
         self.assertListEqual(
             res,
             [
-                ["foo"],
+                PhraseNode(["foo"]),
                 TokenNode("reseed", None, [1, 2, 3, 4, 12345]),
-                ["bin"],
+                PhraseNode(["bin"]),
             ],
         )
 
-    def test_compile_basic(self):
+    def test_compile_tokens(self):
         prompt = compile_prompt_onnx("foo <clip:skip:2> bar (baz) <lora:qux:1.5>")
+
+        self.assertEqual(prompt.clip_skip, 2)
         self.assertEqual(prompt.networks, [PromptNetwork("lora", "qux", 1.5)])
         self.assertEqual(
             prompt.positive_phrases,
             [
-                PromptPhrase("foo"),
-                PromptPhrase("bar"),
+                PromptPhrase(["foo"]),
+                PromptPhrase(["bar"]),
                 PromptPhrase(["baz"], weight=1.5),
+            ],
+        )
+
+    def test_compile_weights(self):
+        prompt = compile_prompt_onnx("foo ((bar)) baz [[qux]] bun ([nest] me)")
+
+        self.assertEqual(
+            prompt.positive_phrases,
+            [
+                PromptPhrase(["foo"]),
+                PromptPhrase(["bar"], weight=2.25),
+                PromptPhrase(["baz"]),
+                PromptPhrase(["qux"], weight=0.25),
+                PromptPhrase(["bun"]),
+                PromptPhrase(["nest"], weight=0.75),
+                PromptPhrase(["me"], weight=1.5),
             ],
         )

@@ -169,29 +169,85 @@ class OnnxPromptVisitor(PTNodeVisitor):
         return children
 
     def visit_phrase_inner(self, node, children):
-        if isinstance(children[0], PhraseNode):
-            return children[0]
-        elif isinstance(children[0], TokenNode):
-            return children[0]
-        else:
-            return PhraseNode(children[0])
+        return [
+            (
+                child
+                if isinstance(child, (PhraseNode, TokenNode, list))
+                else PhraseNode(child)
+            )
+            for child in children
+        ]
 
     def visit_pos_phrase(self, node, children):
-        c = children[0]
-        if isinstance(c, PhraseNode):
-            return PhraseNode(c.tokens, c.weight * self.pos_weight)
-        elif isinstance(c, str):
-            return PhraseNode(c, self.pos_weight)
+        print("positive phrase", len(children), children)
+
+        return parse_phrase(children, self.pos_weight)
 
     def visit_neg_phrase(self, node, children):
-        c = children[0]
-        if isinstance(c, PhraseNode):
-            return PhraseNode(c.tokens, c.weight * self.neg_weight)
-        elif isinstance(c, str):
-            return PhraseNode(c, self.neg_weight)
+        print("negative phrase", len(children), children)
+
+        return parse_phrase(children, self.neg_weight)
 
     def visit_phrase(self, node, children):
-        return children[0]
+        return list(flatten(children))
 
     def visit_prompt(self, node, children):
-        return children
+        return collapse_phrases(list(flatten(children)))
+
+
+def parse_phrase(child, weight):
+    if isinstance(child, PhraseNode):
+        return PhraseNode(child.tokens, child.weight * weight)
+    elif isinstance(child, str):
+        return PhraseNode([child], weight)
+    elif isinstance(child, list):
+        # TODO: when this is a list of strings, create a single node with all of them
+        # if all(isinstance(c, str) for c in child):
+        #     return PhraseNode(child, weight)
+
+        return [parse_phrase(c, weight) for c in child]
+
+
+def flatten(lst):
+    for el in lst:
+        if isinstance(el, list):
+            yield from flatten(el)
+        else:
+            yield el
+
+
+def collapse_phrases(
+    nodes: List[Union[PhraseNode, str]]
+) -> List[Union[PhraseNode, str]]:
+    """
+    Combine phrases with the same weight.
+    """
+
+    weight = None
+    tokens = []
+    phrases = []
+
+    def flush_tokens():
+        nonlocal weight, tokens
+        if len(tokens) > 0:
+            phrases.append(PhraseNode(tokens, weight))
+            tokens = []
+            weight = None
+
+    for node in nodes:
+        if isinstance(node, str):
+            node = PhraseNode([node])
+        elif isinstance(node, TokenNode):
+            flush_tokens()
+            phrases.append(node)
+            continue
+
+        if node.weight == weight:
+            tokens.extend(node.tokens)
+        else:
+            flush_tokens()
+            tokens = [*node.tokens]
+            weight = node.weight
+
+    flush_tokens()
+    return phrases

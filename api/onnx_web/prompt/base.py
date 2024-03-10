@@ -110,6 +110,7 @@ class PromptSeed:
 
 
 class Prompt:
+    clip_skip: int
     networks: List[PromptNetwork]
     positive_phrases: List[PromptPhrase]
     negative_phrases: List[PromptPhrase]
@@ -123,12 +124,14 @@ class Prompt:
         negative_phrases: List[PromptPhrase],
         region_prompts: List[PromptRegion],
         region_seeds: List[PromptSeed],
+        clip_skip: int,
     ) -> None:
         self.positive_phrases = positive_phrases
         self.negative_prompt = negative_phrases
         self.networks = networks or []
         self.region_prompts = region_prompts or []
         self.region_seeds = region_seeds or []
+        self.clip_skip = clip_skip
 
     def __eq__(self, other: object) -> bool:
         return (
@@ -138,7 +141,8 @@ class Prompt:
             and other.negative_phrases == self.negative_phrases
             and other.region_prompts == self.region_prompts
             and other.region_seeds == self.region_seeds
+            and other.clip_skip == self.clip_skip
         )
 
     def __repr__(self) -> str:
-        return f"Prompt({self.networks}, {self.positive_phrases}, {self.negative_phrases}, {self.region_prompts}, {self.region_seeds})"
+        return f"Prompt({self.networks}, {self.positive_phrases}, {self.negative_phrases}, {self.region_prompts}, {self.region_seeds}, {self.clip_skip})"

@@ -125,24 +125,28 @@ class TestGenerateTileSpiral(unittest.TestCase):
 class TestProcessTileStack(unittest.TestCase):
     def test_grid_full(self):
         source = Image.new("RGB", (64, 64))
-        blend = process_tile_stack(
+        result = process_tile_stack(
             StageResult(images=[source], metadata=[ImageMetadata.unknown_image()]),
             32,
             1,
             [],
             generate_tile_grid,
         )
+        images = result.as_images()
 
-        self.assertEqual(blend[0].size, (64, 64))
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0].size, (64, 64))
 
     def test_grid_partial(self):
         source = Image.new("RGB", (72, 72))
-        blend = process_tile_stack(
+        result = process_tile_stack(
             StageResult(images=[source], metadata=[ImageMetadata.unknown_image()]),
             32,
             1,
             [],
             generate_tile_grid,
         )
+        images = result.as_images()
 
-        self.assertEqual(blend[0].size, (72, 72))
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0].size, (72, 72))
