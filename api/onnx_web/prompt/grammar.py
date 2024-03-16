@@ -181,13 +181,9 @@ class OnnxPromptVisitor(PTNodeVisitor):
         ]
 
     def visit_pos_phrase(self, node, children):
-        print("positive phrase", len(children), children)
-
         return parse_phrase(children, self.pos_weight)
 
     def visit_neg_phrase(self, node, children):
-        print("negative phrase", len(children), children)
-
         return parse_phrase(children, self.neg_weight)
 
     def visit_phrase(self, node, children):

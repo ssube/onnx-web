@@ -50,7 +50,6 @@ def wrap_encoder(text_encoder):
                 )
             elif output_hidden_states is True:
                 hidden_states = [torch.from_numpy(state) for state in outputs[2:]]
-                print("outputs", outputs)
                 return SimpleNamespace(
                     last_hidden_state=torch.from_numpy(outputs[0]),
                     pooler_output=torch.from_numpy(outputs[1]),
