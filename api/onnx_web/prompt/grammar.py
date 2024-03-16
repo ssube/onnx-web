@@ -2,6 +2,8 @@ from typing import List, Union
 
 from arpeggio import EOF, OneOrMore, PTNodeVisitor, RegExMatch
 
+from .utils import collapse_phrases, flatten
+
 
 def token_delimiter():
     return ":"
@@ -192,7 +194,7 @@ class OnnxPromptVisitor(PTNodeVisitor):
         return list(flatten(children))
 
     def visit_prompt(self, node, children):
-        return collapse_phrases(list(flatten(children)))
+        return collapse_phrases(list(flatten(children)), PhraseNode, TokenNode)
 
 
 def parse_phrase(child, weight):
@@ -206,48 +208,3 @@ def parse_phrase(child, weight):
         #     return PhraseNode(child, weight)
 
         return [parse_phrase(c, weight) for c in child]
-
-
-def flatten(lst):
-    for el in lst:
-        if isinstance(el, list):
-            yield from flatten(el)
-        else:
-            yield el
-
-
-def collapse_phrases(
-    nodes: List[Union[PhraseNode, str]]
-) -> List[Union[PhraseNode, str]]:
-    """
-    Combine phrases with the same weight.
-    """
-
-    weight = None
-    tokens = []
-    phrases = []
-
-    def flush_tokens():
-        nonlocal weight, tokens
-        if len(tokens) > 0:
-            phrases.append(PhraseNode(tokens, weight))
-            tokens = []
-            weight = None
-
-    for node in nodes:
-        if isinstance(node, str):
-            node = PhraseNode([node])
-        elif isinstance(node, TokenNode):
-            flush_tokens()
-            phrases.append(node)
-            continue
-
-        if node.weight == weight:
-            tokens.extend(node.tokens)
-        else:
-            flush_tokens()
-            tokens = [*node.tokens]
-            weight = node.weight
-
-    flush_tokens()
-    return phrases

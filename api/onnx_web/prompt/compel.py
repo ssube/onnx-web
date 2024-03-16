@@ -10,13 +10,13 @@ from ..diffusers.utils import split_clip_skip
 
 
 def get_inference_session(model):
-    if hasattr(model, "session"):
+    if hasattr(model, "session") and model.session is not None:
         return model.session
 
-    if hasattr(model, "model"):
+    if hasattr(model, "model") and model.model is not None:
         return model.model
 
-    raise ValueError("Model does not have an inference session")
+    raise ValueError("model does not have an inference session")
 
 
 def wrap_encoder(text_encoder):
@@ -50,6 +50,7 @@ def wrap_encoder(text_encoder):
                 )
             elif output_hidden_states is True:
                 hidden_states = [torch.from_numpy(state) for state in outputs[2:]]
+                print("outputs", outputs)
                 return SimpleNamespace(
                     last_hidden_state=torch.from_numpy(outputs[0]),
                     pooler_output=torch.from_numpy(outputs[1]),
@@ -125,7 +126,7 @@ def encode_prompt_compel_sdxl(
     prompt: Union[str, List[str]],
     num_images_per_prompt: int,
     do_classifier_free_guidance: bool,
-    negative_prompt: Optional[Union[str, list]],
+    negative_prompt: Optional[Union[str, list]] = None,
     prompt_embeds: Optional[np.ndarray] = None,
     negative_prompt_embeds: Optional[np.ndarray] = None,
     pooled_prompt_embeds: Optional[np.ndarray] = None,

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Any, List, Optional, Union
 
 
 class PromptNetwork:
@@ -127,7 +127,7 @@ class Prompt:
         clip_skip: int,
     ) -> None:
         self.positive_phrases = positive_phrases
-        self.negative_prompt = negative_phrases
+        self.negative_phrases = negative_phrases
         self.networks = networks or []
         self.region_prompts = region_prompts or []
         self.region_seeds = region_seeds or []
@@ -146,3 +146,45 @@ class Prompt:
 
     def __repr__(self) -> str:
         return f"Prompt({self.networks}, {self.positive_phrases}, {self.negative_phrases}, {self.region_prompts}, {self.region_seeds}, {self.clip_skip})"
+
+    def collapse_runs(self) -> None:
+        self.positive_phrases = collapse_phrases(self.positive_phrases)
+        self.negative_phrases = collapse_phrases(self.negative_phrases)
+
+
+def collapse_phrases(
+    nodes: List[Union[Any]],
+) -> List[Union[Any]]:
+    """
+    Combine phrases with the same weight.
+    """
+
+    weight = None
+    tokens = []
+    phrases = []
+
+    def flush_tokens():
+        nonlocal weight, tokens
+        if len(tokens) > 0:
+            phrase = " ".join(tokens)
+            phrases.append(PromptPhrase([phrase], weight))
+            tokens = []
+            weight = None
+
+    for node in nodes:
+        if isinstance(node, str):
+            node = PromptPhrase(node)
+        elif isinstance(node, (PromptNetwork, PromptRegion, PromptSeed)):
+            flush_tokens()
+            phrases.append(node)
+            continue
+
+        if node.weight == weight:
+            tokens.extend(node.phrase)
+        else:
+            flush_tokens()
+            tokens = node.phrase
+            weight = node.weight
+
+    flush_tokens()
+    return phrases

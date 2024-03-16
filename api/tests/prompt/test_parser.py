@@ -114,3 +114,15 @@ class ParserTests(unittest.TestCase):
                 PromptPhrase(["me"], weight=1.5),
             ],
         )
+
+    def test_compile_runs(self):
+        prompt = compile_prompt_onnx("foo <clip:skip:2> bar (baz) <lora:qux:1.5>")
+        prompt.collapse_runs()
+
+        self.assertEqual(
+            prompt.positive_phrases,
+            [
+                PromptPhrase(["foo bar"]),
+                PromptPhrase(["baz"], weight=1.5),
+            ],
+        )
