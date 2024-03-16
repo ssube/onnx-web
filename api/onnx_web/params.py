@@ -473,13 +473,19 @@ class UpscaleParams:
         )
 
     def resize(self, size: Size) -> Size:
-        face_outscale = self.face_outscale
-        if self.upscale_order == "correction-both":
-            face_outscale *= self.face_outscale
+        face_outscale = 1
+        if self.faces:
+            face_outscale = self.face_outscale
+            if self.upscale_order == "correction-both":
+                face_outscale *= self.face_outscale
+
+        upscale_outscale = 1
+        if self.upscale:
+            upscale_outscale = self.outscale
 
         return Size(
-            size.width * self.outscale * face_outscale,
-            size.height * self.outscale * face_outscale,
+            size.width * face_outscale * upscale_outscale,
+            size.height * face_outscale * upscale_outscale,
         )
 
     def tojson(self):
