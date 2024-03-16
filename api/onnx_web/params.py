@@ -68,7 +68,7 @@ class Border:
         bottom: Optional[int] = None,
         **kwargs,
     ):
-        logger.debug("ignoring extra kwargs for border: %s", kwargs)
+        logger.debug("ignoring extra kwargs for border: %s", list(kwargs.keys()))
         return Border(
             left or self.left,
             right or self.right,
@@ -128,7 +128,7 @@ class Size:
         width: Optional[int] = None,
         **kwargs,
     ):
-        logger.debug("ignoring extra kwargs for size: %s", kwargs)
+        logger.debug("ignoring extra kwargs for size: %s", list(kwargs.keys()))
         return Size(
             width or self.width,
             height or self.height,
@@ -418,7 +418,7 @@ class StageParams:
         tile_size: Optional[int] = None,
         **kwargs,
     ):
-        logger.debug("ignoring extra kwargs for stage: %s", kwargs)
+        logger.debug("ignoring extra kwargs for stage: %s", list(kwargs.keys()))
         return StageParams(
             name=coalesce(name, self.name),
             outscale=coalesce(outscale, self.outscale),
@@ -520,7 +520,7 @@ class UpscaleParams:
         upscale_order: Optional[UpscaleOrder] = None,
         **kwargs,
     ):
-        logger.debug("ignoring extra kwargs for upscale: %s", kwargs)
+        logger.debug("ignoring extra kwargs for upscale: %s", list(kwargs.keys()))
         return UpscaleParams(
             upscale_model=coalesce(upscale_model, self.upscale_model),
             correction_model=coalesce(correction_model, self.correction_model),
@@ -584,7 +584,7 @@ class HighresParams:
         iterations: Optional[int] = None,
         **kwargs,
     ):
-        logger.debug("ignoring extra kwargs for highres: %s", kwargs)
+        logger.debug("ignoring extra kwargs for highres: %s", list(kwargs.keys()))
         return HighresParams(
             enabled=coalesce(enabled, self.enabled),
             scale=coalesce(scale, self.scale),

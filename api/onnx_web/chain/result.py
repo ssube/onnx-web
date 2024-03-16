@@ -265,7 +265,7 @@ class ImageMetadata:
         ancestors: Optional[List["ImageMetadata"]] = None,
         **kwargs,
     ) -> "ImageMetadata":
-        logger.info("ignoring extra kwargs for metadata: %s", kwargs)
+        logger.info("ignoring extra kwargs for metadata: %s", list(kwargs.keys()))
         return ImageMetadata(
             params or self.params,
             size or self.size,
