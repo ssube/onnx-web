@@ -27,7 +27,7 @@ export function GridItem(props: { xs: number; children: React.ReactNode }) {
 
 export function ImageCard(props: ImageCardProps) {
   const { image } = props;
-  const { metadata, outputs, thumbnails } = image;
+  const { metadata, outputs } = image;
 
   const [_hash, setHash] = useHash();
   const [blendAnchor, setBlendAnchor] = useState<Maybe<HTMLElement>>();
@@ -110,6 +110,16 @@ export function ImageCard(props: ImageCardProps) {
   const outputURL = useMemo(() => client.outputURL(image, index), [image, index]);
   const thumbnailURL = useMemo(() => client.thumbnailURL(image, index), [image, index]);
   const previewURL = thumbnailURL ?? outputURL;
+
+  if (metadata.length === 0) {
+    return <Card sx={{ maxWidth: config.params.width.default }} elevation={2}>
+      <CardContent>
+        <Box textAlign='center'>
+          <Typography>{t('error.emptyResult')}</Typography>
+        </Box>
+      </CardContent>
+    </Card>;
+  }
 
   const model = getLabel('model', metadata[index].models[0].name);
   const scheduler = getLabel('scheduler', metadata[index].params.scheduler);
