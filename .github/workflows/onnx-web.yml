@@ -1,0 +1,345 @@
+name: bob/onnx-web
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  github-pending:
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:large
+    container:
+      image: docker.io/python:3.10
+    env:
+      PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - run: "./common/scripts/github-status.sh pending"
+  build-api-coverage-3-10:
+    needs: github-pending
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:large
+    container:
+      image: docker.io/python:3.10
+    env:
+      PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: actions/cache@v3.3.2
+      with:
+        path: ".cache/pip"
+        key: python-3-10
+    - run: apt-get -y update && apt-get -y install python3-opencv
+    - run: cd api
+    - run: "${{ github.workspace }}/common/scripts/make-venv.sh"
+    - run: make ci
+  build-api-coverage-3-9:
+    needs: github-pending
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:large
+    container:
+      image: docker.io/python:3.9
+    env:
+      PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: actions/cache@v3.3.2
+      with:
+        path: ".cache/pip"
+        key: python-3-9
+    - run: apt-get -y update && apt-get -y install python3-opencv
+    - run: cd api
+    - run: "${{ github.workspace }}/common/scripts/make-venv.sh"
+    - run: make ci
+  build-api-coverage-3-8:
+    needs: github-pending
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:large
+    container:
+      image: docker.io/python:3.8
+    env:
+      PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: actions/cache@v3.3.2
+      with:
+        path: ".cache/pip"
+        key: python-3-8
+    - run: apt-get -y update && apt-get -y install python3-opencv
+    - run: cd api
+    - run: "${{ github.workspace }}/common/scripts/make-venv.sh"
+    - run: make ci
+  build-gui-bundle:
+    needs: github-pending
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:shared
+    container:
+      image: docker.io/node:18
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: actions/cache@v3.3.2
+      with:
+        path: gui/node_modules/
+        key: "${{ runner.os }}-${{ hashFiles('gui/yarn.lock') }}"
+    - run: cd gui
+    - run: make ci
+#     # 'artifacts.coverage_report' was not transformed because there is no suitable equivalent in GitHub Actions
+#     # 'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions
+    - uses: actions/upload-artifact@v4.1.0
+      if: success()
+      with:
+        name: "${{ github.job }}"
+        retention-days: 1
+        path: gui/out/
+  package-api-oci:
+    needs:
+    - build-api-coverage-3-8
+    - build-api-coverage-3-9
+    - build-api-coverage-3-10
+    - build-gui-bundle
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:large
+    container:
+      image: docker.io/docker:20.10
+    services:
+      docker.io/docker:20.10-dind:
+        image: docker.io/docker:20.10-dind
+    env:
+      DOCKER_CERT_PATH: "/shared/docker/client"
+      DOCKER_DRIVER: overlay2
+      DOCKER_HOST: tcp://localhost:2376
+      DOCKER_NAME: "${{ github.repository }}"
+      DOCKER_TLS_CERTDIR: "/shared/docker"
+      DOCKER_TLS_VERIFY: 1
+      VERSION_TAG: "${{ github.ref }}"
+      IMAGE_ROOT: "${{ github.workspace }}"
+      IMAGE_SUFFIX: api
+    strategy:
+      matrix:
+        include:
+        - IMAGE_ARCH: cpu-buster
+          IMAGE_FILE: api/Containerfile.cpu.buster
+        - IMAGE_ARCH: cuda-ubuntu
+          IMAGE_FILE: api/Containerfile.cuda.ubuntu
+        - IMAGE_ARCH: rocm-ubuntu
+          IMAGE_FILE: api/Containerfile.rocm.ubuntu
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: actions/download-artifact@v4.1.0
+    - run: mkdir ${HOME}/.docker
+    - run: echo "${DOCKER_SECRET}" | base64 -d > ${HOME}/.docker/config.json
+    - run: "${{ github.workspace }}/common/scripts/image-build.sh --push"
+    - run: rm -rfv ${HOME}/.docker
+      if: always()
+  package-gui-oci:
+    needs: build-gui-bundle
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:large
+    container:
+      image: docker.io/docker:20.10
+    services:
+      docker.io/docker:20.10-dind:
+        image: docker.io/docker:20.10-dind
+    env:
+      DOCKER_CERT_PATH: "/shared/docker/client"
+      DOCKER_DRIVER: overlay2
+      DOCKER_HOST: tcp://localhost:2376
+      DOCKER_NAME: "${{ github.repository }}"
+      DOCKER_TLS_CERTDIR: "/shared/docker"
+      DOCKER_TLS_VERIFY: 1
+      VERSION_TAG: "${{ github.ref }}"
+      IMAGE_ROOT: "${{ github.workspace }}/gui"
+      IMAGE_SUFFIX: gui
+    strategy:
+      matrix:
+        include:
+        - IMAGE_ARCH: nginx-alpine
+          IMAGE_FILE: Containerfile.nginx.alpine
+        - IMAGE_ARCH: nginx-bullseye
+          IMAGE_FILE: Containerfile.nginx.bullseye
+        - IMAGE_ARCH: node-alpine
+          IMAGE_FILE: Containerfile.node.alpine
+        - IMAGE_ARCH: node-buster
+          IMAGE_FILE: Containerfile.node.buster
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: actions/download-artifact@v4.1.0
+    - run: mkdir ${HOME}/.docker
+    - run: echo "${DOCKER_SECRET}" | base64 -d > ${HOME}/.docker/config.json
+    - run: cd gui
+    - run: "${{ github.workspace }}/common/scripts/image-build.sh --push"
+    - run: rm -rfv ${HOME}/.docker
+      if: always()
+  package-api-twine:
+    needs:
+    - build-api-coverage-3-8
+    - build-api-coverage-3-10
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:large
+    container:
+      image: docker.io/python:3.10
+    if: startsWith(github.ref, 'refs/tags')
+    env:
+      PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: actions/cache@v3.3.2
+      with:
+        path: ".cache/pip"
+        key: "${{ runner.os }}-${{ hashFiles('api/requirements/dev.txt') }}"
+    - uses: actions/download-artifact@v4.1.0
+    - run: echo "${PIP_SECRET}" | base64 -d > $HOME/.pypirc
+    - run: cp -v README.md api/README.md
+    - run: cd api
+    - run: pip3 install -r requirements/dev.txt
+    - run: python3 -m build
+    - run: twine check dist/*
+    - run: twine upload --repository onnx-web dist/*
+    - uses: actions/upload-artifact@v4.1.0
+      if: success()
+      with:
+        name: "${{ github.job }}"
+        retention-days: 7
+        path: dist/
+  package-api-twine-dry:
+    needs:
+    - build-api-coverage-3-8
+    - build-api-coverage-3-10
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:large
+    container:
+      image: docker.io/python:3.10
+    if: !(startsWith(github.ref, 'refs/tags'))
+    env:
+      PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: actions/cache@v3.3.2
+      with:
+        path: ".cache/pip"
+        key: "${{ runner.os }}-${{ hashFiles('api/requirements/dev.txt') }}"
+    - uses: actions/download-artifact@v4.1.0
+    - run: cp -v README.md api/README.md
+    - run: cd api
+    - run: pip install build twine
+    - run: python -m build
+    - run: twine check dist/*
+    - uses: actions/upload-artifact@v4.1.0
+      if: success()
+      with:
+        name: "${{ github.job }}"
+        retention-days: 7
+        path: dist/
+  package-gui-npm:
+    needs: build-gui-bundle
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:shared
+    container:
+      image: docker.io/node:18
+    if: startsWith(github.ref, 'refs/tags')
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: actions/cache@v3.3.2
+      with:
+        path: gui/node_modules/
+        key: "${{ runner.os }}-${{ hashFiles('gui/yarn.lock') }}"
+    - uses: actions/download-artifact@v4.1.0
+    - run: echo "${NPM_SECRET}" | base64 -d > $HOME/.npmrc
+    - run: cp -v README.md gui/README.md
+    - run: cd gui
+    - run: npm publish
+#     # 'artifacts.coverage_report' was not transformed because there is no suitable equivalent in GitHub Actions
+#     # 'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions
+    - uses: actions/upload-artifact@v4.1.0
+      if: success()
+      with:
+        name: "${{ github.job }}"
+        retention-days: 7
+        path: "${{ github.workspace }}/*.tgz"
+  package-gui-npm-dry:
+    needs: build-gui-bundle
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:shared
+    container:
+      image: docker.io/node:18
+    if: !(startsWith(github.ref, 'refs/tags'))
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: actions/cache@v3.3.2
+      with:
+        path: gui/node_modules/
+        key: "${{ runner.os }}-${{ hashFiles('gui/yarn.lock') }}"
+    - uses: actions/download-artifact@v4.1.0
+    - run: cp -v README.md gui/README.md
+    - run: cd gui
+    - run: npm pack
+#     # 'artifacts.coverage_report' was not transformed because there is no suitable equivalent in GitHub Actions
+#     # 'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions
+    - uses: actions/upload-artifact@v4.1.0
+      if: success()
+      with:
+        name: "${{ github.job }}"
+        retention-days: 7
+        path: "${{ github.workspace }}/*.tgz"
+  github-failure:
+    needs:
+    - package-api-oci
+    - package-gui-oci
+    - package-api-twine
+    - package-api-twine-dry
+    - package-gui-npm
+    - package-gui-npm-dry
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:large
+    container:
+      image: docker.io/python:3.10
+    if: failure()
+    env:
+      PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: actions/download-artifact@v4.1.0
+    - run: "./common/scripts/github-status.sh failure"
+  github-success:
+    needs:
+    - package-api-oci
+    - package-gui-oci
+    - package-api-twine
+    - package-api-twine-dry
+    - package-gui-npm
+    - package-gui-npm-dry
+    runs-on:
+      - self-hosted
+      - platform:k8s
+      - runner:large
+    container:
+      image: docker.io/python:3.10
+    if: success()
+    env:
+      PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: actions/download-artifact@v4.1.0
+    - run: "./common/scripts/github-status.sh success"
