@@ -225,7 +225,7 @@ jobs:
       - runner:large
     container:
       image: docker.io/python:3.10
-    if: !(startsWith(github.ref, 'refs/tags'))
+    if: "!(startsWith(github.ref, 'refs/tags'))"
     env:
       PIP_CACHE_DIR: "${{ github.workspace }}/.cache/pip"
     steps:
@@ -282,7 +282,7 @@ jobs:
       - runner:shared
     container:
       image: docker.io/node:18
-    if: !(startsWith(github.ref, 'refs/tags'))
+    if: "!(startsWith(github.ref, 'refs/tags'))"
     steps:
     - uses: actions/checkout@v4.1.0
     - uses: actions/cache@v3.3.2
