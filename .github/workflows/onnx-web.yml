@@ -1,13 +1,11 @@
-name: bob/onnx-web
+name: build
 on:
   push:
   workflow_dispatch:
 jobs:
   github-pending:
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:large
+      - ubuntu-latest
     container:
       image: docker.io/python:3.10
     env:
@@ -18,9 +16,7 @@ jobs:
   build-api-coverage-3-10:
     needs: github-pending
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:large
+      - ubuntu-latest
     container:
       image: docker.io/python:3.10
     env:
@@ -38,9 +34,7 @@ jobs:
   build-api-coverage-3-9:
     needs: github-pending
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:large
+      - ubuntu-latest
     container:
       image: docker.io/python:3.9
     env:
@@ -58,9 +52,7 @@ jobs:
   build-api-coverage-3-8:
     needs: github-pending
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:large
+      - ubuntu-latest
     container:
       image: docker.io/python:3.8
     env:
@@ -78,9 +70,7 @@ jobs:
   build-gui-bundle:
     needs: github-pending
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:shared
+      - ubuntu-latest
     container:
       image: docker.io/node:18
     steps:
@@ -106,9 +96,7 @@ jobs:
     - build-api-coverage-3-10
     - build-gui-bundle
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:large
+      - ubuntu-latest
     container:
       image: docker.io/docker:20.10
     services:
@@ -144,9 +132,7 @@ jobs:
   package-gui-oci:
     needs: build-gui-bundle
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:large
+      - ubuntu-latest
     container:
       image: docker.io/docker:20.10
     services:
@@ -187,9 +173,7 @@ jobs:
     - build-api-coverage-3-8
     - build-api-coverage-3-10
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:large
+      - ubuntu-latest
     container:
       image: docker.io/python:3.10
     if: startsWith(github.ref, 'refs/tags')
@@ -220,9 +204,7 @@ jobs:
     - build-api-coverage-3-8
     - build-api-coverage-3-10
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:large
+      - ubuntu-latest
     container:
       image: docker.io/python:3.10
     if: "!(startsWith(github.ref, 'refs/tags'))"
@@ -249,9 +231,7 @@ jobs:
   package-gui-npm:
     needs: build-gui-bundle
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:shared
+      - ubuntu-latest
     container:
       image: docker.io/node:18
     if: startsWith(github.ref, 'refs/tags')
@@ -277,9 +257,7 @@ jobs:
   package-gui-npm-dry:
     needs: build-gui-bundle
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:shared
+      - ubuntu-latest
     container:
       image: docker.io/node:18
     if: "!(startsWith(github.ref, 'refs/tags'))"
@@ -310,9 +288,7 @@ jobs:
     - package-gui-npm
     - package-gui-npm-dry
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:large
+      - ubuntu-latest
     container:
       image: docker.io/python:3.10
     if: failure()
@@ -331,9 +307,7 @@ jobs:
     - package-gui-npm
     - package-gui-npm-dry
     runs-on:
-      - self-hosted
-      - platform:k8s
-      - runner:large
+      - ubuntu-latest
     container:
       image: docker.io/python:3.10
     if: success()
