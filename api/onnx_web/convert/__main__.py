@@ -73,11 +73,11 @@ base_models: Models = {
         # v1.x
         (
             "stable-diffusion-onnx-v1-5",
-            HuggingfaceClient.protocol + "runwayml/stable-diffusion-v1-5",
+            HuggingfaceClient.protocol + "benjamin-paine/stable-diffusion-v1-5",
         ),
         (
             "stable-diffusion-onnx-v1-inpainting",
-            HuggingfaceClient.protocol + "runwayml/stable-diffusion-inpainting",
+            HuggingfaceClient.protocol + "benjamin-paine/stable-diffusion-v1-5-inpainting",
         ),
         (
             "upscaling-stable-diffusion-x4",

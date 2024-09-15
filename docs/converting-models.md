@@ -64,7 +64,7 @@ To convert the diffusers model using the `diffusers` script:
 
 ```shell
 > python3 convert_stable_diffusion_checkpoint_to_onnx.py \
-  --model_path="runwayml/stable-diffusion-v1-5" \
+  --model_path="benjamin-paine/stable-diffusion-v1-5" \
   --output_path="~/onnx-web/models/stable-diffusion-onnx-v1-5"
 ```
 
@@ -186,7 +186,7 @@ when you run the `lora_add` command:
 
 ```shell
 > python3 -m lora_diffusion.cli_lora_add \
-    runwayml/stable-diffusion-v1-5 \
+    benjamin-paine/stable-diffusion-v1-5 \
     sayakpaul/sd-model-finetuned-lora-t4 \
     ~/onnx-web/models/.cache/diffusion-sd-v1-5-pokemon \
     0.8 \
