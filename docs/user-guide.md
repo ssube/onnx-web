@@ -205,7 +205,7 @@ hardware-accelerated inference using those models and a web client to provide th
 The models used by onnx-web are split up into four groups:
 
 1. Diffusion
-   1. general models like [Stable Diffusion](https://huggingface.co/runwayml/stable-diffusion-v1-5)
+   1. general models like [Stable Diffusion](https://huggingface.co/benjamin-paine/stable-diffusion-v1-5)
    2. specialized models like [Knollingcase](https://huggingface.co/Aybeeceedee/knollingcase) or
       [OpenJourney](https://huggingface.co/prompthero/openjourney)
 2. Upscaling
@@ -1302,7 +1302,7 @@ some common configurations in a server context.
   "diffusion": [
     {
       "name": "diffusion-blend-many",
-      "source": "runwayml/stable-diffusion-v1-5",
+      "source": "benjamin-paine/stable-diffusion-v1-5",
       "inversions": [
         {
           "name": "cubex",
