@@ -1,4 +1,4 @@
-FROM docker.io/nvidia/cuda:11.7.1-runtime-ubuntu20.04
+FROM docker.io/nvidia/cuda:12.6.2-runtime-ubuntu20.04
 
 WORKDIR /onnx-web/api
 
