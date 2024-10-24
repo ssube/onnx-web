@@ -29,7 +29,7 @@ realesrgan==0.3.0
 
 ### Server packages ###
 arpeggio==2.0.2
-boto3==1.26.87
+boto3==1.35.48
 flask==3.0.0
 flask-cors==3.0.10
 jsonschema==4.17.3
